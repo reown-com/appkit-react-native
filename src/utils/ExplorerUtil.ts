@@ -31,10 +31,13 @@ export const ExplorerUtil = {
     const fetched = await fetch(fetchUrl);
 
     //TODO: Add installed boolean & catch errors
-    return fetched.json().then((data: ListingResponse) => {
-      return { listings: Object.values(data.listings), total: data.total };
-    });
+    return fetched.json();
   },
+
+  formatImageUrl(projectId: string, imageId: string) {
+    return `${EXPLORER_API}/v3/logo/lg/${imageId}?projectId=${projectId}`;
+  },
+
   async navigateDeepLink(
     universalLink: string,
     deepLink: string,

@@ -1,0 +1,75 @@
+import { proxy } from 'valtio/vanilla';
+import type { ExplorerCtrlState, PageParams } from '../types/controllerTypes';
+import { ExplorerUtil } from '../utils/ExplorerUtil';
+import { ConfigCtrl } from './ConfigCtrl';
+
+// -- initial state ------------------------------------------------ //
+const state = proxy<ExplorerCtrlState>({
+  wallets: { listings: [], total: 0, page: 1 },
+  search: { listings: [], total: 0, page: 1 },
+  previewWallets: [],
+  recomendedWallets: [],
+});
+
+// -- helpers ------------------------------------------------------ //
+function getProjectId() {
+  const { projectId } = ConfigCtrl.state;
+  if (!projectId) {
+    throw new Error('projectId is required to work with explorer api');
+  }
+
+  return projectId;
+}
+
+// -- controller --------------------------------------------------- //
+export const ExplorerCtrl = {
+  state,
+
+  async getPreviewWallets(params: PageParams) {
+    const { listings } = await ExplorerUtil.fetchWallets(
+      getProjectId(),
+      params
+    );
+    state.previewWallets = Object.values(listings);
+
+    return state.previewWallets;
+  },
+
+  async getRecomendedWallets() {
+    const { listings } = await ExplorerUtil.fetchWallets(getProjectId(), {
+      page: 1,
+      entries: 6,
+    });
+    state.recomendedWallets = Object.values(listings);
+  },
+
+  async getAllWallets() {
+    const { listings, total } = await ExplorerUtil.fetchWallets(getProjectId());
+    state.wallets = { listings: Object.values(listings), page: 1, total };
+  },
+
+  async getPaginatedWallets(params: PageParams) {
+    const { page, search } = params;
+    const { listings: listingsObj, total } = await ExplorerUtil.fetchWallets(
+      getProjectId(),
+      params
+    );
+    const listings = Object.values(listingsObj);
+    const type = search ? 'search' : 'wallets';
+    state[type] = {
+      listings: [...state[type].listings, ...listings],
+      total,
+      page: page ?? 1,
+    };
+
+    return { listings, total };
+  },
+
+  getImageUrl(imageId: string) {
+    return ExplorerUtil.formatImageUrl(getProjectId(), imageId);
+  },
+
+  resetSearch() {
+    state.search = { listings: [], total: 0, page: 1 };
+  },
+};

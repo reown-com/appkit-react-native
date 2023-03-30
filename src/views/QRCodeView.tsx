@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -6,25 +6,23 @@ import {
   StyleSheet,
   useColorScheme,
 } from 'react-native';
-// import Clipboard from '@react-native-clipboard/clipboard';
+
 import * as Clipboard from 'expo-clipboard';
 import { DEVICE_HEIGHT, DEVICE_WIDTH } from '../constants/Platform';
 import NavHeader from '../components/NavHeader';
 import QRCode from '../components/QRCode';
 import CopyIcon from '../assets/Copy.png';
 import { DarkTheme, LightTheme } from '../constants/Colors';
+import { RouterCtrl } from '../controllers/RouterCtrl';
+import { OptionsCtrl } from '../controllers/OptionsCtrl';
 
-interface Props {
-  uri?: string;
-  onBackPress: () => void;
-}
-
-function QRCodeView({ uri, onBackPress }: Props) {
+function QRCodeView() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [wcUri, setWCUri] = useState(OptionsCtrl.state.sessionUri);
   const isDarkMode = useColorScheme() === 'dark';
 
   const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(uri!).then(() => {
+    await Clipboard.setStringAsync(wcUri!).then(() => {
       Alert.alert('Copied to clipboard');
     });
   };
@@ -37,18 +35,27 @@ function QRCodeView({ uri, onBackPress }: Props) {
     }).start();
   }, [fadeAnim]);
 
+  useEffect(() => {
+    const unsubscribeOptions = OptionsCtrl.subscribe((state) => {
+      setWCUri(state.sessionUri);
+    });
+    return () => {
+      unsubscribeOptions();
+    };
+  }, []);
+
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <NavHeader
         title="Scan the code"
-        onBackPress={onBackPress}
+        onBackPress={RouterCtrl.goBack}
         actionIcon={CopyIcon}
         onActionPress={copyToClipboard}
-        actionDisabled={!uri}
+        actionDisabled={!wcUri}
       />
-      {uri ? (
+      {wcUri ? (
         <QRCode
-          uri={uri}
+          uri={wcUri}
           size={DEVICE_WIDTH * 0.9}
           theme={isDarkMode ? 'dark' : 'light'}
         />

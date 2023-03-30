@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo, useState } from 'react';
 import {
   Animated,
   StyleSheet,
@@ -11,22 +11,18 @@ import { DEVICE_HEIGHT } from '../constants/Platform';
 import WalletItem, { ITEM_HEIGHT } from '../components/WalletItem';
 
 import NavHeader from '../components/NavHeader';
+import { RouterCtrl } from '../controllers/RouterCtrl';
+import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
+import { OptionsCtrl } from '../controllers/OptionsCtrl';
 
-interface ViewAllExplorerProps {
-  isLoading: boolean;
-  explorerData: any;
-  onBackPress: () => void;
-  currentWCURI?: string;
-}
-
-function ViewAllExplorer({
-  isLoading,
-  explorerData,
-  onBackPress,
-  currentWCURI,
-}: ViewAllExplorerProps) {
+function ViewAllExplorer() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const isDarkMode = useColorScheme() === 'dark';
+  const [isLoading, setIsLoading] = useState(!OptionsCtrl.state.isDataLoaded);
+  const [wcUri, setWCUri] = useState(OptionsCtrl.state.sessionUri);
+  const wallets = useMemo(() => {
+    return ExplorerCtrl.state.wallets.listings;
+  }, []);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -36,18 +32,31 @@ function ViewAllExplorer({
     }).start();
   }, [fadeAnim]);
 
+  useEffect(() => {
+    const unsubscribeOptions = OptionsCtrl.subscribe((state) => {
+      setIsLoading(!state.isDataLoaded);
+      setWCUri(state.sessionUri);
+    });
+    return () => {
+      unsubscribeOptions();
+    };
+  }, []);
+
   return (
     <Animated.View style={{ opacity: fadeAnim }}>
       <>
-        <NavHeader title="Connect your Wallet" onBackPress={onBackPress} />
-        {isLoading || !currentWCURI ? (
+        <NavHeader
+          title="Connect your Wallet"
+          onBackPress={RouterCtrl.goBack}
+        />
+        {isLoading || !wcUri ? (
           <ActivityIndicator
             style={styles.loader}
             color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
           />
         ) : (
           <FlatList
-            data={explorerData || []}
+            data={wallets || []}
             style={styles.list}
             contentContainerStyle={styles.listContentContainer}
             indicatorStyle={isDarkMode ? 'white' : 'black'}
@@ -59,7 +68,7 @@ function ViewAllExplorer({
               index,
             })}
             renderItem={({ item }) => (
-              <WalletItem currentWCURI={currentWCURI} walletInfo={item} />
+              <WalletItem currentWCURI={wcUri} walletInfo={item} />
             )}
           />
         )}

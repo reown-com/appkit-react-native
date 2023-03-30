@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "1.17.11",
     "expo": "~48.0.9",
     "expo-clipboard": "~4.1.2",
     "expo-status-bar": "~1.4.4",
@@ -16,13 +17,14 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.71.4",
+    "react-native-get-random-values": "~1.8.0",
     "react-native-modal": "^13.0.1",
     "react-native-svg": "13.4.0",
     "react-native-web": "~0.18.10"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
-    "@expo/webpack-config": "^0.17.2",
+    "@expo/webpack-config": "^18.0.1",
     "babel-loader": "^8.1.0",
     "babel-plugin-module-resolver": "^4.1.0"
   },
