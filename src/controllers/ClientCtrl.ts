@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { proxy } from 'valtio/vanilla';
+import { proxy, ref } from 'valtio/vanilla';
 import type { ClientCtrlState } from '../types/controllerTypes';
 
 // -- initial state ------------------------------------------------ //
@@ -16,15 +16,17 @@ export const ClientCtrl = {
 
   setProvider(provider: ClientCtrlState['provider']) {
     if (!state.initialized && provider) {
-      state.provider = provider;
+      state.provider = ref(provider);
       state.initialized = true;
     }
   },
 
   setSession(session: ClientCtrlState['session']) {
     if (session && state.provider) {
-      state.session = session;
-      state.web3Provider = new ethers.providers.Web3Provider(state.provider);
+      state.session = ref(session);
+      state.web3Provider = ref(
+        new ethers.providers.Web3Provider(state.provider)
+      );
     }
   },
 
