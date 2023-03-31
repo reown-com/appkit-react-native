@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Animated,
   StyleSheet,
   useColorScheme,
 } from 'react-native';
 
-import * as Clipboard from 'expo-clipboard';
 import { DEVICE_HEIGHT, DEVICE_WIDTH } from '../constants/Platform';
 import NavHeader from '../components/NavHeader';
 import QRCode from '../components/QRCode';
@@ -15,16 +13,18 @@ import CopyIcon from '../assets/Copy.png';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import type { RouterProps } from '../types/routerTypes';
 
-function QRCodeView() {
+function QRCodeView({ onCopyClipboard }: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [wcUri, setWCUri] = useState(OptionsCtrl.state.sessionUri);
   const isDarkMode = useColorScheme() === 'dark';
 
   const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(wcUri!).then(() => {
-      Alert.alert('Copied to clipboard');
-    });
+    if (onCopyClipboard && wcUri) {
+      onCopyClipboard(wcUri);
+      // Show toast
+    }
   };
 
   useEffect(() => {
@@ -50,7 +50,7 @@ function QRCodeView() {
         title="Scan the code"
         onBackPress={RouterCtrl.goBack}
         actionIcon={CopyIcon}
-        onActionPress={copyToClipboard}
+        onActionPress={onCopyClipboard ? copyToClipboard : undefined}
         actionDisabled={!wcUri}
       />
       {wcUri ? (

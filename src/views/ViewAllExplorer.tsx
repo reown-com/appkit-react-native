@@ -14,8 +14,9 @@ import NavHeader from '../components/NavHeader';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import type { RouterProps } from '../types/routerTypes';
 
-function ViewAllExplorer() {
+function ViewAllExplorer(_: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const isDarkMode = useColorScheme() === 'dark';
   const [isLoading, setIsLoading] = useState(!OptionsCtrl.state.isDataLoaded);

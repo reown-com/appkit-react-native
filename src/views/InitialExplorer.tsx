@@ -16,8 +16,9 @@ import type { Listing } from '../types/controllerTypes';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import type { RouterProps } from '../types/routerTypes';
 
-function InitialExplorer() {
+function InitialExplorer(_: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const isDarkMode = useColorScheme() === 'dark';
   const [isLoading, setIsLoading] = useState(!OptionsCtrl.state.isDataLoaded);

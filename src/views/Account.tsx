@@ -8,8 +8,9 @@ import DisconnectIcon from '../assets/Disconnect.png';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import { LightTheme } from '../constants/Colors';
 import { ModalCtrl } from '../controllers/ModalCtrl';
+import type { RouterProps } from 'src/types/routerTypes';
 
-export function Account() {
+export function Account(_: RouterProps) {
   const [address, setAddress] = React.useState<string | undefined>(
     OptionsCtrl.state.address
   );

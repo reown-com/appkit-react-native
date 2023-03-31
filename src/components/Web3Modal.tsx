@@ -24,9 +24,14 @@ import { ClientCtrl } from '../controllers/ClientCtrl';
 interface Web3ModalProps {
   projectId: string;
   relayUrl: string;
+  onCopyClipboard?: (value: string) => void;
 }
 
-export function Web3Modal({ projectId, relayUrl }: Web3ModalProps) {
+export function Web3Modal({
+  projectId,
+  relayUrl,
+  onCopyClipboard,
+}: Web3ModalProps) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const isDarkMode = useColorScheme() === 'dark';
@@ -163,7 +168,7 @@ export function Web3Modal({ projectId, relayUrl }: Web3ModalProps) {
             isDarkMode && styles.connectWalletContainerDark,
           ]}
         >
-          <Web3ModalRouter />
+          <Web3ModalRouter onCopyClipboard={onCopyClipboard} />
         </View>
       </ImageBackground>
     </Modal>

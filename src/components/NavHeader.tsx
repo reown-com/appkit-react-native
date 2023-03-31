@@ -46,7 +46,7 @@ function NavHeader({
       <Text style={[styles.title, isDarkMode && styles.titleDark]}>
         {title}
       </Text>
-      {actionIcon ? (
+      {actionIcon && onActionPress ? (
         <TouchableOpacity
           style={styles.button}
           onPress={onActionPress}

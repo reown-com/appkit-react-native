@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo } from 'react';
-import { View } from 'react-native';
 
 import QRCodeView from '../views/QRCodeView';
 import ViewAllExplorer from '../views/ViewAllExplorer';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import InitialExplorer from '../views/InitialExplorer';
 import { Account } from '../views/Account';
+import { Error } from '../views/Error';
+import type { RouterProps } from '../types/routerTypes';
 
-export function Web3ModalRouter() {
+export function Web3ModalRouter(props: RouterProps) {
   const [activeView, setActiveView] = React.useState(RouterCtrl.state.view);
 
   const ViewComponent = useMemo(() => {
@@ -21,7 +22,7 @@ export function Web3ModalRouter() {
       case 'Account':
         return Account;
       default:
-        return View; // TODO: Add a default view here
+        return Error;
     }
   }, [activeView]);
 
@@ -35,5 +36,5 @@ export function Web3ModalRouter() {
     };
   }, []);
 
-  return <ViewComponent />;
+  return <ViewComponent {...props} />;
 }
