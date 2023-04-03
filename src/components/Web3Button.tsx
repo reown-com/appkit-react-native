@@ -22,21 +22,18 @@ export function Web3Button() {
   }, []);
 
   return (
-    <TouchableOpacity
-      onPress={() => ModalCtrl.open()}
-      style={styles.blueButton}
-    >
+    <TouchableOpacity onPress={() => ModalCtrl.open()} style={styles.container}>
       {isConnected ? (
-        <Text style={styles.blueButtonText}>View Account</Text>
+        <Text style={styles.text}>View Account</Text>
       ) : (
-        <Text style={styles.blueButtonText}>Connect</Text>
+        <Text style={styles.text}>Connect</Text>
       )}
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  blueButton: {
+  container: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -47,7 +44,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: LightTheme.overlayThin,
   },
-  blueButtonText: {
+  text: {
     color: 'white',
     fontWeight: '700',
   },

@@ -30,7 +30,6 @@ export const ExplorerUtil = {
     }
     const fetched = await fetch(fetchUrl);
 
-    //TODO: Add installed boolean & catch errors
     return fetched.json();
   },
 
@@ -55,8 +54,6 @@ export const ExplorerUtil = {
     }
 
     try {
-      // Note: Could not use .canOpenURL() to check if the app is installed
-      // Due to having to add it to the iOS info.plist
       await Linking.openURL(tempDeepLink);
     } catch (error) {
       Alert.alert(`Unable to open this DeepLink: ${tempDeepLink}`);
