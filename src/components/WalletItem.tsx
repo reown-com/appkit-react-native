@@ -6,7 +6,7 @@ import {
   StyleSheet,
   useColorScheme,
 } from 'react-native';
-import type { Listing } from 'src/types/controllerTypes';
+import type { Listing } from '../types/controllerTypes';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import { ExplorerUtil } from '../utils/ExplorerUtil';
 

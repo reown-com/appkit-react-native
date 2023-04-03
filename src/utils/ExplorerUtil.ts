@@ -1,6 +1,6 @@
 import { Linking } from 'react-native';
 import { Alert } from 'react-native';
-import type { ListingResponse, PageParams } from 'src/types/controllerTypes';
+import type { ListingResponse, PageParams } from '../types/controllerTypes';
 import { CoreUtil } from './CoreUtil';
 
 const EXPLORER_API = 'https://explorer-api.walletconnect.com';
