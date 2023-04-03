@@ -1,4 +1,4 @@
-import {Dimensions, Platform} from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 
 const windowDimensions = Dimensions.get('window');
 export const DEVICE_HEIGHT = windowDimensions.height;

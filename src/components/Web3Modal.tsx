@@ -28,12 +28,7 @@ interface Web3ModalProps {
   currentWCURI?: string;
 }
 
-export function Web3Modal({
-  projectId,
-  isVisible,
-  onClose,
-  currentWCURI,
-}: Web3ModalProps) {
+export function Web3Modal({ projectId, isVisible, onClose }: Web3ModalProps) {
   const [isWalletListLoading, setWalletListLoading] = useState(true);
   const [initialWallets, setInitialWallets] = useState<Listing[]>([]);
   const [allWallets, setAllWallets] = useState<Listing[]>([]);
