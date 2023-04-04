@@ -1,5 +1,4 @@
-import { Linking } from 'react-native';
-import { Alert } from 'react-native';
+import { Alert, Linking } from 'react-native';
 import type { ListingResponse, PageParams } from '../types/controllerTypes';
 import { CoreUtil } from './CoreUtil';
 

@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import { Image } from 'react-native';
+import { useCallback, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   useColorScheme,
+  Image,
 } from 'react-native';
 import { DEVICE_HEIGHT } from '../constants/Platform';
 import { ClientCtrl } from '../controllers/ClientCtrl';
@@ -20,7 +20,7 @@ import NavHeader from '../components/NavHeader';
 
 export function Account(_: RouterProps) {
   const isDarkMode = useColorScheme() === 'dark';
-  const [address, setAddress] = React.useState<string | undefined>(
+  const [address, setAddress] = useState<string | undefined>(
     OptionsCtrl.state.address
   );
 
@@ -35,7 +35,7 @@ export function Account(_: RouterProps) {
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = OptionsCtrl.subscribe((state) => {
       setAddress(state.address);
     });

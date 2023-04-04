@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import QRCodeView from '../views/QRCodeView';
 import ViewAllExplorer from '../views/ViewAllExplorer';
@@ -9,7 +9,7 @@ import { Error } from '../views/Error';
 import type { RouterProps } from '../types/routerTypes';
 
 export function Web3ModalRouter(props: RouterProps) {
-  const [activeView, setActiveView] = React.useState(RouterCtrl.state.view);
+  const [activeView, setActiveView] = useState(RouterCtrl.state.view);
 
   const ViewComponent = useMemo(() => {
     switch (activeView) {

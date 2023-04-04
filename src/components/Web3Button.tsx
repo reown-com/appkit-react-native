@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { ModalCtrl } from '../controllers/ModalCtrl';
@@ -6,7 +6,7 @@ import { LightTheme } from '../constants/Colors';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 
 export function Web3Button() {
-  const [isConnected, setIsConnected] = React.useState<boolean | undefined>(
+  const [isConnected, setIsConnected] = useState<boolean | undefined>(
     OptionsCtrl.state.isConnected
   );
 

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo, useState } from 'react';
+import { useRef, useEffect, useMemo, useState } from 'react';
 import {
   Animated,
   StyleSheet,
@@ -63,7 +63,7 @@ function ViewAllExplorer(_: RouterProps) {
             indicatorStyle={isDarkMode ? 'white' : 'black'}
             showsVerticalScrollIndicator
             numColumns={4}
-            getItemLayout={(_, index) => ({
+            getItemLayout={(__, index) => ({
               length: ITEM_HEIGHT,
               offset: ITEM_HEIGHT * index,
               index,

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import { Web3Modal, Web3Button } from '@web3modal/react-native';
 import { setStringAsync } from 'expo-clipboard';
