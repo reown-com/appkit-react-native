@@ -57,16 +57,15 @@ export function Web3Modal({
 
   const onConnect = useCallback(async () => {
     const provider = ClientCtrl.provider();
-    createSession(provider)
-      .then((session) => {
-        if (session) {
-          ClientCtrl.setSession(session);
-          onSessionCreated();
-        }
-      })
-      .catch(() => {
-        onSessionError();
-      });
+    try {
+      const session = await createSession(provider);
+      if (session) {
+        ClientCtrl.setSession(session);
+        onSessionCreated();
+      }
+    } catch (error) {
+      onSessionError();
+    }
   }, [onSessionCreated, onSessionError]);
 
   const subscribeToEvents = useCallback(async () => {
