@@ -115,24 +115,32 @@ export function Web3Modal({
   }, []);
 
   useEffect(() => {
-    ConfigCtrl.setConfig({ projectId });
-    if (!ExplorerCtrl.state.wallets.total) {
-      ExplorerCtrl.getAllWallets().then(() => {
-        OptionsCtrl.setIsDataLoaded(true);
-      });
+    async function fetchWallets() {
+      try {
+        if (!ExplorerCtrl.state.wallets.total) {
+          await ExplorerCtrl.getAllWallets();
+          OptionsCtrl.setIsDataLoaded(true);
+        }
+      } catch (error) {
+        Alert.alert('Error', 'Error fetching wallets');
+      }
     }
+
+    ConfigCtrl.setConfig({ projectId });
+    fetchWallets();
   }, [projectId]);
 
   useEffect(() => {
-    function createProvider() {
-      createUniversalProvider({ projectId, relayUrl })
-        .then((provider) => {
+    async function createProvider() {
+      try {
+        const provider = await createUniversalProvider({ projectId, relayUrl });
+        if (provider) {
           ClientCtrl.setProvider(provider);
           subscribeToEvents();
-        })
-        .catch(() => {
-          Alert.alert('Error', 'Error creating provider');
-        });
+        }
+      } catch (error) {
+        Alert.alert('Error', 'Error creating provider');
+      }
     }
     createProvider();
   }, [projectId, relayUrl, subscribeToEvents]);
