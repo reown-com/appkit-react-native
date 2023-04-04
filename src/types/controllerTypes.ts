@@ -36,13 +36,11 @@ export interface ExplorerCtrlState {
   wallets: ListingResponse & { page: number };
 }
 
-export interface PageParams {
+export interface ListingParams {
   page?: number;
   search?: string;
   entries?: number;
   version?: number;
-  device?: 'desktop' | 'mobile';
-  order?: 'asc' | 'desc';
   chains?: string;
 }
 

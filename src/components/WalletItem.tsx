@@ -33,20 +33,16 @@ function WalletItem({ currentWCURI, walletInfo }: WalletItemProps) {
       key={walletInfo.id}
       style={styles.container}
     >
-      <Image style={styles.icon} source={{ uri: walletInfo.image_url.md }} />
+      <Image
+        style={styles.icon}
+        source={{ uri: ExplorerUtil.getWalletImageUrl(walletInfo.image_id) }}
+      />
       <Text
         style={[styles.name, isDarkMode && styles.nameDark]}
         numberOfLines={1}
       >
         {walletInfo.name}
       </Text>
-      {/* {walletInfo.isInstalled ? (
-        <Text
-          style={[styles.installedText, isDarkMode && styles.installedTextDark]}
-        >
-          Installed
-        </Text>
-      ) : null} */}
     </TouchableOpacity>
   );
 }
@@ -75,15 +71,6 @@ const styles = StyleSheet.create({
   },
   nameDark: {
     color: DarkTheme.foreground1,
-  },
-  installedText: {
-    color: LightTheme.foreground3,
-    fontSize: 10,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-  },
-  installedTextDark: {
-    color: DarkTheme.foreground3,
   },
 });
 

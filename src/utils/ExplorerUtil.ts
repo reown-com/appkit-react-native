@@ -1,39 +1,43 @@
 import { Alert, Linking } from 'react-native';
-import type { ListingResponse, PageParams } from '../types/controllerTypes';
+import type { ListingParams, ListingResponse } from '../types/controllerTypes';
 import { CoreUtil } from './CoreUtil';
+import { ConfigCtrl } from '../controllers/ConfigCtrl';
 
-const EXPLORER_API = 'https://explorer-api.walletconnect.com';
+// -- Helpers -------------------------------------------------------
+const W3M_API = 'https://explorer-api.walletconnect.com';
 
-function formatParams(params: PageParams) {
-  const stringParams = Object.fromEntries(
-    Object.entries(params)
-      .filter(
-        ([_, value]) =>
-          typeof value !== 'undefined' && value !== null && value !== ''
-      )
-      .map(([key, value]) => [key, value.toString()])
-  );
+async function fetchListings(
+  endpoint: string,
+  params: ListingParams
+): Promise<ListingResponse> {
+  const url = new URL(endpoint, W3M_API);
+  url.searchParams.append('projectId', ConfigCtrl.state.projectId);
 
-  return new URLSearchParams(stringParams).toString();
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) {
+        url.searchParams.append(key, String(value));
+      }
+    });
+  }
+
+  const request = await fetch(url.toString());
+
+  return request.json() as Promise<ListingResponse>;
 }
 
+// -- Utility -------------------------------------------------------
 export const ExplorerUtil = {
-  async fetchWallets(
-    projectId: string,
-    params?: PageParams
-  ): Promise<ListingResponse> {
-    let fetchUrl = `${EXPLORER_API}/v3/wallets?projectId=${projectId}&sdks=sign_v2`;
-    if (params) {
-      const urlParams = formatParams(params);
-      fetchUrl = `${fetchUrl}&${urlParams}`;
-    }
-    const fetched = await fetch(fetchUrl);
-
-    return fetched.json();
+  async getMobileListings(params: ListingParams) {
+    return fetchListings('/w3m/v1/getMobileListings', params);
   },
 
-  formatImageUrl(projectId: string, imageId: string) {
-    return `${EXPLORER_API}/v3/logo/lg/${imageId}?projectId=${projectId}`;
+  getWalletImageUrl(imageId: string) {
+    return `${W3M_API}/w3m/v1/getWalletImage/${imageId}?projectId=${ConfigCtrl.state.projectId}`;
+  },
+
+  getAssetImageUrl(imageId: string) {
+    return `${W3M_API}/w3m/v1/getAssetImage/${imageId}?projectId=${ConfigCtrl.state.projectId}`;
   },
 
   async navigateDeepLink(

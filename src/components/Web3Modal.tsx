@@ -118,7 +118,7 @@ export function Web3Modal({
     async function fetchWallets() {
       try {
         if (!ExplorerCtrl.state.wallets.total) {
-          await ExplorerCtrl.getAllWallets();
+          await ExplorerCtrl.getMobileWallets({ version: 2 });
           OptionsCtrl.setIsDataLoaded(true);
         }
       } catch (error) {
