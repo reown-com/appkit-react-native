@@ -46,8 +46,8 @@ export function Account(_: RouterProps) {
   }, []);
 
   return (
-    <View style={[styles.container]}>
-      <NavHeader title="Account info" />
+    <View style={styles.container}>
+      <NavHeader title="Connected Account" />
       <View>
         <Text
           style={[
@@ -83,11 +83,11 @@ const styles = StyleSheet.create({
   container: {
     height: DEVICE_HEIGHT * 0.4,
     padding: 16,
-    justifyContent: 'space-between',
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 30,
   },
   iconContainer: {
     alignItems: 'center',
