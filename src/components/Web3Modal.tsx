@@ -42,9 +42,8 @@ export function Web3Modal({
   }, []);
 
   const onSessionError = useCallback(async () => {
-    // TODO: Improve this, check why is alerting a lot, and check MaxListeners warning
-    // ModalCtrl.close();
-    // Alert.alert('Error', 'Error creating session');
+    ModalCtrl.close();
+    Alert.alert('Error', 'Error with session');
   }, []);
 
   const onSessionDelete = useCallback(async ({ topic }: { topic: string }) => {
