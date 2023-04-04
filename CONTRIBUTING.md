@@ -34,11 +34,6 @@ To run the example app on iOS:
 yarn example ios
 ```
 
-To run the example app on Web:
-
-```sh
-yarn example web
-```
 
 Make sure your code passes TypeScript and ESLint. Run the following to verify:
 
