@@ -1,4 +1,3 @@
-//Based on https://github.com/WalletConnect/web3modal/blob/V2/packages/ui/src/utils/QrCode.ts
 import React, { ReactNode } from 'react';
 import { Line, Rect, Circle } from 'react-native-svg';
 import QRCode from 'qrcode';

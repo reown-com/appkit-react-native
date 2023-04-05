@@ -92,7 +92,6 @@ const styles = StyleSheet.create({
   titleDark: {
     color: DarkTheme.foreground1,
   },
-  // Handle better when themes are added
   actionDisabled: {
     tintColor: LightTheme.foreground3,
   },

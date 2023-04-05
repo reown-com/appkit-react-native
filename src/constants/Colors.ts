@@ -1,4 +1,3 @@
-// Will be better used when Themeing is added
 export const DarkTheme = {
   accent: '#47A1FF',
   foreground1: '#E4E7E7',
