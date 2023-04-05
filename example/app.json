@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "example",
-    "slug": "example",
+    "name": "web3modal-rn-example",
+    "slug": "web3modal-rn-example",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
