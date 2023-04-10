@@ -13,7 +13,6 @@ export interface ClientCtrlState {
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigCtrlState {
   projectId: string;
-  walletConnectVersion?: 1 | 2;
   themeMode?: 'dark' | 'light';
 }
 
@@ -27,7 +26,6 @@ export interface OptionsCtrlState {
   address?: string;
   isConnected: boolean;
   isDataLoaded: boolean;
-  walletConnectVersion: 1 | 2;
   sessionUri?: string;
 }
 

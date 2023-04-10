@@ -8,7 +8,6 @@ const state = proxy<OptionsCtrlState>({
   isConnected: false,
   sessionUri: undefined,
   isDataLoaded: false,
-  walletConnectVersion: 2,
 });
 
 // -- controller --------------------------------------------------- //
@@ -39,12 +38,6 @@ export const OptionsCtrl = {
 
   setIsDataLoaded(isDataLoaded: OptionsCtrlState['isDataLoaded']) {
     state.isDataLoaded = isDataLoaded;
-  },
-
-  setWalletConnectVersion(
-    walletConnectVersion: OptionsCtrlState['walletConnectVersion']
-  ) {
-    state.walletConnectVersion = walletConnectVersion;
   },
 
   setSessionUri(sessionUri: OptionsCtrlState['sessionUri']) {

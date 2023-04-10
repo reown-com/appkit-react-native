@@ -1,7 +1,6 @@
 import { Appearance } from 'react-native';
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla';
 import type { ConfigCtrlState } from '../types/controllerTypes';
-import { OptionsCtrl } from './OptionsCtrl';
 
 // -- initial state ------------------------------------------------ //
 function isDarkMode() {
@@ -23,8 +22,6 @@ export const ConfigCtrl = {
   },
 
   setConfig(config: ConfigCtrlState) {
-    OptionsCtrl.setWalletConnectVersion(config.walletConnectVersion ?? 2);
-
     Object.assign(state, config);
   },
 };
