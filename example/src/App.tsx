@@ -14,7 +14,6 @@ export default function App() {
       <Web3Button />
       <Web3Modal
         projectId="YOUR_PROJECT_ID"
-        relayUrl="wss://relay.walletconnect.com"
         onCopyClipboard={onCopyClipboard}
       />
     </View>

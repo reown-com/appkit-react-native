@@ -23,7 +23,7 @@ import { ClientCtrl } from '../controllers/ClientCtrl';
 
 interface Web3ModalProps {
   projectId: string;
-  relayUrl: string;
+  relayUrl?: string;
   onCopyClipboard?: (value: string) => void;
 }
 
@@ -147,8 +147,6 @@ export function Web3Modal({
   useEffect(() => {
     if (!projectId) {
       Alert.alert('Error', 'Please provide a projectId');
-    } else if (!relayUrl) {
-      Alert.alert('Error', 'Please provide a relayUrl');
     }
   }, [projectId, relayUrl]);
 

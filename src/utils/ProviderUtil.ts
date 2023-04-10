@@ -1,6 +1,5 @@
-import 'react-native-get-random-values';
-import '@ethersproject/shims';
 import '@walletconnect/react-native-compat';
+import '@ethersproject/shims';
 import UniversalProvider from '@walletconnect/universal-provider';
 import type { SessionTypes } from '@walletconnect/types';
 
@@ -9,7 +8,7 @@ export async function createUniversalProvider({
   relayUrl,
 }: {
   projectId: string;
-  relayUrl: string;
+  relayUrl?: string;
 }) {
   return UniversalProvider.init({
     logger: 'info',
