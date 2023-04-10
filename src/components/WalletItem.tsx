@@ -5,12 +5,13 @@ import {
   StyleSheet,
   useColorScheme,
 } from 'react-native';
+
 import type { Listing } from '../types/controllerTypes';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import { ExplorerUtil } from '../utils/ExplorerUtil';
 
 interface WalletItemProps {
-  currentWCURI: string;
+  currentWCURI?: string;
   walletInfo: Listing;
 }
 
@@ -20,11 +21,13 @@ function WalletItem({ currentWCURI, walletInfo }: WalletItemProps) {
   const isDarkMode = useColorScheme() === 'dark';
 
   const onPress = () => {
-    ExplorerUtil.navigateDeepLink(
-      walletInfo.mobile.universal,
-      walletInfo.mobile.native,
-      currentWCURI
-    );
+    if (currentWCURI) {
+      ExplorerUtil.navigateDeepLink(
+        walletInfo.mobile.universal,
+        walletInfo.mobile.native,
+        currentWCURI
+      );
+    }
   };
 
   return (

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,10 +7,10 @@ import {
   Alert,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import { useSnapshot } from 'valtio';
 
 import { DEVICE_WIDTH } from '../constants/Platform';
 import { DarkTheme, LightTheme } from '../constants/Colors';
-
 import Background from '../assets/Background.png';
 import Web3ModalHeader from './Web3ModalHeader';
 import { createUniversalProvider, createSession } from '../utils/ProviderUtil';
@@ -32,8 +32,7 @@ export function Web3Modal({
   relayUrl,
   onCopyClipboard,
 }: Web3ModalProps) {
-  const [modalVisible, setModalVisible] = useState(false);
-
+  const modalState = useSnapshot(ModalCtrl.state);
   const isDarkMode = useColorScheme() === 'dark';
 
   const onSessionCreated = useCallback(async () => {
@@ -104,16 +103,6 @@ export function Web3Modal({
   }, [onSessionDelete]);
 
   useEffect(() => {
-    const unsubscribeModal = ModalCtrl.subscribe((modalState) => {
-      setModalVisible(modalState.open);
-    });
-
-    return () => {
-      unsubscribeModal();
-    };
-  }, []);
-
-  useEffect(() => {
     async function fetchWallets() {
       try {
         if (!ExplorerCtrl.state.wallets.total) {
@@ -152,7 +141,7 @@ export function Web3Modal({
 
   return (
     <Modal
-      isVisible={modalVisible}
+      isVisible={modalState.open}
       style={styles.modal}
       propagateSwipe
       hideModalContentWhileAnimating

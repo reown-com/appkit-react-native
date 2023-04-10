@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { useSnapshot } from 'valtio';
 
 import QRCodeView from '../views/QRCodeView';
 import ViewAllExplorer from '../views/ViewAllExplorer';
@@ -9,10 +10,10 @@ import { Error } from '../views/Error';
 import type { RouterProps } from '../types/routerTypes';
 
 export function Web3ModalRouter(props: RouterProps) {
-  const [activeView, setActiveView] = useState(RouterCtrl.state.view);
+  const routerState = useSnapshot(RouterCtrl.state);
 
   const ViewComponent = useMemo(() => {
-    switch (activeView) {
+    switch (routerState.view) {
       case 'ConnectWallet':
         return InitialExplorer;
       case 'WalletExplorer':
@@ -24,17 +25,7 @@ export function Web3ModalRouter(props: RouterProps) {
       default:
         return Error;
     }
-  }, [activeView]);
-
-  useEffect(() => {
-    const unsubscribe = RouterCtrl.subscribe((state) => {
-      setActiveView(state.view);
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+  }, [routerState.view]);
 
   return <ViewComponent {...props} />;
 }

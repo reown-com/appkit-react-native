@@ -1,4 +1,4 @@
-import { useRef, useEffect, useMemo, useState } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import {
   Animated,
   StyleSheet,
@@ -6,10 +6,11 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
+import { useSnapshot } from 'valtio';
+
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import { DEVICE_HEIGHT } from '../constants/Platform';
 import WalletItem, { ITEM_HEIGHT } from '../components/WalletItem';
-
 import NavHeader from '../components/NavHeader';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
@@ -19,8 +20,8 @@ import type { RouterProps } from '../types/routerTypes';
 function ViewAllExplorer(_: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const isDarkMode = useColorScheme() === 'dark';
-  const [isLoading, setIsLoading] = useState(!OptionsCtrl.state.isDataLoaded);
-  const [wcUri, setWCUri] = useState(OptionsCtrl.state.sessionUri);
+  const optionsState = useSnapshot(OptionsCtrl.state);
+  const loading = !optionsState.isDataLoaded || !optionsState.sessionUri;
   const wallets = useMemo(() => {
     return ExplorerCtrl.state.wallets.listings;
   }, []);
@@ -33,16 +34,6 @@ function ViewAllExplorer(_: RouterProps) {
     }).start();
   }, [fadeAnim]);
 
-  useEffect(() => {
-    const unsubscribeOptions = OptionsCtrl.subscribe((state) => {
-      setIsLoading(!state.isDataLoaded);
-      setWCUri(state.sessionUri);
-    });
-    return () => {
-      unsubscribeOptions();
-    };
-  }, []);
-
   return (
     <Animated.View style={{ opacity: fadeAnim }}>
       <>
@@ -50,7 +41,7 @@ function ViewAllExplorer(_: RouterProps) {
           title="Connect your Wallet"
           onBackPress={RouterCtrl.goBack}
         />
-        {isLoading || !wcUri ? (
+        {loading ? (
           <ActivityIndicator
             style={styles.loader}
             color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
@@ -69,7 +60,10 @@ function ViewAllExplorer(_: RouterProps) {
               index,
             })}
             renderItem={({ item }) => (
-              <WalletItem currentWCURI={wcUri} walletInfo={item} />
+              <WalletItem
+                currentWCURI={optionsState.sessionUri}
+                walletInfo={item}
+              />
             )}
           />
         )}

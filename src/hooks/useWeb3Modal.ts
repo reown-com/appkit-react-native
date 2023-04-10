@@ -1,31 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useSnapshot } from 'valtio';
+
 import { ModalCtrl } from '../controllers/ModalCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 
 export function useWeb3Modal() {
-  const [modal, setModal] = useState(ModalCtrl.state);
-  const [initialized, setInitialized] = useState(ClientCtrl.state.initialized);
-
-  useEffect(() => {
-    const unsubscribeModal = ModalCtrl.subscribe((newModal) =>
-      setModal({ ...newModal })
-    );
-
-    const unsubscribeClient = ClientCtrl.subscribe((newClient) =>
-      setInitialized(newClient.initialized)
-    );
-
-    return () => {
-      unsubscribeModal();
-      unsubscribeClient();
-    };
-  }, []);
+  const modalState = useSnapshot(ModalCtrl.state);
+  const clientState = useSnapshot(ClientCtrl.state);
 
   return {
-    isOpen: modal.open,
+    isOpen: modalState.open,
     open: ModalCtrl.open,
     close: ModalCtrl.close,
     provider: ClientCtrl.state.provider,
-    initialized,
+    initialized: clientState.initialized,
   };
 }

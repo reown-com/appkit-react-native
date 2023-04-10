@@ -1,4 +1,5 @@
-import { proxy, subscribe as valtioSub } from 'valtio/vanilla';
+import { proxy } from 'valtio';
+
 import type { ModalCtrlState } from '../types/controllerTypes';
 import { ClientCtrl } from './ClientCtrl';
 import { OptionsCtrl } from './OptionsCtrl';
@@ -17,10 +18,6 @@ const state = proxy<ModalCtrlState>({
 // -- controller --------------------------------------------------- //
 export const ModalCtrl = {
   state,
-
-  subscribe(callback: (newState: ModalCtrlState) => void) {
-    return valtioSub(state, () => callback(state));
-  },
 
   async open(options?: OpenOptions) {
     return new Promise<void>((resolve) => {

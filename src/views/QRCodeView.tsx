@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   ActivityIndicator,
   Animated,
   StyleSheet,
   useColorScheme,
 } from 'react-native';
+import { useSnapshot } from 'valtio';
 
 import { DEVICE_HEIGHT, DEVICE_WIDTH } from '../constants/Platform';
 import NavHeader from '../components/NavHeader';
@@ -17,12 +18,12 @@ import type { RouterProps } from '../types/routerTypes';
 
 function QRCodeView({ onCopyClipboard }: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const [wcUri, setWCUri] = useState(OptionsCtrl.state.sessionUri);
+  const optionsState = useSnapshot(OptionsCtrl.state);
   const isDarkMode = useColorScheme() === 'dark';
 
   const copyToClipboard = async () => {
-    if (onCopyClipboard && wcUri) {
-      onCopyClipboard(wcUri);
+    if (onCopyClipboard && optionsState.sessionUri) {
+      onCopyClipboard(optionsState.sessionUri);
       // Show toast
     }
   };
@@ -35,15 +36,6 @@ function QRCodeView({ onCopyClipboard }: RouterProps) {
     }).start();
   }, [fadeAnim]);
 
-  useEffect(() => {
-    const unsubscribeOptions = OptionsCtrl.subscribe((state) => {
-      setWCUri(state.sessionUri);
-    });
-    return () => {
-      unsubscribeOptions();
-    };
-  }, []);
-
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <NavHeader
@@ -51,11 +43,11 @@ function QRCodeView({ onCopyClipboard }: RouterProps) {
         onBackPress={RouterCtrl.goBack}
         actionIcon={CopyIcon}
         onActionPress={onCopyClipboard ? copyToClipboard : undefined}
-        actionDisabled={!wcUri}
+        actionDisabled={!optionsState.sessionUri}
       />
-      {wcUri ? (
+      {optionsState?.sessionUri ? (
         <QRCode
-          uri={wcUri}
+          uri={optionsState.sessionUri}
           size={DEVICE_WIDTH * 0.9}
           theme={isDarkMode ? 'dark' : 'light'}
         />

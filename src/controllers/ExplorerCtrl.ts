@@ -1,4 +1,5 @@
-import { proxy } from 'valtio/vanilla';
+import { proxy } from 'valtio';
+
 import type {
   ExplorerCtrlState,
   ListingParams,

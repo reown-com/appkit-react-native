@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
-import { proxy, ref, subscribe as valtioSub } from 'valtio/vanilla';
+import { proxy, ref } from 'valtio';
+
 import type { ClientCtrlState } from '../types/controllerTypes';
 
 // -- initial state ------------------------------------------------ //
@@ -13,10 +14,6 @@ const state = proxy<ClientCtrlState>({
 // -- controller -------------------------------------------------- //
 export const ClientCtrl = {
   state,
-
-  subscribe(callback: (newState: ClientCtrlState) => void) {
-    return valtioSub(state, () => callback(state));
-  },
 
   setProvider(provider: ClientCtrlState['provider']) {
     if (!state.initialized && provider) {

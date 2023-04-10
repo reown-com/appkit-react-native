@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,11 @@ import {
   useColorScheme,
   Image,
 } from 'react-native';
+import { useSnapshot } from 'valtio';
+
 import { DEVICE_HEIGHT } from '../constants/Platform';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import DisconnectIcon from '../assets/Disconnect.png';
-
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import { ModalCtrl } from '../controllers/ModalCtrl';
@@ -20,9 +21,7 @@ import NavHeader from '../components/NavHeader';
 
 export function Account(_: RouterProps) {
   const isDarkMode = useColorScheme() === 'dark';
-  const [address, setAddress] = useState<string | undefined>(
-    OptionsCtrl.state.address
-  );
+  const optionsState = useSnapshot(OptionsCtrl.state);
 
   const onDisconnect = useCallback(async () => {
     try {
@@ -33,16 +32,6 @@ export function Account(_: RouterProps) {
     } catch (err: unknown) {
       Alert.alert('Error', 'Error disconnecting');
     }
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = OptionsCtrl.subscribe((state) => {
-      setAddress(state.address);
-    });
-
-    return () => {
-      unsubscribe();
-    };
   }, []);
 
   return (
@@ -66,7 +55,7 @@ export function Account(_: RouterProps) {
             color: isDarkMode ? DarkTheme.foreground1 : LightTheme.foreground1,
           }}
         >
-          {address}
+          {optionsState.address}
         </Text>
       </View>
       <TouchableOpacity onPress={onDisconnect} style={styles.button}>

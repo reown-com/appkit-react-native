@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -6,6 +6,8 @@ import {
   ActivityIndicator,
   useColorScheme,
 } from 'react-native';
+import { useSnapshot } from 'valtio';
+
 import WalletItem from '../components/WalletItem';
 import ViewAllBox from '../components/ViewAllBox';
 import QRIcon from '../assets/QR.png';
@@ -21,21 +23,11 @@ import type { RouterProps } from '../types/routerTypes';
 function InitialExplorer(_: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const isDarkMode = useColorScheme() === 'dark';
-  const [isLoading, setIsLoading] = useState(!OptionsCtrl.state.isDataLoaded);
-  const [wcUri, setWCUri] = useState(OptionsCtrl.state.sessionUri);
+  const optionsState = useSnapshot(OptionsCtrl.state);
+  const loading = !optionsState.isDataLoaded || !optionsState.sessionUri;
 
   const wallets = useMemo(() => {
     return ExplorerCtrl.state.wallets.listings.slice(0, 7);
-  }, []);
-
-  useEffect(() => {
-    const unsubscribeOptions = OptionsCtrl.subscribe((state) => {
-      setIsLoading(!state.isDataLoaded);
-      setWCUri(state.sessionUri);
-    });
-    return () => {
-      unsubscribeOptions();
-    };
   }, []);
 
   useEffect(() => {
@@ -54,7 +46,7 @@ function InitialExplorer(_: RouterProps) {
         actionIcon={QRIcon}
         actionIconStyle={styles.qrIcon}
       />
-      {isLoading || !wcUri ? (
+      {loading ? (
         <ActivityIndicator
           style={styles.loader}
           color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
@@ -62,7 +54,11 @@ function InitialExplorer(_: RouterProps) {
       ) : (
         <View style={styles.explorerContainer}>
           {wallets.map((item: Listing) => (
-            <WalletItem walletInfo={item} key={item.id} currentWCURI={wcUri} />
+            <WalletItem
+              walletInfo={item}
+              key={item.id}
+              currentWCURI={optionsState.sessionUri}
+            />
           ))}
           <ViewAllBox onPress={() => RouterCtrl.push('WalletExplorer')} />
         </View>

@@ -1,4 +1,5 @@
-import { proxy, subscribe as valtioSub } from 'valtio/vanilla';
+import { proxy } from 'valtio';
+
 import type { OptionsCtrlState } from '../types/controllerTypes';
 import { ClientCtrl } from './ClientCtrl';
 
@@ -13,10 +14,6 @@ const state = proxy<OptionsCtrlState>({
 // -- controller --------------------------------------------------- //
 export const OptionsCtrl = {
   state,
-
-  subscribe(callback: (newState: OptionsCtrlState) => void) {
-    return valtioSub(state, () => callback(state));
-  },
 
   async getAccount() {
     const web3Provider = ClientCtrl.state.web3Provider;

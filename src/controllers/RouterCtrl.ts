@@ -1,4 +1,5 @@
-import { proxy, subscribe as valtioSub } from 'valtio/vanilla';
+import { proxy } from 'valtio';
+
 import type { RouterCtrlState } from '../types/controllerTypes';
 
 // -- initial state ------------------------------------------------ //
@@ -10,10 +11,6 @@ const state = proxy<RouterCtrlState>({
 // -- controller --------------------------------------------------- //
 export const RouterCtrl = {
   state,
-
-  subscribe(callback: (newState: RouterCtrlState) => void) {
-    return valtioSub(state, () => callback(state));
-  },
 
   push(view: RouterCtrlState['view']) {
     if (view !== state.view) {
