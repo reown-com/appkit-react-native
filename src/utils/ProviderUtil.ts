@@ -1,5 +1,3 @@
-import '@walletconnect/react-native-compat';
-import '@ethersproject/shims';
 import UniversalProvider from '@walletconnect/universal-provider';
 import type { SessionTypes } from '@walletconnect/types';
 
