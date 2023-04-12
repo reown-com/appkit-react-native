@@ -54,7 +54,7 @@ function ViewAllExplorer(_: RouterProps) {
             indicatorStyle={isDarkMode ? 'white' : 'black'}
             showsVerticalScrollIndicator
             numColumns={4}
-            getItemLayout={(__, index) => ({
+            getItemLayout={(_data, index) => ({
               length: ITEM_HEIGHT,
               offset: ITEM_HEIGHT * index,
               index,
