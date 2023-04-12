@@ -53,6 +53,10 @@ export function Web3Modal({
     }
   }, []);
 
+  const onDisplayUri = useCallback(async (uri: string) => {
+    OptionsCtrl.setSessionUri(uri);
+  }, []);
+
   const onConnect = useCallback(async () => {
     const provider = ClientCtrl.provider();
     try {
@@ -65,42 +69,6 @@ export function Web3Modal({
       onSessionError();
     }
   }, [onSessionCreated, onSessionError]);
-
-  const subscribeToEvents = useCallback(async () => {
-    const provider = ClientCtrl.provider();
-    if (provider) {
-      provider.on('display_uri', (uri: string) => {
-        OptionsCtrl.setSessionUri(uri);
-      });
-
-      // Subscribe to session ping
-      provider.on(
-        'session_ping',
-        ({ id, topic }: { id: string; topic: any }) => {
-          console.log('session_ping', id, topic);
-        }
-      );
-
-      // Subscribe to session event
-      provider.on(
-        'session_event',
-        ({ event, chainId }: { event: any; chainId: string }) => {
-          console.log('session_event', event, chainId);
-        }
-      );
-
-      // Subscribe to session update
-      provider.on(
-        'session_update',
-        ({ topic, params }: { topic: any; params: any }) => {
-          console.log('session_update', topic, params);
-        }
-      );
-
-      // Subscribe to session delete
-      provider.on('session_delete', onSessionDelete);
-    }
-  }, [onSessionDelete]);
 
   useEffect(() => {
     async function fetchWallets() {
@@ -124,14 +92,22 @@ export function Web3Modal({
         const provider = await createUniversalProvider({ projectId, relayUrl });
         if (provider) {
           ClientCtrl.setProvider(provider);
-          subscribeToEvents();
+          provider.on('display_uri', onDisplayUri);
+          provider.on('session_delete', onSessionDelete);
         }
       } catch (error) {
         Alert.alert('Error', 'Error creating provider');
       }
     }
     createProvider();
-  }, [projectId, relayUrl, subscribeToEvents]);
+
+    return () => {
+      // Unsubscribe from events
+      const provider = ClientCtrl.provider();
+      provider?.removeListener('display_uri', onDisplayUri);
+      provider?.removeListener('session_delete', onSessionDelete);
+    };
+  }, [onDisplayUri, onSessionDelete, projectId, relayUrl]);
 
   useEffect(() => {
     if (!projectId) {
