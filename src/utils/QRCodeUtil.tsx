@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Line, Rect, Circle } from 'react-native-svg';
 import QRCode from 'qrcode';
 import { DarkTheme, LightTheme } from '../constants/Colors';

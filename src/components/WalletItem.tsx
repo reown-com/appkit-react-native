@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Image,
   Text,
@@ -6,12 +5,13 @@ import {
   StyleSheet,
   useColorScheme,
 } from 'react-native';
-import type { Listing } from 'src/types/controllerTypes';
+
+import type { Listing } from '../types/controllerTypes';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import { ExplorerUtil } from '../utils/ExplorerUtil';
 
 interface WalletItemProps {
-  currentWCURI: string;
+  currentWCURI?: string;
   walletInfo: Listing;
 }
 
@@ -21,11 +21,13 @@ function WalletItem({ currentWCURI, walletInfo }: WalletItemProps) {
   const isDarkMode = useColorScheme() === 'dark';
 
   const onPress = () => {
-    ExplorerUtil.navigateDeepLink(
-      walletInfo.mobile.universal,
-      walletInfo.mobile.native,
-      currentWCURI
-    );
+    if (currentWCURI) {
+      ExplorerUtil.navigateDeepLink(
+        walletInfo.mobile.universal,
+        walletInfo.mobile.native,
+        currentWCURI
+      );
+    }
   };
 
   return (
@@ -34,20 +36,16 @@ function WalletItem({ currentWCURI, walletInfo }: WalletItemProps) {
       key={walletInfo.id}
       style={styles.container}
     >
-      <Image style={styles.icon} source={{ uri: walletInfo.image_url.md }} />
+      <Image
+        style={styles.icon}
+        source={{ uri: ExplorerUtil.getWalletImageUrl(walletInfo.image_id) }}
+      />
       <Text
         style={[styles.name, isDarkMode && styles.nameDark]}
         numberOfLines={1}
       >
         {walletInfo.name}
       </Text>
-      {/* {walletInfo.isInstalled ? (
-        <Text
-          style={[styles.installedText, isDarkMode && styles.installedTextDark]}
-        >
-          Installed
-        </Text>
-      ) : null} */}
     </TouchableOpacity>
   );
 }
@@ -76,15 +74,6 @@ const styles = StyleSheet.create({
   },
   nameDark: {
     color: DarkTheme.foreground1,
-  },
-  installedText: {
-    color: LightTheme.foreground3,
-    fontSize: 10,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-  },
-  installedTextDark: {
-    color: DarkTheme.foreground3,
   },
 });
 

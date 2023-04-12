@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import {
   Animated,
   StyleSheet,
@@ -6,27 +6,25 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
+import { useSnapshot } from 'valtio';
+
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import { DEVICE_HEIGHT } from '../constants/Platform';
 import WalletItem, { ITEM_HEIGHT } from '../components/WalletItem';
-
 import NavHeader from '../components/NavHeader';
+import { RouterCtrl } from '../controllers/RouterCtrl';
+import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
+import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import type { RouterProps } from '../types/routerTypes';
 
-interface ViewAllExplorerProps {
-  isLoading: boolean;
-  explorerData: any;
-  onBackPress: () => void;
-  currentWCURI?: string;
-}
-
-function ViewAllExplorer({
-  isLoading,
-  explorerData,
-  onBackPress,
-  currentWCURI,
-}: ViewAllExplorerProps) {
+function ViewAllExplorer(_: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const isDarkMode = useColorScheme() === 'dark';
+  const optionsState = useSnapshot(OptionsCtrl.state);
+  const loading = !optionsState.isDataLoaded || !optionsState.sessionUri;
+  const wallets = useMemo(() => {
+    return ExplorerCtrl.state.wallets.listings;
+  }, []);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -39,27 +37,33 @@ function ViewAllExplorer({
   return (
     <Animated.View style={{ opacity: fadeAnim }}>
       <>
-        <NavHeader title="Connect your Wallet" onBackPress={onBackPress} />
-        {isLoading || !currentWCURI ? (
+        <NavHeader
+          title="Connect your Wallet"
+          onBackPress={RouterCtrl.goBack}
+        />
+        {loading ? (
           <ActivityIndicator
             style={styles.loader}
             color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
           />
         ) : (
           <FlatList
-            data={explorerData || []}
+            data={wallets || []}
             style={styles.list}
             contentContainerStyle={styles.listContentContainer}
             indicatorStyle={isDarkMode ? 'white' : 'black'}
             showsVerticalScrollIndicator
             numColumns={4}
-            getItemLayout={(_, index) => ({
+            getItemLayout={(_data, index) => ({
               length: ITEM_HEIGHT,
               offset: ITEM_HEIGHT * index,
               index,
             })}
             renderItem={({ item }) => (
-              <WalletItem currentWCURI={currentWCURI} walletInfo={item} />
+              <WalletItem
+                currentWCURI={optionsState.sessionUri}
+                walletInfo={item}
+              />
             )}
           />
         )}

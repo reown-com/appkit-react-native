@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Svg } from 'react-native-svg';
 import { View, Image, StyleSheet } from 'react-native';
 import { QRCodeUtil } from '../utils/QRCodeUtil';

@@ -1,12 +1,44 @@
-// -- ExplorerCtrl ------------------------------------------- //
+import type { SessionTypes } from '@walletconnect/types';
+import type UniversalProvider from '@walletconnect/universal-provider/dist/types/UniversalProvider';
+import type { ethers } from 'ethers';
 
-export interface PageParams {
+// -- ClientCtrl ------------------------------------------- //
+export interface ClientCtrlState {
+  initialized: boolean;
+  provider?: UniversalProvider;
+  web3Provider?: ethers.providers.Web3Provider;
+  session?: SessionTypes.Struct;
+}
+
+// -- ConfigCtrl ------------------------------------------- //
+export interface ConfigCtrlState {
+  projectId: string;
+  themeMode?: 'dark' | 'light';
+}
+
+// -- ModalCtrl --------------------------------------- //
+export interface ModalCtrlState {
+  open: boolean;
+}
+
+// -- OptionsCtrl --------------------------------------- //
+export interface OptionsCtrlState {
+  address?: string;
+  isConnected: boolean;
+  isDataLoaded: boolean;
+  sessionUri?: string;
+}
+
+// -- ExplorerCtrl ------------------------------------------- //
+export interface ExplorerCtrlState {
+  wallets: ListingResponse & { page: number };
+}
+
+export interface ListingParams {
   page?: number;
   search?: string;
   entries?: number;
   version?: number;
-  device?: 'desktop' | 'mobile';
-  order?: 'asc' | 'desc';
   chains?: string;
 }
 
@@ -51,4 +83,16 @@ export interface Listing {
 export interface ListingResponse {
   listings: Listing[];
   total: number;
+}
+
+// -- RouterCtrl --------------------------------------------- //
+export type RouterView =
+  | 'ConnectWallet'
+  | 'Qrcode'
+  | 'WalletExplorer'
+  | 'Account';
+
+export interface RouterCtrlState {
+  history: RouterView[];
+  view: RouterView;
 }

@@ -1,112 +1,128 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   StyleSheet,
   View,
   useColorScheme,
   ImageBackground,
+  Alert,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import { useSnapshot } from 'valtio';
 
 import { DEVICE_WIDTH } from '../constants/Platform';
 import { DarkTheme, LightTheme } from '../constants/Colors';
-import type { Routes } from '../constants/Routes';
-import type { Listing } from '../types/controllerTypes';
-
 import Background from '../assets/Background.png';
 import Web3ModalHeader from './Web3ModalHeader';
-import { ExplorerUtil } from '../utils/ExplorerUtil';
-import InitialExplorer from '../views/InitialExplorer';
-import ViewAllExplorer from '../views/ViewAllExplorer';
-import QRCodeView from '../views/QRCodeView';
-
-const INITIAL_ROUTE = 'INIT_WALLETS';
+import { createUniversalProvider, createSession } from '../utils/ProviderUtil';
+import { ModalCtrl } from '../controllers/ModalCtrl';
+import { Web3ModalRouter } from './Web3ModalRouter';
+import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
+import { ConfigCtrl } from '../controllers/ConfigCtrl';
+import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import { ClientCtrl } from '../controllers/ClientCtrl';
 
 interface Web3ModalProps {
   projectId: string;
-  isVisible: boolean;
-  onClose: () => void;
-  currentWCURI?: string;
+  relayUrl?: string;
+  onCopyClipboard?: (value: string) => void;
 }
 
-export function Web3Modal({ projectId, isVisible, onClose }: Web3ModalProps) {
-  const [isWalletListLoading, setWalletListLoading] = useState(true);
-  const [initialWallets, setInitialWallets] = useState<Listing[]>([]);
-  const [allWallets, setAllWallets] = useState<Listing[]>([]);
-
+export function Web3Modal({
+  projectId,
+  relayUrl,
+  onCopyClipboard,
+}: Web3ModalProps) {
+  const modalState = useSnapshot(ModalCtrl.state);
   const isDarkMode = useColorScheme() === 'dark';
 
-  const [viewStack, setViewStack] = useState<Routes[]>([INITIAL_ROUTE]);
+  const onSessionCreated = useCallback(async () => {
+    OptionsCtrl.getAccount();
+    ModalCtrl.close();
+  }, []);
 
-  const fetchWallets = useCallback(() => {
-    ExplorerUtil.fetchWallets(projectId).then((wallets) => {
-      setWalletListLoading(false);
-      if (wallets) {
-        setInitialWallets(wallets.listings.slice(0, 7));
-        setAllWallets(wallets.listings);
-      }
-    });
-  }, [projectId]);
+  const onSessionError = useCallback(async () => {
+    ModalCtrl.close();
+    Alert.alert('Error', 'Error with session');
+  }, []);
 
-  const onNavigate = useCallback(
-    (route: Routes) => {
-      setViewStack(viewStack.concat([route]));
-    },
-    [viewStack]
-  );
-
-  const onNavigateBack = useCallback(() => {
-    if (viewStack.length > 1) {
-      setViewStack(viewStack.slice(0, -1));
+  const onSessionDelete = useCallback(async ({ topic }: { topic: string }) => {
+    const session = ClientCtrl.session();
+    if (topic === session?.topic) {
+      OptionsCtrl.resetAccount();
+      ClientCtrl.clearSession();
     }
-  }, [viewStack]);
+  }, []);
 
-  const SCREENS = useMemo(() => {
-    return {
-      ['INIT_WALLETS']: (
-        <InitialExplorer
-          isLoading={isWalletListLoading}
-          explorerData={initialWallets}
-          onViewAllPress={() => onNavigate('ALL_WALLETS')}
-          currentWCURI={'currentWCURI'}
-          onQRPress={() => onNavigate('QR_CODE')}
-        />
-      ),
-      ['ALL_WALLETS']: (
-        <ViewAllExplorer
-          isLoading={isWalletListLoading}
-          explorerData={allWallets}
-          onBackPress={onNavigateBack}
-          currentWCURI={'currentWCURI'}
-        />
-      ),
-      ['QR_CODE']: (
-        <QRCodeView uri={'currentWCURI'} onBackPress={onNavigateBack} />
-      ),
-    };
-  }, [
-    initialWallets,
-    isWalletListLoading,
-    onNavigateBack,
-    onNavigate,
-    allWallets,
-  ]);
+  const onDisplayUri = useCallback(async (uri: string) => {
+    OptionsCtrl.setSessionUri(uri);
+  }, []);
+
+  const onConnect = useCallback(async () => {
+    const provider = ClientCtrl.provider();
+    try {
+      const session = await createSession(provider);
+      if (session) {
+        ClientCtrl.setSession(session);
+        onSessionCreated();
+      }
+    } catch (error) {
+      onSessionError();
+    }
+  }, [onSessionCreated, onSessionError]);
 
   useEffect(() => {
-    if (!allWallets.length) {
-      fetchWallets();
+    async function fetchWallets() {
+      try {
+        if (!ExplorerCtrl.state.wallets.total) {
+          await ExplorerCtrl.getMobileWallets({ version: 2 });
+          OptionsCtrl.setIsDataLoaded(true);
+        }
+      } catch (error) {
+        Alert.alert('Error', 'Error fetching wallets');
+      }
     }
-  }, [allWallets, fetchWallets]);
+
+    ConfigCtrl.setConfig({ projectId });
+    fetchWallets();
+  }, [projectId]);
+
+  useEffect(() => {
+    async function createProvider() {
+      try {
+        const provider = await createUniversalProvider({ projectId, relayUrl });
+        if (provider) {
+          ClientCtrl.setProvider(provider);
+          provider.on('display_uri', onDisplayUri);
+          provider.on('session_delete', onSessionDelete);
+        }
+      } catch (error) {
+        Alert.alert('Error', 'Error creating provider');
+      }
+    }
+    createProvider();
+
+    return () => {
+      // Unsubscribe from events
+      const provider = ClientCtrl.provider();
+      provider?.removeListener('display_uri', onDisplayUri);
+      provider?.removeListener('session_delete', onSessionDelete);
+    };
+  }, [onDisplayUri, onSessionDelete, projectId, relayUrl]);
+
+  useEffect(() => {
+    if (!projectId) {
+      Alert.alert('Error', 'Please provide a projectId');
+    }
+  }, [projectId, relayUrl]);
 
   return (
     <Modal
-      isVisible={isVisible}
+      isVisible={modalState.open}
       style={styles.modal}
       propagateSwipe
       hideModalContentWhileAnimating
-      onBackdropPress={onClose}
-      onModalHide={() => {
-        setViewStack([INITIAL_ROUTE]);
-      }}
+      onBackdropPress={ModalCtrl.close}
+      onModalWillShow={onConnect}
       useNativeDriver
     >
       <ImageBackground
@@ -114,14 +130,14 @@ export function Web3Modal({ projectId, isVisible, onClose }: Web3ModalProps) {
         source={Background}
         imageStyle={styles.wcImage}
       >
-        <Web3ModalHeader onClose={onClose} />
+        <Web3ModalHeader onClose={ModalCtrl.close} />
         <View
           style={[
             styles.connectWalletContainer,
             isDarkMode && styles.connectWalletContainerDark,
           ]}
         >
-          {SCREENS[viewStack.at(-1) ?? INITIAL_ROUTE]}
+          <Web3ModalRouter onCopyClipboard={onCopyClipboard} />
         </View>
       </ImageBackground>
     </Modal>

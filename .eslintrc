@@ -1,0 +1,28 @@
+{
+  "root": true,
+  "extends": [
+    "@react-native-community",
+    "prettier"
+  ],
+  "plugins": ["promise"],
+  "ignorePatterns":[
+    "node_modules/",
+    "build/",
+    "lib/"
+  ],
+  "rules": {
+    "react/react-in-jsx-scope": 0,
+    "no-duplicate-imports":"error",
+    "promise/prefer-await-to-then": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "quoteProps": "consistent",
+        "singleQuote": true,
+        "tabWidth": 2,
+        "trailingComma": "es5",
+        "useTabs": false
+      }
+    ]
+  }
+}

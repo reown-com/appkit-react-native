@@ -1,32 +1,31 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Animated,
   StyleSheet,
   useColorScheme,
 } from 'react-native';
-// import Clipboard from '@react-native-clipboard/clipboard';
-import * as Clipboard from 'expo-clipboard';
+import { useSnapshot } from 'valtio';
+
 import { DEVICE_HEIGHT, DEVICE_WIDTH } from '../constants/Platform';
 import NavHeader from '../components/NavHeader';
 import QRCode from '../components/QRCode';
 import CopyIcon from '../assets/Copy.png';
 import { DarkTheme, LightTheme } from '../constants/Colors';
+import { RouterCtrl } from '../controllers/RouterCtrl';
+import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import type { RouterProps } from '../types/routerTypes';
 
-interface Props {
-  uri?: string;
-  onBackPress: () => void;
-}
-
-function QRCodeView({ uri, onBackPress }: Props) {
+function QRCodeView({ onCopyClipboard }: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const optionsState = useSnapshot(OptionsCtrl.state);
   const isDarkMode = useColorScheme() === 'dark';
 
   const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(uri!).then(() => {
-      Alert.alert('Copied to clipboard');
-    });
+    if (onCopyClipboard && optionsState.sessionUri) {
+      onCopyClipboard(optionsState.sessionUri);
+      // Show toast
+    }
   };
 
   useEffect(() => {
@@ -41,14 +40,14 @@ function QRCodeView({ uri, onBackPress }: Props) {
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <NavHeader
         title="Scan the code"
-        onBackPress={onBackPress}
+        onBackPress={RouterCtrl.goBack}
         actionIcon={CopyIcon}
-        onActionPress={copyToClipboard}
-        actionDisabled={!uri}
+        onActionPress={onCopyClipboard ? copyToClipboard : undefined}
+        actionDisabled={!optionsState.sessionUri}
       />
-      {uri ? (
+      {optionsState?.sessionUri ? (
         <QRCode
-          uri={uri}
+          uri={optionsState.sessionUri}
           size={DEVICE_WIDTH * 0.9}
           theme={isDarkMode ? 'dark' : 'light'}
         />

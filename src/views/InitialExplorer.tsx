@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -6,31 +6,29 @@ import {
   ActivityIndicator,
   useColorScheme,
 } from 'react-native';
+import { useSnapshot } from 'valtio';
+
 import WalletItem from '../components/WalletItem';
 import ViewAllBox from '../components/ViewAllBox';
 import QRIcon from '../assets/QR.png';
 import NavHeader from '../components/NavHeader';
 import { DEVICE_HEIGHT } from '../constants/Platform';
 import { DarkTheme, LightTheme } from '../constants/Colors';
-import type { Listing } from 'src/types/controllerTypes';
+import type { Listing } from '../types/controllerTypes';
+import { RouterCtrl } from '../controllers/RouterCtrl';
+import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
+import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import type { RouterProps } from '../types/routerTypes';
 
-interface InitialExplorerProps {
-  isLoading: boolean;
-  explorerData: any;
-  onViewAllPress: () => void;
-  currentWCURI?: string;
-  onQRPress: () => void;
-}
-
-function InitialExplorer({
-  isLoading,
-  explorerData,
-  onViewAllPress,
-  currentWCURI,
-  onQRPress,
-}: InitialExplorerProps) {
+function InitialExplorer(_: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const isDarkMode = useColorScheme() === 'dark';
+  const optionsState = useSnapshot(OptionsCtrl.state);
+  const loading = !optionsState.isDataLoaded || !optionsState.sessionUri;
+
+  const wallets = useMemo(() => {
+    return ExplorerCtrl.state.wallets.listings.slice(0, 7);
+  }, []);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -44,25 +42,25 @@ function InitialExplorer({
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <NavHeader
         title="Connect your Wallet"
-        onActionPress={onQRPress}
+        onActionPress={() => RouterCtrl.push('Qrcode')}
         actionIcon={QRIcon}
         actionIconStyle={styles.qrIcon}
       />
-      {isLoading || !currentWCURI ? (
+      {loading ? (
         <ActivityIndicator
           style={styles.loader}
           color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
         />
       ) : (
         <View style={styles.explorerContainer}>
-          {explorerData.map((item: Listing) => (
+          {wallets.map((item: Listing) => (
             <WalletItem
               walletInfo={item}
               key={item.id}
-              currentWCURI={currentWCURI}
+              currentWCURI={optionsState.sessionUri}
             />
           ))}
-          <ViewAllBox onPress={onViewAllPress} />
+          <ViewAllBox onPress={() => RouterCtrl.push('WalletExplorer')} />
         </View>
       )}
     </Animated.View>
@@ -81,7 +79,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   loader: {
-    height: DEVICE_HEIGHT * 0.2,
+    height: DEVICE_HEIGHT * 0.3,
   },
   qrIcon: {
     height: 24,
