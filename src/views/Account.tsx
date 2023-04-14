@@ -36,14 +36,14 @@ export function Account(_: RouterProps) {
   }, []);
 
   return (
-    <View
-      style={[
-        styles.container,
-        { height: isPortrait ? height * 0.3 : height * 0.7 },
-      ]}
-    >
+    <>
       <NavHeader title="Connected Account" />
-      <View>
+      <View
+        style={[
+          styles.container,
+          { height: isPortrait ? height * 0.3 : height * 0.6 },
+        ]}
+      >
         <Text
           style={[
             styles.text,
@@ -63,14 +63,14 @@ export function Account(_: RouterProps) {
         >
           {optionsState.address}
         </Text>
+        <TouchableOpacity onPress={onDisconnect} style={styles.button}>
+          <View style={styles.iconContainer}>
+            <Image source={DisconnectIcon} style={styles.icon} />
+          </View>
+          <Text style={styles.buttonText}>Disconnect</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={onDisconnect} style={styles.button}>
-        <View style={styles.iconContainer}>
-          <Image source={DisconnectIcon} style={styles.icon} />
-        </View>
-        <Text style={styles.buttonText}>Disconnect</Text>
-      </TouchableOpacity>
-    </View>
+    </>
   );
 }
 
