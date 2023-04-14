@@ -22,7 +22,7 @@ import { useOrientation } from '../hooks/useOrientation';
 export function Account(_: RouterProps) {
   const isDarkMode = useColorScheme() === 'dark';
   const optionsState = useSnapshot(OptionsCtrl.state);
-  const { height } = useOrientation();
+  const { isPortrait, height } = useOrientation();
 
   const onDisconnect = useCallback(async () => {
     try {
@@ -36,7 +36,12 @@ export function Account(_: RouterProps) {
   }, []);
 
   return (
-    <View style={[styles.container, { height: height * 0.4 }]}>
+    <View
+      style={[
+        styles.container,
+        { height: isPortrait ? height * 0.3 : height * 0.7 },
+      ]}
+    >
       <NavHeader title="Connected Account" />
       <View>
         <Text
