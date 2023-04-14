@@ -9,7 +9,6 @@ import {
 import { useSnapshot } from 'valtio';
 
 import { DarkTheme, LightTheme } from '../constants/Colors';
-// import { DEVICE_HEIGHT } from '../constants/Platform';
 import WalletItem, { ITEM_HEIGHT } from '../components/WalletItem';
 import NavHeader from '../components/NavHeader';
 import { RouterCtrl } from '../controllers/RouterCtrl';
@@ -22,7 +21,7 @@ function ViewAllExplorer(_: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const isDarkMode = useColorScheme() === 'dark';
   const optionsState = useSnapshot(OptionsCtrl.state);
-  const { height } = useOrientation();
+  const { isPortrait, height, width } = useOrientation();
   const loading = !optionsState.isDataLoaded || !optionsState.sessionUri;
   const wallets = useMemo(() => {
     return ExplorerCtrl.state.wallets.listings;
@@ -57,7 +56,8 @@ function ViewAllExplorer(_: RouterProps) {
             contentContainerStyle={styles.listContentContainer}
             indicatorStyle={isDarkMode ? 'white' : 'black'}
             showsVerticalScrollIndicator
-            numColumns={4}
+            numColumns={isPortrait ? 4 : 6}
+            key={isPortrait ? 'portrait' : 'landscape'}
             getItemLayout={(_data, index) => ({
               length: ITEM_HEIGHT,
               offset: ITEM_HEIGHT * index,
@@ -67,6 +67,7 @@ function ViewAllExplorer(_: RouterProps) {
               <WalletItem
                 currentWCURI={optionsState.sessionUri}
                 walletInfo={item}
+                style={{ width: isPortrait ? width / 4 : width / 7 }}
               />
             )}
           />
@@ -80,6 +81,7 @@ const styles = StyleSheet.create({
   listContentContainer: {
     paddingHorizontal: 4,
     paddingBottom: 12,
+    alignItems: 'center',
   },
 });
 
