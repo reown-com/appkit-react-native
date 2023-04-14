@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { useSnapshot } from 'valtio';
 
-import { DEVICE_HEIGHT } from '../constants/Platform';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import DisconnectIcon from '../assets/Disconnect.png';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
@@ -18,10 +17,12 @@ import { DarkTheme, LightTheme } from '../constants/Colors';
 import { ModalCtrl } from '../controllers/ModalCtrl';
 import type { RouterProps } from '../types/routerTypes';
 import NavHeader from '../components/NavHeader';
+import { useOrientation } from '../hooks/useOrientation';
 
 export function Account(_: RouterProps) {
   const isDarkMode = useColorScheme() === 'dark';
   const optionsState = useSnapshot(OptionsCtrl.state);
+  const { height } = useOrientation();
 
   const onDisconnect = useCallback(async () => {
     try {
@@ -35,7 +36,7 @@ export function Account(_: RouterProps) {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { height: height * 0.4 }]}>
       <NavHeader title="Connected Account" />
       <View>
         <Text
@@ -70,7 +71,6 @@ export function Account(_: RouterProps) {
 
 const styles = StyleSheet.create({
   container: {
-    height: DEVICE_HEIGHT * 0.4,
     padding: 16,
   },
   button: {

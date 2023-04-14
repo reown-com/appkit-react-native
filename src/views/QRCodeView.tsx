@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { useSnapshot } from 'valtio';
 
-import { DEVICE_HEIGHT, DEVICE_WIDTH } from '../constants/Platform';
 import NavHeader from '../components/NavHeader';
 import QRCode from '../components/QRCode';
 import CopyIcon from '../assets/Copy.png';
@@ -15,11 +14,13 @@ import { DarkTheme, LightTheme } from '../constants/Colors';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import type { RouterProps } from '../types/routerTypes';
+import { useOrientation } from '../hooks/useOrientation';
 
 function QRCodeView({ onCopyClipboard }: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const optionsState = useSnapshot(OptionsCtrl.state);
   const isDarkMode = useColorScheme() === 'dark';
+  const { height, width, isPortrait } = useOrientation();
 
   const copyToClipboard = async () => {
     if (onCopyClipboard && optionsState.sessionUri) {
@@ -48,12 +49,12 @@ function QRCodeView({ onCopyClipboard }: RouterProps) {
       {optionsState?.sessionUri ? (
         <QRCode
           uri={optionsState.sessionUri}
-          size={DEVICE_WIDTH * 0.9}
+          size={isPortrait ? width * 0.9 : height * 0.5}
           theme={isDarkMode ? 'dark' : 'light'}
         />
       ) : (
         <ActivityIndicator
-          style={styles.loader}
+          style={{ height: isPortrait ? width * 0.9 : height * 0.5 }}
           color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
         />
       )}
@@ -64,9 +65,6 @@ function QRCodeView({ onCopyClipboard }: RouterProps) {
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 32,
-  },
-  loader: {
-    height: DEVICE_HEIGHT * 0.4,
   },
 });
 

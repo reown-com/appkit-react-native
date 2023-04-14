@@ -12,18 +12,20 @@ import WalletItem from '../components/WalletItem';
 import ViewAllBox from '../components/ViewAllBox';
 import QRIcon from '../assets/QR.png';
 import NavHeader from '../components/NavHeader';
-import { DEVICE_HEIGHT } from '../constants/Platform';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import type { Listing } from '../types/controllerTypes';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import type { RouterProps } from '../types/routerTypes';
+import { useOrientation } from '../hooks/useOrientation';
 
 function InitialExplorer(_: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const isDarkMode = useColorScheme() === 'dark';
   const optionsState = useSnapshot(OptionsCtrl.state);
+  const { height, isPortrait } = useOrientation();
+
   const loading = !optionsState.isDataLoaded || !optionsState.sessionUri;
 
   const wallets = useMemo(() => {
@@ -39,7 +41,7 @@ function InitialExplorer(_: RouterProps) {
   }, [fadeAnim]);
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+    <Animated.View style={{ opacity: fadeAnim }}>
       <NavHeader
         title="Connect your Wallet"
         onActionPress={() => RouterCtrl.push('Qrcode')}
@@ -48,7 +50,9 @@ function InitialExplorer(_: RouterProps) {
       />
       {loading ? (
         <ActivityIndicator
-          style={styles.loader}
+          style={{
+            height: isPortrait ? height * 0.3 : height * 0.6,
+          }}
           color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
         />
       ) : (
@@ -68,18 +72,12 @@ function InitialExplorer(_: RouterProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingBottom: 12,
-  },
   explorerContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 4,
-  },
-  loader: {
-    height: DEVICE_HEIGHT * 0.3,
   },
   qrIcon: {
     height: 24,

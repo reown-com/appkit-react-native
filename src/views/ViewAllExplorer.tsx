@@ -9,18 +9,20 @@ import {
 import { useSnapshot } from 'valtio';
 
 import { DarkTheme, LightTheme } from '../constants/Colors';
-import { DEVICE_HEIGHT } from '../constants/Platform';
+// import { DEVICE_HEIGHT } from '../constants/Platform';
 import WalletItem, { ITEM_HEIGHT } from '../components/WalletItem';
 import NavHeader from '../components/NavHeader';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import type { RouterProps } from '../types/routerTypes';
+import { useOrientation } from '../hooks/useOrientation';
 
 function ViewAllExplorer(_: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const isDarkMode = useColorScheme() === 'dark';
   const optionsState = useSnapshot(OptionsCtrl.state);
+  const { height } = useOrientation();
   const loading = !optionsState.isDataLoaded || !optionsState.sessionUri;
   const wallets = useMemo(() => {
     return ExplorerCtrl.state.wallets.listings;
@@ -43,13 +45,15 @@ function ViewAllExplorer(_: RouterProps) {
         />
         {loading ? (
           <ActivityIndicator
-            style={styles.loader}
+            style={{
+              height: height * 0.6,
+            }}
             color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
           />
         ) : (
           <FlatList
             data={wallets || []}
-            style={styles.list}
+            style={{ maxHeight: height * 0.6 }}
             contentContainerStyle={styles.listContentContainer}
             indicatorStyle={isDarkMode ? 'white' : 'black'}
             showsVerticalScrollIndicator
@@ -73,15 +77,9 @@ function ViewAllExplorer(_: RouterProps) {
 }
 
 const styles = StyleSheet.create({
-  list: {
-    maxHeight: DEVICE_HEIGHT * 0.6,
-  },
   listContentContainer: {
     paddingHorizontal: 4,
     paddingBottom: 12,
-  },
-  loader: {
-    height: DEVICE_HEIGHT * 0.4,
   },
 });
 
