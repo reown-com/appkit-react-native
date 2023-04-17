@@ -27,6 +27,10 @@ function InitialExplorer({
     return ExplorerCtrl.state.wallets.listings.slice(0, 7);
   }, []);
 
+  const viewAllWallets = useMemo(() => {
+    return ExplorerCtrl.state.wallets.listings.slice(7, 11);
+  }, []);
+
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -50,7 +54,7 @@ function InitialExplorer({
       {loading ? (
         <ActivityIndicator
           style={{
-            height: isPortrait ? windowHeight * 0.3 : windowHeight * 0.7,
+            height: windowHeight * 0.3,
           }}
           color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
         />
@@ -61,9 +65,14 @@ function InitialExplorer({
               walletInfo={item}
               key={item.id}
               currentWCURI={optionsState.sessionUri}
+              style={isPortrait && styles.wallet}
             />
           ))}
-          <ViewAllBox onPress={() => RouterCtrl.push('WalletExplorer')} />
+          <ViewAllBox
+            onPress={() => RouterCtrl.push('WalletExplorer')}
+            wallets={viewAllWallets}
+            style={isPortrait && styles.wallet}
+          />
         </View>
       )}
     </Animated.View>
@@ -76,11 +85,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 4,
   },
   qrIcon: {
     height: 24,
     width: 24,
+  },
+  wallet: {
+    width: '25%',
   },
 });
 

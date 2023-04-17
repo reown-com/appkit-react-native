@@ -55,7 +55,7 @@ function WalletItem({ currentWCURI, walletInfo, style }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    width: '25%',
+    width: 80,
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',

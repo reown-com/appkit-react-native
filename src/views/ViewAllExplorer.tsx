@@ -86,7 +86,6 @@ function ViewAllExplorer({
 
 const styles = StyleSheet.create({
   listContentContainer: {
-    paddingHorizontal: 4,
     paddingBottom: 12,
     alignItems: 'center',
   },

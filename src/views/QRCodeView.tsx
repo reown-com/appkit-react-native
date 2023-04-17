@@ -41,7 +41,7 @@ function QRCodeView({
         styles.container,
         {
           opacity: fadeAnim,
-          height: isPortrait ? windowHeight * 0.5 : windowHeight * 0.7,
+          height: isPortrait ? windowHeight * 0.5 : windowHeight * 0.8,
         },
       ]}
     >
@@ -55,13 +55,13 @@ function QRCodeView({
       {optionsState?.sessionUri ? (
         <QRCode
           uri={optionsState.sessionUri}
-          size={isPortrait ? windowWidth * 0.9 : windowHeight * 0.5}
+          size={isPortrait ? windowWidth * 0.9 : windowHeight * 0.6}
           theme={isDarkMode ? 'dark' : 'light'}
         />
       ) : (
         <ActivityIndicator
           style={{
-            height: isPortrait ? windowWidth * 0.9 : windowHeight * 0.5,
+            height: isPortrait ? windowWidth * 0.9 : windowHeight * 0.6,
           }}
           color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
         />
