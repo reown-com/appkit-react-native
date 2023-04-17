@@ -4,7 +4,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  useColorScheme,
   StyleProp,
   ViewStyle,
 } from 'react-native';
@@ -16,31 +15,29 @@ import { ExplorerUtil } from '../utils/ExplorerUtil';
 interface Props {
   onPress: any;
   wallets: Listing[];
+  isDarkMode: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
-function ViewAllBox({ onPress, wallets, style }: Props) {
-  const isDarkMode = useColorScheme() === 'dark';
+const WalletIcon = ({ wallet }: { wallet: Listing }) => (
+  <Image
+    source={{ uri: ExplorerUtil.getWalletImageUrl(wallet.image_id) }}
+    style={styles.icon}
+  />
+);
 
+function ViewAllBox({ onPress, wallets, style, isDarkMode }: Props) {
   return (
     <TouchableOpacity onPress={onPress} style={[styles.container, style]}>
-      <View style={styles.icons}>
+      <View style={[styles.icons, isDarkMode && styles.iconsDark]}>
         <View style={styles.row}>
-          {wallets.slice(0, 2).map((wallet, index) => (
-            <Image
-              key={index}
-              source={{ uri: ExplorerUtil.getWalletImageUrl(wallet.image_id) }}
-              style={styles.icon}
-            />
+          {wallets.slice(0, 2).map((wallet) => (
+            <WalletIcon key={wallet.id} wallet={wallet} />
           ))}
         </View>
         <View style={styles.row}>
-          {wallets.slice(-2).map((wallet, index) => (
-            <Image
-              key={index}
-              source={{ uri: ExplorerUtil.getWalletImageUrl(wallet.image_id) }}
-              style={styles.icon}
-            />
+          {wallets.slice(2, 4).map((wallet) => (
+            <WalletIcon key={wallet.id} wallet={wallet} />
           ))}
         </View>
       </View>
@@ -61,6 +58,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     alignItems: 'center',
+    marginVertical: 16,
   },
   icons: {
     height: 60,
@@ -70,6 +68,9 @@ const styles = StyleSheet.create({
     borderColor: LightTheme.overlayThin,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  iconsDark: {
+    backgroundColor: DarkTheme.background2,
   },
   icon: {
     height: 23,
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: LightTheme.foreground1,
-    marginTop: 8,
+    marginTop: 5,
     maxWidth: 100,
     fontWeight: '600',
     fontSize: 12,

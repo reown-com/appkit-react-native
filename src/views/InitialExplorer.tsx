@@ -72,6 +72,7 @@ function InitialExplorer({
             onPress={() => RouterCtrl.push('WalletExplorer')}
             wallets={viewAllWallets}
             style={isPortrait && styles.wallet}
+            isDarkMode={isDarkMode}
           />
         </View>
       )}
