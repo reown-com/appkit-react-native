@@ -1,11 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import {
-  StyleSheet,
-  View,
-  Animated,
-  ActivityIndicator,
-  useColorScheme,
-} from 'react-native';
+import { StyleSheet, View, Animated, ActivityIndicator } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import WalletItem from '../components/WalletItem';
@@ -18,13 +12,14 @@ import { RouterCtrl } from '../controllers/RouterCtrl';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import type { RouterProps } from '../types/routerTypes';
-import { useOrientation } from '../hooks/useOrientation';
 
-function InitialExplorer(_: RouterProps) {
+function InitialExplorer({
+  windowHeight,
+  isPortrait,
+  isDarkMode,
+}: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const isDarkMode = useColorScheme() === 'dark';
   const optionsState = useSnapshot(OptionsCtrl.state);
-  const { height, isPortrait } = useOrientation();
 
   const loading = !optionsState.isDataLoaded || !optionsState.sessionUri;
 
@@ -41,7 +36,11 @@ function InitialExplorer(_: RouterProps) {
   }, [fadeAnim]);
 
   return (
-    <Animated.View style={{ opacity: fadeAnim }}>
+    <Animated.View
+      style={{
+        opacity: fadeAnim,
+      }}
+    >
       <NavHeader
         title="Connect your Wallet"
         onActionPress={() => RouterCtrl.push('Qrcode')}
@@ -51,7 +50,7 @@ function InitialExplorer(_: RouterProps) {
       {loading ? (
         <ActivityIndicator
           style={{
-            height: isPortrait ? height * 0.3 : height * 0.6,
+            height: isPortrait ? windowHeight * 0.3 : windowHeight * 0.7,
           }}
           color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
         />

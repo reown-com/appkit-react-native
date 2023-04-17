@@ -1,10 +1,5 @@
 import { useEffect, useRef } from 'react';
-import {
-  ActivityIndicator,
-  Animated,
-  StyleSheet,
-  useColorScheme,
-} from 'react-native';
+import { ActivityIndicator, Animated, StyleSheet } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import NavHeader from '../components/NavHeader';
@@ -14,13 +9,16 @@ import { DarkTheme, LightTheme } from '../constants/Colors';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import type { RouterProps } from '../types/routerTypes';
-import { useOrientation } from '../hooks/useOrientation';
 
-function QRCodeView({ onCopyClipboard }: RouterProps) {
+function QRCodeView({
+  onCopyClipboard,
+  isPortrait,
+  windowHeight,
+  windowWidth,
+  isDarkMode,
+}: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const optionsState = useSnapshot(OptionsCtrl.state);
-  const isDarkMode = useColorScheme() === 'dark';
-  const { height, width, isPortrait } = useOrientation();
 
   const copyToClipboard = async () => {
     if (onCopyClipboard && optionsState.sessionUri) {
@@ -38,7 +36,15 @@ function QRCodeView({ onCopyClipboard }: RouterProps) {
   }, [fadeAnim]);
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          opacity: fadeAnim,
+          height: isPortrait ? windowHeight * 0.5 : windowHeight * 0.7,
+        },
+      ]}
+    >
       <NavHeader
         title="Scan the code"
         onBackPress={RouterCtrl.goBack}
@@ -49,12 +55,14 @@ function QRCodeView({ onCopyClipboard }: RouterProps) {
       {optionsState?.sessionUri ? (
         <QRCode
           uri={optionsState.sessionUri}
-          size={isPortrait ? width * 0.9 : height * 0.5}
+          size={isPortrait ? windowWidth * 0.9 : windowHeight * 0.5}
           theme={isDarkMode ? 'dark' : 'light'}
         />
       ) : (
         <ActivityIndicator
-          style={{ height: isPortrait ? width * 0.9 : height * 0.5 }}
+          style={{
+            height: isPortrait ? windowWidth * 0.9 : windowHeight * 0.5,
+          }}
           color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
         />
       )}

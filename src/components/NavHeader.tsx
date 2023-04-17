@@ -67,7 +67,6 @@ function NavHeader({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 16,

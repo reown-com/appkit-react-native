@@ -17,12 +17,10 @@ import { DarkTheme, LightTheme } from '../constants/Colors';
 import { ModalCtrl } from '../controllers/ModalCtrl';
 import type { RouterProps } from '../types/routerTypes';
 import NavHeader from '../components/NavHeader';
-import { useOrientation } from '../hooks/useOrientation';
 
-export function Account(_: RouterProps) {
+export function Account({ isPortrait, windowHeight }: RouterProps) {
   const isDarkMode = useColorScheme() === 'dark';
   const optionsState = useSnapshot(OptionsCtrl.state);
-  const { isPortrait, height } = useOrientation();
 
   const onDisconnect = useCallback(async () => {
     try {
@@ -41,7 +39,7 @@ export function Account(_: RouterProps) {
       <View
         style={[
           styles.container,
-          { height: isPortrait ? height * 0.3 : height * 0.6 },
+          { height: isPortrait ? windowHeight * 0.3 : windowHeight * 0.6 },
         ]}
       >
         <Text

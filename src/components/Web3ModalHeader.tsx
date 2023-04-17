@@ -1,8 +1,8 @@
 import {
   Image,
+  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
-  View,
   useColorScheme,
 } from 'react-native';
 
@@ -19,7 +19,7 @@ export function Web3ModalHeader({ onClose }: Web3ModalHeaderProps) {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Image style={styles.wcLogo} source={WCLogo} />
       <TouchableOpacity
         style={[styles.closeContainer, isDarkMode && styles.closeContainerDark]}
@@ -31,17 +31,17 @@ export function Web3ModalHeader({ onClose }: Web3ModalHeaderProps) {
           source={isDarkMode ? CloseWhite : Close}
         />
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 8,
-    display: 'flex',
+    height: 46,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
+    marginHorizontal: 10,
   },
   wcLogo: {
     width: 181,

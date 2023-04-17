@@ -7,10 +7,17 @@ import { RouterCtrl } from '../controllers/RouterCtrl';
 import InitialExplorer from '../views/InitialExplorer';
 import { Account } from '../views/Account';
 import { Error } from '../views/Error';
-import type { RouterProps } from '../types/routerTypes';
+import { useOrientation } from '../hooks/useOrientation';
+import { useColorScheme } from 'react-native';
 
-export function Web3ModalRouter(props: RouterProps) {
+interface Props {
+  onCopyClipboard?: (value: string) => void;
+}
+
+export function Web3ModalRouter(props: Props) {
   const routerState = useSnapshot(RouterCtrl.state);
+  const { height, width, isPortrait } = useOrientation();
+  const isDarkMode = useColorScheme() === 'dark';
 
   const ViewComponent = useMemo(() => {
     switch (routerState.view) {
@@ -27,5 +34,13 @@ export function Web3ModalRouter(props: RouterProps) {
     }
   }, [routerState.view]);
 
-  return <ViewComponent {...props} />;
+  return (
+    <ViewComponent
+      windowHeight={height}
+      windowWidth={width}
+      isPortrait={isPortrait}
+      isDarkMode={isDarkMode}
+      {...props}
+    />
+  );
 }
