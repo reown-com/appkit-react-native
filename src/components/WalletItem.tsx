@@ -5,6 +5,7 @@ import {
   StyleSheet,
   useColorScheme,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import type { Listing } from '../types/controllerTypes';
 import { DarkTheme, LightTheme } from '../constants/Colors';
@@ -22,6 +23,10 @@ function WalletItem({ currentWCURI, walletInfo }: WalletItemProps) {
 
   const onPress = () => {
     if (currentWCURI) {
+      AsyncStorage.setItem(
+        'WALLETCONNECT_DEEPLINK_CHOICE',
+        JSON.stringify({ href: walletInfo.mobile.universal })
+      );
       ExplorerUtil.navigateDeepLink(
         walletInfo.mobile.universal,
         walletInfo.mobile.native,
