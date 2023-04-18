@@ -1,13 +1,7 @@
 import { useEffect, useRef } from 'react';
-import {
-  ActivityIndicator,
-  Animated,
-  StyleSheet,
-  useColorScheme,
-} from 'react-native';
+import { ActivityIndicator, Animated, StyleSheet } from 'react-native';
 import { useSnapshot } from 'valtio';
 
-import { DEVICE_HEIGHT, DEVICE_WIDTH } from '../constants/Platform';
 import NavHeader from '../components/NavHeader';
 import QRCode from '../components/QRCode';
 import CopyIcon from '../assets/Copy.png';
@@ -16,10 +10,15 @@ import { RouterCtrl } from '../controllers/RouterCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import type { RouterProps } from '../types/routerTypes';
 
-function QRCodeView({ onCopyClipboard }: RouterProps) {
+function QRCodeView({
+  onCopyClipboard,
+  isPortrait,
+  windowHeight,
+  windowWidth,
+  isDarkMode,
+}: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const optionsState = useSnapshot(OptionsCtrl.state);
-  const isDarkMode = useColorScheme() === 'dark';
 
   const copyToClipboard = async () => {
     if (onCopyClipboard && optionsState.sessionUri) {
@@ -37,7 +36,15 @@ function QRCodeView({ onCopyClipboard }: RouterProps) {
   }, [fadeAnim]);
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          opacity: fadeAnim,
+          height: isPortrait ? windowHeight * 0.5 : windowHeight * 0.8,
+        },
+      ]}
+    >
       <NavHeader
         title="Scan the code"
         onBackPress={RouterCtrl.goBack}
@@ -48,12 +55,14 @@ function QRCodeView({ onCopyClipboard }: RouterProps) {
       {optionsState?.sessionUri ? (
         <QRCode
           uri={optionsState.sessionUri}
-          size={DEVICE_WIDTH * 0.9}
+          size={isPortrait ? windowWidth * 0.9 : windowHeight * 0.6}
           theme={isDarkMode ? 'dark' : 'light'}
         />
       ) : (
         <ActivityIndicator
-          style={styles.loader}
+          style={{
+            height: isPortrait ? windowWidth * 0.9 : windowHeight * 0.6,
+          }}
           color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
         />
       )}
@@ -64,9 +73,6 @@ function QRCodeView({ onCopyClipboard }: RouterProps) {
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 32,
-  },
-  loader: {
-    height: DEVICE_HEIGHT * 0.4,
   },
 });
 

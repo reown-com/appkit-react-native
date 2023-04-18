@@ -1,15 +1,14 @@
 import { useCallback, useEffect } from 'react';
 import {
   StyleSheet,
-  View,
   useColorScheme,
   ImageBackground,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { useSnapshot } from 'valtio';
 
-import { DEVICE_WIDTH } from '../constants/Platform';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import Background from '../assets/Background.png';
 import Web3ModalHeader from './Web3ModalHeader';
@@ -20,6 +19,7 @@ import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { ConfigCtrl } from '../controllers/ConfigCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
+import { useOrientation } from '../hooks/useOrientation';
 
 interface Web3ModalProps {
   projectId: string;
@@ -34,6 +34,7 @@ export function Web3Modal({
 }: Web3ModalProps) {
   const modalState = useSnapshot(ModalCtrl.state);
   const isDarkMode = useColorScheme() === 'dark';
+  const { width } = useOrientation();
 
   const onSessionCreated = useCallback(async () => {
     OptionsCtrl.getAccount();
@@ -126,19 +127,19 @@ export function Web3Modal({
       useNativeDriver
     >
       <ImageBackground
-        style={styles.wcContainer}
+        style={{ width }}
         source={Background}
         imageStyle={styles.wcImage}
       >
         <Web3ModalHeader onClose={ModalCtrl.close} />
-        <View
+        <SafeAreaView
           style={[
             styles.connectWalletContainer,
             isDarkMode && styles.connectWalletContainerDark,
           ]}
         >
           <Web3ModalRouter onCopyClipboard={onCopyClipboard} />
-        </View>
+        </SafeAreaView>
       </ImageBackground>
     </Modal>
   );
@@ -148,9 +149,6 @@ const styles = StyleSheet.create({
   modal: {
     margin: 0,
     justifyContent: 'flex-end',
-  },
-  wcContainer: {
-    width: DEVICE_WIDTH,
   },
   wcImage: {
     borderTopLeftRadius: 8,

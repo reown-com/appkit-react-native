@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { useSnapshot } from 'valtio';
 
-import { DEVICE_HEIGHT } from '../constants/Platform';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import DisconnectIcon from '../assets/Disconnect.png';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
@@ -19,7 +18,7 @@ import { ModalCtrl } from '../controllers/ModalCtrl';
 import type { RouterProps } from '../types/routerTypes';
 import NavHeader from '../components/NavHeader';
 
-export function Account(_: RouterProps) {
+export function Account({ isPortrait, windowHeight }: RouterProps) {
   const isDarkMode = useColorScheme() === 'dark';
   const optionsState = useSnapshot(OptionsCtrl.state);
 
@@ -35,9 +34,14 @@ export function Account(_: RouterProps) {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <>
       <NavHeader title="Connected Account" />
-      <View>
+      <View
+        style={[
+          styles.container,
+          { height: isPortrait ? windowHeight * 0.3 : windowHeight * 0.6 },
+        ]}
+      >
         <Text
           style={[
             styles.text,
@@ -57,20 +61,19 @@ export function Account(_: RouterProps) {
         >
           {optionsState.address}
         </Text>
+        <TouchableOpacity onPress={onDisconnect} style={styles.button}>
+          <View style={styles.iconContainer}>
+            <Image source={DisconnectIcon} style={styles.icon} />
+          </View>
+          <Text style={styles.buttonText}>Disconnect</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={onDisconnect} style={styles.button}>
-        <View style={styles.iconContainer}>
-          <Image source={DisconnectIcon} style={styles.icon} />
-        </View>
-        <Text style={styles.buttonText}>Disconnect</Text>
-      </TouchableOpacity>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    height: DEVICE_HEIGHT * 0.4,
     padding: 16,
   },
   button: {

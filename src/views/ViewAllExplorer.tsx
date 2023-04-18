@@ -2,14 +2,12 @@ import { useRef, useEffect, useMemo } from 'react';
 import {
   Animated,
   StyleSheet,
-  useColorScheme,
   FlatList,
   ActivityIndicator,
 } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import { DarkTheme, LightTheme } from '../constants/Colors';
-import { DEVICE_HEIGHT } from '../constants/Platform';
 import WalletItem, { ITEM_HEIGHT } from '../components/WalletItem';
 import NavHeader from '../components/NavHeader';
 import { RouterCtrl } from '../controllers/RouterCtrl';
@@ -17,9 +15,13 @@ import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import type { RouterProps } from '../types/routerTypes';
 
-function ViewAllExplorer(_: RouterProps) {
+function ViewAllExplorer({
+  isPortrait,
+  windowHeight,
+  windowWidth,
+  isDarkMode,
+}: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const isDarkMode = useColorScheme() === 'dark';
   const optionsState = useSnapshot(OptionsCtrl.state);
   const loading = !optionsState.isDataLoaded || !optionsState.sessionUri;
   const wallets = useMemo(() => {
@@ -35,7 +37,12 @@ function ViewAllExplorer(_: RouterProps) {
   }, [fadeAnim]);
 
   return (
-    <Animated.View style={{ opacity: fadeAnim }}>
+    <Animated.View
+      style={{
+        opacity: fadeAnim,
+        maxHeight: isPortrait ? windowHeight * 0.7 : windowHeight * 0.8,
+      }}
+    >
       <>
         <NavHeader
           title="Connect your Wallet"
@@ -43,17 +50,19 @@ function ViewAllExplorer(_: RouterProps) {
         />
         {loading ? (
           <ActivityIndicator
-            style={styles.loader}
+            style={{
+              height: windowHeight * 0.6,
+            }}
             color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
           />
         ) : (
           <FlatList
             data={wallets || []}
-            style={styles.list}
             contentContainerStyle={styles.listContentContainer}
             indicatorStyle={isDarkMode ? 'white' : 'black'}
             showsVerticalScrollIndicator
-            numColumns={4}
+            numColumns={isPortrait ? 4 : 6}
+            key={isPortrait ? 'portrait' : 'landscape'}
             getItemLayout={(_data, index) => ({
               length: ITEM_HEIGHT,
               offset: ITEM_HEIGHT * index,
@@ -63,6 +72,9 @@ function ViewAllExplorer(_: RouterProps) {
               <WalletItem
                 currentWCURI={optionsState.sessionUri}
                 walletInfo={item}
+                style={{
+                  width: isPortrait ? windowWidth / 4 : windowWidth / 7,
+                }}
               />
             )}
           />
@@ -73,15 +85,9 @@ function ViewAllExplorer(_: RouterProps) {
 }
 
 const styles = StyleSheet.create({
-  list: {
-    maxHeight: DEVICE_HEIGHT * 0.6,
-  },
   listContentContainer: {
-    paddingHorizontal: 4,
     paddingBottom: 12,
-  },
-  loader: {
-    height: DEVICE_HEIGHT * 0.4,
+    alignItems: 'center',
   },
 });
 

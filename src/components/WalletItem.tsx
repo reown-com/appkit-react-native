@@ -4,6 +4,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   useColorScheme,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -11,14 +13,15 @@ import type { Listing } from '../types/controllerTypes';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import { ExplorerUtil } from '../utils/ExplorerUtil';
 
-interface WalletItemProps {
+interface Props {
   currentWCURI?: string;
   walletInfo: Listing;
+  style?: StyleProp<ViewStyle>;
 }
 
 export const ITEM_HEIGHT = 80;
 
-function WalletItem({ currentWCURI, walletInfo }: WalletItemProps) {
+function WalletItem({ currentWCURI, walletInfo, style }: Props) {
   const isDarkMode = useColorScheme() === 'dark';
 
   const onPress = () => {
@@ -39,7 +42,7 @@ function WalletItem({ currentWCURI, walletInfo }: WalletItemProps) {
     <TouchableOpacity
       onPress={onPress}
       key={walletInfo.id}
-      style={styles.container}
+      style={[styles.container, style]}
     >
       <Image
         style={styles.icon}
@@ -57,9 +60,8 @@ function WalletItem({ currentWCURI, walletInfo }: WalletItemProps) {
 
 const styles = StyleSheet.create({
   container: {
-    width: '25%',
+    width: 80,
     height: 80,
-    justifyContent: 'flex-start',
     alignItems: 'center',
     marginVertical: 16,
   },
