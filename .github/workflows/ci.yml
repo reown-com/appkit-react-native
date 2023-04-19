@@ -67,7 +67,7 @@ jobs:
         id: preview
         with:
           command: eas update --auto
-          comment: false
+          comment: true
           working-directory: example/
       
       - name: 💬 Comment deployment link
