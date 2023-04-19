@@ -70,4 +70,4 @@ jobs:
           comment: true
           working-directory: example/
         env:
-          PROJECT_ID=${{ secrets.CLOUD_PROJECT_ID }}
+          PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
