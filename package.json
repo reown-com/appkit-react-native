@@ -50,7 +50,8 @@
   },
   "homepage": "https://github.com/WalletConnect/web3modal-react-native",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "devDependencies": {
     "@babel/core": "7.21.4",
