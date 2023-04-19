@@ -30,6 +30,12 @@ export default () => ({
       },
       PROJECT_ID: process.env.PROJECT_ID || null,
     },
+    updates: {
+      url: 'https://u.expo.dev/c731a682-cac7-4f3b-838d-bd79ae66b994',
+    },
+    runtimeVersion: {
+      policy: 'sdkVersion',
+    },
     owner: 'nachinn.s',
   },
 });
