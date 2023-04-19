@@ -64,11 +64,11 @@ jobs:
 
       - name: 🚀 Create preview
         uses: expo/expo-github-action/preview@v8
-        project-root: example/
         id: preview
         with:
           command: eas update --auto
           comment: false
+          project-root: example/
       
       - name: 💬 Comment deployment link
         uses: unsplash/comment-on-pr@master
