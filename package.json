@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/react-native",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
