@@ -68,7 +68,7 @@ jobs:
         with:
           command: eas update --auto
           comment: false
-          project-root: example/
+          working-directory: example/
       
       - name: 💬 Comment deployment link
         uses: unsplash/comment-on-pr@master
