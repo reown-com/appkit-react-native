@@ -66,6 +66,8 @@ jobs:
         uses: expo/expo-github-action/preview@v8
         id: preview
         with:
-          command: PROJECT_ID=${{ secrets.CLOUD_PROJECT_ID }} eas update --auto
+          command: eas update --auto
           comment: true
           working-directory: example/
+        env:
+          PROJECT_ID=${{ secrets.CLOUD_PROJECT_ID }}
