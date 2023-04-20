@@ -1,4 +1,4 @@
-### 📚 [Documentation](https://docs.walletconnect.com/2.0/reactnative/Introduction)
+### 📚 [Documentation](https://docs.walletconnect.com/2.0/reactnative/web3modal/Installation)
 
 ### 🔎 [Examples](https://github.com/WalletConnect/react-native-examples/tree/main/dapps/v2Explorer)
 
