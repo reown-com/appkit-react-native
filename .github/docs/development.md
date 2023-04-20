@@ -26,7 +26,7 @@ PROJECT_ID="YOUR_PROJECT_ID" yarn example ios
 ```
 
 
-To create your ProjectID head to [cloud.walletconnect.com](https://cloud.walletconnect.com/)
+To create your ProjectID, head to [cloud.walletconnect.com](https://cloud.walletconnect.com/)
 
 ## Commands
 
