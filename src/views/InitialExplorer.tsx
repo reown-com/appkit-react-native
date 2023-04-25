@@ -11,6 +11,7 @@ import type { Listing } from '../types/controllerTypes';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
 import type { RouterProps } from '../types/routerTypes';
 
 function InitialExplorer({
@@ -20,8 +21,9 @@ function InitialExplorer({
 }: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const optionsState = useSnapshot(OptionsCtrl.state);
+  const wcConnectionState = useSnapshot(WcConnectionCtrl.state);
 
-  const loading = !optionsState.isDataLoaded || !optionsState.sessionUri;
+  const loading = !optionsState.isDataLoaded || !wcConnectionState.pairingUri;
 
   const wallets = useMemo(() => {
     return ExplorerCtrl.state.wallets.listings.slice(0, 7);
@@ -64,7 +66,7 @@ function InitialExplorer({
             <WalletItem
               walletInfo={item}
               key={item.id}
-              currentWCURI={optionsState.sessionUri}
+              currentWCURI={wcConnectionState.pairingUri}
               style={isPortrait && styles.wallet}
             />
           ))}

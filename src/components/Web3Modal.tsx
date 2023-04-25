@@ -18,9 +18,11 @@ import { ModalCtrl } from '../controllers/ModalCtrl';
 import { Web3ModalRouter } from './Web3ModalRouter';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { ConfigCtrl } from '../controllers/ConfigCtrl';
-import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import { AccountCtrl } from '../controllers/AccountCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import { useOrientation } from '../hooks/useOrientation';
+import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
 
 interface Web3ModalProps {
   projectId: string;
@@ -38,12 +40,13 @@ export function Web3Modal({
   const { width } = useOrientation();
 
   const resetApp = useCallback(() => {
-    ClientCtrl.clearSession();
-    OptionsCtrl.resetAccount();
+    ClientCtrl.resetSession();
+    AccountCtrl.resetAccount();
+    WcConnectionCtrl.resetConnection();
   }, []);
 
   const onSessionCreated = useCallback(async () => {
-    OptionsCtrl.getAccount();
+    AccountCtrl.getAccount();
     ModalCtrl.close();
   }, []);
 
@@ -63,7 +66,7 @@ export function Web3Modal({
   );
 
   const onDisplayUri = useCallback(async (uri: string) => {
-    OptionsCtrl.setSessionUri(uri);
+    WcConnectionCtrl.setPairingUri(uri);
   }, []);
 
   const onConnect = useCallback(async () => {

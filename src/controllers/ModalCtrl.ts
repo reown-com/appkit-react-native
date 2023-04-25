@@ -3,6 +3,7 @@ import { proxy } from 'valtio';
 import type { ModalCtrlState } from '../types/controllerTypes';
 import { ClientCtrl } from './ClientCtrl';
 import { OptionsCtrl } from './OptionsCtrl';
+import { AccountCtrl } from './AccountCtrl';
 import { RouterCtrl } from './RouterCtrl';
 
 // -- types -------------------------------------------------------- //
@@ -21,7 +22,8 @@ export const ModalCtrl = {
 
   async open(options?: OpenOptions) {
     return new Promise<void>((resolve) => {
-      const { isDataLoaded, isConnected } = OptionsCtrl.state;
+      const { isDataLoaded } = OptionsCtrl.state;
+      const { isConnected } = AccountCtrl.state;
       const { initialized } = ClientCtrl.state;
 
       if (options?.route) {

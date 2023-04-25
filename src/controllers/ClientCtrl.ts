@@ -43,7 +43,7 @@ export const ClientCtrl = {
     return state.sessionTopic;
   },
 
-  clearSession() {
+  resetSession() {
     state.web3Provider = undefined;
     state.sessionTopic = undefined;
   },

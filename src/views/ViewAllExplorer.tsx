@@ -13,6 +13,7 @@ import NavHeader from '../components/NavHeader';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
 import type { RouterProps } from '../types/routerTypes';
 
 function ViewAllExplorer({
@@ -23,7 +24,8 @@ function ViewAllExplorer({
 }: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const optionsState = useSnapshot(OptionsCtrl.state);
-  const loading = !optionsState.isDataLoaded || !optionsState.sessionUri;
+  const wcConnectionState = useSnapshot(WcConnectionCtrl.state);
+  const loading = !optionsState.isDataLoaded || !wcConnectionState.pairingUri;
   const wallets = useMemo(() => {
     return ExplorerCtrl.state.wallets.listings;
   }, []);
@@ -70,7 +72,7 @@ function ViewAllExplorer({
             })}
             renderItem={({ item }) => (
               <WalletItem
-                currentWCURI={optionsState.sessionUri}
+                currentWCURI={wcConnectionState.pairingUri}
                 walletInfo={item}
                 style={{
                   width: isPortrait ? windowWidth / 4 : windowWidth / 7,

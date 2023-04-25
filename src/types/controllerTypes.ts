@@ -22,15 +22,24 @@ export interface ModalCtrlState {
 
 // -- OptionsCtrl --------------------------------------- //
 export interface OptionsCtrlState {
-  address?: string;
-  isConnected: boolean;
   isDataLoaded: boolean;
-  sessionUri?: string;
 }
 
 // -- ExplorerCtrl ------------------------------------------- //
 export interface ExplorerCtrlState {
   wallets: ListingResponse & { page: number };
+}
+
+// -- AccountCtrl --------------------------------------- //
+export interface AccountCtrlState {
+  address?: string;
+  isConnected: boolean;
+}
+
+// -- WcConnectionCtrl ------------------------------------- //
+export interface WcConnectionCtrlState {
+  pairingUri: string;
+  pairingError: boolean;
 }
 
 export interface ListingParams {
