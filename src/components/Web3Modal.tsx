@@ -8,22 +8,18 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { useSnapshot } from 'valtio';
-import { SUBSCRIBER_EVENTS } from '@walletconnect/core';
 
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import Background from '../assets/Background.png';
 import Web3ModalHeader from './Web3ModalHeader';
-import { createUniversalProvider, createSession } from '../utils/ProviderUtil';
+import { createSession } from '../utils/ProviderUtil';
 import { ModalCtrl } from '../controllers/ModalCtrl';
 import { Web3ModalRouter } from './Web3ModalRouter';
-import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
-import { ConfigCtrl } from '../controllers/ConfigCtrl';
 import { AccountCtrl } from '../controllers/AccountCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import { useOrientation } from '../hooks/useOrientation';
-import { OptionsCtrl } from '../controllers/OptionsCtrl';
-import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
 import type { ProviderParams, SessionParams } from '../types/coreTypes';
+import { useConfigure } from '../hooks/useConfigure';
 
 interface Web3ModalProps {
   projectId: string;
@@ -40,15 +36,10 @@ export function Web3Modal({
   relayUrl,
   onCopyClipboard,
 }: Web3ModalProps) {
-  const modalState = useSnapshot(ModalCtrl.state);
+  useConfigure({ projectId, providerParams, relayUrl });
+  const { open } = useSnapshot(ModalCtrl.state);
   const isDarkMode = useColorScheme() === 'dark';
   const { width } = useOrientation();
-
-  const resetApp = useCallback(() => {
-    ClientCtrl.resetSession();
-    AccountCtrl.resetAccount();
-    WcConnectionCtrl.resetConnection();
-  }, []);
 
   const onSessionCreated = useCallback(async () => {
     AccountCtrl.getAccount();
@@ -58,20 +49,6 @@ export function Web3Modal({
   const onSessionError = useCallback(async () => {
     ModalCtrl.close();
     Alert.alert('Error', 'Error with session');
-  }, []);
-
-  const onSessionDelete = useCallback(
-    ({ topic }: { topic: string }) => {
-      const sessionTopic = ClientCtrl.sessionTopic();
-      if (topic === sessionTopic) {
-        resetApp();
-      }
-    },
-    [resetApp]
-  );
-
-  const onDisplayUri = useCallback(async (uri: string) => {
-    WcConnectionCtrl.setPairingUri(uri);
   }, []);
 
   const onConnect = useCallback(async () => {
@@ -88,63 +65,14 @@ export function Web3Modal({
   }, [onSessionCreated, onSessionError, sessionParams]);
 
   useEffect(() => {
-    async function fetchWallets() {
-      try {
-        if (!ExplorerCtrl.state.wallets.total) {
-          await ExplorerCtrl.getMobileWallets({ version: 2 });
-          OptionsCtrl.setIsDataLoaded(true);
-        }
-      } catch (error) {
-        Alert.alert('Error', 'Error fetching wallets');
-      }
-    }
-
-    ConfigCtrl.setConfig({ projectId });
-    fetchWallets();
-  }, [projectId]);
-
-  useEffect(() => {
-    async function createProvider() {
-      try {
-        const provider = await createUniversalProvider({
-          projectId,
-          relayUrl,
-          metadata: providerParams,
-        });
-        if (provider) {
-          ClientCtrl.setProvider(provider);
-          provider.on('display_uri', onDisplayUri);
-          provider.client.core.relayer.subscriber.on(
-            SUBSCRIBER_EVENTS.deleted,
-            onSessionDelete
-          );
-        }
-      } catch (error) {
-        Alert.alert('Error', 'Error creating provider');
-      }
-    }
-    createProvider();
-
-    return () => {
-      // Unsubscribe from events
-      const provider = ClientCtrl.provider();
-      provider?.removeListener('display_uri', onDisplayUri);
-      provider?.client.core.relayer.subscriber.removeListener(
-        SUBSCRIBER_EVENTS.deleted,
-        onSessionDelete
-      );
-    };
-  }, [providerParams, onDisplayUri, onSessionDelete, projectId, relayUrl]);
-
-  useEffect(() => {
     if (!projectId) {
       Alert.alert('Error', 'Please provide a projectId');
     }
-  }, [projectId, relayUrl]);
+  }, [projectId]);
 
   return (
     <Modal
-      isVisible={modalState.open}
+      isVisible={open}
       style={styles.modal}
       propagateSwipe
       hideModalContentWhileAnimating
