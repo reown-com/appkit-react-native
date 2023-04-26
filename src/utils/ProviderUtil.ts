@@ -1,23 +1,21 @@
 import UniversalProvider from '@walletconnect/universal-provider';
 import type { SessionTypes } from '@walletconnect/types';
+import type { ProviderMetadata } from 'src/types/coreTypes';
 
 export async function createUniversalProvider({
   projectId,
   relayUrl,
+  metadata,
 }: {
   projectId: string;
+  metadata: ProviderMetadata;
   relayUrl?: string;
 }) {
   return UniversalProvider.init({
-    logger: 'info',
+    logger: __DEV__ ? 'info' : undefined,
     relayUrl,
     projectId,
-    metadata: {
-      name: 'React Native V2 dApp',
-      description: 'RN dApp by WalletConnect',
-      url: 'https://walletconnect.com/',
-      icons: ['https://avatars.githubusercontent.com/u/37784886'],
-    },
+    metadata,
   });
 }
 

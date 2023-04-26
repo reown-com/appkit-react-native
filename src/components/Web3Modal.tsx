@@ -23,15 +23,18 @@ import { ClientCtrl } from '../controllers/ClientCtrl';
 import { useOrientation } from '../hooks/useOrientation';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
+import type { ProviderMetadata } from '../types/coreTypes';
 
 interface Web3ModalProps {
   projectId: string;
+  providerOptions: ProviderMetadata;
   relayUrl?: string;
   onCopyClipboard?: (value: string) => void;
 }
 
 export function Web3Modal({
   projectId,
+  providerOptions,
   relayUrl,
   onCopyClipboard,
 }: Web3ModalProps) {
@@ -101,7 +104,11 @@ export function Web3Modal({
   useEffect(() => {
     async function createProvider() {
       try {
-        const provider = await createUniversalProvider({ projectId, relayUrl });
+        const provider = await createUniversalProvider({
+          projectId,
+          relayUrl,
+          metadata: providerOptions,
+        });
         if (provider) {
           ClientCtrl.setProvider(provider);
           provider.on('display_uri', onDisplayUri);
@@ -125,7 +132,7 @@ export function Web3Modal({
         onSessionDelete
       );
     };
-  }, [onDisplayUri, onSessionDelete, projectId, relayUrl]);
+  }, [providerOptions, onDisplayUri, onSessionDelete, projectId, relayUrl]);
 
   useEffect(() => {
     if (!projectId) {
