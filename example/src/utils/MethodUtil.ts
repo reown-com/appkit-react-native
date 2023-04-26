@@ -1,7 +1,23 @@
 import { utf8ToHex } from '@walletconnect/encoding';
 import { ethers } from 'ethers';
+import { recoverAddress } from '@ethersproject/transactions';
+import { hashMessage } from '@ethersproject/hash';
+import type { Bytes, SignatureLike } from '@ethersproject/bytes';
 
-export const signMessage = async (
+export function verifyMessage(
+  message: Bytes | string,
+  signature: SignatureLike
+): string {
+  return recoverAddress(hashMessage(message), signature);
+}
+
+const verifyEip155MessageSignature = (
+  message: string,
+  signature: string,
+  address: string
+) => verifyMessage(message, signature).toLowerCase() === address.toLowerCase();
+
+export const testSignMessage = async (
   web3Provider?: ethers.providers.Web3Provider
 ) => {
   if (!web3Provider) {
@@ -11,14 +27,16 @@ export const signMessage = async (
   const hexMsg = utf8ToHex(msg, true);
   const [address] = await web3Provider.listAccounts();
   const signature = await web3Provider.send('personal_sign', [hexMsg, address]);
+  const valid = verifyEip155MessageSignature(msg, signature, address!);
   return {
     method: 'personal_sign',
     address,
+    valid,
     result: signature,
   };
 };
 
-export const sendTransaction = async (
+export const testSendTransaction = async (
   web3Provider?: ethers.providers.Web3Provider
 ) => {
   if (!web3Provider) {
@@ -28,11 +46,12 @@ export const sendTransaction = async (
   // Get the signer from the UniversalProvider
   const signer = web3Provider.getSigner();
 
-  const amount = ethers.utils.parseEther('0.001');
+  const amount = ethers.utils.parseEther('0.0001');
   const address = '0x0000000000000000000000000000000000000000';
   const transaction = {
     to: address,
     value: amount,
+    valid: true,
     chainId: 5,
   };
 

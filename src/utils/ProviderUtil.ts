@@ -1,6 +1,6 @@
 import UniversalProvider from '@walletconnect/universal-provider';
 import type { SessionTypes } from '@walletconnect/types';
-import type { ProviderParams, SessionParams } from '../types/coreTypes';
+import type { ProviderMetadata, SessionParams } from '../types/coreTypes';
 
 export async function createUniversalProvider({
   projectId,
@@ -8,7 +8,7 @@ export async function createUniversalProvider({
   metadata,
 }: {
   projectId: string;
-  metadata: ProviderParams;
+  metadata: ProviderMetadata;
   relayUrl?: string;
 }) {
   return UniversalProvider.init({

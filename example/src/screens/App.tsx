@@ -7,7 +7,7 @@ import { Web3Modal, Web3Button, useWeb3Modal } from '@web3modal/react-native';
 import { setStringAsync } from 'expo-clipboard';
 import { ethers } from 'ethers';
 import { Env } from '../../env';
-import { sendTransaction, signMessage } from '../utils/MethodUtil';
+import { testSendTransaction, testSignMessage } from '../utils/MethodUtil';
 import { sessionParams, providerParams } from '../constants/Config';
 
 export default function App() {
@@ -33,13 +33,13 @@ export default function App() {
         <View style={styles.buttons}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => signMessage(web3Provider)}
+            onPress={() => testSignMessage(web3Provider)}
           >
             <Text style={styles.text}>personal_sign</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => sendTransaction(web3Provider)}
+            onPress={() => testSendTransaction(web3Provider)}
           >
             <Text style={styles.text}>eth_sendTransaction</Text>
           </TouchableOpacity>
@@ -48,7 +48,7 @@ export default function App() {
       <Web3Modal
         projectId={Env.PROJECT_ID}
         onCopyClipboard={onCopyClipboard}
-        providerParams={providerParams}
+        providerMetadata={providerParams}
         sessionParams={sessionParams}
       />
     </View>

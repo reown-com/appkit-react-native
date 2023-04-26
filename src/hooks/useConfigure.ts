@@ -7,16 +7,16 @@ import { ConfigCtrl } from '../controllers/ConfigCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import { AccountCtrl } from '../controllers/AccountCtrl';
 import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
-import type { ProviderParams } from '../types/coreTypes';
+import type { ProviderMetadata } from '../types/coreTypes';
 import { createUniversalProvider } from '../utils/ProviderUtil';
 
 interface Props {
   projectId: string;
-  providerParams: ProviderParams;
+  providerMetadata: ProviderMetadata;
   relayUrl?: string;
 }
 
-export function useConfigure({ projectId, relayUrl, providerParams }: Props) {
+export function useConfigure({ projectId, relayUrl, providerMetadata }: Props) {
   const isDarkMode = useColorScheme() === 'dark';
 
   const resetApp = useCallback(() => {
@@ -71,7 +71,7 @@ export function useConfigure({ projectId, relayUrl, providerParams }: Props) {
         const provider = await createUniversalProvider({
           projectId,
           relayUrl,
-          metadata: providerParams,
+          metadata: providerMetadata,
         });
         if (provider) {
           ClientCtrl.setProvider(provider);
@@ -94,5 +94,5 @@ export function useConfigure({ projectId, relayUrl, providerParams }: Props) {
         onSessionDelete
       );
     };
-  }, [projectId, providerParams, relayUrl, onDisplayUri, onSessionDelete]);
+  }, [projectId, providerMetadata, relayUrl, onDisplayUri, onSessionDelete]);
 }

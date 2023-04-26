@@ -18,12 +18,12 @@ import { Web3ModalRouter } from './Web3ModalRouter';
 import { AccountCtrl } from '../controllers/AccountCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import { useOrientation } from '../hooks/useOrientation';
-import type { ProviderParams, SessionParams } from '../types/coreTypes';
+import type { ProviderMetadata, SessionParams } from '../types/coreTypes';
 import { useConfigure } from '../hooks/useConfigure';
 
 interface Web3ModalProps {
   projectId: string;
-  providerParams: ProviderParams;
+  providerMetadata: ProviderMetadata;
   sessionParams: SessionParams;
   relayUrl?: string;
   onCopyClipboard?: (value: string) => void;
@@ -31,12 +31,12 @@ interface Web3ModalProps {
 
 export function Web3Modal({
   projectId,
-  providerParams,
+  providerMetadata,
   sessionParams,
   relayUrl,
   onCopyClipboard,
 }: Web3ModalProps) {
-  useConfigure({ projectId, providerParams, relayUrl });
+  useConfigure({ projectId, providerMetadata, relayUrl });
   const { open } = useSnapshot(ModalCtrl.state);
   const isDarkMode = useColorScheme() === 'dark';
   const { width } = useOrientation();
