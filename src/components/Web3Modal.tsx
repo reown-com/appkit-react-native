@@ -105,7 +105,6 @@ export function Web3Modal({
         if (provider) {
           ClientCtrl.setProvider(provider);
           provider.on('display_uri', onDisplayUri);
-          provider.on('session_delete', onSessionDelete);
           provider.client.core.relayer.subscriber.on(
             SUBSCRIBER_EVENTS.deleted,
             onSessionDelete
@@ -121,7 +120,6 @@ export function Web3Modal({
       // Unsubscribe from events
       const provider = ClientCtrl.provider();
       provider?.removeListener('display_uri', onDisplayUri);
-      provider?.removeListener('session_delete', onSessionDelete);
       provider?.client.core.relayer.subscriber.removeListener(
         SUBSCRIBER_EVENTS.deleted,
         onSessionDelete
