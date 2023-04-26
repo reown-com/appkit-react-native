@@ -3,14 +3,14 @@ import { useSnapshot } from 'valtio';
 
 import { ModalCtrl } from '../controllers/ModalCtrl';
 import { LightTheme } from '../constants/Colors';
-import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import { AccountCtrl } from '../controllers/AccountCtrl';
 
 export function Web3Button() {
-  const optionsState = useSnapshot(OptionsCtrl.state);
+  const accountState = useSnapshot(AccountCtrl.state);
 
   return (
     <TouchableOpacity onPress={() => ModalCtrl.open()} style={styles.container}>
-      {optionsState.isConnected ? (
+      {accountState.isConnected ? (
         <Text style={styles.text}>View Account</Text>
       ) : (
         <Text style={styles.text}>Connect</Text>

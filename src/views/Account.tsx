@@ -12,7 +12,7 @@ import { useSnapshot } from 'valtio';
 
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import DisconnectIcon from '../assets/Disconnect.png';
-import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import { AccountCtrl } from '../controllers/AccountCtrl';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import { ModalCtrl } from '../controllers/ModalCtrl';
 import type { RouterProps } from '../types/routerTypes';
@@ -20,13 +20,13 @@ import NavHeader from '../components/NavHeader';
 
 export function Account({ isPortrait, windowHeight }: RouterProps) {
   const isDarkMode = useColorScheme() === 'dark';
-  const optionsState = useSnapshot(OptionsCtrl.state);
+  const accountState = useSnapshot(AccountCtrl.state);
 
   const onDisconnect = useCallback(async () => {
     try {
       ClientCtrl.provider().disconnect();
-      ClientCtrl.clearSession();
-      OptionsCtrl.resetAccount();
+      ClientCtrl.resetSession();
+      AccountCtrl.resetAccount();
       ModalCtrl.close();
     } catch (err: unknown) {
       Alert.alert('Error', 'Error disconnecting');
@@ -59,7 +59,7 @@ export function Account({ isPortrait, windowHeight }: RouterProps) {
             color: isDarkMode ? DarkTheme.foreground1 : LightTheme.foreground1,
           }}
         >
-          {optionsState.address}
+          {accountState.address}
         </Text>
         <TouchableOpacity onPress={onDisconnect} style={styles.button}>
           <View style={styles.iconContainer}>

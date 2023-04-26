@@ -1,4 +1,3 @@
-import type { SessionTypes } from '@walletconnect/types';
 import type UniversalProvider from '@walletconnect/universal-provider/dist/types/UniversalProvider';
 import type { ethers } from 'ethers';
 
@@ -7,7 +6,7 @@ export interface ClientCtrlState {
   initialized: boolean;
   provider?: UniversalProvider;
   web3Provider?: ethers.providers.Web3Provider;
-  session?: SessionTypes.Struct;
+  sessionTopic?: string;
 }
 
 // -- ConfigCtrl ------------------------------------------- //
@@ -23,15 +22,24 @@ export interface ModalCtrlState {
 
 // -- OptionsCtrl --------------------------------------- //
 export interface OptionsCtrlState {
-  address?: string;
-  isConnected: boolean;
   isDataLoaded: boolean;
-  sessionUri?: string;
 }
 
 // -- ExplorerCtrl ------------------------------------------- //
 export interface ExplorerCtrlState {
   wallets: ListingResponse & { page: number };
+}
+
+// -- AccountCtrl --------------------------------------- //
+export interface AccountCtrlState {
+  address?: string;
+  isConnected: boolean;
+}
+
+// -- WcConnectionCtrl ------------------------------------- //
+export interface WcConnectionCtrlState {
+  pairingUri: string;
+  pairingError: boolean;
 }
 
 export interface ListingParams {

@@ -8,7 +8,7 @@ const state = proxy<ClientCtrlState>({
   initialized: false,
   provider: undefined,
   web3Provider: undefined,
-  session: undefined,
+  sessionTopic: undefined,
 });
 
 // -- controller -------------------------------------------------- //
@@ -22,9 +22,9 @@ export const ClientCtrl = {
     }
   },
 
-  setSession(session: ClientCtrlState['session']) {
-    if (session && state.provider) {
-      state.session = ref(session);
+  setSessionTopic(topic: ClientCtrlState['sessionTopic']) {
+    if (topic && state.provider) {
+      state.sessionTopic = topic;
       state.web3Provider = ref(
         new ethers.providers.Web3Provider(state.provider)
       );
@@ -39,16 +39,12 @@ export const ClientCtrl = {
     throw new Error('ClientCtrl has no provider set');
   },
 
-  session() {
-    if (state.session) {
-      return state.session;
-    }
-
-    throw new Error('ClientCtrl has no session set');
+  sessionTopic() {
+    return state.sessionTopic;
   },
 
-  clearSession() {
+  resetSession() {
     state.web3Provider = undefined;
-    state.session = undefined;
+    state.sessionTopic = undefined;
   },
 };

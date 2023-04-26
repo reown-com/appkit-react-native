@@ -7,7 +7,7 @@ import QRCode from '../components/QRCode';
 import CopyIcon from '../assets/Copy.png';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import { RouterCtrl } from '../controllers/RouterCtrl';
-import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
 import type { RouterProps } from '../types/routerTypes';
 
 function QRCodeView({
@@ -18,11 +18,11 @@ function QRCodeView({
   isDarkMode,
 }: RouterProps) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const optionsState = useSnapshot(OptionsCtrl.state);
+  const wcConnectionState = useSnapshot(WcConnectionCtrl.state);
 
   const copyToClipboard = async () => {
-    if (onCopyClipboard && optionsState.sessionUri) {
-      onCopyClipboard(optionsState.sessionUri);
+    if (onCopyClipboard && wcConnectionState.pairingUri) {
+      onCopyClipboard(wcConnectionState.pairingUri);
       // Show toast
     }
   };
@@ -50,11 +50,11 @@ function QRCodeView({
         onBackPress={RouterCtrl.goBack}
         actionIcon={CopyIcon}
         onActionPress={onCopyClipboard ? copyToClipboard : undefined}
-        actionDisabled={!optionsState.sessionUri}
+        actionDisabled={!wcConnectionState.pairingUri}
       />
-      {optionsState?.sessionUri ? (
+      {wcConnectionState?.pairingUri ? (
         <QRCode
-          uri={optionsState.sessionUri}
+          uri={wcConnectionState.pairingUri}
           size={isPortrait ? windowWidth * 0.9 : windowHeight * 0.6}
           theme={isDarkMode ? 'dark' : 'light'}
         />

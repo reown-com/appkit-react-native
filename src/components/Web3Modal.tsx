@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { useSnapshot } from 'valtio';
+import { SUBSCRIBER_EVENTS } from '@walletconnect/core';
 
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import Background from '../assets/Background.png';
@@ -17,9 +18,11 @@ import { ModalCtrl } from '../controllers/ModalCtrl';
 import { Web3ModalRouter } from './Web3ModalRouter';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { ConfigCtrl } from '../controllers/ConfigCtrl';
-import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import { AccountCtrl } from '../controllers/AccountCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import { useOrientation } from '../hooks/useOrientation';
+import { OptionsCtrl } from '../controllers/OptionsCtrl';
+import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
 
 interface Web3ModalProps {
   projectId: string;
@@ -36,8 +39,14 @@ export function Web3Modal({
   const isDarkMode = useColorScheme() === 'dark';
   const { width } = useOrientation();
 
+  const resetApp = useCallback(() => {
+    ClientCtrl.resetSession();
+    AccountCtrl.resetAccount();
+    WcConnectionCtrl.resetConnection();
+  }, []);
+
   const onSessionCreated = useCallback(async () => {
-    OptionsCtrl.getAccount();
+    AccountCtrl.getAccount();
     ModalCtrl.close();
   }, []);
 
@@ -46,16 +55,18 @@ export function Web3Modal({
     Alert.alert('Error', 'Error with session');
   }, []);
 
-  const onSessionDelete = useCallback(async ({ topic }: { topic: string }) => {
-    const session = ClientCtrl.session();
-    if (topic === session?.topic) {
-      OptionsCtrl.resetAccount();
-      ClientCtrl.clearSession();
-    }
-  }, []);
+  const onSessionDelete = useCallback(
+    ({ topic }: { topic: string }) => {
+      const sessionTopic = ClientCtrl.sessionTopic();
+      if (topic === sessionTopic) {
+        resetApp();
+      }
+    },
+    [resetApp]
+  );
 
   const onDisplayUri = useCallback(async (uri: string) => {
-    OptionsCtrl.setSessionUri(uri);
+    WcConnectionCtrl.setPairingUri(uri);
   }, []);
 
   const onConnect = useCallback(async () => {
@@ -63,7 +74,7 @@ export function Web3Modal({
     try {
       const session = await createSession(provider);
       if (session) {
-        ClientCtrl.setSession(session);
+        ClientCtrl.setSessionTopic(session.topic);
         onSessionCreated();
       }
     } catch (error) {
@@ -94,7 +105,10 @@ export function Web3Modal({
         if (provider) {
           ClientCtrl.setProvider(provider);
           provider.on('display_uri', onDisplayUri);
-          provider.on('session_delete', onSessionDelete);
+          provider.client.core.relayer.subscriber.on(
+            SUBSCRIBER_EVENTS.deleted,
+            onSessionDelete
+          );
         }
       } catch (error) {
         Alert.alert('Error', 'Error creating provider');
@@ -106,7 +120,10 @@ export function Web3Modal({
       // Unsubscribe from events
       const provider = ClientCtrl.provider();
       provider?.removeListener('display_uri', onDisplayUri);
-      provider?.removeListener('session_delete', onSessionDelete);
+      provider?.client.core.relayer.subscriber.removeListener(
+        SUBSCRIBER_EVENTS.deleted,
+        onSessionDelete
+      );
     };
   }, [onDisplayUri, onSessionDelete, projectId, relayUrl]);
 
