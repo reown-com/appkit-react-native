@@ -23,18 +23,20 @@ import { ClientCtrl } from '../controllers/ClientCtrl';
 import { useOrientation } from '../hooks/useOrientation';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
-import type { ProviderMetadata } from '../types/coreTypes';
+import type { ProviderParams, SessionParams } from '../types/coreTypes';
 
 interface Web3ModalProps {
   projectId: string;
-  providerOptions: ProviderMetadata;
+  providerParams: ProviderParams;
+  sessionParams: SessionParams;
   relayUrl?: string;
   onCopyClipboard?: (value: string) => void;
 }
 
 export function Web3Modal({
   projectId,
-  providerOptions,
+  providerParams,
+  sessionParams,
   relayUrl,
   onCopyClipboard,
 }: Web3ModalProps) {
@@ -75,7 +77,7 @@ export function Web3Modal({
   const onConnect = useCallback(async () => {
     const provider = ClientCtrl.provider();
     try {
-      const session = await createSession(provider);
+      const session = await createSession(provider, sessionParams);
       if (session) {
         ClientCtrl.setSessionTopic(session.topic);
         onSessionCreated();
@@ -83,7 +85,7 @@ export function Web3Modal({
     } catch (error) {
       onSessionError();
     }
-  }, [onSessionCreated, onSessionError]);
+  }, [onSessionCreated, onSessionError, sessionParams]);
 
   useEffect(() => {
     async function fetchWallets() {
@@ -107,7 +109,7 @@ export function Web3Modal({
         const provider = await createUniversalProvider({
           projectId,
           relayUrl,
-          metadata: providerOptions,
+          metadata: providerParams,
         });
         if (provider) {
           ClientCtrl.setProvider(provider);
@@ -132,7 +134,7 @@ export function Web3Modal({
         onSessionDelete
       );
     };
-  }, [providerOptions, onDisplayUri, onSessionDelete, projectId, relayUrl]);
+  }, [providerParams, onDisplayUri, onSessionDelete, projectId, relayUrl]);
 
   useEffect(() => {
     if (!projectId) {

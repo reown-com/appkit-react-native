@@ -6,11 +6,28 @@ import { Web3Modal, Web3Button } from '@web3modal/react-native';
 import { setStringAsync } from 'expo-clipboard';
 import { Env } from '../env';
 
-const providerOptions = {
+const providerParams = {
   name: 'React Native V2 dApp',
   description: 'RN dApp by WalletConnect',
   url: 'https://walletconnect.com/',
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
+};
+
+const sessionParams = {
+  namespaces: {
+    eip155: {
+      methods: [
+        'eth_sendTransaction',
+        'eth_signTransaction',
+        'eth_sign',
+        'personal_sign',
+        'eth_signTypedData',
+      ],
+      chains: ['eip155:5'],
+      events: ['chainChanged', 'accountsChanged'],
+      rpcMap: {},
+    },
+  },
 };
 
 export default function App() {
@@ -26,7 +43,8 @@ export default function App() {
       <Web3Modal
         projectId={Env.PROJECT_ID}
         onCopyClipboard={onCopyClipboard}
-        providerOptions={providerOptions}
+        providerParams={providerParams}
+        sessionParams={sessionParams}
       />
     </View>
   );

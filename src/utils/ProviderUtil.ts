@@ -1,6 +1,6 @@
 import UniversalProvider from '@walletconnect/universal-provider';
 import type { SessionTypes } from '@walletconnect/types';
-import type { ProviderMetadata } from 'src/types/coreTypes';
+import type { ProviderParams, SessionParams } from '../types/coreTypes';
 
 export async function createUniversalProvider({
   projectId,
@@ -8,7 +8,7 @@ export async function createUniversalProvider({
   metadata,
 }: {
   projectId: string;
-  metadata: ProviderMetadata;
+  metadata: ProviderParams;
   relayUrl?: string;
 }) {
   return UniversalProvider.init({
@@ -20,22 +20,8 @@ export async function createUniversalProvider({
 }
 
 export async function createSession(
-  provider: UniversalProvider
+  provider: UniversalProvider,
+  sessionParams: SessionParams
 ): Promise<SessionTypes.Struct | undefined> {
-  return provider.connect({
-    namespaces: {
-      eip155: {
-        methods: [
-          'eth_sendTransaction',
-          'eth_signTransaction',
-          'eth_sign',
-          'personal_sign',
-          'eth_signTypedData',
-        ],
-        chains: ['eip155:1'],
-        events: ['chainChanged', 'accountsChanged'],
-        rpcMap: {},
-      },
-    },
-  });
+  return provider.connect(sessionParams);
 }
