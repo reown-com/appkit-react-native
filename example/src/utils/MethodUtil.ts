@@ -51,7 +51,6 @@ export const testSendTransaction = async (
   const transaction = {
     to: address,
     value: amount,
-    valid: true,
     chainId: 5,
   };
 

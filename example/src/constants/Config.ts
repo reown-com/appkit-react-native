@@ -15,7 +15,7 @@ export const sessionParams = {
         'personal_sign',
         'eth_signTypedData',
       ],
-      chains: ['eip155:1'],
+      chains: ['eip155:5'],
       events: ['chainChanged', 'accountsChanged'],
       rpcMap: {},
     },
