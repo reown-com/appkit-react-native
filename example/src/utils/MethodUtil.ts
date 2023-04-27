@@ -1,6 +1,7 @@
 import { utf8ToHex } from '@walletconnect/encoding';
 import { ethers } from 'ethers';
 import { recoverAddress } from '@ethersproject/transactions';
+import { Alert } from 'react-native';
 import { hashMessage } from '@ethersproject/hash';
 import type { Bytes, SignatureLike } from '@ethersproject/bytes';
 
@@ -54,18 +55,31 @@ export const testSendTransaction = async (
     chainId: 5,
   };
 
-  // Send the transaction using the signer
-  const txResponse = await signer.sendTransaction(transaction);
-  const transactionHash = txResponse.hash;
-  console.log('transactionHash is ' + transactionHash);
+  try {
+    // Send the transaction using the signer
+    const txResponse = await signer.sendTransaction(transaction);
+    const transactionHash = txResponse.hash;
+    console.log('transactionHash is ' + transactionHash);
 
-  // Wait for the transaction to be mined (optional)
-  const receipt = await txResponse.wait();
-  console.log('Transaction was mined in block:', receipt.blockNumber);
+    // Wait for the transaction to be mined (optional)
+    const receipt = await txResponse.wait();
+    console.log('Transaction was mined in block:', receipt.blockNumber);
 
-  return {
-    method: 'eth_sendTransaction',
-    address,
-    transactionHash,
-  };
+    return {
+      method: 'eth_sendTransaction',
+      address,
+      valid: true,
+      transactionHash,
+    };
+  } catch (error: any) {
+    if (error?.code === -32050) {
+      Alert.alert('Transaction Rejected', 'User rejected the transaction');
+    }
+    return {
+      method: 'eth_sendTransaction',
+      address,
+      valid: false,
+      error: error?.message,
+    };
+  }
 };
