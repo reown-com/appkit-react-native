@@ -1,11 +1,4 @@
-export const providerMetadata = {
-  name: 'React Native V2 dApp',
-  description: 'RN dApp by WalletConnect',
-  url: 'https://walletconnect.com/',
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
-};
-
-export const sessionParams = {
+export const defaultSessionParams = {
   namespaces: {
     eip155: {
       methods: [

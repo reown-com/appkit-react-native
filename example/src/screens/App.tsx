@@ -8,12 +8,13 @@ import { setStringAsync } from 'expo-clipboard';
 import { ethers } from 'ethers';
 import { Env } from '../../env';
 import { testSendTransaction, testSignMessage } from '../utils/MethodUtil';
-import { sessionParams, providerParams } from '../constants/Config';
+import { sessionParams, providerMetadata } from '../constants/Config';
 
 export default function App() {
   const { isConnected, provider } = useWeb3Modal();
   const [web3Provider, setWeb3Provider] =
     useState<ethers.providers.Web3Provider>();
+
   const onCopyClipboard = async (value: string) => {
     await setStringAsync(value).then(() => {
       Alert.alert('Copied', 'Copied to clipboard');
@@ -48,7 +49,7 @@ export default function App() {
       <Web3Modal
         projectId={Env.PROJECT_ID}
         onCopyClipboard={onCopyClipboard}
-        providerMetadata={providerParams}
+        providerMetadata={providerMetadata}
         sessionParams={sessionParams}
       />
     </View>

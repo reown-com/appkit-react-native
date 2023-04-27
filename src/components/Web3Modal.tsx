@@ -20,11 +20,12 @@ import { ClientCtrl } from '../controllers/ClientCtrl';
 import { useOrientation } from '../hooks/useOrientation';
 import type { ProviderMetadata, SessionParams } from '../types/coreTypes';
 import { useConfigure } from '../hooks/useConfigure';
+import { defaultSessionParams } from '../constants/Config';
 
 interface Web3ModalProps {
   projectId: string;
   providerMetadata: ProviderMetadata;
-  sessionParams: SessionParams;
+  sessionParams?: SessionParams;
   relayUrl?: string;
   onCopyClipboard?: (value: string) => void;
 }
@@ -32,7 +33,7 @@ interface Web3ModalProps {
 export function Web3Modal({
   projectId,
   providerMetadata,
-  sessionParams,
+  sessionParams = defaultSessionParams,
   relayUrl,
   onCopyClipboard,
 }: Web3ModalProps) {
