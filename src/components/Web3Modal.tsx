@@ -21,6 +21,8 @@ import { useOrientation } from '../hooks/useOrientation';
 import type { ProviderMetadata, SessionParams } from '../types/coreTypes';
 import { useConfigure } from '../hooks/useConfigure';
 import { defaultSessionParams } from '../constants/Config';
+import { ConfigCtrl } from '../controllers/ConfigCtrl';
+import { setDeepLinkWallet } from '../utils/StorageUtil';
 
 interface Web3ModalProps {
   projectId: string;
@@ -43,11 +45,17 @@ export function Web3Modal({
   const { width } = useOrientation();
 
   const onSessionCreated = useCallback(async () => {
+    const deepLink = ConfigCtrl.getPressedWalletDeepLink();
+    if (deepLink) {
+      setDeepLinkWallet(deepLink);
+      ConfigCtrl.setPressedWalletDeepLink(undefined);
+    }
     AccountCtrl.getAccount();
     ModalCtrl.close();
   }, []);
 
   const onSessionError = useCallback(async () => {
+    ConfigCtrl.setPressedWalletDeepLink(undefined);
     ModalCtrl.close();
     Alert.alert('Error', 'Error with session');
   }, []);

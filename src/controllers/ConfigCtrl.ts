@@ -11,6 +11,7 @@ function isDarkMode() {
 
 const state = proxy<ConfigCtrlState>({
   projectId: '',
+  pressedWalletDeepLink: undefined,
   themeMode: isDarkMode() ? 'dark' : 'light',
 });
 
@@ -24,5 +25,17 @@ export const ConfigCtrl = {
 
   setThemeMode(themeMode: 'dark' | 'light') {
     state.themeMode = themeMode;
+  },
+
+  setPressedWalletDeepLink(deepLink?: string) {
+    state.pressedWalletDeepLink = deepLink;
+  },
+
+  getPressedWalletDeepLink() {
+    return state.pressedWalletDeepLink;
+  },
+
+  resetConfig() {
+    state.pressedWalletDeepLink = undefined;
   },
 };

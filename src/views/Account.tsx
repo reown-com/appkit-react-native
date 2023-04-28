@@ -25,8 +25,6 @@ export function Account({ isPortrait, windowHeight }: RouterProps) {
   const onDisconnect = useCallback(async () => {
     try {
       ClientCtrl.provider().disconnect();
-      ClientCtrl.resetSession();
-      AccountCtrl.resetAccount();
       ModalCtrl.close();
     } catch (err: unknown) {
       Alert.alert('Error', 'Error disconnecting');

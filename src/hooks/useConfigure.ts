@@ -9,6 +9,7 @@ import { AccountCtrl } from '../controllers/AccountCtrl';
 import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
 import type { ProviderMetadata } from '../types/coreTypes';
 import { createUniversalProvider } from '../utils/ProviderUtil';
+import { removeDeepLinkWallet } from '../utils/StorageUtil';
 
 interface Props {
   projectId: string;
@@ -23,6 +24,8 @@ export function useConfigure({ projectId, relayUrl, providerMetadata }: Props) {
     ClientCtrl.resetSession();
     AccountCtrl.resetAccount();
     WcConnectionCtrl.resetConnection();
+    ConfigCtrl.resetConfig();
+    removeDeepLinkWallet();
   }, []);
 
   const onSessionDelete = useCallback(
@@ -57,7 +60,6 @@ export function useConfigure({ projectId, relayUrl, providerMetadata }: Props) {
         Alert.alert('Error', 'Error fetching wallets');
       }
     }
-
     ConfigCtrl.setConfig({ projectId });
     fetchWallets();
   }, [projectId]);
