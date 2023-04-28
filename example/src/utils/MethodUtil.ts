@@ -6,6 +6,7 @@ import { hashMessage } from '@ethersproject/hash';
 import type { Bytes, SignatureLike } from '@ethersproject/bytes';
 import { eip712 } from '../constants/eip712';
 import { _TypedDataEncoder } from 'ethers/lib/utils';
+import type { IFormattedRpcResponse } from '../types/methods';
 
 export function verifyMessage(
   message: Bytes | string,
@@ -41,6 +42,10 @@ export const testSignMessage = async (
   const msg = 'Hello World';
   const hexMsg = utf8ToHex(msg, true);
   const [address] = await web3Provider.listAccounts();
+  if (!address) {
+    throw new Error('No address found');
+  }
+
   const signature = await web3Provider.send('personal_sign', [hexMsg, address]);
   const valid = verifyEip155MessageSignature(msg, signature, address!);
   return {
@@ -51,7 +56,7 @@ export const testSignMessage = async (
   };
 };
 
-export const testEthSign = async (
+export const testEthSign: () => Promise<IFormattedRpcResponse> = async (
   web3Provider?: ethers.providers.Web3Provider
 ) => {
   if (!web3Provider) {
@@ -60,8 +65,13 @@ export const testEthSign = async (
   const msg = 'hello world';
   const hexMsg = utf8ToHex(msg, true);
   const [address] = await web3Provider.listAccounts();
+
+  if (!address) {
+    throw new Error('No address found');
+  }
+
   const signature = await web3Provider.send('eth_sign', [address, hexMsg]);
-  const valid = verifyEip155MessageSignature(msg, signature, address!);
+  const valid = verifyEip155MessageSignature(msg, signature, address);
   return {
     method: 'eth_sign (standard)',
     address,
@@ -70,7 +80,7 @@ export const testEthSign = async (
   };
 };
 
-export const testSignTypedData = async (
+export const testSignTypedData: () => Promise<IFormattedRpcResponse> = async (
   web3Provider?: ethers.providers.Web3Provider
 ) => {
   if (!web3Provider) {
@@ -80,6 +90,10 @@ export const testSignTypedData = async (
   const message = JSON.stringify(eip712.example);
 
   const [address] = await web3Provider.listAccounts();
+
+  if (!address) {
+    throw new Error('No address found');
+  }
 
   // eth_signTypedData params
   const params = [address, message];
@@ -109,7 +123,7 @@ export const testSignTypedData = async (
   };
 };
 
-export const testSendTransaction = async (
+export const testSendTransaction: () => Promise<IFormattedRpcResponse> = async (
   web3Provider?: ethers.providers.Web3Provider
 ) => {
   if (!web3Provider) {
@@ -143,7 +157,7 @@ export const testSendTransaction = async (
       method: 'eth_sendTransaction',
       address,
       valid: true,
-      transactionHash,
+      result: transactionHash,
     };
   } catch (error: any) {
     if (error?.code === -32050) {
@@ -153,20 +167,22 @@ export const testSendTransaction = async (
       method: 'eth_sendTransaction',
       address,
       valid: false,
-      error: error?.message,
+      result: error?.message,
     };
   }
 };
 
-export const testSignTransaction = async (
+export const testSignTransaction: () => Promise<IFormattedRpcResponse> = async (
   web3Provider?: ethers.providers.Web3Provider
 ) => {
   if (!web3Provider) {
     throw new Error('web3Provider not connected');
   }
 
-  // const { chainId } = await web3Provider.getNetwork();
   const [address] = await web3Provider.listAccounts();
+  if (!address) {
+    throw new Error('No address found');
+  }
 
   const tx = {
     from: address,
@@ -180,6 +196,7 @@ export const testSignTransaction = async (
   return {
     method: 'eth_signTransaction',
     address,
+    valid: true,
     result: signedTx,
   };
 };
