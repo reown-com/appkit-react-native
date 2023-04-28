@@ -1,4 +1,4 @@
-import { utf8ToHex } from '@walletconnect/encoding';
+import { numberToHex, sanitizeHex, utf8ToHex } from '@walletconnect/encoding';
 import { ethers, TypedDataDomain, TypedDataField } from 'ethers';
 import { recoverAddress } from '@ethersproject/transactions';
 import { Alert } from 'react-native';
@@ -119,12 +119,14 @@ export const testSendTransaction = async (
   // Get the signer from the UniversalProvider
   const signer = web3Provider.getSigner();
 
+  const { chainId } = await web3Provider.getNetwork();
+
   const amount = ethers.utils.parseEther('0.0001');
   const address = '0x0000000000000000000000000000000000000000';
   const transaction = {
     to: address,
     value: amount,
-    chainId: 5,
+    chainId,
   };
 
   try {
@@ -154,4 +156,30 @@ export const testSendTransaction = async (
       error: error?.message,
     };
   }
+};
+
+export const testSignTransaction = async (
+  web3Provider?: ethers.providers.Web3Provider
+) => {
+  if (!web3Provider) {
+    throw new Error('web3Provider not connected');
+  }
+
+  // const { chainId } = await web3Provider.getNetwork();
+  const [address] = await web3Provider.listAccounts();
+
+  const tx = {
+    from: address,
+    to: address,
+    data: '0x',
+    value: sanitizeHex(numberToHex(0)),
+  };
+
+  const signedTx = await web3Provider.send('eth_signTransaction', [tx]);
+
+  return {
+    method: 'eth_signTransaction',
+    address,
+    result: signedTx,
+  };
 };

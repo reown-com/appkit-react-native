@@ -9,6 +9,7 @@ import {
   testEthSign,
   testSendTransaction,
   testSignMessage,
+  testSignTransaction,
   testSignTypedData,
 } from '../utils/MethodUtil';
 import { sessionParams, providerMetadata } from '../constants/Config';
@@ -22,6 +23,10 @@ export default function App() {
     {
       name: 'eth_sendTransaction',
       callback: testSendTransaction,
+    },
+    {
+      name: 'eth_signTransaction',
+      callback: testSignTransaction,
     },
     {
       name: 'personal_sign',
