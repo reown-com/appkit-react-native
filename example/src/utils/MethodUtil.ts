@@ -1,15 +1,29 @@
 import { utf8ToHex } from '@walletconnect/encoding';
-import { ethers } from 'ethers';
+import { ethers, TypedDataDomain, TypedDataField } from 'ethers';
 import { recoverAddress } from '@ethersproject/transactions';
 import { Alert } from 'react-native';
 import { hashMessage } from '@ethersproject/hash';
 import type { Bytes, SignatureLike } from '@ethersproject/bytes';
+import { eip712 } from '../constants/eip712';
+import { _TypedDataEncoder } from 'ethers/lib/utils';
 
 export function verifyMessage(
   message: Bytes | string,
   signature: SignatureLike
 ): string {
   return recoverAddress(hashMessage(message), signature);
+}
+
+function verifyTypedData(
+  domain: TypedDataDomain,
+  types: Record<string, Array<TypedDataField>>,
+  value: Record<string, any>,
+  signature: SignatureLike
+): string {
+  return recoverAddress(
+    _TypedDataEncoder.hash(domain, types, value),
+    signature
+  );
 }
 
 const verifyEip155MessageSignature = (
@@ -31,6 +45,64 @@ export const testSignMessage = async (
   const valid = verifyEip155MessageSignature(msg, signature, address!);
   return {
     method: 'personal_sign',
+    address,
+    valid,
+    result: signature,
+  };
+};
+
+export const testEthSign = async (
+  web3Provider?: ethers.providers.Web3Provider
+) => {
+  if (!web3Provider) {
+    throw new Error('web3Provider not connected');
+  }
+  const msg = 'hello world';
+  const hexMsg = utf8ToHex(msg, true);
+  const [address] = await web3Provider.listAccounts();
+  const signature = await web3Provider.send('eth_sign', [address, hexMsg]);
+  const valid = verifyEip155MessageSignature(msg, signature, address!);
+  return {
+    method: 'eth_sign (standard)',
+    address,
+    valid,
+    result: signature,
+  };
+};
+
+export const testSignTypedData = async (
+  web3Provider?: ethers.providers.Web3Provider
+) => {
+  if (!web3Provider) {
+    throw new Error('web3Provider not connected');
+  }
+
+  const message = JSON.stringify(eip712.example);
+
+  const [address] = await web3Provider.listAccounts();
+
+  // eth_signTypedData params
+  const params = [address, message];
+
+  // send message
+  const signature = await web3Provider.send('eth_signTypedData', params);
+
+  // Separate `EIP712Domain` type from remaining types to verify, otherwise `ethers.utils.verifyTypedData`
+  // will throw due to "unused" `EIP712Domain` type.
+  // See: https://github.com/ethers-io/ethers.js/issues/687#issuecomment-714069471
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { EIP712Domain, ...nonDomainTypes }: Record<string, TypedDataField[]> =
+    eip712.example.types;
+
+  const valid =
+    verifyTypedData(
+      eip712.example.domain,
+      nonDomainTypes,
+      eip712.example.message,
+      signature
+    ).toLowerCase() === address?.toLowerCase();
+  return {
+    method: 'eth_signTypedData',
     address,
     valid,
     result: signature,

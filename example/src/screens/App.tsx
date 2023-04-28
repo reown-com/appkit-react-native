@@ -5,13 +5,37 @@ import { Web3Modal, Web3Button, useWeb3Modal } from '@web3modal/react-native';
 import { setStringAsync } from 'expo-clipboard';
 import { ethers } from 'ethers';
 import { Env } from '../../env';
-import { testSendTransaction, testSignMessage } from '../utils/MethodUtil';
+import {
+  testEthSign,
+  testSendTransaction,
+  testSignMessage,
+  testSignTypedData,
+} from '../utils/MethodUtil';
 import { sessionParams, providerMetadata } from '../constants/Config';
 
 export default function App() {
   const { isConnected, provider } = useWeb3Modal();
   const [web3Provider, setWeb3Provider] =
     useState<ethers.providers.Web3Provider>();
+
+  const testMethods = [
+    {
+      name: 'eth_sendTransaction',
+      callback: testSendTransaction,
+    },
+    {
+      name: 'personal_sign',
+      callback: testSignMessage,
+    },
+    {
+      name: 'eth_sign (standard)',
+      callback: testEthSign,
+    },
+    {
+      name: 'eth_signTypedData',
+      callback: testSignTypedData,
+    },
+  ];
 
   const onCopyClipboard = async (value: string) => {
     await setStringAsync(value).then(() => {
@@ -30,18 +54,15 @@ export default function App() {
       <Web3Button />
       {isConnected && (
         <View style={styles.buttons}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => testSignMessage(web3Provider)}
-          >
-            <Text style={styles.text}>personal_sign</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => testSendTransaction(web3Provider)}
-          >
-            <Text style={styles.text}>eth_sendTransaction</Text>
-          </TouchableOpacity>
+          {testMethods.map((method) => (
+            <TouchableOpacity
+              style={styles.button}
+              key={method.name}
+              onPress={() => method.callback(web3Provider)}
+            >
+              <Text style={styles.text}>{method.name}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       )}
       <Web3Modal
