@@ -27,9 +27,9 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Web3Button />
+      <Web3Button style={styles.web3Button} />
       {isConnected && (
-        <View style={styles.buttons}>
+        <>
           <TouchableOpacity
             style={styles.button}
             onPress={() => testSignMessage(web3Provider)}
@@ -42,7 +42,7 @@ export default function App() {
           >
             <Text style={styles.text}>eth_sendTransaction</Text>
           </TouchableOpacity>
-        </View>
+        </>
       )}
       <Web3Modal
         projectId={Env.PROJECT_ID}
@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttons: {
-    marginTop: 32,
+  web3Button: {
+    width: 180,
   },
   button: {
     display: 'flex',
@@ -69,11 +69,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#3396FF',
     borderRadius: 20,
-    width: 150,
+    width: 180,
     height: 50,
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.1)',
-    marginVertical: 4,
+    marginTop: 4,
   },
   text: {
     color: 'white',

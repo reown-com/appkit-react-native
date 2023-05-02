@@ -47,6 +47,13 @@ export function useConfigure({ projectId, relayUrl, providerMetadata }: Props) {
   }, [isDarkMode]);
 
   /**
+   * Set config
+   */
+  useEffect(() => {
+    ConfigCtrl.setConfig({ projectId });
+  }, [projectId]);
+
+  /**
    * Fetch wallet list
    */
   useEffect(() => {
@@ -60,9 +67,8 @@ export function useConfigure({ projectId, relayUrl, providerMetadata }: Props) {
         Alert.alert('Error', 'Error fetching wallets');
       }
     }
-    ConfigCtrl.setConfig({ projectId });
     fetchWallets();
-  }, [projectId]);
+  }, []);
 
   /**
    * Initialize provider
