@@ -1,15 +1,28 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import {
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ViewStyle,
+} from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import { ModalCtrl } from '../controllers/ModalCtrl';
 import { LightTheme } from '../constants/Colors';
 import { AccountCtrl } from '../controllers/AccountCtrl';
 
-export function Web3Button() {
+interface Props {
+  style?: StyleProp<ViewStyle>;
+}
+
+export function Web3Button({ style }: Props) {
   const accountState = useSnapshot(AccountCtrl.state);
 
   return (
-    <TouchableOpacity onPress={() => ModalCtrl.open()} style={styles.container}>
+    <TouchableOpacity
+      onPress={() => ModalCtrl.open()}
+      style={[styles.container, style]}
+    >
       {accountState.isConnected ? (
         <Text style={styles.text}>View Account</Text>
       ) : (

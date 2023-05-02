@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const setDeepLinkWallet = (universalLink: string) => {
-  AsyncStorage.setItem(
+  return AsyncStorage.setItem(
     'WALLETCONNECT_DEEPLINK_CHOICE',
     JSON.stringify({ href: universalLink })
   );

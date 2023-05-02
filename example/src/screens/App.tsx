@@ -27,7 +27,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Web3Button />
+      <Web3Button style={styles.web3Button} />
       {isConnected && web3Provider && (
         <BlockchainActions web3Provider={web3Provider} />
       )}
@@ -46,5 +46,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  web3Button: {
+    width: 180,
   },
 });

@@ -13,7 +13,7 @@ export interface ClientCtrlState {
 export interface ConfigCtrlState {
   projectId: string;
   themeMode?: 'dark' | 'light';
-  pressedWalletDeepLink?: string;
+  recentWalletDeepLink?: string;
 }
 
 // -- ModalCtrl --------------------------------------- //

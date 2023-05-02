@@ -45,17 +45,21 @@ export function Web3Modal({
   const { width } = useOrientation();
 
   const onSessionCreated = useCallback(async () => {
-    const deepLink = ConfigCtrl.getPressedWalletDeepLink();
-    if (deepLink) {
-      setDeepLinkWallet(deepLink);
-      ConfigCtrl.setPressedWalletDeepLink(undefined);
+    const deepLink = ConfigCtrl.getRecentWalletDeepLink();
+    try {
+      if (deepLink) {
+        await setDeepLinkWallet(deepLink);
+        ConfigCtrl.setRecentWalletDeepLink(undefined);
+      }
+      AccountCtrl.getAccount();
+      ModalCtrl.close();
+    } catch (error) {
+      Alert.alert('Error', 'Error setting deep link wallet');
     }
-    AccountCtrl.getAccount();
-    ModalCtrl.close();
   }, []);
 
   const onSessionError = useCallback(async () => {
-    ConfigCtrl.setPressedWalletDeepLink(undefined);
+    ConfigCtrl.setRecentWalletDeepLink(undefined);
     ModalCtrl.close();
     Alert.alert('Error', 'Error with session');
   }, []);

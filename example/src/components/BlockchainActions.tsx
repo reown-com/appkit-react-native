@@ -73,17 +73,15 @@ export function BlockchainActions({ web3Provider }: Props) {
 
   return (
     <>
-      <View style={styles.container}>
-        {getEthereumActions().map((method) => (
-          <TouchableOpacity
-            style={styles.button}
-            key={method.method}
-            onPress={() => method.callback(web3Provider)}
-          >
-            <Text style={styles.buttonText}>{method.method}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {getEthereumActions().map((method) => (
+        <TouchableOpacity
+          style={styles.button}
+          key={method.method}
+          onPress={() => method.callback(web3Provider)}
+        >
+          <Text style={styles.buttonText}>{method.method}</Text>
+        </TouchableOpacity>
+      ))}
       <Modal
         isVisible={modalVisible}
         onBackdropPress={onModalClose}
@@ -121,20 +119,17 @@ export function BlockchainActions({ web3Provider }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 32,
-  },
   button: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#3396FF',
     borderRadius: 20,
-    width: 150,
+    width: 180,
     height: 50,
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.1)',
-    marginVertical: 4,
+    marginTop: 4,
   },
   buttonText: {
     color: 'white',

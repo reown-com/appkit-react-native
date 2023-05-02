@@ -26,7 +26,7 @@ function WalletItem({ currentWCURI, walletInfo, style }: Props) {
 
   const onPress = () => {
     if (currentWCURI) {
-      ConfigCtrl.setPressedWalletDeepLink(walletInfo.mobile.universal);
+      ConfigCtrl.setRecentWalletDeepLink(walletInfo.mobile.universal);
       ExplorerUtil.navigateDeepLink(
         walletInfo.mobile.universal,
         walletInfo.mobile.native,
