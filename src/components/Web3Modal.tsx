@@ -46,12 +46,16 @@ export function Web3Modal({
 
   const onSessionCreated = useCallback(async () => {
     const deepLink = ConfigCtrl.getRecentWalletDeepLink();
-    if (deepLink) {
-      setDeepLinkWallet(deepLink);
-      ConfigCtrl.setRecentWalletDeepLink(undefined);
+    try {
+      if (deepLink) {
+        await setDeepLinkWallet(deepLink);
+        ConfigCtrl.setRecentWalletDeepLink(undefined);
+      }
+      AccountCtrl.getAccount();
+      ModalCtrl.close();
+    } catch (error) {
+      Alert.alert('Error', 'Error setting deep link wallet');
     }
-    AccountCtrl.getAccount();
-    ModalCtrl.close();
   }, []);
 
   const onSessionError = useCallback(async () => {
