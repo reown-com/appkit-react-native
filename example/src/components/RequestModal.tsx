@@ -64,12 +64,6 @@ export function RequestModal({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-  },
   closeButton: {
     alignSelf: 'flex-end',
     backgroundColor: 'white',
