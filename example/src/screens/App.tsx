@@ -1,6 +1,4 @@
 import '../../expo-crypto-shim.js';
-import '@walletconnect/react-native-compat';
-import '@ethersproject/shims';
 import { useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Web3Modal, Web3Button, useWeb3Modal } from '@web3modal/react-native';

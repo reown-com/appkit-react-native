@@ -7,11 +7,11 @@ import {
   StyleProp,
   ViewStyle,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import type { Listing } from '../types/controllerTypes';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import { ExplorerUtil } from '../utils/ExplorerUtil';
+import { ConfigCtrl } from '../controllers/ConfigCtrl';
 
 interface Props {
   currentWCURI?: string;
@@ -26,10 +26,7 @@ function WalletItem({ currentWCURI, walletInfo, style }: Props) {
 
   const onPress = () => {
     if (currentWCURI) {
-      AsyncStorage.setItem(
-        'WALLETCONNECT_DEEPLINK_CHOICE',
-        JSON.stringify({ href: walletInfo.mobile.universal })
-      );
+      ConfigCtrl.setRecentWalletDeepLink(walletInfo.mobile.universal);
       ExplorerUtil.navigateDeepLink(
         walletInfo.mobile.universal,
         walletInfo.mobile.native,
