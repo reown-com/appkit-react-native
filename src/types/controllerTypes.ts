@@ -25,11 +25,6 @@ export interface OptionsCtrlState {
   isDataLoaded: boolean;
 }
 
-// -- ExplorerCtrl ------------------------------------------- //
-export interface ExplorerCtrlState {
-  wallets: ListingResponse & { page: number };
-}
-
 // -- AccountCtrl --------------------------------------- //
 export interface AccountCtrlState {
   address?: string;
@@ -40,6 +35,11 @@ export interface AccountCtrlState {
 export interface WcConnectionCtrlState {
   pairingUri: string;
   pairingError: boolean;
+}
+
+// -- ExplorerCtrl ------------------------------------------- //
+export interface ExplorerCtrlState {
+  wallets: ListingResponse & { page: number };
 }
 
 export interface ListingParams {

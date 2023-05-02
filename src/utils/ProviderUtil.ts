@@ -1,43 +1,27 @@
 import UniversalProvider from '@walletconnect/universal-provider';
 import type { SessionTypes } from '@walletconnect/types';
+import type { ProviderMetadata, SessionParams } from '../types/coreTypes';
 
 export async function createUniversalProvider({
   projectId,
   relayUrl,
+  metadata,
 }: {
   projectId: string;
+  metadata: ProviderMetadata;
   relayUrl?: string;
 }) {
   return UniversalProvider.init({
-    logger: 'info',
+    logger: __DEV__ ? 'info' : undefined,
     relayUrl,
     projectId,
-    metadata: {
-      name: 'React Native V2 dApp',
-      description: 'RN dApp by WalletConnect',
-      url: 'https://walletconnect.com/',
-      icons: ['https://avatars.githubusercontent.com/u/37784886'],
-    },
+    metadata,
   });
 }
 
 export async function createSession(
-  provider: UniversalProvider
+  provider: UniversalProvider,
+  sessionParams: SessionParams
 ): Promise<SessionTypes.Struct | undefined> {
-  return provider.connect({
-    namespaces: {
-      eip155: {
-        methods: [
-          'eth_sendTransaction',
-          'eth_signTransaction',
-          'eth_sign',
-          'personal_sign',
-          'eth_signTypedData',
-        ],
-        chains: ['eip155:1'],
-        events: ['chainChanged', 'accountsChanged'],
-        rpcMap: {},
-      },
-    },
-  });
+  return provider.connect(sessionParams);
 }

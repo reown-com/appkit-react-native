@@ -21,4 +21,8 @@ export const ConfigCtrl = {
   setConfig(config: ConfigCtrlState) {
     Object.assign(state, config);
   },
+
+  setThemeMode(themeMode: 'dark' | 'light') {
+    state.themeMode = themeMode;
+  },
 };

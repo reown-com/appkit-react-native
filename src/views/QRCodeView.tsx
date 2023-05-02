@@ -41,7 +41,7 @@ function QRCodeView({
         styles.container,
         {
           opacity: fadeAnim,
-          height: isPortrait ? windowHeight * 0.5 : windowHeight * 0.8,
+          maxHeight: isPortrait ? windowHeight * 0.9 : windowHeight * 0.8,
         },
       ]}
     >
@@ -72,7 +72,7 @@ function QRCodeView({
 
 const styles = StyleSheet.create({
   container: {
-    paddingBottom: 32,
+    paddingBottom: 12,
   },
 });
 
