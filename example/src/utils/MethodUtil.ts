@@ -50,7 +50,7 @@ export const testSignMessage = async (
       hexMsg,
       address,
     ]);
-    const valid = verifyEip155MessageSignature(msg, signature, address!);
+    const valid = verifyEip155MessageSignature(msg, signature, address);
     return {
       method: 'personal_sign',
       address,
