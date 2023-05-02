@@ -1,13 +1,7 @@
 import type { ethers } from 'ethers';
 import { useState } from 'react';
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Modal from 'react-native-modal';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+
 import type { AccountAction, IFormattedRpcResponse } from '../types/methods';
 import {
   testEthSign,
@@ -16,6 +10,7 @@ import {
   testSignTransaction,
   testSignTypedData,
 } from '../utils/MethodUtil';
+import { RequestModal } from './RequestModal';
 
 interface Props {
   web3Provider: ethers.providers.Web3Provider;
@@ -82,38 +77,12 @@ export function BlockchainActions({ web3Provider }: Props) {
           <Text style={styles.buttonText}>{method.method}</Text>
         </TouchableOpacity>
       ))}
-      <Modal
+      <RequestModal
+        rcpResponse={rcpResponse}
+        isLoading={loading}
         isVisible={modalVisible}
-        onBackdropPress={onModalClose}
-        onModalHide={onModalClose}
-      >
-        <View style={styles.modalContainer}>
-          <Text>Pending request</Text>
-          <ActivityIndicator animating={loading} size="large" color="#3396FF" />
-          {rcpResponse?.valid && (
-            <>
-              <Text style={styles.subtitle}>
-                method:{' '}
-                <Text style={styles.responseText}>{rcpResponse.method}</Text>
-              </Text>
-              <Text style={styles.subtitle}>
-                address:{' '}
-                <Text style={styles.responseText}>{rcpResponse.address}</Text>
-              </Text>
-              <Text style={styles.subtitle}>
-                valid:{' '}
-                <Text style={styles.responseText}>
-                  {rcpResponse.valid ? 'true' : 'false'}
-                </Text>
-              </Text>
-              <Text style={styles.subtitle}>
-                result:{' '}
-                <Text style={styles.responseText}>{rcpResponse.result}</Text>
-              </Text>
-            </>
-          )}
-        </View>
-      </Modal>
+        onClose={onModalClose}
+      />
     </>
   );
 }
@@ -136,13 +105,21 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   modalContainer: {
+    padding: 16,
     backgroundColor: 'white',
     borderRadius: 8,
   },
+  title: {
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
   subtitle: {
     fontWeight: 'bold',
+    marginVertical: 4,
   },
   responseText: {
-    fontWeight: 'normal',
+    fontWeight: '300',
   },
 });

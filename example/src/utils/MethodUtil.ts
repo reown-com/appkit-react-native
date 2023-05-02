@@ -1,7 +1,6 @@
 import { numberToHex, sanitizeHex, utf8ToHex } from '@walletconnect/encoding';
 import { ethers, TypedDataDomain, TypedDataField } from 'ethers';
 import { recoverAddress } from '@ethersproject/transactions';
-import { Alert } from 'react-native';
 import { hashMessage } from '@ethersproject/hash';
 import type { Bytes, SignatureLike } from '@ethersproject/bytes';
 import { eip712 } from '../constants/eip712';
@@ -46,14 +45,26 @@ export const testSignMessage = async (
     throw new Error('No address found');
   }
 
-  const signature = await web3Provider.send('personal_sign', [hexMsg, address]);
-  const valid = verifyEip155MessageSignature(msg, signature, address!);
-  return {
-    method: 'personal_sign',
-    address,
-    valid,
-    result: signature,
-  };
+  try {
+    const signature = await web3Provider.send('personal_sign', [
+      hexMsg,
+      address,
+    ]);
+    const valid = verifyEip155MessageSignature(msg, signature, address!);
+    return {
+      method: 'personal_sign',
+      address,
+      valid,
+      result: signature,
+    };
+  } catch (error: any) {
+    return {
+      method: 'personal_sign',
+      address,
+      valid: false,
+      result: error?.message,
+    };
+  }
 };
 
 export const testEthSign: () => Promise<IFormattedRpcResponse> = async (
@@ -69,15 +80,23 @@ export const testEthSign: () => Promise<IFormattedRpcResponse> = async (
   if (!address) {
     throw new Error('No address found');
   }
-
-  const signature = await web3Provider.send('eth_sign', [address, hexMsg]);
-  const valid = verifyEip155MessageSignature(msg, signature, address);
-  return {
-    method: 'eth_sign (standard)',
-    address,
-    valid,
-    result: signature,
-  };
+  try {
+    const signature = await web3Provider.send('eth_sign', [address, hexMsg]);
+    const valid = verifyEip155MessageSignature(msg, signature, address);
+    return {
+      method: 'eth_sign (standard)',
+      address,
+      valid,
+      result: signature,
+    };
+  } catch (error: any) {
+    return {
+      method: 'eth_sign (standard)',
+      address,
+      valid: false,
+      result: error?.message,
+    };
+  }
 };
 
 export const testSignTypedData: () => Promise<IFormattedRpcResponse> = async (
@@ -98,29 +117,41 @@ export const testSignTypedData: () => Promise<IFormattedRpcResponse> = async (
   // eth_signTypedData params
   const params = [address, message];
 
-  // send message
-  const signature = await web3Provider.send('eth_signTypedData', params);
+  try {
+    // send message
+    const signature = await web3Provider.send('eth_signTypedData', params);
 
-  // Separate `EIP712Domain` type from remaining types to verify, otherwise `ethers.utils.verifyTypedData`
-  // will throw due to "unused" `EIP712Domain` type.
-  // See: https://github.com/ethers-io/ethers.js/issues/687#issuecomment-714069471
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { EIP712Domain, ...nonDomainTypes }: Record<string, TypedDataField[]> =
-    eip712.example.types;
+    // Separate `EIP712Domain` type from remaining types to verify, otherwise `ethers.utils.verifyTypedData`
+    // will throw due to "unused" `EIP712Domain` type.
+    // See: https://github.com/ethers-io/ethers.js/issues/687#issuecomment-714069471
 
-  const valid =
-    verifyTypedData(
-      eip712.example.domain,
-      nonDomainTypes,
-      eip712.example.message,
-      signature
-    ).toLowerCase() === address?.toLowerCase();
-  return {
-    method: 'eth_signTypedData',
-    address,
-    valid,
-    result: signature,
-  };
+    const {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      EIP712Domain,
+      ...nonDomainTypes
+    }: Record<string, TypedDataField[]> = eip712.example.types;
+
+    const valid =
+      verifyTypedData(
+        eip712.example.domain,
+        nonDomainTypes,
+        eip712.example.message,
+        signature
+      ).toLowerCase() === address?.toLowerCase();
+    return {
+      method: 'eth_signTypedData',
+      address,
+      valid,
+      result: signature,
+    };
+  } catch (error: any) {
+    return {
+      method: 'eth_signTypedData',
+      address,
+      valid: false,
+      result: error?.message,
+    };
+  }
 };
 
 export const testSendTransaction: () => Promise<IFormattedRpcResponse> = async (
@@ -160,9 +191,6 @@ export const testSendTransaction: () => Promise<IFormattedRpcResponse> = async (
       result: transactionHash,
     };
   } catch (error: any) {
-    if (error?.code === -32050) {
-      Alert.alert('Transaction Rejected', 'User rejected the transaction');
-    }
     return {
       method: 'eth_sendTransaction',
       address,
@@ -178,25 +206,33 @@ export const testSignTransaction: () => Promise<IFormattedRpcResponse> = async (
   if (!web3Provider) {
     throw new Error('web3Provider not connected');
   }
-
   const [address] = await web3Provider.listAccounts();
   if (!address) {
     throw new Error('No address found');
   }
 
-  const tx = {
-    from: address,
-    to: address,
-    data: '0x',
-    value: sanitizeHex(numberToHex(0)),
-  };
+  try {
+    const tx = {
+      from: address,
+      to: address,
+      data: '0x',
+      value: sanitizeHex(numberToHex(0)),
+    };
 
-  const signedTx = await web3Provider.send('eth_signTransaction', [tx]);
+    const signedTx = await web3Provider.send('eth_signTransaction', [tx]);
 
-  return {
-    method: 'eth_signTransaction',
-    address,
-    valid: true,
-    result: signedTx,
-  };
+    return {
+      method: 'eth_signTransaction',
+      address,
+      valid: true,
+      result: signedTx,
+    };
+  } catch (error: any) {
+    return {
+      method: 'eth_signTransaction',
+      address,
+      valid: false,
+      result: error?.message,
+    };
+  }
 };
