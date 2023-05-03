@@ -28,9 +28,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Web3Button style={styles.web3Button} />
-      {isConnected && web3Provider && (
-        <BlockchainActions web3Provider={web3Provider} />
-      )}
+      {isConnected && <BlockchainActions />}
       <Web3Modal
         projectId={Env.PROJECT_ID}
         onCopyClipboard={onCopyClipboard}

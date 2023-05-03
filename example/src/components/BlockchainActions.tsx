@@ -1,5 +1,6 @@
-import type { ethers } from 'ethers';
-import { useState } from 'react';
+import { useWeb3Modal } from '@web3modal/react-native';
+import { ethers } from 'ethers';
+import { useMemo, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import type {
@@ -16,12 +17,15 @@ import {
 } from '../utils/MethodUtil';
 import { RequestModal } from './RequestModal';
 
-interface Props {
-  web3Provider: ethers.providers.Web3Provider;
-}
-
-export function BlockchainActions({ web3Provider }: Props) {
+export function BlockchainActions() {
   const [rcpResponse, setRcpResponse] = useState<FormattedRpcResponse>();
+  const { provider } = useWeb3Modal();
+
+  const web3Provider = useMemo(
+    () => (provider ? new ethers.providers.Web3Provider(provider) : undefined),
+    [provider]
+  );
+
   const [rcpError, setRcpError] = useState<FormattedRcpError>();
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -42,6 +46,8 @@ export function BlockchainActions({ web3Provider }: Props) {
         ) => Promise<FormattedRpcResponse>
       ) =>
       async () => {
+        if (!web3Provider) return;
+
         setRcpResponse(undefined);
         setRcpError(undefined);
         setModalVisible(true);
