@@ -7,18 +7,20 @@ import {
   View,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import type { IFormattedRpcResponse } from '../types/methods';
+import type { FormattedRcpError, FormattedRpcResponse } from '../types/methods';
 import Close from '../assets/Close.png';
 
 interface Props {
-  rcpResponse?: IFormattedRpcResponse;
+  rcpResponse?: FormattedRpcResponse;
   isVisible: boolean;
   onClose: () => void;
   isLoading?: boolean;
+  rcpError?: FormattedRcpError;
 }
 
 export function RequestModal({
   rcpResponse,
+  rcpError,
   isVisible,
   onClose,
   isLoading,
@@ -40,22 +42,30 @@ export function RequestModal({
         )}
         {rcpResponse && (
           <>
-            <Text
-              style={[
-                styles.title,
-                rcpResponse.valid ? styles.successText : styles.failureText,
-              ]}
-            >
-              JSON-RPC Request {rcpResponse.valid ? 'Success' : 'Failure'}
+            <Text style={[styles.title, styles.successText]}>
+              JSON-RPC Request Response
             </Text>
             {Object.keys(rcpResponse).map((key) => (
               <Text key={key} style={styles.subtitle}>
                 {key}:{' '}
                 <Text style={styles.responseText}>
-                  {rcpResponse[key as keyof IFormattedRpcResponse]?.toString()}
+                  {rcpResponse[key as keyof FormattedRpcResponse]?.toString()}
                 </Text>
               </Text>
             ))}
+          </>
+        )}
+        {rcpError && (
+          <>
+            <Text style={[styles.title, styles.failureText]}>
+              JSON-RPC Request Failure
+            </Text>
+            <Text style={styles.subtitle}>
+              Method: <Text style={styles.responseText}>{rcpError.method}</Text>
+            </Text>
+            <Text style={styles.subtitle}>
+              Error: <Text style={styles.responseText}>{rcpError.error}</Text>
+            </Text>
           </>
         )}
       </View>

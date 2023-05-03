@@ -1,10 +1,16 @@
 import type { ethers } from 'ethers';
 
-export interface IFormattedRpcResponse {
+export interface FormattedRpcResponse {
   method: string;
   address: string;
   valid: boolean;
   result: string;
+  error?: string;
+}
+
+export interface FormattedRcpError {
+  method: string;
+  error?: string;
 }
 
 export interface AccountAction {

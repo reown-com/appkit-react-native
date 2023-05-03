@@ -2,7 +2,11 @@ import type { ethers } from 'ethers';
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import type { AccountAction, IFormattedRpcResponse } from '../types/methods';
+import type {
+  AccountAction,
+  FormattedRcpError,
+  FormattedRpcResponse,
+} from '../types/methods';
 import {
   testEthSign,
   testSendTransaction,
@@ -17,7 +21,8 @@ interface Props {
 }
 
 export function BlockchainActions({ web3Provider }: Props) {
-  const [rcpResponse, setRcpResponse] = useState<IFormattedRpcResponse>();
+  const [rcpResponse, setRcpResponse] = useState<FormattedRpcResponse>();
+  const [rcpError, setRcpError] = useState<FormattedRcpError>();
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -25,24 +30,30 @@ export function BlockchainActions({ web3Provider }: Props) {
     setModalVisible(false);
     setLoading(false);
     setRcpResponse(undefined);
+    setRcpError(undefined);
   };
 
   const getEthereumActions: () => AccountAction[] = () => {
     const wrapRpcRequest =
       (
+        method: string,
         rpcRequest: (
           web3Provider: ethers.providers.Web3Provider
-        ) => Promise<IFormattedRpcResponse>
+        ) => Promise<FormattedRpcResponse>
       ) =>
       async () => {
+        setRcpResponse(undefined);
+        setRcpError(undefined);
         setModalVisible(true);
         try {
           setLoading(true);
           const result = await rpcRequest(web3Provider);
           setRcpResponse(result);
-        } catch (error) {
+          setRcpError(undefined);
+        } catch (error: any) {
           console.error('RPC request failed:', error);
           setRcpResponse(undefined);
+          setRcpError({ method, error: error?.message });
         } finally {
           setLoading(false);
         }
@@ -51,17 +62,23 @@ export function BlockchainActions({ web3Provider }: Props) {
     return [
       {
         method: 'eth_sendTransaction',
-        callback: wrapRpcRequest(testSendTransaction),
+        callback: wrapRpcRequest('eth_sendTransaction', testSendTransaction),
       },
       {
         method: 'eth_signTransaction',
-        callback: wrapRpcRequest(testSignTransaction),
+        callback: wrapRpcRequest('eth_signTransaction', testSignTransaction),
       },
-      { method: 'personal_sign', callback: wrapRpcRequest(testSignMessage) },
-      { method: 'eth_sign (standard)', callback: wrapRpcRequest(testEthSign) },
+      {
+        method: 'personal_sign',
+        callback: wrapRpcRequest('personal_sign', testSignMessage),
+      },
+      {
+        method: 'eth_sign (standard)',
+        callback: wrapRpcRequest('eth_sign (standard)', testEthSign),
+      },
       {
         method: 'eth_signTypedData',
-        callback: wrapRpcRequest(testSignTypedData),
+        callback: wrapRpcRequest('eth_signTypedData', testSignTypedData),
       },
     ];
   };
@@ -79,6 +96,7 @@ export function BlockchainActions({ web3Provider }: Props) {
       ))}
       <RequestModal
         rcpResponse={rcpResponse}
+        rcpError={rcpError}
         isLoading={loading}
         isVisible={modalVisible}
         onClose={onModalClose}
