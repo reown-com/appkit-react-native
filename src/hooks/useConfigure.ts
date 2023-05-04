@@ -50,7 +50,7 @@ export function useConfigure({ projectId, relayUrl, providerMetadata }: Props) {
    * Set config
    */
   useEffect(() => {
-    ConfigCtrl.setConfig({ projectId });
+    ConfigCtrl.setProjectId(projectId);
   }, [projectId]);
 
   /**
@@ -93,7 +93,10 @@ export function useConfigure({ projectId, relayUrl, providerMetadata }: Props) {
         Alert.alert('Error', 'Error initializing provider');
       }
     }
-    initProvider();
+    if (!ClientCtrl.provider()) {
+      initProvider();
+    }
+
     return () => {
       const provider = ClientCtrl.provider();
       provider?.removeListener('display_uri', onDisplayUri);

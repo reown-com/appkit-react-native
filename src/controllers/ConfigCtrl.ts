@@ -19,8 +19,10 @@ const state = proxy<ConfigCtrlState>({
 export const ConfigCtrl = {
   state,
 
-  setConfig(config: ConfigCtrlState) {
-    Object.assign(state, config);
+  setProjectId(projectId: ConfigCtrlState['projectId']) {
+    if (projectId !== state.projectId) {
+      state.projectId = projectId;
+    }
   },
 
   setThemeMode(themeMode: 'dark' | 'light') {
