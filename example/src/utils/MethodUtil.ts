@@ -3,7 +3,7 @@ import { ethers, TypedDataDomain, TypedDataField } from 'ethers';
 import { recoverAddress } from '@ethersproject/transactions';
 import { hashMessage } from '@ethersproject/hash';
 import type { Bytes, SignatureLike } from '@ethersproject/bytes';
-import { eip712 } from '../constants/eip712';
+import { getTypedDataExample } from '../constants/eip712';
 import { _TypedDataEncoder } from 'ethers/lib/utils';
 import type { FormattedRpcResponse } from '../types/methods';
 
@@ -86,7 +86,8 @@ export const testSignTypedData: () => Promise<FormattedRpcResponse> = async (
     throw new Error('web3Provider not connected');
   }
 
-  const message = JSON.stringify(eip712.example);
+  const { chainId } = await web3Provider.getNetwork();
+  const message = getTypedDataExample(chainId);
 
   const [address] = await web3Provider.listAccounts();
 
@@ -95,7 +96,7 @@ export const testSignTypedData: () => Promise<FormattedRpcResponse> = async (
   }
 
   // eth_signTypedData params
-  const params = [address, message];
+  const params = [address, JSON.stringify(message)];
 
   // send message
   const signature = await web3Provider.send('eth_signTypedData', params);
@@ -108,13 +109,13 @@ export const testSignTypedData: () => Promise<FormattedRpcResponse> = async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     EIP712Domain,
     ...nonDomainTypes
-  }: Record<string, TypedDataField[]> = eip712.example.types;
+  }: Record<string, TypedDataField[]> = message.types;
 
   const valid =
     verifyTypedData(
-      eip712.example.domain,
+      message.domain,
       nonDomainTypes,
-      eip712.example.message,
+      message.message,
       signature
     ).toLowerCase() === address?.toLowerCase();
   return {
