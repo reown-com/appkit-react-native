@@ -93,17 +93,8 @@ export function useConfigure({ projectId, relayUrl, providerMetadata }: Props) {
         Alert.alert('Error', 'Error initializing provider');
       }
     }
-    if (!ClientCtrl.provider()) {
+    if (!ClientCtrl.provider() && projectId && providerMetadata) {
       initProvider();
     }
-
-    return () => {
-      const provider = ClientCtrl.provider();
-      provider?.removeListener('display_uri', onDisplayUri);
-      provider?.client.core.relayer.subscriber.removeListener(
-        SUBSCRIBER_EVENTS.deleted,
-        onSessionDelete
-      );
-    };
   }, [projectId, providerMetadata, relayUrl, onDisplayUri, onSessionDelete]);
 }
