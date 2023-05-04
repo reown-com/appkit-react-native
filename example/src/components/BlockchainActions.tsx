@@ -5,7 +5,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import type {
   AccountAction,
-  FormattedRcpError,
+  FormattedRpcError,
   FormattedRpcResponse,
 } from '../types/methods';
 import {
@@ -18,7 +18,8 @@ import {
 import { RequestModal } from './RequestModal';
 
 export function BlockchainActions() {
-  const [rcpResponse, setRcpResponse] = useState<FormattedRpcResponse>();
+  const [rpcResponse, setRpcResponse] = useState<FormattedRpcResponse>();
+  const [rpcError, setRpcError] = useState<FormattedRpcError>();
   const { provider } = useWeb3Modal();
 
   const web3Provider = useMemo(
@@ -26,15 +27,14 @@ export function BlockchainActions() {
     [provider]
   );
 
-  const [rcpError, setRcpError] = useState<FormattedRcpError>();
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   const onModalClose = () => {
     setModalVisible(false);
     setLoading(false);
-    setRcpResponse(undefined);
-    setRcpError(undefined);
+    setRpcResponse(undefined);
+    setRpcError(undefined);
   };
 
   const getEthereumActions: () => AccountAction[] = () => {
@@ -48,18 +48,18 @@ export function BlockchainActions() {
       async () => {
         if (!web3Provider) return;
 
-        setRcpResponse(undefined);
-        setRcpError(undefined);
+        setRpcResponse(undefined);
+        setRpcError(undefined);
         setModalVisible(true);
         try {
           setLoading(true);
           const result = await rpcRequest(web3Provider);
-          setRcpResponse(result);
-          setRcpError(undefined);
+          setRpcResponse(result);
+          setRpcError(undefined);
         } catch (error: any) {
           console.error('RPC request failed:', error);
-          setRcpResponse(undefined);
-          setRcpError({ method, error: error?.message });
+          setRpcResponse(undefined);
+          setRpcError({ method, error: error?.message });
         } finally {
           setLoading(false);
         }
@@ -101,8 +101,8 @@ export function BlockchainActions() {
         </TouchableOpacity>
       ))}
       <RequestModal
-        rcpResponse={rcpResponse}
-        rcpError={rcpError}
+        rpcResponse={rpcResponse}
+        rpcError={rpcError}
         isLoading={loading}
         isVisible={modalVisible}
         onClose={onModalClose}

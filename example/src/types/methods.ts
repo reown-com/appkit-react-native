@@ -8,7 +8,7 @@ export interface FormattedRpcResponse {
   error?: string;
 }
 
-export interface FormattedRcpError {
+export interface FormattedRpcError {
   method: string;
   error?: string;
 }

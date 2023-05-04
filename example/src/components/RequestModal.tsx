@@ -7,23 +7,23 @@ import {
   View,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import type { FormattedRcpError, FormattedRpcResponse } from '../types/methods';
+import type { FormattedRpcError, FormattedRpcResponse } from '../types/methods';
 import Close from '../assets/Close.png';
 
 interface Props {
-  rcpResponse?: FormattedRpcResponse;
   isVisible: boolean;
   onClose: () => void;
   isLoading?: boolean;
-  rcpError?: FormattedRcpError;
+  rpcResponse?: FormattedRpcResponse;
+  rpcError?: FormattedRpcError;
 }
 
 export function RequestModal({
-  rcpResponse,
-  rcpError,
   isVisible,
   onClose,
   isLoading,
+  rpcResponse,
+  rpcError,
 }: Props) {
   return (
     <Modal isVisible={isVisible} onBackdropPress={onClose}>
@@ -40,31 +40,31 @@ export function RequestModal({
             </Text>
           </>
         )}
-        {rcpResponse && (
+        {rpcResponse && (
           <>
             <Text style={[styles.title, styles.successText]}>
               JSON-RPC Request Response
             </Text>
-            {Object.keys(rcpResponse).map((key) => (
+            {Object.keys(rpcResponse).map((key) => (
               <Text key={key} style={styles.subtitle}>
                 {key}:{' '}
                 <Text style={styles.responseText}>
-                  {rcpResponse[key as keyof FormattedRpcResponse]?.toString()}
+                  {rpcResponse[key as keyof FormattedRpcResponse]?.toString()}
                 </Text>
               </Text>
             ))}
           </>
         )}
-        {rcpError && (
+        {rpcError && (
           <>
             <Text style={[styles.title, styles.failureText]}>
               JSON-RPC Request Failure
             </Text>
             <Text style={styles.subtitle}>
-              Method: <Text style={styles.responseText}>{rcpError.method}</Text>
+              Method: <Text style={styles.responseText}>{rpcError.method}</Text>
             </Text>
             <Text style={styles.subtitle}>
-              Error: <Text style={styles.responseText}>{rcpError.error}</Text>
+              Error: <Text style={styles.responseText}>{rpcError.error}</Text>
             </Text>
           </>
         )}
