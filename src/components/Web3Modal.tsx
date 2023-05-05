@@ -67,6 +67,8 @@ export function Web3Modal({
   const onConnect = useCallback(async () => {
     const provider = ClientCtrl.provider();
     try {
+      if (!provider) throw new Error('Provider not initialized');
+
       const session = await createSession(provider, sessionParams);
       if (session) {
         ClientCtrl.setSessionTopic(session.topic);

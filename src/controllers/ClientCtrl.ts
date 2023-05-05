@@ -32,11 +32,7 @@ export const ClientCtrl = {
   },
 
   provider() {
-    if (state.provider) {
-      return state.provider;
-    }
-
-    throw new Error('ClientCtrl has no provider set');
+    return state.provider;
   },
 
   sessionTopic() {
