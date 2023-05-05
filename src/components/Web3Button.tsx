@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   StyleProp,
   StyleSheet,
   Text,
@@ -10,23 +11,30 @@ import { useSnapshot } from 'valtio';
 import { ModalCtrl } from '../controllers/ModalCtrl';
 import { LightTheme } from '../constants/Colors';
 import { AccountCtrl } from '../controllers/AccountCtrl';
+import { ClientCtrl } from '../controllers/ClientCtrl';
 
 interface Props {
   style?: StyleProp<ViewStyle>;
 }
 
 export function Web3Button({ style }: Props) {
-  const accountState = useSnapshot(AccountCtrl.state);
+  const { isConnected } = useSnapshot(AccountCtrl.state);
+  const { initialized } = useSnapshot(ClientCtrl.state);
 
   return (
     <TouchableOpacity
       onPress={() => ModalCtrl.open()}
       style={[styles.container, style]}
+      disabled={!initialized}
     >
-      {accountState.isConnected ? (
-        <Text style={styles.text}>View Account</Text>
+      {initialized ? (
+        isConnected ? (
+          <Text style={styles.text}>View Account</Text>
+        ) : (
+          <Text style={styles.text}>Connect</Text>
+        )
       ) : (
-        <Text style={styles.text}>Connect</Text>
+        <ActivityIndicator color="white" />
       )}
     </TouchableOpacity>
   );

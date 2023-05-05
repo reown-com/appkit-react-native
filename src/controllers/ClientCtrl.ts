@@ -18,8 +18,11 @@ export const ClientCtrl = {
   setProvider(provider: ClientCtrlState['provider']) {
     if (!state.initialized && provider) {
       state.provider = ref(provider);
-      state.initialized = true;
     }
+  },
+
+  setInitialized(initialized: ClientCtrlState['initialized']) {
+    state.initialized = initialized;
   },
 
   setSessionTopic(topic: ClientCtrlState['sessionTopic']) {

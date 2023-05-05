@@ -88,6 +88,13 @@ export function useConfigure({ projectId, relayUrl, providerMetadata }: Props) {
             SUBSCRIBER_EVENTS.deleted,
             onSessionDelete
           );
+
+          // Check if there is an active session
+          if (provider.session) {
+            ClientCtrl.setSessionTopic(provider.session.topic);
+            AccountCtrl.getAccount();
+          }
+          ClientCtrl.setInitialized(true);
         }
       } catch (error) {
         Alert.alert('Error', 'Error initializing provider');

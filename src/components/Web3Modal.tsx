@@ -69,10 +69,12 @@ export function Web3Modal({
     try {
       if (!provider) throw new Error('Provider not initialized');
 
-      const session = await createSession(provider, sessionParams);
-      if (session) {
-        ClientCtrl.setSessionTopic(session.topic);
-        onSessionCreated();
+      if (!provider.session) {
+        const session = await createSession(provider, sessionParams);
+        if (session) {
+          ClientCtrl.setSessionTopic(session.topic);
+          onSessionCreated();
+        }
       }
     } catch (error) {
       onSessionError();
