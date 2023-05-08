@@ -7,12 +7,13 @@ import { AccountCtrl } from '../controllers/AccountCtrl';
 export function useWeb3Modal() {
   const modalState = useSnapshot(ModalCtrl.state);
   const accountState = useSnapshot(AccountCtrl.state);
+  const clientState = useSnapshot(ClientCtrl.state);
 
   return {
     isOpen: modalState.open,
     open: ModalCtrl.open,
     close: ModalCtrl.close,
-    provider: ClientCtrl.state.provider,
+    provider: clientState.initialized ? ClientCtrl.provider() : undefined,
     isConnected: accountState.isConnected,
   };
 }

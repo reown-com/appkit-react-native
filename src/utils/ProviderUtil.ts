@@ -1,6 +1,5 @@
 import UniversalProvider from '@walletconnect/universal-provider';
-import type { SessionTypes } from '@walletconnect/types';
-import type { ProviderMetadata, SessionParams } from '../types/coreTypes';
+import type { ProviderMetadata } from '../types/coreTypes';
 
 export async function createUniversalProvider({
   projectId,
@@ -17,11 +16,4 @@ export async function createUniversalProvider({
     projectId,
     metadata,
   });
-}
-
-export async function createSession(
-  provider: UniversalProvider,
-  sessionParams: SessionParams
-): Promise<SessionTypes.Struct | undefined> {
-  return provider.connect(sessionParams);
 }
