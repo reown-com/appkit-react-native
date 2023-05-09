@@ -34,7 +34,7 @@ const verifyEip155MessageSignature = (
 
 export const testSignMessage = async (
   web3Provider?: ethers.providers.Web3Provider
-) => {
+): Promise<FormattedRpcResponse> => {
   if (!web3Provider) {
     throw new Error('web3Provider not connected');
   }
@@ -55,9 +55,9 @@ export const testSignMessage = async (
   };
 };
 
-export const testEthSign: () => Promise<FormattedRpcResponse> = async (
+export const testEthSign = async (
   web3Provider?: ethers.providers.Web3Provider
-) => {
+): Promise<FormattedRpcResponse> => {
   if (!web3Provider) {
     throw new Error('web3Provider not connected');
   }
@@ -126,9 +126,9 @@ export const testSignTypedData: () => Promise<FormattedRpcResponse> = async (
   };
 };
 
-export const testSendTransaction: () => Promise<FormattedRpcResponse> = async (
+export const testSendTransaction = async (
   web3Provider?: ethers.providers.Web3Provider
-) => {
+): Promise<FormattedRpcResponse> => {
   if (!web3Provider) {
     throw new Error('web3Provider not connected');
   }
@@ -163,9 +163,9 @@ export const testSendTransaction: () => Promise<FormattedRpcResponse> = async (
   };
 };
 
-export const testSignTransaction: () => Promise<FormattedRpcResponse> = async (
+export const testSignTransaction = async (
   web3Provider?: ethers.providers.Web3Provider
-) => {
+): Promise<FormattedRpcResponse> => {
   if (!web3Provider) {
     throw new Error('web3Provider not connected');
   }
@@ -188,5 +188,95 @@ export const testSignTransaction: () => Promise<FormattedRpcResponse> = async (
     address,
     valid: true,
     result: signedTx,
+  };
+};
+
+export const readContract = async (
+  web3Provider?: ethers.providers.Web3Provider
+): Promise<FormattedRpcResponse> => {
+  if (!web3Provider) {
+    throw new Error('web3Provider not connected');
+  }
+
+  const daiAddress = 'dai.tokens.ethers.eth';
+  const daiAbi = [
+    'function name() view returns (string)',
+    'function symbol() view returns (string)',
+    'function balanceOf(address) view returns (uint)',
+  ];
+
+  const daiContract = new ethers.Contract(daiAddress, daiAbi, web3Provider);
+
+  // Read contract information
+  const name = await daiContract.name();
+  const symbol = await daiContract.symbol();
+  const balance = await daiContract.balanceOf('ricmoo.firefly.eth');
+
+  // Format the DAI for displaying to the user
+  const formattedBalance = ethers.utils.formatUnits(balance, 18);
+
+  return {
+    method: 'readContract',
+    address: daiAddress,
+    valid: true,
+    result: `name: ${name}, symbol: ${symbol}, balance: ${formattedBalance}`,
+  };
+};
+
+export const queryContract = async (
+  web3Provider?: ethers.providers.Web3Provider
+): Promise<FormattedRpcResponse> => {
+  if (!web3Provider) {
+    throw new Error('web3Provider not connected');
+  }
+  const daiAddress = 'dai.tokens.ethers.eth';
+  const daiAbi = [
+    'event Transfer(address indexed from, address indexed to, uint amount)',
+  ];
+
+  const daiContract = new ethers.Contract(daiAddress, daiAbi, web3Provider);
+
+  // Filter for all token transfers
+  const filterFrom = daiContract.filters.Transfer?.(null, null);
+
+  // List all transfers sent in the last 100 blocks
+  const transfers = await daiContract.queryFilter(filterFrom!, -100);
+
+  return {
+    method: 'queryContract',
+    address: daiAddress,
+    valid: true,
+    result: `transfers: ${transfers.length}`,
+  };
+};
+
+export const sendContractTransaction = async (
+  web3Provider?: ethers.providers.Web3Provider
+): Promise<FormattedRpcResponse> => {
+  if (!web3Provider) {
+    throw new Error('web3Provider not connected');
+  }
+
+  const daiAddress = 'dai.tokens.ethers.eth';
+  const daiAbi = [
+    'function transfer(address to, uint amount)',
+    'function isValidSignature(bytes32 hash, bytes memory signature)',
+  ];
+
+  const daiContract = new ethers.Contract(daiAddress, daiAbi, web3Provider);
+  const daiWithSigner = daiContract.connect(web3Provider.getSigner());
+  const myAddress = await web3Provider.getSigner().getAddress();
+
+  // Each DAI has 18 decimal places
+  const dai = ethers.utils.parseUnits('0.001', 18);
+
+  // Send 0.001 DAI to myself
+  const tx = await daiWithSigner.transfer(myAddress, dai);
+
+  return {
+    method: 'sendContractTransaction',
+    address: myAddress,
+    valid: true,
+    result: tx.hash,
   };
 };

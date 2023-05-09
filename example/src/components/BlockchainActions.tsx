@@ -9,6 +9,9 @@ import type {
   FormattedRpcResponse,
 } from '../types/methods';
 import {
+  queryContract,
+  readContract,
+  sendContractTransaction,
   testEthSign,
   testSendTransaction,
   testSignMessage,
@@ -86,6 +89,18 @@ export function BlockchainActions() {
         method: 'eth_signTypedData',
         callback: wrapRpcRequest('eth_signTypedData', testSignTypedData),
       },
+      {
+        method: 'read contract (mainnet)',
+        callback: wrapRpcRequest('read contract', readContract),
+      },
+      {
+        method: 'query contract (mainnet)',
+        callback: wrapRpcRequest('query contract', queryContract),
+      },
+      {
+        method: 'tx contract (mainnet)',
+        callback: wrapRpcRequest('tx contract', sendContractTransaction),
+      },
     ];
   };
 
@@ -118,7 +133,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#3396FF',
     borderRadius: 20,
-    width: 180,
+    width: 200,
     height: 50,
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.1)',

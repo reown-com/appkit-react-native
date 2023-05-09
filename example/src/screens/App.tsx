@@ -36,6 +36,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   web3Button: {
-    width: 180,
+    width: 200,
   },
 });
