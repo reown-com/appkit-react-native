@@ -1,10 +1,10 @@
-import type UniversalProvider from '@walletconnect/universal-provider/dist/types/UniversalProvider';
+import type { IUniversalProvider } from '@walletconnect/universal-provider';
 import type { ethers } from 'ethers';
 
 // -- ClientCtrl ------------------------------------------- //
 export interface ClientCtrlState {
   initialized: boolean;
-  provider?: UniversalProvider;
+  provider?: IUniversalProvider;
   web3Provider?: ethers.providers.Web3Provider;
   sessionTopic?: string;
 }

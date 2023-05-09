@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import {
   StyleSheet,
   useColorScheme,
@@ -8,11 +8,11 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { useSnapshot } from 'valtio';
+import type { SessionTypes } from '@walletconnect/types';
 
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import Background from '../assets/Background.png';
 import Web3ModalHeader from './Web3ModalHeader';
-import { createSession } from '../utils/ProviderUtil';
 import { ModalCtrl } from '../controllers/ModalCtrl';
 import { Web3ModalRouter } from './Web3ModalRouter';
 import { AccountCtrl } from '../controllers/AccountCtrl';
@@ -41,10 +41,12 @@ export function Web3Modal({
 }: Web3ModalProps) {
   useConfigure({ projectId, providerMetadata, relayUrl });
   const { open } = useSnapshot(ModalCtrl.state);
+  const { isConnected } = useSnapshot(AccountCtrl.state);
   const isDarkMode = useColorScheme() === 'dark';
   const { width } = useOrientation();
 
-  const onSessionCreated = useCallback(async () => {
+  const onSessionCreated = async (session: SessionTypes.Struct) => {
+    ClientCtrl.setSessionTopic(session.topic);
     const deepLink = ConfigCtrl.getRecentWalletDeepLink();
     try {
       if (deepLink) {
@@ -56,28 +58,29 @@ export function Web3Modal({
     } catch (error) {
       Alert.alert('Error', 'Error setting deep link wallet');
     }
-  }, []);
+  };
 
-  const onSessionError = useCallback(async () => {
+  const onSessionError = async () => {
     ConfigCtrl.setRecentWalletDeepLink(undefined);
     ModalCtrl.close();
     Alert.alert('Error', 'Error with session');
-  }, []);
+  };
 
-  const onConnect = useCallback(async () => {
+  const onConnect = async () => {
     const provider = ClientCtrl.provider();
     try {
       if (!provider) throw new Error('Provider not initialized');
 
-      const session = await createSession(provider, sessionParams);
-      if (session) {
-        ClientCtrl.setSessionTopic(session.topic);
-        onSessionCreated();
+      if (!isConnected) {
+        const session = await provider.connect(sessionParams);
+        if (session) {
+          onSessionCreated(session);
+        }
       }
     } catch (error) {
       onSessionError();
     }
-  }, [onSessionCreated, onSessionError, sessionParams]);
+  };
 
   useEffect(() => {
     if (!projectId) {
