@@ -7,6 +7,7 @@ import type {
   AccountAction,
   FormattedRpcError,
   FormattedRpcResponse,
+  RpcRequestParams,
 } from '../types/methods';
 import {
   getFilterChanges,
@@ -46,9 +47,10 @@ export function BlockchainActions() {
     const wrapRpcRequest =
       (
         method: string,
-        rpcRequest: (
-          web3Provider: ethers.providers.Web3Provider
-        ) => Promise<FormattedRpcResponse>
+        rpcRequest: ({
+          web3Provider,
+          method,
+        }: RpcRequestParams) => Promise<FormattedRpcResponse>
       ) =>
       async () => {
         if (!web3Provider) return;
@@ -58,7 +60,7 @@ export function BlockchainActions() {
         setModalVisible(true);
         try {
           setLoading(true);
-          const result = await rpcRequest(web3Provider);
+          const result = await rpcRequest({ web3Provider, method });
           setRpcResponse(result);
           setRpcError(undefined);
         } catch (error: any) {

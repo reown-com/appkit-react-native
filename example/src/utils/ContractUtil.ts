@@ -1,11 +1,12 @@
 import { ethers } from 'ethers';
 
 import CONTRACT_VALUES from '../constants/Contract';
-import type { FormattedRpcResponse } from '../types/methods';
+import type { FormattedRpcResponse, RpcRequestParams } from '../types/methods';
 
-export const readContract = async (
-  web3Provider?: ethers.providers.Web3Provider
-): Promise<FormattedRpcResponse> => {
+export const readContract = async ({
+  web3Provider,
+  method,
+}: RpcRequestParams): Promise<FormattedRpcResponse> => {
   if (!web3Provider) {
     throw new Error('web3Provider not connected');
   }
@@ -25,16 +26,17 @@ export const readContract = async (
   const formattedBalance = ethers.utils.formatUnits(balance, 18);
 
   return {
-    method: 'readContract',
+    method,
     address: CONTRACT_VALUES.contractAddress,
     valid: true,
     result: `name: ${name}, symbol: ${symbol}, balance: ${formattedBalance}`,
   };
 };
 
-export const getFilterChanges = async (
-  web3Provider?: ethers.providers.Web3Provider
-): Promise<FormattedRpcResponse> => {
+export const getFilterChanges = async ({
+  web3Provider,
+  method,
+}: RpcRequestParams): Promise<FormattedRpcResponse> => {
   if (!web3Provider) {
     throw new Error('web3Provider not connected');
   }
@@ -52,16 +54,17 @@ export const getFilterChanges = async (
   const transfers = await daiContract.queryFilter(filterFrom!, -100);
 
   return {
-    method: 'getFilterChanges',
+    method,
     address: CONTRACT_VALUES.contractAddress,
     valid: true,
     result: `transfers: ${transfers.length}`,
   };
 };
 
-export const writeContract = async (
-  web3Provider?: ethers.providers.Web3Provider
-): Promise<FormattedRpcResponse> => {
+export const writeContract = async ({
+  web3Provider,
+  method,
+}: RpcRequestParams): Promise<FormattedRpcResponse> => {
   if (!web3Provider) {
     throw new Error('web3Provider not connected');
   }
@@ -81,7 +84,7 @@ export const writeContract = async (
   const tx = await daiWithSigner.transfer(myAddress, dai);
 
   return {
-    method: 'writeContract',
+    method,
     address: myAddress,
     valid: true,
     result: tx.hash,
