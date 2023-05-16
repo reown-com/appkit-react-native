@@ -1,19 +1,25 @@
-import { useWeb3Modal } from '@web3modal/react-native';
+import { useWeb3Modal, Web3Button } from '@web3modal/react-native';
 import { ethers } from 'ethers';
 import { useMemo, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import type {
   AccountAction,
   FormattedRpcError,
   FormattedRpcResponse,
+  RpcRequestParams,
 } from '../types/methods';
 import {
-  testEthSign,
-  testSendTransaction,
-  testSignMessage,
-  testSignTransaction,
-  testSignTypedData,
+  getFilterChanges,
+  readContract,
+  writeContract,
+} from '../utils/ContractUtil';
+import {
+  ethSign,
+  sendTransaction,
+  signMessage,
+  signTransaction,
+  signTypedData,
 } from '../utils/MethodUtil';
 import { RequestModal } from './RequestModal';
 
@@ -37,13 +43,14 @@ export function BlockchainActions() {
     setRpcError(undefined);
   };
 
-  const getEthereumActions: () => AccountAction[] = () => {
+  const getEthereumActions = () => {
     const wrapRpcRequest =
       (
         method: string,
-        rpcRequest: (
-          web3Provider: ethers.providers.Web3Provider
-        ) => Promise<FormattedRpcResponse>
+        rpcRequest: ({
+          web3Provider,
+          method,
+        }: RpcRequestParams) => Promise<FormattedRpcResponse>
       ) =>
       async () => {
         if (!web3Provider) return;
@@ -53,7 +60,7 @@ export function BlockchainActions() {
         setModalVisible(true);
         try {
           setLoading(true);
-          const result = await rpcRequest(web3Provider);
+          const result = await rpcRequest({ web3Provider, method });
           setRpcResponse(result);
           setRpcError(undefined);
         } catch (error: any) {
@@ -65,41 +72,59 @@ export function BlockchainActions() {
         }
       };
 
-    return [
+    const actions: AccountAction[] = [
       {
         method: 'eth_sendTransaction',
-        callback: wrapRpcRequest('eth_sendTransaction', testSendTransaction),
+        callback: wrapRpcRequest('eth_sendTransaction', sendTransaction),
       },
       {
         method: 'eth_signTransaction',
-        callback: wrapRpcRequest('eth_signTransaction', testSignTransaction),
+        callback: wrapRpcRequest('eth_signTransaction', signTransaction),
       },
       {
         method: 'personal_sign',
-        callback: wrapRpcRequest('personal_sign', testSignMessage),
+        callback: wrapRpcRequest('personal_sign', signMessage),
       },
       {
         method: 'eth_sign (standard)',
-        callback: wrapRpcRequest('eth_sign (standard)', testEthSign),
+        callback: wrapRpcRequest('eth_sign (standard)', ethSign),
       },
       {
         method: 'eth_signTypedData',
-        callback: wrapRpcRequest('eth_signTypedData', testSignTypedData),
+        callback: wrapRpcRequest('eth_signTypedData', signTypedData),
+      },
+      {
+        method: 'read contract (mainnet)',
+        callback: wrapRpcRequest('read contract', readContract),
+      },
+      {
+        method: 'write contract (mainnet)',
+        callback: wrapRpcRequest('write contract', writeContract),
+      },
+      {
+        method: 'filter contract (mainnet)',
+        callback: wrapRpcRequest('filter contract', getFilterChanges),
       },
     ];
+    return actions;
   };
 
   return (
     <>
-      {getEthereumActions().map((method) => (
-        <TouchableOpacity
-          style={styles.button}
-          key={method.method}
-          onPress={() => method.callback(web3Provider)}
-        >
-          <Text style={styles.buttonText}>{method.method}</Text>
-        </TouchableOpacity>
-      ))}
+      <FlatList
+        data={getEthereumActions()}
+        ListHeaderComponent={<Web3Button style={styles.web3Button} />}
+        style={styles.list}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.button}
+            key={item.method}
+            onPress={() => item.callback(web3Provider)}
+          >
+            <Text style={styles.buttonText}>{item.method}</Text>
+          </TouchableOpacity>
+        )}
+      />
       <RequestModal
         rpcResponse={rpcResponse}
         rpcError={rpcError}
@@ -118,7 +143,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#3396FF',
     borderRadius: 20,
-    width: 180,
+    width: 200,
     height: 50,
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.1)',
@@ -145,5 +170,11 @@ const styles = StyleSheet.create({
   },
   responseText: {
     fontWeight: '300',
+  },
+  list: {
+    paddingTop: 16,
+  },
+  web3Button: {
+    width: 200,
   },
 });
