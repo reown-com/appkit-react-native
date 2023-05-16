@@ -17,8 +17,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Web3Button style={styles.web3Button} />
-      {isConnected && <BlockchainActions />}
+      {isConnected ? <BlockchainActions /> : <Web3Button />}
       <Web3Modal
         projectId={Env.PROJECT_ID}
         onCopyClipboard={onCopyClipboard}
@@ -34,8 +33,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  web3Button: {
-    width: 200,
   },
 });

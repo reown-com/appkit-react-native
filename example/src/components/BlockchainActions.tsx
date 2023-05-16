@@ -1,7 +1,7 @@
-import { useWeb3Modal } from '@web3modal/react-native';
+import { useWeb3Modal, Web3Button } from '@web3modal/react-native';
 import { ethers } from 'ethers';
 import { useMemo, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import type {
   AccountAction,
@@ -111,15 +111,20 @@ export function BlockchainActions() {
 
   return (
     <>
-      {getEthereumActions().map((method) => (
-        <TouchableOpacity
-          style={styles.button}
-          key={method.method}
-          onPress={() => method.callback(web3Provider)}
-        >
-          <Text style={styles.buttonText}>{method.method}</Text>
-        </TouchableOpacity>
-      ))}
+      <FlatList
+        data={getEthereumActions()}
+        ListHeaderComponent={<Web3Button style={styles.web3Button} />}
+        style={styles.list}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.button}
+            key={item.method}
+            onPress={() => item.callback(web3Provider)}
+          >
+            <Text style={styles.buttonText}>{item.method}</Text>
+          </TouchableOpacity>
+        )}
+      />
       <RequestModal
         rpcResponse={rpcResponse}
         rpcError={rpcError}
@@ -165,5 +170,11 @@ const styles = StyleSheet.create({
   },
   responseText: {
     fontWeight: '300',
+  },
+  list: {
+    paddingTop: 16,
+  },
+  web3Button: {
+    width: 200,
   },
 });
