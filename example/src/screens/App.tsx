@@ -16,7 +16,7 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.container}>
       {isConnected ? <BlockchainActions /> : <Web3Button />}
       <Web3Modal
         projectId={Env.PROJECT_ID}
@@ -29,9 +29,6 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
   container: {
     flex: 1,
     alignItems: 'center',
