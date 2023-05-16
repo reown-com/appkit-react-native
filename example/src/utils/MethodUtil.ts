@@ -32,7 +32,7 @@ const verifyEip155MessageSignature = (
   address: string
 ) => verifyMessage(message, signature).toLowerCase() === address.toLowerCase();
 
-export const testSignMessage = async (
+export const signMessage = async (
   web3Provider?: ethers.providers.Web3Provider
 ): Promise<FormattedRpcResponse> => {
   if (!web3Provider) {
@@ -55,7 +55,7 @@ export const testSignMessage = async (
   };
 };
 
-export const testEthSign = async (
+export const ethSign = async (
   web3Provider?: ethers.providers.Web3Provider
 ): Promise<FormattedRpcResponse> => {
   if (!web3Provider) {
@@ -79,7 +79,7 @@ export const testEthSign = async (
   };
 };
 
-export const testSignTypedData: () => Promise<FormattedRpcResponse> = async (
+export const signTypedData: () => Promise<FormattedRpcResponse> = async (
   web3Provider?: ethers.providers.Web3Provider
 ) => {
   if (!web3Provider) {
@@ -126,7 +126,7 @@ export const testSignTypedData: () => Promise<FormattedRpcResponse> = async (
   };
 };
 
-export const testSendTransaction = async (
+export const sendTransaction = async (
   web3Provider?: ethers.providers.Web3Provider
 ): Promise<FormattedRpcResponse> => {
   if (!web3Provider) {
@@ -163,7 +163,7 @@ export const testSendTransaction = async (
   };
 };
 
-export const testSignTransaction = async (
+export const signTransaction = async (
   web3Provider?: ethers.providers.Web3Provider
 ): Promise<FormattedRpcResponse> => {
   if (!web3Provider) {

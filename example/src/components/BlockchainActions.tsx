@@ -14,11 +14,11 @@ import {
   writeContract,
 } from '../utils/ContractUtil';
 import {
-  testEthSign,
-  testSendTransaction,
-  testSignMessage,
-  testSignTransaction,
-  testSignTypedData,
+  ethSign,
+  sendTransaction,
+  signMessage,
+  signTransaction,
+  signTypedData,
 } from '../utils/MethodUtil';
 import { RequestModal } from './RequestModal';
 
@@ -42,7 +42,7 @@ export function BlockchainActions() {
     setRpcError(undefined);
   };
 
-  const getEthereumActions: () => AccountAction[] = () => {
+  const getEthereumActions = () => {
     const wrapRpcRequest =
       (
         method: string,
@@ -70,26 +70,26 @@ export function BlockchainActions() {
         }
       };
 
-    return [
+    const actions: AccountAction[] = [
       {
         method: 'eth_sendTransaction',
-        callback: wrapRpcRequest('eth_sendTransaction', testSendTransaction),
+        callback: wrapRpcRequest('eth_sendTransaction', sendTransaction),
       },
       {
         method: 'eth_signTransaction',
-        callback: wrapRpcRequest('eth_signTransaction', testSignTransaction),
+        callback: wrapRpcRequest('eth_signTransaction', signTransaction),
       },
       {
         method: 'personal_sign',
-        callback: wrapRpcRequest('personal_sign', testSignMessage),
+        callback: wrapRpcRequest('personal_sign', signMessage),
       },
       {
         method: 'eth_sign (standard)',
-        callback: wrapRpcRequest('eth_sign (standard)', testEthSign),
+        callback: wrapRpcRequest('eth_sign (standard)', ethSign),
       },
       {
         method: 'eth_signTypedData',
-        callback: wrapRpcRequest('eth_signTypedData', testSignTypedData),
+        callback: wrapRpcRequest('eth_signTypedData', signTypedData),
       },
       {
         method: 'read contract (mainnet)',
@@ -104,6 +104,7 @@ export function BlockchainActions() {
         callback: wrapRpcRequest('filter contract', getFilterChanges),
       },
     ];
+    return actions;
   };
 
   return (
