@@ -9,9 +9,11 @@ import type {
   FormattedRpcResponse,
 } from '../types/methods';
 import {
-  queryContract,
+  getFilterChanges,
   readContract,
-  sendContractTransaction,
+  writeContract,
+} from '../utils/ContractUtil';
+import {
   testEthSign,
   testSendTransaction,
   testSignMessage,
@@ -94,12 +96,12 @@ export function BlockchainActions() {
         callback: wrapRpcRequest('read contract', readContract),
       },
       {
-        method: 'query contract (mainnet)',
-        callback: wrapRpcRequest('query contract', queryContract),
+        method: 'write contract (mainnet)',
+        callback: wrapRpcRequest('write contract', writeContract),
       },
       {
-        method: 'tx contract (mainnet)',
-        callback: wrapRpcRequest('tx contract', sendContractTransaction),
+        method: 'filter contract (mainnet)',
+        callback: wrapRpcRequest('filter contract', getFilterChanges),
       },
     ];
   };
