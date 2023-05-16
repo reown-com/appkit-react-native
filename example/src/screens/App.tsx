@@ -1,5 +1,5 @@
 import '../../expo-crypto-shim.js';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, SafeAreaView, StyleSheet } from 'react-native';
 import { Web3Modal, Web3Button, useWeb3Modal } from '@web3modal/react-native';
 import { setStringAsync } from 'expo-clipboard';
 import { Env } from '../../env';
@@ -16,7 +16,7 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
       {isConnected ? <BlockchainActions /> : <Web3Button />}
       <Web3Modal
         projectId={Env.PROJECT_ID}
@@ -24,11 +24,14 @@ export default function App() {
         providerMetadata={providerMetadata}
         sessionParams={sessionParams}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
