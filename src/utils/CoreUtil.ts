@@ -3,7 +3,9 @@ export const CoreUtil = {
     return url.startsWith('http://') || url.startsWith('https://');
   },
 
-  formatNativeUrl(appUrl: string, wcUri: string): string {
+  formatNativeUrl(appUrl: string, wcUri: string): string | undefined {
+    if (!appUrl || appUrl === '') return undefined;
+
     if (CoreUtil.isHttpUrl(appUrl)) {
       return this.formatUniversalUrl(appUrl, wcUri);
     }
@@ -18,7 +20,9 @@ export const CoreUtil = {
     return `${safeAppUrl}wc?uri=${encodedWcUrl}`;
   },
 
-  formatUniversalUrl(appUrl: string, wcUri: string): string {
+  formatUniversalUrl(appUrl: string, wcUri: string): string | undefined {
+    if (!appUrl || appUrl === '') return undefined;
+
     if (!CoreUtil.isHttpUrl(appUrl)) {
       return this.formatNativeUrl(appUrl, wcUri);
     }

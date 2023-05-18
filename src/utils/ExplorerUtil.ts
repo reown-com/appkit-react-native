@@ -45,21 +45,25 @@ export const ExplorerUtil = {
     deepLink: string,
     wcURI: string
   ) {
-    let tempDeepLink;
-
-    if (universalLink && universalLink !== '') {
-      tempDeepLink = CoreUtil.formatUniversalUrl(universalLink, wcURI);
-    } else if (deepLink && deepLink !== '') {
-      tempDeepLink = CoreUtil.formatNativeUrl(deepLink, wcURI);
-    } else {
-      Alert.alert('No valid link found for this wallet');
-      return;
-    }
-
     try {
-      await Linking.openURL(tempDeepLink);
+      const nativeUrl = CoreUtil.formatNativeUrl(deepLink, wcURI);
+      const universalUrl = CoreUtil.formatUniversalUrl(universalLink, wcURI);
+      if (nativeUrl) {
+        await Linking.openURL(nativeUrl).catch(() => {
+          // Fallback to universal link
+          if (universalUrl) {
+            Linking.openURL(universalUrl);
+          } else {
+            throw new Error('No valid link found for this wallet');
+          }
+        });
+      } else if (universalUrl) {
+        await Linking.openURL(universalUrl);
+      } else {
+        throw new Error('No valid link found for this wallet');
+      }
     } catch (error) {
-      Alert.alert(`Unable to open this DeepLink: ${tempDeepLink}`);
+      Alert.alert(`Unable to open the app`);
     }
   },
 };
