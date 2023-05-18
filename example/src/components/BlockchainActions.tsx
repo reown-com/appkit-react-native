@@ -115,6 +115,7 @@ export function BlockchainActions() {
         data={getEthereumActions()}
         ListHeaderComponent={<Web3Button style={styles.web3Button} />}
         style={styles.list}
+        contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.button}
@@ -172,7 +173,10 @@ const styles = StyleSheet.create({
     fontWeight: '300',
   },
   list: {
-    paddingTop: 16,
+    paddingTop: 60,
+  },
+  listContent: {
+    alignItems: 'center',
   },
   web3Button: {
     width: 200,
