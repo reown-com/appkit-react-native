@@ -9,11 +9,7 @@ import type {
   FormattedRpcResponse,
   RpcRequestParams,
 } from '../types/methods';
-import {
-  getFilterChanges,
-  readContract,
-  writeContract,
-} from '../utils/ContractUtil';
+import { getFilterChanges, readContract } from '../utils/ContractUtil';
 import {
   ethSign,
   sendTransaction,
@@ -96,10 +92,6 @@ export function BlockchainActions() {
       {
         method: 'read contract (mainnet)',
         callback: wrapRpcRequest('read contract', readContract),
-      },
-      {
-        method: 'write contract (mainnet)',
-        callback: wrapRpcRequest('write contract', writeContract),
       },
       {
         method: 'filter contract (mainnet)',

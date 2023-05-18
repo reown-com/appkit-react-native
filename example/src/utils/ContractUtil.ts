@@ -11,19 +11,19 @@ export const readContract = async ({
     throw new Error('web3Provider not connected');
   }
 
-  const daiContract = new ethers.Contract(
+  const contract = new ethers.Contract(
     CONTRACT_VALUES.contractAddress,
     CONTRACT_VALUES.readContractAbi,
     web3Provider
   );
 
   // Read contract information
-  const name = await daiContract.name();
-  const symbol = await daiContract.symbol();
-  const balance = await daiContract.balanceOf(CONTRACT_VALUES.balanceAddress);
+  const name = await contract.name();
+  const symbol = await contract.symbol();
+  const balance = await contract.balanceOf(CONTRACT_VALUES.balanceAddress);
 
-  // Format the DAI for displaying to the user
-  const formattedBalance = ethers.utils.formatUnits(balance, 18);
+  // Format the USDT for displaying to the user
+  const formattedBalance = ethers.utils.formatUnits(balance, 6);
 
   return {
     method,
@@ -41,52 +41,22 @@ export const getFilterChanges = async ({
     throw new Error('web3Provider not connected');
   }
 
-  const daiContract = new ethers.Contract(
+  const contract = new ethers.Contract(
     CONTRACT_VALUES.contractAddress,
     CONTRACT_VALUES.getFilterChangesAbi,
     web3Provider
   );
 
   // Filter for all token transfers
-  const filterFrom = daiContract.filters.Transfer?.(null, null);
+  const filterFrom = contract.filters.Transfer?.(null, null);
 
   // List all transfers sent in the last 100 blocks
-  const transfers = await daiContract.queryFilter(filterFrom!, -100);
+  const transfers = await contract.queryFilter(filterFrom!, -100);
 
   return {
     method,
     address: CONTRACT_VALUES.contractAddress,
     valid: true,
-    result: `transfers: ${transfers.length}`,
-  };
-};
-
-export const writeContract = async ({
-  web3Provider,
-  method,
-}: RpcRequestParams): Promise<FormattedRpcResponse> => {
-  if (!web3Provider) {
-    throw new Error('web3Provider not connected');
-  }
-
-  const daiContract = new ethers.Contract(
-    CONTRACT_VALUES.contractAddress,
-    CONTRACT_VALUES.writeContractAbi,
-    web3Provider
-  );
-  const daiWithSigner = daiContract.connect(web3Provider.getSigner());
-  const myAddress = await web3Provider.getSigner().getAddress();
-
-  // Each DAI has 18 decimal places
-  const dai = ethers.utils.parseUnits('0.001', 18);
-
-  // Send 0.001 DAI to myself
-  const tx = await daiWithSigner.transfer(myAddress, dai);
-
-  return {
-    method,
-    address: myAddress,
-    valid: true,
-    result: tx.hash,
+    result: `transfers in last 100 blocks: ${transfers.length}`,
   };
 };
