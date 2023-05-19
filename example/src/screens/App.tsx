@@ -1,4 +1,3 @@
-// import '../../expo-crypto-shim.js';
 import { Alert, SafeAreaView, StyleSheet, View } from 'react-native';
 import { Web3Modal, Web3Button, useWeb3Modal } from '@web3modal/react-native';
 import { setStringAsync } from 'expo-clipboard';
