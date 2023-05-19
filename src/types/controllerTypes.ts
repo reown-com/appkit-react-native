@@ -59,17 +59,8 @@ export interface PlatformInfo {
 export interface Listing {
   id: string;
   name: string;
-  description: string;
   homepage: string;
-  chains: string[];
-  versions: string[];
-  app_type: string;
   image_id: string;
-  image_url: {
-    sm: string;
-    md: string;
-    lg: string;
-  };
   app: {
     browser: string;
     ios: string;
@@ -80,13 +71,6 @@ export interface Listing {
   };
   mobile: PlatformInfo;
   desktop: PlatformInfo;
-  metadata: {
-    shortName: string;
-    colors: {
-      primary: string;
-      secondary: string;
-    };
-  };
 }
 
 export interface ListingResponse {

@@ -16,7 +16,7 @@ export const ExplorerCtrl = {
   state,
 
   async getMobileWallets(params: ListingParams) {
-    const { listings, total } = await ExplorerUtil.getMobileListings(params);
+    const { listings, total } = await ExplorerUtil.getListings(params);
     state.wallets = { listings: Object.values(listings), page: 1, total };
   },
 
