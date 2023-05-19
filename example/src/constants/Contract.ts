@@ -1,15 +1,71 @@
-const contractAddress = 'dai.tokens.ethers.eth';
-const balanceAddress = 'ricmoo.firefly.eth';
+// Tether (USDT)
+const contractAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7';
+
+// vitalik.eth
+const balanceAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 
 const readContractAbi = [
-  'function name() view returns (string)',
-  'function symbol() view returns (string)',
-  'function balanceOf(address) view returns (uint)',
-];
-
-const writeContractAbi = [
-  'function transfer(address to, uint amount)',
-  'function isValidSignature(bytes32 hash, bytes memory signature)',
+  {
+    constant: true,
+    inputs: [],
+    name: 'name',
+    outputs: [
+      {
+        name: '',
+        type: 'string',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'symbol',
+    outputs: [
+      {
+        name: '',
+        type: 'string',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'totalSupply',
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: '_owner',
+        type: 'address',
+      },
+    ],
+    name: 'balanceOf',
+    outputs: [
+      {
+        name: 'balance',
+        type: 'uint256',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
 ];
 
 const getFilterChangesAbi = [
@@ -20,6 +76,5 @@ export default {
   contractAddress,
   balanceAddress,
   readContractAbi,
-  writeContractAbi,
   getFilterChangesAbi,
 };
