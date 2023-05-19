@@ -4,7 +4,7 @@ export const CoreUtil = {
   },
 
   formatNativeUrl(appUrl: string, wcUri: string): string | undefined {
-    if (!appUrl || appUrl === '') return undefined;
+    if (!appUrl) return undefined;
 
     if (CoreUtil.isHttpUrl(appUrl)) {
       return this.formatUniversalUrl(appUrl, wcUri);
@@ -21,7 +21,7 @@ export const CoreUtil = {
   },
 
   formatUniversalUrl(appUrl: string, wcUri: string): string | undefined {
-    if (!appUrl || appUrl === '') return undefined;
+    if (!appUrl) return undefined;
 
     if (!CoreUtil.isHttpUrl(appUrl)) {
       return this.formatNativeUrl(appUrl, wcUri);
