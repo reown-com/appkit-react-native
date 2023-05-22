@@ -1,4 +1,4 @@
-import { Alert, Linking } from 'react-native';
+import { Alert, Linking, Platform } from 'react-native';
 import type { ListingParams, ListingResponse } from '../types/controllerTypes';
 import { CoreUtil } from './CoreUtil';
 import { ConfigCtrl } from '../controllers/ConfigCtrl';
@@ -28,8 +28,14 @@ async function fetchListings(
 
 // -- Utility -------------------------------------------------------
 export const ExplorerUtil = {
-  async getMobileListings(params: ListingParams) {
-    return fetchListings('/w3m/v1/getMobileListings', params);
+  async getListings(params: ListingParams) {
+    const platform = Platform.select({
+      ios: 'iOS',
+      android: 'Android',
+      default: 'Mobile',
+    });
+
+    return fetchListings(`/w3m/v1/get${platform}Listings`, params);
   },
 
   getWalletImageUrl(imageId: string) {
