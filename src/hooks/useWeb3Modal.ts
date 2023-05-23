@@ -15,5 +15,6 @@ export function useWeb3Modal() {
     close: ModalCtrl.close,
     provider: clientState.initialized ? ClientCtrl.provider() : undefined,
     isConnected: accountState.isConnected,
+    address: accountState.address,
   };
 }
