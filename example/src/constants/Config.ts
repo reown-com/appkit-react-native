@@ -1,4 +1,6 @@
-export const providerMetadata = {
+import type { IProviderMetadata } from '@web3modal/react-native';
+
+export const providerMetadata: IProviderMetadata = {
   name: 'React Native V2 dApp',
   description: 'RN dApp by WalletConnect',
   url: 'https://walletconnect.com/',

@@ -7,13 +7,13 @@ import { ConfigCtrl } from '../controllers/ConfigCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import { AccountCtrl } from '../controllers/AccountCtrl';
 import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
-import type { ProviderMetadata } from '../types/coreTypes';
+import type { IProviderMetadata } from '../types/coreTypes';
 import { createUniversalProvider } from '../utils/ProviderUtil';
 import { removeDeepLinkWallet } from '../utils/StorageUtil';
 
 interface Props {
   projectId: string;
-  providerMetadata: ProviderMetadata;
+  providerMetadata: IProviderMetadata;
   relayUrl?: string;
 }
 
