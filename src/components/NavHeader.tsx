@@ -53,7 +53,11 @@ function NavHeader({
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
           <Image
-            style={[actionIconStyle, actionDisabled && styles.actionDisabled]}
+            style={[
+              styles.actionIcon,
+              actionIconStyle,
+              actionDisabled && styles.actionDisabled,
+            ]}
             source={actionIcon}
           />
         </TouchableOpacity>
@@ -89,6 +93,10 @@ const styles = StyleSheet.create({
   },
   titleDark: {
     color: DarkTheme.foreground1,
+  },
+  actionIcon: {
+    width: 22,
+    height: 22,
   },
   actionDisabled: {
     tintColor: LightTheme.foreground3,
