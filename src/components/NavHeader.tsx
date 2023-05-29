@@ -95,8 +95,8 @@ const styles = StyleSheet.create({
     color: DarkTheme.foreground1,
   },
   actionIcon: {
-    width: 22,
-    height: 22,
+    width: 24,
+    height: 24,
   },
   actionDisabled: {
     tintColor: LightTheme.foreground3,
