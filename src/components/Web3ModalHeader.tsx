@@ -8,7 +8,6 @@ import {
 
 import WCLogo from '../assets/WCLogo.png';
 import Close from '../assets/Close.png';
-import CloseWhite from '../assets/CloseWhite.png';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 
 interface Web3ModalHeaderProps {
@@ -27,8 +26,8 @@ export function Web3ModalHeader({ onClose }: Web3ModalHeaderProps) {
         hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
       >
         <Image
-          style={styles.closeImage}
-          source={isDarkMode ? CloseWhite : Close}
+          style={[styles.closeImage, isDarkMode && styles.closeImageDark]}
+          source={Close}
         />
       </TouchableOpacity>
     </SafeAreaView>
@@ -50,6 +49,10 @@ const styles = StyleSheet.create({
   closeImage: {
     width: 12,
     height: 12,
+    tintColor: 'black',
+  },
+  closeImageDark: {
+    tintColor: 'white',
   },
   closeContainer: {
     height: 28,
