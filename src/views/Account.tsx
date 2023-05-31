@@ -1,70 +1,83 @@
-import { useCallback } from 'react';
 import {
   View,
-  Text,
   Alert,
   TouchableOpacity,
   StyleSheet,
-  useColorScheme,
+  Text,
   Image,
 } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import DisconnectIcon from '../assets/Disconnect.png';
+import CopyIcon from '../assets/Copy.png';
 import { AccountCtrl } from '../controllers/AccountCtrl';
-import { DarkTheme, LightTheme } from '../constants/Colors';
+import { LightTheme } from '../constants/Colors';
 import { ModalCtrl } from '../controllers/ModalCtrl';
-import type { RouterProps } from '../types/routerTypes';
-import NavHeader from '../components/NavHeader';
+import { UiUtil } from '../utils/UiUtil';
+import Web3Text from '../components/Web3Text';
+import type { RouterProps } from 'src/types/routerTypes';
+import Web3Avatar from '../components/Web3Avatar';
+import ConnectionBadge from '../components/ConnectionBadge';
 
-export function Account({ isPortrait, windowHeight }: RouterProps) {
-  const isDarkMode = useColorScheme() === 'dark';
+export function Account({ onCopyClipboard }: RouterProps) {
   const accountState = useSnapshot(AccountCtrl.state);
 
-  const onDisconnect = useCallback(async () => {
+  const onDisconnect = () => {
     try {
       ClientCtrl.provider()?.disconnect();
       ModalCtrl.close();
     } catch (err: unknown) {
       Alert.alert('Error', 'Error disconnecting');
     }
-  }, []);
+  };
+
+  const onCopy = () => {
+    if (onCopyClipboard && accountState.address) {
+      onCopyClipboard(accountState.address);
+    }
+  };
 
   return (
     <>
-      <NavHeader title="Connected Account" />
-      <View
-        style={[
-          styles.container,
-          { height: isPortrait ? windowHeight * 0.3 : windowHeight * 0.6 },
-        ]}
-      >
-        <Text
-          style={[
-            styles.text,
-            {
-              color: isDarkMode
-                ? DarkTheme.foreground1
-                : LightTheme.foreground1,
-            },
-          ]}
-        >
-          Account
-        </Text>
-        <Text
-          style={{
-            color: isDarkMode ? DarkTheme.foreground1 : LightTheme.foreground1,
-          }}
-        >
-          {accountState.address}
-        </Text>
-        <TouchableOpacity onPress={onDisconnect} style={styles.button}>
-          <View style={styles.iconContainer}>
-            <Image source={DisconnectIcon} style={styles.icon} />
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View>
+            <Web3Avatar
+              address={accountState.address ?? ''}
+              style={styles.avatar}
+            />
+            <Web3Text style={styles.address}>
+              {UiUtil.truncate(accountState.address ?? '')}
+            </Web3Text>
           </View>
-          <Text style={styles.buttonText}>Disconnect</Text>
-        </TouchableOpacity>
+          <ConnectionBadge />
+        </View>
+        <View style={styles.footer}>
+          <TouchableOpacity onPress={() => {}} style={styles.button}>
+            <View style={styles.iconContainer}>
+              {/* <Image source={DisconnectIcon} style={styles.icon} /> */}
+            </View>
+            <Text style={styles.buttonText}>chain_name</Text>
+          </TouchableOpacity>
+          {onCopyClipboard && (
+            <TouchableOpacity onPress={onCopy} style={styles.button}>
+              <View style={styles.iconContainer}>
+                <Image source={CopyIcon} style={styles.icon} />
+              </View>
+              <Text style={styles.buttonText}>Copy address</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity onPress={onDisconnect} style={styles.button}>
+            <View style={styles.iconContainer}>
+              <Image
+                source={DisconnectIcon}
+                style={[styles.icon, styles.disconnectIcon]}
+              />
+            </View>
+            <Text style={styles.buttonText}>Disconnect</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </>
   );
@@ -72,31 +85,53 @@ export function Account({ isPortrait, windowHeight }: RouterProps) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    justifyContent: 'space-between',
   },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 30,
+  header: {
+    padding: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  avatar: {
+    height: 70,
+    width: 70,
+    borderRadius: 100,
+    marginBottom: 10,
+  },
+  address: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  footer: {
+    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: LightTheme.accent,
     borderRadius: 100,
-    height: 32,
-    width: 32,
+    height: 36,
+    width: 36,
     marginBottom: 4,
   },
   icon: {
-    height: 15,
+    height: 16,
+    width: 16,
+    tintColor: 'white',
   },
-  text: {
-    fontWeight: 'bold',
+  disconnectIcon: {
+    height: 14,
+  },
+  button: {
+    width: 90,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonText: {
     color: LightTheme.accent,
     fontWeight: '600',
-    fontSize: 12,
+    fontSize: 13,
   },
 });

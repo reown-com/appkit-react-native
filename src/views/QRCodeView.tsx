@@ -20,7 +20,7 @@ function QRCodeView({
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const wcConnectionState = useSnapshot(WcConnectionCtrl.state);
 
-  const copyToClipboard = async () => {
+  const onCopy = async () => {
     if (onCopyClipboard && wcConnectionState.pairingUri) {
       onCopyClipboard(wcConnectionState.pairingUri);
       // Show toast
@@ -49,7 +49,7 @@ function QRCodeView({
         title="Scan the code"
         onBackPress={RouterCtrl.goBack}
         actionIcon={CopyIcon}
-        onActionPress={onCopyClipboard ? copyToClipboard : undefined}
+        onActionPress={onCopyClipboard ? onCopy : undefined}
         actionDisabled={!wcConnectionState.pairingUri}
       />
       {wcConnectionState?.pairingUri ? (
