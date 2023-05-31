@@ -112,17 +112,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: LightTheme.accent,
     borderRadius: 100,
-    height: 36,
-    width: 36,
+    height: 30,
+    width: 30,
     marginBottom: 4,
   },
   icon: {
-    height: 16,
-    width: 16,
+    height: 14,
+    width: 14,
     tintColor: 'white',
   },
   disconnectIcon: {
-    height: 14,
+    height: 13,
   },
   button: {
     width: 90,

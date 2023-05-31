@@ -1,4 +1,4 @@
-import { StyleSheet, useColorScheme, View } from 'react-native';
+import { Platform, StyleSheet, useColorScheme, View } from 'react-native';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import Web3Text from './Web3Text';
 
@@ -22,7 +22,7 @@ function ConnectionBadge() {
 
 const styles = StyleSheet.create({
   container: {
-    height: 30,
+    height: 32,
     width: 108,
     borderRadius: 28,
     backgroundColor: 'gray',
@@ -37,10 +37,18 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     marginRight: 6,
     shadowColor: 'rgba(43, 238, 108, 0.4)',
-    shadowOpacity: 1,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 1 },
-    elevation: 6,
+    ...Platform.select({
+      ios: {
+        shadowOpacity: 1,
+        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 1 },
+      },
+      android: {
+        borderColor: 'rgba(43, 238, 108, 0.4)',
+        borderWidth: 1,
+        elevation: 6,
+      },
+    }),
   },
   text: {
     fontWeight: '600',
