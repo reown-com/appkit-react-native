@@ -52,7 +52,7 @@ function ViewAllBox({ onPress, wallets, style }: Props) {
             <WalletIcon
               key={wallet.id}
               wallet={wallet}
-              style={[styles.icon, { borderColor: LightTheme.overlayThin }]}
+              style={[styles.icon, { borderColor: Theme.overlayThin }]}
             />
           ))}
         </View>
