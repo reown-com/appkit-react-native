@@ -1,13 +1,13 @@
 import {
-  Image,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   useColorScheme,
 } from 'react-native';
+import { SvgXml } from 'react-native-svg';
 
-import WCLogo from '../assets/LogoLockup.png';
-import Close from '../assets/Close.png';
+import WCLogo from '../assets/LogoLockup';
+import CloseIcon from '../assets/Close';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 
 interface Web3ModalHeaderProps {
@@ -19,15 +19,17 @@ export function Web3ModalHeader({ onClose }: Web3ModalHeaderProps) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Image style={styles.wcLogo} source={WCLogo} />
+      <SvgXml xml={WCLogo} width={181} height={28} fill="white" />
       <TouchableOpacity
         style={[styles.closeContainer, { backgroundColor: Theme.background1 }]}
         onPress={onClose}
         hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
       >
-        <Image
-          style={[styles.closeImage, { tintColor: Theme.foreground1 }]}
-          source={Close}
+        <SvgXml
+          xml={CloseIcon}
+          height={12}
+          width={12}
+          fill={Theme.foreground1}
         />
       </TouchableOpacity>
     </SafeAreaView>
@@ -42,16 +44,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginHorizontal: 10,
   },
-  wcLogo: {
-    width: 181,
-    height: 28,
-  },
-  closeImage: {
-    width: 12,
-    height: 12,
-    tintColor: 'black',
-  },
-
   closeContainer: {
     height: 28,
     width: 28,

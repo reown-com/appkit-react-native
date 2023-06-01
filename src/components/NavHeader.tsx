@@ -1,13 +1,13 @@
 import {
-  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
   useColorScheme,
   View,
 } from 'react-native';
+import { SvgXml } from 'react-native-svg';
 
-import Chevron from '../assets/Chevron.png';
+import Chevron from '../assets/Chevron';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 
 interface Props {
@@ -15,7 +15,6 @@ interface Props {
   onBackPress?: () => void;
   onActionPress?: () => void;
   actionIcon?: any;
-  actionIconStyle?: any;
   actionDisabled?: boolean;
 }
 
@@ -24,7 +23,6 @@ function NavHeader({
   onBackPress,
   onActionPress,
   actionIcon,
-  actionIconStyle,
   actionDisabled,
 }: Props) {
   const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
@@ -38,7 +36,7 @@ function NavHeader({
           disabled={actionDisabled}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Image style={styles.backIcon} source={Chevron} />
+          <SvgXml xml={Chevron} height={18} fill={Theme.accent} />
         </TouchableOpacity>
       ) : (
         <View style={styles.button} />
@@ -51,13 +49,11 @@ function NavHeader({
           disabled={actionDisabled}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Image
-            style={[
-              styles.actionIcon,
-              actionIconStyle,
-              actionDisabled && { tintColor: Theme.foreground3 },
-            ]}
-            source={actionIcon}
+          <SvgXml
+            xml={actionIcon}
+            width={22}
+            height={22}
+            fill={actionDisabled ? Theme.foreground3 : Theme.accent}
           />
         </TouchableOpacity>
       ) : (
@@ -80,18 +76,10 @@ const styles = StyleSheet.create({
     height: 24,
     justifyContent: 'center',
   },
-  backIcon: {
-    width: 8,
-    height: 18,
-  },
   title: {
     fontWeight: '600',
     fontSize: 20,
     lineHeight: 24,
-  },
-  actionIcon: {
-    width: 24,
-    height: 24,
   },
 });
 

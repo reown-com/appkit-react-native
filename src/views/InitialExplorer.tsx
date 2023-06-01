@@ -4,7 +4,7 @@ import { useSnapshot } from 'valtio';
 
 import WalletItem from '../components/WalletItem';
 import ViewAllBox from '../components/ViewAllBox';
-import QRIcon from '../assets/QR.png';
+import QRIcon from '../assets/QRCode';
 import NavHeader from '../components/NavHeader';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import type { Listing } from '../types/controllerTypes';
@@ -51,7 +51,6 @@ function InitialExplorer({
         title="Connect your Wallet"
         onActionPress={() => RouterCtrl.push('Qrcode')}
         actionIcon={QRIcon}
-        actionIconStyle={styles.qrIcon}
       />
       {loading ? (
         <ActivityIndicator
@@ -87,10 +86,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  qrIcon: {
-    height: 24,
-    width: 24,
   },
   wallet: {
     width: '25%',

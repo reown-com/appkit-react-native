@@ -1,16 +1,10 @@
-import {
-  View,
-  Alert,
-  TouchableOpacity,
-  StyleSheet,
-  Text,
-  Image,
-} from 'react-native';
+import { View, Alert, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { useSnapshot } from 'valtio';
+import { SvgXml } from 'react-native-svg';
 
 import { ClientCtrl } from '../controllers/ClientCtrl';
-import DisconnectIcon from '../assets/Disconnect.png';
-import CopyIcon from '../assets/Copy.png';
+import DisconnectIcon from '../assets/Disconnect';
+import CopyIcon from '../assets/CopySmall';
 import { AccountCtrl } from '../controllers/AccountCtrl';
 import { LightTheme } from '../constants/Colors';
 import { ModalCtrl } from '../controllers/ModalCtrl';
@@ -57,17 +51,14 @@ export function Account({ onCopyClipboard }: RouterProps) {
           {onCopyClipboard && (
             <TouchableOpacity onPress={onCopy} style={styles.button}>
               <View style={styles.iconContainer}>
-                <Image source={CopyIcon} style={styles.icon} />
+                <SvgXml xml={CopyIcon} height={14} width={14} fill="white" />
               </View>
               <Text style={styles.buttonText}>Copy address</Text>
             </TouchableOpacity>
           )}
           <TouchableOpacity onPress={onDisconnect} style={styles.button}>
             <View style={styles.iconContainer}>
-              <Image
-                source={DisconnectIcon}
-                style={[styles.icon, styles.disconnectIcon]}
-              />
+              <SvgXml xml={DisconnectIcon} width={14} fill="white" />
             </View>
             <Text style={styles.buttonText}>Disconnect</Text>
           </TouchableOpacity>

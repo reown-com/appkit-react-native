@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import { Svg } from 'react-native-svg';
-import { View, Image, StyleSheet } from 'react-native';
+import { Svg, SvgXml } from 'react-native-svg';
+import { View, StyleSheet } from 'react-native';
 
 import { QRCodeUtil } from '../utils/QRCodeUtil';
-import WCIsotype from '../assets/WCIsotype.png';
+import WCLogo from '../assets/WCLogo';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 
 interface Props {
@@ -24,10 +24,11 @@ function QRCode({ uri, size, theme = 'light' }: Props) {
       <Svg height={size} width={size}>
         {dots}
       </Svg>
-      <Image
-        source={WCIsotype}
-        resizeMode="contain"
-        style={[styles.logo, { width: size / 4, tintColor }]}
+      <SvgXml
+        xml={WCLogo}
+        width={size / 4}
+        fill={tintColor}
+        style={styles.logo}
       />
     </View>
   );

@@ -4,7 +4,7 @@ import { useSnapshot } from 'valtio';
 
 import NavHeader from '../components/NavHeader';
 import QRCode from '../components/QRCode';
-import CopyIcon from '../assets/Copy.png';
+import CopyIcon from '../assets/Copy';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
