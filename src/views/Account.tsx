@@ -54,12 +54,6 @@ export function Account({ onCopyClipboard }: RouterProps) {
           <ConnectionBadge />
         </View>
         <View style={styles.footer}>
-          <TouchableOpacity onPress={() => {}} style={styles.button}>
-            <View style={styles.iconContainer}>
-              {/* <Image source={DisconnectIcon} style={styles.icon} /> */}
-            </View>
-            <Text style={styles.buttonText}>chain_name</Text>
-          </TouchableOpacity>
           {onCopyClipboard && (
             <TouchableOpacity onPress={onCopy} style={styles.button}>
               <View style={styles.iconContainer}>
