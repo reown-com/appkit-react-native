@@ -18,7 +18,7 @@ import { Web3ModalRouter } from './Web3ModalRouter';
 import { AccountCtrl } from '../controllers/AccountCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import { useOrientation } from '../hooks/useOrientation';
-import type { ProviderMetadata, SessionParams } from '../types/coreTypes';
+import type { IProviderMetadata, ISessionParams } from '../types/coreTypes';
 import { useConfigure } from '../hooks/useConfigure';
 import { defaultSessionParams } from '../constants/Config';
 import { ConfigCtrl } from '../controllers/ConfigCtrl';
@@ -26,8 +26,8 @@ import { setDeepLinkWallet } from '../utils/StorageUtil';
 
 interface Web3ModalProps {
   projectId: string;
-  providerMetadata: ProviderMetadata;
-  sessionParams?: SessionParams;
+  providerMetadata: IProviderMetadata;
+  sessionParams?: ISessionParams;
   relayUrl?: string;
   onCopyClipboard?: (value: string) => void;
 }

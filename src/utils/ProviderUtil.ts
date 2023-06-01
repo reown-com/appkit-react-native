@@ -1,5 +1,5 @@
 import UniversalProvider from '@walletconnect/universal-provider';
-import type { ProviderMetadata } from '../types/coreTypes';
+import type { IProviderMetadata } from '../types/coreTypes';
 
 export async function createUniversalProvider({
   projectId,
@@ -7,7 +7,7 @@ export async function createUniversalProvider({
   metadata,
 }: {
   projectId: string;
-  metadata: ProviderMetadata;
+  metadata: IProviderMetadata;
   relayUrl?: string;
 }) {
   return UniversalProvider.init({
