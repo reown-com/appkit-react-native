@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   footer: {
     padding: 16,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
   },
   iconContainer: {
     alignItems: 'center',
