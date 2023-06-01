@@ -6,7 +6,7 @@ import {
   useColorScheme,
 } from 'react-native';
 
-import WCLogo from '../assets/WCLogo.png';
+import WCLogo from '../assets/LogoLockup.png';
 import Close from '../assets/Close.png';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 

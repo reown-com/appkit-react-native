@@ -2,16 +2,15 @@ import { useEffect } from 'react';
 import {
   StyleSheet,
   useColorScheme,
-  ImageBackground,
   Alert,
   SafeAreaView,
+  View,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { useSnapshot } from 'valtio';
 import type { SessionTypes } from '@walletconnect/types';
 
 import { DarkTheme, LightTheme } from '../constants/Colors';
-import Background from '../assets/Background.png';
 import Web3ModalHeader from './Web3ModalHeader';
 import { ModalCtrl } from '../controllers/ModalCtrl';
 import { Web3ModalRouter } from './Web3ModalRouter';
@@ -43,6 +42,7 @@ export function Web3Modal({
   const { open } = useSnapshot(ModalCtrl.state);
   const { isConnected } = useSnapshot(AccountCtrl.state);
   const isDarkMode = useColorScheme() === 'dark';
+  const Theme = isDarkMode ? DarkTheme : LightTheme;
   const { width } = useOrientation();
 
   const onSessionCreated = async (session: SessionTypes.Struct) => {
@@ -98,21 +98,19 @@ export function Web3Modal({
       onModalWillShow={onConnect}
       useNativeDriver
     >
-      <ImageBackground
-        style={{ width }}
-        source={Background}
-        imageStyle={styles.wcImage}
+      <View
+        style={[styles.container, { width, backgroundColor: Theme.accent }]}
       >
         <Web3ModalHeader onClose={ModalCtrl.close} />
         <SafeAreaView
           style={[
             styles.connectWalletContainer,
-            isDarkMode && styles.connectWalletContainerDark,
+            { backgroundColor: Theme.background1 },
           ]}
         >
           <Web3ModalRouter onCopyClipboard={onCopyClipboard} />
         </SafeAreaView>
-      </ImageBackground>
+      </View>
     </Modal>
   );
 }
@@ -122,16 +120,12 @@ const styles = StyleSheet.create({
     margin: 0,
     justifyContent: 'flex-end',
   },
-  wcImage: {
+  container: {
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
   connectWalletContainer: {
-    backgroundColor: LightTheme.background1,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-  },
-  connectWalletContainerDark: {
-    backgroundColor: DarkTheme.background1,
   },
 });

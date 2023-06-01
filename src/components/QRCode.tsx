@@ -3,6 +3,7 @@ import { Svg } from 'react-native-svg';
 import { View, Image, StyleSheet } from 'react-native';
 import { QRCodeUtil } from '../utils/QRCodeUtil';
 import WCIsotype from '../assets/WCIsotype.png';
+import { DarkTheme, LightTheme } from '../constants/Colors';
 
 interface Props {
   uri: string;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 function QRCode({ uri, size, theme = 'light' }: Props) {
+  const tintColor = theme === 'light' ? LightTheme.accent : DarkTheme.accent;
   const dots = useMemo(
     () => QRCodeUtil.generate(uri, size, size / 4, theme),
     [uri, size, theme]
@@ -24,7 +26,7 @@ function QRCode({ uri, size, theme = 'light' }: Props) {
       <Image
         source={WCIsotype}
         resizeMode="contain"
-        style={[styles.logo, { width: size / 4 }]}
+        style={[styles.logo, { width: size / 4, tintColor }]}
       />
     </View>
   );
