@@ -4,12 +4,18 @@ import {
   StyleSheet,
   TouchableOpacity,
   useColorScheme,
+  View,
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
+import { useSnapshot } from 'valtio';
 
 import WCLogo from '../assets/LogoLockup';
 import CloseIcon from '../assets/Close';
+import DisconnectIcon from '../assets/Disconnect';
 import { DarkTheme, LightTheme } from '../constants/Colors';
+import { RouterCtrl } from '../controllers/RouterCtrl';
+import { ClientCtrl } from '../controllers/ClientCtrl';
+import { ModalCtrl } from '../controllers/ModalCtrl';
 
 interface Web3ModalHeaderProps {
   onClose: () => void;
@@ -17,22 +23,39 @@ interface Web3ModalHeaderProps {
 
 export function Web3ModalHeader({ onClose }: Web3ModalHeaderProps) {
   const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
+  const routerState = useSnapshot(RouterCtrl.state);
+
+  const onDisconnect = () => {
+    ClientCtrl.provider()?.disconnect();
+    ModalCtrl.close();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <SvgXml xml={WCLogo} width={181} height={28} fill="white" />
-      <TouchableOpacity
-        style={[styles.closeContainer, { backgroundColor: Theme.background1 }]}
-        onPress={onClose}
-        hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
-      >
-        <SvgXml
-          xml={CloseIcon}
-          height={12}
-          width={12}
-          fill={Theme.foreground1}
-        />
-      </TouchableOpacity>
+      <View style={styles.row}>
+        {routerState.view === 'Account' && (
+          <TouchableOpacity
+            style={[
+              styles.buttonContainer,
+              styles.disconnectButton,
+              { backgroundColor: Theme.background1 },
+            ]}
+            onPress={onDisconnect}
+          >
+            <SvgXml xml={DisconnectIcon} height={14} fill={Theme.foreground1} />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          style={[
+            styles.buttonContainer,
+            { backgroundColor: Theme.background1 },
+          ]}
+          onPress={onClose}
+        >
+          <SvgXml xml={CloseIcon} height={11} fill={Theme.foreground1} />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -45,7 +68,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginHorizontal: 10,
   },
-  closeContainer: {
+  row: {
+    flexDirection: 'row',
+  },
+  buttonContainer: {
     height: 28,
     width: 28,
     borderRadius: 14,
@@ -64,6 +90,9 @@ const styles = StyleSheet.create({
         elevation: 4,
       },
     }),
+  },
+  disconnectButton: {
+    marginRight: 16,
   },
 });
 

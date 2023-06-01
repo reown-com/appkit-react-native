@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
       android: {
         borderColor: 'rgba(43, 238, 108, 0.4)',
         borderWidth: 1,
-        elevation: 6,
+        elevation: 2,
       },
     }),
   },
