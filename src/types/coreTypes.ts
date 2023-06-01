@@ -1,8 +1,11 @@
 import type {
   ConnectParams,
   Metadata,
+  IUniversalProvider,
 } from '@walletconnect/universal-provider';
 
-export type ProviderMetadata = Metadata;
+export type IProvider = IUniversalProvider;
 
-export type SessionParams = ConnectParams;
+export type IProviderMetadata = Metadata;
+
+export type ISessionParams = ConnectParams;

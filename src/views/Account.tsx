@@ -89,7 +89,8 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   icon: {
-    height: 15,
+    width: 16,
+    height: 14,
   },
   text: {
     fontWeight: 'bold',
