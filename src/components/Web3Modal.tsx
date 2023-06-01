@@ -41,8 +41,7 @@ export function Web3Modal({
   useConfigure({ projectId, providerMetadata, relayUrl });
   const { open } = useSnapshot(ModalCtrl.state);
   const { isConnected } = useSnapshot(AccountCtrl.state);
-  const isDarkMode = useColorScheme() === 'dark';
-  const Theme = isDarkMode ? DarkTheme : LightTheme;
+  const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
   const { width } = useOrientation();
 
   const onSessionCreated = async (session: SessionTypes.Struct) => {

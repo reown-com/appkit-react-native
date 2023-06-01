@@ -15,18 +15,18 @@ interface Web3ModalHeaderProps {
 }
 
 export function Web3ModalHeader({ onClose }: Web3ModalHeaderProps) {
-  const isDarkMode = useColorScheme() === 'dark';
+  const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
 
   return (
     <SafeAreaView style={styles.container}>
       <Image style={styles.wcLogo} source={WCLogo} />
       <TouchableOpacity
-        style={[styles.closeContainer, isDarkMode && styles.closeContainerDark]}
+        style={[styles.closeContainer, { backgroundColor: Theme.background1 }]}
         onPress={onClose}
         hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
       >
         <Image
-          style={[styles.closeImage, isDarkMode && styles.closeImageDark]}
+          style={[styles.closeImage, { tintColor: Theme.foreground1 }]}
           source={Close}
         />
       </TouchableOpacity>
@@ -51,20 +51,14 @@ const styles = StyleSheet.create({
     height: 12,
     tintColor: 'black',
   },
-  closeImageDark: {
-    tintColor: 'white',
-  },
+
   closeContainer: {
     height: 28,
     width: 28,
-    backgroundColor: LightTheme.background1,
     borderRadius: 14,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  closeContainerDark: {
-    backgroundColor: DarkTheme.background1,
   },
 });
 

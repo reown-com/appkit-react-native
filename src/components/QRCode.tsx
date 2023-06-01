@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Svg } from 'react-native-svg';
 import { View, Image, StyleSheet } from 'react-native';
+
 import { QRCodeUtil } from '../utils/QRCodeUtil';
 import WCIsotype from '../assets/WCIsotype.png';
 import { DarkTheme, LightTheme } from '../constants/Colors';

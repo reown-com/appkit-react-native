@@ -4,12 +4,13 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useColorScheme,
   ViewStyle,
 } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import { ModalCtrl } from '../controllers/ModalCtrl';
-import { LightTheme } from '../constants/Colors';
+import { DarkTheme, LightTheme } from '../constants/Colors';
 import { AccountCtrl } from '../controllers/AccountCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 
@@ -18,13 +19,18 @@ interface Props {
 }
 
 export function Web3Button({ style }: Props) {
+  const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
   const { isConnected } = useSnapshot(AccountCtrl.state);
   const { initialized } = useSnapshot(ClientCtrl.state);
 
   return (
     <TouchableOpacity
       onPress={() => ModalCtrl.open()}
-      style={[styles.container, style]}
+      style={[
+        styles.container,
+        { backgroundColor: Theme.accent, borderColor: Theme.overlayThin },
+        style,
+      ]}
       disabled={!initialized}
     >
       {initialized ? (
@@ -45,12 +51,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: LightTheme.accent,
     borderRadius: 20,
     width: 150,
     height: 50,
     borderWidth: 1,
-    borderColor: LightTheme.overlayThin,
   },
   text: {
     color: 'white',

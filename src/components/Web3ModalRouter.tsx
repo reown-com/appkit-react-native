@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useColorScheme } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import QRCodeView from '../views/QRCodeView';
@@ -8,7 +9,6 @@ import InitialExplorer from '../views/InitialExplorer';
 import { Account } from '../views/Account';
 import { Error } from '../views/Error';
 import { useOrientation } from '../hooks/useOrientation';
-import { useColorScheme } from 'react-native';
 
 interface Props {
   onCopyClipboard?: (value: string) => void;

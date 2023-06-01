@@ -6,6 +6,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+
 import Chevron from '../assets/Chevron.png';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 
@@ -26,7 +27,7 @@ function NavHeader({
   actionIconStyle,
   actionDisabled,
 }: Props) {
-  const isDarkMode = useColorScheme() === 'dark';
+  const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
 
   return (
     <View style={styles.container}>
@@ -42,9 +43,7 @@ function NavHeader({
       ) : (
         <View style={styles.button} />
       )}
-      <Text style={[styles.title, isDarkMode && styles.titleDark]}>
-        {title}
-      </Text>
+      <Text style={[styles.title, { color: Theme.foreground1 }]}>{title}</Text>
       {actionIcon && onActionPress ? (
         <TouchableOpacity
           style={styles.button}
@@ -56,7 +55,7 @@ function NavHeader({
             style={[
               styles.actionIcon,
               actionIconStyle,
-              actionDisabled && styles.actionDisabled,
+              actionDisabled && { tintColor: Theme.foreground3 },
             ]}
             source={actionIcon}
           />
@@ -87,19 +86,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: '600',
-    color: LightTheme.foreground1,
     fontSize: 20,
     lineHeight: 24,
-  },
-  titleDark: {
-    color: DarkTheme.foreground1,
   },
   actionIcon: {
     width: 24,
     height: 24,
-  },
-  actionDisabled: {
-    tintColor: LightTheme.foreground3,
   },
 });
 

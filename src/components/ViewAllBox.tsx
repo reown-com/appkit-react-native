@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   StyleProp,
   ViewStyle,
+  useColorScheme,
+  ImageStyle,
 } from 'react-native';
 
 import { DarkTheme, LightTheme } from '../constants/Colors';
@@ -15,35 +17,49 @@ import { ExplorerUtil } from '../utils/ExplorerUtil';
 interface Props {
   onPress: any;
   wallets: Listing[];
-  isDarkMode: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
-const WalletIcon = ({ wallet }: { wallet: Listing }) => (
+const WalletIcon = ({
+  wallet,
+  style,
+}: {
+  wallet: Listing;
+  style: StyleProp<ImageStyle>;
+}) => (
   <Image
     source={{ uri: ExplorerUtil.getWalletImageUrl(wallet.image_id) }}
-    style={styles.icon}
+    style={style}
   />
 );
 
-function ViewAllBox({ onPress, wallets, style, isDarkMode }: Props) {
+function ViewAllBox({ onPress, wallets, style }: Props) {
+  const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
   return (
     <TouchableOpacity onPress={onPress} style={[styles.container, style]}>
-      <View style={[styles.icons, isDarkMode && styles.iconsDark]}>
+      <View style={[styles.icons, { borderColor: Theme.overlayThin }]}>
         <View style={styles.row}>
           {wallets.slice(0, 2).map((wallet) => (
-            <WalletIcon key={wallet.id} wallet={wallet} />
+            <WalletIcon
+              key={wallet.id}
+              wallet={wallet}
+              style={[styles.icon, { borderColor: Theme.overlayThin }]}
+            />
           ))}
         </View>
         <View style={styles.row}>
           {wallets.slice(2, 4).map((wallet) => (
-            <WalletIcon key={wallet.id} wallet={wallet} />
+            <WalletIcon
+              key={wallet.id}
+              wallet={wallet}
+              style={[styles.icon, { borderColor: LightTheme.overlayThin }]}
+            />
           ))}
         </View>
       </View>
       <View>
         <Text
-          style={[styles.text, isDarkMode && styles.textDark]}
+          style={[styles.text, { color: Theme.foreground1 }]}
           numberOfLines={1}
         >
           View All
@@ -65,12 +81,8 @@ const styles = StyleSheet.create({
     width: 60,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: LightTheme.overlayThin,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  iconsDark: {
-    backgroundColor: DarkTheme.background2,
   },
   icon: {
     height: 23,
@@ -78,20 +90,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 1,
     borderWidth: 1,
-    borderColor: LightTheme.overlayThin,
   },
   row: {
     flexDirection: 'row',
   },
   text: {
-    color: LightTheme.foreground1,
     marginTop: 5,
     maxWidth: 100,
     fontWeight: '600',
     fontSize: 12,
-  },
-  textDark: {
-    color: DarkTheme.foreground1,
   },
 });
 
