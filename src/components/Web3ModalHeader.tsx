@@ -1,4 +1,5 @@
 import {
+  Platform,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
@@ -51,6 +52,18 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: 'rgba(0, 0, 0, 0.12)',
+        shadowOpacity: 1,
+        shadowOffset: { width: 0, height: 4 },
+      },
+      android: {
+        borderColor: 'rgba(0, 0, 0, 0.12)',
+        borderWidth: 1,
+        elevation: 4,
+      },
+    }),
   },
 });
 
