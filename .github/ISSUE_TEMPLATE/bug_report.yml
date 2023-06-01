@@ -30,12 +30,12 @@ body:
       description: Run `npx react-native info` in your terminal, copy and paste the results here.
     validations:
       required: true
-  - type: checkboxes
+  - type: input
     id: expo
     attributes:
-      label: Are you using Expo?
-      options:
-        - label: Im using Expo
+      label: Expo Version (if applies)
+      description: Which SDK version of Expo are you using?
+      placeholder: Expo 48.0.9
   - type: textarea
     id: reproduction
     attributes:
