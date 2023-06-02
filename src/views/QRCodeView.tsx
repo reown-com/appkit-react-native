@@ -38,15 +38,7 @@ function QRCodeView({
   }, [fadeAnim]);
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          opacity: fadeAnim,
-          maxHeight: isPortrait ? windowHeight * 0.9 : windowHeight * 0.8,
-        },
-      ]}
-    >
+    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <NavHeader
         title="Scan the code"
         onBackPress={RouterCtrl.goBack}

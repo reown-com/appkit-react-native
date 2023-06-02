@@ -4,6 +4,7 @@ import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import { useSnapshot } from 'valtio';
 
@@ -44,7 +45,6 @@ function ViewAllExplorer({
     <Animated.View
       style={{
         opacity: fadeAnim,
-        maxHeight: isPortrait ? windowHeight * 0.7 : windowHeight * 0.8,
       }}
     >
       <>
@@ -54,14 +54,15 @@ function ViewAllExplorer({
         />
         {loading ? (
           <ActivityIndicator
-            style={{
-              height: windowHeight * 0.6,
-            }}
+            style={{ height: windowHeight * 0.6 }}
             color={Theme.accent}
           />
         ) : (
           <FlatList
             data={wallets || []}
+            style={{
+              maxHeight: windowHeight * 0.6 - (StatusBar.currentHeight || 0),
+            }}
             contentContainerStyle={styles.listContentContainer}
             indicatorStyle={themeState.themeMode === 'dark' ? 'white' : 'black'}
             showsVerticalScrollIndicator
