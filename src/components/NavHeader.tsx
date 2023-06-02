@@ -1,7 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useSnapshot } from 'valtio';
 
 import useTheme from '../hooks/useTheme';
 import Backward from '../assets/Backward';
+import { RouterCtrl } from '../controllers/RouterCtrl';
 
 interface Props {
   title: string;
@@ -20,10 +22,11 @@ function NavHeader({
 }: Props) {
   const Theme = useTheme();
   const ActionIcon = actionIcon;
+  const routerState = useSnapshot(RouterCtrl.state);
 
   return (
     <View style={styles.container}>
-      {onBackPress ? (
+      {onBackPress && routerState.history.length > 1 ? (
         <TouchableOpacity
           style={styles.button}
           onPress={onBackPress}
