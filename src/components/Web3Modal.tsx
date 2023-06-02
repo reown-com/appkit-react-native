@@ -92,6 +92,7 @@ export function Web3Modal({
       onBackdropPress={ModalCtrl.close}
       onModalWillShow={onConnect}
       useNativeDriver
+      statusBarTranslucent
     >
       <View
         style={[styles.container, { width, backgroundColor: Theme.accent }]}
