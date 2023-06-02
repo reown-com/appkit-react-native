@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useColorScheme } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import QRCodeView from '../views/QRCodeView';
@@ -17,7 +16,6 @@ interface Props {
 export function Web3ModalRouter(props: Props) {
   const routerState = useSnapshot(RouterCtrl.state);
   const { height, width, isPortrait } = useOrientation();
-  const isDarkMode = useColorScheme() === 'dark';
 
   const ViewComponent = useMemo(() => {
     switch (routerState.view) {
@@ -39,7 +37,6 @@ export function Web3ModalRouter(props: Props) {
       windowHeight={height}
       windowWidth={width}
       isPortrait={isPortrait}
-      isDarkMode={isDarkMode}
       {...props}
     />
   );
