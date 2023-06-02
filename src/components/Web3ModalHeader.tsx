@@ -6,7 +6,6 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { SvgXml } from 'react-native-svg';
 import { useSnapshot } from 'valtio';
 
 import WCLogo from '../assets/LogoLockup';
@@ -32,7 +31,7 @@ export function Web3ModalHeader({ onClose }: Web3ModalHeaderProps) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <SvgXml xml={WCLogo} width={181} height={28} fill="white" />
+      <WCLogo width={181} height={28} fill="white" />
       <View style={styles.row}>
         {routerState.view === 'Account' && (
           <TouchableOpacity
@@ -43,7 +42,7 @@ export function Web3ModalHeader({ onClose }: Web3ModalHeaderProps) {
             ]}
             onPress={onDisconnect}
           >
-            <SvgXml xml={DisconnectIcon} height={14} fill={Theme.foreground1} />
+            <DisconnectIcon height={14} fill={Theme.foreground1} />
           </TouchableOpacity>
         )}
         <TouchableOpacity
@@ -53,7 +52,7 @@ export function Web3ModalHeader({ onClose }: Web3ModalHeaderProps) {
           ]}
           onPress={onClose}
         >
-          <SvgXml xml={CloseIcon} height={11} fill={Theme.foreground1} />
+          <CloseIcon height={11} fill={Theme.foreground1} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>

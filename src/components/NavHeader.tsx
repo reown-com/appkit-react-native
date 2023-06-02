@@ -5,9 +5,8 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { SvgXml } from 'react-native-svg';
 
-import Chevron from '../assets/Chevron';
+import Backward from '../assets/Backward';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 
 interface Props {
@@ -26,6 +25,7 @@ function NavHeader({
   actionDisabled,
 }: Props) {
   const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
+  const ActionIcon = actionIcon;
 
   return (
     <View style={styles.container}>
@@ -36,7 +36,7 @@ function NavHeader({
           disabled={actionDisabled}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <SvgXml xml={Chevron} height={18} fill={Theme.accent} />
+          <Backward height={18} width={10} fill={Theme.accent} />
         </TouchableOpacity>
       ) : (
         <View style={styles.button} />
@@ -49,8 +49,7 @@ function NavHeader({
           disabled={actionDisabled}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <SvgXml
-            xml={actionIcon}
+          <ActionIcon
             width={22}
             height={22}
             fill={actionDisabled ? Theme.foreground3 : Theme.accent}

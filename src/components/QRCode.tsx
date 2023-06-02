@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Svg, SvgXml } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 import { View, StyleSheet } from 'react-native';
 
 import { QRCodeUtil } from '../utils/QRCodeUtil';
@@ -24,12 +24,7 @@ function QRCode({ uri, size, theme = 'light' }: Props) {
       <Svg height={size} width={size}>
         {dots}
       </Svg>
-      <SvgXml
-        xml={WCLogo}
-        width={size / 4}
-        fill={tintColor}
-        style={styles.logo}
-      />
+      <WCLogo width={size / 4} fill={tintColor} style={styles.logo} />
     </View>
   );
 }

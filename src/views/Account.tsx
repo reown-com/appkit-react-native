@@ -1,8 +1,7 @@
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSnapshot } from 'valtio';
-import { SvgXml } from 'react-native-svg';
 
-import CopyIcon from '../assets/CopySmall';
+import CopyIcon from '../assets/Copy';
 import { AccountCtrl } from '../controllers/AccountCtrl';
 import { DarkTheme, LightTheme } from '../constants/Colors';
 import { UiUtil } from '../utils/UiUtil';
@@ -36,12 +35,7 @@ export function Account({ onCopyClipboard, isDarkMode }: RouterProps) {
               </Web3Text>
               {onCopyClipboard && (
                 <TouchableOpacity onPress={onCopy} style={styles.button}>
-                  <SvgXml
-                    xml={CopyIcon}
-                    height={14}
-                    width={14}
-                    fill={Theme.foreground3}
-                  />
+                  <CopyIcon height={14} width={14} fill={Theme.foreground3} />
                 </TouchableOpacity>
               )}
             </View>
