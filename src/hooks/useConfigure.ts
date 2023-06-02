@@ -92,7 +92,7 @@ export function useConfigure({ projectId, relayUrl, providerMetadata }: Props) {
           // Check if there is an active session
           if (provider.session) {
             ClientCtrl.setSessionTopic(provider.session.topic);
-            AccountCtrl.getAccount();
+            await AccountCtrl.getAccount();
           }
           ClientCtrl.setInitialized(true);
         }
