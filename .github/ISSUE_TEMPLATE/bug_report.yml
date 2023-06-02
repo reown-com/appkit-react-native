@@ -1,8 +1,8 @@
 
 name: 🐛 Bug Report
 description: Report a reproducible bug or regression in @web3modal/react-native.
-title: "[bug]: "
-labels: ["bug"]
+title: '[bug]: '
+labels: ['bug', 'needs review']
 body:
   - type: markdown
     attributes:
