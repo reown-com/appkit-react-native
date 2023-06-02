@@ -1,5 +1,5 @@
-import { StyleProp, Text, TextStyle, useColorScheme } from 'react-native';
-import { DarkTheme, LightTheme } from '../constants/Colors';
+import { StyleProp, Text, TextStyle } from 'react-native';
+import useTheme from '../hooks/useTheme';
 
 interface Props {
   children: React.ReactNode;
@@ -7,19 +7,8 @@ interface Props {
 }
 
 function Web3Text({ children, style }: Props) {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <Text
-      style={[
-        {
-          color: isDarkMode ? DarkTheme.foreground1 : LightTheme.foreground1,
-        },
-        style,
-      ]}
-    >
-      {children}
-    </Text>
-  );
+  const Theme = useTheme();
+  return <Text style={[{ color: Theme.foreground1 }, style]}>{children}</Text>;
 }
 
 export default Web3Text;

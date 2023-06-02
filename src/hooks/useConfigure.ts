@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { Alert, useColorScheme } from 'react-native';
+import { Alert, Appearance } from 'react-native';
 import { SUBSCRIBER_EVENTS } from '@walletconnect/core';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
@@ -10,16 +10,21 @@ import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
 import type { IProviderMetadata } from '../types/coreTypes';
 import { createUniversalProvider } from '../utils/ProviderUtil';
 import { removeDeepLinkWallet } from '../utils/StorageUtil';
+import { ThemeCtrl } from '../controllers/ThemeCtrl';
 
 interface Props {
   projectId: string;
   providerMetadata: IProviderMetadata;
   relayUrl?: string;
+  themeMode?: 'light' | 'dark';
 }
 
-export function useConfigure({ projectId, relayUrl, providerMetadata }: Props) {
-  const isDarkMode = useColorScheme() === 'dark';
-
+export function useConfigure({
+  projectId,
+  relayUrl,
+  providerMetadata,
+  themeMode,
+}: Props) {
   const resetApp = useCallback(() => {
     ClientCtrl.resetSession();
     AccountCtrl.resetAccount();
@@ -42,9 +47,20 @@ export function useConfigure({ projectId, relayUrl, providerMetadata }: Props) {
     WcConnectionCtrl.setPairingUri(uri);
   }, []);
 
+  /**
+   * Set theme mode
+   */
   useEffect(() => {
-    ConfigCtrl.setThemeMode(isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode]);
+    const themeListener = Appearance.addChangeListener(({ colorScheme }) => {
+      if (!themeMode && colorScheme) ThemeCtrl.setThemeMode(colorScheme);
+    });
+
+    ThemeCtrl.setThemeMode(themeMode);
+
+    return () => {
+      themeListener.remove();
+    };
+  }, [themeMode]);
 
   /**
    * Set config

@@ -8,7 +8,6 @@ import InitialExplorer from '../views/InitialExplorer';
 import { Account } from '../views/Account';
 import { Error } from '../views/Error';
 import { useOrientation } from '../hooks/useOrientation';
-import { useColorScheme } from 'react-native';
 
 interface Props {
   onCopyClipboard?: (value: string) => void;
@@ -17,7 +16,6 @@ interface Props {
 export function Web3ModalRouter(props: Props) {
   const routerState = useSnapshot(RouterCtrl.state);
   const { height, width, isPortrait } = useOrientation();
-  const isDarkMode = useColorScheme() === 'dark';
 
   const ViewComponent = useMemo(() => {
     switch (routerState.view) {
@@ -39,7 +37,6 @@ export function Web3ModalRouter(props: Props) {
       windowHeight={height}
       windowWidth={width}
       isPortrait={isPortrait}
-      isDarkMode={isDarkMode}
       {...props}
     />
   );

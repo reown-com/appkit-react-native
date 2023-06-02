@@ -1,20 +1,13 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from 'react-native';
-import Chevron from '../assets/Chevron.png';
-import { DarkTheme, LightTheme } from '../constants/Colors';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+import useTheme from '../hooks/useTheme';
+import Backward from '../assets/Backward';
 
 interface Props {
   title: string;
   onBackPress?: () => void;
   onActionPress?: () => void;
   actionIcon?: any;
-  actionIconStyle?: any;
   actionDisabled?: boolean;
 }
 
@@ -23,10 +16,10 @@ function NavHeader({
   onBackPress,
   onActionPress,
   actionIcon,
-  actionIconStyle,
   actionDisabled,
 }: Props) {
-  const isDarkMode = useColorScheme() === 'dark';
+  const Theme = useTheme();
+  const ActionIcon = actionIcon;
 
   return (
     <View style={styles.container}>
@@ -37,14 +30,12 @@ function NavHeader({
           disabled={actionDisabled}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Image style={styles.backIcon} source={Chevron} />
+          <Backward height={18} width={10} fill={Theme.accent} />
         </TouchableOpacity>
       ) : (
         <View style={styles.button} />
       )}
-      <Text style={[styles.title, isDarkMode && styles.titleDark]}>
-        {title}
-      </Text>
+      <Text style={[styles.title, { color: Theme.foreground1 }]}>{title}</Text>
       {actionIcon && onActionPress ? (
         <TouchableOpacity
           style={styles.button}
@@ -52,13 +43,10 @@ function NavHeader({
           disabled={actionDisabled}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Image
-            style={[
-              styles.actionIcon,
-              actionIconStyle,
-              actionDisabled && styles.actionDisabled,
-            ]}
-            source={actionIcon}
+          <ActionIcon
+            width={22}
+            height={22}
+            fill={actionDisabled ? Theme.foreground3 : Theme.accent}
           />
         </TouchableOpacity>
       ) : (
@@ -81,25 +69,10 @@ const styles = StyleSheet.create({
     height: 24,
     justifyContent: 'center',
   },
-  backIcon: {
-    width: 8,
-    height: 18,
-  },
   title: {
     fontWeight: '600',
-    color: LightTheme.foreground1,
     fontSize: 20,
     lineHeight: 24,
-  },
-  titleDark: {
-    color: DarkTheme.foreground1,
-  },
-  actionIcon: {
-    width: 24,
-    height: 24,
-  },
-  actionDisabled: {
-    tintColor: LightTheme.foreground3,
   },
 });
 

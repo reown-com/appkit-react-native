@@ -12,7 +12,6 @@ export interface ClientCtrlState {
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigCtrlState {
   projectId: string;
-  themeMode?: 'dark' | 'light';
   recentWalletDeepLink?: string;
 }
 
@@ -41,6 +40,11 @@ export interface WcConnectionCtrlState {
 // -- ExplorerCtrl ------------------------------------------- //
 export interface ExplorerCtrlState {
   wallets: ListingResponse & { page: number };
+}
+
+// -- ThemeCtrl --------------------------------------------- //
+export interface ThemeCtrlState {
+  themeMode: 'dark' | 'light';
 }
 
 export interface ListingParams {

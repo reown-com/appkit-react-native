@@ -4,21 +4,18 @@ import { useSnapshot } from 'valtio';
 
 import WalletItem from '../components/WalletItem';
 import ViewAllBox from '../components/ViewAllBox';
-import QRIcon from '../assets/QR.png';
+import QRIcon from '../assets/QRCode';
 import NavHeader from '../components/NavHeader';
-import { DarkTheme, LightTheme } from '../constants/Colors';
 import type { Listing } from '../types/controllerTypes';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
 import type { RouterProps } from '../types/routerTypes';
+import useTheme from '../hooks/useTheme';
 
-function InitialExplorer({
-  windowHeight,
-  isPortrait,
-  isDarkMode,
-}: RouterProps) {
+function InitialExplorer({ windowHeight, isPortrait }: RouterProps) {
+  const Theme = useTheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const optionsState = useSnapshot(OptionsCtrl.state);
   const wcConnectionState = useSnapshot(WcConnectionCtrl.state);
@@ -48,17 +45,16 @@ function InitialExplorer({
       }}
     >
       <NavHeader
-        title="Connect your Wallet"
+        title="Connect your wallet"
         onActionPress={() => RouterCtrl.push('Qrcode')}
         actionIcon={QRIcon}
-        actionIconStyle={styles.qrIcon}
       />
       {loading ? (
         <ActivityIndicator
           style={{
             height: windowHeight * 0.3,
           }}
-          color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
+          color={Theme.accent}
         />
       ) : (
         <View style={styles.explorerContainer}>
@@ -74,7 +70,6 @@ function InitialExplorer({
             onPress={() => RouterCtrl.push('WalletExplorer')}
             wallets={viewAllWallets}
             style={isPortrait && styles.wallet}
-            isDarkMode={isDarkMode}
           />
         </View>
       )}
@@ -88,10 +83,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  qrIcon: {
-    height: 24,
-    width: 24,
   },
   wallet: {
     width: '25%',

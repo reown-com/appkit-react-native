@@ -3,15 +3,14 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  useColorScheme,
   StyleProp,
   ViewStyle,
 } from 'react-native';
 
 import type { Listing } from '../types/controllerTypes';
-import { DarkTheme, LightTheme } from '../constants/Colors';
 import { ExplorerUtil } from '../utils/ExplorerUtil';
 import { ConfigCtrl } from '../controllers/ConfigCtrl';
+import useTheme from '../hooks/useTheme';
 
 interface Props {
   currentWCURI?: string;
@@ -22,7 +21,7 @@ interface Props {
 export const ITEM_HEIGHT = 80;
 
 function WalletItem({ currentWCURI, walletInfo, style }: Props) {
-  const isDarkMode = useColorScheme() === 'dark';
+  const Theme = useTheme();
 
   const onPress = () => {
     if (currentWCURI) {
@@ -44,11 +43,11 @@ function WalletItem({ currentWCURI, walletInfo, style }: Props) {
       style={[styles.container, style]}
     >
       <Image
-        style={styles.icon}
+        style={[styles.icon, { borderColor: Theme.overlayThin }]}
         source={{ uri: ExplorerUtil.getWalletImageUrl(walletInfo.image_id) }}
       />
       <Text
-        style={[styles.name, isDarkMode && styles.nameDark]}
+        style={[styles.name, { color: Theme.foreground1 }]}
         numberOfLines={1}
       >
         {walletInfo.name}
@@ -69,17 +68,12 @@ const styles = StyleSheet.create({
     width: 60,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: LightTheme.overlayThin,
   },
   name: {
-    color: LightTheme.foreground1,
     marginTop: 5,
     maxWidth: 100,
     fontSize: 12,
     fontWeight: '600',
-  },
-  nameDark: {
-    color: DarkTheme.foreground1,
   },
 });
 

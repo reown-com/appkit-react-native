@@ -1,10 +1,10 @@
-import { Platform, StyleSheet, useColorScheme, View } from 'react-native';
-import { DarkTheme, LightTheme } from '../constants/Colors';
+import { Platform, StyleSheet, View } from 'react-native';
+import useTheme from '../hooks/useTheme';
+
 import Web3Text from './Web3Text';
 
 function ConnectionBadge() {
-  const isDarkMode = useColorScheme() === 'dark';
-  const Theme = isDarkMode ? DarkTheme : LightTheme;
+  const Theme = useTheme();
   return (
     <View
       style={[
@@ -36,9 +36,9 @@ const styles = StyleSheet.create({
     width: 10,
     borderRadius: 100,
     marginRight: 6,
-    shadowColor: 'rgba(43, 238, 108, 0.4)',
     ...Platform.select({
       ios: {
+        shadowColor: 'rgba(43, 238, 108, 0.4)',
         shadowOpacity: 1,
         shadowRadius: 4,
         shadowOffset: { width: 0, height: 1 },
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
       android: {
         borderColor: 'rgba(43, 238, 108, 0.4)',
         borderWidth: 1,
-        elevation: 6,
+        elevation: 2,
       },
     }),
   },

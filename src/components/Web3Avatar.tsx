@@ -1,6 +1,7 @@
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import Svg, { Defs, Circle, RadialGradient, Stop } from 'react-native-svg';
 
+import useTheme from '../hooks/useTheme';
 import { UiUtil } from '../utils/UiUtil';
 
 interface Props {
@@ -9,9 +10,19 @@ interface Props {
 }
 
 function Web3Avatar({ address, style }: Props) {
+  const Theme = useTheme();
   const colors = UiUtil.generateAvatarColors(address);
   return (
-    <View style={[style, { backgroundColor: colors[0] }]}>
+    <View
+      style={[
+        style,
+        {
+          backgroundColor: colors[0],
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: Theme.overlayThick,
+        },
+      ]}
+    >
       <Svg height="100%" width="100%">
         <Defs>
           <RadialGradient

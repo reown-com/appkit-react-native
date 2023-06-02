@@ -4,19 +4,21 @@ import { useSnapshot } from 'valtio';
 
 import NavHeader from '../components/NavHeader';
 import QRCode from '../components/QRCode';
-import CopyIcon from '../assets/Copy.png';
-import { DarkTheme, LightTheme } from '../constants/Colors';
+import CopyIcon from '../assets/CopyLarge';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
 import type { RouterProps } from '../types/routerTypes';
+import { ThemeCtrl } from '../controllers/ThemeCtrl';
+import useTheme from '../hooks/useTheme';
 
 function QRCodeView({
   onCopyClipboard,
   isPortrait,
   windowHeight,
   windowWidth,
-  isDarkMode,
 }: RouterProps) {
+  const Theme = useTheme();
+  const themeState = useSnapshot(ThemeCtrl.state);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const wcConnectionState = useSnapshot(WcConnectionCtrl.state);
 
@@ -56,14 +58,14 @@ function QRCodeView({
         <QRCode
           uri={wcConnectionState.pairingUri}
           size={isPortrait ? windowWidth * 0.9 : windowHeight * 0.6}
-          theme={isDarkMode ? 'dark' : 'light'}
+          theme={themeState.themeMode}
         />
       ) : (
         <ActivityIndicator
           style={{
             height: isPortrait ? windowWidth * 0.9 : windowHeight * 0.6,
           }}
-          color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
+          color={Theme.accent}
         />
       )}
     </Animated.View>
