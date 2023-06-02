@@ -49,7 +49,7 @@ function ViewAllExplorer({
     >
       <>
         <NavHeader
-          title="Connect your Wallet"
+          title="Connect your wallet"
           onBackPress={RouterCtrl.goBack}
         />
         {loading ? (

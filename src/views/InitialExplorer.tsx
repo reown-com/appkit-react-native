@@ -45,7 +45,7 @@ function InitialExplorer({ windowHeight, isPortrait }: RouterProps) {
       }}
     >
       <NavHeader
-        title="Connect your Wallet"
+        title="Connect your wallet"
         onActionPress={() => RouterCtrl.push('Qrcode')}
         actionIcon={QRIcon}
       />
