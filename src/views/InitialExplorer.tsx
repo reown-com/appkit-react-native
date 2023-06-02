@@ -39,11 +39,7 @@ function InitialExplorer({ windowHeight, isPortrait }: RouterProps) {
   }, [fadeAnim]);
 
   return (
-    <Animated.View
-      style={{
-        opacity: fadeAnim,
-      }}
-    >
+    <Animated.View style={{ opacity: fadeAnim }}>
       <NavHeader
         title="Connect your wallet"
         onActionPress={() => RouterCtrl.push('Qrcode')}
@@ -51,9 +47,7 @@ function InitialExplorer({ windowHeight, isPortrait }: RouterProps) {
       />
       {loading ? (
         <ActivityIndicator
-          style={{
-            height: windowHeight * 0.3,
-          }}
+          style={{ height: windowHeight * 0.3 }}
           color={Theme.accent}
         />
       ) : (
