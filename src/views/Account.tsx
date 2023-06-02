@@ -3,15 +3,15 @@ import { useSnapshot } from 'valtio';
 
 import CopyIcon from '../assets/Copy';
 import { AccountCtrl } from '../controllers/AccountCtrl';
-import { DarkTheme, LightTheme } from '../constants/Colors';
 import { UiUtil } from '../utils/UiUtil';
 import Web3Text from '../components/Web3Text';
 import type { RouterProps } from 'src/types/routerTypes';
 import Web3Avatar from '../components/Web3Avatar';
 import ConnectionBadge from '../components/ConnectionBadge';
+import useTheme from '../hooks/useTheme';
 
-export function Account({ onCopyClipboard, isDarkMode }: RouterProps) {
-  const Theme = isDarkMode ? DarkTheme : LightTheme;
+export function Account({ onCopyClipboard }: RouterProps) {
+  const Theme = useTheme();
   const accountState = useSnapshot(AccountCtrl.state);
 
   const onCopy = () => {

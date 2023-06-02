@@ -3,7 +3,6 @@ import {
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
-  useColorScheme,
   View,
 } from 'react-native';
 import { useSnapshot } from 'valtio';
@@ -11,17 +10,17 @@ import { useSnapshot } from 'valtio';
 import WCLogo from '../assets/LogoLockup';
 import CloseIcon from '../assets/Close';
 import DisconnectIcon from '../assets/Disconnect';
-import { DarkTheme, LightTheme } from '../constants/Colors';
 import { RouterCtrl } from '../controllers/RouterCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import { ModalCtrl } from '../controllers/ModalCtrl';
+import useTheme from '../hooks/useTheme';
 
 interface Web3ModalHeaderProps {
   onClose: () => void;
 }
 
 export function Web3ModalHeader({ onClose }: Web3ModalHeaderProps) {
-  const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
+  const Theme = useTheme();
   const routerState = useSnapshot(RouterCtrl.state);
 
   const onDisconnect = () => {

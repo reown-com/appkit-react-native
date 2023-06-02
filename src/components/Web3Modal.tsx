@@ -1,16 +1,9 @@
 import { useEffect } from 'react';
-import {
-  StyleSheet,
-  useColorScheme,
-  Alert,
-  SafeAreaView,
-  View,
-} from 'react-native';
+import { StyleSheet, Alert, SafeAreaView, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { useSnapshot } from 'valtio';
 import type { SessionTypes } from '@walletconnect/types';
 
-import { DarkTheme, LightTheme } from '../constants/Colors';
 import Web3ModalHeader from './Web3ModalHeader';
 import { ModalCtrl } from '../controllers/ModalCtrl';
 import { Web3ModalRouter } from './Web3ModalRouter';
@@ -22,6 +15,7 @@ import { useConfigure } from '../hooks/useConfigure';
 import { defaultSessionParams } from '../constants/Config';
 import { ConfigCtrl } from '../controllers/ConfigCtrl';
 import { setDeepLinkWallet } from '../utils/StorageUtil';
+import useTheme from '../hooks/useTheme';
 
 interface Web3ModalProps {
   projectId: string;
@@ -29,6 +23,7 @@ interface Web3ModalProps {
   sessionParams?: ISessionParams;
   relayUrl?: string;
   onCopyClipboard?: (value: string) => void;
+  themeMode?: 'dark' | 'light';
 }
 
 export function Web3Modal({
@@ -37,12 +32,13 @@ export function Web3Modal({
   sessionParams = defaultSessionParams,
   relayUrl,
   onCopyClipboard,
+  themeMode,
 }: Web3ModalProps) {
-  useConfigure({ projectId, providerMetadata, relayUrl });
+  useConfigure({ projectId, providerMetadata, relayUrl, themeMode });
   const { open } = useSnapshot(ModalCtrl.state);
   const { isConnected } = useSnapshot(AccountCtrl.state);
-  const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
   const { width } = useOrientation();
+  const Theme = useTheme();
 
   const onSessionCreated = async (session: SessionTypes.Struct) => {
     ClientCtrl.setSessionTopic(session.topic);

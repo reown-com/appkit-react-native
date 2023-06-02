@@ -4,22 +4,21 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  useColorScheme,
   ViewStyle,
 } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import { ModalCtrl } from '../controllers/ModalCtrl';
-import { DarkTheme, LightTheme } from '../constants/Colors';
 import { AccountCtrl } from '../controllers/AccountCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
+import useTheme from '../hooks/useTheme';
 
 interface Props {
   style?: StyleProp<ViewStyle>;
 }
 
 export function Web3Button({ style }: Props) {
-  const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
+  const Theme = useTheme();
   const { isConnected } = useSnapshot(AccountCtrl.state);
   const { initialized } = useSnapshot(ClientCtrl.state);
 

@@ -6,11 +6,10 @@ import {
   TouchableOpacity,
   StyleProp,
   ViewStyle,
-  useColorScheme,
   ImageStyle,
 } from 'react-native';
 
-import { DarkTheme, LightTheme } from '../constants/Colors';
+import useTheme from '../hooks/useTheme';
 import type { Listing } from '../types/controllerTypes';
 import { ExplorerUtil } from '../utils/ExplorerUtil';
 
@@ -34,7 +33,7 @@ const WalletIcon = ({
 );
 
 function ViewAllBox({ onPress, wallets, style }: Props) {
-  const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
+  const Theme = useTheme();
   return (
     <TouchableOpacity onPress={onPress} style={[styles.container, style]}>
       <View style={[styles.icons, { borderColor: Theme.overlayThin }]}>

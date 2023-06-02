@@ -3,15 +3,14 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  useColorScheme,
   StyleProp,
   ViewStyle,
 } from 'react-native';
 
 import type { Listing } from '../types/controllerTypes';
-import { DarkTheme, LightTheme } from '../constants/Colors';
 import { ExplorerUtil } from '../utils/ExplorerUtil';
 import { ConfigCtrl } from '../controllers/ConfigCtrl';
+import useTheme from '../hooks/useTheme';
 
 interface Props {
   currentWCURI?: string;
@@ -22,7 +21,7 @@ interface Props {
 export const ITEM_HEIGHT = 80;
 
 function WalletItem({ currentWCURI, walletInfo, style }: Props) {
-  const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
+  const Theme = useTheme();
 
   const onPress = () => {
     if (currentWCURI) {

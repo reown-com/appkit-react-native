@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { useSnapshot } from 'valtio';
 
-import { DarkTheme, LightTheme } from '../constants/Colors';
 import WalletItem, { ITEM_HEIGHT } from '../components/WalletItem';
 import NavHeader from '../components/NavHeader';
 import { RouterCtrl } from '../controllers/RouterCtrl';
@@ -15,16 +14,19 @@ import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
 import type { RouterProps } from '../types/routerTypes';
+import useTheme from '../hooks/useTheme';
+import { ThemeCtrl } from '../controllers/ThemeCtrl';
 
 function ViewAllExplorer({
   isPortrait,
   windowHeight,
   windowWidth,
-  isDarkMode,
 }: RouterProps) {
+  const Theme = useTheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const optionsState = useSnapshot(OptionsCtrl.state);
   const wcConnectionState = useSnapshot(WcConnectionCtrl.state);
+  const themeState = useSnapshot(ThemeCtrl.state);
   const loading = !optionsState.isDataLoaded || !wcConnectionState.pairingUri;
   const wallets = useMemo(() => {
     return ExplorerCtrl.state.wallets.listings;
@@ -55,13 +57,13 @@ function ViewAllExplorer({
             style={{
               height: windowHeight * 0.6,
             }}
-            color={isDarkMode ? LightTheme.accent : DarkTheme.accent}
+            color={Theme.accent}
           />
         ) : (
           <FlatList
             data={wallets || []}
             contentContainerStyle={styles.listContentContainer}
-            indicatorStyle={isDarkMode ? 'white' : 'black'}
+            indicatorStyle={themeState.themeMode === 'dark' ? 'white' : 'black'}
             showsVerticalScrollIndicator
             numColumns={isPortrait ? 4 : 6}
             key={isPortrait ? 'portrait' : 'landscape'}

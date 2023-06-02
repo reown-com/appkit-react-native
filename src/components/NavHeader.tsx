@@ -1,13 +1,7 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import useTheme from '../hooks/useTheme';
 import Backward from '../assets/Backward';
-import { DarkTheme, LightTheme } from '../constants/Colors';
 
 interface Props {
   title: string;
@@ -24,7 +18,7 @@ function NavHeader({
   actionIcon,
   actionDisabled,
 }: Props) {
-  const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
+  const Theme = useTheme();
   const ActionIcon = actionIcon;
 
   return (

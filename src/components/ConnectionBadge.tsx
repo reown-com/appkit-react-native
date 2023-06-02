@@ -1,10 +1,10 @@
-import { Platform, StyleSheet, useColorScheme, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
+import useTheme from '../hooks/useTheme';
 
-import { DarkTheme, LightTheme } from '../constants/Colors';
 import Web3Text from './Web3Text';
 
 function ConnectionBadge() {
-  const Theme = useColorScheme() === 'dark' ? DarkTheme : LightTheme;
+  const Theme = useTheme();
   return (
     <View
       style={[
