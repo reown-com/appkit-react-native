@@ -5,6 +5,7 @@ export default () => ({
     version: '1.0.0',
     orientation: 'default',
     icon: './assets/icon.png',
+    scheme: 'rnweb3modalexpo',
     userInterfaceStyle: 'automatic',
     splash: {
       image: './assets/splash.png',

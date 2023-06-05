@@ -5,6 +5,9 @@ export const providerMetadata: IProviderMetadata = {
   description: 'RN dApp by WalletConnect',
   url: 'https://walletconnect.com/',
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
+  redirect: {
+    native: 'rnweb3modalexpo://',
+  },
 };
 
 export const sessionParams = {

@@ -6,6 +6,11 @@ import type {
 
 export type IProvider = IUniversalProvider;
 
-export type IProviderMetadata = Metadata;
+export interface IProviderMetadata extends Metadata {
+  redirect: {
+    native: string;
+    universal?: string;
+  };
+}
 
 export type ISessionParams = ConnectParams;
