@@ -1,8 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-    - name: 📃 Documentation Issue
-      url: https://github.com/WalletConnect/walletconnect-docs/issues
-      about: Please report documentation issues in the Wallet Connect website repository.
     - name: 🤔 Questions and Help
       url: https://github.com/orgs/WalletConnect/discussions/categories/web3modal-sdk-support
       about: Looking for help with your app? Please refer to the Wallet Connect community's support resources.
