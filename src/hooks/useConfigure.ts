@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { Alert, Appearance } from 'react-native';
+import { Alert, useColorScheme } from 'react-native';
 import { SUBSCRIBER_EVENTS } from '@walletconnect/core';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import { OptionsCtrl } from '../controllers/OptionsCtrl';
@@ -25,6 +25,7 @@ export function useConfigure({
   providerMetadata,
   themeMode,
 }: Props) {
+  const colorScheme = useColorScheme();
   const resetApp = useCallback(() => {
     ClientCtrl.resetSession();
     AccountCtrl.resetAccount();
@@ -51,16 +52,8 @@ export function useConfigure({
    * Set theme mode
    */
   useEffect(() => {
-    const themeListener = Appearance.addChangeListener(({ colorScheme }) => {
-      if (!themeMode && colorScheme) ThemeCtrl.setThemeMode(colorScheme);
-    });
-
-    ThemeCtrl.setThemeMode(themeMode);
-
-    return () => {
-      themeListener.remove();
-    };
-  }, [themeMode]);
+    ThemeCtrl.setThemeMode(themeMode || colorScheme);
+  }, [themeMode, colorScheme]);
 
   /**
    * Set config
