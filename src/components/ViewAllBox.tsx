@@ -6,12 +6,11 @@ import {
   TouchableOpacity,
   StyleProp,
   ViewStyle,
-  ImageStyle,
 } from 'react-native';
 
+import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import useTheme from '../hooks/useTheme';
 import type { Listing } from '../types/controllerTypes';
-import { ExplorerUtil } from '../utils/ExplorerUtil';
 
 interface Props {
   onPress: any;
@@ -19,38 +18,33 @@ interface Props {
   style?: StyleProp<ViewStyle>;
 }
 
-const WalletIcon = ({
-  wallet,
-  style,
-}: {
-  wallet: Listing;
-  style: StyleProp<ImageStyle>;
-}) => (
-  <Image
-    source={{ uri: ExplorerUtil.getWalletImageUrl(wallet.image_id) }}
-    style={style}
-  />
-);
-
 function ViewAllBox({ onPress, wallets, style }: Props) {
   const Theme = useTheme();
+  const imageHeaders = ExplorerCtrl.getExplorerHeaders();
+
   return (
     <TouchableOpacity onPress={onPress} style={[styles.container, style]}>
       <View style={[styles.icons, { borderColor: Theme.overlayThin }]}>
         <View style={styles.row}>
           {wallets.slice(0, 2).map((wallet) => (
-            <WalletIcon
+            <Image
               key={wallet.id}
-              wallet={wallet}
+              source={{
+                uri: ExplorerCtrl.getWalletImageUrl(wallet.image_id),
+                headers: imageHeaders,
+              }}
               style={[styles.icon, { borderColor: Theme.overlayThin }]}
             />
           ))}
         </View>
         <View style={styles.row}>
           {wallets.slice(2, 4).map((wallet) => (
-            <WalletIcon
+            <Image
               key={wallet.id}
-              wallet={wallet}
+              source={{
+                uri: ExplorerCtrl.getWalletImageUrl(wallet.image_id),
+                headers: imageHeaders,
+              }}
               style={[styles.icon, { borderColor: Theme.overlayThin }]}
             />
           ))}

@@ -60,7 +60,8 @@ export function useConfigure({
    */
   useEffect(() => {
     ConfigCtrl.setProjectId(projectId);
-  }, [projectId]);
+    ConfigCtrl.setMetadata(providerMetadata);
+  }, [projectId, providerMetadata]);
 
   /**
    * Fetch wallet list
