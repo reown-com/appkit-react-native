@@ -20,7 +20,6 @@ interface Props {
 
 function ViewAllBox({ onPress, wallets, style }: Props) {
   const Theme = useTheme();
-  const imageHeaders = ExplorerCtrl.getExplorerHeaders();
 
   return (
     <TouchableOpacity onPress={onPress} style={[styles.container, style]}>
@@ -29,10 +28,7 @@ function ViewAllBox({ onPress, wallets, style }: Props) {
           {wallets.slice(0, 2).map((wallet) => (
             <Image
               key={wallet.id}
-              source={{
-                uri: ExplorerCtrl.getWalletImageUrl(wallet.image_id),
-                headers: imageHeaders,
-              }}
+              source={{ uri: ExplorerCtrl.getWalletImageUrl(wallet.image_id) }}
               style={[styles.icon, { borderColor: Theme.overlayThin }]}
             />
           ))}
@@ -41,10 +37,7 @@ function ViewAllBox({ onPress, wallets, style }: Props) {
           {wallets.slice(2, 4).map((wallet) => (
             <Image
               key={wallet.id}
-              source={{
-                uri: ExplorerCtrl.getWalletImageUrl(wallet.image_id),
-                headers: imageHeaders,
-              }}
+              source={{ uri: ExplorerCtrl.getWalletImageUrl(wallet.image_id) }}
               style={[styles.icon, { borderColor: Theme.overlayThin }]}
             />
           ))}

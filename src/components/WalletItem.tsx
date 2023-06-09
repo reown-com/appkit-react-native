@@ -47,7 +47,6 @@ function WalletItem({ currentWCURI, walletInfo, style }: Props) {
         style={[styles.icon, { borderColor: Theme.overlayThin }]}
         source={{
           uri: ExplorerCtrl.getWalletImageUrl(walletInfo.image_id),
-          headers: ExplorerCtrl.getExplorerHeaders(),
         }}
       />
       <Text

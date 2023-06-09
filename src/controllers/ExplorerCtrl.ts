@@ -27,8 +27,4 @@ export const ExplorerCtrl = {
   getAssetImageUrl(imageId: string) {
     return ExplorerUtil.getAssetImageUrl(imageId);
   },
-
-  getExplorerHeaders() {
-    return ExplorerUtil.getCustomHeaders();
-  },
 };
