@@ -9,6 +9,7 @@ import type { RouterProps } from 'src/types/routerTypes';
 import Web3Avatar from '../components/Web3Avatar';
 import ConnectionBadge from '../components/ConnectionBadge';
 import useTheme from '../hooks/useTheme';
+import { ToastCtrl } from '../controllers/ToastCtrl';
 
 export function Account({ onCopyClipboard }: RouterProps) {
   const Theme = useTheme();
@@ -17,6 +18,7 @@ export function Account({ onCopyClipboard }: RouterProps) {
   const onCopy = () => {
     if (onCopyClipboard && accountState.address) {
       onCopyClipboard(accountState.address);
+      ToastCtrl.openToast('Address copied', 'success');
     }
   };
 

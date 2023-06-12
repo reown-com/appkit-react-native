@@ -47,6 +47,13 @@ export interface ThemeCtrlState {
   themeMode: 'dark' | 'light';
 }
 
+// -- ToastCtrl ------------------------------------------ //
+export interface ToastCtrlState {
+  open: boolean;
+  message: string;
+  variant: 'error' | 'success';
+}
+
 export interface ListingParams {
   page?: number;
   search?: string;
