@@ -3,7 +3,6 @@ import {
   StyleProp,
   StyleSheet,
   Text,
-  TouchableOpacity,
   ViewStyle,
 } from 'react-native';
 import { useSnapshot } from 'valtio';
@@ -12,6 +11,7 @@ import { ModalCtrl } from '../controllers/ModalCtrl';
 import { AccountCtrl } from '../controllers/AccountCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import useTheme from '../hooks/useTheme';
+import Touchable from './Touchable';
 
 interface Props {
   style?: StyleProp<ViewStyle>;
@@ -23,7 +23,7 @@ export function Web3Button({ style }: Props) {
   const { initialized } = useSnapshot(ClientCtrl.state);
 
   return (
-    <TouchableOpacity
+    <Touchable
       onPress={() => ModalCtrl.open()}
       style={[
         styles.container,
@@ -41,7 +41,7 @@ export function Web3Button({ style }: Props) {
       ) : (
         <ActivityIndicator color="white" />
       )}
-    </TouchableOpacity>
+    </Touchable>
   );
 }
 

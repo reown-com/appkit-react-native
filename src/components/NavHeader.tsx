@@ -1,16 +1,10 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-  StyleProp,
-} from 'react-native';
+import { StyleSheet, Text, View, ViewStyle, StyleProp } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import useTheme from '../hooks/useTheme';
 import Backward from '../assets/Backward';
 import { RouterCtrl } from '../controllers/RouterCtrl';
+import Touchable from './Touchable';
 
 interface Props {
   title: string;
@@ -35,27 +29,27 @@ function NavHeader({
   return (
     <View style={styles.container}>
       {onBackPress && routerState.history.length > 1 ? (
-        <TouchableOpacity
+        <Touchable
           style={styles.button}
           onPress={onBackPress}
           disabled={actionDisabled}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
           <Backward height={18} width={10} fill={Theme.accent} />
-        </TouchableOpacity>
+        </Touchable>
       ) : (
         <View style={styles.button} />
       )}
       <Text style={[styles.title, { color: Theme.foreground1 }]}>{title}</Text>
       {actionIcon && onActionPress ? (
-        <TouchableOpacity
+        <Touchable
           style={[styles.button, actionStyle]}
           onPress={onActionPress}
           disabled={actionDisabled}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
           {actionIcon}
-        </TouchableOpacity>
+        </Touchable>
       ) : (
         <View style={styles.button} />
       )}

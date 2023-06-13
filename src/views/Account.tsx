@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import CopyIcon from '../assets/Copy';
@@ -10,6 +10,7 @@ import Web3Avatar from '../components/Web3Avatar';
 import ConnectionBadge from '../components/ConnectionBadge';
 import useTheme from '../hooks/useTheme';
 import { ToastCtrl } from '../controllers/ToastCtrl';
+import Touchable from '../components/Touchable';
 
 export function Account({ onCopyClipboard }: RouterProps) {
   const Theme = useTheme();
@@ -35,9 +36,9 @@ export function Account({ onCopyClipboard }: RouterProps) {
               {UiUtil.truncate(accountState.address ?? '')}
             </Web3Text>
             {onCopyClipboard && (
-              <TouchableOpacity onPress={onCopy} style={styles.button}>
+              <Touchable onPress={onCopy} style={styles.button}>
                 <CopyIcon height={14} width={14} fill={Theme.foreground3} />
-              </TouchableOpacity>
+              </Touchable>
             )}
           </View>
         </View>
