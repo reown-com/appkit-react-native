@@ -46,7 +46,9 @@ function ModalToast() {
       ]}
     >
       <Icon width={16} fill={iconColor} style={styles.icon} />
-      <Web3Text numberOfLines={1}>{message}</Web3Text>
+      <Web3Text style={styles.text} numberOfLines={1}>
+        {message}
+      </Web3Text>
     </Animated.View>
   ) : null;
 }
@@ -58,6 +60,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20,
     padding: 9,
+    paddingHorizontal: 16,
     marginHorizontal: 16,
     bottom: 25,
     alignSelf: 'center',
@@ -78,6 +81,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 6,
+  },
+  text: {
+    fontWeight: '600',
   },
 });
 
