@@ -43,7 +43,7 @@ function InitialExplorer({ windowHeight, isPortrait }: RouterProps) {
       <NavHeader
         title="Connect your wallet"
         onActionPress={() => RouterCtrl.push('Qrcode')}
-        actionIcon={QRIcon}
+        actionIcon={<QRIcon width={22} height={22} fill={Theme.accent} />}
       />
       {loading ? (
         <ActivityIndicator

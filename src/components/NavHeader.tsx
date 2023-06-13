@@ -1,4 +1,11 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+  StyleProp,
+} from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import useTheme from '../hooks/useTheme';
@@ -9,8 +16,9 @@ interface Props {
   title: string;
   onBackPress?: () => void;
   onActionPress?: () => void;
-  actionIcon?: any;
+  actionIcon?: React.ReactNode;
   actionDisabled?: boolean;
+  actionStyle?: StyleProp<ViewStyle>;
 }
 
 function NavHeader({
@@ -19,9 +27,9 @@ function NavHeader({
   onActionPress,
   actionIcon,
   actionDisabled,
+  actionStyle,
 }: Props) {
   const Theme = useTheme();
-  const ActionIcon = actionIcon;
   const routerState = useSnapshot(RouterCtrl.state);
 
   return (
@@ -41,16 +49,12 @@ function NavHeader({
       <Text style={[styles.title, { color: Theme.foreground1 }]}>{title}</Text>
       {actionIcon && onActionPress ? (
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, actionStyle]}
           onPress={onActionPress}
           disabled={actionDisabled}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <ActionIcon
-            width={22}
-            height={22}
-            fill={actionDisabled ? Theme.foreground3 : Theme.accent}
-          />
+          {actionIcon}
         </TouchableOpacity>
       ) : (
         <View style={styles.button} />
@@ -71,6 +75,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontWeight: '600',
