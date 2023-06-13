@@ -1,5 +1,6 @@
 import { proxy } from 'valtio';
 
+import { UiUtil } from '../utils/UiUtil';
 import type { RouterCtrlState } from '../types/controllerTypes';
 
 // -- initial state ------------------------------------------------ //
@@ -14,6 +15,7 @@ export const RouterCtrl = {
 
   push(view: RouterCtrlState['view']) {
     if (view !== state.view) {
+      UiUtil.layoutAnimation();
       state.view = view;
       state.history.push(view);
     }
@@ -26,6 +28,7 @@ export const RouterCtrl = {
 
   goBack() {
     if (state.history.length > 1) {
+      UiUtil.layoutAnimation();
       state.history.pop();
       const [last] = state.history.slice(-1);
       state.view = last || 'ConnectWallet';

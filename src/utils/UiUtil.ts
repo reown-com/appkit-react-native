@@ -1,3 +1,5 @@
+import { LayoutAnimation } from 'react-native';
+
 export const UiUtil = {
   truncate(value: string, strLen = 8) {
     if (value.length <= strLen) {
@@ -31,5 +33,10 @@ export const UiUtil = {
     });
 
     return colors;
+  },
+  layoutAnimation() {
+    return LayoutAnimation.configureNext(
+      LayoutAnimation.create(200, 'easeInEaseOut', 'opacity')
+    );
   },
 };

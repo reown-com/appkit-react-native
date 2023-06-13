@@ -23,29 +23,27 @@ export function Account({ onCopyClipboard }: RouterProps) {
   };
 
   return (
-    <>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View>
-            <Web3Avatar
-              address={accountState.address ?? ''}
-              style={styles.avatar}
-            />
-            <View style={styles.row}>
-              <Web3Text style={styles.address}>
-                {UiUtil.truncate(accountState.address ?? '')}
-              </Web3Text>
-              {onCopyClipboard && (
-                <TouchableOpacity onPress={onCopy} style={styles.button}>
-                  <CopyIcon height={14} width={14} fill={Theme.foreground3} />
-                </TouchableOpacity>
-              )}
-            </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <View>
+          <Web3Avatar
+            address={accountState.address ?? ''}
+            style={styles.avatar}
+          />
+          <View style={styles.row}>
+            <Web3Text style={styles.address}>
+              {UiUtil.truncate(accountState.address ?? '')}
+            </Web3Text>
+            {onCopyClipboard && (
+              <TouchableOpacity onPress={onCopy} style={styles.button}>
+                <CopyIcon height={14} width={14} fill={Theme.foreground3} />
+              </TouchableOpacity>
+            )}
           </View>
-          <ConnectionBadge />
         </View>
+        <ConnectionBadge />
       </View>
-    </>
+    </View>
   );
 }
 

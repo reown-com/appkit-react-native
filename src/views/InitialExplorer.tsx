@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef } from 'react';
-import { StyleSheet, View, Animated, ActivityIndicator } from 'react-native';
+import { useEffect, useMemo } from 'react';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import WalletItem from '../components/WalletItem';
@@ -13,14 +13,22 @@ import { OptionsCtrl } from '../controllers/OptionsCtrl';
 import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
 import type { RouterProps } from '../types/routerTypes';
 import useTheme from '../hooks/useTheme';
+import { UiUtil } from '../utils/UiUtil';
 
 function InitialExplorer({ windowHeight, isPortrait }: RouterProps) {
   const Theme = useTheme();
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const optionsState = useSnapshot(OptionsCtrl.state);
-  const wcConnectionState = useSnapshot(WcConnectionCtrl.state);
+  const { isDataLoaded } = useSnapshot(OptionsCtrl.state);
+  const { pairingUri } = useSnapshot(WcConnectionCtrl.state);
+  const loading = useMemo(
+    () => !isDataLoaded || !pairingUri,
+    [isDataLoaded, pairingUri]
+  );
 
-  const loading = !optionsState.isDataLoaded || !wcConnectionState.pairingUri;
+  useEffect(() => {
+    if (!loading) {
+      UiUtil.layoutAnimation();
+    }
+  }, [loading]);
 
   const wallets = useMemo(() => {
     return ExplorerCtrl.state.wallets.listings.slice(0, 7);
@@ -30,16 +38,8 @@ function InitialExplorer({ windowHeight, isPortrait }: RouterProps) {
     return ExplorerCtrl.state.wallets.listings.slice(7, 11);
   }, []);
 
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, [fadeAnim]);
-
   return (
-    <Animated.View style={{ opacity: fadeAnim }}>
+    <>
       <NavHeader
         title="Connect your wallet"
         onActionPress={() => RouterCtrl.push('Qrcode')}
@@ -56,7 +56,7 @@ function InitialExplorer({ windowHeight, isPortrait }: RouterProps) {
             <WalletItem
               walletInfo={item}
               key={item.id}
-              currentWCURI={wcConnectionState.pairingUri}
+              currentWCURI={pairingUri}
               style={isPortrait && styles.wallet}
             />
           ))}
@@ -67,7 +67,7 @@ function InitialExplorer({ windowHeight, isPortrait }: RouterProps) {
           />
         </View>
       )}
-    </Animated.View>
+    </>
   );
 }
 

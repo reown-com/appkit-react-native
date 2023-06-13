@@ -1,5 +1,4 @@
-import { useEffect, useRef } from 'react';
-import { ActivityIndicator, Animated, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import NavHeader from '../components/NavHeader';
@@ -20,36 +19,27 @@ function QRCodeView({
 }: RouterProps) {
   const Theme = useTheme();
   const themeState = useSnapshot(ThemeCtrl.state);
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const wcConnectionState = useSnapshot(WcConnectionCtrl.state);
+  const { pairingUri } = useSnapshot(WcConnectionCtrl.state);
 
   const onCopy = async () => {
-    if (onCopyClipboard && wcConnectionState.pairingUri) {
-      onCopyClipboard(wcConnectionState.pairingUri);
+    if (onCopyClipboard && pairingUri) {
+      onCopyClipboard(pairingUri);
       ToastCtrl.openToast('Link copied', 'success');
     }
   };
 
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, [fadeAnim]);
-
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+    <View style={[styles.container]}>
       <NavHeader
         title="Scan the code"
         onBackPress={RouterCtrl.goBack}
         actionIcon={CopyIcon}
         onActionPress={onCopyClipboard ? onCopy : undefined}
-        actionDisabled={!wcConnectionState.pairingUri}
+        actionDisabled={!pairingUri}
       />
-      {wcConnectionState?.pairingUri ? (
+      {pairingUri ? (
         <QRCode
-          uri={wcConnectionState.pairingUri}
+          uri={pairingUri}
           size={isPortrait ? windowWidth * 0.9 : windowHeight * 0.6}
           theme={themeState.themeMode}
         />
@@ -61,7 +51,7 @@ function QRCodeView({
           color={Theme.accent}
         />
       )}
-    </Animated.View>
+    </View>
   );
 }
 
