@@ -1,10 +1,11 @@
-import { Alert, Linking, Platform } from 'react-native';
-
+import { Linking, Platform } from 'react-native';
 import { version } from '../../package.json';
 import { version as providerVersion } from '@walletconnect/universal-provider/package.json';
+
 import type { ListingParams, ListingResponse } from '../types/controllerTypes';
 import { CoreUtil } from './CoreUtil';
 import { ConfigCtrl } from '../controllers/ConfigCtrl';
+import { ToastCtrl } from '../controllers/ToastCtrl';
 
 // -- Helpers -------------------------------------------------------
 const W3M_API = 'https://explorer-api.walletconnect.com';
@@ -69,16 +70,16 @@ export const ExplorerUtil = {
           if (universalUrl) {
             Linking.openURL(universalUrl);
           } else {
-            throw new Error('No valid link found for this wallet');
+            ToastCtrl.openToast('Unable to open the Wallet', 'error');
           }
         });
       } else if (universalUrl) {
         await Linking.openURL(universalUrl);
       } else {
-        throw new Error('No valid link found for this wallet');
+        ToastCtrl.openToast('Unable to open the Wallet', 'error');
       }
     } catch (error) {
-      Alert.alert(`Unable to open the app`);
+      ToastCtrl.openToast('Unable to open the Wallet', 'error');
     }
   },
   getCustomHeaders() {

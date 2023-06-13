@@ -10,6 +10,7 @@ import { WcConnectionCtrl } from '../controllers/WcConnectionCtrl';
 import type { RouterProps } from '../types/routerTypes';
 import { ThemeCtrl } from '../controllers/ThemeCtrl';
 import useTheme from '../hooks/useTheme';
+import { ToastCtrl } from '../controllers/ToastCtrl';
 
 function QRCodeView({
   onCopyClipboard,
@@ -25,7 +26,7 @@ function QRCodeView({
   const onCopy = async () => {
     if (onCopyClipboard && wcConnectionState.pairingUri) {
       onCopyClipboard(wcConnectionState.pairingUri);
-      // Show toast
+      ToastCtrl.openToast('Link copied', 'success');
     }
   };
 

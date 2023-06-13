@@ -9,6 +9,7 @@ import { ModalCtrl } from '../controllers/ModalCtrl';
 import { Web3ModalRouter } from './Web3ModalRouter';
 import { AccountCtrl } from '../controllers/AccountCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
+import { ToastCtrl } from '../controllers/ToastCtrl';
 import { useOrientation } from '../hooks/useOrientation';
 import type { IProviderMetadata, ISessionParams } from '../types/coreTypes';
 import { useConfigure } from '../hooks/useConfigure';
@@ -16,6 +17,7 @@ import { defaultSessionParams } from '../constants/Config';
 import { ConfigCtrl } from '../controllers/ConfigCtrl';
 import { setDeepLinkWallet } from '../utils/StorageUtil';
 import useTheme from '../hooks/useTheme';
+import ModalToast from './ModalToast';
 
 interface Web3ModalProps {
   projectId: string;
@@ -51,14 +53,14 @@ export function Web3Modal({
       AccountCtrl.getAccount();
       ModalCtrl.close();
     } catch (error) {
-      Alert.alert('Error', 'Error setting deep link wallet');
+      ToastCtrl.openToast("Couldn't save deeplink", 'error');
     }
   };
 
   const onSessionError = async () => {
     ConfigCtrl.setRecentWalletDeepLink(undefined);
     ModalCtrl.close();
-    Alert.alert('Error', 'Error with session');
+    ToastCtrl.openToast('Unable to create the session', 'error');
   };
 
   const onConnect = async () => {
@@ -79,7 +81,7 @@ export function Web3Modal({
 
   useEffect(() => {
     if (!projectId) {
-      Alert.alert('Error', 'Please provide a projectId');
+      Alert.alert('Error', 'projectId not found');
     }
   }, [projectId]);
 
@@ -105,6 +107,7 @@ export function Web3Modal({
           ]}
         >
           <Web3ModalRouter onCopyClipboard={onCopyClipboard} />
+          <ModalToast />
         </SafeAreaView>
       </View>
     </Modal>

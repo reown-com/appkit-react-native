@@ -107,7 +107,7 @@ export function useConfigure({
           ClientCtrl.setInitialized(true);
         }
       } catch (error) {
-        Alert.alert('Error', 'Error initializing provider');
+        Alert.alert('Error', 'Error initializing SDK');
       }
     }
     if (!ClientCtrl.provider() && projectId && providerMetadata) {
