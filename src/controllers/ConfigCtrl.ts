@@ -6,6 +6,7 @@ import type { ConfigCtrlState } from '../types/controllerTypes';
 const state = proxy<ConfigCtrlState>({
   projectId: '',
   recentWalletDeepLink: undefined,
+  metadata: undefined,
 });
 
 // -- controller --------------------------------------------------- //
@@ -18,12 +19,25 @@ export const ConfigCtrl = {
     }
   },
 
+  setMetadata(metadata: ConfigCtrlState['metadata']) {
+    if (metadata && state.metadata !== metadata) {
+      state.metadata = metadata;
+    }
+  },
+
   setRecentWalletDeepLink(deepLink?: string) {
     state.recentWalletDeepLink = deepLink;
   },
 
   getRecentWalletDeepLink() {
     return state.recentWalletDeepLink;
+  },
+
+  getMetadata() {
+    if (!state.metadata) {
+      throw new Error('Metadata not set');
+    }
+    return state.metadata;
   },
 
   resetConfig() {

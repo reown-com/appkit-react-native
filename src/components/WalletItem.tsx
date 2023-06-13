@@ -11,6 +11,7 @@ import type { Listing } from '../types/controllerTypes';
 import { ExplorerUtil } from '../utils/ExplorerUtil';
 import { ConfigCtrl } from '../controllers/ConfigCtrl';
 import useTheme from '../hooks/useTheme';
+import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 
 interface Props {
   currentWCURI?: string;
@@ -44,7 +45,9 @@ function WalletItem({ currentWCURI, walletInfo, style }: Props) {
     >
       <Image
         style={[styles.icon, { borderColor: Theme.overlayThin }]}
-        source={{ uri: ExplorerUtil.getWalletImageUrl(walletInfo.image_id) }}
+        source={{
+          uri: ExplorerCtrl.getWalletImageUrl(walletInfo.image_id),
+        }}
       />
       <Text
         style={[styles.name, { color: Theme.foreground1 }]}
