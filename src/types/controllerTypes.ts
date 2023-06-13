@@ -1,10 +1,10 @@
-import type { IUniversalProvider } from '@walletconnect/universal-provider';
 import type { ethers } from 'ethers';
+import type { IProviderMetadata, IProvider } from './coreTypes';
 
 // -- ClientCtrl ------------------------------------------- //
 export interface ClientCtrlState {
   initialized: boolean;
-  provider?: IUniversalProvider;
+  provider?: IProvider;
   web3Provider?: ethers.providers.Web3Provider;
   sessionTopic?: string;
 }
@@ -13,6 +13,7 @@ export interface ClientCtrlState {
 export interface ConfigCtrlState {
   projectId: string;
   recentWalletDeepLink?: string;
+  metadata?: IProviderMetadata;
 }
 
 // -- ModalCtrl --------------------------------------- //
