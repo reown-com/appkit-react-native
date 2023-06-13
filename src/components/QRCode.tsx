@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { Svg } from 'react-native-svg';
 import { View, StyleSheet } from 'react-native';
 
@@ -39,4 +39,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default QRCode;
+export default memo(QRCode);

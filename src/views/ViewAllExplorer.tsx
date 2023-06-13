@@ -36,14 +36,15 @@ function ViewAllExplorer({
       <NavHeader title="Connect your wallet" onBackPress={RouterCtrl.goBack} />
       {loading ? (
         <ActivityIndicator
-          style={{ height: windowHeight * 0.6 }}
+          style={{ height: Math.round(windowHeight * 0.6) }}
           color={Theme.accent}
         />
       ) : (
         <FlatList
           data={wallets || []}
           style={{
-            maxHeight: windowHeight * 0.6 - (StatusBar.currentHeight || 0),
+            maxHeight:
+              Math.round(windowHeight * 0.6) - (StatusBar.currentHeight || 0),
           }}
           contentContainerStyle={styles.listContentContainer}
           indicatorStyle={themeState.themeMode === 'dark' ? 'white' : 'black'}
@@ -60,7 +61,9 @@ function ViewAllExplorer({
               currentWCURI={wcConnectionState.pairingUri}
               walletInfo={item}
               style={{
-                width: isPortrait ? windowWidth / 4 : windowWidth / 7,
+                width: isPortrait
+                  ? Math.round(windowWidth / 4)
+                  : Math.round(windowWidth / 7),
               }}
             />
           )}

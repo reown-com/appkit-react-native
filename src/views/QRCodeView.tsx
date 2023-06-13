@@ -18,6 +18,9 @@ function QRCodeView({
   windowWidth,
 }: RouterProps) {
   const Theme = useTheme();
+  const QRSize = isPortrait
+    ? Math.round(windowWidth * 0.9)
+    : Math.round(windowHeight * 0.6);
   const themeState = useSnapshot(ThemeCtrl.state);
   const { pairingUri } = useSnapshot(WcConnectionCtrl.state);
 
@@ -38,15 +41,11 @@ function QRCodeView({
         actionDisabled={!pairingUri}
       />
       {pairingUri ? (
-        <QRCode
-          uri={pairingUri}
-          size={isPortrait ? windowWidth * 0.9 : windowHeight * 0.6}
-          theme={themeState.themeMode}
-        />
+        <QRCode uri={pairingUri} size={QRSize} theme={themeState.themeMode} />
       ) : (
         <ActivityIndicator
           style={{
-            height: isPortrait ? windowWidth * 0.9 : windowHeight * 0.6,
+            height: QRSize,
           }}
           color={Theme.accent}
         />
@@ -58,6 +57,7 @@ function QRCodeView({
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 12,
+    width: '100%',
   },
 });
 

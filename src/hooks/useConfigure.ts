@@ -11,6 +11,7 @@ import type { IProviderMetadata } from '../types/coreTypes';
 import { createUniversalProvider } from '../utils/ProviderUtil';
 import { removeDeepLinkWallet } from '../utils/StorageUtil';
 import { ThemeCtrl } from '../controllers/ThemeCtrl';
+import { ToastCtrl } from '../controllers/ToastCtrl';
 
 interface Props {
   projectId: string;
@@ -74,7 +75,7 @@ export function useConfigure({
           OptionsCtrl.setIsDataLoaded(true);
         }
       } catch (error) {
-        Alert.alert('Error', 'Error fetching wallets');
+        ToastCtrl.openToast('Network error', 'error');
       }
     }
     fetchWallets();
@@ -107,7 +108,7 @@ export function useConfigure({
           ClientCtrl.setInitialized(true);
         }
       } catch (error) {
-        Alert.alert('Error', 'Error initializing SDK');
+        Alert.alert('Error', 'Error initializing WalletConnect SDK');
       }
     }
     if (!ClientCtrl.provider() && projectId && providerMetadata) {

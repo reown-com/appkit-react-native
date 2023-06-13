@@ -47,7 +47,7 @@ function InitialExplorer({ windowHeight, isPortrait }: RouterProps) {
       />
       {loading ? (
         <ActivityIndicator
-          style={{ height: windowHeight * 0.3 }}
+          style={{ height: Math.round(windowHeight * 0.3) }}
           color={Theme.accent}
         />
       ) : (
