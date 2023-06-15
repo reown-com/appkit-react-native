@@ -1,5 +1,4 @@
-import { useEffect, useRef } from 'react';
-import { ActivityIndicator, Animated, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import NavHeader from '../components/NavHeader';
@@ -19,55 +18,63 @@ function QRCodeView({
   windowWidth,
 }: RouterProps) {
   const Theme = useTheme();
+  const QRSize = isPortrait
+    ? Math.round(windowWidth * 0.9)
+    : Math.round(windowHeight * 0.6);
   const themeState = useSnapshot(ThemeCtrl.state);
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const wcConnectionState = useSnapshot(WcConnectionCtrl.state);
+  const { pairingUri } = useSnapshot(WcConnectionCtrl.state);
 
   const onCopy = async () => {
-    if (onCopyClipboard && wcConnectionState.pairingUri) {
-      onCopyClipboard(wcConnectionState.pairingUri);
+    if (onCopyClipboard && pairingUri) {
+      onCopyClipboard(pairingUri);
       ToastCtrl.openToast('Link copied', 'success');
     }
   };
 
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, [fadeAnim]);
-
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+    <View style={[styles.container]}>
       <NavHeader
         title="Scan the code"
         onBackPress={RouterCtrl.goBack}
-        actionIcon={CopyIcon}
+        actionIcon={
+          <CopyIcon
+            width={22}
+            height={22}
+            fill={!pairingUri ? Theme.foreground3 : Theme.accent}
+          />
+        }
+        actionStyle={[
+          styles.iconStyle,
+          {
+            backgroundColor: Theme.overlayThin,
+          },
+        ]}
         onActionPress={onCopyClipboard ? onCopy : undefined}
-        actionDisabled={!wcConnectionState.pairingUri}
+        actionDisabled={!pairingUri}
       />
-      {wcConnectionState?.pairingUri ? (
-        <QRCode
-          uri={wcConnectionState.pairingUri}
-          size={isPortrait ? windowWidth * 0.9 : windowHeight * 0.6}
-          theme={themeState.themeMode}
-        />
+      {pairingUri ? (
+        <QRCode uri={pairingUri} size={QRSize} theme={themeState.themeMode} />
       ) : (
         <ActivityIndicator
           style={{
-            height: isPortrait ? windowWidth * 0.9 : windowHeight * 0.6,
+            height: QRSize,
           }}
           color={Theme.accent}
         />
       )}
-    </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 12,
+    width: '100%',
+  },
+  iconStyle: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
   },
 });
 

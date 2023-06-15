@@ -1,10 +1,4 @@
-import {
-  Platform,
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import WCLogo from '../assets/LogoLockup';
@@ -14,6 +8,7 @@ import { RouterCtrl } from '../controllers/RouterCtrl';
 import { ClientCtrl } from '../controllers/ClientCtrl';
 import { ModalCtrl } from '../controllers/ModalCtrl';
 import useTheme from '../hooks/useTheme';
+import Touchable from './Touchable';
 
 interface Web3ModalHeaderProps {
   onClose: () => void;
@@ -33,7 +28,7 @@ export function Web3ModalHeader({ onClose }: Web3ModalHeaderProps) {
       <WCLogo width={181} height={28} fill="white" />
       <View style={styles.row}>
         {routerState.view === 'Account' && (
-          <TouchableOpacity
+          <Touchable
             style={[
               styles.buttonContainer,
               styles.disconnectButton,
@@ -42,9 +37,9 @@ export function Web3ModalHeader({ onClose }: Web3ModalHeaderProps) {
             onPress={onDisconnect}
           >
             <DisconnectIcon height={14} fill={Theme.foreground1} />
-          </TouchableOpacity>
+          </Touchable>
         )}
-        <TouchableOpacity
+        <Touchable
           style={[
             styles.buttonContainer,
             { backgroundColor: Theme.background1 },
@@ -52,7 +47,7 @@ export function Web3ModalHeader({ onClose }: Web3ModalHeaderProps) {
           onPress={onClose}
         >
           <CloseIcon height={11} fill={Theme.foreground1} />
-        </TouchableOpacity>
+        </Touchable>
       </View>
     </SafeAreaView>
   );

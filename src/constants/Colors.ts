@@ -11,6 +11,7 @@ export const DarkTheme = {
   overlayThin: 'rgba(255, 255, 255, 0.1)',
   overlayThick: 'rgba(255, 255, 255, 0.3)',
   green: '#2BEE6C',
+  glass: 'rgba(39, 42, 42, 0.999)',
 };
 
 export const LightTheme = {
@@ -26,4 +27,5 @@ export const LightTheme = {
   overlayThin: 'rgba(0, 0, 0, 0.1)',
   overlayThick: 'rgba(0, 0, 0, 0.3)',
   green: '#2BEE6C',
+  glass: 'rgba(244, 245, 245, 0.99)',
 };

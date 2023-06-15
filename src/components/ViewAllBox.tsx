@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
   StyleProp,
   ViewStyle,
 } from 'react-native';
@@ -11,6 +10,7 @@ import {
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
 import useTheme from '../hooks/useTheme';
 import type { Listing } from '../types/controllerTypes';
+import Touchable from './Touchable';
 
 interface Props {
   onPress: any;
@@ -22,7 +22,7 @@ function ViewAllBox({ onPress, wallets, style }: Props) {
   const Theme = useTheme();
 
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.container, style]}>
+    <Touchable onPress={onPress} style={[styles.container, style]}>
       <View style={[styles.icons, { borderColor: Theme.overlayThin }]}>
         <View style={styles.row}>
           {wallets.slice(0, 2).map((wallet) => (
@@ -51,7 +51,7 @@ function ViewAllBox({ onPress, wallets, style }: Props) {
           View All
         </Text>
       </View>
-    </TouchableOpacity>
+    </Touchable>
   );
 }
 
@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     maxWidth: 100,
     fontWeight: '600',
     fontSize: 12,
+    textAlign: 'center',
   },
 });
 

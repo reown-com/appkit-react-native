@@ -1,17 +1,11 @@
-import {
-  Image,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import { Image, Text, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 
 import type { Listing } from '../types/controllerTypes';
 import { ExplorerUtil } from '../utils/ExplorerUtil';
 import { ConfigCtrl } from '../controllers/ConfigCtrl';
 import useTheme from '../hooks/useTheme';
 import { ExplorerCtrl } from '../controllers/ExplorerCtrl';
+import Touchable from './Touchable';
 
 interface Props {
   currentWCURI?: string;
@@ -38,7 +32,7 @@ function WalletItem({ currentWCURI, walletInfo, style }: Props) {
   };
 
   return (
-    <TouchableOpacity
+    <Touchable
       onPress={onPress}
       key={walletInfo.id}
       style={[styles.container, style]}
@@ -55,7 +49,7 @@ function WalletItem({ currentWCURI, walletInfo, style }: Props) {
       >
         {walletInfo.name}
       </Text>
-    </TouchableOpacity>
+    </Touchable>
   );
 }
 
@@ -77,6 +71,7 @@ const styles = StyleSheet.create({
     maxWidth: 100,
     fontSize: 12,
     fontWeight: '600',
+    textAlign: 'center',
   },
 });
 

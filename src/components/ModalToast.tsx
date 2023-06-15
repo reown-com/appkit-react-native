@@ -5,14 +5,14 @@ import { useSnapshot } from 'valtio';
 import useTheme from '../hooks/useTheme';
 import { ToastCtrl } from '../controllers/ToastCtrl';
 import Checkmark from '../assets/Checkmark';
-import Close from '../assets/Close';
+import Warning from '../assets/Warning';
 import Web3Text from './Web3Text';
 
 function ModalToast() {
   const Theme = useTheme();
   const { open, message, variant } = useSnapshot(ToastCtrl.state);
   const toastOpacity = useMemo(() => new Animated.Value(0), []);
-  const Icon = variant === 'success' ? Checkmark : Close;
+  const Icon = variant === 'success' ? Checkmark : Warning;
   const iconColor = variant === 'success' ? Theme.accent : Theme.negative;
 
   useEffect(() => {
@@ -39,14 +39,16 @@ function ModalToast() {
       style={[
         styles.container,
         {
-          backgroundColor: Theme.background2,
+          backgroundColor: Theme.glass,
           borderColor: Theme.overlayThin,
           opacity: toastOpacity,
         },
       ]}
     >
-      <Icon width={12} fill={iconColor} style={styles.icon} />
-      <Web3Text numberOfLines={1}>{message}</Web3Text>
+      <Icon width={16} fill={iconColor} style={styles.icon} />
+      <Web3Text style={styles.text} numberOfLines={1}>
+        {message}
+      </Web3Text>
     </Animated.View>
   ) : null;
 }
@@ -58,8 +60,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20,
     padding: 9,
+    paddingHorizontal: 16,
     marginHorizontal: 16,
-    top: 10,
+    bottom: 25,
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
@@ -78,6 +81,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 6,
+  },
+  text: {
+    fontWeight: '600',
   },
 });
 

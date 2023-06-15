@@ -70,16 +70,16 @@ export const ExplorerUtil = {
           if (universalUrl) {
             Linking.openURL(universalUrl);
           } else {
-            ToastCtrl.openToast('Unable to open the Wallet', 'error');
+            ToastCtrl.openToast('Unable to open the wallet', 'error');
           }
         });
       } else if (universalUrl) {
         await Linking.openURL(universalUrl);
       } else {
-        ToastCtrl.openToast('Unable to open the Wallet', 'error');
+        ToastCtrl.openToast('Unable to open the wallet', 'error');
       }
     } catch (error) {
-      ToastCtrl.openToast('Unable to open the Wallet', 'error');
+      ToastCtrl.openToast('Unable to open the wallet', 'error');
     }
   },
   getCustomHeaders() {

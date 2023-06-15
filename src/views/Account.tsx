@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useSnapshot } from 'valtio';
 
 import CopyIcon from '../assets/Copy';
@@ -10,6 +10,7 @@ import Web3Avatar from '../components/Web3Avatar';
 import ConnectionBadge from '../components/ConnectionBadge';
 import useTheme from '../hooks/useTheme';
 import { ToastCtrl } from '../controllers/ToastCtrl';
+import Touchable from '../components/Touchable';
 
 export function Account({ onCopyClipboard }: RouterProps) {
   const Theme = useTheme();
@@ -23,29 +24,27 @@ export function Account({ onCopyClipboard }: RouterProps) {
   };
 
   return (
-    <>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View>
-            <Web3Avatar
-              address={accountState.address ?? ''}
-              style={styles.avatar}
-            />
-            <View style={styles.row}>
-              <Web3Text style={styles.address}>
-                {UiUtil.truncate(accountState.address ?? '')}
-              </Web3Text>
-              {onCopyClipboard && (
-                <TouchableOpacity onPress={onCopy} style={styles.button}>
-                  <CopyIcon height={14} width={14} fill={Theme.foreground3} />
-                </TouchableOpacity>
-              )}
-            </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <View>
+          <Web3Avatar
+            address={accountState.address ?? ''}
+            style={styles.avatar}
+          />
+          <View style={styles.row}>
+            <Web3Text style={styles.address}>
+              {UiUtil.truncate(accountState.address ?? '')}
+            </Web3Text>
+            {onCopyClipboard && (
+              <Touchable onPress={onCopy} style={styles.button}>
+                <CopyIcon height={14} width={14} fill={Theme.foreground3} />
+              </Touchable>
+            )}
           </View>
-          <ConnectionBadge />
         </View>
+        <ConnectionBadge />
       </View>
-    </>
+    </View>
   );
 }
 
