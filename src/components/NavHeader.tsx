@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { StyleSheet, Text, View, ViewStyle, StyleProp } from 'react-native';
 import { useSnapshot } from 'valtio';
 
@@ -10,7 +11,7 @@ interface Props {
   title: string;
   onBackPress?: () => void;
   onActionPress?: () => void;
-  actionIcon?: React.ReactNode;
+  actionIcon?: ReactNode;
   actionDisabled?: boolean;
   actionStyle?: StyleProp<ViewStyle>;
 }
