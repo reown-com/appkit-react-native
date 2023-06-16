@@ -7,6 +7,7 @@ const state = proxy<ConfigCtrlState>({
   projectId: '',
   recentWalletDeepLink: undefined,
   metadata: undefined,
+  apiVersion: undefined,
 });
 
 // -- controller --------------------------------------------------- //
@@ -27,6 +28,12 @@ export const ConfigCtrl = {
 
   setRecentWalletDeepLink(deepLink?: string) {
     state.recentWalletDeepLink = deepLink;
+  },
+
+  setApiVersion(apiVersion: ConfigCtrlState['apiVersion']) {
+    if (apiVersion !== state.apiVersion) {
+      state.apiVersion = apiVersion;
+    }
   },
 
   getRecentWalletDeepLink() {

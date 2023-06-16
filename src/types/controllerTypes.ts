@@ -14,6 +14,7 @@ export interface ConfigCtrlState {
   projectId: string;
   recentWalletDeepLink?: string;
   metadata?: IProviderMetadata;
+  apiVersion?: number;
 }
 
 // -- ModalCtrl --------------------------------------- //

@@ -18,6 +18,7 @@ interface Props {
   providerMetadata: IProviderMetadata;
   relayUrl?: string;
   themeMode?: 'light' | 'dark';
+  apiVersion?: number;
 }
 
 export function useConfigure({
@@ -25,6 +26,7 @@ export function useConfigure({
   relayUrl,
   providerMetadata,
   themeMode,
+  apiVersion,
 }: Props) {
   const colorScheme = useColorScheme();
   const resetApp = useCallback(() => {
@@ -62,7 +64,8 @@ export function useConfigure({
   useEffect(() => {
     ConfigCtrl.setProjectId(projectId);
     ConfigCtrl.setMetadata(providerMetadata);
-  }, [projectId, providerMetadata]);
+    ConfigCtrl.setApiVersion(apiVersion);
+  }, [projectId, providerMetadata, apiVersion]);
 
   /**
    * Fetch wallet list
@@ -71,7 +74,7 @@ export function useConfigure({
     async function fetchWallets() {
       try {
         if (!ExplorerCtrl.state.wallets.total) {
-          await ExplorerCtrl.getMobileWallets({ version: 2 });
+          await ExplorerCtrl.getMobileWallets({ version: apiVersion });
           OptionsCtrl.setIsDataLoaded(true);
         }
       } catch (error) {

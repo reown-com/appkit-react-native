@@ -26,6 +26,7 @@ interface Web3ModalProps {
   relayUrl?: string;
   onCopyClipboard?: (value: string) => void;
   themeMode?: 'dark' | 'light';
+  apiVersion?: number;
 }
 
 export function Web3Modal({
@@ -35,8 +36,9 @@ export function Web3Modal({
   relayUrl,
   onCopyClipboard,
   themeMode,
+  apiVersion,
 }: Web3ModalProps) {
-  useConfigure({ projectId, providerMetadata, relayUrl, themeMode });
+  useConfigure({ projectId, providerMetadata, relayUrl, themeMode, apiVersion });
   const { open } = useSnapshot(ModalCtrl.state);
   const { isConnected } = useSnapshot(AccountCtrl.state);
   const { width } = useOrientation();
