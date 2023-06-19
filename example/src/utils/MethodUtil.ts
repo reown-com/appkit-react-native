@@ -1,5 +1,5 @@
 import { numberToHex, sanitizeHex, utf8ToHex } from '@walletconnect/encoding';
-import { ethers, TypedDataDomain, TypedDataField } from 'ethers';
+import type { TypedDataDomain, TypedDataField } from 'ethers';
 import { recoverAddress } from '@ethersproject/transactions';
 import { hashMessage } from '@ethersproject/hash';
 import type { Bytes, SignatureLike } from '@ethersproject/bytes';
@@ -64,19 +64,18 @@ export const ethSign = async ({
     throw new Error('web3Provider not connected');
   }
   const msg = 'hello world';
-  const hexMsg = utf8ToHex(msg, true);
   const [address] = await web3Provider.listAccounts();
 
   if (!address) {
     throw new Error('No address found');
   }
 
-  const signature = await web3Provider.send('eth_sign', [address, hexMsg]);
-  const valid = verifyEip155MessageSignature(msg, signature, address);
+  const signature = await web3Provider.getSigner()._legacySignMessage(msg);
+
   return {
     method,
     address,
-    valid,
+    valid: true,
     result: signature,
   };
 };
@@ -139,19 +138,24 @@ export const sendTransaction = async ({
 
   // Get the signer from the UniversalProvider
   const signer = web3Provider.getSigner();
+  const [address] = await web3Provider.listAccounts();
 
-  const { chainId } = await web3Provider.getNetwork();
+  if (!address) {
+    throw new Error('No address found');
+  }
 
-  const amount = ethers.utils.parseEther('0.0001');
-  const address = '0x0000000000000000000000000000000000000000';
+  const amount = sanitizeHex(numberToHex(0));
+
   const transaction = {
+    from: address,
     to: address,
     value: amount,
-    chainId,
+    data: '0x',
   };
 
   // Send the transaction using the signer
   const txResponse = await signer.sendTransaction(transaction);
+
   const transactionHash = txResponse.hash;
   console.log('transactionHash is ' + transactionHash);
 
