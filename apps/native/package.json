@@ -16,7 +16,7 @@
     "react-dom": "18.2.0",
     "react-native": "0.72.3",
     "react-native-web": "~0.19.6",
-    "ui": "*"
+    "@web3modal/ui-react-native": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

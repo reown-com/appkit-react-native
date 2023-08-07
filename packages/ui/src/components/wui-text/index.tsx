@@ -13,7 +13,7 @@ export function Text({ children, style, color = 'fg-100', variant = 'paragraph-5
   const Theme = useTheme();
 
   return (
-    <NativeText style={[styles.base, styles[variant], { color: Theme[color] }, style]} {...rest} >
+    <NativeText style={[styles.base, styles[variant], { color: Theme[color] }, style]} {...rest}>
       {children}
     </NativeText>
   )

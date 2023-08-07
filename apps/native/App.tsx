@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { Button, Text } from "ui";
+import { Button, Text } from "@web3modal/ui-react-native";
 
 export default function Native() {
   return (
