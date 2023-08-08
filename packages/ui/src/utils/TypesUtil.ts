@@ -22,3 +22,7 @@ export type ColorType =
   | 'inverse-000'
   | 'inverse-100'
   | 'success-100'
+
+  export type SizeType = 'lg' | 'md' | 'sm' | 'xs' | 'xxs'
+
+  export type ButtonType = 'accent' | 'fill'

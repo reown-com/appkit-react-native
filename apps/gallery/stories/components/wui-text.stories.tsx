@@ -17,9 +17,9 @@ const meta: Meta<typeof Text> = {
     }
   },
   args: {
-    children: 'Text',
     variant: 'paragraph-500',
-    color: 'fg-100'
+    color: 'fg-100',
+    children: 'Text'
   },
 };
 

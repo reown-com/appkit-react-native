@@ -1,4 +1,4 @@
-import { ColorType, TextType } from "@web3modal/ui-react-native"
+import { ColorType, TextType, ButtonType } from "@web3modal/ui-react-native"
 
 export const colorOptions: ColorType[] = [
   'blue-100',
@@ -26,3 +26,5 @@ export const textOptions: TextType[] = [
   'large-600',
   'large-700'
 ]
+
+export const buttonOptions: ButtonType[] = ['fill', 'accent']
