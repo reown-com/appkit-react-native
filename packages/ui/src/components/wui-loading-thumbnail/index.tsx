@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { Animated, Easing, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 import useTheme from '../../hooks/useTheme';
@@ -6,13 +6,12 @@ import styles from './styles';
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
-interface Props {
-  children?: React.ReactNode;
-  imageSize?: number;
+export interface LoadingThumbnailProps {
+  children?: ReactNode;
   showError?: boolean;
 }
 
-export function LoadingThumbnail({ children, showError }: Props) {
+export function LoadingThumbnail({ children, showError }: LoadingThumbnailProps) {
   const Theme = useTheme();
   const spinValue = useRef(new Animated.Value(0));
 

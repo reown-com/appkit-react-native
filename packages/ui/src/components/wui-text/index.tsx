@@ -1,6 +1,6 @@
-import { Text as NativeText, TextProps as NativeProps } from 'react-native';
+import { Text as NativeText, type TextProps as NativeProps } from 'react-native';
 import useTheme from '../../hooks/useTheme';
-import { ColorType, TextType } from '../../utils/TypesUtil';
+import type { ColorType, TextType } from '../../utils/TypesUtil';
 import styles from './styles';
 
 export type TextProps = NativeProps & {
@@ -18,7 +18,15 @@ export function Text({
   const Theme = useTheme();
 
   return (
-    <NativeText style={[styles.base, styles[variant], { color: Theme[color] }, style]} {...rest}>
+    <NativeText
+      style={[
+        styles.base,
+        styles[variant],
+        color && { color: Theme[color as keyof typeof Theme] },
+        style
+      ]}
+      {...rest}
+    >
       {children}
     </NativeText>
   );
