@@ -20,7 +20,7 @@ const meta: Meta<typeof Text> = {
     variant: 'paragraph-500',
     color: 'fg-100',
     children: 'Text'
-  },
+  }
 };
 
 export default meta;
@@ -32,5 +32,9 @@ type Story = StoryObj<typeof Text>;
  * to learn how to use render functions.
  */
 export const Default: Story = {
-  render: args => <Text variant={args.variant} color={args.color} >{args.children}</Text>,
+  render: args => (
+    <Text variant={args.variant} color={args.color}>
+      {args.children}
+    </Text>
+  )
 };

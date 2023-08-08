@@ -1,5 +1,5 @@
-import { defaults as tsjPreset } from 'ts-jest/presets'
-import type { JestConfigWithTsJest } from 'ts-jest'
+import { defaults as tsjPreset } from 'ts-jest/presets';
+import type { JestConfigWithTsJest } from 'ts-jest';
 
 const jestConfig: JestConfigWithTsJest = {
   ...tsjPreset,
@@ -9,12 +9,12 @@ const jestConfig: JestConfigWithTsJest = {
     '^.+\\.tsx?$': [
       'ts-jest',
       {
-        tsconfig: 'tsconfig.spec.json',
-      },
-    ],
+        tsconfig: 'tsconfig.spec.json'
+      }
+    ]
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  setupFilesAfterEnv: ["@testing-library/jest-native/extend-expect"]
-}
+  setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect']
+};
 
-export default jestConfig
+export default jestConfig;

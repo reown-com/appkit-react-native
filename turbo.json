@@ -6,11 +6,22 @@
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
       "dependsOn": ["^build"]
     },
+    "build:gallery": {
+      "dependsOn": ["build", "^build:gallery"],
+      "outputs": ["out/**"]
+    },
     "dev": {
       "cache": false,
       "persistent": true
     },
-    "lint": {},
+    "dev:gallery": {
+      "dependsOn": ["build", "^dev:gallery"],
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": ["^lint"],
+      "cache": false
+    },
     "clean": {
       "cache": false
     }

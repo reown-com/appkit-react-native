@@ -1,17 +1,20 @@
-import { StyleSheet, View } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { Button, Text } from "@web3modal/ui-react-native";
+import { StyleSheet, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { Button, Text } from '@web3modal/ui-react-native';
 
 export default function Native() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text} variant="large-700">Native</Text>
+      <Text style={styles.text} variant="large-700">
+        Native
+      </Text>
       <Button
         onPress={() => {
-          console.log("Pressed!");
-          alert("Pressed!");
+          alert('Pressed!');
         }}
-      >Hola</Button>
+      >
+        Button
+      </Button>
       <StatusBar style="auto" />
     </View>
   );
@@ -20,11 +23,11 @@ export default function Native() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   text: {
-    marginBottom: 20,
-  },
+    marginBottom: 20
+  }
 });

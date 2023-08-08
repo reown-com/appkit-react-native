@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Animated, Pressable, PressableProps as NativeProps } from 'react-native';
 import { Text } from '../../components/wui-text';
 import useTheme from '../../hooks/useTheme';
@@ -15,9 +15,16 @@ export type ButtonProps = NativeProps & {
   iconLeft?: string;
   iconRight?: string;
   children: React.ReactNode;
-}
+};
 
-export function Button({ children, size = 'md', variant = 'fill', disabled, style, ...rest }: ButtonProps){
+export function Button({
+  children,
+  size = 'md',
+  variant = 'fill',
+  disabled,
+  style,
+  ...rest
+}: ButtonProps) {
   const Theme = useTheme();
   const scale = useRef(new Animated.Value(1)).current;
   const [pressed, setPressed] = useState(false);
@@ -25,24 +32,38 @@ export function Button({ children, size = 'md', variant = 'fill', disabled, styl
   const themedTextStyle = getThemedTextStyle(Theme, variant, disabled);
 
   const onPressIn = () => {
-    setPressed(true)
+    setPressed(true);
     Animated.spring(scale, {
       toValue: 0.95,
-      useNativeDriver: true,
+      useNativeDriver: true
     }).start();
   };
 
   const onPressOut = () => {
-    setPressed(false)
+    setPressed(false);
     Animated.spring(scale, {
       toValue: 1,
-      useNativeDriver: true,
+      useNativeDriver: true
     }).start();
   };
 
   return (
-    <AnimatedPressable disabled={disabled} style={[styles.button, styles[`${size}Button`], { transform: [{ scale }] }, themedButtonStyle, style]} onPressIn={onPressIn} onPressOut={onPressOut} {...rest}>
-      <Text variant={size === 'md' ? 'paragraph-600' : 'small-600'} style={themedTextStyle}>{children}</Text>
+    <AnimatedPressable
+      disabled={disabled}
+      style={[
+        styles.button,
+        styles[`${size}Button`],
+        { transform: [{ scale }] },
+        themedButtonStyle,
+        style
+      ]}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
+      {...rest}
+    >
+      <Text variant={size === 'md' ? 'paragraph-600' : 'small-600'} style={themedTextStyle}>
+        {children}
+      </Text>
     </AnimatedPressable>
-  )
+  );
 }

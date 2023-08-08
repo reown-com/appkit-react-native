@@ -10,7 +10,7 @@ export type TextType =
   | 'small-500'
   | 'small-600'
   | 'tiny-500'
-  | 'tiny-600'
+  | 'tiny-600';
 
 export type ColorType =
   | 'blue-100'
@@ -21,8 +21,8 @@ export type ColorType =
   | 'inherit'
   | 'inverse-000'
   | 'inverse-100'
-  | 'success-100'
+  | 'success-100';
 
-  export type SizeType = 'lg' | 'md' | 'sm' | 'xs' | 'xxs'
+export type SizeType = 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
 
-  export type ButtonType = 'accent' | 'fill'
+export type ButtonType = 'accent' | 'fill';
