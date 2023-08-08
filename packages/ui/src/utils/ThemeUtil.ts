@@ -1,4 +1,6 @@
-export const DarkTheme: { [key: string]: string } = {
+import { ThemeKeys } from './TypesUtil';
+
+export const DarkTheme: { [key in ThemeKeys]: string } = {
   'blue-100': '#47a1ff',
   'blue-090': '#59aaff',
   'blue-080': '#6cb4ff',
@@ -48,7 +50,7 @@ export const DarkTheme: { [key: string]: string } = {
   'overlay-030': 'rgba(255, 255, 255, 0.3)'
 };
 
-export const LightTheme: { [key: string]: string } = {
+export const LightTheme: { [key in ThemeKeys]: string } = {
   'blue-100': '#3396ff',
   'blue-090': '#2d7dd2',
   'blue-080': '#2978cc',
