@@ -7,12 +7,11 @@ export default function Native() {
     <View style={styles.container}>
       <Text style={styles.text} variant="large-700">Native</Text>
       <Button
-        onClick={() => {
+        onPress={() => {
           console.log("Pressed!");
           alert("Pressed!");
         }}
-        text="Boop"
-      />
+      >Hola</Button>
       <StatusBar style="auto" />
     </View>
   );
