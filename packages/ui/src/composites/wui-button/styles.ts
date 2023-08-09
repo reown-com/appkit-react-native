@@ -1,8 +1,8 @@
 import { StyleProp, StyleSheet } from 'react-native';
-import type { ButtonType } from '../../utils/TypesUtil';
+import type { ButtonType, ThemeKeys } from '../../utils/TypesUtil';
 
 export const getThemedButtonStyle = (
-  theme: { [key: string]: string },
+  theme: { [key in ThemeKeys]: string },
   variant: ButtonType,
   disabled?: boolean,
   pressed?: boolean

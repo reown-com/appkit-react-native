@@ -29,8 +29,8 @@ export const DarkTheme: { [key in ThemeKeys]: string } = {
   'bg-275': '#363b3b',
   'bg-300': '#3b4040',
 
-  'inverse-100': '#fff',
-  'inverse-000': '#000',
+  'inverse-100': '#ffffff',
+  'inverse-000': '#000000',
 
   'success-100': '#26d962',
   'error-100': '#f25a67',

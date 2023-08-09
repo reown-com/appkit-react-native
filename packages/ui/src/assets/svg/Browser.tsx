@@ -1,6 +1,6 @@
 import Svg, { Path, SvgProps } from 'react-native-svg';
 const SvgBrowser = (props: SvgProps) => (
-  <Svg viewBox="0 0 21 20" fill="none" {...props}>
+  <Svg viewBox="0 0 20 20" fill="none" {...props}>
     <Path
       fill={props.fill || '#fff'}
       fillRule="evenodd"

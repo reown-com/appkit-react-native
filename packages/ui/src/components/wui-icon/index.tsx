@@ -102,11 +102,12 @@ export type IconProps = {
   name: IconType;
   size?: SizeType;
   color?: ColorType;
+  style?: SvgProps['style'];
 };
 
-export function Icon({ name, color = 'fg-100', size = 'md' }: IconProps) {
+export function Icon({ name, color = 'fg-100', size = 'md', style }: IconProps) {
   const Theme = useTheme();
   const Component = svgOptions[name];
 
-  return <Component fill={Theme[color as ThemeKeys]} width={IconSize[size]} />;
+  return <Component fill={Theme[color as ThemeKeys]} width={IconSize[size]} style={style} />;
 }
