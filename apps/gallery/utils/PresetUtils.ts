@@ -1,4 +1,4 @@
-import { ColorType, TextType, ButtonType } from '@web3modal/ui-react-native';
+import { ColorType, TextType, ButtonType, IconType } from '@web3modal/ui-react-native';
 
 export const colorOptions: ColorType[] = [
   'blue-100',
@@ -28,3 +28,51 @@ export const textOptions: TextType[] = [
 ];
 
 export const buttonOptions: ButtonType[] = ['fill', 'accent'];
+
+export const iconOptions: IconType[] = [
+  'apple',
+  'arrowBottom',
+  'arrowLeft',
+  'arrowRight',
+  'arrowTop',
+  'browser',
+  'checkmark',
+  'chevronBottom',
+  'chevronLeft',
+  'chevronRight',
+  'chevronTop',
+  'clock',
+  'close',
+  'coinPlaceholder',
+  'compass',
+  'copy',
+  'desktop',
+  'disconnect',
+  'discord',
+  'etherscan',
+  'extension',
+  'externalLink',
+  'facebook',
+  'filters',
+  'github',
+  'google',
+  'helpCircle',
+  'infoCircle',
+  'mail',
+  'mobile',
+  'networkPlaceholder',
+  'nftPlaceholder',
+  'off',
+  'refresh',
+  'search',
+  'swapHorizontal',
+  'swapVertical',
+  'telegram',
+  'twitch',
+  'twitterIcon',
+  'twitter',
+  'wallet',
+  'walletConnect',
+  'walletPlaceholder',
+  'warningCircle'
+];

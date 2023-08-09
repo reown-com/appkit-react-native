@@ -1,22 +1,24 @@
 import { StyleSheet } from 'react-native';
+import { BorderRadius } from '../../utils/ThemeUtil';
 
 export default StyleSheet.create({
-  base: {
-    borderWidth: 1
-  },
   smImage: {
-    height: 30,
-    width: 30,
-    borderRadius: 10.5
+    height: 40,
+    width: 40,
+    borderRadius: BorderRadius.xxs
   },
   mdImage: {
-    height: 60,
-    width: 60,
-    borderRadius: 21
+    height: 56,
+    width: 56,
+    borderRadius: BorderRadius.xs
   },
   lgImage: {
-    height: 90,
-    width: 90,
-    borderRadius: 31.5
+    height: 80,
+    width: 80,
+    borderRadius: BorderRadius.m
+  },
+  border: {
+    borderWidth: 1,
+    position: 'absolute'
   }
 });

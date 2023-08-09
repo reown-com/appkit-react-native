@@ -99,3 +99,23 @@ export const LightTheme: { [key in ThemeKeys]: string } = {
   'overlay-025': 'rgba(0, 0, 0, 0.25)',
   'overlay-030': 'rgba(0, 0, 0, 0.3)'
 };
+
+export const BorderRadius = {
+  '5xs': 4,
+  '4xs': 6,
+  '3xs': 8,
+  'xxs': 12,
+  'xs': 16,
+  's': 20,
+  'm': 28,
+  'l': 36,
+  '3xl': 80
+};
+
+export const IconSize = {
+  xxs: 10,
+  xs: 12,
+  sm: 14,
+  md: 16,
+  lg: 20
+};

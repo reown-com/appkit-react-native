@@ -1,3 +1,4 @@
+import { View } from 'react-native';
 import { Image } from '../../components/wui-image';
 import useTheme from '../../hooks/useTheme';
 import { SizeType } from '../../utils/TypesUtil';
@@ -13,10 +14,12 @@ export function WalletImage({ imageSrc, size = 'md' }: WalletImageProps) {
   const Theme = useTheme();
   if (imageSrc) {
     return (
-      <Image
-        source={imageSrc}
-        style={[styles.base, styles[`${size}Image`], { borderColor: Theme['overlay-010'] }]}
-      />
+      <View>
+        <Image source={imageSrc} style={styles[`${size}Image`]} />
+        <View
+          style={[styles.border, styles[`${size}Image`], { borderColor: Theme['overlay-010'] }]}
+        />
+      </View>
     );
   }
 
