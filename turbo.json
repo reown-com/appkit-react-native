@@ -14,6 +14,10 @@
       "cache": false,
       "persistent": true
     },
+    "dev:android": {
+      "cache": false,
+      "persistent": true
+    },
     "dev:gallery": {
       "dependsOn": ["build", "^dev:gallery"],
       "cache": false
