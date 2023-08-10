@@ -1,4 +1,5 @@
 import { StyleProp, StyleSheet } from 'react-native';
+import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 import type { ButtonType, ThemeKeys } from '../../utils/TypesUtil';
 
 export const getThemedButtonStyle = (
@@ -65,11 +66,11 @@ export const getThemedTextStyle = (
 export default StyleSheet.create({
   button: {
     height: 40,
-    paddingVertical: 4,
-    paddingHorizontal: 16,
+    paddingVertical: Spacing['3xs'],
+    paddingHorizontal: Spacing.l,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
+    borderRadius: BorderRadius.s,
     borderWidth: 1
   },
   smButton: {

@@ -119,3 +119,17 @@ export const IconSize = {
   md: 16,
   lg: 20
 };
+
+export const Spacing = {
+  '4xs': 2,
+  '3xs': 4,
+  '2xs': 6,
+  'xs': 8,
+  's': 12,
+  'm': 14,
+  'l': 16,
+  'xl': 20,
+  '2xl': 24,
+  '3xl': 32,
+  '4xl': 40
+};
