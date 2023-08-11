@@ -79,8 +79,8 @@ export const LightTheme: { [key in ThemeKeys]: string } = {
   'bg-275': '#dce7e7',
   'bg-300': '#d8e3e3',
 
-  'inverse-100': '#fff',
-  'inverse-000': '#000',
+  'inverse-100': '#ffffff',
+  'inverse-000': '#000000',
 
   'success-100': '#26b562',
   'error-100': '#f05142',

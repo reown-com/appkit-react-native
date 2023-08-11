@@ -70,6 +70,8 @@ export type SizeType = 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
 
 export type ButtonType = 'accent' | 'fill';
 
+export type ChipType = 'fill' | 'shade' | 'transparent';
+
 export type IconType =
   | 'apple'
   | 'arrowBottom'

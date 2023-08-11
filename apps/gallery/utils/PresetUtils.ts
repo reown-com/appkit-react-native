@@ -1,4 +1,4 @@
-import { ColorType, TextType, ButtonType, IconType } from '@web3modal/ui-react-native';
+import { ColorType, TextType, ButtonType, IconType, ChipType } from '@web3modal/ui-react-native';
 
 export const colorOptions: ColorType[] = [
   'blue-100',
@@ -28,6 +28,8 @@ export const textOptions: TextType[] = [
 ];
 
 export const buttonOptions: ButtonType[] = ['fill', 'accent'];
+
+export const chipOptions: ChipType[] = ['fill', 'shade', 'transparent'];
 
 export const iconOptions: IconType[] = [
   'apple',

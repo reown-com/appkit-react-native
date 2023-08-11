@@ -8,59 +8,40 @@ export const getThemedButtonStyle = (
   disabled?: boolean,
   pressed?: boolean
 ): StyleProp<any> => {
-  switch (variant) {
-    case 'fill':
-      if (disabled) {
-        return {
-          backgroundColor: theme['overlay-020'],
-          borderColor: theme['overlay-005']
-        };
-      } else if (pressed) {
-        return {
-          backgroundColor: theme['blue-080'],
-          borderColor: theme['overlay-010']
-        };
-      }
+  const buttonBaseStyle = {
+    borderColor: theme['overlay-010']
+  };
 
-      return {
-        backgroundColor: theme['blue-100'],
-        borderColor: theme['overlay-010']
-      };
-    case 'accent':
-      if (disabled) {
-        return {
-          backgroundColor: theme['overlay-010'],
-          borderColor: theme['overlay-005']
-        };
-      } else if (pressed) {
-        return {
-          backgroundColor: theme['overlay-010'],
-          borderColor: theme['overlay-010']
-        };
-      }
-
-      return {
-        backgroundColor: 'transparent',
-        borderColor: theme['overlay-010']
-      };
+  if (disabled) {
+    return {
+      backgroundColor: variant === 'fill' ? theme['overlay-020'] : theme['overlay-010'],
+      borderColor: theme['overlay-005']
+    };
   }
+
+  if (pressed) {
+    return {
+      ...buttonBaseStyle,
+      backgroundColor: variant === 'fill' ? theme['blue-080'] : theme['overlay-010']
+    };
+  }
+
+  return {
+    ...buttonBaseStyle,
+    backgroundColor: variant === 'fill' ? theme['blue-100'] : 'transparent'
+  };
 };
 
 export const getThemedTextStyle = (
-  theme: { [key: string]: string },
+  theme: { [key in ThemeKeys]: string },
   variant: ButtonType,
   disabled?: boolean
 ): StyleProp<any> => {
-  switch (variant) {
-    case 'fill':
-      if (disabled) return { color: theme['fg-300'] };
-
-      return { color: theme['inverse-100'] };
-    case 'accent':
-      if (disabled) return { color: theme['overlay-020'] };
-
-      return { color: theme['blue-100'] };
+  if (disabled) {
+    return variant === 'fill' ? { color: theme['fg-300'] } : { color: theme['overlay-020'] };
   }
+
+  return variant === 'fill' ? { color: theme['inverse-100'] } : { color: theme['blue-100'] };
 };
 
 export default StyleSheet.create({
