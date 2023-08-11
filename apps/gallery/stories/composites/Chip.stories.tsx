@@ -18,6 +18,12 @@ const meta: Meta<typeof Chip> = {
     disabled: {
       control: { type: 'boolean' }
     },
+    link: {
+      control: { type: 'text' }
+    },
+    label: {
+      control: { type: 'text' }
+    },
     imageSrc: {
       control: { type: 'text' }
     },
@@ -30,8 +36,9 @@ const meta: Meta<typeof Chip> = {
     variant: 'fill',
     size: 'md',
     disabled: false,
-    link: 'www.fireblocks.com',
     icon: 'disconnect',
+    link: 'https://www.fireblocks.com',
+    label: 'www.fireblocks.com',
     imageSrc:
       'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7e1514ba-932d-415d-1bdb-bccb6c2cbc00?projectId=c1781fc385454899a2b1385a2b83df3b'
   }
@@ -47,6 +54,7 @@ export const Default: Story = {
       size={args.size}
       disabled={args.disabled}
       link={args.link}
+      label={args.label}
       imageSrc={args.imageSrc}
       icon={args.icon}
     />

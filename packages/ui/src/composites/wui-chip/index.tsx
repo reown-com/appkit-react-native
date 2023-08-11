@@ -1,17 +1,17 @@
 import { useRef, useState } from 'react';
-import { Animated, Pressable, StyleProp, ViewStyle } from 'react-native';
+import { Animated, Linking, Pressable, StyleProp, ViewStyle } from 'react-native';
 import { ChipType, ColorType, IconType, SizeType } from '../../utils/TypesUtil';
 import useTheme from '../../hooks/useTheme';
 import { Text } from '../../components/wui-text';
 import styles, { getThemedChipStyle, getThemedTextColor } from './styles';
 import { Image } from '../../components/wui-image';
 import { Icon } from '../../components/wui-icon';
-import { IconSize } from '../../utils/ThemeUtil';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface ChipProps {
   link: string;
+  label?: string;
   imageSrc?: string;
   icon?: IconType;
   variant?: ChipType;
@@ -27,6 +27,7 @@ export function Chip({
   variant = 'fill',
   size = 'md',
   disabled,
+  label,
   style
 }: ChipProps) {
   const Theme = useTheme();
@@ -37,7 +38,9 @@ export function Chip({
   const iconSize = size === 'md' ? 'sm' : 'xs';
 
   const onPress = () => {
-    // open link
+    Linking.canOpenURL(link).then(supported => {
+      if (supported) Linking.openURL(link);
+    });
   };
 
   const onPressIn = () => {
@@ -85,7 +88,7 @@ export function Chip({
         variant={size === 'md' ? 'paragraph-600' : 'small-600'}
         style={[styles.link, { color: Theme[themedTextColor] }]}
       >
-        {link}
+        {label || link}
       </Text>
       {icon && (
         <Icon
