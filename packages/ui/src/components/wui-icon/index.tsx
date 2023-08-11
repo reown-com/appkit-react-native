@@ -36,7 +36,7 @@ import NetworkPlaceholderSvg from '../../assets/svg/NetworkPlaceholder';
 import NftPlaceholderSvg from '../../assets/svg/NftPlaceholder';
 import OffSvg from '../../assets/svg/Off';
 import RefreshSvg from '../../assets/svg/Refresh';
-import SearchSvg from '../../assets/svg/Magnifier';
+import SearchSvg from '../../assets/svg/Search';
 import SwapHorizontalSvg from '../../assets/svg/SwapHorizontal';
 import SwapVerticalSvg from '../../assets/svg/SwapVertical';
 import TelegramSvg from '../../assets/svg/Telegram';
