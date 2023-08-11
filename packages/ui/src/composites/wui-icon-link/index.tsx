@@ -28,14 +28,16 @@ export function IconLink({
   const onPressIn = () => {
     Animated.spring(colorAnimation.current, {
       toValue: 1,
-      useNativeDriver: true
+      useNativeDriver: true,
+      overshootClamping: true
     }).start();
   };
 
   const onPressOut = () => {
     Animated.spring(colorAnimation.current, {
       toValue: 0,
-      useNativeDriver: true
+      useNativeDriver: true,
+      overshootClamping: true
     }).start();
   };
 

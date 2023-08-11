@@ -1,5 +1,11 @@
-import { useRef, useState } from 'react';
-import { Animated, Pressable, PressableProps as NativeProps } from 'react-native';
+import { useRef } from 'react';
+import {
+  Animated,
+  Pressable,
+  PressableProps as NativeProps,
+  StyleProp,
+  ViewStyle
+} from 'react-native';
 import { Text } from '../../components/wui-text';
 import useTheme from '../../hooks/useTheme';
 import { ButtonType, SizeType } from '../../utils/TypesUtil';
@@ -15,6 +21,7 @@ export type ButtonProps = NativeProps & {
   iconLeft?: string;
   iconRight?: string;
   children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
 };
 
 export function Button({
@@ -26,37 +33,42 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const Theme = useTheme();
-  const scale = useRef(new Animated.Value(1)).current;
-  const [pressed, setPressed] = useState(false);
-  const themedButtonStyle = getThemedButtonStyle(Theme, variant, disabled, pressed);
   const themedTextStyle = getThemedTextStyle(Theme, variant, disabled);
+  const colorAnimation = useRef(new Animated.Value(0));
+
+  const themedNormalStyle = getThemedButtonStyle(Theme, variant, disabled, false);
+  const themedPressedStyle = getThemedButtonStyle(Theme, variant, disabled, true);
 
   const onPressIn = () => {
-    setPressed(true);
-    Animated.spring(scale, {
-      toValue: 0.95,
-      useNativeDriver: true
+    Animated.spring(colorAnimation.current, {
+      toValue: 1,
+      useNativeDriver: true,
+      overshootClamping: true
     }).start();
   };
 
   const onPressOut = () => {
-    setPressed(false);
-    Animated.spring(scale, {
-      toValue: 1,
-      useNativeDriver: true
+    Animated.spring(colorAnimation.current, {
+      toValue: 0,
+      useNativeDriver: true,
+      overshootClamping: true
     }).start();
   };
+
+  const backgroundColor = colorAnimation.current.interpolate({
+    inputRange: [0, 1],
+    outputRange: [themedNormalStyle.backgroundColor, themedPressedStyle.backgroundColor]
+  });
+
+  const borderColor = colorAnimation.current.interpolate({
+    inputRange: [0, 1],
+    outputRange: [themedNormalStyle.borderColor, themedPressedStyle.borderColor]
+  });
 
   return (
     <AnimatedPressable
       disabled={disabled}
-      style={[
-        styles.button,
-        styles[`${size}Button`],
-        { transform: [{ scale }] },
-        themedButtonStyle,
-        style
-      ]}
+      style={[styles.button, styles[`${size}Button`], { backgroundColor, borderColor }, style]}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
       {...rest}

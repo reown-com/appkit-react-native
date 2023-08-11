@@ -3,9 +3,9 @@ import { Animated, Linking, Pressable, StyleProp, ViewStyle } from 'react-native
 import { ChipType, ColorType, IconType, SizeType } from '../../utils/TypesUtil';
 import useTheme from '../../hooks/useTheme';
 import { Text } from '../../components/wui-text';
-import styles, { getThemedChipStyle, getThemedTextColor } from './styles';
 import { Image } from '../../components/wui-image';
 import { Icon } from '../../components/wui-icon';
+import styles, { getThemedChipStyle, getThemedTextColor } from './styles';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -31,9 +31,10 @@ export function Chip({
   style
 }: ChipProps) {
   const Theme = useTheme();
-  const scale = useRef(new Animated.Value(1)).current;
+  const colorAnimation = useRef(new Animated.Value(0));
   const [pressed, setPressed] = useState(false);
-  const themedButtonStyle = getThemedChipStyle(Theme, variant, disabled, pressed);
+  const themedNormalStyle = getThemedChipStyle(Theme, variant, disabled, false);
+  const themedPressedStyle = getThemedChipStyle(Theme, variant, disabled, true);
   const themedTextColor = getThemedTextColor(variant, disabled, pressed);
   const iconSize = size === 'md' ? 'sm' : 'xs';
 
@@ -44,31 +45,37 @@ export function Chip({
   };
 
   const onPressIn = () => {
-    setPressed(true);
-    Animated.spring(scale, {
-      toValue: 0.98,
-      useNativeDriver: true
+    Animated.spring(colorAnimation.current, {
+      toValue: 1,
+      useNativeDriver: true,
+      overshootClamping: true
     }).start();
+    setPressed(true);
   };
 
   const onPressOut = () => {
-    setPressed(false);
-    Animated.spring(scale, {
-      toValue: 1,
-      useNativeDriver: true
+    Animated.spring(colorAnimation.current, {
+      toValue: 0,
+      useNativeDriver: true,
+      overshootClamping: true
     }).start();
+    setPressed(false);
   };
+
+  const backgroundColor = colorAnimation.current.interpolate({
+    inputRange: [0, 1],
+    outputRange: [themedNormalStyle.backgroundColor, themedPressedStyle.backgroundColor]
+  });
+
+  const borderColor = colorAnimation.current.interpolate({
+    inputRange: [0, 1],
+    outputRange: [themedNormalStyle.borderColor, themedPressedStyle.borderColor]
+  });
 
   return (
     <AnimatedPressable
       disabled={disabled}
-      style={[
-        styles.container,
-        styles[`${size}Chip`],
-        { transform: [{ scale }] },
-        themedButtonStyle,
-        style
-      ]}
+      style={[styles.container, styles[`${size}Chip`], { borderColor, backgroundColor }, style]}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
       onPress={onPress}
@@ -78,7 +85,7 @@ export function Chip({
           style={[
             styles.image,
             styles[`${size}Image`],
-            { borderColor: themedButtonStyle.borderColor },
+            { borderColor: themedNormalStyle.borderColor },
             disabled && styles.disabledImage
           ]}
           source={imageSrc}
