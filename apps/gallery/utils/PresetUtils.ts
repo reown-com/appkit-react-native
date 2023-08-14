@@ -1,4 +1,11 @@
-import { ColorType, TextType, ButtonType, IconType, ChipType } from '@web3modal/ui-react-native';
+import {
+  ColorType,
+  TextType,
+  ButtonType,
+  IconType,
+  ChipType,
+  VisualType
+} from '@web3modal/ui-react-native';
 
 export const colorOptions: ColorType[] = [
   'blue-100',
@@ -77,4 +84,20 @@ export const iconOptions: IconType[] = [
   'walletConnect',
   'walletPlaceholder',
   'warningCircle'
+];
+
+export const visualOptions: VisualType[] = [
+  'browser',
+  'dao',
+  'defi',
+  'defiAlt',
+  'eth',
+  'layers',
+  'lock',
+  'login',
+  'network',
+  'nft',
+  'noun',
+  'profile',
+  'system'
 ];

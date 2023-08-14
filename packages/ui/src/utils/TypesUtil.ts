@@ -118,3 +118,18 @@ export type IconType =
   | 'walletConnect'
   | 'walletPlaceholder'
   | 'warningCircle';
+
+export type VisualType =
+  | 'browser'
+  | 'dao'
+  | 'defi'
+  | 'defiAlt'
+  | 'eth'
+  | 'layers'
+  | 'lock'
+  | 'login'
+  | 'network'
+  | 'nft'
+  | 'noun'
+  | 'profile'
+  | 'system';
