@@ -12,5 +12,6 @@ export { WalletImage, type WalletImageProps } from './composites/wui-wallet-imag
 export { IconBox, type IconBoxProps } from './composites/wui-icon-box';
 export { IconLink, type IconLinkProps } from './composites/wui-icon-link';
 export { Chip, type ChipProps } from './composites/wui-chip';
+export { Tag, type TagProps } from './composites/wui-tag';
 
 export type { ColorType, TextType, SizeType, IconType } from './utils/TypesUtil';

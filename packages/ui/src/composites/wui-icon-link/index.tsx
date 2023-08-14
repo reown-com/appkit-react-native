@@ -54,7 +54,7 @@ export function IconLink({
       disabled={disabled}
       style={[styles.container, { backgroundColor: boxColor }]}
     >
-      <Icon name={icon} size={size} color={disabled ? 'fg-300' : iconColor} />
+      <Icon name={icon} size={size} color={disabled ? ('overlay-020' as ColorType) : iconColor} />
     </AnimatedPressable>
   );
 }

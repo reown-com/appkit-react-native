@@ -44,12 +44,12 @@ export default StyleSheet.create({
     fontWeight: '600'
   },
   'micro-600': {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '600',
     letterSpacing: 0.2
   },
   'micro-700': {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '700',
     letterSpacing: 0.2
   }
