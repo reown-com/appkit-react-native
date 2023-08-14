@@ -68,6 +68,8 @@ export type ColorType =
 
 export type SizeType = 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
 
+export type PlacementType = 'bottom' | 'left' | 'right' | 'top';
+
 export type ButtonType = 'accent' | 'fill';
 
 export type ChipType = 'fill' | 'shade' | 'transparent';
@@ -89,6 +91,7 @@ export type IconType =
   | 'coinPlaceholder'
   | 'compass'
   | 'copy'
+  | 'cursor'
   | 'desktop'
   | 'disconnect'
   | 'discord'

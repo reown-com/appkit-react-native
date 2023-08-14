@@ -4,7 +4,8 @@ import {
   ButtonType,
   IconType,
   ChipType,
-  VisualType
+  VisualType,
+  PlacementType
 } from '@web3modal/ui-react-native';
 
 export const colorOptions: ColorType[] = [
@@ -38,6 +39,8 @@ export const buttonOptions: ButtonType[] = ['fill', 'accent'];
 
 export const chipOptions: ChipType[] = ['fill', 'shade', 'transparent'];
 
+export const tooltipOptions: PlacementType[] = ['top', 'bottom', 'left', 'right'];
+
 export const iconOptions: IconType[] = [
   'apple',
   'arrowBottom',
@@ -55,6 +58,7 @@ export const iconOptions: IconType[] = [
   'coinPlaceholder',
   'compass',
   'copy',
+  'cursor',
   'desktop',
   'disconnect',
   'discord',

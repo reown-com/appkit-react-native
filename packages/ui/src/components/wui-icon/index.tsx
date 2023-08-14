@@ -18,6 +18,7 @@ import CloseSvg from '../../assets/svg/Close';
 import CompassSvg from '../../assets/svg/Compass';
 import CoinPlaceholderSvg from '../../assets/svg/CoinPlaceholder';
 import CopySvg from '../../assets/svg/Copy';
+import CursorSvg from '../../assets/svg/Cursor';
 import DesktopSvg from '../../assets/svg/Desktop';
 import DisconnectSvg from '../../assets/svg/Disconnect';
 import DiscordSvg from '../../assets/svg/Discord';
@@ -67,6 +68,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   compass: CompassSvg,
   coinPlaceholder: CoinPlaceholderSvg,
   copy: CopySvg,
+  cursor: CursorSvg,
   desktop: DesktopSvg,
   disconnect: DisconnectSvg,
   discord: DiscordSvg,
@@ -98,16 +100,18 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   warningCircle: WarningCircleSvg
 };
 
-export type IconProps = {
+export type IconProps = SvgProps & {
   name: IconType;
   size?: SizeType;
   color?: ColorType;
   style?: SvgProps['style'];
 };
 
-export function Icon({ name, color = 'fg-100', size = 'md', style }: IconProps) {
+export function Icon({ name, color = 'fg-100', size = 'md', style, ...rest }: IconProps) {
   const Theme = useTheme();
   const Component = svgOptions[name];
 
-  return <Component fill={Theme[color as ThemeKeys]} width={IconSize[size]} style={style} />;
+  return (
+    <Component fill={Theme[color as ThemeKeys]} width={IconSize[size]} style={style} {...rest} />
+  );
 }
