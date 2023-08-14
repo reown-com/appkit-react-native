@@ -1,13 +1,13 @@
 import Svg, { ClipPath, Defs, G, Path, Rect, SvgProps } from 'react-native-svg';
 const SvgEth = (props: SvgProps) => (
   <Svg fill="none" viewBox="0 0 60 60" {...props}>
-    <G clip-path="url(#a)">
+    <G clipPath="url(#a)">
       <Rect width="60" height="60" fill="#987DE8" rx="30" />
       <Path
         fill="#fff"
-        fill-rule="evenodd"
+        fillRule="evenodd"
         d="m15.48 28.37 11.97-19.3a3 3 0 0 1 5.1 0l11.97 19.3a6 6 0 0 1 .9 3.14v.03a6 6 0 0 1-1.16 3.56L33.23 50.2a4 4 0 0 1-6.46 0L15.73 35.1a6 6 0 0 1-1.15-3.54v-.03a6 6 0 0 1 .9-3.16Z"
-        clip-rule="evenodd"
+        clipRule="evenodd"
       />
       <Path
         fill="#643CDD"
@@ -34,7 +34,7 @@ const SvgEth = (props: SvgProps) => (
         d="M30 37.64V24.46l-12.6 5.57a2 2 0 0 0 .97 1.39l10.13 5.82a3 3 0 0 0 1.5.4Z"
       />
     </G>
-    <Rect width="59" height="59" x=".5" y=".5" stroke="#fff" stroke-opacity=".1" rx="29.5" />
+    <Rect width="59" height="59" x=".5" y=".5" stroke="#fff" strokeOpacity=".1" rx="29.5" />
     <Defs>
       <ClipPath id="a">
         <Rect width="60" height="60" fill="#fff" rx="30" />

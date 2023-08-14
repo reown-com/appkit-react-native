@@ -9,6 +9,9 @@ const meta: Meta<typeof Tag> = {
     variant: {
       options: ['main', 'shade'],
       control: { type: 'select' }
+    },
+    children: {
+      control: { type: 'text' }
     }
   },
   args: {

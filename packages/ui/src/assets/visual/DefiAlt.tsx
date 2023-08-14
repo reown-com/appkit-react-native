@@ -1,7 +1,7 @@
 import Svg, { ClipPath, Defs, G, Path, Rect, SvgProps } from 'react-native-svg';
 const SvgDefiAlt = (props: SvgProps) => (
   <Svg fill="none" viewBox="0 0 60 60" {...props}>
-    <G clip-path="url(#a)">
+    <G clipPath="url(#a)">
       <Rect width="60" height="60" fill="#C653C6" rx="30" />
       <Path
         fill="#E87DE8"
@@ -13,14 +13,14 @@ const SvgDefiAlt = (props: SvgProps) => (
       />
       <Path
         fill="#fff"
-        fill-rule="evenodd"
+        fillRule="evenodd"
         d="M35.5 27a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0Z"
-        clip-rule="evenodd"
+        clipRule="evenodd"
       />
       <Path fill="#fff" d="M31 0v60h-2V0h2Z" />
       <Path fill="#E87DE8" d="M33.5 27a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" />
     </G>
-    <Rect width="59" height="59" x=".5" y=".5" stroke="#fff" stroke-opacity=".1" rx="29.5" />
+    <Rect width="59" height="59" x=".5" y=".5" stroke="#fff" strokeOpacity=".1" rx="29.5" />
     <Defs>
       <ClipPath id="a">
         <Rect width="60" height="60" fill="#fff" rx="30" />

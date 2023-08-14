@@ -38,5 +38,5 @@ export interface VisualProps {
 export function Visual({ name }: VisualProps) {
   const Component = svgOptions[name];
 
-  return <Component width="60" />;
+  return <Component width={60} height={60} />;
 }
