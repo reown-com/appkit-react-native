@@ -29,6 +29,7 @@ export function Button({
   size = 'md',
   variant = 'fill',
   disabled,
+  onPress,
   style,
   ...rest
 }: ButtonProps) {
@@ -71,6 +72,7 @@ export function Button({
       style={[styles.button, styles[`${size}Button`], { backgroundColor, borderColor }, style]}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
+      onPress={onPress}
       {...rest}
     >
       <Text variant={size === 'md' ? 'paragraph-600' : 'small-600'} style={themedTextStyle}>
