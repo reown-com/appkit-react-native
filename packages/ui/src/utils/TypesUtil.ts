@@ -136,3 +136,13 @@ export type VisualType =
   | 'noun'
   | 'profile'
   | 'system';
+
+export type LogoType =
+  | 'apple'
+  | 'discord'
+  | 'facebook'
+  | 'github'
+  | 'google'
+  | 'telegram'
+  | 'twitch'
+  | 'twitter';

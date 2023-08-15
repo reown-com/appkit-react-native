@@ -14,5 +14,7 @@ export { IconLink, type IconLinkProps } from './composites/wui-icon-link';
 export { Chip, type ChipProps } from './composites/wui-chip';
 export { Tag, type TagProps } from './composites/wui-tag';
 export { Tooltip, type TooltipProps } from './composites/wui-tooltip';
+export { Logo, type LogoProps } from './composites/wui-logo';
+export { LogoSelect, type LogoSelectProps } from './composites/wui-logo-select';
 
-export type { ColorType, TextType, SizeType, IconType } from './utils/TypesUtil';
+export type { ColorType, TextType, SizeType, IconType, LogoType } from './utils/TypesUtil';

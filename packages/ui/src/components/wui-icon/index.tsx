@@ -112,6 +112,12 @@ export function Icon({ name, color = 'fg-100', size = 'md', style, ...rest }: Ic
   const Component = svgOptions[name];
 
   return (
-    <Component fill={Theme[color as ThemeKeys]} width={IconSize[size]} style={style} {...rest} />
+    <Component
+      fill={Theme[color as ThemeKeys]}
+      width={IconSize[size]}
+      height={IconSize[size]}
+      style={style}
+      {...rest}
+    />
   );
 }

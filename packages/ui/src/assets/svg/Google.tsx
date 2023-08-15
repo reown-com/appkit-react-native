@@ -3,8 +3,8 @@ const SvgGoogle = (props: SvgProps) => (
   <Svg viewBox="0 0 40 40" {...props} fill="none">
     <G clipPath="url(#Google_svg__a)">
       <G clipPath="url(#Google_svg__b)">
-        <Circle cx={20} cy={19.886} r={20} fill="#fff" fillOpacity={0.05} />
-        <Circle cx={20} cy={19.886} r={19.5} stroke="#fff" strokeOpacity={0.05} />
+        <Circle cx={20} cy={20} r={20} fill="#fff" fillOpacity={0.05} />
+        <Circle cx={20} cy={20} r={19.5} stroke="#fff" strokeOpacity={0.05} />
         <G clipPath="url(#Google_svg__c)">
           <Path
             fill="#4285F4"

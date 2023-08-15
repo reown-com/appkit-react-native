@@ -5,7 +5,8 @@ import {
   IconType,
   ChipType,
   VisualType,
-  PlacementType
+  PlacementType,
+  LogoType
 } from '@web3modal/ui-react-native';
 
 export const colorOptions: ColorType[] = [
@@ -104,4 +105,15 @@ export const visualOptions: VisualType[] = [
   'noun',
   'profile',
   'system'
+];
+
+export const logoOptions: LogoType[] = [
+  'apple',
+  'discord',
+  'facebook',
+  'github',
+  'google',
+  'telegram',
+  'twitch',
+  'twitter'
 ];
