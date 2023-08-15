@@ -15,6 +15,7 @@ export { InputElement, type InputElementProps } from './composites/wui-input-ele
 export { Link, type LinkProps } from './composites/wui-link';
 export { Logo, type LogoProps } from './composites/wui-logo';
 export { LogoSelect, type LogoSelectProps } from './composites/wui-logo-select';
+export { Snackbar, type SnackbarProps } from './composites/wui-snackbar';
 export { Tag, type TagProps } from './composites/wui-tag';
 export { Tooltip, type TooltipProps } from './composites/wui-tooltip';
 export { WalletImage, type WalletImageProps } from './composites/wui-wallet-image';
