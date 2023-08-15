@@ -70,7 +70,7 @@ export type SizeType = 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top';
 
-export type ButtonType = 'accent' | 'fill';
+export type ButtonType = 'accent' | 'fill' | 'shade';
 
 export type ChipType = 'fill' | 'shade' | 'transparent';
 

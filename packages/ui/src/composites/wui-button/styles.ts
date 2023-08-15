@@ -4,7 +4,7 @@ import type { ButtonType, ThemeKeys } from '../../utils/TypesUtil';
 
 export const getThemedButtonStyle = (
   theme: { [key in ThemeKeys]: string },
-  variant: ButtonType,
+  variant: Exclude<ButtonType, 'shade'>,
   disabled?: boolean,
   pressed?: boolean
 ): StyleProp<any> => {

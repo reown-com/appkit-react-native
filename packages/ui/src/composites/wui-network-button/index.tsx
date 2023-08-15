@@ -1,44 +1,34 @@
 import { useRef } from 'react';
-import {
-  Animated,
-  Pressable,
-  PressableProps as NativeProps,
-  StyleProp,
-  ViewStyle
-} from 'react-native';
+import { Animated, Pressable } from 'react-native';
+import { Image } from '../../components/wui-image';
 import { Text } from '../../components/wui-text';
 import useTheme from '../../hooks/useTheme';
-import { ButtonType, SizeType } from '../../utils/TypesUtil';
-
-import styles, { getThemedButtonStyle, getThemedTextStyle } from './styles';
+import { ButtonType } from '../../utils/TypesUtil';
+import { IconBox } from '../wui-icon-box';
+import styles, { getThemedStyle, getTextColor } from './styles';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export type ButtonProps = NativeProps & {
-  size?: Exclude<SizeType, 'lg' | 'xs' | 'xxs'>;
-  variant?: Exclude<ButtonType, 'shade'>;
+export interface NetworkButtonProps {
+  name: string;
+  onPress: () => void;
+  imageSrc?: string;
   disabled?: boolean;
-  iconLeft?: string;
-  iconRight?: string;
-  children: React.ReactNode;
-  style?: StyleProp<ViewStyle>;
-};
+  variant?: Exclude<ButtonType, 'accent'>;
+}
 
-export function Button({
-  children,
-  size = 'md',
-  variant = 'fill',
+export function NetworkButton({
+  imageSrc,
+  name,
   disabled,
   onPress,
-  style,
-  ...rest
-}: ButtonProps) {
+  variant = 'fill'
+}: NetworkButtonProps) {
   const Theme = useTheme();
-  const themedTextStyle = getThemedTextStyle(Theme, variant, disabled);
   const colorAnimation = useRef(new Animated.Value(0));
-
-  const themedNormalStyle = getThemedButtonStyle(Theme, variant, disabled, false);
-  const themedPressedStyle = getThemedButtonStyle(Theme, variant, disabled, true);
+  const themedNormalStyle = getThemedStyle(Theme, variant, false, disabled);
+  const themedPressedStyle = getThemedStyle(Theme, variant, true, disabled);
+  const color = getTextColor(variant, disabled);
 
   const onPressIn = () => {
     Animated.spring(colorAnimation.current, {
@@ -68,15 +58,18 @@ export function Button({
 
   return (
     <AnimatedPressable
-      disabled={disabled}
-      style={[styles.button, styles[`${size}Button`], { backgroundColor, borderColor }, style]}
+      style={[styles.container, { backgroundColor, borderColor }]}
+      onPress={onPress}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
-      onPress={onPress}
-      {...rest}
     >
-      <Text variant={size === 'md' ? 'paragraph-600' : 'small-600'} style={themedTextStyle}>
-        {children}
+      {imageSrc ? (
+        <Image style={[styles.image, disabled && styles.imageDisabled]} source={imageSrc} />
+      ) : (
+        <IconBox icon="networkPlaceholder" background iconColor={color} size="sm" />
+      )}
+      <Text style={styles.text} variant="paragraph-600" color={color}>
+        {name}
       </Text>
     </AnimatedPressable>
   );
