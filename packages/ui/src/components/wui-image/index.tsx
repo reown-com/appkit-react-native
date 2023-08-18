@@ -12,9 +12,10 @@ export function Image({ source, style, ...rest }: ImageProps) {
   const opacity = useRef(new Animated.Value(0));
 
   const onLoadEnd = () => {
-    Animated.spring(opacity.current, {
+    Animated.timing(opacity.current, {
       toValue: 1,
-      useNativeDriver: true
+      useNativeDriver: true,
+      duration: 150
     }).start();
   };
 

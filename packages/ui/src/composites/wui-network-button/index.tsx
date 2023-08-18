@@ -31,18 +31,18 @@ export function NetworkButton({
   const color = getTextColor(variant, disabled);
 
   const onPressIn = () => {
-    Animated.spring(colorAnimation.current, {
+    Animated.timing(colorAnimation.current, {
       toValue: 1,
       useNativeDriver: true,
-      overshootClamping: true
+      duration: 200
     }).start();
   };
 
   const onPressOut = () => {
-    Animated.spring(colorAnimation.current, {
+    Animated.timing(colorAnimation.current, {
       toValue: 0,
       useNativeDriver: true,
-      overshootClamping: true
+      duration: 200
     }).start();
   };
 

@@ -5,18 +5,18 @@ function useAnimatedColor(startColor: string, endColor: string) {
   const colorAnimation = useRef(new Animated.Value(0));
 
   const setStartColor = useCallback(() => {
-    Animated.spring(colorAnimation.current, {
+    Animated.timing(colorAnimation.current, {
       toValue: 0,
       useNativeDriver: true,
-      overshootClamping: true
+      duration: 200
     }).start();
   }, [colorAnimation]);
 
   const setEndColor = useCallback(() => {
-    Animated.spring(colorAnimation.current, {
+    Animated.timing(colorAnimation.current, {
       toValue: 1,
       useNativeDriver: true,
-      overshootClamping: true
+      duration: 200
     }).start();
   }, [colorAnimation]);
 
