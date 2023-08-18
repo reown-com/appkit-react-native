@@ -146,3 +146,5 @@ export type LogoType =
   | 'telegram'
   | 'twitch'
   | 'twitter';
+
+export type TagType = 'main' | 'shade';

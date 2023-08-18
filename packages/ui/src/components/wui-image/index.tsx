@@ -1,10 +1,29 @@
-import { Image as NativeImage, type ImageProps as NativeProps } from 'react-native';
+import { useRef } from 'react';
+import { Animated, Image as NativeImage, type ImageProps as NativeProps } from 'react-native';
 import styles from './styles';
+
+const AnimatedImage = Animated.createAnimatedComponent(NativeImage);
 
 export type ImageProps = Omit<NativeProps, 'source'> & {
   source: string;
 };
 
 export function Image({ source, style, ...rest }: ImageProps) {
-  return <NativeImage source={{ uri: source }} style={[styles.image, style]} {...rest} />;
+  const opacity = useRef(new Animated.Value(0));
+
+  const onLoadEnd = () => {
+    Animated.spring(opacity.current, {
+      toValue: 1,
+      useNativeDriver: true
+    }).start();
+  };
+
+  return (
+    <AnimatedImage
+      onLoadEnd={onLoadEnd}
+      source={{ uri: source }}
+      style={[styles.image, { opacity: opacity.current }, style]}
+      {...rest}
+    />
+  );
 }

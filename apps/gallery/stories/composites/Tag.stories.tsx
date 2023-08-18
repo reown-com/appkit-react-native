@@ -12,11 +12,15 @@ const meta: Meta<typeof Tag> = {
     },
     children: {
       control: { type: 'text' }
+    },
+    disabled: {
+      control: { type: 'boolean' }
     }
   },
   args: {
     variant: 'main',
-    children: 'Recent'
+    children: 'Recent',
+    disabled: false
   }
 };
 
@@ -24,5 +28,9 @@ export default meta;
 type Story = StoryObj<typeof Tag>;
 
 export const Default: Story = {
-  render: args => <Tag variant={args.variant}>{args.children}</Tag>
+  render: args => (
+    <Tag variant={args.variant} disabled={args.disabled}>
+      {args.children}
+    </Tag>
+  )
 };

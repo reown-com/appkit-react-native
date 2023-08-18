@@ -2,6 +2,10 @@ import { StyleSheet } from 'react-native';
 import { BorderRadius } from '../../utils/ThemeUtil';
 
 export default StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   smImage: {
     height: 40,
     width: 40,

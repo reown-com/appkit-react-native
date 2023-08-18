@@ -6,8 +6,44 @@ import {
   ChipType,
   VisualType,
   PlacementType,
-  LogoType
+  LogoType,
+  TagType
 } from '@web3modal/ui-react-native';
+
+export const walletImagesOptions = [
+  {
+    src: 'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=90369b5c91c6f7fffe308df2b30f3ace',
+    walletName: 'Rainbow'
+  },
+  {
+    src: 'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/f216b371-96cf-409a-9d88-296392b85800?projectId=90369b5c91c6f7fffe308df2b30f3ace',
+    walletName: 'Zerion'
+  },
+  {
+    src: 'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/a7f416de-aa03-4c5e-3280-ab49269aef00?projectId=90369b5c91c6f7fffe308df2b30f3ace',
+    walletName: 'Ledger'
+  },
+  {
+    src: 'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7e1514ba-932d-415d-1bdb-bccb6c2cbc00?projectId=90369b5c91c6f7fffe308df2b30f3ace',
+    walletName: 'Fireblocks'
+  }
+];
+
+export const walletImageSrc =
+  'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=90369b5c91c6f7fffe308df2b30f3ace';
+
+export const networkImageSrc =
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=90369b5c91c6f7fffe308df2b30f3ace';
+
+export const avatarImageSrc =
+  'https://i.seadn.io/gcs/files/007a5af0d93d561f87c8d026ddd5179e.png?auto=format&dpr=1&w=1000';
+
+export const wcUri =
+  'wc:139520827546986d057472f8bbd7ef0484409458034b61cca59d908563773c7a@2?relay-protocol=irn&symKey=43b5fad11bf07bc8a0aa12231435a4ad3e72e2d1fa257cf191a90ec5b62cb0a';
+
+export const externalLink = 'https://www.fireblocks.com';
+
+export const externalLabel = 'www.fireblocks.com';
 
 export const colorOptions: ColorType[] = [
   'blue-100',
@@ -41,6 +77,8 @@ export const buttonOptions: ButtonType[] = ['fill', 'accent'];
 export const chipOptions: ChipType[] = ['fill', 'shade', 'transparent'];
 
 export const tooltipOptions: PlacementType[] = ['top', 'bottom', 'left', 'right'];
+
+export const tagOptions: TagType[] = ['main', 'shade'];
 
 export const iconOptions: IconType[] = [
   'apple',
