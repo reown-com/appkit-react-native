@@ -45,7 +45,7 @@ const meta: Meta<typeof Chip> = {
     icon: 'disconnect',
     link: externalLink,
     label: externalLabel,
-    imageSrc: walletImagesOptions[3]?.src
+    imageSrc: walletImagesOptions[3]
   }
 };
 

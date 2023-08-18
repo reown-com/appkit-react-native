@@ -8,11 +8,12 @@ import styles from './styles';
 
 export interface WalletImageProps {
   imageSrc?: string;
-  size?: Exclude<SizeType, 'xs' | 'xxs'>;
+  size?: Exclude<SizeType, 'xxs'>;
   style?: StyleProp<ViewStyle>;
 }
 
 const IconSize = {
+  xs: 10,
   sm: 20,
   md: 25,
   lg: 40

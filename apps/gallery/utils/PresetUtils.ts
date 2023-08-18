@@ -11,22 +11,10 @@ import {
 } from '@web3modal/ui-react-native';
 
 export const walletImagesOptions = [
-  {
-    src: 'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=90369b5c91c6f7fffe308df2b30f3ace',
-    walletName: 'Rainbow'
-  },
-  {
-    src: 'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/f216b371-96cf-409a-9d88-296392b85800?projectId=90369b5c91c6f7fffe308df2b30f3ace',
-    walletName: 'Zerion'
-  },
-  {
-    src: 'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/a7f416de-aa03-4c5e-3280-ab49269aef00?projectId=90369b5c91c6f7fffe308df2b30f3ace',
-    walletName: 'Ledger'
-  },
-  {
-    src: 'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7e1514ba-932d-415d-1bdb-bccb6c2cbc00?projectId=90369b5c91c6f7fffe308df2b30f3ace',
-    walletName: 'Fireblocks'
-  }
+  'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=90369b5c91c6f7fffe308df2b30f3ace',
+  'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/bff9cf1f-df19-42ce-f62a-87f04df13c00?projectId=90369b5c91c6f7fffe308df2b30f3ace',
+  'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/a7f416de-aa03-4c5e-3280-ab49269aef00?projectId=90369b5c91c6f7fffe308df2b30f3ace',
+  'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7e1514ba-932d-415d-1bdb-bccb6c2cbc00?projectId=90369b5c91c6f7fffe308df2b30f3ace'
 ];
 
 export const walletImageSrc =

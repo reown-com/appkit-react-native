@@ -6,6 +6,11 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  xsImage: {
+    height: 15,
+    width: 15,
+    borderRadius: BorderRadius['4xs']
+  },
   smImage: {
     height: 40,
     width: 40,

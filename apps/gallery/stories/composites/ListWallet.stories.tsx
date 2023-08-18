@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { ListWallet } from '@web3modal/ui-react-native';
-import { tagOptions, walletImageSrc } from '../../utils/PresetUtils';
+import { tagOptions, walletImagesOptions, walletImageSrc } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof ListWallet> = {
   component: ListWallet,
@@ -26,6 +26,9 @@ const meta: Meta<typeof ListWallet> = {
     },
     disabled: {
       control: { type: 'boolean' }
+    },
+    showAllWallets: {
+      control: { type: 'boolean' }
     }
   },
   args: {
@@ -33,6 +36,8 @@ const meta: Meta<typeof ListWallet> = {
     tagVariant: 'main',
     tagLabel: 'Recent',
     imageSrc: walletImageSrc,
+    walletImages: walletImagesOptions,
+    showAllWallets: false,
     disabled: false
   }
 };
@@ -48,7 +53,9 @@ export const Default: Story = {
         tagVariant={args.tagVariant}
         tagLabel={args.tagLabel}
         imageSrc={args.imageSrc}
+        walletImages={args.walletImages}
         disabled={args.disabled}
+        showAllWallets={args.showAllWallets}
       />
     </View>
   )

@@ -5,6 +5,7 @@ import useTheme from '../../hooks/useTheme';
 import { TagType } from '../../utils/TypesUtil';
 import { Tag } from '../wui-tag';
 import { WalletImage } from '../wui-wallet-image';
+import { AllWalletsImage } from '../wui-all-wallets-image';
 import styles from './styles';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -14,6 +15,7 @@ export interface ListWalletProps {
   onPress?: () => void;
   imageSrc?: string;
   walletImages?: string[];
+  showAllWallets?: boolean;
   tagLabel?: string;
   tagVariant?: TagType;
   disabled?: boolean;
@@ -24,6 +26,7 @@ export function ListWallet({
   onPress,
   imageSrc,
   walletImages,
+  showAllWallets = false,
   tagLabel,
   tagVariant,
   disabled
@@ -33,6 +36,29 @@ export function ListWallet({
     Theme['overlay-002'],
     Theme['overlay-010']
   );
+
+  function imageTemplate() {
+    if (walletImages && showAllWallets) {
+      return (
+        <AllWalletsImage
+          walletImages={walletImages}
+          style={[
+            styles.image,
+            { backgroundColor: animatedColor },
+            disabled && styles.imageDisabled
+          ]}
+        />
+      );
+    }
+
+    return (
+      <WalletImage
+        style={[styles.image, disabled && styles.imageDisabled]}
+        imageSrc={imageSrc}
+        size="sm"
+      />
+    );
+  }
 
   return (
     <AnimatedPressable
@@ -46,13 +72,7 @@ export function ListWallet({
       onPressOut={setStartColor}
     >
       <View style={styles.leftSide}>
-        {walletImages ? null : (
-          <WalletImage
-            style={[styles.image, disabled && styles.imageDisabled]}
-            imageSrc={imageSrc}
-            size="sm"
-          />
-        )}
+        {imageTemplate()}
         <Text variant="paragraph-500" style={styles.name} color={disabled ? 'fg-300' : 'fg-100'}>
           {name}
         </Text>
