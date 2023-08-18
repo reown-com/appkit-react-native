@@ -19,7 +19,7 @@ const meta: Meta<typeof Text> = {
   args: {
     variant: 'paragraph-500',
     color: 'fg-100',
-    children: 'Text'
+    children: 'The fox jumped over the lazy dog'
   }
 };
 

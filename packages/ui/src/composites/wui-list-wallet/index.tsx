@@ -1,6 +1,6 @@
 import { Animated, Pressable, View } from 'react-native';
 import { Text } from '../../components/wui-text';
-import useAnimatedColor from '../../hooks/useAnimatedColor';
+import useAnimatedValue from '../../hooks/useAnimatedValue';
 import useTheme from '../../hooks/useTheme';
 import { TagType } from '../../utils/TypesUtil';
 import { Tag } from '../wui-tag';
@@ -32,7 +32,7 @@ export function ListWallet({
   disabled
 }: ListWalletProps) {
   const Theme = useTheme();
-  const { animatedColor, setStartColor, setEndColor } = useAnimatedColor(
+  const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
     Theme['overlay-002'],
     Theme['overlay-010']
   );
@@ -44,7 +44,7 @@ export function ListWallet({
           walletImages={walletImages}
           style={[
             styles.image,
-            { backgroundColor: animatedColor },
+            { backgroundColor: animatedValue },
             disabled && styles.imageDisabled
           ]}
         />
@@ -62,14 +62,11 @@ export function ListWallet({
 
   return (
     <AnimatedPressable
-      style={[
-        styles.container,
-        { backgroundColor: disabled ? Theme['overlay-010'] : animatedColor }
-      ]}
+      style={[styles.container, { backgroundColor: disabled ? Theme['overlay-010'] : value }]}
       disabled={disabled}
       onPress={onPress}
-      onPressIn={setEndColor}
-      onPressOut={setStartColor}
+      onPressIn={setEndValue}
+      onPressOut={setStartValue}
     >
       <View style={styles.leftSide}>
         {imageTemplate()}

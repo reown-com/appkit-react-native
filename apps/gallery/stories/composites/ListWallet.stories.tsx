@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { ListWallet } from '@web3modal/ui-react-native';
 import { tagOptions, walletImagesOptions, walletImageSrc } from '../../utils/PresetUtils';
+import { GalleryContainer } from '../../components/GalleryContainer';
 
 const meta: Meta<typeof ListWallet> = {
   component: ListWallet,
@@ -47,7 +47,7 @@ type Story = StoryObj<typeof ListWallet>;
 
 export const Default: Story = {
   render: args => (
-    <View style={styles.container}>
+    <GalleryContainer width={300}>
       <ListWallet
         name={args.name}
         tagVariant={args.tagVariant}
@@ -57,12 +57,6 @@ export const Default: Story = {
         disabled={args.disabled}
         showAllWallets={args.showAllWallets}
       />
-    </View>
+    </GalleryContainer>
   )
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: 300
-  }
-});

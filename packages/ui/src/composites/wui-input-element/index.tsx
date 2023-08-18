@@ -1,6 +1,6 @@
 import { Animated, Pressable } from 'react-native';
 import { Icon } from '../../components/wui-icon';
-import useAnimatedColor from '../../hooks/useAnimatedColor';
+import useAnimatedValue from '../../hooks/useAnimatedValue';
 import useTheme from '../../hooks/useTheme';
 import { ColorType, IconType } from '../../utils/TypesUtil';
 import styles from './styles';
@@ -15,7 +15,7 @@ export interface InputElementProps {
 
 export function InputElement({ icon, disabled, onPress }: InputElementProps) {
   const Theme = useTheme();
-  const { animatedColor, setStartColor, setEndColor } = useAnimatedColor(
+  const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
     Theme['overlay-020'],
     Theme['overlay-030']
   );
@@ -24,12 +24,12 @@ export function InputElement({ icon, disabled, onPress }: InputElementProps) {
     <AnimatedPressable
       disabled={disabled}
       onPress={onPress}
-      onPressIn={setEndColor}
-      onPressOut={setStartColor}
+      onPressIn={setEndValue}
+      onPressOut={setStartValue}
       hitSlop={10}
       style={[
         styles.container,
-        { backgroundColor: disabled ? Theme['overlay-010'] : animatedColor }
+        { backgroundColor: disabled ? Theme['overlay-010'] : animatedValue }
       ]}
     >
       <Icon name={icon} size="xxs" color={'bg-200' as ColorType} />

@@ -1,5 +1,5 @@
 import { Animated, Pressable } from 'react-native';
-import useAnimatedColor from '../../hooks/useAnimatedColor';
+import useAnimatedValue from '../../hooks/useAnimatedValue';
 import useTheme from '../../hooks/useTheme';
 import { LogoType } from '../../utils/TypesUtil';
 import { Logo } from '../wui-logo';
@@ -14,16 +14,16 @@ export interface LogoSelectProps {
 
 export function LogoSelect({ logo, disabled }: LogoSelectProps) {
   const Theme = useTheme();
-  const { animatedColor, setStartColor, setEndColor } = useAnimatedColor(
+  const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
     Theme['overlay-005'],
     Theme['overlay-010']
   );
 
   return (
     <AnimatedPressable
-      onPressIn={setEndColor}
-      onPressOut={setStartColor}
-      style={[styles.box, { backgroundColor: animatedColor }]}
+      onPressIn={setEndValue}
+      onPressOut={setStartValue}
+      style={[styles.box, { backgroundColor: animatedValue }]}
       disabled={disabled}
     >
       <Logo logo={logo} style={disabled && styles.disabled} />

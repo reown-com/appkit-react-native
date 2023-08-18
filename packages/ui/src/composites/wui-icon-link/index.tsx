@@ -1,6 +1,6 @@
 import { Animated, Pressable } from 'react-native';
 import { Icon } from '../../components/wui-icon';
-import useAnimatedColor from '../../hooks/useAnimatedColor';
+import useAnimatedValue from '../../hooks/useAnimatedValue';
 import useTheme from '../../hooks/useTheme';
 import { ColorType, IconType, SizeType } from '../../utils/TypesUtil';
 import styles from './styles';
@@ -23,7 +23,7 @@ export function IconLink({
   disabled
 }: IconLinkProps) {
   const Theme = useTheme();
-  const { animatedColor, setStartColor, setEndColor } = useAnimatedColor(
+  const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
     'transparent',
     Theme['overlay-010']
   );
@@ -31,10 +31,10 @@ export function IconLink({
   return (
     <AnimatedPressable
       onPress={onPress}
-      onPressIn={setEndColor}
-      onPressOut={setStartColor}
+      onPressIn={setEndValue}
+      onPressOut={setStartValue}
       disabled={disabled}
-      style={[styles.container, { backgroundColor: animatedColor }]}
+      style={[styles.container, { backgroundColor: animatedValue }]}
     >
       <Icon name={icon} size={size} color={disabled ? ('overlay-020' as ColorType) : iconColor} />
     </AnimatedPressable>
