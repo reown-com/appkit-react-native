@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { StyleProp, View, ViewStyle } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import useTheme from '../../hooks/useTheme';
 import { BorderRadius } from '../../utils/ThemeUtil';
@@ -11,9 +11,17 @@ export interface IconBoxProps {
   iconColor?: ColorType;
   background?: boolean;
   border?: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
-export function IconBox({ size, iconColor = 'fg-100', icon, background, border }: IconBoxProps) {
+export function IconBox({
+  size,
+  iconColor = 'fg-100',
+  icon,
+  background,
+  border,
+  style
+}: IconBoxProps) {
   const Theme = useTheme();
   let iconSize: SizeType = 'xxs';
   switch (size) {
@@ -57,7 +65,8 @@ export function IconBox({ size, iconColor = 'fg-100', icon, background, border }
         styles.box,
         backgroundStyle,
         border && { borderColor: Theme['bg-125'] },
-        border && styles.border
+        border && styles.border,
+        style
       ]}
     >
       <Icon size={iconSize} color={iconColor} name={icon} />

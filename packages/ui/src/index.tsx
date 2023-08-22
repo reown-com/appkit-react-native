@@ -16,6 +16,7 @@ export { IconBox, type IconBoxProps } from './composites/wui-icon-box';
 export { IconLink, type IconLinkProps } from './composites/wui-icon-link';
 export { InputElement, type InputElementProps } from './composites/wui-input-element';
 export { Link, type LinkProps } from './composites/wui-link';
+export { ListItem, type ListItemProps } from './composites/wui-list-item';
 export { ListWallet, type ListWalletProps } from './composites/wui-list-wallet';
 export { Logo, type LogoProps } from './composites/wui-logo';
 export { LogoSelect, type LogoSelectProps } from './composites/wui-logo-select';

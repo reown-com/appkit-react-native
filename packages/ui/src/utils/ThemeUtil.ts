@@ -120,6 +120,11 @@ export const IconSize = {
   lg: 20
 };
 
+export const SpinnerSize = {
+  sm: 16,
+  md: 24
+};
+
 export const Spacing = {
   '4xs': 2,
   '3xs': 4,
