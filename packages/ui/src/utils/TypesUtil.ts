@@ -148,3 +148,5 @@ export type LogoType =
   | 'twitter';
 
 export type TagType = 'main' | 'shade';
+
+export type CardSelectType = 'wallet' | 'network';

@@ -7,7 +7,8 @@ import {
   VisualType,
   PlacementType,
   LogoType,
-  TagType
+  TagType,
+  CardSelectType
 } from '@web3modal/ui-react-native';
 
 export const walletImagesOptions = [
@@ -143,3 +144,5 @@ export const logoOptions: LogoType[] = [
   'twitch',
   'twitter'
 ];
+
+export const cardSelectOptions: CardSelectType[] = ['wallet', 'network'];
