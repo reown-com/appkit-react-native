@@ -8,6 +8,7 @@ export { Text, type TextProps } from './components/wui-text';
 export { Visual, type VisualProps } from './components/wui-visual';
 
 export { AllWalletsImage, type AllWalletsImageProps } from './composites/wui-all-wallets-image';
+export { Avatar, type AvatarProps } from './composites/wui-avatar';
 export { Button, type ButtonProps } from './composites/wui-button';
 export { CardSelect, type CardSelectProps } from './composites/wui-card-select';
 export { Chip, type ChipProps } from './composites/wui-chip';

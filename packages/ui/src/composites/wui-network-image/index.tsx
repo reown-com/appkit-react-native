@@ -4,7 +4,7 @@ import { SizeType } from '../../utils/TypesUtil';
 import { PathLg, PathNormal } from './styles';
 
 export interface NetworkImageProps {
-  imageSrc: string;
+  imageSrc?: string;
   selected?: boolean;
   size?: Exclude<SizeType, 'sm' | 'xs' | 'xxs'>;
 }
