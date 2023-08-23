@@ -25,6 +25,7 @@ export { NetworkImage, type NetworkImageProps } from './composites/wui-network-i
 export { QrCode, type QrCodeProps } from './composites/wui-qr-code';
 export { SearchBar, type SearchBarProps } from './composites/wui-search-bar';
 export { Snackbar, type SnackbarProps } from './composites/wui-snackbar';
+export { Tabs, type TabsProps } from './composites/wui-tabs';
 export { Tag, type TagProps } from './composites/wui-tag';
 export { Tooltip, type TooltipProps } from './composites/wui-tooltip';
 export { WalletImage, type WalletImageProps } from './composites/wui-wallet-image';

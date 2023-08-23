@@ -62,7 +62,10 @@ export function ListWallet({
 
   return (
     <AnimatedPressable
-      style={[styles.container, { backgroundColor: disabled ? Theme['overlay-010'] : value }]}
+      style={[
+        styles.container,
+        { backgroundColor: disabled ? Theme['overlay-010'] : animatedValue }
+      ]}
       disabled={disabled}
       onPress={onPress}
       onPressIn={setEndValue}

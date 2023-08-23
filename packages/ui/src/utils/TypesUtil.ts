@@ -149,3 +149,8 @@ export type LogoType =
 export type TagType = 'main' | 'shade';
 
 export type CardSelectType = 'wallet' | 'network';
+
+export type TabOptionType = {
+  icon: IconType;
+  label: string;
+};
