@@ -13,7 +13,7 @@ const meta: Meta<typeof Snackbar> = {
   },
   argTypes: {
     iconColor: {
-      options: colorOptions,
+      options: ['inherit', ...colorOptions],
       control: { type: 'select' }
     },
     icon: {

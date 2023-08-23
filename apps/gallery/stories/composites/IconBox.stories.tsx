@@ -19,7 +19,7 @@ const meta: Meta<typeof IconBox> = {
       control: { type: 'select' }
     },
     iconColor: {
-      options: colorOptions,
+      options: ['inherit', ...colorOptions],
       control: { type: 'select' }
     },
     background: {
@@ -46,8 +46,6 @@ export const Default: Story = {
       icon={args.icon}
       border={args.border}
       background={args.background}
-    >
-      {args.children}
-    </IconBox>
+    />
   )
 };

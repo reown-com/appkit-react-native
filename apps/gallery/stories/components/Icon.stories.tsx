@@ -17,7 +17,7 @@ const meta: Meta<typeof Icon> = {
       control: { type: 'select' }
     },
     color: {
-      options: colorOptions,
+      options: ['inherit', ...colorOptions],
       control: { type: 'select' }
     },
     name: {

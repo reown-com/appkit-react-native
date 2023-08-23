@@ -18,7 +18,7 @@ const meta: Meta<typeof IconLink> = {
       control: { type: 'select' }
     },
     iconColor: {
-      options: colorOptions,
+      options: ['inherit', ...colorOptions],
       control: { type: 'select' }
     },
     disabled: {

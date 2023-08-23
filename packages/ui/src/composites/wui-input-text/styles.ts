@@ -21,7 +21,7 @@ export default StyleSheet.create({
     flexGrow: 1,
     marginHorizontal: Spacing['4xs']
   },
-  searchIcon: {
+  icon: {
     marginRight: Spacing.xs
   },
   text: {
