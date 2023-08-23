@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { ImageStyle, StyleProp, View } from 'react-native';
 import Svg, { Circle, ClipPath, Defs, G, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { Image } from '../../components/wui-image';
 import useTheme from '../../hooks/useTheme';
@@ -9,9 +9,10 @@ import styles from './styles';
 export interface AvatarProps {
   imageSrc?: string;
   address?: string;
+  style?: StyleProp<ImageStyle>;
 }
 
-export function Avatar({ imageSrc, address }: AvatarProps) {
+export function Avatar({ imageSrc, address, style }: AvatarProps) {
   const Theme = useTheme();
   const colors = UiUtil.generateAvatarColors(address);
 
@@ -19,14 +20,14 @@ export function Avatar({ imageSrc, address }: AvatarProps) {
     return (
       <Image
         source={imageSrc}
-        style={[styles.container, styles.image, { borderColor: Theme['overlay-005'] }]}
+        style={[styles.container, styles.image, { borderColor: Theme['overlay-005'] }, style]}
       />
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Svg width="64" height="64" viewBox="0 0 80 80" fill="none">
+    <View style={[styles.container, style]}>
+      <Svg width="100%" height="100%" viewBox="0 0 80 80" fill="none">
         <G clip-path="url(#clip)">
           <Circle cx="40" cy="40" r="32" fill="url(#radial)" />
           <Circle cx="40" cy="40" r="31.5" stroke={Theme['overlay-005']} />

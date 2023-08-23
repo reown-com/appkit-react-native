@@ -64,7 +64,14 @@ export function NetworkButton({
       onPressOut={onPressOut}
     >
       {imageSrc ? (
-        <Image style={[styles.image, disabled && styles.imageDisabled]} source={imageSrc} />
+        <Image
+          style={[
+            styles.image,
+            { borderColor: Theme['overlay-010'] },
+            disabled && styles.imageDisabled
+          ]}
+          source={imageSrc}
+        />
       ) : (
         <IconBox icon="networkPlaceholder" background iconColor={color} size="sm" />
       )}

@@ -7,6 +7,7 @@ export { LoadingThumbnail, type LoadingThumbnailProps } from './components/wui-l
 export { Text, type TextProps } from './components/wui-text';
 export { Visual, type VisualProps } from './components/wui-visual';
 
+export { AccountButton, type AccountButtonProps } from './composites/wui-account-button';
 export { AllWalletsImage, type AllWalletsImageProps } from './composites/wui-all-wallets-image';
 export { Avatar, type AvatarProps } from './composites/wui-avatar';
 export { Button, type ButtonProps } from './composites/wui-button';

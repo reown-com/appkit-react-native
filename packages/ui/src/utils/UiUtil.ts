@@ -35,5 +35,9 @@ export const UiUtil = {
     const tintedB = Math.round(b + (255 - b) * tint);
 
     return [tintedR, tintedG, tintedB];
+  },
+
+  getTruncateAddress(address: string, chars: number) {
+    return `${address.substring(0, chars)}...${address.substring(address.length - chars)}`;
   }
 };

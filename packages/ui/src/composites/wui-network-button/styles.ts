@@ -60,6 +60,7 @@ export default StyleSheet.create({
     height: 24,
     width: 24,
     borderRadius: 100,
+    borderWidth: 2,
     paddingLeft: Spacing['4xs']
   },
   imageDisabled: {
