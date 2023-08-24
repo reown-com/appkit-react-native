@@ -8,7 +8,8 @@ import {
   PlacementType,
   LogoType,
   TagType,
-  CardSelectType
+  CardSelectType,
+  SizeType
 } from '@web3modal/ui-react-native';
 
 export const walletImagesOptions = [
@@ -145,3 +146,5 @@ export const logoOptions: LogoType[] = [
 ];
 
 export const cardSelectOptions: CardSelectType[] = ['wallet', 'network'];
+
+export const inputSizeOptions: SizeType[] = ['sm', 'md'];

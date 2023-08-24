@@ -3,7 +3,7 @@ import { Animated, Pressable, TextInput, TextInputProps } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import useTheme from '../../hooks/useTheme';
-import { ColorType, IconType } from '../../utils/TypesUtil';
+import { ColorType, IconType, SizeType } from '../../utils/TypesUtil';
 import styles from './styles';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -21,11 +21,22 @@ export interface InputTextProps {
   inputStyle?: TextInputProps['style'];
   children?: ReactNode;
   icon?: IconType;
+  disabled?: boolean;
+  size?: Exclude<SizeType, 'lg' | 'xs' | 'xxs'>;
 }
 
 export const InputText = forwardRef<InputRef, InputTextProps>(
   (
-    { children, placeholder, onSubmitEditing, onChangeText, inputStyle, icon }: InputTextProps,
+    {
+      children,
+      placeholder,
+      onSubmitEditing,
+      onChangeText,
+      inputStyle,
+      icon,
+      size = 'sm',
+      disabled
+    }: InputTextProps,
     ref
   ) => {
     const inputRef = useRef<TextInput>(null);
@@ -65,10 +76,17 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
     });
 
     return (
-      <AnimatedPressable style={[styles.focusedBorder, { borderColor: outerBorder }]}>
-        <AnimatedPressable
-          style={[styles.container, { backgroundColor: animatedValue, borderColor: innerBorder }]}
-          onPress={() => inputRef.current?.focus()}
+      <AnimatedPressable
+        style={[styles.outerBorder, { borderColor: outerBorder }]}
+        disabled={disabled}
+        onPress={() => inputRef.current?.focus()}
+      >
+        <Animated.View
+          style={[
+            styles[`${size}Container`],
+            { backgroundColor: animatedValue, borderColor: innerBorder },
+            disabled && { backgroundColor: Theme['overlay-015'] }
+          ]}
         >
           {icon && <Icon name={icon} size="md" color={'fg-275' as ColorType} style={styles.icon} />}
           <TextInput
@@ -88,9 +106,10 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
             onSubmitEditing={onSubmitEditing}
             underlineColorAndroid="transparent"
             selectTextOnFocus={false}
+            editable={!disabled}
           />
           {children}
-        </AnimatedPressable>
+        </Animated.View>
       </AnimatedPressable>
     );
   }

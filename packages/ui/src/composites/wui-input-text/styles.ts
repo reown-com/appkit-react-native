@@ -1,17 +1,26 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 
+const baseStyle = {
+  flexDirection: 'row',
+  height: 40,
+  width: '100%',
+  borderRadius: BorderRadius.xxs,
+  alignItems: 'center',
+  paddingHorizontal: Spacing.m,
+  borderWidth: 1
+} as ViewStyle;
+
 export default StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    height: 40,
-    width: '100%',
-    borderRadius: BorderRadius.xxs,
-    alignItems: 'center',
-    paddingHorizontal: Spacing.m,
-    borderWidth: 1
+  smContainer: {
+    ...baseStyle
   },
-  focusedBorder: {
+  mdContainer: {
+    ...baseStyle,
+    height: 56,
+    paddingHorizontal: Spacing.l
+  },
+  outerBorder: {
     borderWidth: 4,
     borderRadius: BorderRadius.xs,
     borderColor: 'transparent'

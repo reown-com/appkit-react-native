@@ -4,13 +4,15 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { InputText } from '@web3modal/ui-react-native';
 import { GalleryContainer } from '../../components/GalleryContainer';
-import { iconOptions } from '../../utils/PresetUtils';
+import { iconOptions, inputSizeOptions } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof InputText> = {
   component: InputText,
   args: {
     placeholder: 'Search wallet',
-    icon: 'search'
+    icon: 'search',
+    disabled: false,
+    size: 'sm'
   },
   argTypes: {
     placeholder: {
@@ -19,6 +21,14 @@ const meta: Meta<typeof InputText> = {
     icon: {
       control: { type: 'select' },
       options: iconOptions
+    },
+    disabled: {
+      control: { type: 'boolean' },
+      description: "Disable input (doesn't work on web)"
+    },
+    size: {
+      control: { type: 'select' },
+      options: inputSizeOptions
     }
   }
 };
@@ -32,6 +42,8 @@ export const Default: Story = {
       <InputText
         icon={args.icon}
         placeholder={args.placeholder}
+        size={args.size}
+        disabled={args.disabled}
         inputStyle={{ outlineStyle: 'none' }}
       />
     </GalleryContainer>
