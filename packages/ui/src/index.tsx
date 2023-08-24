@@ -26,6 +26,7 @@ export { Logo, type LogoProps } from './composites/wui-logo';
 export { LogoSelect, type LogoSelectProps } from './composites/wui-logo-select';
 export { NetworkButton, type NetworkButtonProps } from './composites/wui-network-button';
 export { NetworkImage, type NetworkImageProps } from './composites/wui-network-image';
+export { Otp, type OtpProps } from './composites/wui-otp';
 export { QrCode, type QrCodeProps } from './composites/wui-qr-code';
 export { SearchBar, type SearchBarProps } from './composites/wui-search-bar';
 export { Snackbar, type SnackbarProps } from './composites/wui-snackbar';

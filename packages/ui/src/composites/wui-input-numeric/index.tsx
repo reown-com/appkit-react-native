@@ -1,3 +1,4 @@
+import { TextInput } from 'react-native';
 import { InputText, InputTextProps } from '../wui-input-text';
 import styles from './styles';
 
@@ -6,13 +7,15 @@ export interface InputNumericProps {
   onChangeText?: InputTextProps['onChangeText'];
   onSubmitEditing?: InputTextProps['onSubmitEditing'];
   style?: InputTextProps['inputStyle'];
+  inputRef?: React.Ref<TextInput>;
 }
 
 export function InputNumeric({
   disabled,
   onChangeText,
   onSubmitEditing,
-  style
+  style,
+  inputRef
 }: InputNumericProps) {
   return (
     <InputText
@@ -25,6 +28,7 @@ export function InputNumeric({
       textAlign="center"
       inputStyle={[styles.input, style]}
       maxLength={1}
+      ref={inputRef}
     />
   );
 }
