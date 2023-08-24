@@ -12,6 +12,11 @@ const baseStyle = {
 } as ViewStyle;
 
 export default StyleSheet.create({
+  xsContainer: {
+    ...baseStyle,
+    height: 50,
+    width: 50
+  },
   smContainer: {
     ...baseStyle
   },
@@ -26,7 +31,7 @@ export default StyleSheet.create({
     borderColor: 'transparent'
   },
   input: {
-    width: 'auto',
+    width: '80%',
     flexGrow: 1,
     marginHorizontal: Spacing['4xs']
   },

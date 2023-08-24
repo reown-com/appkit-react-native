@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Animated, Pressable, TextInput, TextInputProps } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
@@ -14,29 +14,16 @@ interface InputRef {
   blur: () => void;
 }
 
-export interface InputTextProps {
-  placeholder?: string;
-  onSubmitEditing?: TextInputProps['onSubmitEditing'];
-  onChangeText?: TextInputProps['onChangeText'];
+export type InputTextProps = TextInputProps & {
   inputStyle?: TextInputProps['style'];
-  children?: ReactNode;
   icon?: IconType;
   disabled?: boolean;
-  size?: Exclude<SizeType, 'lg' | 'xs' | 'xxs'>;
-}
+  size?: Exclude<SizeType, 'lg' | 'xxs'>;
+};
 
 export const InputText = forwardRef<InputRef, InputTextProps>(
   (
-    {
-      children,
-      placeholder,
-      onSubmitEditing,
-      onChangeText,
-      inputStyle,
-      icon,
-      size = 'sm',
-      disabled
-    }: InputTextProps,
+    { children, placeholder, inputStyle, icon, size = 'sm', disabled, ...rest }: InputTextProps,
     ref
   ) => {
     const inputRef = useRef<TextInput>(null);
@@ -102,11 +89,10 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
             autoComplete="off"
             spellCheck={false}
             selectionColor={Theme['blue-100']}
-            onChangeText={onChangeText}
-            onSubmitEditing={onSubmitEditing}
             underlineColorAndroid="transparent"
             selectTextOnFocus={false}
             editable={!disabled}
+            {...rest}
           />
           {children}
         </Animated.View>

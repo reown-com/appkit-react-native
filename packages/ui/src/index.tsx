@@ -16,6 +16,7 @@ export { Chip, type ChipProps } from './composites/wui-chip';
 export { IconBox, type IconBoxProps } from './composites/wui-icon-box';
 export { IconLink, type IconLinkProps } from './composites/wui-icon-link';
 export { InputElement, type InputElementProps } from './composites/wui-input-element';
+export { InputNumeric, type InputNumericProps } from './composites/wui-input-numeric';
 export { InputText, type InputTextProps } from './composites/wui-input-text';
 export { Link, type LinkProps } from './composites/wui-link';
 export { ListItem, type ListItemProps } from './composites/wui-list-item';
