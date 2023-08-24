@@ -23,7 +23,8 @@ export default StyleSheet.create({
   mdContainer: {
     ...baseStyle,
     height: 56,
-    paddingHorizontal: Spacing.l
+    paddingHorizontal: Spacing.l,
+    borderRadius: BorderRadius.xs
   },
   outerBorder: {
     borderWidth: 4,

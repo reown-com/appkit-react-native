@@ -63,40 +63,44 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
     });
 
     return (
-      <AnimatedPressable
-        style={[styles.outerBorder, { borderColor: outerBorder }]}
-        disabled={disabled}
-        onPress={() => inputRef.current?.focus()}
-      >
-        <Animated.View
-          style={[
-            styles[`${size}Container`],
-            { backgroundColor: animatedValue, borderColor: innerBorder },
-            disabled && { backgroundColor: Theme['overlay-015'] }
-          ]}
+      <>
+        <AnimatedPressable
+          style={[styles.outerBorder, { borderColor: outerBorder }]}
+          disabled={disabled}
+          onPress={() => inputRef.current?.focus()}
         >
-          {icon && <Icon name={icon} size="md" color={'fg-275' as ColorType} style={styles.icon} />}
-          <TextInput
-            ref={inputRef}
-            onFocus={setEndValue}
-            onBlur={setStartValue}
-            placeholder={placeholder}
-            placeholderTextColor={Theme['fg-275']}
-            returnKeyType="search"
-            style={[styles.input, { color: Theme['fg-100'] }, inputStyle]}
-            autoCapitalize="none"
-            autoCorrect={false}
-            autoComplete="off"
-            spellCheck={false}
-            selectionColor={Theme['blue-100']}
-            underlineColorAndroid="transparent"
-            selectTextOnFocus={false}
-            editable={!disabled}
-            {...rest}
-          />
-          {children}
-        </Animated.View>
-      </AnimatedPressable>
+          <Animated.View
+            style={[
+              styles[`${size}Container`],
+              { backgroundColor: animatedValue, borderColor: innerBorder },
+              disabled && { backgroundColor: Theme['overlay-015'] }
+            ]}
+          >
+            {icon && (
+              <Icon name={icon} size="md" color={'fg-275' as ColorType} style={styles.icon} />
+            )}
+            <TextInput
+              ref={inputRef}
+              onFocus={setEndValue}
+              onBlur={setStartValue}
+              placeholder={placeholder}
+              placeholderTextColor={Theme['fg-275']}
+              returnKeyType="search"
+              style={[styles.input, { color: Theme['fg-100'] }, inputStyle]}
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="off"
+              spellCheck={false}
+              selectionColor={Theme['blue-100']}
+              underlineColorAndroid="transparent"
+              selectTextOnFocus={false}
+              editable={!disabled}
+              {...rest}
+            />
+            {children}
+          </Animated.View>
+        </AnimatedPressable>
+      </>
     );
   }
 );
