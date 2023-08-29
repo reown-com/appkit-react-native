@@ -8,6 +8,8 @@ export interface InputNumericProps {
   onSubmitEditing?: InputTextProps['onSubmitEditing'];
   style?: InputTextProps['inputStyle'];
   inputRef?: React.Ref<TextInput>;
+  value?: string;
+  onKeyPress?: InputTextProps['onKeyPress'];
 }
 
 export function InputNumeric({
@@ -15,7 +17,9 @@ export function InputNumeric({
   onChangeText,
   onSubmitEditing,
   style,
-  inputRef
+  inputRef,
+  value,
+  onKeyPress
 }: InputNumericProps) {
   return (
     <InputText
@@ -27,8 +31,10 @@ export function InputNumeric({
       size="xs"
       textAlign="center"
       inputStyle={[styles.input, style]}
-      maxLength={1}
+      // maxLength={1}
       ref={inputRef}
+      value={value}
+      onKeyPress={onKeyPress}
     />
   );
 }
