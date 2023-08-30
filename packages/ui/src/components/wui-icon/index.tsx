@@ -36,6 +36,7 @@ import MobileSvg from '../../assets/svg/Mobile';
 import NetworkPlaceholderSvg from '../../assets/svg/NetworkPlaceholder';
 import NftPlaceholderSvg from '../../assets/svg/NftPlaceholder';
 import OffSvg from '../../assets/svg/Off';
+import QrCodeSvg from '../../assets/svg/QrCode';
 import RefreshSvg from '../../assets/svg/Refresh';
 import SearchSvg from '../../assets/svg/Search';
 import SwapHorizontalSvg from '../../assets/svg/SwapHorizontal';
@@ -86,6 +87,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   networkPlaceholder: NetworkPlaceholderSvg,
   nftPlaceholder: NftPlaceholderSvg,
   off: OffSvg,
+  qrCode: QrCodeSvg,
   refresh: RefreshSvg,
   search: SearchSvg,
   swapHorizontal: SwapHorizontalSvg,

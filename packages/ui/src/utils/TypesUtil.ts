@@ -108,6 +108,7 @@ export type IconType =
   | 'networkPlaceholder'
   | 'nftPlaceholder'
   | 'off'
+  | 'qrCode'
   | 'refresh'
   | 'search'
   | 'swapHorizontal'
