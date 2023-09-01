@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
-import { ThemeKeys } from '../../utils/TypesUtil';
+import type { ThemeKeys } from '../../utils/TypesUtil';
 
 export const getBackgroundColor = ({
   selected,

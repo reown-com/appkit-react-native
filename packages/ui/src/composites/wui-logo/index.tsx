@@ -1,7 +1,7 @@
-import { SvgProps } from 'react-native-svg';
+import type { SvgProps } from 'react-native-svg';
 import { Icon } from '../../components/wui-icon';
 
-import { LogoType } from '../../utils/TypesUtil';
+import type { LogoType } from '../../utils/TypesUtil';
 
 export interface LogoProps {
   logo: LogoType;

@@ -3,7 +3,7 @@ import { Animated, Easing, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import useTheme from '../../hooks/useTheme';
 import { SpinnerSize } from '../../utils/ThemeUtil';
-import { ColorType, SizeType } from '../../utils/TypesUtil';
+import type { ColorType, SizeType } from '../../utils/TypesUtil';
 import styles from './styles';
 
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);

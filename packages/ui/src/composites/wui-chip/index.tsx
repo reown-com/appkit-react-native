@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
-import { Animated, Linking, Pressable, StyleProp, ViewStyle } from 'react-native';
-import { ChipType, ColorType, IconType, SizeType } from '../../utils/TypesUtil';
+import { Animated, Linking, Pressable, type StyleProp, type ViewStyle } from 'react-native';
+import type { ChipType, ColorType, IconType, SizeType } from '../../utils/TypesUtil';
 import useTheme from '../../hooks/useTheme';
 import { Text } from '../../components/wui-text';
 import { Image } from '../../components/wui-image';

@@ -1,5 +1,4 @@
-import * as React from 'react';
-import Svg, { Path, SvgProps } from 'react-native-svg';
+import Svg, { Path, type SvgProps } from 'react-native-svg';
 const SvgArrowRight = (props: SvgProps) => (
   <Svg viewBox="0 0 14 15" fill="none" {...props}>
     <Path

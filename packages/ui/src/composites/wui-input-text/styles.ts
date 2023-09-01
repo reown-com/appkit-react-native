@@ -1,4 +1,4 @@
-import { StyleSheet, ViewStyle } from 'react-native';
+import { StyleSheet, type ViewStyle } from 'react-native';
 import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 
 const baseStyle = {

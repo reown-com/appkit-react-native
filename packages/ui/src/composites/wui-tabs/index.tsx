@@ -3,7 +3,7 @@ import { Animated, Pressable, View } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import { Text } from '../../components/wui-text';
 import useTheme from '../../hooks/useTheme';
-import { TabOptionType } from '../../utils/TypesUtil';
+import type { TabOptionType } from '../../utils/TypesUtil';
 import styles from './styles';
 
 export interface TabsProps {

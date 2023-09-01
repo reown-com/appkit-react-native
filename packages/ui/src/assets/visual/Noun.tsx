@@ -1,4 +1,4 @@
-import Svg, { Path, Rect, SvgProps } from 'react-native-svg';
+import Svg, { Path, Rect, type SvgProps } from 'react-native-svg';
 const SvgNoun = (props: SvgProps) => (
   <Svg fill="none" viewBox="0 0 60 60" {...props}>
     <Rect width="60" height="60" fill="#794CFF" rx="3" />

@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { TextInput, TextInputProps } from 'react-native';
+import { TextInput, type TextInputProps } from 'react-native';
 
 import { InputElement } from '../wui-input-element';
 import { InputText } from '../wui-input-text';
@@ -30,6 +30,7 @@ export function SearchBar({
       onSubmitEditing={onSubmitEditing}
       icon="search"
       inputStyle={inputStyle}
+      returnKeyType="search"
     >
       {showClear && (
         <InputElement

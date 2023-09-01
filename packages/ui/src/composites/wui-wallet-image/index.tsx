@@ -1,8 +1,8 @@
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { type StyleProp, View, type ViewStyle } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import { Image } from '../../components/wui-image';
 import useTheme from '../../hooks/useTheme';
-import { SizeType } from '../../utils/TypesUtil';
+import type { SizeType } from '../../utils/TypesUtil';
 
 import styles from './styles';
 

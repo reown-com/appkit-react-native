@@ -1,9 +1,8 @@
-import React from 'react';
 import { Animated, Pressable } from 'react-native';
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import useTheme from '../../hooks/useTheme';
-import { CardSelectType } from '../../utils/TypesUtil';
+import type { CardSelectType } from '../../utils/TypesUtil';
 import { NetworkImage } from '../wui-network-image';
 import { WalletImage } from '../wui-wallet-image';
 import styles, { getBackgroundColor } from './styles';

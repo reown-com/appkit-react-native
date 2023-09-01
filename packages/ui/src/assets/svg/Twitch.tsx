@@ -1,4 +1,4 @@
-import Svg, { G, Circle, Path, Defs, ClipPath, SvgProps } from 'react-native-svg';
+import Svg, { G, Circle, Path, Defs, ClipPath, type SvgProps } from 'react-native-svg';
 const SvgTwitch = (props: SvgProps) => (
   <Svg viewBox="0 0 40 40" {...props} fill="none">
     <G clipPath="url(#Twitch_svg__a)">

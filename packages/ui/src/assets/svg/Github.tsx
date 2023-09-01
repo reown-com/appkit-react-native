@@ -1,4 +1,4 @@
-import Svg, { G, Circle, Path, Defs, ClipPath, SvgProps } from 'react-native-svg';
+import Svg, { G, Circle, Path, Defs, ClipPath, type SvgProps } from 'react-native-svg';
 const SvgGithub = (props: SvgProps) => (
   <Svg viewBox="0 0 40 40" {...props} fill="none">
     <G clipPath="url(#Github_svg__a)">

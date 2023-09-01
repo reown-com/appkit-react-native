@@ -1,5 +1,5 @@
 import { TextInput } from 'react-native';
-import { InputText, InputTextProps } from '../wui-input-text';
+import { InputText, type InputTextProps } from '../wui-input-text';
 import styles from './styles';
 
 export interface InputNumericProps {

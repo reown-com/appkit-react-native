@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { Text } from '../../components/wui-text';
 import useTheme from '../../hooks/useTheme';
-import { ColorType, IconType } from '../../utils/TypesUtil';
+import type { ColorType, IconType } from '../../utils/TypesUtil';
 import { IconBox } from '../wui-icon-box';
 import styles from './styles';
 

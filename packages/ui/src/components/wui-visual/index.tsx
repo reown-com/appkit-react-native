@@ -1,4 +1,4 @@
-import { SvgProps } from 'react-native-svg';
+import type { SvgProps } from 'react-native-svg';
 
 import BrowserSvg from '../../assets/visual/Browser';
 import DaoSvg from '../../assets/visual/Dao';
@@ -13,7 +13,7 @@ import NftSvg from '../../assets/visual/Nft';
 import NounSvg from '../../assets/visual/Noun';
 import ProfileSvg from '../../assets/visual/Profile';
 import SystemSvg from '../../assets/visual/System';
-import { VisualType } from '../../utils/TypesUtil';
+import type { VisualType } from '../../utils/TypesUtil';
 
 const svgOptions: Record<VisualType, (props: SvgProps) => JSX.Element> = {
   browser: BrowserSvg,

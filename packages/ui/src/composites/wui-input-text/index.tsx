@@ -1,9 +1,9 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
-import { Animated, Pressable, TextInput, TextInputProps } from 'react-native';
+import { Animated, Pressable, TextInput, type TextInputProps } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import useTheme from '../../hooks/useTheme';
-import { ColorType, IconType, SizeType } from '../../utils/TypesUtil';
+import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil';
 import styles from './styles';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -23,7 +23,16 @@ export type InputTextProps = TextInputProps & {
 
 export const InputText = forwardRef<InputRef, InputTextProps>(
   (
-    { children, placeholder, inputStyle, icon, size = 'sm', disabled, ...rest }: InputTextProps,
+    {
+      children,
+      placeholder,
+      inputStyle,
+      icon,
+      size = 'sm',
+      disabled,
+      returnKeyType,
+      ...rest
+    }: InputTextProps,
     ref
   ) => {
     const inputRef = useRef<TextInput>(null);
@@ -85,7 +94,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
               onBlur={setStartValue}
               placeholder={placeholder}
               placeholderTextColor={Theme['fg-275']}
-              returnKeyType="search"
+              returnKeyType={returnKeyType}
               style={[styles.input, { color: Theme['fg-100'] }, inputStyle]}
               autoCapitalize="none"
               autoCorrect={false}

@@ -1,6 +1,6 @@
 import { Path, Svg, Image, Defs, Pattern } from 'react-native-svg';
 import useTheme from '../../hooks/useTheme';
-import { SizeType } from '../../utils/TypesUtil';
+import type { SizeType } from '../../utils/TypesUtil';
 import { PathLg, PathNormal } from './styles';
 
 export interface NetworkImageProps {

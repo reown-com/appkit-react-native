@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import type { ReactNode } from 'react';
+import { type StyleProp, View, type ViewStyle } from 'react-native';
 
 import { Text } from '../../components/wui-text';
 import useTheme from '../../hooks/useTheme';

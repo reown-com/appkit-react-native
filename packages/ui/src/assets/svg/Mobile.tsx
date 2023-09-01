@@ -1,4 +1,4 @@
-import Svg, { Path, SvgProps } from 'react-native-svg';
+import Svg, { Path, type SvgProps } from 'react-native-svg';
 const SvgMobile = (props: SvgProps) => (
   <Svg viewBox="0 0 20 20" fill="none" {...props}>
     <Path fill={props.fill || '#fff'} d="M10.81 5.81a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" />

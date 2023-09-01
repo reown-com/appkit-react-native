@@ -1,4 +1,4 @@
-import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg';
+import Svg, { ClipPath, Defs, G, Path, type SvgProps } from 'react-native-svg';
 const SvgDefi = (props: SvgProps) => (
   <Svg fill="none" viewBox="0 0 60 60" {...props}>
     <G clipPath="url(#a)">

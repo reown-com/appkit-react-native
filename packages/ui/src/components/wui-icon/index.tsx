@@ -1,5 +1,5 @@
 import type { SvgProps } from 'react-native-svg';
-import { ColorType, IconType, SizeType, ThemeKeys } from '../../utils/TypesUtil';
+import type { ColorType, IconType, SizeType, ThemeKeys } from '../../utils/TypesUtil';
 
 // -- Svg's-------------------------------- //
 import AppleSvg from '../../assets/svg/Apple';

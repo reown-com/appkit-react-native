@@ -1,4 +1,4 @@
-import Svg, { Path, SvgProps } from 'react-native-svg';
+import Svg, { Path, type SvgProps } from 'react-native-svg';
 const SvgWarningCircle = (props: SvgProps) => (
   <Svg viewBox="0 0 20 20" fill="none" {...props}>
     <Path

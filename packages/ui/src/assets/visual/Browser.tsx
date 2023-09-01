@@ -1,4 +1,4 @@
-import Svg, { Circle, Path, Rect, SvgProps } from 'react-native-svg';
+import Svg, { Circle, Path, Rect, type SvgProps } from 'react-native-svg';
 const SvgBrowser = (props: SvgProps) => (
   <Svg fill="none" viewBox="0 0 60 60" {...props}>
     <Rect width="60" height="60" fill="#1DC956" rx="30" />

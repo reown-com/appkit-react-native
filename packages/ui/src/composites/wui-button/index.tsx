@@ -2,13 +2,13 @@ import { useRef } from 'react';
 import {
   Animated,
   Pressable,
-  PressableProps as NativeProps,
-  StyleProp,
-  ViewStyle
+  type PressableProps as NativeProps,
+  type StyleProp,
+  type ViewStyle
 } from 'react-native';
 import { Text } from '../../components/wui-text';
 import useTheme from '../../hooks/useTheme';
-import { ButtonType, SizeType } from '../../utils/TypesUtil';
+import type { ButtonType, SizeType } from '../../utils/TypesUtil';
 
 import styles, { getThemedButtonStyle, getThemedTextStyle } from './styles';
 

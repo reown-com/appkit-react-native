@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import { Text } from '../../components/wui-text';
-import { InputText, InputTextProps } from '../wui-input-text';
+import { InputText, type InputTextProps } from '../wui-input-text';
 
 import styles from './styles';
 

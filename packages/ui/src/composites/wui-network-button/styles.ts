@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Spacing } from '../../utils/ThemeUtil';
-import { ButtonType, ColorType, ThemeKeys } from '../../utils/TypesUtil';
+import type { ButtonType, ColorType, ThemeKeys } from '../../utils/TypesUtil';
 
 export const getThemedStyle = (
   theme: { [key in ThemeKeys]: string },

@@ -1,11 +1,11 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { View, Pressable, Animated } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import { Image } from '../../components/wui-image';
 import { LoadingSpinner } from '../../components/wui-loading-spinner';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import useTheme from '../../hooks/useTheme';
-import { IconType } from '../../utils/TypesUtil';
+import type { IconType } from '../../utils/TypesUtil';
 import { IconBox } from '../wui-icon-box';
 import styles from './styles';
 

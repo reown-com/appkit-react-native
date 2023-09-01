@@ -1,15 +1,15 @@
 import {
   Animated,
   Pressable,
-  PressableProps as NativeProps,
-  StyleProp,
-  ViewStyle
+  type PressableProps as NativeProps,
+  type StyleProp,
+  type ViewStyle
 } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import useTheme from '../../hooks/useTheme';
-import { ColorType, IconType, SizeType } from '../../utils/TypesUtil';
+import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil';
 import styles from './styles';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);

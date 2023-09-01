@@ -1,4 +1,4 @@
-import { StyleProp, StyleSheet } from 'react-native';
+import { type StyleProp, StyleSheet } from 'react-native';
 import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 import type { ButtonType, ThemeKeys } from '../../utils/TypesUtil';
 

@@ -1,5 +1,4 @@
-import React from 'react';
-import { ImageStyle, StyleProp, View } from 'react-native';
+import { type ImageStyle, type StyleProp, View } from 'react-native';
 import Svg, { Circle, ClipPath, Defs, G, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { Image } from '../../components/wui-image';
 import useTheme from '../../hooks/useTheme';

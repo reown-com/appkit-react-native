@@ -1,8 +1,8 @@
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { type StyleProp, View, type ViewStyle } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import useTheme from '../../hooks/useTheme';
 import { BorderRadius } from '../../utils/ThemeUtil';
-import { ColorType, IconType, SizeType, ThemeKeys } from '../../utils/TypesUtil';
+import type { ColorType, IconType, SizeType, ThemeKeys } from '../../utils/TypesUtil';
 import styles from './styles';
 
 export interface IconBoxProps {

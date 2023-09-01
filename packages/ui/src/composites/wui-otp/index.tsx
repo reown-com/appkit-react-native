@@ -1,6 +1,11 @@
 import { createRef, useMemo, useState } from 'react';
-import { NativeSyntheticEvent, TextInput, TextInputKeyPressEventData, View } from 'react-native';
-import { InputNumeric, InputNumericProps } from '../wui-input-numeric';
+import {
+  type NativeSyntheticEvent,
+  TextInput,
+  type TextInputKeyPressEventData,
+  View
+} from 'react-native';
+import { InputNumeric, type InputNumericProps } from '../wui-input-numeric';
 import styles from './styles';
 
 export interface OtpProps {
@@ -23,7 +28,7 @@ export function Otp({ length, style, onChangeText }: OtpProps) {
     onChangeText?.(newValue.join(''));
 
     if (text.length === 1 && index < length - 1) {
-      refArray[index + 1].current?.focus();
+      refArray[index + 1]?.current?.focus();
     }
   };
 
@@ -31,14 +36,14 @@ export function Otp({ length, style, onChangeText }: OtpProps) {
     const currentValue = value[index] || '';
 
     if (e.nativeEvent.key !== 'Backspace' && currentValue && index !== length - 1) {
-      refArray[index + 1].current?.focus();
+      refArray[index + 1]?.current?.focus();
 
       return;
     }
 
     if (e.nativeEvent.key === 'Backspace' && index !== 0) {
       if (!currentValue) {
-        refArray[index - 1].current?.focus();
+        refArray[index - 1]?.current?.focus();
       }
     }
   };

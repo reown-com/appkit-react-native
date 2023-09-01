@@ -1,4 +1,4 @@
-import { ThemeKeys } from './TypesUtil';
+import type { ThemeKeys } from './TypesUtil';
 
 export const DarkTheme: { [key in ThemeKeys]: string } = {
   'blue-100': '#47a1ff',
