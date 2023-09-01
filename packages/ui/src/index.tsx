@@ -35,4 +35,6 @@ export { Tag, type TagProps } from './composites/wui-tag';
 export { Tooltip, type TooltipProps } from './composites/wui-tooltip';
 export { WalletImage, type WalletImageProps } from './composites/wui-wallet-image';
 
+export { Overlay, type OverlayProps } from './layout/wui-overlay';
+
 export type { ColorType, TextType, SizeType, IconType, LogoType } from './utils/TypesUtil';
