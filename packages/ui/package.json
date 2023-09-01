@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ui-react-native",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "source": "./src/index",
@@ -41,7 +41,7 @@
     "ts-node": "^10.9.1",
     "tsconfig": "*",
     "tsup": "^6.0.1",
-    "typescript": "^4.7.4"
+    "typescript": "5.2.2"
   },
   "peerDependencies": {
     "react": "*",
