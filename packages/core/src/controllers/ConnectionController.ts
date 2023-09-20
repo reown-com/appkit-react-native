@@ -1,7 +1,7 @@
 import { proxy, ref } from 'valtio'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { StorageUtil } from '../utils/StorageUtil.js'
-import type { ApiWallet } from '../utils/TypeUtils.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil'
+import { StorageUtil } from '../utils/StorageUtil'
+import type { ApiWallet } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface ConnectionControllerClient {

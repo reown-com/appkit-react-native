@@ -1,4 +1,4 @@
-import { AssetController } from '../controllers/AssetController.js'
+import { AssetController } from '../controllers/AssetController'
 
 export const AssetUtil = {
   getWalletImage(imageId?: string) {

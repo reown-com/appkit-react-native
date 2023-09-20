@@ -1,4 +1,4 @@
-import type { ThemeKeys } from './TypesUtil';
+import type { SpacingType, ThemeKeys } from './TypesUtil';
 
 export const DarkTheme: { [key in ThemeKeys]: string } = {
   'blue-100': '#47a1ff',
@@ -125,7 +125,8 @@ export const SpinnerSize = {
   md: 24
 };
 
-export const Spacing = {
+export const Spacing: { [K in SpacingType]: number } = {
+  '0': 0,
   '4xs': 2,
   '3xs': 4,
   '2xs': 6,

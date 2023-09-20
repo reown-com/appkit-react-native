@@ -1,5 +1,5 @@
 import { proxy, ref } from 'valtio'
-import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtils.js'
+import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {

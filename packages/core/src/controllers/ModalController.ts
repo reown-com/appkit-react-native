@@ -1,7 +1,7 @@
 import { proxy } from 'valtio'
-import { AccountController } from './AccountController.js'
-import type { RouterControllerState } from './RouterController.js'
-import { RouterController } from './RouterController.js'
+import { AccountController } from './AccountController'
+import type { RouterControllerState } from './RouterController'
+import { RouterController } from './RouterController'
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {

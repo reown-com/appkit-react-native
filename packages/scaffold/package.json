@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "source": "./src/index",
+  "source": "./index.ts",
   "scripts": {
     "build": "tsup ",
     "dev": "tsup --watch",
@@ -42,11 +42,12 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": ">=0.68.0"
   },
   "dependencies": {
-    "@web3modal/core-react-native": "^0.0.1",
-    "@web3modal/ui-react-native": "^0.0.1",
+    "@web3modal/core-react-native": "*",
+    "@web3modal/ui-react-native": "*",
+    "react-native-modal": "13.0.1",
     "valtio": "1.11.2"
   }
 }

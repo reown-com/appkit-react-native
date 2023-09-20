@@ -1,6 +1,19 @@
 /* eslint-disable no-bitwise */
 
+import { Spacing } from './ThemeUtil';
+import type { SpacingType } from './TypesUtil';
+
 export const UiUtil = {
+  getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {
+    if (Array.isArray(spacing)) {
+      return spacing[index] ? Spacing[spacing[index] as SpacingType] : undefined;
+    } else if (typeof spacing === 'string') {
+      return Spacing[spacing];
+    }
+
+    return undefined;
+  },
+
   generateAvatarColors(address?: string) {
     if (!address) return ['#f5ccfc', '#dba4f5', '#9a8ee8', '#6493da', '#6ebdea'];
 

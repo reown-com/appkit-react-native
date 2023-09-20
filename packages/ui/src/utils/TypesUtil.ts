@@ -74,6 +74,7 @@ export type ButtonType = 'accent' | 'fill' | 'shade';
 export type ChipType = 'fill' | 'shade' | 'transparent';
 
 export type IconType =
+  | 'allWallets'
   | 'apple'
   | 'arrowBottom'
   | 'arrowLeft'
@@ -155,3 +156,37 @@ export type TabOptionType = {
   icon: IconType;
   label: string;
 };
+
+export type SpacingType =
+  | '0'
+  | '4xs'
+  | '3xs'
+  | '2xs'
+  | 'xs'
+  | 's'
+  | 'm'
+  | 'l'
+  | 'xl'
+  | '2xl'
+  | '3xl'
+  | '4xl';
+
+export type BorderRadiusType = Exclude<SpacingType, 'xl' | 'xxl'>;
+
+export type FlexDirectionType = 'column-reverse' | 'column' | 'row-reverse' | 'row';
+
+export type FlexWrapType = 'nowrap' | 'wrap-reverse' | 'wrap';
+
+export type FlexGrowType = 0 | 1;
+
+export type FlexShrinkType = 0 | 1;
+
+export type FlexAlignItemsType = 'baseline' | 'center' | 'flex-end' | 'flex-start' | 'stretch';
+
+export type FlexJustifyContentType =
+  | 'center'
+  | 'flex-end'
+  | 'flex-start'
+  | 'space-around'
+  | 'space-between'
+  | 'space-evenly';

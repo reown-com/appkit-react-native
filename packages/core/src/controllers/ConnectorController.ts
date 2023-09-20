@@ -1,5 +1,5 @@
 import { proxy } from 'valtio'
-import type { Connector } from '../utils/TypeUtils.js'
+import type { Connector } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface ConnectorControllerState {

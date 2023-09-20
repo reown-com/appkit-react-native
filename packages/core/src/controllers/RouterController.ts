@@ -1,5 +1,5 @@
 import { proxy } from 'valtio'
-import type { ApiWallet, CaipNetwork, Connector } from '../utils/TypeUtils.js'
+import type { ApiWallet, CaipNetwork, Connector } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface RouterControllerState {

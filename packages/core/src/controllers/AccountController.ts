@@ -1,6 +1,6 @@
 import { proxy } from 'valtio'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import type { CaipAddress } from '../utils/TypeUtils.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil'
+import type { CaipAddress } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {

@@ -1,9 +1,9 @@
-import { FetchUtil } from '../utils/FetchUtil.js'
+import { FetchUtil } from '../utils/FetchUtil'
 import type {
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse
-} from '../utils/TypeUtils.js'
-import { OptionsController } from './OptionsController.js'
+} from '../utils/TypeUtils'
+import { OptionsController } from './OptionsController'
 
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://rpc.walletconnect.com' })

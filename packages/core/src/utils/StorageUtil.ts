@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
-// SHOULD WE USE ASYNC?
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { ApiWallet } from './TypeUtils.js'
+import type { ApiWallet } from './TypeUtils'
 
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE'

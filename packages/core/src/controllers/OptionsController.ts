@@ -1,5 +1,5 @@
 import { proxy } from 'valtio'
-import type { ProjectId } from '../utils/TypeUtils.js'
+import type { ProjectId } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {

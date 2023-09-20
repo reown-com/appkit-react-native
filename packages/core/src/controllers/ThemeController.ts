@@ -1,5 +1,5 @@
 import { proxy, subscribe as sub } from 'valtio'
-import type { ThemeMode, ThemeVariables } from '../utils/TypeUtils.js'
+import type { ThemeMode, ThemeVariables } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface ThemeControllerState {

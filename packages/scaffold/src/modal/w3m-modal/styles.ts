@@ -1,8 +1,12 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center'
+  modal: {
+    margin: 0,
+    justifyContent: 'flex-end',
+  },
+  card: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   }
 });

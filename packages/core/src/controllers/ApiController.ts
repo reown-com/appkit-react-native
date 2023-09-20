@@ -1,17 +1,17 @@
 import { proxy } from 'valtio'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { FetchUtil } from '../utils/FetchUtil.js'
-import { StorageUtil } from '../utils/StorageUtil.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil'
+import { FetchUtil } from '../utils/FetchUtil'
+import { StorageUtil } from '../utils/StorageUtil'
 import type {
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
   ApiWallet,
   SdkVersion
-} from '../utils/TypeUtils.js'
-import { AssetController } from './AssetController.js'
-import { ConnectorController } from './ConnectorController.js'
-import { NetworkController } from './NetworkController.js'
-import { OptionsController } from './OptionsController.js'
+} from '../utils/TypeUtils'
+import { AssetController } from './AssetController'
+import { ConnectorController } from './ConnectorController'
+import { NetworkController } from './NetworkController'
+import { OptionsController } from './OptionsController'
 
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://api.web3modal.com' })

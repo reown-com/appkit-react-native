@@ -1,6 +1,6 @@
 import { Linking } from 'react-native'
-import { ConstantsUtil } from './ConstantsUtil.js'
-import type { CaipAddress, LinkingRecord } from './TypeUtils.js'
+import { ConstantsUtil } from './ConstantsUtil'
+import type { CaipAddress, LinkingRecord } from './TypeUtils'
 
 export const CoreHelperUtil = {
 

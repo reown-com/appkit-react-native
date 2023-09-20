@@ -1,16 +1,22 @@
-import { Card, Overlay } from '@web3modal/ui-react-native';
+import { useSnapshot } from 'valtio';
+import Modal from 'react-native-modal';
+import { Card } from '@web3modal/ui-react-native';
+import { ModalController } from '@web3modal/core-react-native';
+
 import { Web3Router } from '../w3m-router';
+import styles from './styles';
+import { Header } from '../../partials/w3m-header';
 
-export interface Web3ModalProps {
+export function Web3Modal() {
+  const { open } = useSnapshot(ModalController.state);
 
-}
-
-export function Web3Modal({ }: Web3ModalProps) {
   return (
-    <Overlay>
-      <Card>
+    <Modal style={styles.modal} isVisible={open} >
+      <Card style={styles.card}>
+        <Header />
         <Web3Router />
+        {/* <Snack /> */}
       </Card>
-    </Overlay>
+    </Modal>
   );
 };

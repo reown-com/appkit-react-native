@@ -70,6 +70,7 @@ export const tooltipOptions: PlacementType[] = ['top', 'bottom', 'left', 'right'
 export const tagOptions: TagType[] = ['main', 'shade'];
 
 export const iconOptions: IconType[] = [
+  'allWallets',
   'apple',
   'arrowBottom',
   'arrowLeft',

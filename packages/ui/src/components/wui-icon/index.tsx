@@ -2,6 +2,7 @@ import type { SvgProps } from 'react-native-svg';
 import type { ColorType, IconType, SizeType, ThemeKeys } from '../../utils/TypesUtil';
 
 // -- Svg's-------------------------------- //
+import AllWalletsSvg from '../../assets/svg/AllWallets';
 import AppleSvg from '../../assets/svg/Apple';
 import ArrowBottomSvg from '../../assets/svg/ArrowBottom';
 import ArrowLeftSvg from '../../assets/svg/ArrowLeft';
@@ -53,6 +54,7 @@ import useTheme from '../../hooks/useTheme';
 import { IconSize } from '../../utils/ThemeUtil';
 
 const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
+  allWallets: AllWalletsSvg,
   apple: AppleSvg,
   arrowBottom: ArrowBottomSvg,
   arrowLeft: ArrowLeftSvg,

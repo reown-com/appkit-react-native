@@ -2,7 +2,7 @@ import { Animated, Pressable, View } from 'react-native';
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import useTheme from '../../hooks/useTheme';
-import type { TagType } from '../../utils/TypesUtil';
+import type { IconType, TagType } from '../../utils/TypesUtil';
 import { Tag } from '../wui-tag';
 import { WalletImage } from '../wui-wallet-image';
 import { AllWalletsImage } from '../wui-all-wallets-image';
@@ -15,6 +15,7 @@ export interface ListWalletProps {
   onPress?: () => void;
   imageSrc?: string;
   walletImages?: string[];
+  walletIcon?: IconType;
   showAllWallets?: boolean;
   tagLabel?: string;
   tagVariant?: TagType;
@@ -26,6 +27,7 @@ export function ListWallet({
   onPress,
   imageSrc,
   walletImages,
+  walletIcon,
   showAllWallets = false,
   tagLabel,
   tagVariant,
@@ -38,7 +40,7 @@ export function ListWallet({
   );
 
   function imageTemplate() {
-    if (walletImages && showAllWallets) {
+    if (showAllWallets) {
       return (
         <AllWalletsImage
           walletImages={walletImages}
@@ -55,6 +57,7 @@ export function ListWallet({
       <WalletImage
         style={[styles.image, disabled && styles.imageDisabled]}
         imageSrc={imageSrc}
+        walletIcon={walletIcon}
         size="sm"
       />
     );
