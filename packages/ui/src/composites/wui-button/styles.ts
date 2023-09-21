@@ -46,6 +46,7 @@ export const getThemedTextStyle = (
 
 export default StyleSheet.create({
   button: {
+    flexDirection: 'row',
     height: 40,
     paddingVertical: Spacing['3xs'],
     paddingHorizontal: Spacing.l,
@@ -59,5 +60,11 @@ export default StyleSheet.create({
   },
   mdButton: {
     height: 40
+  },
+  iconLeft: {
+    marginRight: Spacing['2xs']
+  },
+  iconRight: {
+    marginLeft: Spacing['2xs']
   }
 });

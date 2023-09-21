@@ -8,6 +8,7 @@ export { Text, type TextProps } from './components/wui-text';
 export { Visual, type VisualProps } from './components/wui-visual';
 
 export { AccountButton, type AccountButtonProps } from './composites/wui-account-button';
+export { ActionEntry, type ActionEntryProps } from './composites/wui-action-entry';
 export { AllWalletsImage, type AllWalletsImageProps } from './composites/wui-all-wallets-image';
 export { Avatar, type AvatarProps } from './composites/wui-avatar';
 export { Button, type ButtonProps } from './composites/wui-button';
@@ -30,6 +31,7 @@ export { Otp, type OtpProps } from './composites/wui-otp';
 export { QrCode, type QrCodeProps } from './composites/wui-qr-code';
 export { SearchBar, type SearchBarProps } from './composites/wui-search-bar';
 export { Snackbar, type SnackbarProps } from './composites/wui-snackbar';
+export { StoreEntry, type StoreEntryProps } from './composites/wui-store-entry';
 export { Tabs, type TabsProps } from './composites/wui-tabs';
 export { Tag, type TagProps } from './composites/wui-tag';
 export { Tooltip, type TooltipProps } from './composites/wui-tooltip';

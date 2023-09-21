@@ -22,8 +22,8 @@ export default StyleSheet.create({
     borderRadius: BorderRadius.xs
   },
   lgImage: {
-    height: 80,
-    width: 80,
+    height: 90,
+    width: 90,
     borderRadius: BorderRadius.m
   },
   border: {

@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
-import {RouterController} from '@web3modal/core-react-native'
-
+import { RouterController } from '@web3modal/core-react-native';
 
 import { View } from 'react-native';
 import { ConnectView } from '../../views/w3m-connect-view';
+import { AllWalletsView } from '../../views/w3m-all-wallets-view';
+import { ConnectingView } from '../../views/w3m-connecting-view';
 
 interface Props {
   // onCopyClipboard?: (value: string) => void;
@@ -17,6 +18,10 @@ export function Web3Router(props: Props) {
     switch (routerState.view) {
       case 'Connect':
         return ConnectView;
+      case 'AllWallets':
+        return AllWalletsView;
+      case 'ConnectingWalletConnect':
+        return ConnectingView;
       case 'Account':
         return View;
       default:
@@ -24,11 +29,5 @@ export function Web3Router(props: Props) {
     }
   }, [routerState.view]);
 
-  return (
-
-      <ViewComponent
-        {...props}
-      />
-
-  );
+  return <ViewComponent {...props} />;
 }

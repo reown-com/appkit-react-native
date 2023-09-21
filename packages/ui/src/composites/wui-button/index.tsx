@@ -7,8 +7,9 @@ import {
   type ViewStyle
 } from 'react-native';
 import { Text } from '../../components/wui-text';
+import { Icon } from '../../components/wui-icon';
 import useTheme from '../../hooks/useTheme';
-import type { ButtonType, SizeType } from '../../utils/TypesUtil';
+import type { ButtonType, IconType, SizeType } from '../../utils/TypesUtil';
 
 import styles, { getThemedButtonStyle, getThemedTextStyle } from './styles';
 
@@ -18,8 +19,8 @@ export type ButtonProps = NativeProps & {
   size?: Exclude<SizeType, 'lg' | 'xs' | 'xxs'>;
   variant?: Exclude<ButtonType, 'shade'>;
   disabled?: boolean;
-  iconLeft?: string;
-  iconRight?: string;
+  iconLeft?: IconType;
+  iconRight?: IconType;
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 };
@@ -31,11 +32,14 @@ export function Button({
   disabled,
   onPress,
   style,
+  iconLeft,
+  iconRight,
   ...rest
 }: ButtonProps) {
   const Theme = useTheme();
   const themedTextStyle = getThemedTextStyle(Theme, variant, disabled);
   const colorAnimation = useRef(new Animated.Value(0));
+  const iconColor = variant === 'fill' ? 'fg-100' : 'blue-100';
 
   const themedNormalStyle = getThemedButtonStyle(Theme, variant, disabled, false);
   const themedPressedStyle = getThemedButtonStyle(Theme, variant, disabled, true);
@@ -75,9 +79,13 @@ export function Button({
       onPress={onPress}
       {...rest}
     >
+      {iconLeft && <Icon color={iconColor} name={iconLeft} size={size} style={styles.iconLeft} />}
       <Text variant={size === 'md' ? 'paragraph-600' : 'small-600'} style={themedTextStyle}>
         {children}
       </Text>
+      {iconRight && (
+        <Icon color={iconColor} name={iconRight} size={size} style={styles.iconRight} />
+      )}
     </AnimatedPressable>
   );
 }

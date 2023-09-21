@@ -26,7 +26,8 @@ export default StyleSheet.create({
     borderRadius: BorderRadius.xs
   },
   text: {
-    marginTop: Spacing.xs
+    marginTop: Spacing.xs,
+    marginHorizontal: Spacing['2xs']
   },
   disabledImage: {
     opacity: 0.4

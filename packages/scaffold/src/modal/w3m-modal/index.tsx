@@ -5,8 +5,9 @@ import { Card } from '@web3modal/ui-react-native';
 import { ApiController, ModalController } from '@web3modal/core-react-native';
 
 import { Web3Router } from '../w3m-router';
-import styles from './styles';
 import { Header } from '../../partials/w3m-header';
+
+import styles from './styles';
 
 export function Web3Modal() {
   const { open } = useSnapshot(ModalController.state);
@@ -16,7 +17,7 @@ export function Web3Modal() {
   }, []);
 
   return (
-    <Modal style={styles.modal} isVisible={open} >
+    <Modal style={styles.modal} isVisible={open}>
       <Card style={styles.card}>
         <Header />
         <Web3Router />
@@ -24,4 +25,4 @@ export function Web3Modal() {
       </Card>
     </Modal>
   );
-};
+}

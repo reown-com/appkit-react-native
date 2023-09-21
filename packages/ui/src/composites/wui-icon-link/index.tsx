@@ -34,7 +34,7 @@ export function IconLink({
       onPressIn={setEndValue}
       onPressOut={setStartValue}
       disabled={disabled}
-      style={[styles.container, { backgroundColor: animatedValue }]}
+      style={[styles.container, styles[`container-${size}`], { backgroundColor: animatedValue }]}
     >
       <Icon name={icon} size={size} color={disabled ? ('overlay-020' as ColorType) : iconColor} />
     </AnimatedPressable>

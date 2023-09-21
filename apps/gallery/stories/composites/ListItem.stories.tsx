@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { ListItem, Text } from '@web3modal/ui-react-native';

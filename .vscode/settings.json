@@ -1,5 +1,18 @@
 {
-  "eslint.workingDirectories": [
-    {"mode": "auto"}
-  ]
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.wordWrapColumn": 100,
+  "extensions.ignoreRecommendations": true,
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/out": true,
+    "**/dist": true,
+    "**/.turbo": true
+  },
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "eslint.workingDirectories": [{ "mode": "auto" }]
 }

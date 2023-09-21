@@ -4,7 +4,6 @@ import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 const baseStyle = {
   flexDirection: 'row',
   height: 40,
-  width: '100%',
   borderRadius: BorderRadius.xxs,
   alignItems: 'center',
   paddingHorizontal: Spacing.m,
@@ -27,12 +26,12 @@ export default StyleSheet.create({
     borderRadius: BorderRadius.xs
   },
   outerBorder: {
+    flexGrow: 1,
     borderWidth: 4,
     borderRadius: BorderRadius.xs,
     borderColor: 'transparent'
   },
   input: {
-    width: '80%',
     flexGrow: 1,
     marginHorizontal: Spacing['4xs']
   },

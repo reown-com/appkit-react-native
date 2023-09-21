@@ -1,4 +1,4 @@
-import { Animated, Pressable } from 'react-native';
+import { Animated, Pressable, type StyleProp, type ViewStyle } from 'react-native';
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import useTheme from '../../hooks/useTheme';
@@ -17,6 +17,7 @@ export interface CardSelectProps {
   selected?: boolean;
   type?: CardSelectType;
   onPress?: () => void;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function CardSelect({
@@ -26,7 +27,8 @@ export function CardSelect({
   imageHeaders,
   onPress,
   selected,
-  disabled
+  disabled,
+  style
 }: CardSelectProps) {
   const Theme = useTheme();
   const normalbackgroundColor = getBackgroundColor({ selected, disabled, pressed: false });
@@ -47,7 +49,7 @@ export function CardSelect({
       onPressIn={setEndValue}
       onPressOut={setStartValue}
       disabled={disabled}
-      style={[styles.container, { backgroundColor: animatedValue }]}
+      style={[styles.container, { backgroundColor: animatedValue }, style]}
     >
       <Image
         imageSrc={imageSrc}
@@ -55,7 +57,7 @@ export function CardSelect({
         size="md"
         style={disabled && styles.disabledImage}
       />
-      <Text variant="tiny-500" color={textColor} style={styles.text}>
+      <Text variant="tiny-500" color={textColor} style={styles.text} numberOfLines={1}>
         {name}
       </Text>
     </AnimatedPressable>
