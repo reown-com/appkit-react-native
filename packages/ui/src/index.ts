@@ -42,3 +42,5 @@ export { FlexView, type FlexViewProps } from './layout/wui-flex';
 export { Separator } from './layout/wui-separator';
 
 export type { ColorType, TextType, SizeType, IconType, LogoType } from './utils/TypesUtil';
+
+export { useTheme } from './hooks/useTheme';

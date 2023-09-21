@@ -7,11 +7,12 @@ import {
   RouterController,
   type WcWallet
 } from '@web3modal/core-react-native';
-import { CardSelect, FlexView, IconLink, SearchBar } from '@web3modal/ui-react-native';
+import { CardSelect, FlexView, IconLink, SearchBar, useTheme } from '@web3modal/ui-react-native';
 
 import styles from './styles';
 
 export function AllWalletsView() {
+  const Theme = useTheme();
   const { wallets } = useSnapshot(ApiController.state);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export function AllWalletsView() {
         columnGap="xs"
         flexDirection="row"
         alignItems="center"
+        style={[styles.header, { backgroundColor: Theme['bg-125'], shadowColor: Theme['bg-125'] }]}
       >
         <SearchBar inputStyle={{ width: '70%' }} />
         <IconLink

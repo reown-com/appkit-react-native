@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   wallet: {
@@ -15,5 +15,14 @@ export default StyleSheet.create({
     paddingHorizontal: 8,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  header: {
+    zIndex: 1,
+    ...Platform.select({
+      ios: {
+        shadowOpacity: 1,
+        shadowOffset: { width: 0, height: 6 }
+      }
+    })
   }
 });

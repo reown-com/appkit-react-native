@@ -1,4 +1,4 @@
-import { View, type ViewStyle } from 'react-native';
+import { View, type StyleProp, type ViewStyle } from 'react-native';
 
 import type {
   FlexAlignItemsType,
@@ -26,6 +26,7 @@ export interface FlexViewProps {
   gap?: SpacingType;
   padding?: SpacingType | SpacingType[];
   margin?: SpacingType | SpacingType[];
+  style?: StyleProp<ViewStyle>;
 }
 
 export function FlexView(props: FlexViewProps) {
@@ -49,5 +50,5 @@ export function FlexView(props: FlexViewProps) {
     marginLeft: props.margin && UiUtil.getSpacingStyles(props.margin, 3)
   };
 
-  return <View style={styles}>{props.children}</View>;
+  return <View style={[styles, props.style]}>{props.children}</View>;
 }
