@@ -5,10 +5,11 @@ import styles from './styles';
 
 export interface AllWalletsImageProps {
   walletImages?: string[];
+  imageHeaders?: Record<string, string>;
   style?: any;
 }
 
-export function AllWalletsImage({ walletImages, style }: AllWalletsImageProps) {
+export function AllWalletsImage({ walletImages, imageHeaders, style }: AllWalletsImageProps) {
   const Theme = useTheme();
   const _wallets = walletImages?.slice(0, 4) || [];
   const _emptyBoxes = Array.from(Array(4 - _wallets.length).keys());
@@ -23,7 +24,13 @@ export function AllWalletsImage({ walletImages, style }: AllWalletsImageProps) {
     >
       <View style={styles.row}>
         {_wallets.map(wallet => (
-          <WalletImage key={wallet} size="xs" imageSrc={wallet} style={styles.icon} />
+          <WalletImage
+            key={wallet}
+            size="xs"
+            imageSrc={wallet}
+            imageHeaders={imageHeaders}
+            style={styles.icon}
+          />
         ))}
         {_emptyBoxes.map((_, i) => (
           <WalletImage key={i} size="xs" style={styles.icon} />

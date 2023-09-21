@@ -14,6 +14,7 @@ export interface ListWalletProps {
   name: string;
   onPress?: () => void;
   imageSrc?: string;
+  imageHeaders?: Record<string, string>;
   walletImages?: string[];
   walletIcon?: IconType;
   showAllWallets?: boolean;
@@ -26,6 +27,7 @@ export function ListWallet({
   name,
   onPress,
   imageSrc,
+  imageHeaders,
   walletImages,
   walletIcon,
   showAllWallets = false,
@@ -44,6 +46,7 @@ export function ListWallet({
       return (
         <AllWalletsImage
           walletImages={walletImages}
+          imageHeaders={imageHeaders}
           style={[
             styles.image,
             { backgroundColor: animatedValue },
@@ -57,6 +60,7 @@ export function ListWallet({
       <WalletImage
         style={[styles.image, disabled && styles.imageDisabled]}
         imageSrc={imageSrc}
+        imageHeaders={imageHeaders}
         walletIcon={walletIcon}
         size="sm"
       />

@@ -6,6 +6,7 @@ export interface CaipNetwork {
   id: CaipNetworkId
   name?: string
   imageId?: string
+  imageUrl?: string
 }
 
 export interface LinkingRecord {
@@ -36,24 +37,25 @@ export type CaipNamespaces = Record<
   }
 >
 
-export type SdkVersion = `${'html' | 'react' | 'vue'}-wagmi-${string}`
+export type SdkVersion = `react-native-${string}`
 
 // -- ApiController Types -------------------------------------------------------
-export interface ApiWallet {
+export interface WcWallet {
   id: string
   name: string
-  homepage: string
-  image_id: string
-  order: number
-  mobile_link: string | null
-  desktop_link: string | null
-  webapp_link: string | null
-  app_store: string | null
-  play_store: string | null
-  injected:
+  homepage?: string
+  image_id?: string
+  image_url?: string
+  order?: number
+  mobile_link?: string | null
+  desktop_link?: string | null
+  webapp_link?: string | null
+  app_store?: string | null
+  play_store?: string | null
+  injected?:
     | {
-        namespace: string
-        injected_id: string
+        namespace?: string
+        injected_id?: string
       }[]
     | null
 }
@@ -67,7 +69,7 @@ export interface ApiGetWalletsRequest {
 }
 
 export interface ApiGetWalletsResponse {
-  data: ApiWallet[]
+  data: WcWallet[]
   count: number
 }
 
@@ -80,7 +82,7 @@ export interface ThemeVariables {
   '--w3m-color-mix-strength'?: number
   '--w3m-font-size-master'?: string
   '--w3m-border-radius-master'?: string
-  '--w3m-z-index'?: string
+  '--w3m-z-index'?: number
 }
 
 // -- BlockchainApiController Types ---------------------------------------------
@@ -93,3 +95,24 @@ export interface BlockchainApiIdentityResponse {
   avatar: string
   name: string
 }
+
+// -- OptionsController Types ---------------------------------------------------
+export interface Token {
+  address: string
+  image?: string
+}
+
+export type Tokens = Record<CaipNetworkId, Token>
+
+export type CustomWallet = Pick<
+  WcWallet,
+  | 'id'
+  | 'name'
+  | 'homepage'
+  | 'image_url'
+  | 'mobile_link'
+  | 'desktop_link'
+  | 'webapp_link'
+  | 'app_store'
+  | 'play_store'
+>

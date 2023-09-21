@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { ApiWallet } from './TypeUtils'
+import type { WcWallet } from './TypeUtils'
 
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE'
@@ -37,7 +37,7 @@ export const StorageUtil = {
     }
   },
 
-  async setWeb3ModalRecent(wallet: ApiWallet) {
+  async setWeb3ModalRecent(wallet: WcWallet) {
     try {
       const recentWallets = await StorageUtil.getRecentWallets()
       const exists = recentWallets.find(w => w.id === wallet.id)
@@ -53,7 +53,7 @@ export const StorageUtil = {
     }
   },
 
-  async getRecentWallets(): Promise<ApiWallet[]> {
+  async getRecentWallets(): Promise<WcWallet[]> {
     try {
       const recent = await AsyncStorage.getItem(W3M_RECENT)
 

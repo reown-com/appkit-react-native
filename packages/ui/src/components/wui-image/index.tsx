@@ -6,9 +6,10 @@ const AnimatedImage = Animated.createAnimatedComponent(NativeImage);
 
 export type ImageProps = Omit<NativeProps, 'source'> & {
   source: string;
+  headers?: Record<string, string>;
 };
 
-export function Image({ source, style, ...rest }: ImageProps) {
+export function Image({ source, headers, style, ...rest }: ImageProps) {
   const opacity = useRef(new Animated.Value(0));
 
   const onLoadEnd = () => {
@@ -22,7 +23,7 @@ export function Image({ source, style, ...rest }: ImageProps) {
   return (
     <AnimatedImage
       onLoadEnd={onLoadEnd}
-      source={{ uri: source }}
+      source={{ uri: source, headers }}
       style={[styles.image, { opacity: opacity.current }, style]}
       {...rest}
     />

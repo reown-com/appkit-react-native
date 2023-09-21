@@ -25,17 +25,21 @@ export function Header() {
       GetWallet: 'Get a Wallet'
     }
   }
+  
+  const header = headings()[view];
 
   const dynamicButtonTemplate = () => {
     const showBack = history.length > 1
     return showBack ? <IconLink icon='chevronLeft' size='md' onPress={RouterController.goBack} /> : <IconLink icon='helpCircle' size='md' onPress={() => RouterController.push('WhatIsANetwork')} />
   }
+  
+  if(!header) return null;
 
   return (
     <>
       <FlexView justifyContent='space-between' flexDirection='row' alignItems='center' padding={['l', 'xl', 'l', 'xl']}>
         {dynamicButtonTemplate()}
-        <Text variant='paragraph-700'>{headings()[view]}</Text>
+        <Text variant='paragraph-700'>{header}</Text>
         <IconLink icon='close' size='md' onPress={ModalController.close}  />
       </FlexView>
       <Separator />

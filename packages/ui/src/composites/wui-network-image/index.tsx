@@ -5,11 +5,12 @@ import { PathLg, PathNormal } from './styles';
 
 export interface NetworkImageProps {
   imageSrc?: string;
+  imageHeaders?: Record<string, string>;
   selected?: boolean;
   size?: Exclude<SizeType, 'sm' | 'xs' | 'xxs'>;
 }
 
-export function NetworkImage({ imageSrc, selected, size = 'md' }: NetworkImageProps) {
+export function NetworkImage({ imageSrc, imageHeaders, selected, size = 'md' }: NetworkImageProps) {
   const Theme = useTheme();
   const isLg = size === 'lg';
   const svgWidth = isLg ? 96 : 56;
@@ -20,7 +21,13 @@ export function NetworkImage({ imageSrc, selected, size = 'md' }: NetworkImagePr
     <Svg width={svgWidth} height={svgHeight} stroke={svgStroke} strokeWidth={1}>
       <Defs>
         <Pattern id="image-pattern" x="0" y="0" width="1" height="1">
-          <Image height={svgHeight} width={svgWidth} x="0" y="0" href={imageSrc} />
+          <Image
+            height={svgHeight}
+            width={svgWidth}
+            x="0"
+            y="0"
+            href={{ uri: imageSrc, headers: imageHeaders }}
+          />
         </Pattern>
       </Defs>
       <Path

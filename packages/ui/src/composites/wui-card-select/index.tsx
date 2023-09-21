@@ -12,6 +12,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export interface CardSelectProps {
   name: string;
   imageSrc?: string;
+  imageHeaders?: Record<string, string>;
   disabled?: boolean;
   selected?: boolean;
   type?: CardSelectType;
@@ -22,6 +23,7 @@ export function CardSelect({
   name,
   type = 'wallet',
   imageSrc,
+  imageHeaders,
   onPress,
   selected,
   disabled
@@ -47,7 +49,12 @@ export function CardSelect({
       disabled={disabled}
       style={[styles.container, { backgroundColor: animatedValue }]}
     >
-      <Image imageSrc={imageSrc} size="md" style={disabled && styles.disabledImage} />
+      <Image
+        imageSrc={imageSrc}
+        imageHeaders={imageHeaders}
+        size="md"
+        style={disabled && styles.disabledImage}
+      />
       <Text variant="tiny-500" color={textColor} style={styles.text}>
         {name}
       </Text>

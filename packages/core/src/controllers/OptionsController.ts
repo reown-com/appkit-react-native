@@ -6,6 +6,7 @@ export interface OptionsControllerState {
   projectId: ProjectId
   includeWalletIds?: string[]
   excludeWalletIds?: string[]
+  featuredWalletIds?: string[]
 }
 
 // -- State --------------------------------------------- //
@@ -27,5 +28,9 @@ export const OptionsController = {
 
   setExcludeWalletIds(excludeWalletIds: OptionsControllerState['excludeWalletIds']) {
     state.excludeWalletIds = excludeWalletIds
-  }
+  },
+
+  setFeaturedWalletIds(featuredWalletIds: OptionsControllerState['featuredWalletIds']) {
+    state.featuredWalletIds = featuredWalletIds
+  },
 }

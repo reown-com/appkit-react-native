@@ -8,6 +8,7 @@ import styles from './styles';
 
 export interface WalletImageProps {
   imageSrc?: string;
+  imageHeaders?: Record<string, string>;
   size?: Exclude<SizeType, 'xxs'>;
   style?: StyleProp<ViewStyle>;
   walletIcon?: IconType;
@@ -20,12 +21,18 @@ const IconSize = {
   lg: 40
 };
 
-export function WalletImage({ imageSrc, size = 'md', style, walletIcon }: WalletImageProps) {
+export function WalletImage({
+  imageSrc,
+  imageHeaders,
+  size = 'md',
+  style,
+  walletIcon
+}: WalletImageProps) {
   const Theme = useTheme();
 
   const templateVisual = () => {
     if (imageSrc) {
-      return <Image source={imageSrc} style={styles[`${size}Image`]} />;
+      return <Image source={imageSrc} headers={imageHeaders} style={styles[`${size}Image`]} />;
     }
 
     if (walletIcon) {
