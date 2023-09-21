@@ -41,7 +41,7 @@ export function AllWalletsView() {
 
   const walletTemplate = ({ item }: { item: WcWallet }) => {
     return (
-      <View style={{ width: '25%' }}>
+      <View style={styles.wallet}>
         <CardSelect
           key={item?.id}
           imageSrc={AssetUtil.getWalletImage(item)}

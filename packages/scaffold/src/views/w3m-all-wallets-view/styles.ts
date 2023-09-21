@@ -2,17 +2,18 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   wallet: {
-    justifyContent: 'center',
-    alignItems: 'center'
+    width: '25%',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   container: {
-    height: '40%',
-    flexGrow: 1,
-    paddingHorizontal: 16
+    height: '40%'
   },
   contentContainer: {
-    gap: 16,
+    gap: 12,
+    paddingBottom: 24,
+    paddingHorizontal: 8,
     alignItems: 'center',
-    paddingBottom: 24
+    justifyContent: 'center'
   }
 });
