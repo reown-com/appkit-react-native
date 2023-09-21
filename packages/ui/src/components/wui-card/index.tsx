@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
 
 export interface CardProps {

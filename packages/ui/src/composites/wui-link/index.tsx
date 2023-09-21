@@ -8,7 +8,7 @@ import {
 import { Icon } from '../../components/wui-icon';
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil';
 import styles from './styles';
 

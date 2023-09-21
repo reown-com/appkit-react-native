@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { type StyleProp, View, type ViewStyle } from 'react-native';
 
 import { Text } from '../../components/wui-text';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
 
 export interface TagProps {

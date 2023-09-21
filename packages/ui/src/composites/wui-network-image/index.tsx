@@ -1,5 +1,5 @@
 import { Path, Svg, Image, Defs, Pattern } from 'react-native-svg';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import type { SizeType } from '../../utils/TypesUtil';
 import { PathLg, PathNormal } from './styles';
 

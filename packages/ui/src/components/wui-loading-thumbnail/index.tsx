@@ -1,7 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { Animated, Easing, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);

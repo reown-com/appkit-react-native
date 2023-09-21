@@ -1,5 +1,5 @@
 import { Animated, View } from 'react-native';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import { WalletImage } from '../wui-wallet-image';
 import styles from './styles';
 

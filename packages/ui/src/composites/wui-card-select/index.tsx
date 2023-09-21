@@ -1,7 +1,7 @@
 import { Animated, Pressable, type StyleProp, type ViewStyle } from 'react-native';
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import type { CardSelectType } from '../../utils/TypesUtil';
 import { NetworkImage } from '../wui-network-image';
 import { WalletImage } from '../wui-wallet-image';

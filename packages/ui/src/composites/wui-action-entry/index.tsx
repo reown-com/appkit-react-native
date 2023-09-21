@@ -2,7 +2,7 @@ import { Animated, Pressable, type StyleProp, type ViewStyle } from 'react-nativ
 
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import type { ColorType, IconType } from '../../utils/TypesUtil';
 import { Icon } from '../../components/wui-icon';
 

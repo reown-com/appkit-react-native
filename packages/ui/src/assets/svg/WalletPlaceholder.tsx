@@ -1,5 +1,5 @@
 import Svg, { Path, type SvgProps } from 'react-native-svg';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 
 const SvgWalletPlaceholder = (props: SvgProps) => {
   const Theme = useTheme();

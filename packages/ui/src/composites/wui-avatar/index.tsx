@@ -1,7 +1,7 @@
 import { type ImageStyle, type StyleProp, View } from 'react-native';
 import Svg, { Circle, ClipPath, Defs, G, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { Image } from '../../components/wui-image';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import { UiUtil } from '../../utils/UiUtil';
 import styles from './styles';
 

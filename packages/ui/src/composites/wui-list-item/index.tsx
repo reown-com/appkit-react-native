@@ -4,7 +4,7 @@ import { Icon } from '../../components/wui-icon';
 import { Image } from '../../components/wui-image';
 import { LoadingSpinner } from '../../components/wui-loading-spinner';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import type { IconType } from '../../utils/TypesUtil';
 import { IconBox } from '../wui-icon-box';
 import styles from './styles';

@@ -2,7 +2,7 @@ import { Animated, Pressable, View } from 'react-native';
 import { Image } from '../../components/wui-image';
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import { UiUtil } from '../../utils/UiUtil';
 import { Avatar } from '../wui-avatar';
 import { IconBox } from '../wui-icon-box';

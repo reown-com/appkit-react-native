@@ -50,7 +50,7 @@ import WarningCircleSvg from '../../assets/svg/WarningCircle';
 import TwitchSvg from '../../assets/svg/Twitch';
 import TwitterIconSvg from '../../assets/svg/TwitterIcon';
 import WalletPlaceholderSvg from '../../assets/svg/WalletPlaceholder';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import { IconSize } from '../../utils/ThemeUtil';
 
 const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {

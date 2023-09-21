@@ -1,7 +1,7 @@
 import { Animated, Pressable } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil';
 import styles from './styles';
 

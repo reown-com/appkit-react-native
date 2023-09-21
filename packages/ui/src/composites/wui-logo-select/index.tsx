@@ -1,6 +1,6 @@
 import { Animated, Pressable } from 'react-native';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import type { LogoType } from '../../utils/TypesUtil';
 import { Logo } from '../wui-logo';
 import styles from './styles';

@@ -7,5 +7,3 @@ export function useTheme() {
 
   return Theme;
 }
-
-export default useTheme;

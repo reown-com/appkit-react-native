@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { Animated, Pressable } from 'react-native';
 import { Image } from '../../components/wui-image';
 import { Text } from '../../components/wui-text';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import type { ButtonType } from '../../utils/TypesUtil';
 import { IconBox } from '../wui-icon-box';
 import styles, { getThemedStyle, getTextColor } from './styles';

@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Text } from '../../components/wui-text';
 import { Icon } from '../../components/wui-icon';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import type { ButtonType, IconType, SizeType } from '../../utils/TypesUtil';
 
 import styles, { getThemedButtonStyle, getThemedTextStyle } from './styles';

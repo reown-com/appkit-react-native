@@ -1,7 +1,7 @@
 import { Animated, Pressable, View } from 'react-native';
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
-import useTheme from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import type { IconType, TagType } from '../../utils/TypesUtil';
 import { Tag } from '../wui-tag';
 import { WalletImage } from '../wui-wallet-image';
