@@ -39,7 +39,7 @@ export function Button({
   const Theme = useTheme();
   const themedTextStyle = getThemedTextStyle(Theme, variant, disabled);
   const colorAnimation = useRef(new Animated.Value(0));
-  const iconColor = variant === 'fill' ? 'fg-100' : 'blue-100';
+  const iconColor = variant === 'fill' ? 'inverse-100' : 'blue-100';
 
   const themedNormalStyle = getThemedButtonStyle(Theme, variant, disabled, false);
   const themedPressedStyle = getThemedButtonStyle(Theme, variant, disabled, true);

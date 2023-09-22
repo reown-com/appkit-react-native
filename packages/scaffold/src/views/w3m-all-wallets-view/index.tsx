@@ -25,7 +25,6 @@ export function AllWalletsView() {
     return (
       <FlexView
         padding={['2xs', 'm', '2xs', 'm']}
-        // columnGap="xs"
         flexDirection="row"
         alignItems="center"
         style={[styles.header, { backgroundColor: Theme['bg-125'], shadowColor: Theme['bg-125'] }]}
@@ -60,6 +59,7 @@ export function AllWalletsView() {
       {headerTemplate()}
       <FlatList
         fadingEdgeLength={20}
+        bounces={false}
         numColumns={4}
         data={wallets}
         renderItem={walletTemplate}

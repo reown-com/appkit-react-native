@@ -35,7 +35,7 @@ export function Header() {
       <IconLink
         icon="helpCircle"
         size="md"
-        onPress={() => RouterController.push('WhatIsANetwork')}
+        onPress={() => RouterController.push('WhatIsAWallet')}
       />
     );
   };

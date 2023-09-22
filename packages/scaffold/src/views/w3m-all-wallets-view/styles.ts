@@ -7,7 +7,7 @@ export default StyleSheet.create({
     justifyContent: 'center'
   },
   container: {
-    height: '40%'
+    height: '65%'
   },
   contentContainer: {
     gap: 12,
