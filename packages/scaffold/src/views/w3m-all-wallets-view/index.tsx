@@ -25,12 +25,12 @@ export function AllWalletsView() {
     return (
       <FlexView
         padding={['2xs', 'm', '2xs', 'm']}
-        columnGap="xs"
+        // columnGap="xs"
         flexDirection="row"
         alignItems="center"
         style={[styles.header, { backgroundColor: Theme['bg-125'], shadowColor: Theme['bg-125'] }]}
       >
-        <SearchBar inputStyle={{ width: '70%' }} />
+        <SearchBar inputStyle={{ width: '50%' }} />
         <IconLink
           icon="qrCode"
           iconColor="blue-100"
