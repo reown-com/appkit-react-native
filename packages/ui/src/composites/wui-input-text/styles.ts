@@ -32,7 +32,7 @@ export default StyleSheet.create({
     borderColor: 'transparent'
   },
   input: {
-    flexGrow: 1,
+    flex: 1,
     marginHorizontal: Spacing['4xs']
   },
   icon: {

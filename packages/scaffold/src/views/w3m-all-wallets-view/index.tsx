@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
-import { FlatList, View } from 'react-native';
+import { FlatList, useWindowDimensions } from 'react-native';
 import {
   ApiController,
   AssetUtil,
@@ -14,6 +14,9 @@ import styles from './styles';
 export function AllWalletsView() {
   const Theme = useTheme();
   const { wallets } = useSnapshot(ApiController.state);
+  const { width } = useWindowDimensions();
+  const numColumns = Math.floor(width / 80);
+  const gap = Math.trunc((width / numColumns - 70) / (numColumns - 1));
 
   useEffect(() => {
     if (!wallets.length) {
@@ -24,17 +27,20 @@ export function AllWalletsView() {
   const headerTemplate = () => {
     return (
       <FlexView
-        padding={['2xs', 'm', '2xs', 'm']}
+        padding={['s', 'm', 's', 's']}
         flexDirection="row"
         alignItems="center"
+        justifyContent="space-between"
         style={[styles.header, { backgroundColor: Theme['bg-125'], shadowColor: Theme['bg-125'] }]}
       >
-        <SearchBar inputStyle={{ width: '50%' }} />
+        <SearchBar />
         <IconLink
           icon="qrCode"
           iconColor="blue-100"
+          background
           size="lg"
           onPress={() => RouterController.push('ConnectingWalletConnect')}
+          style={{ marginLeft: 8 }}
         />
       </FlexView>
     );
@@ -42,15 +48,14 @@ export function AllWalletsView() {
 
   const walletTemplate = ({ item }: { item: WcWallet }) => {
     return (
-      <View style={styles.wallet}>
-        <CardSelect
-          key={item?.id}
-          imageSrc={AssetUtil.getWalletImage(item)}
-          imageHeaders={ApiController._getApiHeaders()}
-          name={item?.name ?? 'Unknown'}
-          onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
-        />
-      </View>
+      <CardSelect
+        key={item?.id}
+        imageSrc={AssetUtil.getWalletImage(item)}
+        imageHeaders={ApiController._getApiHeaders()}
+        name={item?.name ?? 'Unknown'}
+        onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
+        style={{ margin: gap }}
+      />
     );
   };
 
@@ -58,9 +63,10 @@ export function AllWalletsView() {
     <>
       {headerTemplate()}
       <FlatList
+        key={numColumns}
         fadingEdgeLength={20}
         bounces={false}
-        numColumns={4}
+        numColumns={numColumns}
         data={wallets}
         renderItem={walletTemplate}
         style={styles.container}
