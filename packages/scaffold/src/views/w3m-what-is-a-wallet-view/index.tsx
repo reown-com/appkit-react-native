@@ -1,5 +1,6 @@
 import { ScrollView } from 'react-native';
 import { Button, FlexView, Text, Visual } from '@web3modal/ui-react-native';
+import { RouterController } from '@web3modal/core-react-native';
 
 export function WhatIsAWalletView() {
   return (
@@ -32,7 +33,12 @@ export function WhatIsAWalletView() {
         <Text variant="small-500" color="fg-200" style={{ textAlign: 'center' }}>
           With your wallet, you can explore and interact with DeFi, NFTs, DAOs, and much more.
         </Text>
-        <Button size="sm" iconLeft="wallet" style={{ marginTop: 16 }}>
+        <Button
+          size="sm"
+          iconLeft="wallet"
+          style={{ marginTop: 16 }}
+          onPress={() => RouterController.push('GetWallet')}
+        >
           Get a Wallet
         </Button>
       </FlexView>

@@ -6,6 +6,8 @@ import type { IconType, TagType } from '../../utils/TypesUtil';
 import { Tag } from '../wui-tag';
 import { WalletImage } from '../wui-wallet-image';
 import { AllWalletsImage } from '../wui-all-wallets-image';
+import { Icon } from '../../components/wui-icon';
+
 import styles from './styles';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -20,6 +22,7 @@ export interface ListWalletProps {
   showAllWallets?: boolean;
   tagLabel?: string;
   tagVariant?: TagType;
+  icon?: IconType;
   disabled?: boolean;
 }
 
@@ -33,6 +36,7 @@ export function ListWallet({
   showAllWallets = false,
   tagLabel,
   tagVariant,
+  icon,
   disabled
 }: ListWalletProps) {
   const Theme = useTheme();
@@ -67,6 +71,29 @@ export function ListWallet({
     );
   }
 
+  function iconTemplate() {
+    if (tagLabel && tagVariant) {
+      return (
+        <Tag variant={tagVariant} disabled={disabled} style={styles.rightIcon}>
+          {tagLabel}
+        </Tag>
+      );
+    }
+
+    if (icon) {
+      return (
+        <Icon
+          name={icon}
+          color={disabled ? 'fg-300' : 'fg-100'}
+          size="sm"
+          style={styles.rightIcon}
+        />
+      );
+    }
+
+    return null;
+  }
+
   return (
     <AnimatedPressable
       style={[
@@ -84,11 +111,7 @@ export function ListWallet({
           {name}
         </Text>
       </View>
-      {tagLabel && tagVariant && (
-        <Tag variant={tagVariant} disabled={disabled} style={styles.tag}>
-          {tagLabel}
-        </Tag>
-      )}
+      {iconTemplate()}
     </AnimatedPressable>
   );
 }

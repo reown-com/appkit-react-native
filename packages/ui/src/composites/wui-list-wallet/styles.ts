@@ -20,7 +20,7 @@ export default StyleSheet.create({
   name: {
     marginHorizontal: Spacing['4xs']
   },
-  tag: {
+  rightIcon: {
     marginHorizontal: Spacing.xs
   },
   image: {

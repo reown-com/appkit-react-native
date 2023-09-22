@@ -1,8 +1,12 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { ListWallet } from '@web3modal/ui-react-native';
-import { tagOptions, walletImagesOptions, walletImageSrc } from '../../utils/PresetUtils';
+import {
+  iconOptions,
+  tagOptions,
+  walletImagesOptions,
+  walletImageSrc
+} from '../../utils/PresetUtils';
 import { GalleryContainer } from '../../components/GalleryContainer';
 
 const meta: Meta<typeof ListWallet> = {
@@ -23,6 +27,10 @@ const meta: Meta<typeof ListWallet> = {
     },
     tagLabel: {
       control: { type: 'text' }
+    },
+    icon: {
+      options: [undefined, ...iconOptions],
+      control: { type: 'select' }
     },
     disabled: {
       control: { type: 'boolean' }
@@ -46,7 +54,7 @@ export default meta;
 type Story = StoryObj<typeof ListWallet>;
 
 export const Default: Story = {
-  render: args => (
+  render: (args: any) => (
     <GalleryContainer width={300}>
       <ListWallet
         name={args.name}
@@ -56,6 +64,7 @@ export const Default: Story = {
         walletImages={args.walletImages}
         disabled={args.disabled}
         showAllWallets={args.showAllWallets}
+        icon={args.icon}
       />
     </GalleryContainer>
   )
