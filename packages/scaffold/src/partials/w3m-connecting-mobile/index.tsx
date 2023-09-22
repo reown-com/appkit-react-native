@@ -42,7 +42,12 @@ export function ConnectingMobile() {
       <Text variant="small-500" color="fg-200">
         Accept connection request in the wallet
       </Text>
-      <Button variant="accent" iconLeft="refresh" style={styles.retryButton}>
+      <Button
+        variant="accent"
+        iconLeft="refresh"
+        style={styles.retryButton}
+        iconStyle={styles.copyIcon}
+      >
         Try again
       </Button>
       <ActionEntry label="Copy link" iconLeft="copy" style={styles.copyButton} onPress={() => {}} />

@@ -13,5 +13,8 @@ export default StyleSheet.create({
   },
   storeButton: {
     width: '95%'
+  },
+  copyIcon: {
+    transform: [{ rotateY: '180deg' }]
   }
 });

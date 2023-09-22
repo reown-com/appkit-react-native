@@ -12,6 +12,7 @@ import { useTheme } from '../../hooks/useTheme';
 import type { ButtonType, IconType, SizeType } from '../../utils/TypesUtil';
 
 import styles, { getThemedButtonStyle, getThemedTextStyle } from './styles';
+import type { SvgProps } from 'react-native-svg';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -23,6 +24,7 @@ export type ButtonProps = NativeProps & {
   iconRight?: IconType;
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  iconStyle?: SvgProps['style'];
 };
 
 export function Button({
@@ -34,6 +36,7 @@ export function Button({
   style,
   iconLeft,
   iconRight,
+  iconStyle,
   ...rest
 }: ButtonProps) {
   const Theme = useTheme();
@@ -79,7 +82,9 @@ export function Button({
       onPress={onPress}
       {...rest}
     >
-      {iconLeft && <Icon color={iconColor} name={iconLeft} size={size} style={styles.iconLeft} />}
+      {iconLeft && (
+        <Icon color={iconColor} name={iconLeft} size={size} style={[styles.iconLeft, iconStyle]} />
+      )}
       <Text variant={size === 'md' ? 'paragraph-600' : 'small-600'} style={themedTextStyle}>
         {children}
       </Text>
