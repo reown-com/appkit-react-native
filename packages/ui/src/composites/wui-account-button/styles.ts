@@ -33,10 +33,13 @@ export default StyleSheet.create({
     height: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingLeft: Spacing['3xs'],
-    paddingRight: Spacing.s,
+    paddingHorizontal: Spacing['3xs'],
+
     gap: Spacing['3xs'],
     borderRadius: 100,
     borderWidth: 1
+  },
+  address: {
+    paddingRight: Spacing.xs
   }
 });

@@ -14,6 +14,7 @@ export interface AccountButtonProps {
   networkSrc?: string;
   avatarSrc?: string;
   address?: string;
+  isProfileName?: boolean;
   balance?: string;
   onPress?: () => void;
 }
@@ -22,6 +23,7 @@ export function AccountButton({
   networkSrc,
   avatarSrc,
   address,
+  isProfileName,
   balance,
   onPress
 }: AccountButtonProps) {
@@ -81,9 +83,11 @@ export function AccountButton({
           address={address}
           style={[styles.image, !avatarSrc && styles.avatarPlaceholder]}
         />
-        <Text variant="paragraph-600" color="fg-200">
-          {address ? UiUtil.getTruncateAddress(address, 4) : '...'}
-        </Text>
+        {address && (
+          <Text variant="paragraph-600" color="fg-200" style={styles.address}>
+            {UiUtil.getTruncateString(address, 8, isProfileName ? 'end' : 'middle')}
+          </Text>
+        )}
       </View>
     </AnimatedPressable>
   );

@@ -1,8 +1,7 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Button } from '@web3modal/ui-react-native';
-import { buttonOptions } from '../../utils/PresetUtils';
+import { buttonOptions, iconOptions } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof Button> = {
   component: Button,
@@ -13,6 +12,14 @@ const meta: Meta<typeof Button> = {
     },
     variant: {
       options: buttonOptions,
+      control: { type: 'select' }
+    },
+    iconLeft: {
+      options: [undefined, ...iconOptions],
+      control: { type: 'select' }
+    },
+    iconRight: {
+      options: [undefined, ...iconOptions],
       control: { type: 'select' }
     },
     disabled: {
@@ -32,7 +39,13 @@ type Story = StoryObj<typeof Button>;
 
 export const Default: Story = {
   render: args => (
-    <Button variant={args.variant} size={args.size} disabled={args.disabled}>
+    <Button
+      variant={args.variant}
+      size={args.size}
+      disabled={args.disabled}
+      iconLeft={args.iconLeft}
+      iconRight={args.iconRight}
+    >
       {args.children}
     </Button>
   )

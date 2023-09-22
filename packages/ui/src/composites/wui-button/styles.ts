@@ -4,7 +4,7 @@ import type { ButtonType, ThemeKeys } from '../../utils/TypesUtil';
 
 export const getThemedButtonStyle = (
   theme: { [key in ThemeKeys]: string },
-  variant: Exclude<ButtonType, 'shade'>,
+  variant: ButtonType,
   disabled?: boolean,
   pressed?: boolean
 ): StyleProp<any> => {
@@ -41,7 +41,11 @@ export const getThemedTextStyle = (
     return variant === 'fill' ? { color: theme['fg-300'] } : { color: theme['overlay-020'] };
   }
 
-  return variant === 'fill' ? { color: theme['inverse-100'] } : { color: theme['blue-100'] };
+  return variant === 'fill'
+    ? { color: theme['inverse-100'] }
+    : variant === 'accent'
+    ? { color: theme['blue-100'] }
+    : { color: theme['fg-150'] };
 };
 
 export default StyleSheet.create({

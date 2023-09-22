@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { AccountButton } from '@web3modal/ui-react-native';
@@ -13,6 +12,9 @@ const meta: Meta<typeof AccountButton> = {
     address: {
       control: { type: 'text' }
     },
+    isProfileName: {
+      control: { type: 'boolean' }
+    },
     networkSrc: {
       control: { type: 'text' }
     },
@@ -24,7 +26,8 @@ const meta: Meta<typeof AccountButton> = {
     avatarSrc: avatarImageSrc,
     address: '0xDBbD65026a07cFbFa1aa92744E4D69951686077d',
     networkSrc: networkImageSrc,
-    balance: '0.527 ETH'
+    balance: '0.527 ETH',
+    isProfileName: false
   }
 };
 
@@ -38,6 +41,7 @@ export const Default: Story = {
       address={args.address}
       networkSrc={args.networkSrc}
       balance={args.balance}
+      isProfileName={args.isProfileName}
     />
   )
 };

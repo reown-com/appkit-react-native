@@ -190,3 +190,5 @@ export type FlexJustifyContentType =
   | 'space-around'
   | 'space-between'
   | 'space-evenly';
+
+export type TruncateType = 'start' | 'middle' | 'end';

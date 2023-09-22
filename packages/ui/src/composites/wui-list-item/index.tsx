@@ -54,7 +54,7 @@ export function ListItem({
       );
     } else if (variant === 'icon' && icon) {
       const iconColor = iconVariant === 'blue' ? 'blue-100' : 'fg-200';
-      const borderColor = iconVariant === 'blue' ? 'blue-015' : 'overlay-015';
+      const borderColor = iconVariant === 'blue' ? 'blue-005' : 'overlay-002';
 
       return (
         <IconBox

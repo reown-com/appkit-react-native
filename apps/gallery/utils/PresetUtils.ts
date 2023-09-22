@@ -61,7 +61,7 @@ export const textOptions: TextType[] = [
   'large-700'
 ];
 
-export const buttonOptions: ButtonType[] = ['fill', 'accent'];
+export const buttonOptions: ButtonType[] = ['fill', 'accent', 'shade'];
 
 export const chipOptions: ChipType[] = ['fill', 'shade', 'transparent'];
 

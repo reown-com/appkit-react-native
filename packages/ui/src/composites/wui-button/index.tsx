@@ -9,7 +9,7 @@ import {
 import { Text } from '../../components/wui-text';
 import { Icon } from '../../components/wui-icon';
 import { useTheme } from '../../hooks/useTheme';
-import type { ButtonType, IconType, SizeType } from '../../utils/TypesUtil';
+import type { ButtonType, ColorType, IconType, SizeType } from '../../utils/TypesUtil';
 
 import styles, { getThemedButtonStyle, getThemedTextStyle } from './styles';
 import type { SvgProps } from 'react-native-svg';
@@ -18,7 +18,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export type ButtonProps = NativeProps & {
   size?: Exclude<SizeType, 'lg' | 'xs' | 'xxs'>;
-  variant?: Exclude<ButtonType, 'shade'>;
+  variant?: ButtonType;
   disabled?: boolean;
   iconLeft?: IconType;
   iconRight?: IconType;
@@ -42,7 +42,9 @@ export function Button({
   const Theme = useTheme();
   const themedTextStyle = getThemedTextStyle(Theme, variant, disabled);
   const colorAnimation = useRef(new Animated.Value(0));
-  const iconColor = variant === 'fill' ? 'inverse-100' : 'blue-100';
+  const iconColor = (
+    variant === 'fill' ? 'inverse-100' : variant === 'accent' ? 'blue-100' : 'fg-150'
+  ) as ColorType;
 
   const themedNormalStyle = getThemedButtonStyle(Theme, variant, disabled, false);
   const themedPressedStyle = getThemedButtonStyle(Theme, variant, disabled, true);
