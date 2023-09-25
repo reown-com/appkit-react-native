@@ -1,4 +1,4 @@
-import { Image } from 'react-native';
+import { Image, Platform } from 'react-native';
 import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy } from 'valtio/vanilla';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
@@ -18,7 +18,7 @@ import { OptionsController } from './OptionsController';
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl();
 const api = new FetchUtil({ baseUrl });
-const entries = '40';
+const entries = '100';
 const recommendedEntries = '4';
 const sdkType = 'w3m';
 
@@ -50,6 +50,10 @@ const state = proxy<ApiControllerState>({
 // -- Controller ---------------------------------------- //
 export const ApiController = {
   state,
+
+  platform() {
+    return Platform.select({ default: 'ios', android: 'android' });
+  },
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: ApiControllerState[K]) => void) {
     return subKey(state, key, callback);
@@ -107,6 +111,7 @@ export const ApiController = {
         headers: ApiController._getApiHeaders(),
         params: {
           page: '1',
+          platform: this.platform(),
           entries: featuredWalletIds?.length
             ? String(featuredWalletIds.length)
             : recommendedEntries,
@@ -128,6 +133,7 @@ export const ApiController = {
       headers: ApiController._getApiHeaders(),
       params: {
         page: '1',
+        platform: this.platform(),
         entries: recommendedEntries,
         include: includeWalletIds?.join(','),
         exclude: exclude?.join(',')
@@ -157,6 +163,7 @@ export const ApiController = {
       headers: ApiController._getApiHeaders(),
       params: {
         page: String(page),
+        platform: this.platform(),
         entries,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
@@ -181,7 +188,8 @@ export const ApiController = {
       headers: ApiController._getApiHeaders(),
       params: {
         page: '1',
-        entries: '100',
+        platform: this.platform(),
+        entries,
         search,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
@@ -199,6 +207,7 @@ export const ApiController = {
     state.prefetchPromise = Promise.race([
       Promise.allSettled([
         ApiController.fetchFeaturedWallets(),
+        ApiController.fetchWallets({ page: 1 }),
         ApiController.fetchRecommendedWallets(),
         ApiController.fetchNetworkImages(),
         ApiController.fetchConnectorImages()

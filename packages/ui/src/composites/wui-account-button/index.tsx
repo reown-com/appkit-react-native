@@ -17,6 +17,7 @@ export interface AccountButtonProps {
   isProfileName?: boolean;
   balance?: string;
   onPress?: () => void;
+  disabled?: boolean;
 }
 
 export function AccountButton({
@@ -25,7 +26,8 @@ export function AccountButton({
   address,
   isProfileName,
   balance,
-  onPress
+  onPress,
+  disabled
 }: AccountButtonProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
@@ -66,6 +68,7 @@ export function AccountButton({
       onPress={onPress}
       onPressIn={setEndValue}
       onPressOut={setStartValue}
+      disabled={disabled}
       style={[
         styles.container,
         { backgroundColor: animatedValue, borderColor: Theme['overlay-005'] }

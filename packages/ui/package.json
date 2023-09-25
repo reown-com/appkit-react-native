@@ -44,8 +44,8 @@
     "typescript": "5.2.2"
   },
   "peerDependencies": {
-    "react": "*",
-    "react-native": "*",
+    "react": ">=17",
+    "react-native": ">=0.68.5",
     "react-native-svg": ">=13"
   },
   "dependencies": {

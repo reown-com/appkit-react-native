@@ -1,9 +1,14 @@
 import { useSnapshot } from 'valtio';
 import { ApiController, AssetUtil, RouterController } from '@web3modal/core-react-native';
 import { ListWallet, FlexView } from '@web3modal/ui-react-native';
+import type { WcWallet } from '@web3modal/core-react-native';
 
 export function ConnectView() {
   const { recommended, featured, count } = useSnapshot(ApiController.state);
+
+  const onWalletPress = (wallet: WcWallet) => {
+    RouterController.push('ConnectingWalletConnect', { wallet });
+  };
 
   const recommendedTemplate = () => {
     // TODO: Filter recent wallets
@@ -18,7 +23,7 @@ export function ConnectView() {
         imageSrc={AssetUtil.getWalletImage(wallet)}
         imageHeaders={ApiController._getApiHeaders()}
         name={wallet?.name ?? 'Unknown'}
-        onPress={() => RouterController.push('ConnectingWalletConnect', { wallet })}
+        onPress={() => onWalletPress(wallet!)}
       />
     ));
   };

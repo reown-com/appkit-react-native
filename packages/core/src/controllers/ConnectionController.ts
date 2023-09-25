@@ -1,14 +1,20 @@
-import { proxy, ref } from 'valtio';
+import { subscribeKey as subKey } from 'valtio/utils';
+import { proxy, ref } from 'valtio/vanilla';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
-import type { WcWallet } from '../utils/TypeUtils';
+import type { Connector, WcWallet } from '../utils/TypeUtils';
 
 // -- Types --------------------------------------------- //
+export interface ConnectExternalOptions {
+  id: Connector['id'];
+  provider?: Connector['provider'];
+  info?: Connector['info'];
+}
+
 export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>;
   disconnect: () => Promise<void>;
-  connectExternal?: (id: string) => Promise<void>;
-  connectInjected?: () => Promise<void>;
+  connectExternal?: (options: ConnectExternalOptions) => Promise<void>;
   checkInjectedInstalled?: (ids?: string[]) => boolean;
 }
 
@@ -23,16 +29,27 @@ export interface ConnectionControllerState {
   };
   wcError?: boolean;
   recentWallet?: WcWallet;
+  buffering: boolean;
 }
+
+type StateKey = keyof ConnectionControllerState;
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
-  wcError: false
+  wcError: false,
+  buffering: false
 });
 
 // -- Controller ---------------------------------------- //
 export const ConnectionController = {
   state,
+
+  subscribeKey<K extends StateKey>(
+    key: K,
+    callback: (value: ConnectionControllerState[K]) => void
+  ) {
+    return subKey(state, key, callback);
+  },
 
   _getClient() {
     if (!state._client) {
@@ -53,12 +70,8 @@ export const ConnectionController = {
     });
   },
 
-  async connectExternal(id: string) {
-    await this._getClient().connectExternal?.(id);
-  },
-
-  async connectInjected() {
-    await this._getClient().connectInjected?.();
+  async connectExternal(options: ConnectExternalOptions) {
+    await this._getClient().connectExternal?.(options);
   },
 
   checkInjectedInstalled(ids?: string[]) {
@@ -80,10 +93,15 @@ export const ConnectionController = {
 
   setWcError(wcError: ConnectionControllerState['wcError']) {
     state.wcError = wcError;
+    state.buffering = false;
   },
 
   setRecentWallet(wallet: ConnectionControllerState['recentWallet']) {
     state.recentWallet = wallet;
+  },
+
+  setBuffering(buffering: ConnectionControllerState['buffering']) {
+    state.buffering = buffering;
   },
 
   async disconnect() {

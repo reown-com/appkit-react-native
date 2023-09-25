@@ -14,6 +14,7 @@ export { Avatar, type AvatarProps } from './composites/wui-avatar';
 export { Button, type ButtonProps } from './composites/wui-button';
 export { CardSelect, type CardSelectProps } from './composites/wui-card-select';
 export { Chip, type ChipProps } from './composites/wui-chip';
+export { ConnectButton, type ConnectButtonProps } from './composites/wui-connect-button';
 export { EmailInput, type EmailInputProps } from './composites/wui-email-input';
 export { IconBox, type IconBoxProps } from './composites/wui-icon-box';
 export { IconLink, type IconLinkProps } from './composites/wui-icon-link';

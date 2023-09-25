@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Animated, Easing, View } from 'react-native';
+import { Animated, Easing, View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { useTheme } from '../../hooks/useTheme';
 import { SpinnerSize } from '../../utils/ThemeUtil';
@@ -14,9 +14,10 @@ export interface LoadingSpinnerProps {
     ColorType,
     'fg-100' | 'error-100' | 'fg-300' | 'inverse-000' | 'inverse-100' | 'success-100'
   >;
+  style?: StyleProp<ViewStyle>;
 }
 
-export function LoadingSpinner({ color, size = 'md' }: LoadingSpinnerProps) {
+export function LoadingSpinner({ color, style, size = 'md' }: LoadingSpinnerProps) {
   const Theme = useTheme();
   const spinValue = useRef(new Animated.Value(0));
   const stroke = color ? Theme[color] : Theme['blue-100'];
@@ -43,7 +44,7 @@ export function LoadingSpinner({ color, size = 'md' }: LoadingSpinnerProps) {
   });
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <AnimatedSvg
         width={SpinnerSize[size]}
         height={SpinnerSize[size]}

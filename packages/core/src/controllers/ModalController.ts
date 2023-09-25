@@ -1,23 +1,23 @@
-import { proxy } from 'valtio'
-import { AccountController } from './AccountController'
-import type { RouterControllerState } from './RouterController'
-import { RouterController } from './RouterController'
+import { proxy } from 'valtio';
+import { AccountController } from './AccountController';
+import type { RouterControllerState } from './RouterController';
+import { RouterController } from './RouterController';
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
-  open: boolean
+  open: boolean;
 }
 
 export interface ModalControllerArguments {
   open: {
-    view?: RouterControllerState['view']
-  }
+    view?: RouterControllerState['view'];
+  };
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<ModalControllerState>({
   open: false
-})
+});
 
 // -- Controller ---------------------------------------- //
 export const ModalController = {
@@ -25,16 +25,16 @@ export const ModalController = {
 
   open(options?: ModalControllerArguments['open']) {
     if (options?.view) {
-      RouterController.reset(options.view)
+      RouterController.reset(options.view);
     } else if (AccountController.state.isConnected) {
-      RouterController.reset('Account')
+      RouterController.reset('Account');
     } else {
-      RouterController.reset('Connect')
+      RouterController.reset('Connect');
     }
-    state.open = true
+    state.open = true;
   },
 
   close() {
-    state.open = false
+    state.open = false;
   }
-}
+};

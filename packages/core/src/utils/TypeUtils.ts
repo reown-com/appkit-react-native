@@ -20,13 +20,16 @@ export type Platform = 'mobile' | 'web' | 'qrcode' | 'unsupported';
 
 export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT';
 
-export interface Connector {
+export type Connector = {
   id: string;
   type: ConnectorType;
   name?: string;
   imageId?: string;
   explorerId?: string;
-}
+  imageUrl?: string;
+  info?: unknown;
+  provider?: unknown;
+};
 
 export type CaipNamespaces = Record<
   string,
@@ -70,13 +73,7 @@ export interface ApiGetWalletsResponse {
 export type ThemeMode = 'dark' | 'light';
 
 export interface ThemeVariables {
-  '--w3m-font-family'?: string;
-  '--w3m-accent'?: string;
-  '--w3m-color-mix'?: string;
-  '--w3m-color-mix-strength'?: number;
-  '--w3m-font-size-master'?: string;
-  '--w3m-border-radius-master'?: string;
-  '--w3m-z-index'?: number;
+  accent?: string;
 }
 
 // -- BlockchainApiController Types ---------------------------------------------
