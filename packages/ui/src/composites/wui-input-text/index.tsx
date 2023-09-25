@@ -3,7 +3,7 @@ import { Animated, Pressable, TextInput, type TextInputProps } from 'react-nativ
 import { Icon } from '../../components/wui-icon';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import { useTheme } from '../../hooks/useTheme';
-import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil';
+import type { IconType, SizeType } from '../../utils/TypesUtil';
 import styles from './styles';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -85,9 +85,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
               disabled && { backgroundColor: Theme['overlay-015'] }
             ]}
           >
-            {icon && (
-              <Icon name={icon} size="md" color={'fg-275' as ColorType} style={styles.icon} />
-            )}
+            {icon && <Icon name={icon} size="md" color="fg-275" style={styles.icon} />}
             <TextInput
               ref={inputRef}
               onFocus={setEndValue}

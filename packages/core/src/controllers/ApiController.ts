@@ -1,3 +1,4 @@
+import { Image } from 'react-native';
 import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy } from 'valtio/vanilla';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
@@ -68,16 +69,19 @@ export const ApiController = {
 
   async _fetchWalletImage(imageId: string) {
     const imageUrl = `${api.baseUrl}/getWalletImage/${imageId}`;
+    await Image.getSizeWithHeaders(imageUrl, ApiController._getApiHeaders(), () => {});
     AssetController.setWalletImage(imageId, imageUrl);
   },
 
   async _fetchNetworkImage(imageId: string) {
     const imageUrl = `${api.baseUrl}/public/getAssetImage/${imageId}`;
+    await Image.prefetch(imageUrl);
     AssetController.setNetworkImage(imageId, imageUrl);
   },
 
   async _fetchConnectorImage(imageId: string) {
     const imageUrl = `${api.baseUrl}/public/getAssetImage/${imageId}`;
+    await Image.prefetch(imageUrl);
     AssetController.setConnectorImage(imageId, imageUrl);
   },
 

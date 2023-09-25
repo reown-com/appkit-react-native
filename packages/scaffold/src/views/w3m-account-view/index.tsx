@@ -1,6 +1,11 @@
 import { useSnapshot } from 'valtio';
 import { Linking } from 'react-native';
-import { AccountController, ModalController } from '@web3modal/core-react-native';
+import {
+  AccountController,
+  AssetController,
+  ModalController,
+  NetworkController
+} from '@web3modal/core-react-native';
 import {
   Avatar,
   Button,
@@ -16,6 +21,11 @@ export function AccountView() {
   const { address, profileName, profileImage, balance, addressExplorerUrl } = useSnapshot(
     AccountController.state
   );
+
+  const { networkImages } = useSnapshot(AssetController.state);
+  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const networkImage = networkImages[caipNetwork?.imageId ?? ''];
+
   const testAddress = '0xDBbD65026a07cFbFa1aa92744E4D69951686077d';
 
   const onExplorerPress = () => {
@@ -25,7 +35,7 @@ export function AccountView() {
   };
 
   const addressExplorerTemplate = () => {
-    // if (!addressExplorerUrl) return null;
+    if (!addressExplorerUrl) return null;
 
     return (
       <Button
@@ -34,7 +44,7 @@ export function AccountView() {
         iconLeft="compass"
         iconRight="externalLink"
         onPress={onExplorerPress}
-        style={{ marginVertical: Spacing.l }}
+        style={{ marginVertical: Spacing.s }}
       >
         Block Explorer
       </Button>
@@ -53,11 +63,22 @@ export function AccountView() {
         </Text>
         <IconLink icon="copy" size="md" iconColor="fg-250" />
       </FlexView>
-      <Text color="fg-200">{balance ?? '0.527 ETH'}</Text>
+      <Text color="fg-200">{balance ?? '0.527 MOCK'}</Text>
       {addressExplorerTemplate()}
-      <ListItem variant="icon" icon="disconnect" iconVariant="overlay">
-        <Text color="fg-200">Disconnect</Text>
-      </ListItem>
+      <FlexView gap="xs" margin={['s', '0', '0', '0']}>
+        <ListItem
+          variant={networkImage ? 'image' : 'icon'}
+          chevron
+          icon="networkPlaceholder"
+          iconVariant="overlay"
+          imageSrc={networkImage}
+        >
+          <Text color="fg-100">Ethereum</Text>
+        </ListItem>
+        <ListItem variant="icon" icon="disconnect" iconVariant="overlay">
+          <Text color="fg-200">Disconnect</Text>
+        </ListItem>
+      </FlexView>
     </FlexView>
   );
 }

@@ -60,6 +60,8 @@ export type ColorType =
   | 'error-100'
   | 'fg-100'
   | 'fg-200'
+  | 'fg-250'
+  | 'fg-275'
   | 'fg-300'
   | 'inverse-000'
   | 'inverse-100'

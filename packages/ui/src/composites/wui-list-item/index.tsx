@@ -74,7 +74,7 @@ export function ListItem({
     if (loading) {
       return <LoadingSpinner color="fg-200" size="sm" />;
     } else if (chevron) {
-      return <Icon name="chevronRight" size="xs" color="fg-200" />;
+      return <Icon name="chevronRight" size="sm" color="fg-200" />;
     }
 
     return null;
