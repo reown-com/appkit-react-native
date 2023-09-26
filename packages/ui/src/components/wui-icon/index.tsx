@@ -4,6 +4,7 @@ import type { ColorType, IconType, SizeType, ThemeKeys } from '../../utils/Types
 // -- Svg's-------------------------------- //
 import AllWalletsSvg from '../../assets/svg/AllWallets';
 import AppleSvg from '../../assets/svg/Apple';
+import AppStoreSvg from '../../assets/svg/AppStore';
 import ArrowBottomSvg from '../../assets/svg/ArrowBottom';
 import ArrowLeftSvg from '../../assets/svg/ArrowLeft';
 import ArrowRightSvg from '../../assets/svg/ArrowRight';
@@ -37,6 +38,7 @@ import MobileSvg from '../../assets/svg/Mobile';
 import NetworkPlaceholderSvg from '../../assets/svg/NetworkPlaceholder';
 import NftPlaceholderSvg from '../../assets/svg/NftPlaceholder';
 import OffSvg from '../../assets/svg/Off';
+import PlayStoreSvg from '../../assets/svg/PlayStore';
 import QrCodeSvg from '../../assets/svg/QrCode';
 import RefreshSvg from '../../assets/svg/Refresh';
 import SearchSvg from '../../assets/svg/Search';
@@ -56,6 +58,7 @@ import { IconSize } from '../../utils/ThemeUtil';
 const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   allWallets: AllWalletsSvg,
   apple: AppleSvg,
+  appStore: AppStoreSvg,
   arrowBottom: ArrowBottomSvg,
   arrowLeft: ArrowLeftSvg,
   arrowRight: ArrowRightSvg,
@@ -89,6 +92,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   networkPlaceholder: NetworkPlaceholderSvg,
   nftPlaceholder: NftPlaceholderSvg,
   off: OffSvg,
+  playStore: PlayStoreSvg,
   qrCode: QrCodeSvg,
   refresh: RefreshSvg,
   search: SearchSvg,
@@ -111,15 +115,23 @@ export type IconProps = SvgProps & {
   style?: SvgProps['style'];
 };
 
-export function Icon({ name, color = 'fg-100', size = 'md', style, ...rest }: IconProps) {
+export function Icon({
+  name,
+  width,
+  height,
+  color = 'fg-100',
+  size = 'md',
+  style,
+  ...rest
+}: IconProps) {
   const Theme = useTheme();
   const Component = svgOptions[name];
 
   return (
     <Component
       fill={Theme[color as ThemeKeys]}
-      width={IconSize[size]}
-      height={IconSize[size]}
+      width={width || IconSize[size]}
+      height={height || IconSize[size]}
       style={style}
       {...rest}
     />

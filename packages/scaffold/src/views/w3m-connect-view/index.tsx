@@ -10,6 +10,25 @@ export function ConnectView() {
     RouterController.push('ConnectingWalletConnect', { wallet });
   };
 
+  const featuredTemplate = () => {
+    // TODO: Filter recent wallets
+    if (!featured.length) {
+      return null;
+    }
+
+    return featured
+      .slice(8)
+      .map(wallet => (
+        <ListWallet
+          key={wallet?.id}
+          imageSrc={AssetUtil.getWalletImage(wallet)}
+          imageHeaders={ApiController._getApiHeaders()}
+          name={wallet?.name ?? 'Unknown'}
+          onPress={() => onWalletPress(wallet!)}
+        />
+      ));
+  };
+
   const recommendedTemplate = () => {
     // TODO: Filter recent wallets
     if (!recommended.length || featured.length) {
@@ -42,6 +61,7 @@ export function ConnectView() {
 
   return (
     <FlexView padding="s" rowGap="2xs">
+      {featuredTemplate()}
       {recommendedTemplate()}
       {allWalletsTemplate()}
     </FlexView>

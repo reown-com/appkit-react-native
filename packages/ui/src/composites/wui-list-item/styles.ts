@@ -27,5 +27,9 @@ export default StyleSheet.create({
   },
   icon: {
     borderWidth: 2
+  },
+  squareIcon: {
+    width: 36,
+    height: 36
   }
 });

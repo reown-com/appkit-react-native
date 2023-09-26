@@ -19,7 +19,7 @@ const meta: Meta<typeof ListItem> = {
       control: { type: 'select' }
     },
     iconVariant: {
-      options: ['blue', 'overlay'],
+      options: ['blue', 'overlay', 'square'],
       control: { type: 'select' }
     },
     disabled: {
@@ -47,7 +47,7 @@ export default meta;
 type Story = StoryObj<typeof ListItem>;
 
 export const Default: Story = {
-  render: args => (
+  render: (args: any) => (
     <GalleryContainer width={300}>
       <ListItem
         variant={args.variant}

@@ -72,6 +72,7 @@ export const tagOptions: TagType[] = ['main', 'shade'];
 export const iconOptions: IconType[] = [
   'allWallets',
   'apple',
+  'appStore',
   'arrowBottom',
   'arrowLeft',
   'arrowRight',
@@ -105,6 +106,7 @@ export const iconOptions: IconType[] = [
   'networkPlaceholder',
   'nftPlaceholder',
   'off',
+  'playStore',
   'qrCode',
   'refresh',
   'search',

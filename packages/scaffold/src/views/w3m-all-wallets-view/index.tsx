@@ -13,10 +13,11 @@ import styles from './styles';
 
 export function AllWalletsView() {
   const Theme = useTheme();
-  const { wallets } = useSnapshot(ApiController.state);
+  const { featured, recommended, wallets } = useSnapshot(ApiController.state);
   const { width } = useWindowDimensions();
   const numColumns = Math.floor(width / 80);
   const gap = Math.trunc((width / numColumns - 70) / (numColumns - 1));
+  const walletList = [...featured, ...recommended, ...wallets];
 
   useEffect(() => {
     if (!wallets.length) {
@@ -67,7 +68,7 @@ export function AllWalletsView() {
         fadingEdgeLength={20}
         bounces={false}
         numColumns={numColumns}
-        data={wallets}
+        data={walletList}
         renderItem={walletTemplate}
         style={styles.container}
         contentContainerStyle={styles.contentContainer}

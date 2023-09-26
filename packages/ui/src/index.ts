@@ -32,7 +32,6 @@ export { Otp, type OtpProps } from './composites/wui-otp';
 export { QrCode, type QrCodeProps } from './composites/wui-qr-code';
 export { SearchBar, type SearchBarProps } from './composites/wui-search-bar';
 export { Snackbar, type SnackbarProps } from './composites/wui-snackbar';
-export { StoreEntry, type StoreEntryProps } from './composites/wui-store-entry';
 export { Tabs, type TabsProps } from './composites/wui-tabs';
 export { Tag, type TagProps } from './composites/wui-tag';
 export { Tooltip, type TooltipProps } from './composites/wui-tooltip';

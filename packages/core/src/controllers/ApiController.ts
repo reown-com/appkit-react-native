@@ -207,7 +207,6 @@ export const ApiController = {
     state.prefetchPromise = Promise.race([
       Promise.allSettled([
         ApiController.fetchFeaturedWallets(),
-        ApiController.fetchWallets({ page: 1 }),
         ApiController.fetchRecommendedWallets(),
         ApiController.fetchNetworkImages(),
         ApiController.fetchConnectorImages()

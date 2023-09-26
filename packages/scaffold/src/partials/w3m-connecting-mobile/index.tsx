@@ -8,7 +8,7 @@ import {
   WalletImage,
   ActionEntry,
   Separator,
-  StoreEntry
+  ListItem
 } from '@web3modal/ui-react-native';
 
 import styles from './styles';
@@ -56,13 +56,16 @@ export function ConnectingMobile() {
       {storeUrl && (
         <>
           <Separator />
-          <StoreEntry
-            label="Get the app"
-            imageSrc={AssetUtil.getWalletImage(data?.wallet)} //TODO: Replace with stores image
-            imageHeaders={ApiController._getApiHeaders()}
+          <ListItem
+            variant="icon"
+            iconVariant="square"
             onPress={onStorePress}
+            icon={Platform.select({ ios: 'appStore', android: 'playStore' })}
             style={styles.storeButton}
-          />
+            chevron
+          >
+            <Text>Get the app</Text>
+          </ListItem>
         </>
       )}
     </FlexView>

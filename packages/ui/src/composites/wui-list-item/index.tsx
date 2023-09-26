@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { View, Pressable, Animated } from 'react-native';
+import { View, Pressable, Animated, type StyleProp, type ViewStyle } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import { Image } from '../../components/wui-image';
 import { LoadingSpinner } from '../../components/wui-loading-spinner';
@@ -13,7 +13,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface ListItemProps {
   icon?: IconType;
-  iconVariant?: 'blue' | 'overlay';
+  iconVariant?: 'blue' | 'overlay' | 'square';
   variant?: 'image' | 'icon';
   imageSrc?: string;
   chevron?: boolean;
@@ -21,6 +21,7 @@ export interface ListItemProps {
   loading?: boolean;
   onPress?: () => void;
   children?: ReactNode;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function ListItem({
@@ -32,7 +33,8 @@ export function ListItem({
   chevron,
   loading,
   disabled,
-  onPress
+  onPress,
+  style
 }: ListItemProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
@@ -52,6 +54,8 @@ export function ListItem({
           ]}
         />
       );
+    } else if (variant === 'icon' && iconVariant === 'square' && icon) {
+      return <Icon name={icon} width={36} height={36} style={styles.squareIcon} />;
     } else if (variant === 'icon' && icon) {
       const iconColor = iconVariant === 'blue' ? 'blue-100' : 'fg-200';
       const borderColor = iconVariant === 'blue' ? 'blue-005' : 'overlay-002';
@@ -85,7 +89,8 @@ export function ListItem({
       disabled={disabled || loading}
       style={[
         styles.container,
-        { backgroundColor: disabled || loading ? Theme['overlay-010'] : animatedValue }
+        { backgroundColor: disabled || loading ? Theme['overlay-010'] : animatedValue },
+        style
       ]}
       onPress={onPress}
       onPressIn={setEndValue}
