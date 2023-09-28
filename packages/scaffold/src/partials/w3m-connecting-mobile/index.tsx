@@ -62,7 +62,7 @@ export function ConnectingMobile({ onRetry }: Props) {
     // First connection
     if (!ready && wcUri) {
       setReady(true);
-      // onConnect();
+      onConnect();
     }
   }, [ready, wcUri]);
 
