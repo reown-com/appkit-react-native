@@ -4,7 +4,8 @@
     "apps/*",
     "packages/scaffold",
     "packages/ui",
-    "packages/core"
+    "packages/core",
+    "packages/viem"
   ],
   "scripts": {
     "dev": "turbo dev",

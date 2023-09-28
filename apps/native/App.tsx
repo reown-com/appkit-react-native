@@ -1,6 +1,23 @@
+import '@walletconnect/react-native-compat';
 import { StyleSheet, View, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { Web3Modal, W3mButton } from '@web3modal/scaffold-react-native';
+import { Web3Modal, W3mButton, createWeb3Modal } from '@web3modal/viem-react-native';
+import { mainnet } from 'viem/chains';
+
+createWeb3Modal({
+  projectId: '90369b5c91c6f7fffe308df2b30f3ace',
+  defaultChain: mainnet,
+  chains: [mainnet],
+  metadata: {
+    name: 'Web3Modal v3',
+    description: 'Web3Modal v3 by WalletConnect',
+    url: 'https://walletconnect.com/',
+    icons: ['https://avatars.githubusercontent.com/u/37784886'],
+    redirect: {
+      native: 'redirect://'
+    }
+  }
+});
 
 export default function Native() {
   const isDarkMode = useColorScheme() === 'dark';

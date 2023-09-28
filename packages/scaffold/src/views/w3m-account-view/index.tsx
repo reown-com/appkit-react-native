@@ -3,6 +3,8 @@ import { Linking } from 'react-native';
 import {
   AccountController,
   AssetController,
+  ConnectionController,
+  CoreHelperUtil,
   ModalController,
   NetworkController
 } from '@web3modal/core-react-native';
@@ -18,15 +20,18 @@ import {
 } from '@web3modal/ui-react-native';
 
 export function AccountView() {
-  const { address, profileName, profileImage, balance, addressExplorerUrl } = useSnapshot(
-    AccountController.state
-  );
+  const { address, profileName, profileImage, balance, balanceSymbol, addressExplorerUrl } =
+    useSnapshot(AccountController.state);
 
   const { networkImages } = useSnapshot(AssetController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const networkImage = networkImages[caipNetwork?.imageId ?? ''];
 
-  const testAddress = '0xDBbD65026a07cFbFa1aa92744E4D69951686077d';
+  async function onDisconnect() {
+    await ConnectionController.disconnect();
+    AccountController.setIsConnected(false);
+    ModalController.close();
+  }
 
   const onExplorerPress = () => {
     if (addressExplorerUrl) {
@@ -59,11 +64,13 @@ export function AccountView() {
         <Text variant="large-600">
           {profileName
             ? UiUtil.getTruncateString(profileName, 20, 'end')
-            : UiUtil.getTruncateString(testAddress, 8, 'middle')}
+            : UiUtil.getTruncateString(address ?? '', 8, 'middle')}
         </Text>
         <IconLink icon="copy" size="md" iconColor="fg-250" />
       </FlexView>
-      <Text color="fg-200">{balance ?? '0.527 MOCK'}</Text>
+      {balance && (
+        <Text color="fg-200">{CoreHelperUtil.formatBalance(balance, balanceSymbol)}</Text>
+      )}
       {addressExplorerTemplate()}
       <FlexView gap="xs" margin={['s', '0', '0', '0']}>
         <ListItem
@@ -75,7 +82,7 @@ export function AccountView() {
         >
           <Text color="fg-100">Ethereum</Text>
         </ListItem>
-        <ListItem variant="icon" icon="disconnect" iconVariant="overlay">
+        <ListItem variant="icon" icon="disconnect" iconVariant="overlay" onPress={onDisconnect}>
           <Text color="fg-200">Disconnect</Text>
         </ListItem>
       </FlexView>

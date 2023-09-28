@@ -1,4 +1,5 @@
 import { proxy } from 'valtio';
+import { subscribeKey } from 'valtio/utils';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import type { CaipAddress } from '../utils/TypeUtils';
 
@@ -22,6 +23,10 @@ const state = proxy<AccountControllerState>({
 // -- Controller ---------------------------------------- //
 export const AccountController = {
   state,
+
+  subscribeConnection(callback: (value: AccountControllerState['isConnected']) => void) {
+    return subscribeKey(state, 'isConnected', callback);
+  },
 
   setIsConnected(isConnected: AccountControllerState['isConnected']) {
     state.isConnected = isConnected;

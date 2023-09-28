@@ -1,4 +1,5 @@
 import type {
+  AccountControllerState,
   ApiControllerState,
   ConnectionControllerClient,
   NetworkControllerClient,
@@ -14,7 +15,6 @@ import {
   ApiController,
   BlockchainApiController,
   ConnectionController,
-  ConnectorController,
   ModalController,
   NetworkController,
   OptionsController,
@@ -97,6 +97,12 @@ export class Web3ModalScaffold {
     return PublicStateController.subscribe(callback);
   }
 
+  public subscribeConnection(
+    callback: (isConnected: AccountControllerState['isConnected']) => void
+  ) {
+    return AccountController.subscribeConnection(callback);
+  }
+
   // -- Protected ----------------------------------------------------------------
   protected setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
     AccountController.setIsConnected(isConnected);
@@ -138,14 +144,6 @@ export class Web3ModalScaffold {
 
   protected resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
     NetworkController.resetNetwork();
-  };
-
-  protected setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
-    ConnectorController.setConnectors(connectors);
-  };
-
-  protected addConnector: (typeof ConnectorController)['addConnector'] = connector => {
-    ConnectorController.addConnector(connector);
   };
 
   protected resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {

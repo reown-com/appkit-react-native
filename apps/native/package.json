@@ -11,12 +11,14 @@
     "dev:android": "expo start --android"
   },
   "dependencies": {
+    "@react-native-community/netinfo": "9.3.10",
     "@web3modal/scaffold-react-native": "*",
     "expo": "^49.0.0",
     "expo-status-bar": "~1.6.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.72.5",
+    "react-native-get-random-values": "~1.9.0",
     "react-native-web": "~0.19.6"
   },
   "devDependencies": {

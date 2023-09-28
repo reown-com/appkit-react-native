@@ -73,7 +73,6 @@ export const ApiController = {
 
   async _fetchWalletImage(imageId: string) {
     const imageUrl = `${api.baseUrl}/getWalletImage/${imageId}`;
-    await Image.getSizeWithHeaders(imageUrl, ApiController._getApiHeaders(), () => {});
     AssetController.setWalletImage(imageId, imageUrl);
   },
 
