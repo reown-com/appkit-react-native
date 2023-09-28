@@ -16,6 +16,7 @@ export interface ListItemProps {
   iconVariant?: 'blue' | 'overlay' | 'square';
   variant?: 'image' | 'icon';
   imageSrc?: string;
+  imageHeaders?: Record<string, string>;
   chevron?: boolean;
   disabled?: boolean;
   loading?: boolean;
@@ -29,6 +30,7 @@ export function ListItem({
   icon,
   variant,
   imageSrc,
+  imageHeaders,
   iconVariant = 'blue',
   chevron,
   loading,
@@ -47,6 +49,7 @@ export function ListItem({
       return (
         <Image
           source={imageSrc}
+          headers={imageHeaders}
           style={[
             styles.image,
             (disabled || loading) && styles.disabledImage,
@@ -76,7 +79,7 @@ export function ListItem({
 
   function rightTemplate() {
     if (loading) {
-      return <LoadingSpinner color="fg-200" size="md" />;
+      return <LoadingSpinner color="fg-200" size="lg" />;
     } else if (chevron) {
       return <Icon name="chevronRight" size="sm" color="fg-200" />;
     }

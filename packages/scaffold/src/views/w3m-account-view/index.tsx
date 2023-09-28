@@ -2,6 +2,7 @@ import { useSnapshot } from 'valtio';
 import { Linking } from 'react-native';
 import {
   AccountController,
+  ApiController,
   AssetController,
   ConnectionController,
   CoreHelperUtil,
@@ -18,19 +19,23 @@ import {
   Spacing,
   ListItem
 } from '@web3modal/ui-react-native';
+import { useState } from 'react';
 
 export function AccountView() {
   const { address, profileName, profileImage, balance, balanceSymbol, addressExplorerUrl } =
     useSnapshot(AccountController.state);
 
+  const [disconnecting, setDisconnecting] = useState(false);
   const { networkImages } = useSnapshot(AssetController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const networkImage = networkImages[caipNetwork?.imageId ?? ''];
 
   async function onDisconnect() {
+    setDisconnecting(true);
     await ConnectionController.disconnect();
     AccountController.setIsConnected(false);
     ModalController.close();
+    setDisconnecting(false);
   }
 
   const onExplorerPress = () => {
@@ -79,10 +84,17 @@ export function AccountView() {
           icon="networkPlaceholder"
           iconVariant="overlay"
           imageSrc={networkImage}
+          imageHeaders={ApiController._getApiHeaders()}
         >
-          <Text color="fg-100">Ethereum</Text>
+          <Text color="fg-100">{caipNetwork?.name}</Text>
         </ListItem>
-        <ListItem variant="icon" icon="disconnect" iconVariant="overlay" onPress={onDisconnect}>
+        <ListItem
+          variant="icon"
+          icon="disconnect"
+          iconVariant="overlay"
+          onPress={onDisconnect}
+          loading={disconnecting}
+        >
           <Text color="fg-200">Disconnect</Text>
         </ListItem>
       </FlexView>

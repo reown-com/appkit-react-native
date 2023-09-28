@@ -9,7 +9,7 @@ import styles from './styles';
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 
 export interface LoadingSpinnerProps {
-  size?: Exclude<SizeType, 'lg' | 'xs' | 'xxs'>;
+  size?: Exclude<SizeType, 'xs' | 'xxs'>;
   color?: Exclude<
     ColorType,
     'fg-100' | 'error-100' | 'fg-300' | 'inverse-000' | 'inverse-100' | 'success-100'
@@ -17,7 +17,7 @@ export interface LoadingSpinnerProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function LoadingSpinner({ color, style, size = 'md' }: LoadingSpinnerProps) {
+export function LoadingSpinner({ color, style, size = 'lg' }: LoadingSpinnerProps) {
   const Theme = useTheme();
   const spinValue = useRef(new Animated.Value(0));
   const stroke = color ? Theme[color] : Theme['blue-100'];

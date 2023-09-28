@@ -8,6 +8,7 @@ import {
 } from '@web3modal/core-react-native';
 
 import { AccountButton } from '@web3modal/ui-react-native';
+import { ApiController } from '@web3modal/core-react-native';
 
 export interface W3mAccountButtonProps {
   balance?: 'show' | 'hide';
@@ -34,6 +35,7 @@ export function W3mAccountButton({ balance, disabled }: W3mAccountButtonProps) {
       address={profileName ?? address}
       isProfileName={Boolean(profileName)}
       networkSrc={networkImage}
+      imageHeaders={ApiController._getApiHeaders()}
       avatarSrc={profileImage}
       disabled={disabled}
       balance={showBalance ? CoreHelperUtil.formatBalance(balanceVal, balanceSymbol) : ''}

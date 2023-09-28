@@ -21,6 +21,7 @@ export type LinkProps = NativeProps & {
   iconRight?: IconType;
   style?: StyleProp<ViewStyle>;
   size?: Exclude<SizeType, 'lg' | 'xs' | 'xxs'>;
+  color?: ColorType;
 };
 
 export function Link({
@@ -31,10 +32,11 @@ export function Link({
   onPress,
   style,
   size = 'sm',
+  color,
   ...rest
 }: LinkProps) {
   const Theme = useTheme();
-  const color = (disabled ? 'bg-300' : 'blue-100') as ColorType;
+  const _color = (disabled ? 'bg-300' : color ?? 'blue-100') as ColorType;
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
     'transparent',
     Theme['overlay-010']
@@ -49,15 +51,15 @@ export function Link({
       style={[styles[`${size}Container`], { backgroundColor: animatedValue }, style]}
       {...rest}
     >
-      {iconLeft && <Icon color={color} name={iconLeft} size={size} style={styles.padding} />}
+      {iconLeft && <Icon color={_color} name={iconLeft} size={size} style={styles.padding} />}
       <Text
         variant={size === 'md' ? 'paragraph-600' : 'small-600'}
-        color={color}
+        color={_color}
         style={styles.padding}
       >
         {children}
       </Text>
-      {iconRight && <Icon color={color} name={iconRight} size={size} style={styles.padding} />}
+      {iconRight && <Icon color={_color} name={iconRight} size={size} style={styles.padding} />}
     </AnimatedPressable>
   );
 }

@@ -12,6 +12,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface AccountButtonProps {
   networkSrc?: string;
+  imageHeaders?: Record<string, string>;
   avatarSrc?: string;
   address?: string;
   isProfileName?: boolean;
@@ -22,6 +23,7 @@ export interface AccountButtonProps {
 
 export function AccountButton({
   networkSrc,
+  imageHeaders,
   avatarSrc,
   address,
   isProfileName,
@@ -38,7 +40,11 @@ export function AccountButton({
   function balanceTemplate() {
     if (balance) {
       const network = networkSrc ? (
-        <Image source={networkSrc} style={[styles.image, { borderColor: Theme['overlay-010'] }]} />
+        <Image
+          source={networkSrc}
+          headers={imageHeaders}
+          style={[styles.image, { borderColor: Theme['overlay-010'] }]}
+        />
       ) : (
         <IconBox
           icon="networkPlaceholder"
