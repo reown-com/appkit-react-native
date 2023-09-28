@@ -1,15 +1,11 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  title: {
-    marginTop: 8
-  },
   retryButton: {
-    marginVertical: 16
+    marginTop: 6
   },
   copyButton: {
-    width: '95%',
-    marginTop: 8
+    marginVertical: 8
   },
   storeButton: {
     width: '95%'

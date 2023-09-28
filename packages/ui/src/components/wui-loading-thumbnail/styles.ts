@@ -12,9 +12,8 @@ export default StyleSheet.create({
   },
   error: {
     position: 'absolute',
-    borderWidth: 4,
-    height: 106,
-    width: 106,
-    borderRadius: 36
+    bottom: 2,
+    right: 2,
+    zIndex: 2
   }
 });

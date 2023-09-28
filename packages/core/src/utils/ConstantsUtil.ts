@@ -17,4 +17,4 @@ export const ConstantsUtil = {
     'ASIA/BEIJING',
     'ASIA/HARBIN'
   ]
-}
+};

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import {
   AccountController,
   ConnectionController,
+  ConstantsUtil,
   CoreHelperUtil,
   ModalController,
   RouterController,
@@ -49,9 +50,12 @@ export function ConnectingView() {
 
   useEffect(() => {
     initializeConnection();
+    const _interval = setInterval(initializeConnection, ConstantsUtil.TEN_SEC_MS);
+
+    return () => clearInterval(_interval);
   }, []);
 
   if (!data?.wallet) return <ConnectingQrCode />;
 
-  return <ConnectingMobile />;
+  return <ConnectingMobile onRetry={() => initializeConnection(true)} />;
 }

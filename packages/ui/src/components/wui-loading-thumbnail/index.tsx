@@ -3,6 +3,7 @@ import { Animated, Easing, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
+import { IconBox } from '../../composites/wui-icon-box';
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
@@ -52,17 +53,17 @@ export function LoadingThumbnail({ children, showError }: LoadingThumbnailProps)
           strokeDashoffset={spin}
         />
       </Svg>
+      {children ?? null}
       {showError && (
-        <View
-          style={[
-            styles.error,
-            {
-              borderColor: Theme['error-100']
-            }
-          ]}
+        <IconBox
+          icon="close"
+          border
+          background
+          size="md"
+          iconColor="error-100"
+          style={styles.error}
         />
       )}
-      {children ?? null}
     </View>
   );
 }

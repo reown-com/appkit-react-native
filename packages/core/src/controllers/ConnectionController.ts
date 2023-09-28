@@ -21,15 +21,13 @@ export interface ConnectionControllerState {
   };
   wcError?: boolean;
   recentWallet?: WcWallet;
-  buffering: boolean;
 }
 
 type StateKey = keyof ConnectionControllerState;
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
-  wcError: false,
-  buffering: false
+  wcError: false
 });
 
 // -- Controller ---------------------------------------- //
@@ -77,15 +75,10 @@ export const ConnectionController = {
 
   setWcError(wcError: ConnectionControllerState['wcError']) {
     state.wcError = wcError;
-    state.buffering = false;
   },
 
   setRecentWallet(wallet: ConnectionControllerState['recentWallet']) {
     state.recentWallet = wallet;
-  },
-
-  setBuffering(buffering: ConnectionControllerState['buffering']) {
-    state.buffering = buffering;
   },
 
   async disconnect() {
