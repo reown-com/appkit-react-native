@@ -84,7 +84,6 @@ export async function fetchBalance({
     }
   }
 
-  // const chains = [...(config.publicClient.chains || []), ...(config.chains ?? [])];
   const value = await publicClient.getBalance({ address });
   const _chainId = await publicClient.getChainId();
   const chain = chains.find(x => x.id === _chainId);

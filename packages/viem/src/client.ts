@@ -104,6 +104,7 @@ export class Web3Modal extends Web3ModalScaffold {
         };
 
         const provider = await this.getProvider();
+        const [defaultChain, ...optionalChains] = this.getChains();
 
         if (!provider) {
           throw new Error('connectionControllerClient:getWalletConnectUri - provider is undefined');
@@ -111,9 +112,10 @@ export class Web3Modal extends Web3ModalScaffold {
 
         provider.on('display_uri', onDisplayUri);
 
-        if (options.chains) {
-          await provider.connect({ chains: options.chains.map(({ id }) => id) });
-        }
+        await provider.connect({
+          chains: [defaultChain!.id],
+          optionalChains: optionalChains.length ? optionalChains.map(chain => chain.id) : undefined
+        });
       },
 
       disconnect: async () => {
@@ -173,13 +175,15 @@ export class Web3Modal extends Web3ModalScaffold {
   private async initProvider() {
     if (!this.options) return;
 
-    const { projectId, chains, defaultChain, metadata, relayUrl } = this.options;
+    const { projectId, metadata, relayUrl } = this.options;
+    const chains = this.getChains();
+    const [defaultChain, ...optionalChains] = chains;
 
     try {
       this.provider = await EthereumProvider.init({
         projectId,
-        chains: [defaultChain?.id ?? 1],
-        optionalChains: chains?.map(({ id }) => id) || [],
+        chains: [defaultChain?.id || mainnet.id],
+        optionalChains: optionalChains?.map(({ id }) => id) || [],
         showQrModal: false,
         optionalMethods: OPTIONAL_METHODS,
         optionalEvents: OPTIONAL_EVENTS,
@@ -200,13 +204,11 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async getClient() {
-    const defaultChain = this.options?.defaultChain || this.options?.chains?.[0];
-
-    const provider = await this.getProvider();
-
     if (!this.client) {
+      const defaultChain = this.getChains()[0];
+      const provider = await this.getProvider();
       this.client = createWalletClient({
-        chain: defaultChain ?? mainnet,
+        chain: defaultChain,
         transport: custom(provider)
       });
     }
@@ -214,12 +216,11 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async getPublicClient() {
-    const defaultChain = this.options?.defaultChain || this.options?.chains?.[0];
-    const provider = await this.getProvider();
-
     if (!this.publicClient) {
+      const defaultChain = this.getChains()[0];
+      const provider = await this.getProvider();
       this.publicClient = createPublicClient({
-        chain: defaultChain ?? mainnet,
+        chain: defaultChain,
         transport: custom(provider)
       });
     }
@@ -277,7 +278,8 @@ export class Web3Modal extends Web3ModalScaffold {
     const [address] = await client.getAddresses();
     const publicClient = await this.getPublicClient();
     const chainId = await publicClient.getChainId();
-    const chain = this.options?.chains?.find(chain => chain.id === chainId);
+    const chains = this.getChains();
+    const chain = chains.find(chain => chain.id === chainId);
     if (chain) {
       const caipChainId: CaipNetworkId = `${NAMESPACE}:${chainId}`;
       this.setCaipNetwork({
@@ -333,15 +335,25 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async syncBalance(address: Address, chainId: number) {
     const publicClient = await this.getPublicClient();
+    const chains = this.getChains();
 
     const balance = await fetchBalance({
       address,
       chainId,
       token: this.options?.tokens?.[chainId]?.address as Address,
-      chains: this.options?.chains,
+      chains,
       publicClient
     });
 
     this.setBalance(balance.formatted, balance.symbol);
+  }
+
+  private getChains(): Chain[] {
+    if (this.options?.defaultChain) {
+      const defaultChain = this.options.defaultChain;
+      const chains = this.options?.chains?.filter(chain => chain.id !== defaultChain.id) ?? [];
+      return [defaultChain, ...chains];
+    }
+    return this.options?.chains ?? [mainnet];
   }
 }
