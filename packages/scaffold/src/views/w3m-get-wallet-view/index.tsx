@@ -5,6 +5,7 @@ import { ApiController, AssetUtil, type WcWallet } from '@web3modal/core-react-n
 
 export function GetWalletView() {
   const { recommended } = useSnapshot(ApiController.state);
+  const imageHeaders = ApiController._getApiHeaders();
 
   const onWalletPress = (wallet: WcWallet) => {
     const storeUrl =
@@ -20,7 +21,7 @@ export function GetWalletView() {
         key={wallet.id}
         name={wallet.name}
         imageSrc={AssetUtil.getWalletImage(wallet)}
-        imageHeaders={ApiController._getApiHeaders()}
+        imageHeaders={imageHeaders}
         onPress={() => onWalletPress(wallet)}
       />
     ));

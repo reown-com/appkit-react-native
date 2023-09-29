@@ -7,7 +7,8 @@ import {
   ConnectionController,
   CoreHelperUtil,
   ModalController,
-  NetworkController
+  NetworkController,
+  RouterController
 } from '@web3modal/core-react-native';
 import {
   Avatar,
@@ -85,8 +86,11 @@ export function AccountView() {
           iconVariant="overlay"
           imageSrc={networkImage}
           imageHeaders={ApiController._getApiHeaders()}
+          onPress={() => RouterController.push('Networks')}
         >
-          <Text color="fg-100">{caipNetwork?.name}</Text>
+          <Text numberOfLines={1} color="fg-100">
+            {caipNetwork?.name}
+          </Text>
         </ListItem>
         <ListItem
           variant="icon"

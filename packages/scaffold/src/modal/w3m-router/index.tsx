@@ -8,6 +8,7 @@ import { ConnectingView } from '../../views/w3m-connecting-view';
 import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
 import { GetWalletView } from '../../views/w3m-get-wallet-view';
 import { AccountView } from '../../views/w3m-account-view';
+import { NetworksView } from '../../views/w3m-networks-view';
 
 interface Props {
   // onCopyClipboard?: (value: string) => void;
@@ -28,6 +29,8 @@ export function Web3Router(props: Props) {
         return WhatIsAWalletView;
       case 'GetWallet':
         return GetWalletView;
+      case 'Networks':
+        return NetworksView;
       case 'Account':
         return AccountView;
       default:

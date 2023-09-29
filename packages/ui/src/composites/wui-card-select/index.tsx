@@ -56,6 +56,7 @@ export function CardSelect({
         imageHeaders={imageHeaders}
         size="md"
         style={disabled && styles.disabledImage}
+        selected={selected}
       />
       <Text variant="tiny-500" color={textColor} style={styles.text} numberOfLines={1}>
         {name}

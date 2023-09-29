@@ -13,6 +13,7 @@ import styles from './styles';
 
 export function AllWalletsView() {
   const Theme = useTheme();
+  const imageHeaders = ApiController._getApiHeaders();
   const { featured, recommended, wallets } = useSnapshot(ApiController.state);
   const { width } = useWindowDimensions();
   const numColumns = Math.floor(width / 80);
@@ -52,7 +53,7 @@ export function AllWalletsView() {
       <CardSelect
         key={item?.id}
         imageSrc={AssetUtil.getWalletImage(item)}
-        imageHeaders={ApiController._getApiHeaders()}
+        imageHeaders={imageHeaders}
         name={item?.name ?? 'Unknown'}
         onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
         style={{ margin: gap }}
@@ -70,7 +71,6 @@ export function AllWalletsView() {
         numColumns={numColumns}
         data={walletList}
         renderItem={walletTemplate}
-        style={styles.container}
         contentContainerStyle={styles.contentContainer}
       />
     </>

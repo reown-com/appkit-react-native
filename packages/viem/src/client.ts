@@ -77,6 +77,8 @@ export class Web3Modal extends Web3ModalScaffold {
           throw new Error('networkControllerClient:switchCaipNetwork - chain not found');
         }
         await this.switchNetwork(chainId);
+        this.syncAccount();
+        this.syncNetwork(chainImages);
       },
 
       getApprovedCaipNetworksData: async () => {

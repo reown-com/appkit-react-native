@@ -5,6 +5,7 @@ import type { WcWallet } from '@web3modal/core-react-native';
 
 export function ConnectView() {
   const { recommended, featured, count } = useSnapshot(ApiController.state);
+  const imageHeaders = ApiController._getApiHeaders();
 
   const onWalletPress = (wallet: WcWallet) => {
     RouterController.push('ConnectingWalletConnect', { wallet });
@@ -22,7 +23,7 @@ export function ConnectView() {
         <ListWallet
           key={wallet?.id}
           imageSrc={AssetUtil.getWalletImage(wallet)}
-          imageHeaders={ApiController._getApiHeaders()}
+          imageHeaders={imageHeaders}
           name={wallet?.name ?? 'Unknown'}
           onPress={() => onWalletPress(wallet!)}
         />
@@ -40,7 +41,7 @@ export function ConnectView() {
       <ListWallet
         key={wallet?.id}
         imageSrc={AssetUtil.getWalletImage(wallet)}
-        imageHeaders={ApiController._getApiHeaders()}
+        imageHeaders={imageHeaders}
         name={wallet?.name ?? 'Unknown'}
         onPress={() => onWalletPress(wallet!)}
       />

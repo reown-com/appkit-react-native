@@ -14,7 +14,7 @@ import { UiUtil } from '../../utils/UiUtil';
 import { Spacing } from '../../utils/ThemeUtil';
 
 export interface FlexViewProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   flexDirection?: FlexDirectionType;
   flexWrap?: FlexWrapType;
   flexGrow?: FlexGrowType;
