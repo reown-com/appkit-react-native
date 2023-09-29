@@ -23,6 +23,7 @@ import {
   type Address
 } from 'viem';
 import { mainnet } from 'viem/chains';
+import { normalize } from 'viem/ens';
 import {
   EthereumProvider,
   OPTIONAL_EVENTS,
@@ -254,19 +255,16 @@ export class Web3Modal extends Web3ModalScaffold {
     const [address] = await client.getAddresses();
     const chainId = await publicClient.getChainId();
 
-    //Why ask for connected?
     if (this.isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${NAMESPACE}:${chainId}:${address}`;
       this.setCaipAddress(caipAddress);
-      await Promise.all([this.syncBalance(address, chainId)]);
-      // await Promise.all([
-      //   // this.syncProfile(address),
-      //   this.syncBalance(address)
-      //   // this.getApprovedCaipNetworksData()
-      // ]);
+      await Promise.all([
+        this.syncProfile(address),
+        this.syncBalance(address, chainId),
+        this.getApprovedCaipNetworksData()
+      ]);
       this.hasSyncedConnectedAccount = true;
     } else if (!this.isConnected && this.hasSyncedConnectedAccount) {
-      // Maybe this is not needed
       this.hasSyncedConnectedAccount = false;
       this.resetAccount();
       this.resetWcConnection();
@@ -304,25 +302,34 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  // private async syncProfile(address: Address) {
-  // try {
-  //   const { name, avatar } = await this.fetchIdentity({
-  //     caipChainId: `${NAMESPACE}:${mainnet.id}`,
-  //     address
-  //   });
-  //   this.setProfileName(name);
-  //   this.setProfileImage(avatar);
-  // } catch {
-  //   const profileName = await fetchEnsName({ address, chainId: mainnet.id });
-  //   if (profileName) {
-  //     this.setProfileName(profileName);
-  //     const profileImage = await fetchEnsAvatar({ name: profileName, chainId: mainnet.id });
-  //     if (profileImage) {
-  //       this.setProfileImage(profileImage);
-  //     }
-  //   }
-  // }
-  // }
+  private async syncProfile(address: Address) {
+    const publicClient = await this.getPublicClient();
+    try {
+      const { name, avatar } = await this.fetchIdentity({
+        caipChainId: `${NAMESPACE}:${mainnet.id}`,
+        address
+      });
+      this.setProfileName(name);
+      this.setProfileImage(avatar);
+    } catch {
+      const mainnetClient = createPublicClient({
+        chain: mainnet,
+        transport: custom(await this.getProvider())
+      });
+
+      const profileName = await mainnetClient.getEnsName({
+        address
+      });
+
+      if (profileName) {
+        this.setProfileName(profileName);
+        const profileImage = await publicClient.getEnsAvatar({ name: normalize(profileName) });
+        if (profileImage) {
+          this.setProfileImage(profileImage);
+        }
+      }
+    }
+  }
 
   private async syncBalance(address: Address, chainId: number) {
     const publicClient = await this.getPublicClient();
@@ -337,14 +344,4 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.setBalance(balance.formatted, balance.symbol);
   }
-
-  // private async syncBalance(address: Address) {
-  //   const publicClient = await this.getPublicClient();
-
-  //   const balance = await publicClient.getBalance({
-  //     address
-  //   });
-
-  //   this.setBalance(formatEther(balance), 'ETH');
-  // }
 }
