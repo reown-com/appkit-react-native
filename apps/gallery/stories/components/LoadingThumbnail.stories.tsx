@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { LoadingThumbnail } from '@web3modal/ui-react-native';
@@ -6,12 +5,12 @@ import { LoadingThumbnail } from '@web3modal/ui-react-native';
 const meta: Meta<typeof LoadingThumbnail> = {
   component: LoadingThumbnail,
   argTypes: {
-    showError: {
+    pause: {
       control: { type: 'boolean' }
     }
   },
   args: {
-    showError: false
+    pause: false
   }
 };
 
@@ -19,5 +18,5 @@ export default meta;
 type Story = StoryObj<typeof LoadingThumbnail>;
 
 export const Default: Story = {
-  render: args => <LoadingThumbnail showError={args.showError} />
+  render: args => <LoadingThumbnail pause={args.pause} />
 };

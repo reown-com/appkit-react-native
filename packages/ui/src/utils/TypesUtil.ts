@@ -39,7 +39,9 @@ export type ThemeKeys =
   | 'overlay-015'
   | 'overlay-020'
   | 'overlay-025'
-  | 'overlay-030';
+  | 'overlay-030'
+  | 'icon-box-bg-error-100'
+  | 'icon-box-bg-success-100';
 
 export type TextType =
   | 'large-500'

@@ -8,10 +8,16 @@ export default StyleSheet.create({
   copyButton: {
     marginVertical: Spacing.xs
   },
-  storeButton: {
-    width: '95%'
-  },
   copyIcon: {
     transform: [{ rotateY: '180deg' }]
+  },
+  descriptionText: {
+    marginHorizontal: Spacing['3xl']
+  },
+  errorIcon: {
+    position: 'absolute',
+    bottom: 2,
+    right: 2,
+    zIndex: 2
   }
 });

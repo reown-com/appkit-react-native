@@ -3,16 +3,15 @@ import { Animated, Easing, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
-import { IconBox } from '../../composites/wui-icon-box';
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
 export interface LoadingThumbnailProps {
   children?: ReactNode;
-  showError?: boolean;
+  pause?: boolean;
 }
 
-export function LoadingThumbnail({ children, showError }: LoadingThumbnailProps) {
+export function LoadingThumbnail({ children, pause }: LoadingThumbnailProps) {
   const Theme = useTheme();
   const spinValue = useRef(new Animated.Value(0));
 
@@ -46,7 +45,7 @@ export function LoadingThumbnail({ children, showError }: LoadingThumbnailProps)
           width={106}
           height={106}
           rx={36}
-          stroke={showError ? 'transparent' : Theme['blue-100']}
+          stroke={pause ? 'transparent' : Theme['blue-100']}
           strokeWidth={4}
           fill="transparent"
           strokeDasharray={'116 245'}
@@ -54,16 +53,6 @@ export function LoadingThumbnail({ children, showError }: LoadingThumbnailProps)
         />
       </Svg>
       {children ?? null}
-      {showError && (
-        <IconBox
-          icon="close"
-          border
-          background
-          size="md"
-          iconColor="error-100"
-          style={styles.error}
-        />
-      )}
     </View>
   );
 }

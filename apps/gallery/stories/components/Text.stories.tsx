@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Text } from '@web3modal/ui-react-native';
@@ -14,12 +13,16 @@ const meta: Meta<typeof Text> = {
     variant: {
       options: textOptions,
       control: { type: 'select' }
+    },
+    center: {
+      control: { type: 'boolean' }
     }
   },
   args: {
     variant: 'paragraph-500',
     color: 'fg-100',
-    children: 'The fox jumped over the lazy dog'
+    children: 'The fox jumped over the lazy dog',
+    center: false
   }
 };
 
@@ -28,7 +31,7 @@ type Story = StoryObj<typeof Text>;
 
 export const Default: Story = {
   render: args => (
-    <Text variant={args.variant} color={args.color}>
+    <Text variant={args.variant} color={args.color} center={args.center}>
       {args.children}
     </Text>
   )

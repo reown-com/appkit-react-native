@@ -25,6 +25,10 @@ const meta: Meta<typeof IconBox> = {
     background: {
       control: { type: 'boolean' }
     },
+    backgroundColor: {
+      options: colorOptions,
+      control: { type: 'select' }
+    },
     border: {
       control: { type: 'boolean' }
     },
@@ -46,6 +50,7 @@ export const Default: Story = {
       icon={args.icon}
       border={args.border}
       background={args.background}
+      backgroundColor={args.backgroundColor}
     />
   )
 };

@@ -52,5 +52,8 @@ export default StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 0.2
+  },
+  'center': {
+    textAlign: 'center'
   }
 });

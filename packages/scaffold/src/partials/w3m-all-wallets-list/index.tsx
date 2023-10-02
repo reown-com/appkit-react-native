@@ -45,7 +45,6 @@ export function AllWalletsList({ columns, itemMargin = 0 }: AllWalletsListProps)
 
   const fetchNextPage = async () => {
     if (walletList.length < count && !pageLoading) {
-      console.log('fetchNextPage', page, count, walletList.length);
       setPageLoading(true);
       await ApiController.fetchWallets({ page: page + 1 });
       setPageLoading(false);

@@ -47,7 +47,11 @@ export const DarkTheme: { [key in ThemeKeys]: string } = {
   'overlay-015': 'rgba(255, 255, 255, 0.15)',
   'overlay-020': 'rgba(255, 255, 255, 0.2)',
   'overlay-025': 'rgba(255, 255, 255, 0.25)',
-  'overlay-030': 'rgba(255, 255, 255, 0.3)'
+  'overlay-030': 'rgba(255, 255, 255, 0.3)',
+
+  //IconBox
+  'icon-box-bg-error-100': '#3c2426',
+  'icon-box-bg-success-100': '#1f3a28'
 };
 
 export const LightTheme: { [key in ThemeKeys]: string } = {
@@ -97,7 +101,11 @@ export const LightTheme: { [key in ThemeKeys]: string } = {
   'overlay-015': 'rgba(0, 0, 0, 0.15)',
   'overlay-020': 'rgba(0, 0, 0, 0.2)',
   'overlay-025': 'rgba(0, 0, 0, 0.25)',
-  'overlay-030': 'rgba(0, 0, 0, 0.3)'
+  'overlay-030': 'rgba(0, 0, 0, 0.3)',
+
+  //IconBox
+  'icon-box-bg-error-100': '#f4dfdd',
+  'icon-box-bg-success-100': '#daf0e4'
 };
 
 export const BorderRadius = {

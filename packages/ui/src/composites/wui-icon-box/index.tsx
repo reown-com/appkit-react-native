@@ -10,6 +10,7 @@ export interface IconBoxProps {
   size?: Exclude<SizeType, 'xs' | 'xxs'>;
   iconColor?: ColorType;
   background?: boolean;
+  backgroundColor?: ThemeKeys;
   border?: boolean;
   style?: StyleProp<ViewStyle>;
 }
@@ -19,6 +20,7 @@ export function IconBox({
   iconColor = 'fg-100',
   icon,
   background,
+  backgroundColor,
   border,
   style
 }: IconBoxProps) {
@@ -53,7 +55,12 @@ export function IconBox({
   const borderRadius = size === 'lg' ? 'xxs' : '3xl';
 
   const backgroundStyle = {
-    backgroundColor: background ? `${Theme[iconColor as ThemeKeys]}1E` : 'transparent',
+    backgroundColor:
+      background && backgroundColor
+        ? Theme[backgroundColor]
+        : background
+        ? `${Theme[iconColor as ThemeKeys]}1E`
+        : 'transparent',
     height: boxSize,
     width: boxSize,
     borderRadius: BorderRadius[borderRadius]

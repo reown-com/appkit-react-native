@@ -9,11 +9,5 @@ export default StyleSheet.create({
   },
   loader: {
     position: 'absolute'
-  },
-  error: {
-    position: 'absolute',
-    bottom: 2,
-    right: 2,
-    zIndex: 2
   }
 });
