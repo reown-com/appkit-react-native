@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import { RouterController } from '@web3modal/core-react-native';
 
@@ -9,16 +9,21 @@ import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
 import { GetWalletView } from '../../views/w3m-get-wallet-view';
 import { AccountView } from '../../views/w3m-account-view';
 import { NetworksView } from '../../views/w3m-networks-view';
+import { LayoutAnimation } from 'react-native';
 
 interface Props {
   // onCopyClipboard?: (value: string) => void;
 }
 
 export function Web3Router(props: Props) {
-  const routerState = useSnapshot(RouterController.state);
+  const { view } = useSnapshot(RouterController.state);
+
+  useLayoutEffect(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.create(200, 'easeInEaseOut', 'opacity'));
+  }, [view]);
 
   const ViewComponent = useMemo(() => {
-    switch (routerState.view) {
+    switch (view) {
       case 'Connect':
         return ConnectView;
       case 'AllWallets':
@@ -36,7 +41,7 @@ export function Web3Router(props: Props) {
       default:
         return ConnectView;
     }
-  }, [routerState.view]);
+  }, [view]);
 
   return <ViewComponent {...props} />;
 }

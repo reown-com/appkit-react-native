@@ -1,3 +1,5 @@
+import './config/animations';
+
 import type {
   AccountControllerState,
   ApiControllerState,
