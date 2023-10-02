@@ -8,6 +8,7 @@ import { Web3Router } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
 
 import styles from './styles';
+import { Snackbar } from '../../partials/w3m-snackbar';
 
 export function Web3Modal() {
   const { open } = useSnapshot(ModalController.state);
@@ -38,7 +39,7 @@ export function Web3Modal() {
       <Card style={styles.card}>
         <Header />
         <Web3Router />
-        {/* <Snack /> */}
+        <Snackbar />
       </Card>
     </Modal>
   );

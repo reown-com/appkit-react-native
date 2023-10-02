@@ -8,7 +8,8 @@ import {
   CoreHelperUtil,
   ModalController,
   NetworkController,
-  RouterController
+  RouterController,
+  SnackController
 } from '@web3modal/core-react-native';
 import {
   Avatar,
@@ -45,6 +46,11 @@ export function AccountView() {
     }
   };
 
+  const onCopyAddress = () => {
+    // TODO: Add copy to clipboard
+    SnackController.showSuccess('Address copied');
+  };
+
   const addressExplorerTemplate = () => {
     if (!addressExplorerUrl) return null;
 
@@ -72,7 +78,7 @@ export function AccountView() {
             ? UiUtil.getTruncateString(profileName, 20, 'end')
             : UiUtil.getTruncateString(address ?? '', 8, 'middle')}
         </Text>
-        <IconLink icon="copy" size="md" iconColor="fg-250" />
+        <IconLink icon="copy" size="md" iconColor="fg-250" onPress={onCopyAddress} />
       </FlexView>
       {balance && (
         <Text color="fg-200">{CoreHelperUtil.formatBalance(balance, balanceSymbol)}</Text>
