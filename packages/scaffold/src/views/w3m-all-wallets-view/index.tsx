@@ -1,30 +1,21 @@
-import { useEffect } from 'react';
-import { useSnapshot } from 'valtio';
-import { FlatList, useWindowDimensions } from 'react-native';
-import {
-  ApiController,
-  AssetUtil,
-  RouterController,
-  type WcWallet
-} from '@web3modal/core-react-native';
-import { CardSelect, FlexView, IconLink, SearchBar, useTheme } from '@web3modal/ui-react-native';
+import { useState } from 'react';
+import { useWindowDimensions } from 'react-native';
+import { RouterController } from '@web3modal/core-react-native';
+import { FlexView, IconLink, SearchBar, useTheme } from '@web3modal/ui-react-native';
 
 import styles from './styles';
+import { useDebounceCallback } from '../../hooks/useDebounceCallback';
+import { AllWalletsList } from '../../partials/w3m-all-wallets-list';
+import { AllWalletsSearch } from '../../partials/w3m-all-wallets-search';
 
 export function AllWalletsView() {
   const Theme = useTheme();
-  const imageHeaders = ApiController._getApiHeaders();
-  const { featured, recommended, wallets } = useSnapshot(ApiController.state);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const { width } = useWindowDimensions();
   const numColumns = Math.floor(width / 80);
-  const gap = Math.trunc((width / numColumns - 70) / (numColumns - 1));
-  const walletList = [...featured, ...recommended, ...wallets];
+  const itemMargin = Math.trunc((width / numColumns - 70) / (numColumns - 1));
 
-  useEffect(() => {
-    if (!wallets.length) {
-      ApiController.fetchWallets({ page: 1 });
-    }
-  }, [wallets]);
+  const onInputChange = useDebounceCallback({ callback: setSearchQuery });
 
   const headerTemplate = () => {
     return (
@@ -35,44 +26,33 @@ export function AllWalletsView() {
         justifyContent="space-between"
         style={[styles.header, { backgroundColor: Theme['bg-125'], shadowColor: Theme['bg-125'] }]}
       >
-        <SearchBar />
+        <SearchBar onChangeText={onInputChange} />
         <IconLink
           icon="qrCode"
           iconColor="blue-100"
           background
           size="lg"
           onPress={() => RouterController.push('ConnectingWalletConnect')}
-          style={{ marginLeft: 8 }}
+          style={styles.icon}
         />
       </FlexView>
     );
   };
 
-  const walletTemplate = ({ item }: { item: WcWallet }) => {
-    return (
-      <CardSelect
-        key={item?.id}
-        imageSrc={AssetUtil.getWalletImage(item)}
-        imageHeaders={imageHeaders}
-        name={item?.name ?? 'Unknown'}
-        onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
-        style={{ margin: gap }}
-      />
-    );
+  const listTemplate = () => {
+    if (searchQuery) {
+      return (
+        <AllWalletsSearch columns={numColumns} itemMargin={itemMargin} searchQuery={searchQuery} />
+      );
+    }
+
+    return <AllWalletsList columns={numColumns} itemMargin={itemMargin} />;
   };
 
   return (
     <>
       {headerTemplate()}
-      <FlatList
-        key={numColumns}
-        fadingEdgeLength={20}
-        bounces={false}
-        numColumns={numColumns}
-        data={walletList}
-        renderItem={walletTemplate}
-        contentContainerStyle={styles.contentContainer}
-      />
+      {listTemplate()}
     </>
   );
 }

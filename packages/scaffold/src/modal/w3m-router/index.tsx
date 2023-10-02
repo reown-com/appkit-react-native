@@ -9,7 +9,7 @@ import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
 import { GetWalletView } from '../../views/w3m-get-wallet-view';
 import { AccountView } from '../../views/w3m-account-view';
 import { NetworksView } from '../../views/w3m-networks-view';
-import { LayoutAnimation } from 'react-native';
+import { UiUtil } from '../../utils/UiUtil';
 
 interface Props {
   // onCopyClipboard?: (value: string) => void;
@@ -19,7 +19,7 @@ export function Web3Router(props: Props) {
   const { view } = useSnapshot(RouterController.state);
 
   useLayoutEffect(() => {
-    LayoutAnimation.configureNext(LayoutAnimation.create(200, 'easeInEaseOut', 'opacity'));
+    UiUtil.createViewTransition();
   }, [view]);
 
   const ViewComponent = useMemo(() => {

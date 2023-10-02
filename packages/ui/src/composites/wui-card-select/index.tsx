@@ -5,9 +5,12 @@ import { useTheme } from '../../hooks/useTheme';
 import type { CardSelectType } from '../../utils/TypesUtil';
 import { NetworkImage } from '../wui-network-image';
 import { WalletImage } from '../wui-wallet-image';
-import styles, { getBackgroundColor } from './styles';
+import styles, { getBackgroundColor, ITEM_HEIGHT } from './styles';
+import { memo } from 'react';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+export const CardSelectHeight = ITEM_HEIGHT;
 
 export interface CardSelectProps {
   name: string;
@@ -20,7 +23,7 @@ export interface CardSelectProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function CardSelect({
+function _CardSelect({
   name,
   type = 'wallet',
   imageSrc,
@@ -64,3 +67,5 @@ export function CardSelect({
     </AnimatedPressable>
   );
 }
+
+export const CardSelect = memo(_CardSelect);

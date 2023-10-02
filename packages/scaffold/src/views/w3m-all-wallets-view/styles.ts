@@ -14,5 +14,8 @@ export default StyleSheet.create({
         shadowOffset: { width: 0, height: 6 }
       }
     })
+  },
+  icon: {
+    marginLeft: 8
   }
 });

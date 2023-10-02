@@ -7,19 +7,22 @@ import { InputText } from '../wui-input-text';
 export interface SearchBarProps {
   placeholder?: string;
   onSubmitEditing?: TextInputProps['onSubmitEditing'];
+  onChangeText?: TextInputProps['onChangeText'];
   inputStyle?: TextInputProps['style'];
 }
 
 export function SearchBar({
   placeholder = 'Search wallet',
   onSubmitEditing,
+  onChangeText,
   inputStyle
 }: SearchBarProps) {
   const [showClear, setShowClear] = useState(false);
   const inputRef = useRef<TextInput>(null);
 
-  const handleChangeText = (text?: string) => {
+  const handleChangeText = (text: string) => {
     setShowClear(!!text?.length);
+    onChangeText?.(text);
   };
 
   return (
@@ -38,7 +41,7 @@ export function SearchBar({
           onPress={() => {
             inputRef.current?.clear();
             inputRef.current?.focus();
-            setShowClear(false);
+            handleChangeText('');
           }}
         />
       )}

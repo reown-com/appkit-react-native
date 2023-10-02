@@ -2,6 +2,8 @@ import { StyleSheet } from 'react-native';
 import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 import type { ThemeKeys } from '../../utils/TypesUtil';
 
+export const ITEM_HEIGHT = 96;
+
 export const getBackgroundColor = ({
   selected,
   disabled,
@@ -21,7 +23,7 @@ export default StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: 96,
+    height: ITEM_HEIGHT,
     width: 76,
     borderRadius: BorderRadius.xs
   },

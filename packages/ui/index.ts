@@ -15,7 +15,11 @@ export { ActionEntry, type ActionEntryProps } from './src/composites/wui-action-
 export { AllWalletsImage, type AllWalletsImageProps } from './src/composites/wui-all-wallets-image';
 export { Avatar, type AvatarProps } from './src/composites/wui-avatar';
 export { Button, type ButtonProps } from './src/composites/wui-button';
-export { CardSelect, type CardSelectProps } from './src/composites/wui-card-select';
+export {
+  CardSelect,
+  CardSelectHeight,
+  type CardSelectProps
+} from './src/composites/wui-card-select';
 export { Chip, type ChipProps } from './src/composites/wui-chip';
 export { ConnectButton, type ConnectButtonProps } from './src/composites/wui-connect-button';
 export { EmailInput, type EmailInputProps } from './src/composites/wui-email-input';
