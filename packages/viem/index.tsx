@@ -42,6 +42,18 @@ export function useWeb3Modal() {
   return { open, close };
 }
 
+export function useProvider() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useProvider" hook');
+  }
+
+  return {
+    provider: () => modal?.provider,
+    publicClient: () => modal?.publicClient,
+    walletClient: () => modal?.client
+  };
+}
+
 export function useWeb3ModalState() {
   if (!modal) {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" hook');

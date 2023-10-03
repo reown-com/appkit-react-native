@@ -2,6 +2,7 @@ import { proxy } from 'valtio';
 import { AccountController } from './AccountController';
 import type { RouterControllerState } from './RouterController';
 import { RouterController } from './RouterController';
+import { PublicStateController } from './PublicStateController';
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
@@ -32,9 +33,11 @@ export const ModalController = {
       RouterController.reset('Connect');
     }
     state.open = true;
+    PublicStateController.set({ open: true });
   },
 
   close() {
     state.open = false;
+    PublicStateController.set({ open: false });
   }
 };

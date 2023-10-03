@@ -1,5 +1,6 @@
 import { proxy, ref } from 'valtio';
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtils';
+import { PublicStateController } from './PublicStateController';
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -43,11 +44,13 @@ export const NetworkController = {
 
   setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
     state.caipNetwork = caipNetwork;
+    PublicStateController.set({ selectedNetworkId: caipNetwork?.id });
   },
 
   setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
     state.caipNetwork = caipNetwork;
     state.isDefaultCaipNetwork = true;
+    PublicStateController.set({ selectedNetworkId: caipNetwork?.id });
   },
 
   setRequestedCaipNetworks(requestedNetworks: NetworkControllerState['requestedCaipNetworks']) {
@@ -63,6 +66,7 @@ export const NetworkController = {
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
     await this._getClient().switchCaipNetwork(network);
     state.caipNetwork = network;
+    PublicStateController.set({ selectedNetworkId: network?.id });
   },
 
   resetNetwork() {

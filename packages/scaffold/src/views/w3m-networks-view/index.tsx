@@ -1,7 +1,13 @@
 import { useSnapshot } from 'valtio';
 import { ScrollView } from 'react-native';
 import { CardSelect, FlexView } from '@web3modal/ui-react-native';
-import { ApiController, AssetUtil, NetworkController } from '@web3modal/core-react-native';
+import {
+  ApiController,
+  AssetUtil,
+  NetworkController,
+  RouterController,
+  type CaipNetwork
+} from '@web3modal/core-react-native';
 
 export function NetworksView() {
   const { caipNetwork, requestedCaipNetworks, approvedCaipNetworkIds, supportsAllNetworks } =
@@ -10,6 +16,13 @@ export function NetworksView() {
 
   const networksTemplate = () => {
     if (!requestedCaipNetworks?.length) return undefined;
+
+    const onNetworkPress = async (network: CaipNetwork) => {
+      if (caipNetwork?.id !== network.id) {
+        await NetworkController.switchActiveNetwork(network);
+        RouterController.goBack();
+      }
+    };
 
     return requestedCaipNetworks.map(network => (
       <CardSelect
@@ -20,7 +33,7 @@ export function NetworksView() {
         imageHeaders={imageHeaders}
         disabled={!supportsAllNetworks && approvedCaipNetworkIds?.includes(network.id)}
         selected={caipNetwork?.id === network.id}
-        onPress={() => NetworkController.switchActiveNetwork(network)}
+        onPress={() => onNetworkPress(network)}
       />
     ));
   };
