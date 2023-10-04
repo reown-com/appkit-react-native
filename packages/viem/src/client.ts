@@ -114,7 +114,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
         provider.on('display_uri', onDisplayUri);
         provider.on('chainChanged', onChainChanged);
-
         await provider.connect({
           chains: [defaultChain!.id],
           optionalChains: optionalChains.length ? optionalChains.map(chain => chain.id) : undefined
@@ -132,8 +131,8 @@ export class Web3Modal extends Web3ModalScaffold {
     };
 
     // Listeners
-    const onChainChanged = (e: string) => {
-      console.log('onChainChanged', e);
+    const onChainChanged = () => {
+      this.syncAccount();
       this.syncNetwork(chainImages);
     };
 
@@ -217,7 +216,9 @@ export class Web3Modal extends Web3ModalScaffold {
   private async getClient() {
     if (!this.client) {
       const provider = await this.getProvider();
+      const [chain] = this.getChains();
       this.client = createWalletClient({
+        chain,
         transport: custom(provider)
       });
     }
@@ -227,7 +228,9 @@ export class Web3Modal extends Web3ModalScaffold {
   private async getPublicClient() {
     if (!this.publicClient) {
       const provider = await this.getProvider();
+      const [chain] = this.getChains();
       this.publicClient = createPublicClient({
+        chain,
         transport: custom(provider)
       });
     }
@@ -263,9 +266,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncAccount() {
     if (this.isConnected) {
       const client = await this.getClient();
-      const publicClient = await this.getPublicClient();
       const [address] = await client.getAddresses();
-      const chainId = await publicClient.getChainId();
+      const chainId = await client.getChainId();
       if (address && chainId) {
         const caipAddress: CaipAddress = `${NAMESPACE}:${chainId}:${address}`;
         this.setCaipAddress(caipAddress);
@@ -288,21 +290,19 @@ export class Web3Modal extends Web3ModalScaffold {
     if (this.isConnected) {
       const client = await this.getClient();
       const [address] = await client.getAddresses();
-      const publicClient = await this.getPublicClient();
-      const chainId = await publicClient.getChainId();
-      const chains = this.getChains();
-      const chain = chains.find(chain => chain.id === chainId);
-      console.log('syncNetwork', chainId, chain);
+      const chainId = await client.getChainId();
+      const chain = this.getChains().find(chain => chain.id === chainId);
+
       if (chain) {
-        const caipChainId: CaipNetworkId = `${NAMESPACE}:${chainId}`;
+        const caipChainId: CaipNetworkId = `${NAMESPACE}:${chain.id}`;
         this.setCaipNetwork({
           id: caipChainId,
           name: chain.name,
-          imageId: NetworkImageIds[chainId],
-          imageUrl: chainImages?.[chainId]
+          imageId: NetworkImageIds[chain.id],
+          imageUrl: chainImages?.[chain.id]
         });
         if (address) {
-          const caipAddress: CaipAddress = `${NAMESPACE}:${chainId}:${address}`;
+          const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`;
           this.setCaipAddress(caipAddress);
           if (chain.blockExplorers?.default?.url) {
             const url = `${chain.blockExplorers.default.url}/address/${address}`;
@@ -311,7 +311,7 @@ export class Web3Modal extends Web3ModalScaffold {
             this.setAddressExplorerUrl(undefined);
           }
           if (this.hasSyncedConnectedAccount) {
-            await this.syncBalance(address, chainId);
+            await this.syncBalance(address, chain.id);
           }
         }
       }
