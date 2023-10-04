@@ -48,8 +48,10 @@ export const StorageUtil = {
         }
         AsyncStorage.setItem(W3M_RECENT, JSON.stringify(recentWallets));
       }
+      return recentWallets;
     } catch {
       console.info('Unable to set Web3Modal recent');
+      return undefined;
     }
   },
 

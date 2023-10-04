@@ -154,7 +154,7 @@ export type LogoType =
   | 'twitch'
   | 'twitter';
 
-export type TagType = 'main' | 'shade';
+export type TagType = 'main' | 'shade' | 'error' | 'success';
 
 export type CardSelectType = 'wallet' | 'network';
 

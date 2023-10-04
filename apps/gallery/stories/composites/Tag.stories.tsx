@@ -1,13 +1,13 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Tag } from '@web3modal/ui-react-native';
+import { tagOptions } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof Tag> = {
   component: Tag,
   argTypes: {
     variant: {
-      options: ['main', 'shade'],
+      options: tagOptions,
       control: { type: 'select' }
     },
     children: {

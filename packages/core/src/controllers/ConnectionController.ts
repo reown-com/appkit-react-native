@@ -21,6 +21,7 @@ export interface ConnectionControllerState {
   };
   wcError?: boolean;
   recentWallet?: WcWallet;
+  recentWallets?: WcWallet[];
 }
 
 type StateKey = keyof ConnectionControllerState;
@@ -79,6 +80,10 @@ export const ConnectionController = {
 
   setRecentWallet(wallet: ConnectionControllerState['recentWallet']) {
     state.recentWallet = wallet;
+  },
+
+  setRecentWallets(wallets: ConnectionControllerState['recentWallets']) {
+    state.recentWallets = wallets;
   },
 
   async disconnect() {

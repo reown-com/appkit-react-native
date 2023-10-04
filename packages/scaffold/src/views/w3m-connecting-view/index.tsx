@@ -44,7 +44,10 @@ export function ConnectingView() {
       StorageUtil.setWalletConnectDeepLink(wcLinking);
     }
     if (recentWallet) {
-      StorageUtil.setWeb3ModalRecent(recentWallet);
+      const recentWallets = await StorageUtil.setWeb3ModalRecent(recentWallet);
+      if (recentWallets) {
+        ConnectionController.setRecentWallets(recentWallets);
+      }
     }
   };
 

@@ -21,11 +21,9 @@ import {
   NetworkController,
   OptionsController,
   PublicStateController,
+  StorageUtil,
   ThemeController
 } from '@web3modal/core-react-native';
-
-// -- Helpers -------------------------------------------------------------------
-let isInitialized = false;
 
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {
@@ -51,21 +49,16 @@ export interface OpenOptions {
 
 // -- Client --------------------------------------------------------------------
 export class Web3ModalScaffold {
-  private initPromise?: Promise<void> = undefined;
-
   public constructor(options: ScaffoldOptions) {
     this.initControllers(options);
-    this.initOrContinue();
   }
 
   // -- Public -------------------------------------------------------------------
   public async open(options?: OpenOptions) {
-    await this.initOrContinue();
     ModalController.open(options);
   }
 
   public async close() {
-    await this.initOrContinue();
     ModalController.close();
   }
 
@@ -162,6 +155,7 @@ export class Web3ModalScaffold {
 
   // -- Private ------------------------------------------------------------------
   private initControllers(options: ScaffoldOptions) {
+    this.initRecentWallets();
     NetworkController.setClient(options.networkControllerClient);
     NetworkController.setDefaultCaipNetwork(options.defaultChain);
 
@@ -183,18 +177,8 @@ export class Web3ModalScaffold {
     }
   }
 
-  private async initOrContinue() {
-    if (!this.initPromise && !isInitialized) {
-      isInitialized = true;
-      this.initPromise = new Promise<void>(async resolve => {
-        await Promise.all([
-          import('@web3modal/ui-react-native'),
-          import('./modal/w3m-modal/index')
-        ]);
-        resolve();
-      });
-    }
-
-    return this.initPromise;
+  private async initRecentWallets() {
+    const wallets = await StorageUtil.getRecentWallets();
+    ConnectionController.setRecentWallets(wallets);
   }
 }

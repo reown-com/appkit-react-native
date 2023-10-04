@@ -67,7 +67,7 @@ export const chipOptions: ChipType[] = ['fill', 'shade', 'transparent'];
 
 export const tooltipOptions: PlacementType[] = ['top', 'bottom', 'left', 'right'];
 
-export const tagOptions: TagType[] = ['main', 'shade'];
+export const tagOptions: TagType[] = ['main', 'shade', 'success', 'error'];
 
 export const iconOptions: IconType[] = [
   'allWallets',
