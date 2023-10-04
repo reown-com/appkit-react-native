@@ -113,7 +113,7 @@ export class Web3Modal extends Web3ModalScaffold {
         }
 
         provider.on('display_uri', onDisplayUri);
-        this.addListeners();
+        this.setupListeners();
 
         await provider.connect({
           chains: [defaultChain!.id],
@@ -198,7 +198,11 @@ export class Web3Modal extends Web3ModalScaffold {
         relayUrl
       });
 
-      this.addListeners();
+      this.setupListeners();
+
+      if (this.provider.session) {
+        this.setIsConnected(true);
+      }
     } catch (error) {
       console.log('error initializing provider', error);
     }
@@ -367,7 +371,7 @@ export class Web3Modal extends Web3ModalScaffold {
     return this.options?.chains ?? [mainnet];
   }
 
-  private addListeners() {
+  private setupListeners() {
     this.provider?.on('chainChanged', this.onChainChanged.bind(this));
   }
 
