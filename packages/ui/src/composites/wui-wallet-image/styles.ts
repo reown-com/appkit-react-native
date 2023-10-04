@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { BorderRadius } from '../../utils/ThemeUtil';
+import { BorderRadius, WalletImageSize } from '../../utils/ThemeUtil';
 
 export default StyleSheet.create({
   container: {
@@ -7,23 +7,23 @@ export default StyleSheet.create({
     justifyContent: 'center'
   },
   xsImage: {
-    height: 15,
-    width: 15,
+    height: WalletImageSize.xs,
+    width: WalletImageSize.xs,
     borderRadius: BorderRadius['4xs']
   },
   smImage: {
-    height: 40,
-    width: 40,
+    height: WalletImageSize.sm,
+    width: WalletImageSize.sm,
     borderRadius: BorderRadius.xxs
   },
   mdImage: {
-    height: 56,
-    width: 56,
+    height: WalletImageSize.md,
+    width: WalletImageSize.md,
     borderRadius: BorderRadius.xs
   },
   lgImage: {
-    height: 90,
-    width: 90,
+    height: WalletImageSize.lg,
+    width: WalletImageSize.lg,
     borderRadius: BorderRadius.m
   },
   border: {

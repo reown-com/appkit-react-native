@@ -9,6 +9,7 @@ export {
 } from './src/components/wui-loading-thumbnail';
 export { Text, type TextProps } from './src/components/wui-text';
 export { Visual, type VisualProps } from './src/components/wui-visual';
+export { Shimmer, type ShimmerProps } from './src/components/wui-shimmer';
 
 export { AccountButton, type AccountButtonProps } from './src/composites/wui-account-button';
 export { ActionEntry, type ActionEntryProps } from './src/composites/wui-action-entry';

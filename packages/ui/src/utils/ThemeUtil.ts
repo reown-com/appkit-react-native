@@ -148,3 +148,10 @@ export const Spacing: { [K in SpacingType]: number } = {
   '3xl': 32,
   '4xl': 40
 };
+
+export const WalletImageSize = {
+  xs: 15,
+  sm: 40,
+  md: 56,
+  lg: 90
+};
