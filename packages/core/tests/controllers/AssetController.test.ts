@@ -1,4 +1,4 @@
-import { AssetController } from '../../index.js'
+import { AssetController } from '../../index.js';
 
 // -- Tests --------------------------------------------------------------------
 describe('AssetController', () => {
@@ -6,8 +6,7 @@ describe('AssetController', () => {
     expect(AssetController.state).toEqual({
       walletImages: {},
       networkImages: {},
-      connectorImages: {},
       tokenImages: {}
-    })
-  })
-})
+    });
+  });
+});

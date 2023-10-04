@@ -11,7 +11,6 @@ import type {
   WcWallet
 } from '../utils/TypeUtils';
 import { AssetController } from './AssetController';
-import { ConnectorController } from './ConnectorController';
 import { NetworkController } from './NetworkController';
 import { OptionsController } from './OptionsController';
 
@@ -81,23 +80,12 @@ export const ApiController = {
     AssetController.setNetworkImage(imageId, imageUrl);
   },
 
-  async _fetchConnectorImage(imageId: string) {
-    const imageUrl = `${api.baseUrl}/public/getAssetImage/${imageId}`;
-    AssetController.setConnectorImage(imageId, imageUrl);
-  },
-
   async fetchNetworkImages() {
     const { requestedCaipNetworks } = NetworkController.state;
     const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean);
     if (ids) {
       await Promise.allSettled((ids as string[]).map(id => ApiController._fetchNetworkImage(id)));
     }
-  },
-
-  async fetchConnectorImages() {
-    const { connectors } = ConnectorController.state;
-    const ids = connectors.map(({ imageId }) => imageId).filter(Boolean);
-    await Promise.allSettled((ids as string[]).map(id => ApiController._fetchConnectorImage(id)));
   },
 
   async fetchFeaturedWallets() {
@@ -205,8 +193,7 @@ export const ApiController = {
       Promise.allSettled([
         ApiController.fetchFeaturedWallets(),
         ApiController.fetchRecommendedWallets(),
-        ApiController.fetchNetworkImages(),
-        ApiController.fetchConnectorImages()
+        ApiController.fetchNetworkImages()
       ]),
       CoreHelperUtil.wait(3000)
     ]);

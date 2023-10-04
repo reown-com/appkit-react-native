@@ -23,9 +23,6 @@ export type {
   ConnectionControllerState
 } from './src/controllers/ConnectionController';
 
-export { ConnectorController } from './src/controllers/ConnectorController';
-export type { ConnectorControllerState } from './src/controllers/ConnectorController';
-
 export { SnackController } from './src/controllers/SnackController';
 export type { SnackControllerState } from './src/controllers/SnackController';
 

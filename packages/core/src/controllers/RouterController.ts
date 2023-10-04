@@ -1,12 +1,11 @@
 import { proxy } from 'valtio';
-import type { WcWallet, CaipNetwork, Connector } from '../utils/TypeUtils';
+import type { WcWallet, CaipNetwork } from '../utils/TypeUtils';
 
 // -- Types --------------------------------------------- //
 export interface RouterControllerState {
   view:
     | 'Account'
     | 'Connect'
-    | 'ConnectingExternal'
     | 'ConnectingWalletConnect'
     | 'Networks'
     | 'SwitchNetwork'
@@ -16,7 +15,6 @@ export interface RouterControllerState {
     | 'GetWallet';
   history: RouterControllerState['view'][];
   data?: {
-    connector?: Connector;
     wallet?: WcWallet;
     network?: CaipNetwork;
   };
