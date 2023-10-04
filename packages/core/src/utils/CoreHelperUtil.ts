@@ -88,18 +88,20 @@ export const CoreHelperUtil = {
     Linking.openURL(url);
   },
 
-  formatBalance(balance: string | undefined, symbol: string | undefined) {
+  formatBalance(balance: string | undefined, symbol: string | undefined, decimals = 3) {
     let formattedBalance = undefined;
 
-    if (balance === '0.0') {
+    if (balance === '0') {
       formattedBalance = '0';
-    } else if (typeof balance === 'string' && balance.length > 6) {
-      formattedBalance = balance.substring(0, 6);
     } else if (typeof balance === 'string') {
-      formattedBalance = balance;
+      const number = Number(balance);
+      if (number) {
+        const regex = new RegExp(`^-?\\d+(?:\\.\\d{0,${decimals}})?`, 'u');
+        formattedBalance = number.toString().match(regex)?.[0];
+      }
     }
 
-    return formattedBalance ? `${formattedBalance} ${symbol}` : '0.0000';
+    return formattedBalance ? `${formattedBalance} ${symbol}` : '0.000';
   },
 
   isRestrictedRegion() {

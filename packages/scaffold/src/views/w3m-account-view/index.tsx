@@ -71,17 +71,17 @@ export function AccountView() {
   return (
     <FlexView alignItems="center" padding="s">
       <IconLink icon="close" style={{ alignSelf: 'flex-end' }} onPress={ModalController.close} />
-      <Avatar imageSrc={profileImage} address={address} />
+      <Avatar imageSrc={profileImage} address={profileName ?? address} />
       <FlexView flexDirection="row" alignItems="center" gap="4xs" margin={['s', '0', '0', '0']}>
         <Text variant="large-600">
           {profileName
-            ? UiUtil.getTruncateString(profileName, 20, 'end')
-            : UiUtil.getTruncateString(address ?? '', 8, 'middle')}
+            ? UiUtil.getTruncateString(profileName, 20, 0, 'end')
+            : UiUtil.getTruncateString(address ?? '', 4, 6, 'middle')}
         </Text>
         <IconLink icon="copy" size="md" iconColor="fg-250" onPress={onCopyAddress} />
       </FlexView>
       {balance && (
-        <Text color="fg-200">{CoreHelperUtil.formatBalance(balance, balanceSymbol)}</Text>
+        <Text color="fg-200">{CoreHelperUtil.formatBalance(balance, balanceSymbol, 4)}</Text>
       )}
       {addressExplorerTemplate()}
       <FlexView gap="xs" margin={['s', '0', '0', '0']}>
