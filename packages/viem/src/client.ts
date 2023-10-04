@@ -113,7 +113,8 @@ export class Web3Modal extends Web3ModalScaffold {
         }
 
         provider.on('display_uri', onDisplayUri);
-        provider.on('chainChanged', onChainChanged);
+        this.addListeners();
+
         await provider.connect({
           chains: [defaultChain!.id],
           optionalChains: optionalChains.length ? optionalChains.map(chain => chain.id) : undefined
@@ -123,17 +124,10 @@ export class Web3Modal extends Web3ModalScaffold {
       disconnect: async () => {
         this.client = undefined;
         this.publicClient = undefined;
-
         const provider = await this.getProvider();
-        provider?.removeListener('chainChanged', onChainChanged);
+        this.removeListeners();
         await provider.disconnect();
       }
-    };
-
-    // Listeners
-    const onChainChanged = () => {
-      this.syncAccount();
-      this.syncNetwork(chainImages);
     };
 
     super({
@@ -203,6 +197,8 @@ export class Web3Modal extends Web3ModalScaffold {
         metadata,
         relayUrl
       });
+
+      this.addListeners();
     } catch (error) {
       console.log('error initializing provider', error);
     }
@@ -369,5 +365,24 @@ export class Web3Modal extends Web3ModalScaffold {
       return [defaultChain, ...chains];
     }
     return this.options?.chains ?? [mainnet];
+  }
+
+  private addListeners() {
+    this.provider?.on('chainChanged', this.onChainChanged.bind(this));
+  }
+
+  private removeListeners() {
+    this.provider?.removeListener('chainChanged', this.onChainChanged.bind(this));
+  }
+
+  private async onChainChanged(chainId: string) {
+    const chainNumber = typeof chainId === 'string' ? parseInt(chainId, 16) : chainId;
+    const clientChainId = await this.client?.getChainId();
+    if (clientChainId !== chainNumber) {
+      await this?.switchNetwork(chainNumber);
+    }
+
+    this.syncAccount();
+    this.syncNetwork(this.options?.chainImages);
   }
 }
