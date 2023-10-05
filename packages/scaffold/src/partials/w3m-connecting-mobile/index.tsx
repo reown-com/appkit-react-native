@@ -56,7 +56,7 @@ export function ConnectingMobile({ onRetry }: Props) {
         ConnectionController.setWcError(false);
         const { redirect, href } = CoreHelperUtil.formatNativeUrl(mobile_link, wcUri);
         ConnectionController.setWcLinking({ name, href });
-        ConnectionController.setRecentWallet(data?.wallet);
+        ConnectionController.setPressedWallet(data?.wallet);
         await Linking.openURL(redirect);
       }
     } catch (error) {

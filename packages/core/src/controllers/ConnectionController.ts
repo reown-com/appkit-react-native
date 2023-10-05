@@ -20,7 +20,7 @@ export interface ConnectionControllerState {
     name: string;
   };
   wcError?: boolean;
-  recentWallet?: WcWallet;
+  pressedWallet?: WcWallet;
   recentWallets?: WcWallet[];
 }
 
@@ -66,7 +66,7 @@ export const ConnectionController = {
     state.wcPairingExpiry = undefined;
     state.wcPromise = undefined;
     state.wcLinking = undefined;
-    state.recentWallet = undefined;
+    state.pressedWallet = undefined;
     StorageUtil.deleteWalletConnectDeepLink();
   },
 
@@ -78,8 +78,8 @@ export const ConnectionController = {
     state.wcError = wcError;
   },
 
-  setRecentWallet(wallet: ConnectionControllerState['recentWallet']) {
-    state.recentWallet = wallet;
+  setPressedWallet(wallet: ConnectionControllerState['pressedWallet']) {
+    state.pressedWallet = wallet;
   },
 
   setRecentWallets(wallets: ConnectionControllerState['recentWallets']) {

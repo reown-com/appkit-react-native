@@ -39,12 +39,12 @@ export function ConnectingView() {
   };
 
   const storeWalletConnectDeeplink = async () => {
-    const { wcLinking, recentWallet } = ConnectionController.state;
+    const { wcLinking, pressedWallet } = ConnectionController.state;
     if (wcLinking) {
       StorageUtil.setWalletConnectDeepLink(wcLinking);
     }
-    if (recentWallet) {
-      const recentWallets = await StorageUtil.setWeb3ModalRecent(recentWallet);
+    if (pressedWallet) {
+      const recentWallets = await StorageUtil.setWeb3ModalRecent(pressedWallet);
       if (recentWallets) {
         ConnectionController.setRecentWallets(recentWallets);
       }
