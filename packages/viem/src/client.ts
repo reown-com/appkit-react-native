@@ -122,11 +122,9 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
-        this.client = undefined;
-        this.publicClient = undefined;
         const provider = await this.getProvider();
-        this.removeListeners();
         await provider.disconnect();
+        this.onDisconnect();
       }
     };
 
@@ -373,10 +371,12 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private setupListeners() {
     this.provider?.on('chainChanged', this.onChainChanged.bind(this));
+    this.provider?.on('disconnect', this.onDisconnect.bind(this));
   }
 
   private removeListeners() {
     this.provider?.removeListener('chainChanged', this.onChainChanged.bind(this));
+    this.provider?.removeListener('disconnect', this.onDisconnect.bind(this));
   }
 
   private async onChainChanged(chainId: string) {
@@ -388,5 +388,12 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.syncAccount();
     this.syncNetwork(this.options?.chainImages);
+  }
+
+  private async onDisconnect() {
+    this.setIsConnected(false);
+    this.client = undefined;
+    this.publicClient = undefined;
+    this.removeListeners();
   }
 }
