@@ -81,7 +81,7 @@ export function AccountView() {
         <IconLink icon="copy" size="md" iconColor="fg-250" onPress={onCopyAddress} />
       </FlexView>
       {balance && (
-        <Text color="fg-200">{CoreHelperUtil.formatBalance(balance, balanceSymbol, 4)}</Text>
+        <Text color="fg-200">{CoreHelperUtil.formatBalance(balance, balanceSymbol)}</Text>
       )}
       {addressExplorerTemplate()}
       <FlexView gap="xs" margin={['s', '0', '0', '0']}>

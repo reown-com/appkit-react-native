@@ -9,6 +9,8 @@ export interface W3mButtonProps {
   size?: W3mConnectButtonProps['size'];
   label?: W3mConnectButtonProps['label'];
   loadingLabel?: W3mConnectButtonProps['loadingLabel'];
+  accountStyle?: W3mAccountButtonProps['style'];
+  connectStyle?: W3mConnectButtonProps['style'];
 }
 
 export function W3mButton({
@@ -16,12 +18,14 @@ export function W3mButton({
   disabled,
   size,
   label = 'Connect',
-  loadingLabel = 'Connecting'
+  loadingLabel = 'Connecting',
+  accountStyle,
+  connectStyle
 }: W3mButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
   return isConnected ? (
-    <W3mAccountButton balance={balance} disabled={disabled} />
+    <W3mAccountButton style={accountStyle} balance={balance} disabled={disabled} />
   ) : (
-    <W3mConnectButton size={size} label={label} loadingLabel={loadingLabel} />
+    <W3mConnectButton style={connectStyle} size={size} label={label} loadingLabel={loadingLabel} />
   );
 }

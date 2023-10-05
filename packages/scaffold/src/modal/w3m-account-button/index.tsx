@@ -9,13 +9,15 @@ import {
 
 import { AccountButton } from '@web3modal/ui-react-native';
 import { ApiController } from '@web3modal/core-react-native';
+import type { StyleProp, ViewStyle } from 'react-native';
 
 export interface W3mAccountButtonProps {
   balance?: 'show' | 'hide';
   disabled?: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
-export function W3mAccountButton({ balance, disabled }: W3mAccountButtonProps) {
+export function W3mAccountButton({ balance, disabled, style }: W3mAccountButtonProps) {
   const { networkImages } = useSnapshot(AssetController.state);
   const {
     address,
@@ -38,6 +40,7 @@ export function W3mAccountButton({ balance, disabled }: W3mAccountButtonProps) {
       imageHeaders={ApiController._getApiHeaders()}
       avatarSrc={profileImage}
       disabled={disabled}
+      style={style}
       balance={showBalance ? CoreHelperUtil.formatBalance(balanceVal, balanceSymbol) : ''}
     />
   );

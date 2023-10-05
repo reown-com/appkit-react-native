@@ -1,4 +1,4 @@
-import { Animated, Pressable, View } from 'react-native';
+import { Animated, Pressable, View, type StyleProp, type ViewStyle } from 'react-native';
 import { Image } from '../../components/wui-image';
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
@@ -19,6 +19,7 @@ export interface AccountButtonProps {
   balance?: string;
   onPress?: () => void;
   disabled?: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function AccountButton({
@@ -29,7 +30,8 @@ export function AccountButton({
   isProfileName,
   balance,
   onPress,
-  disabled
+  disabled,
+  style
 }: AccountButtonProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
@@ -77,7 +79,8 @@ export function AccountButton({
       disabled={disabled}
       style={[
         styles.container,
-        { backgroundColor: animatedValue, borderColor: Theme['overlay-005'] }
+        { backgroundColor: animatedValue, borderColor: Theme['overlay-005'] },
+        style
       ]}
     >
       {balanceTemplate()}
