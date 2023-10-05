@@ -8,6 +8,7 @@ import {
   CoreHelperUtil,
   ModalController,
   NetworkController,
+  OptionsController,
   RouterController,
   SnackController
 } from '@web3modal/core-react-native';
@@ -30,6 +31,7 @@ export function AccountView() {
   const [disconnecting, setDisconnecting] = useState(false);
   const { networkImages } = useSnapshot(AssetController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
+  const clipboardClient = OptionsController._getClipboardClient();
   const networkImage = networkImages[caipNetwork?.imageId ?? ''];
 
   async function onDisconnect() {
@@ -47,8 +49,10 @@ export function AccountView() {
   };
 
   const onCopyAddress = () => {
-    // TODO: Add copy to clipboard
-    SnackController.showSuccess('Address copied');
+    if (clipboardClient && address) {
+      clipboardClient.setString(profileName ?? address);
+      SnackController.showSuccess('Address copied');
+    }
   };
 
   const addressExplorerTemplate = () => {
@@ -78,7 +82,9 @@ export function AccountView() {
             ? UiUtil.getTruncateString(profileName, 20, 0, 'end')
             : UiUtil.getTruncateString(address ?? '', 4, 6, 'middle')}
         </Text>
-        <IconLink icon="copy" size="md" iconColor="fg-250" onPress={onCopyAddress} />
+        {clipboardClient && (
+          <IconLink icon="copy" size="md" iconColor="fg-250" onPress={onCopyAddress} />
+        )}
       </FlexView>
       {balance && (
         <Text color="fg-200">{CoreHelperUtil.formatBalance(balance, balanceSymbol)}</Text>

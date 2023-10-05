@@ -36,6 +36,7 @@ export interface LibraryOptions {
   defaultChain?: NetworkControllerState['caipNetwork'];
   tokens?: OptionsControllerState['tokens'];
   _sdkVersion: ApiControllerState['sdkVersion'];
+  clipboardClient?: OptionsControllerState['_clipboardClient'];
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -164,6 +165,10 @@ export class Web3ModalScaffold {
     OptionsController.setExcludeWalletIds(options.excludeWalletIds);
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
     OptionsController.setTokens(options.tokens);
+
+    if (options.clipboardClient) {
+      OptionsController.setClipboardClient(options.clipboardClient);
+    }
 
     ConnectionController.setClient(options.connectionControllerClient);
 
