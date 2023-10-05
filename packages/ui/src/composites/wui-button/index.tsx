@@ -25,6 +25,7 @@ export type ButtonProps = NativeProps & {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   iconStyle?: SvgProps['style'];
+  iconSize?: SizeType;
 };
 
 export function Button({
@@ -37,6 +38,7 @@ export function Button({
   iconLeft,
   iconRight,
   iconStyle,
+  iconSize,
   ...rest
 }: ButtonProps) {
   const Theme = useTheme();
@@ -85,13 +87,16 @@ export function Button({
       {...rest}
     >
       {iconLeft && (
-        <Icon color={iconColor} name={iconLeft} size={size} style={[styles.iconLeft, iconStyle]} />
+        <Icon color={iconColor} name={iconLeft} size={iconSize ?? size} style={iconStyle} />
       )}
-      <Text variant={size === 'md' ? 'paragraph-600' : 'small-600'} style={themedTextStyle}>
+      <Text
+        variant={size === 'md' ? 'paragraph-600' : 'small-600'}
+        style={[styles.text, themedTextStyle]}
+      >
         {children}
       </Text>
       {iconRight && (
-        <Icon color={iconColor} name={iconRight} size={size} style={styles.iconRight} />
+        <Icon color={iconColor} name={iconRight} size={iconSize ?? size} style={iconStyle} />
       )}
     </AnimatedPressable>
   );

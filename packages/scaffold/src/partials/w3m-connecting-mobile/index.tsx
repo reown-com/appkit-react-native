@@ -14,9 +14,9 @@ import {
   LoadingThumbnail,
   Text,
   WalletImage,
-  ListItem,
   Link,
-  IconBox
+  IconBox,
+  ActionEntry
 } from '@web3modal/ui-react-native';
 
 import styles from './styles';
@@ -97,6 +97,29 @@ export function ConnectingMobile({ onRetry }: Props) {
     );
   };
 
+  const storeTemplate = () => {
+    if (!storeUrl) return null;
+
+    //TODO: Add installed condition
+    return (
+      <ActionEntry style={styles.storeButton}>
+        <Text numberOfLines={1} variant="paragraph-500" color="fg-200">
+          {`Don't have ${data?.wallet?.name}?`}
+        </Text>
+        <Button
+          variant="accent"
+          iconRight="chevronRight"
+          iconSize="xs"
+          onPress={onStorePress}
+          size="sm"
+          hitSlop={20}
+        >
+          Get
+        </Button>
+      </ActionEntry>
+    );
+  };
+
   useEffect(() => {
     // First connection
     if (!ready && wcUri) {
@@ -147,19 +170,7 @@ export function ConnectingMobile({ onRetry }: Props) {
       <Link iconLeft="copy" color="fg-200" style={styles.copyButton} onPress={() => {}}>
         Copy link
       </Link>
-
-      {/* TODO: Add installed condition */}
-      {storeUrl && (
-        <ListItem
-          variant="icon"
-          iconVariant="square"
-          onPress={onStorePress}
-          icon={Platform.select({ ios: 'appStore', android: 'playStore' })}
-          chevron
-        >
-          <Text>Get the app</Text>
-        </ListItem>
-      )}
+      {storeTemplate()}
     </FlexView>
   );
 }

@@ -53,22 +53,21 @@ export default StyleSheet.create({
     flexDirection: 'row',
     height: 40,
     paddingVertical: Spacing['3xs'],
-    paddingHorizontal: Spacing.l,
+
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: BorderRadius.s,
     borderWidth: 1
   },
   smButton: {
-    height: 32
+    height: 32,
+    paddingHorizontal: Spacing.xs
   },
   mdButton: {
-    height: 40
+    height: 40,
+    paddingHorizontal: Spacing.s
   },
-  iconLeft: {
-    marginRight: Spacing['2xs']
-  },
-  iconRight: {
-    marginLeft: Spacing['2xs']
+  text: {
+    marginHorizontal: Spacing['3xs']
   }
 });

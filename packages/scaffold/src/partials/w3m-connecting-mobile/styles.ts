@@ -19,5 +19,10 @@ export default StyleSheet.create({
     bottom: 2,
     right: 2,
     zIndex: 2
+  },
+  storeButton: {
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.l,
+    marginTop: Spacing.xs
   }
 });
