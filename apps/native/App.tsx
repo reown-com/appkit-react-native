@@ -1,4 +1,3 @@
-import '@walletconnect/react-native-compat';
 import { StyleSheet, View, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';

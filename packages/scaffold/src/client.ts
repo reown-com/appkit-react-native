@@ -93,6 +93,13 @@ export class Web3ModalScaffold {
     return PublicStateController.subscribe(callback);
   }
 
+  public subscribeStateKey<K extends keyof PublicStateControllerState>(
+    key: K,
+    callback: (value: PublicStateControllerState[K]) => void
+  ) {
+    return PublicStateController.subscribeKey(key, callback);
+  }
+
   public subscribeConnection(
     callback: (isConnected: AccountControllerState['isConnected']) => void
   ) {

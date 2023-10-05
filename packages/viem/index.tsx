@@ -54,6 +54,32 @@ export function useProvider() {
   };
 }
 
+export function useAccount() {
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [address, setAddress] = useState<string | undefined>();
+
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useAccount" hook');
+  }
+
+  useEffect(() => {
+    const unsubscribeConnection = modal?.subscribeStateKey('isConnected', value => {
+      setIsConnected(value);
+    });
+
+    const unsubscribeAddress = modal?.subscribeStateKey('address', value => {
+      setAddress(value);
+    });
+
+    return () => {
+      unsubscribeConnection?.();
+      unsubscribeAddress?.();
+    };
+  }, []);
+
+  return { isConnected, address };
+}
+
 export function useWeb3ModalState() {
   if (!modal) {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" hook');
