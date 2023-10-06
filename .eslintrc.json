@@ -4,7 +4,8 @@
   "ignorePatterns": ["node_modules/", "build/", "lib/", "dist/", ".turbo", ".expo"],
   "rules": {
     "react/react-in-jsx-scope": 0,
-    "no-duplicate-imports": "error",
+    "no-duplicate-imports": "off",
+    "react-hooks/exhaustive-deps": "warn",
     "no-console": ["error", { "allow": ["warn"] }],
     "newline-before-return": "error"
   },

@@ -18,6 +18,7 @@ export function Web3Modal() {
     if (history.length > 1) {
       return RouterController.goBack();
     }
+
     return ModalController.close();
   };
 

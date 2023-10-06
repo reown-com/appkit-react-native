@@ -22,8 +22,16 @@
       "dependsOn": ["build", "^dev:gallery"],
       "cache": false
     },
+    "test": {
+      "dependsOn": ["^test"],
+      "cache": false
+    },
     "lint": {
       "dependsOn": ["^lint"],
+      "cache": false
+    },
+    "prettier": {
+      "dependsOn": ["^prettier"],
       "cache": false
     },
     "clean": {

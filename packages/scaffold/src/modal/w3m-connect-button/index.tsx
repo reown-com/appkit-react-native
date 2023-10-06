@@ -16,6 +16,7 @@ export function W3mConnectButton({
   style
 }: W3mConnectButtonProps) {
   const { open } = useSnapshot(ModalController.state);
+
   return (
     <ConnectButton onPress={() => ModalController.open()} size={size} loading={open} style={style}>
       {open ? loadingLabel : label}

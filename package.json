@@ -15,10 +15,10 @@
     "build:gallery": "turbo run build:gallery",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
     "prettier": "prettier --check .",
+    "test": "turbo run test --parallel",
     "clean": "turbo clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
-    "new-version": "npm version --no-git-tag-version --exact",
-    "pre-publish": "turbo lint prettier --parallel; npm run new-version; yarn install; turbo run build;"
+    "pre-publish": "turbo lint prettier --parallel; yarn install; turbo run build;"
   },
   "devDependencies": {
     "@react-native/eslint-config": "^0.72.2",

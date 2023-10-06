@@ -1,6 +1,7 @@
 import { ScrollView } from 'react-native';
 import { Button, FlexView, Text, Visual } from '@web3modal/ui-react-native';
 import { RouterController } from '@web3modal/core-react-native';
+import styles from './styles';
 
 export function WhatIsAWalletView() {
   return (
@@ -12,7 +13,7 @@ export function WhatIsAWalletView() {
           <Visual name="lock" />
         </FlexView>
         <Text variant="paragraph-500">One login for all of web3</Text>
-        <Text variant="small-500" color="fg-200" style={{ textAlign: 'center' }}>
+        <Text variant="small-500" color="fg-200" center>
           Log in to any app by connecting your wallet. Say goodbye to countless passwords!
         </Text>
         <FlexView flexDirection="row" columnGap="s" padding={['xs', '0', 'xs', '0']}>
@@ -21,7 +22,7 @@ export function WhatIsAWalletView() {
           <Visual name="eth" />
         </FlexView>
         <Text variant="paragraph-500">A home for your digital assets</Text>
-        <Text variant="small-500" color="fg-200" style={{ textAlign: 'center' }}>
+        <Text variant="small-500" color="fg-200" center>
           A wallet lets you store, send and receive digital assets like cryptocurrencies and NFTs.
         </Text>
         <FlexView flexDirection="row" columnGap="s" padding={['xs', '0', 'xs', '0']}>
@@ -30,13 +31,13 @@ export function WhatIsAWalletView() {
           <Visual name="dao" />
         </FlexView>
         <Text variant="paragraph-500">Your gateway to a new web</Text>
-        <Text variant="small-500" color="fg-200" style={{ textAlign: 'center' }}>
+        <Text variant="small-500" color="fg-200" center>
           With your wallet, you can explore and interact with DeFi, NFTs, DAOs, and much more.
         </Text>
         <Button
           size="sm"
           iconLeft="wallet"
-          style={{ marginTop: 16 }}
+          style={styles.getWalletButton}
           onPress={() => RouterController.push('GetWallet')}
         >
           Get a Wallet

@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Linking, Platform } from 'react-native';
 import {
   RouterController,
@@ -48,7 +48,7 @@ export function ConnectingMobile({ onRetry }: Props) {
     }
   };
 
-  const onConnect = async () => {
+  const onConnect = useCallback(async () => {
     try {
       const { name, mobile_link } = data?.wallet ?? {};
       if (name && mobile_link && wcUri) {
@@ -62,7 +62,7 @@ export function ConnectingMobile({ onRetry }: Props) {
     } catch (error) {
       setLinkingError(true);
     }
-  };
+  }, [data?.wallet, wcUri]);
 
   const textTemplate = () => {
     const walletName = data?.wallet?.name ?? 'Wallet';
@@ -87,6 +87,7 @@ export function ConnectingMobile({ onRetry }: Props) {
         </>
       );
     }
+
     return (
       <>
         <Text variant="paragraph-500">{`Continue in ${walletName}`}</Text>
@@ -126,14 +127,14 @@ export function ConnectingMobile({ onRetry }: Props) {
       setReady(true);
       onConnect();
     }
-  }, [ready, wcUri]);
+  }, [ready, wcUri, onConnect]);
 
   useEffect(() => {
     if (isRetrying) {
       setIsRetrying(false);
       onConnect();
     }
-  }, [wcUri]);
+  }, [wcUri, isRetrying, onConnect]);
 
   return (
     <FlexView alignItems="center" rowGap="xs" padding={['2xl', 'm', 'm', 'm']}>

@@ -23,6 +23,7 @@ import {
   ListItem
 } from '@web3modal/ui-react-native';
 import { useState } from 'react';
+import styles from './styles';
 
 export function AccountView() {
   const { address, profileName, profileImage, balance, balanceSymbol, addressExplorerUrl } =
@@ -74,7 +75,7 @@ export function AccountView() {
 
   return (
     <FlexView alignItems="center" padding="s">
-      <IconLink icon="close" style={{ alignSelf: 'flex-end' }} onPress={ModalController.close} />
+      <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
       <Avatar imageSrc={profileImage} address={profileName ?? address} />
       <FlexView flexDirection="row" alignItems="center" gap="4xs" margin={['s', '0', '0', '0']}>
         <Text variant="large-600">

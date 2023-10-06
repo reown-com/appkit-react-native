@@ -9,7 +9,8 @@
     "build": "tsup --dts",
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "keywords": [
     "web3",
@@ -43,7 +44,10 @@
     "viem": "1.12.2"
   },
   "peerDependencies": {
-    "react": "*",
+    "@react-native-async-storage/async-storage": ">=1.17.0",
+    "@react-native-community/netinfo": "*",
+    "react-native-get-random-values": "*",
+    "react": ">=17",
     "react-native": ">=0.68.5",
     "viem": ">=1"
   },

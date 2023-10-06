@@ -56,6 +56,7 @@ export function ConnectingView() {
     const _interval = setInterval(initializeConnection, ConstantsUtil.TEN_SEC_MS);
 
     return () => clearInterval(_interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!data?.wallet) return <ConnectingQrCode />;

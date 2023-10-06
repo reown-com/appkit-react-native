@@ -26,6 +26,7 @@ export function Header() {
 
   const dynamicButtonTemplate = () => {
     const showBack = history.length > 1;
+
     return showBack ? (
       <IconLink icon="chevronLeft" size="md" onPress={RouterController.goBack} />
     ) : (

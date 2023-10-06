@@ -17,6 +17,7 @@ export interface W3mNetworkButtonProps {
 export function W3mNetworkButton({ disabled, style }: W3mNetworkButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
+
   return (
     <NetworkButton
       imageSrc={AssetUtil.getNetworkImage(caipNetwork)}

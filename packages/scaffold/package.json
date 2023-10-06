@@ -9,7 +9,8 @@
     "build": "tsup --dts",
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "keywords": [
     "web3",
@@ -42,7 +43,7 @@
     "typescript": "5.2.2"
   },
   "peerDependencies": {
-    "react": "*",
+    "react": ">=17",
     "react-native": ">=0.68.5"
   },
   "dependencies": {

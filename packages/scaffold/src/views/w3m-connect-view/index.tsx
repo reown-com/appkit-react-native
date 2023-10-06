@@ -89,6 +89,7 @@ export function ConnectView() {
     if (!recentIds?.length) return wallets;
 
     const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id));
+
     return filtered;
   };
 

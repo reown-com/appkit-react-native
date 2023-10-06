@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 import {
   ApiController,
@@ -37,18 +37,18 @@ export function AllWalletsSearch({ searchQuery, columns, itemMargin = 0 }: AllWa
     );
   };
 
-  const searchFetch = async () => {
+  const searchFetch = useCallback(async () => {
     setLoading(true);
     await ApiController.searchWallet({ search: searchQuery });
     setLoading(false);
-  };
+  }, [searchQuery]);
 
   useEffect(() => {
     if (prevSearchQuery !== searchQuery) {
       setPrevSearchQuery(searchQuery || '');
       searchFetch();
     }
-  }, [searchQuery, prevSearchQuery]);
+  }, [searchQuery, prevSearchQuery, searchFetch]);
 
   return loading ? (
     <FlexView alignItems="center" justifyContent="flex-start" style={styles.loader} padding="4xl">

@@ -23,6 +23,7 @@ export function W3mButton({
   connectStyle
 }: W3mButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
+
   return isConnected ? (
     <W3mAccountButton style={accountStyle} balance={balance} disabled={disabled} />
   ) : (
