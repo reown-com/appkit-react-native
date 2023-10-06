@@ -11,7 +11,6 @@ export function ConnectingQrCode() {
   const clipboardClient = OptionsController._getClipboardClient();
 
   //TODO: Improve loading
-
   const onCopyAddress = () => {
     if (clipboardClient && wcUri) {
       clipboardClient.setString(wcUri);

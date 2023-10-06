@@ -73,12 +73,10 @@ export class Web3ModalScaffold {
 
   public setThemeMode(themeMode: ThemeControllerState['themeMode']) {
     ThemeController.setThemeMode(themeMode);
-    // setColorTheme(ThemeController.state.themeMode);
   }
 
   public setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     ThemeController.setThemeVariables(themeVariables);
-    // setThemeVariables(ThemeController.state.themeVariables);
   }
 
   public subscribeTheme(callback: (newState: ThemeControllerState) => void) {

@@ -6,7 +6,8 @@ import {
   W3mButton,
   createWeb3Modal,
   useProvider,
-  useWeb3ModalState
+  useWeb3ModalState,
+  useAccount
 } from '@web3modal/viem-react-native';
 import {
   arbitrum,
@@ -47,7 +48,7 @@ const clipboardClient = {
 };
 
 createWeb3Modal({
-  projectId: '90369b5c91c6f7fffe308df2b30f3ace',
+  projectId: process.env.EXPO_PUBLIC_PROJECT_ID ?? '',
   chains,
   clipboardClient,
   metadata: {
@@ -65,6 +66,7 @@ export default function Native() {
   const isDarkMode = useColorScheme() === 'dark';
   const { walletClient } = useProvider();
   const { selectedNetworkId } = useWeb3ModalState();
+  const { isConnected } = useAccount();
 
   const onSignMessage = async () => {
     const [account] = (await walletClient()?.getAddresses()) ?? [];
@@ -105,13 +107,17 @@ export default function Native() {
         loadingLabel="Connecting..."
         balance="show"
       />
-      <Button style={styles.button} onPress={() => onSignMessage()}>
-        Sign
-      </Button>
-      <Button style={styles.button} onPress={() => onSendTransaction()}>
-        Send
-      </Button>
       <Web3Modal />
+      {isConnected && (
+        <>
+          <Button style={styles.button} onPress={() => onSignMessage()}>
+            Sign
+          </Button>
+          <Button style={styles.button} onPress={() => onSendTransaction()}>
+            Send
+          </Button>
+        </>
+      )}
     </View>
   );
 }

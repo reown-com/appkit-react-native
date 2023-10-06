@@ -12,7 +12,7 @@ interface Options {
 
 // -- Provider -----------------------------------------------------------------
 export function walletConnectProvider<C extends Chain = Chain>({ projectId }: Options) {
-  return function provider(chain) {
+  return function provider(chain: C) {
     const supported = [
       // Ethereum
       1,

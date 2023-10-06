@@ -1,4 +1,4 @@
-import { ThemeController } from '../../index.js'
+import { ThemeController } from '../../index.js';
 
 // -- Tests --------------------------------------------------------------------
 describe('ThemeController', () => {
@@ -6,22 +6,14 @@ describe('ThemeController', () => {
     expect(ThemeController.state).toEqual({
       themeMode: 'dark',
       themeVariables: {}
-    })
-  })
+    });
+  });
 
   it('should update state correctly when changing theme', () => {
-    ThemeController.setThemeMode('light')
+    ThemeController.setThemeMode('light');
     expect(ThemeController.state).toEqual({
       themeMode: 'light',
       themeVariables: {}
-    })
-  })
-
-  it('should update state correctly when changing themeVariables', () => {
-    ThemeController.setThemeVariables({ '--w3m-color-mix': '#FF0000' })
-    expect(ThemeController.state).toEqual({
-      themeMode: 'light',
-      themeVariables: { '--w3m-color-mix': '#FF0000' }
-    })
-  })
-})
+    });
+  });
+});

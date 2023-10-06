@@ -1,4 +1,4 @@
-import { ApiController } from '../../index.js'
+import { ApiController } from '../../index.js';
 
 // -- Tests --------------------------------------------------------------------
 describe('ApiController', () => {
@@ -9,7 +9,7 @@ describe('ApiController', () => {
       recommended: [],
       wallets: [],
       search: [],
-      sdkVersion: 'html-wagmi-undefined'
-    })
-  })
-})
+      sdkVersion: 'react-native-undefined'
+    });
+  });
+});
