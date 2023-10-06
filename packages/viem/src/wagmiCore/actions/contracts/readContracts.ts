@@ -59,19 +59,21 @@ export async function readContracts<
         contract: ContractConfig;
         index: number;
       }[];
-    }>((contracts, contract, index) => {
+    }>((_contracts, contract, index) => {
       const chainId = contract.chainId ?? defaultChainId;
+
       return {
-        ...contracts,
-        [chainId]: [...(contracts[chainId] || []), { contract, index }]
+        ..._contracts,
+        [chainId]: [...(_contracts[chainId] || []), { contract, index }]
       };
     }, {});
     const promises = () =>
-      Object.entries(contractsByChainId).map(([chainId, contracts]) =>
+      Object.entries(contractsByChainId).map(([chainId, _contracts]) =>
         multicall({
           allowFailure,
+          // eslint-disable-next-line radix
           chainId: parseInt(chainId),
-          contracts: contracts.map(({ contract }) => contract) as MulticallParameters['contracts'],
+          contracts: _contracts.map(({ contract }) => contract) as MulticallParameters['contracts'],
           blockNumber,
           blockTag,
           publicClient
@@ -82,11 +84,13 @@ export async function readContracts<
 
     // Reorder the contract results back to the order they were
     // provided in.
-    const resultIndexes = Object.values(contractsByChainId).flatMap(contracts =>
-      contracts.map(({ index }) => index)
+    const resultIndexes = Object.values(contractsByChainId).flatMap(_contracts =>
+      _contracts.map(({ index }) => index)
     );
+
     return multicallResults.reduce((results, result, index) => {
       if (results) results[resultIndexes[index]!] = result;
+
       return results;
     }, [] as unknown[]) as ReadContractsResult<TContracts, TAllowFailure>;
   } catch (err) {
@@ -99,6 +103,7 @@ export async function readContracts<
     if (allowFailure)
       return (await Promise.allSettled(promises())).map(result => {
         if (result.status === 'fulfilled') return { result: result.value, status: 'success' };
+
         return { error: result.reason, result: undefined, status: 'failure' };
       }) as ReadContractsResult<TContracts, TAllowFailure>;
 

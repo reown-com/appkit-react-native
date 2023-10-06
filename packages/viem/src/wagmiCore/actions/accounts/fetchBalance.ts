@@ -57,6 +57,7 @@ export async function fetchBalance({
           { ...erc20Config, functionName: 'symbol' }
         ]
       });
+
       return {
         decimals,
         formatted: formatUnits(value ?? '0', getUnit(unit ?? decimals)),
@@ -75,6 +76,7 @@ export async function fetchBalance({
         const { symbol, ...rest } = await fetchContractBalance({
           abi: erc20ABI_bytes32
         });
+
         return {
           symbol: hexToString(trim(symbol as Hex, { dir: 'right' })),
           ...rest
@@ -87,6 +89,7 @@ export async function fetchBalance({
   const value = await publicClient.getBalance({ address });
   const _chainId = await publicClient.getChainId();
   const chain = chains.find(x => x.id === _chainId);
+
   return {
     decimals: chain?.nativeCurrency.decimals ?? 18,
     formatted: formatUnits(value ?? '0', getUnit(unit ?? 18)),

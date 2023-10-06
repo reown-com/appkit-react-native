@@ -15,7 +15,7 @@ export type { Web3ModalOptions } from './src/client';
 type OpenOptions = Parameters<Web3Modal['open']>[0];
 
 // -- Setup -------------------------------------------------------------------
-let modal: Web3Modal | undefined = undefined;
+let modal: Web3Modal | undefined;
 
 export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {

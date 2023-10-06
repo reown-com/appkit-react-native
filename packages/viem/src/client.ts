@@ -35,7 +35,6 @@ import { fetchBalance } from './wagmiCore/actions/accounts/fetchBalance';
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata: EthereumProviderOptions['metadata'];
   chains?: Chain[];
   defaultChain?: Chain;
@@ -72,7 +71,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         const chainId = caipNetworkIdToNumber(caipNetwork?.id);
-        const chain = options.chains?.find(chain => chain.id === chainId);
+        const chain = chains?.find(_chain => _chain.id === chainId);
         if (!chain || !chainId) {
           throw new Error('networkControllerClient:switchCaipNetwork - chain not found');
         }
@@ -107,7 +106,12 @@ export class Web3Modal extends Web3ModalScaffold {
 
         const provider = await this.getProvider();
         const selectedChainId = caipNetworkIdToNumber(this.getCaipNetwork()?.id);
-        const chains = this.getChains().filter(chain => chain.id !== selectedChainId);
+        let defaultChainId = selectedChainId;
+        if (!defaultChainId) {
+          defaultChainId = defaultChain?.id ?? chains?.[0]?.id ?? mainnet.id;
+        }
+
+        const optionalChains = this.getChains().filter(chain => chain.id !== defaultChainId);
 
         if (!provider) {
           throw new Error('connectionControllerClient:getWalletConnectUri - provider is undefined');
@@ -117,8 +121,10 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setupListeners();
 
         await provider.connect({
-          chains: [selectedChainId ?? chains[0]?.id ?? mainnet.id],
-          optionalChains: chains.length ? chains.map(chain => chain.id) : undefined
+          chains: [defaultChainId],
+          optionalChains: optionalChains?.length
+            ? optionalChains?.map(chain => chain.id)
+            : undefined
         });
       },
 
@@ -203,12 +209,13 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setIsConnected(true);
       }
     } catch (error) {
-      console.log('error initializing provider', error);
+      throw new Error('Web3Modal:initProvider - error initializing provider');
     }
   }
 
   private async getProvider() {
     if (!this.provider) await this.initProvider();
+
     return this.provider!;
   }
 
@@ -221,6 +228,7 @@ export class Web3Modal extends Web3ModalScaffold {
         transport: custom(provider)
       });
     }
+
     return this.client;
   }
 
@@ -233,6 +241,7 @@ export class Web3Modal extends Web3ModalScaffold {
         transport: custom(provider)
       });
     }
+
     return this.publicClient;
   }
 
@@ -290,7 +299,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const client = await this.getClient();
       const [address] = await client.getAddresses();
       const chainId = await client.getChainId();
-      const chain = this.getChains().find(chain => chain.id === chainId);
+      const chain = this.getChains().find(_chain => _chain.id === chainId);
 
       if (chain) {
         const caipChainId: CaipNetworkId = `${NAMESPACE}:${chain.id}`;
@@ -365,8 +374,10 @@ export class Web3Modal extends Web3ModalScaffold {
     if (this.options?.defaultChain) {
       const defaultChain = this.options.defaultChain;
       const chains = this.options?.chains?.filter(chain => chain.id !== defaultChain.id) ?? [];
+
       return [defaultChain, ...chains];
     }
+
     return this.options?.chains ?? [mainnet];
   }
 

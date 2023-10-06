@@ -3,18 +3,12 @@ import { ConnectionController } from '../../index.js';
 
 // -- Setup --------------------------------------------------------------------
 const walletConnectUri = 'wc://uri?=123';
-const externalId = 'coinbaseWallet';
 
 const client: ConnectionControllerClient = {
   connectWalletConnect: async onUri => {
     onUri(walletConnectUri);
     await Promise.resolve();
   },
-  disconnect: async () => Promise.resolve()
-};
-
-const partialClient: ConnectionControllerClient = {
-  connectWalletConnect: async () => Promise.resolve(),
   disconnect: async () => Promise.resolve()
 };
 

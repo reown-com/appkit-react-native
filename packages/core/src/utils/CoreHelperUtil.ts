@@ -29,9 +29,8 @@ export const CoreHelperUtil = {
     });
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   debounce(func: (...args: any[]) => unknown, timeout = 500) {
-    let timer: ReturnType<typeof setTimeout> | undefined = undefined;
+    let timer: ReturnType<typeof setTimeout> | undefined;
 
     return (...args: unknown[]) => {
       function next() {
@@ -89,7 +88,7 @@ export const CoreHelperUtil = {
   },
 
   formatBalance(balance: string | undefined, symbol: string | undefined, decimals = 3) {
-    let formattedBalance = undefined;
+    let formattedBalance;
 
     if (balance === '0') {
       formattedBalance = '0';
