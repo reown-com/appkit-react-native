@@ -1,12 +1,11 @@
-# ⛔️ DEPRECATED 
+# ⛔️ DEPRECATED
+
 Please replace this package with https://github.com/WalletConnect/modal-react-native
 
 The only difference between both packages is that we removed `Web3Button` component and changed some component names:
 
-
-* `useWeb3Modal` -> `useWalletConnectModal`
-* `Web3Modal` ->`WalletConnectModal`
-
+- `useWeb3Modal` -> `useWalletConnectModal`
+- `Web3Modal` ->`WalletConnectModal`
 
 # Web3Modal SDK for React Native
 

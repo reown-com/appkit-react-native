@@ -1,20 +1,10 @@
 {
   "root": true,
-  "extends": [
-    "@react-native",
-    "prettier"
-  ],
-  "ignorePatterns":[
-    "node_modules/",
-    "build/",
-    "lib/",
-    "dist/",
-    ".turbo",
-    ".expo"
-  ],
+  "extends": ["@react-native", "prettier"],
+  "ignorePatterns": ["node_modules/", "build/", "lib/", "dist/", ".turbo", ".expo"],
   "rules": {
     "react/react-in-jsx-scope": 0,
-    "no-duplicate-imports":"error",
+    "no-duplicate-imports": "error",
     "no-console": ["error", { "allow": ["warn"] }],
     "newline-before-return": "error"
   },

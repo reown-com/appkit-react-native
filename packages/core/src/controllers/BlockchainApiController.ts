@@ -1,12 +1,12 @@
-import { FetchUtil } from '../utils/FetchUtil'
+import { FetchUtil } from '../utils/FetchUtil';
 import type {
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse
-} from '../utils/TypeUtils'
-import { OptionsController } from './OptionsController'
+} from '../utils/TypeUtils';
+import { OptionsController } from './OptionsController';
 
 // -- Helpers ------------------------------------------- //
-const api = new FetchUtil({ baseUrl: 'https://rpc.walletconnect.com' })
+const api = new FetchUtil({ baseUrl: 'https://rpc.walletconnect.com' });
 
 // -- Controller ---------------------------------------- //
 export const BlockchainApiController = {
@@ -17,6 +17,6 @@ export const BlockchainApiController = {
         chainId: caipChainId,
         projectId: OptionsController.state.projectId
       }
-    })
+    });
   }
-}
+};

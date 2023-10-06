@@ -1,4 +1,4 @@
-import { SnackController } from '../../index.js'
+import { SnackController } from '../../index.js';
 
 // -- Tests --------------------------------------------------------------------
 describe('SnackController', () => {
@@ -7,33 +7,33 @@ describe('SnackController', () => {
       message: '',
       variant: 'success',
       open: false
-    })
-  })
+    });
+  });
 
   it('should update state correctly on showSuccess()', () => {
-    SnackController.showSuccess('Success Msg')
+    SnackController.showSuccess('Success Msg');
     expect(SnackController.state).toEqual({
       message: 'Success Msg',
       variant: 'success',
       open: true
-    })
-  })
+    });
+  });
 
   it('should update state correctly on hide()', () => {
-    SnackController.hide()
+    SnackController.hide();
     expect(SnackController.state).toEqual({
       message: 'Success Msg',
       variant: 'success',
       open: false
-    })
-  })
+    });
+  });
 
   it('should update state correctly on showError()', () => {
-    SnackController.showError('Error Msg')
+    SnackController.showError('Error Msg');
     expect(SnackController.state).toEqual({
       message: 'Error Msg',
       variant: 'error',
       open: true
-    })
-  })
-})
+    });
+  });
+});

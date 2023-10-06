@@ -1,15 +1,15 @@
-import { themes } from '@storybook/theming'
+import { themes } from '@storybook/theming';
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
   parameters: {
-    actions: { argTypesRegex: "^on[A-Z].*" },
+    actions: { argTypesRegex: '^on[A-Z].*' },
     layout: 'centered',
     controls: {
       matchers: {
         color: /(background|color)$/i,
-        date: /Date$/,
-      },
+        date: /Date$/
+      }
     },
     backgrounds: {
       default: 'dark',
@@ -25,9 +25,9 @@ const preview = {
       ]
     },
     docs: {
-      theme: themes.dark,
-    },
-  },
+      theme: themes.dark
+    }
+  }
 };
 
 export default preview;

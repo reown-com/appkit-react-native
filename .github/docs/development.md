@@ -12,7 +12,7 @@ yarn
 
 The example project has `app.config.js` file. Add your Project ID there
 
-``` json
+```json
 extra: {
   ...
   PROJECT_ID: process.env.PROJECT_ID || "YOUR_PROJECT_ID"
@@ -24,7 +24,6 @@ or add it before running commands in your terminal:
 ```bash
 PROJECT_ID="YOUR_PROJECT_ID" yarn example ios
 ```
-
 
 To create your ProjectID, head to [cloud.walletconnect.com](https://cloud.walletconnect.com/)
 
