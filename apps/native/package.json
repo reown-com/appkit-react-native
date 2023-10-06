@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@react-native-community/netinfo": "9.3.10",
-    "@web3modal/scaffold-react-native": "*",
+    "@web3modal/scaffold-react-native": "1.0.0-alpha1",
     "expo": "^49.0.0",
     "expo-status-bar": "~1.6.0",
     "expo-clipboard": "4.5.0",

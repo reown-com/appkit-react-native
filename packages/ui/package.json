@@ -3,9 +3,10 @@
   "version": "1.0.0-alpha1",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "module": "./dist/index.mjs",
   "source": "./index.ts",
   "scripts": {
-    "build": "tsup ",
+    "build": "tsup --dts",
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
     "test": "jest"

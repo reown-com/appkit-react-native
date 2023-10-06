@@ -3,9 +3,10 @@
   "version": "1.0.0-alpha1",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "module": "./dist/index.mjs",
   "source": "./index",
   "scripts": {
-    "build": "tsup ",
+    "build": "tsup --dts",
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
     "test": "jest"
@@ -41,8 +42,8 @@
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": ">=1.17.0",
-    "react": "*",
-    "react-native": "*"
+    "react": ">=17",
+    "react-native": ">=0.68.5"
   },
   "dependencies": {
     "valtio": "1.11.2"

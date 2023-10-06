@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "module": "./dist/index.mjs",
   "source": "./index.tsx",
   "scripts": {
-    "build": "tsup ",
+    "build": "tsup --dts",
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
     "test": "jest"
@@ -50,6 +51,6 @@
     "@walletconnect/react-native-compat": "2.10.1",
     "@walletconnect/ethereum-provider": "2.10.1",
     "@walletconnect/modal": "2.6.2",
-    "@web3modal/scaffold-react-native": "*"
+    "@web3modal/scaffold-react-native": "1.0.0-alpha1"
   }
 }

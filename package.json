@@ -1,11 +1,11 @@
 {
   "private": true,
   "workspaces": [
-    "apps/*",
-    "packages/scaffold",
-    "packages/ui",
     "packages/core",
-    "packages/viem"
+    "packages/ui",
+    "packages/scaffold",
+    "packages/viem",
+    "apps/*"
   ],
   "scripts": {
     "dev": "turbo dev",
@@ -14,15 +14,18 @@
     "build": "turbo build",
     "build:gallery": "turbo run build:gallery",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
+    "prettier": "prettier --check .",
     "clean": "turbo clean && rm -rf node_modules",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore"
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
+    "new-version": "npm version --no-git-tag-version --exact",
+    "pre-publish": "turbo lint prettier --parallel; npm run new-version; yarn install; turbo run build;"
   },
   "devDependencies": {
     "@react-native/eslint-config": "^0.72.2",
     "eslint": "^8.46.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.1",
-    "turbo": "latest"
+    "turbo": "1.10.15"
   },
   "packageManager": "yarn@1.22.19"
 }

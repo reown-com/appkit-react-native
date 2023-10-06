@@ -3,9 +3,10 @@
   "version": "1.0.0-alpha1",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "module": "./dist/index.mjs",
   "source": "./index.ts",
   "scripts": {
-    "build": "tsup ",
+    "build": "tsup --dts",
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
     "test": "jest"
@@ -45,8 +46,8 @@
     "react-native": ">=0.68.5"
   },
   "dependencies": {
-    "@web3modal/core-react-native": "*",
-    "@web3modal/ui-react-native": "*",
+    "@web3modal/core-react-native": "1.0.0-alpha1",
+    "@web3modal/ui-react-native": "1.0.0-alpha1",
     "react-native-modal": "13.0.1",
     "valtio": "1.11.2"
   }
