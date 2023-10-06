@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { NetworkButton } from '@web3modal/ui-react-native';
@@ -14,7 +13,7 @@ const meta: Meta<typeof NetworkButton> = {
     disabled: {
       control: { type: 'boolean' }
     },
-    name: {
+    children: {
       control: { type: 'text' }
     },
     imageSrc: {
@@ -24,7 +23,7 @@ const meta: Meta<typeof NetworkButton> = {
   args: {
     variant: 'fill',
     disabled: false,
-    name: 'Ethereum',
+    children: 'Ethereum',
     imageSrc: networkImageSrc
   }
 };
@@ -36,10 +35,11 @@ export const Default: Story = {
   render: args => (
     <NetworkButton
       variant={args.variant}
-      name={args.name}
       disabled={args.disabled}
       imageSrc={args.imageSrc}
       onPress={() => {}}
-    />
+    >
+      {args.children}
+    </NetworkButton>
   )
 };

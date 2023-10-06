@@ -1,28 +1,33 @@
 import { useRef } from 'react';
-import { Animated, Pressable } from 'react-native';
+import { Animated, Pressable, type StyleProp, type ViewStyle } from 'react-native';
 import { Image } from '../../components/wui-image';
 import { Text } from '../../components/wui-text';
 import { useTheme } from '../../hooks/useTheme';
 import type { ButtonType } from '../../utils/TypesUtil';
 import { IconBox } from '../wui-icon-box';
+
 import styles, { getThemedStyle, getTextColor } from './styles';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface NetworkButtonProps {
-  name: string;
+  children: string;
   onPress: () => void;
   imageSrc?: string;
+  imageHeaders?: Record<string, string>;
   disabled?: boolean;
   variant?: Exclude<ButtonType, 'accent'>;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function NetworkButton({
   imageSrc,
-  name,
+  imageHeaders,
   disabled,
   onPress,
-  variant = 'fill'
+  variant = 'fill',
+  style,
+  children
 }: NetworkButtonProps) {
   const Theme = useTheme();
   const colorAnimation = useRef(new Animated.Value(0));
@@ -58,7 +63,7 @@ export function NetworkButton({
 
   return (
     <AnimatedPressable
-      style={[styles.container, { backgroundColor, borderColor }]}
+      style={[styles.container, { backgroundColor, borderColor }, style]}
       onPress={onPress}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
@@ -71,12 +76,13 @@ export function NetworkButton({
             disabled && styles.imageDisabled
           ]}
           source={imageSrc}
+          headers={imageHeaders}
         />
       ) : (
         <IconBox icon="networkPlaceholder" background iconColor={color} size="sm" />
       )}
       <Text style={styles.text} variant="paragraph-600" color={color}>
-        {name}
+        {children}
       </Text>
     </AnimatedPressable>
   );

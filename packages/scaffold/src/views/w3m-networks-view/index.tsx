@@ -6,10 +6,12 @@ import {
   AssetUtil,
   NetworkController,
   RouterController,
-  type CaipNetwork
+  type CaipNetwork,
+  AccountController
 } from '@web3modal/core-react-native';
 
 export function NetworksView() {
+  const { isConnected } = useSnapshot(AccountController.state);
   const { caipNetwork, requestedCaipNetworks, approvedCaipNetworkIds, supportsAllNetworks } =
     useSnapshot(NetworkController.state);
   const imageHeaders = ApiController._getApiHeaders();
@@ -18,9 +20,16 @@ export function NetworksView() {
     if (!requestedCaipNetworks?.length) return undefined;
 
     const onNetworkPress = async (network: CaipNetwork) => {
-      if (caipNetwork?.id !== network.id) {
-        await NetworkController.switchActiveNetwork(network);
-        RouterController.goBack();
+      if (isConnected) {
+        if (caipNetwork?.id !== network.id) {
+          await NetworkController.switchActiveNetwork(network);
+          RouterController.goBack();
+        } else if (supportsAllNetworks) {
+          //TODO: Switch network screen
+        }
+      } else {
+        NetworkController.setCaipNetwork(network);
+        RouterController.push('Connect');
       }
     };
 

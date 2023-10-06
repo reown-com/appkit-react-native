@@ -106,7 +106,8 @@ export class Web3Modal extends Web3ModalScaffold {
         };
 
         const provider = await this.getProvider();
-        const [defaultChain, ...optionalChains] = this.getChains();
+        const selectedChainId = caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+        const chains = this.getChains().filter(chain => chain.id !== selectedChainId);
 
         if (!provider) {
           throw new Error('connectionControllerClient:getWalletConnectUri - provider is undefined');
@@ -116,8 +117,8 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setupListeners();
 
         await provider.connect({
-          chains: [defaultChain!.id],
-          optionalChains: optionalChains.length ? optionalChains.map(chain => chain.id) : undefined
+          chains: [selectedChainId ?? chains[0]?.id ?? mainnet.id],
+          optionalChains: chains.length ? chains.map(chain => chain.id) : undefined
         });
       },
 

@@ -1,6 +1,7 @@
 export * from './src/modal/w3m-account-button';
 export * from './src/modal/w3m-button';
 export * from './src/modal/w3m-connect-button';
+export * from './src/modal/w3m-network-button';
 export * from './src/modal/w3m-modal';
 export * from './src/modal/w3m-router';
 
