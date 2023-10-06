@@ -79,7 +79,6 @@ export type ChipType = 'fill' | 'shade' | 'transparent';
 
 export type IconType =
   | 'allWallets'
-  | 'appStore'
   | 'apple'
   | 'arrowBottom'
   | 'arrowLeft'
@@ -114,7 +113,6 @@ export type IconType =
   | 'networkPlaceholder'
   | 'nftPlaceholder'
   | 'off'
-  | 'playStore'
   | 'qrCode'
   | 'refresh'
   | 'search'
