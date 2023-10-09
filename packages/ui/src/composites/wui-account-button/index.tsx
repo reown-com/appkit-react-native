@@ -97,12 +97,12 @@ export function AccountButton({
         />
         {address && (
           <Text variant="paragraph-600" color="fg-200" style={styles.address}>
-            {UiUtil.getTruncateString(
-              address,
-              isProfileName ? 18 : 4,
-              isProfileName ? 0 : 6,
-              isProfileName ? 'end' : 'middle'
-            )}
+            {UiUtil.getTruncateString({
+              string: address,
+              charsStart: isProfileName ? 18 : 4,
+              charsEnd: isProfileName ? 0 : 6,
+              truncate: isProfileName ? 'end' : 'middle'
+            })}
           </Text>
         )}
       </View>

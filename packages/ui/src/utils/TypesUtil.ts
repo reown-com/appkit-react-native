@@ -196,3 +196,10 @@ export type FlexJustifyContentType =
   | 'space-evenly';
 
 export type TruncateType = 'start' | 'middle' | 'end';
+
+export type TruncateOptions = {
+  string: string;
+  charsStart: number;
+  charsEnd: number;
+  truncate: TruncateType;
+};

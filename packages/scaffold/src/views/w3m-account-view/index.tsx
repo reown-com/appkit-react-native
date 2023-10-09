@@ -80,8 +80,18 @@ export function AccountView() {
       <FlexView flexDirection="row" alignItems="center" gap="4xs" margin={['s', '0', '0', '0']}>
         <Text variant="large-600">
           {profileName
-            ? UiUtil.getTruncateString(profileName, 20, 0, 'end')
-            : UiUtil.getTruncateString(address ?? '', 4, 6, 'middle')}
+            ? UiUtil.getTruncateString({
+                string: profileName,
+                charsStart: 20,
+                charsEnd: 0,
+                truncate: 'end'
+              })
+            : UiUtil.getTruncateString({
+                string: address ?? '',
+                charsStart: 4,
+                charsEnd: 6,
+                truncate: 'middle'
+              })}
         </Text>
         {clipboardClient && (
           <IconLink icon="copy" size="md" iconColor="fg-250" onPress={onCopyAddress} />

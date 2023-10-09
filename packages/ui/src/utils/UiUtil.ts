@@ -1,7 +1,7 @@
 /* eslint-disable no-bitwise */
 
 import { Spacing } from './ThemeUtil';
-import type { SpacingType, TruncateType } from './TypesUtil';
+import type { SpacingType, TruncateOptions } from './TypesUtil';
 
 export const UiUtil = {
   getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {
@@ -50,7 +50,7 @@ export const UiUtil = {
     return [tintedR, tintedG, tintedB];
   },
 
-  getTruncateString(string: string, charsStart: number, charsEnd: number, truncate: TruncateType) {
+  getTruncateString({ string, charsStart, charsEnd, truncate }: TruncateOptions) {
     if (string.length <= charsStart + charsEnd) {
       return string;
     }

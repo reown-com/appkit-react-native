@@ -91,7 +91,7 @@ export const CoreHelperUtil = {
     let formattedBalance;
 
     if (balance === '0') {
-      formattedBalance = '0';
+      formattedBalance = '0.000';
     } else if (typeof balance === 'string') {
       const number = Number(balance);
       if (number) {
