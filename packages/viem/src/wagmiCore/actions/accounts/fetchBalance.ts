@@ -37,8 +37,6 @@ export async function fetchBalance({
   publicClient,
   chains = []
 }: FetchBalanceArgs): Promise<FetchBalanceResult> {
-  // const config = getConfig();
-
   if (token) {
     type FetchContractBalance = {
       abi: typeof erc20ABI | typeof erc20ABI_bytes32;

@@ -22,8 +22,7 @@ import {
   numberToHex,
   ProviderRpcError,
   UserRejectedRequestError,
-  getAddress,
-  createWalletClient
+  getAddress
 } from 'viem';
 import { mainnet } from 'viem/chains';
 import { normalize } from 'viem/ens';
@@ -439,17 +438,15 @@ export class Web3Modal extends Web3ModalScaffold {
   private async onChainChanged(chainId: string) {
     const chainNumber = typeof chainId === 'string' ? parseInt(chainId, 16) : chainId;
     const clientChainId = await this.getChainId();
-    // const provider = await this.getProvider();
-    console.log('onChainChanged: new chain:', chainNumber, 'provider chain:', clientChainId);
+    const provider = await this.getProvider();
 
-    // Not sure why the provider sometimes doesn't update the chainId
-    // if (clientChainId !== chainNumber) {
-    //   await provider.request({
-    //     method: SWITCH_CHAIN_METHOD,
-    //     params: [{ chainId }]
-    //   });
-    // }
-
+    // Some wallets send wrong chains, so we need to check if the provider chain is correct
+    if (clientChainId !== chainNumber) {
+      await provider.request({
+        method: SWITCH_CHAIN_METHOD,
+        params: [{ chainId }]
+      });
+    }
     this.syncAccount();
     this.syncNetwork();
   }
