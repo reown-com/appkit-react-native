@@ -1,9 +1,11 @@
+import '@walletconnect/react-native-compat';
 export {
   W3mAccountButton,
   W3mButton,
   W3mConnectButton,
   Web3Modal
 } from '@web3modal/scaffold-react-native';
+export { defaultWagmiConfig } from './src/utils/defaultWagmiConfig';
 import { useEffect, useState } from 'react';
 import type { Web3ModalOptions } from './src/client';
 import { Web3Modal } from './src/client';
@@ -48,7 +50,7 @@ export function useProvider() {
   }
 
   return {
-    provider: modal?.provider
+    provider: undefined
   };
 }
 

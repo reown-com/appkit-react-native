@@ -1,3 +1,14 @@
+// import type { ConnectorType } from '@web3modal/scaffold-react-native;
+export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED';
+import {
+  COINBASE_CONNECTOR_ID,
+  EIP6963_CONNECTOR_ID,
+  INJECTED_CONNECTOR_ID,
+  LEDGER_CONNECTOR_ID,
+  SAFE_CONNECTOR_ID,
+  WALLET_CONNECT_CONNECTOR_ID
+} from './constants';
+
 export const NetworkImageIds = {
   // Ethereum
   1: '692ed6ba-e569-459a-556a-776476829e00',
@@ -38,3 +49,31 @@ export const NetworkImageIds = {
   // Aurora
   1313161554: '3ff73439-a619-4894-9262-4470c773a100'
 } as Record<string, string>;
+
+export const ConnectorImageIds = {
+  [COINBASE_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
+  [SAFE_CONNECTOR_ID]: '461db637-8616-43ce-035a-d89b8a1d5800',
+  [LEDGER_CONNECTOR_ID]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300',
+  [WALLET_CONNECT_CONNECTOR_ID]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
+  [INJECTED_CONNECTOR_ID]: '07ba87ed-43aa-4adf-4540-9e6a2b9cae00'
+} as Record<string, string>;
+
+export const ConnectorExplorerIds = {
+  [COINBASE_CONNECTOR_ID]: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+  [SAFE_CONNECTOR_ID]: '225affb176778569276e484e1b92637ad061b01e13a048b35a9d280c3b58970f',
+  [LEDGER_CONNECTOR_ID]: '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927'
+} as Record<string, string>;
+
+export const ConnectorNamesMap = {
+  [INJECTED_CONNECTOR_ID]: 'Browser Wallet',
+  [WALLET_CONNECT_CONNECTOR_ID]: 'WalletConnect',
+  [COINBASE_CONNECTOR_ID]: 'Coinbase',
+  [LEDGER_CONNECTOR_ID]: 'Ledger',
+  [SAFE_CONNECTOR_ID]: 'Safe'
+} as Record<string, string>;
+
+export const ConnectorTypesMap = {
+  [INJECTED_CONNECTOR_ID]: 'INJECTED',
+  [WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT',
+  [EIP6963_CONNECTOR_ID]: 'EIP6963'
+} as Record<string, ConnectorType>;

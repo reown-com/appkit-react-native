@@ -28,13 +28,14 @@ export function ConnectingView() {
         AccountController.setIsConnected(true);
         ModalController.close();
       }
-    } catch {
+    } catch (error) {
+      console.log('connection error', error);
       ConnectionController.setWcError(true);
-      if (CoreHelperUtil.isAllowedRetry(lastRetry)) {
-        SnackController.showError('Declined');
-        setLastRetry(Date.now());
-        initializeConnection(true);
-      }
+      // if (CoreHelperUtil.isAllowedRetry(lastRetry)) {
+      //   SnackController.showError('Declined');
+      //   setLastRetry(Date.now());
+      //   initializeConnection(true);
+      // }
     }
   };
 
@@ -53,9 +54,9 @@ export function ConnectingView() {
 
   useEffect(() => {
     initializeConnection();
-    const _interval = setInterval(initializeConnection, ConstantsUtil.TEN_SEC_MS);
+    // const _interval = setInterval(initializeConnection, ConstantsUtil.TEN_SEC_MS);
 
-    return () => clearInterval(_interval);
+    // return () => clearInterval(_interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
