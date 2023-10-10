@@ -48,9 +48,7 @@ export function useProvider() {
   }
 
   return {
-    provider: () => modal?.provider,
-    publicClient: () => modal?.publicClient,
-    walletClient: () => modal?.client
+    provider: modal?.provider
   };
 }
 

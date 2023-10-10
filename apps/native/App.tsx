@@ -23,8 +23,9 @@ import {
   celo,
   aurora
 } from 'viem/chains';
+
 import { Button } from '@web3modal/ui-react-native';
-import { parseEther } from 'viem';
+import { parseEther, createWalletClient, custom } from 'viem';
 
 const chains = [
   mainnet,
@@ -64,30 +65,45 @@ createWeb3Modal({
 
 export default function Native() {
   const isDarkMode = useColorScheme() === 'dark';
-  const { walletClient } = useProvider();
+  const { provider } = useProvider();
   const { selectedNetworkId } = useWeb3ModalState();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
 
   const onSignMessage = async () => {
-    const [account] = (await walletClient()?.getAddresses()) ?? [];
-    const signature = await walletClient()?.signMessage({
-      account,
+    if (!provider || !address) return;
+
+    const chain = chains.find(_chain => _chain.id === selectedNetworkId);
+
+    // const provChain = await provider.request({ method: 'eth_chainId' });
+    // console.log('provChain', provChain);
+    // console.log('prov', provider.session);
+    const client = createWalletClient({
+      chain,
+      transport: custom(provider)
+    });
+
+    const signature = await client.signMessage({
+      account: address as `0x${string}`,
       message: 'hello world'
     });
     console.warn('success', signature);
   };
 
   const onSendTransaction = async () => {
-    const [address] = (await walletClient()?.getAddresses()) ?? [];
-    const activeChain = chains.find(chain => chain.id === selectedNetworkId);
+    if (!provider || !address) return;
+    const chain = chains.find(_chain => _chain.id === selectedNetworkId);
+
+    const client = createWalletClient({
+      chain,
+      transport: custom(provider)
+    });
 
     try {
-      const hash = await walletClient()?.sendTransaction({
-        account: address,
+      const hash = await client.sendTransaction({
+        account: address as `0x${string}`,
         to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', // vitalik.eth
         value: parseEther('0.001'),
-        data: '0x',
-        chain: activeChain
+        data: '0x'
       });
 
       return {

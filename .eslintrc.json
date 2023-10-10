@@ -7,7 +7,8 @@
     "no-duplicate-imports": "off",
     "react-hooks/exhaustive-deps": "warn",
     "no-console": ["error", { "allow": ["warn"] }],
-    "newline-before-return": "error"
+    "newline-before-return": "error",
+    "radix": "off"
   },
   "parserOptions": {
     "requireConfigFile": false

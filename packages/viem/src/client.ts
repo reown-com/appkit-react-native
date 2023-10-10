@@ -10,17 +10,20 @@ import type {
   Token
 } from '@web3modal/scaffold-react-native';
 import { Web3ModalScaffold } from '@web3modal/scaffold-react-native';
-import { ADD_CHAIN_METHOD, NAMESPACE, VERSION } from './utils/constants';
+import { ADD_CHAIN_METHOD, NAMESPACE, SWITCH_CHAIN_METHOD, VERSION } from './utils/constants';
 import { caipNetworkIdToNumber, getCaipDefaultChain, getCaipTokens } from './utils/helpers';
 import { NetworkImageIds } from './utils/presets';
 import {
   type Chain,
-  createWalletClient,
   custom,
   createPublicClient,
-  type WalletClient,
-  type PublicClient,
-  type Address
+  type Address,
+  SwitchChainError,
+  numberToHex,
+  ProviderRpcError,
+  UserRejectedRequestError,
+  getAddress,
+  createWalletClient
 } from 'viem';
 import { mainnet } from 'viem/chains';
 import { normalize } from 'viem/ens';
@@ -31,6 +34,7 @@ import {
   type EthereumProviderOptions
 } from '@walletconnect/ethereum-provider';
 import type WalletConnectProvider from '@walletconnect/ethereum-provider';
+import { normalizeNamespaces } from '@walletconnect/utils';
 import { fetchBalance } from './wagmiCore/actions/accounts/fetchBalance';
 
 // -- Types ---------------------------------------------------------------------
@@ -53,8 +57,6 @@ interface Web3ModalState extends PublicStateControllerState {
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffold {
   public provider?: WalletConnectProvider;
-  public client?: WalletClient;
-  public publicClient?: PublicClient;
 
   private hasSyncedConnectedAccount = false;
   private isConnected = false;
@@ -75,9 +77,7 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!chain || !chainId) {
           throw new Error('networkControllerClient:switchCaipNetwork - chain not found');
         }
-        await this.switchNetwork(chain.id);
-        this.syncAccount();
-        this.syncNetwork(chainImages);
+        await this.switchChain(chain.id);
       },
 
       getApprovedCaipNetworksData: async () => {
@@ -105,11 +105,8 @@ export class Web3Modal extends Web3ModalScaffold {
         };
 
         const provider = await this.getProvider();
-        const selectedChainId = caipNetworkIdToNumber(this.getCaipNetwork()?.id);
-        let defaultChainId = selectedChainId;
-        if (!defaultChainId) {
-          defaultChainId = defaultChain?.id ?? chains?.[0]?.id ?? mainnet.id;
-        }
+
+        let defaultChainId = defaultChain?.id ?? chains?.[0]?.id ?? mainnet.id;
 
         const optionalChains = this.getChains().filter(chain => chain.id !== defaultChainId);
 
@@ -153,7 +150,7 @@ export class Web3Modal extends Web3ModalScaffold {
       if (isConnected !== this.isConnected) {
         this.isConnected = isConnected;
         this.syncAccount();
-        this.syncNetwork(chainImages);
+        this.syncNetwork();
       }
     });
   }
@@ -219,39 +216,66 @@ export class Web3Modal extends Web3ModalScaffold {
     return this.provider!;
   }
 
-  private async getClient() {
-    if (!this.client) {
-      const provider = await this.getProvider();
-      const [chain] = this.getChains();
-      this.client = createWalletClient({
-        chain,
-        transport: custom(provider)
-      });
-    }
-
-    return this.client;
-  }
-
   private async getPublicClient() {
-    if (!this.publicClient) {
-      const provider = await this.getProvider();
-      const [chain] = this.getChains();
-      this.publicClient = createPublicClient({
-        chain,
-        transport: custom(provider)
-      });
-    }
+    const chainId = await this.getChainId();
+    const chain = this.getChains().find(_chain => _chain.id === chainId);
 
-    return this.publicClient;
+    return createPublicClient({
+      chain,
+      transport: custom(await this.getProvider())
+    });
   }
 
-  private async switchNetwork(chainId: number) {
-    const client = await this.getClient();
+  private async getChainId() {
+    const provider = await this.getProvider();
+    const chainId = await provider.request<number>({ method: 'eth_chainId' });
+
+    return chainId;
+  }
+
+  async getAccount() {
+    const { accounts } = await this.getProvider();
+
+    return getAddress(accounts[0]!);
+  }
+
+  async switchChain(chainId: number) {
+    const chain = this.options?.chains?.find(_chain => _chain.id === chainId);
+    if (!chain) throw new SwitchChainError(new Error('chain not found on connector.'));
+
     try {
-      await client.switchChain({ id: chainId });
+      const provider = await this.getProvider();
+      const namespaceChains = this.getNamespaceChainsIds();
+      const namespaceMethods = this.getNamespaceMethods();
+      const isChainApproved = namespaceChains.includes(chainId);
+
+      if (!isChainApproved && namespaceMethods.includes(ADD_CHAIN_METHOD)) {
+        await provider.request({
+          method: ADD_CHAIN_METHOD,
+          params: [
+            {
+              chainId: numberToHex(chain.id),
+              blockExplorerUrls: [chain.blockExplorers?.default?.url],
+              chainName: chain.name,
+              nativeCurrency: chain.nativeCurrency,
+              rpcUrls: [...chain.rpcUrls.default.http]
+            }
+          ]
+        });
+      } else {
+        await provider.request({
+          method: SWITCH_CHAIN_METHOD,
+          params: [{ chainId: numberToHex(chainId) }]
+        });
+      }
+
+      return chain;
     } catch (error) {
-      const newChain = this.getChains().find(c => c.id !== chainId);
-      await client.addChain({ chain: newChain! });
+      const message = typeof error === 'string' ? error : (error as ProviderRpcError)?.message;
+      if (/user rejected request/i.test(message)) {
+        throw new UserRejectedRequestError(error as Error);
+      }
+      throw new SwitchChainError(error as Error);
     }
   }
 
@@ -273,9 +297,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async syncAccount() {
     if (this.isConnected) {
-      const client = await this.getClient();
-      const [address] = await client.getAddresses();
-      const chainId = await client.getChainId();
+      const address = await this.getAccount();
+      const chainId = await this.getChainId();
       if (address && chainId) {
         const caipAddress: CaipAddress = `${NAMESPACE}:${chainId}:${address}`;
         this.setCaipAddress(caipAddress);
@@ -294,11 +317,10 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
+  private async syncNetwork() {
     if (this.isConnected) {
-      const client = await this.getClient();
-      const [address] = await client.getAddresses();
-      const chainId = await client.getChainId();
+      const address = await this.getAccount();
+      const chainId = await this.getChainId();
       const chain = this.getChains().find(_chain => _chain.id === chainId);
 
       if (chain) {
@@ -307,7 +329,7 @@ export class Web3Modal extends Web3ModalScaffold {
           id: caipChainId,
           name: chain.name,
           imageId: NetworkImageIds[chain.id],
-          imageUrl: chainImages?.[chain.id]
+          imageUrl: this.options?.chainImages?.[chain.id]
         });
         if (address) {
           const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`;
@@ -327,7 +349,6 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncProfile(address: Address) {
-    const publicClient = await this.getPublicClient();
     try {
       const { name, avatar } = await this.fetchIdentity({
         caipChainId: `${NAMESPACE}:${mainnet.id}`,
@@ -347,7 +368,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
       if (profileName) {
         this.setProfileName(profileName);
-        const profileImage = await publicClient.getEnsAvatar({ name: normalize(profileName) });
+        const profileImage = await mainnetClient.getEnsAvatar({ name: normalize(profileName) });
         if (profileImage) {
           this.setProfileImage(profileImage);
         }
@@ -381,6 +402,30 @@ export class Web3Modal extends Web3ModalScaffold {
     return this.options?.chains ?? [mainnet];
   }
 
+  private getNamespaceChainsIds() {
+    if (!this.provider) return [];
+    const namespaces = this.provider.session?.namespaces;
+    if (!namespaces) return [];
+
+    const normalizedNamespaces = normalizeNamespaces(namespaces);
+    const chainIds = normalizedNamespaces[NAMESPACE]?.chains?.map(chain =>
+      parseInt(chain.split(':')[1] || '')
+    );
+
+    return chainIds ?? [];
+  }
+
+  private getNamespaceMethods() {
+    if (!this.provider) return [];
+    const namespaces = this.provider.session?.namespaces;
+    if (!namespaces) return [];
+
+    const normalizedNamespaces = normalizeNamespaces(namespaces);
+    const methods = normalizedNamespaces[NAMESPACE]?.methods;
+
+    return methods ?? [];
+  }
+
   private setupListeners() {
     this.provider?.on('chainChanged', this.onChainChanged.bind(this));
     this.provider?.on('disconnect', this.onDisconnect.bind(this));
@@ -393,19 +438,24 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async onChainChanged(chainId: string) {
     const chainNumber = typeof chainId === 'string' ? parseInt(chainId, 16) : chainId;
-    const clientChainId = await this.client?.getChainId();
-    if (clientChainId !== chainNumber) {
-      await this?.switchNetwork(chainNumber);
-    }
+    const clientChainId = await this.getChainId();
+    // const provider = await this.getProvider();
+    console.log('onChainChanged: new chain:', chainNumber, 'provider chain:', clientChainId);
+
+    // Not sure why the provider sometimes doesn't update the chainId
+    // if (clientChainId !== chainNumber) {
+    //   await provider.request({
+    //     method: SWITCH_CHAIN_METHOD,
+    //     params: [{ chainId }]
+    //   });
+    // }
 
     this.syncAccount();
-    this.syncNetwork(this.options?.chainImages);
+    this.syncNetwork();
   }
 
   private async onDisconnect() {
     this.setIsConnected(false);
-    this.client = undefined;
-    this.publicClient = undefined;
     this.removeListeners();
   }
 }
