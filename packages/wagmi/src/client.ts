@@ -45,12 +45,6 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
 
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>;
 
-declare global {
-  interface Window {
-    ethereum?: Record<string, unknown>;
-  }
-}
-
 // @ts-expect-error: Overriden state type is correct
 interface Web3ModalState extends PublicStateControllerState {
   selectedNetworkId: number | undefined;

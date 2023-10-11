@@ -18,7 +18,7 @@
     "test": "turbo run test --parallel",
     "clean": "turbo clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
-    "pre-publish": "turbo lint prettier --parallel; yarn install; turbo run build;",
+    "pre-publish": "turbo clean lint prettier --parallel; yarn install; turbo run build;",
     "publish:latest": "yarn pre-publish && changeset version && changeset publish",
     "publish:alpha": "yarn pre-publish && changeset pre enter alpha && changeset version && changeset publish && changeset pre exit"
   },

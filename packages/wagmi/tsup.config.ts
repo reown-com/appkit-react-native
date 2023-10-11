@@ -9,7 +9,7 @@ export default defineConfig((options: Options) => ({
   },
   clean: true,
   format: ['cjs', 'esm'],
-  external: ['react'],
+  external: ['react', '@wagmi/core'],
   dts: true,
   ...options
 }));
