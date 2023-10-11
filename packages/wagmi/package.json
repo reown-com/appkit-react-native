@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi-react-native",
-  "version": "1.0.0-alpha1",
+  "version": "1.0.0-alpha.2",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "module": "./dist/index.mjs",
@@ -63,6 +63,6 @@
     "@walletconnect/ethereum-provider": "2.10.1",
     "@walletconnect/react-native-compat": "2.10.1",
     "@walletconnect/utils": "2.10.1",
-    "@web3modal/scaffold-react-native": "1.0.0-alpha1"
+    "@web3modal/scaffold-react-native": "1.0.0-alpha.2"
   }
 }
