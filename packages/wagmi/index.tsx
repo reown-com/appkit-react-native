@@ -21,7 +21,7 @@ let modal: Web3Modal | undefined;
 
 export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
-    modal = new Web3Modal({ ...options, _sdkVersion: `react-native-viem-${VERSION}` });
+    modal = new Web3Modal({ ...options, _sdkVersion: `react-native-wagmi-${VERSION}` });
   }
 
   return modal;
@@ -42,42 +42,6 @@ export function useWeb3Modal() {
   }
 
   return { open, close };
-}
-
-export function useProvider() {
-  if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useProvider" hook');
-  }
-
-  return {
-    provider: undefined
-  };
-}
-
-export function useAccount() {
-  const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [address, setAddress] = useState<string | undefined>();
-
-  if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useAccount" hook');
-  }
-
-  useEffect(() => {
-    const unsubscribeConnection = modal?.subscribeStateKey('isConnected', value => {
-      setIsConnected(value);
-    });
-
-    const unsubscribeAddress = modal?.subscribeStateKey('address', value => {
-      setAddress(value);
-    });
-
-    return () => {
-      unsubscribeConnection?.();
-      unsubscribeAddress?.();
-    };
-  }, []);
-
-  return { isConnected, address };
 }
 
 export function useWeb3ModalState() {

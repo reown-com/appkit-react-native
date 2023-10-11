@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/viem-react-native",
+  "name": "@web3modal/wagmi-react-native",
   "version": "0.0.1",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -18,7 +18,8 @@
     "ethereum",
     "web3modal",
     "walletconnect",
-    "react-native"
+    "react-native",
+    "wagmi"
   ],
   "repository": "https://github.com/WalletConnect/web3modal-react-native",
   "author": "WalletConnect <support@walletconnect.com> (https://web3modal.com)",

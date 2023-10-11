@@ -2,7 +2,6 @@ import { proxy } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import type { CaipAddress } from '../utils/TypeUtils';
-import { PublicStateController } from './PublicStateController';
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -31,14 +30,12 @@ export const AccountController = {
 
   setIsConnected(isConnected: AccountControllerState['isConnected']) {
     state.isConnected = isConnected;
-    PublicStateController.set({ isConnected });
   },
 
   setCaipAddress(caipAddress: AccountControllerState['caipAddress']) {
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined;
     state.caipAddress = caipAddress;
     state.address = address;
-    PublicStateController.set({ address });
   },
 
   setBalance(
@@ -70,9 +67,5 @@ export const AccountController = {
     state.profileName = undefined;
     state.profileImage = undefined;
     state.addressExplorerUrl = undefined;
-    PublicStateController.set({
-      isConnected: false,
-      address: undefined
-    });
   }
 };

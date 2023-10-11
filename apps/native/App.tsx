@@ -6,7 +6,7 @@ import {
   W3mButton,
   createWeb3Modal,
   defaultWagmiConfig
-} from '@web3modal/viem-react-native';
+} from '@web3modal/wagmi-react-native';
 
 import { WagmiConfig } from 'wagmi';
 import {

@@ -6,8 +6,6 @@ import type { CaipNetworkId } from '../utils/TypeUtils.js';
 export interface PublicStateControllerState {
   open: boolean;
   selectedNetworkId?: CaipNetworkId;
-  isConnected: boolean;
-  address?: string;
 }
 
 type StateKey = keyof PublicStateControllerState;
@@ -15,9 +13,7 @@ type StateKey = keyof PublicStateControllerState;
 // -- State --------------------------------------------- //
 const state = proxy<PublicStateControllerState>({
   open: false,
-  selectedNetworkId: undefined,
-  isConnected: false,
-  address: undefined
+  selectedNetworkId: undefined
 });
 
 // -- Controller ---------------------------------------- //
