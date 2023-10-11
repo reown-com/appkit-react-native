@@ -2,8 +2,6 @@
 export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED';
 import {
   COINBASE_CONNECTOR_ID,
-  EIP6963_CONNECTOR_ID,
-  INJECTED_CONNECTOR_ID,
   LEDGER_CONNECTOR_ID,
   SAFE_CONNECTOR_ID,
   WALLET_CONNECT_CONNECTOR_ID
@@ -54,8 +52,7 @@ export const ConnectorImageIds = {
   [COINBASE_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
   [SAFE_CONNECTOR_ID]: '461db637-8616-43ce-035a-d89b8a1d5800',
   [LEDGER_CONNECTOR_ID]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300',
-  [WALLET_CONNECT_CONNECTOR_ID]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
-  [INJECTED_CONNECTOR_ID]: '07ba87ed-43aa-4adf-4540-9e6a2b9cae00'
+  [WALLET_CONNECT_CONNECTOR_ID]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400'
 } as Record<string, string>;
 
 export const ConnectorExplorerIds = {
@@ -65,7 +62,6 @@ export const ConnectorExplorerIds = {
 } as Record<string, string>;
 
 export const ConnectorNamesMap = {
-  [INJECTED_CONNECTOR_ID]: 'Browser Wallet',
   [WALLET_CONNECT_CONNECTOR_ID]: 'WalletConnect',
   [COINBASE_CONNECTOR_ID]: 'Coinbase',
   [LEDGER_CONNECTOR_ID]: 'Ledger',
@@ -73,7 +69,5 @@ export const ConnectorNamesMap = {
 } as Record<string, string>;
 
 export const ConnectorTypesMap = {
-  [INJECTED_CONNECTOR_ID]: 'INJECTED',
-  [WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT',
-  [EIP6963_CONNECTOR_ID]: 'EIP6963'
+  [WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT'
 } as Record<string, ConnectorType>;

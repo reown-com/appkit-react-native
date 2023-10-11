@@ -137,7 +137,7 @@ export class Web3Modal extends Web3ModalScaffold {
       connectionControllerClient,
       defaultChain: getCaipDefaultChain(defaultChain),
       tokens: getCaipTokens(tokens),
-      _sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`,
+      _sdkVersion: _sdkVersion ?? `react-native-wagmi-${VERSION}`,
       ...w3mOptions
     });
 
@@ -269,38 +269,15 @@ export class Web3Modal extends Web3ModalScaffold {
   // private syncConnectors(connectors: Web3ModalClientOptions['wagmiConfig']['connectors']) {
   //   const w3mConnectors: Connector[] = [];
   //   connectors.forEach(({ id, name }) => {
-  //     if (id !== EIP6963_CONNECTOR_ID) {
-  //       w3mConnectors.push({
-  //         id,
-  //         explorerId: ConnectorExplorerIds[id],
-  //         imageId: ConnectorImageIds[id],
-  //         imageUrl: this.options?.connectorImages?.[id],
-  //         name: ConnectorNamesMap[id] ?? name,
-  //         type: ConnectorTypesMap[id] ?? 'EXTERNAL'
-  //       });
-  //     }
+  //     w3mConnectors.push({
+  //       id,
+  //       explorerId: ConnectorExplorerIds[id],
+  //       imageId: ConnectorImageIds[id],
+  //       imageUrl: this.options?.connectorImages?.[id],
+  //       name: ConnectorNamesMap[id] ?? name,
+  //       type: ConnectorTypesMap[id] ?? 'EXTERNAL'
+  //     });
   //   });
   //   this.setConnectors(w3mConnectors);
-  // }
-
-  // private listenConnectors(connectors: Web3ModalClientOptions['wagmiConfig']['connectors']) {
-  //   const connector = connectors.find(c => c.id === EIP6963_CONNECTOR_ID) as EIP6963Connector;
-  //   if (typeof window !== 'undefined' && connector) {
-  //     window.addEventListener(EIP6963_ANNOUNCE_EVENT, (event: CustomEventInit<Wallet>) => {
-  //       if (event.detail) {
-  //         const { info, provider } = event.detail;
-  //         this.addConnector({
-  //           id: EIP6963_CONNECTOR_ID,
-  //           type: 'EIP6963',
-  //           imageUrl: info.icon ?? this.options?.connectorImages?.[EIP6963_CONNECTOR_ID],
-  //           name: info.name,
-  //           provider,
-  //           info
-  //         });
-  //         connector.isAuthorized({ info, provider });
-  //       }
-  //     });
-  //     window.dispatchEvent(new Event(EIP6963_REQUEST_EVENT));
-  //   }
   // }
 }

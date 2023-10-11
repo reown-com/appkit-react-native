@@ -1,7 +1,6 @@
 import type WalletConnectProvider from '@walletconnect/ethereum-provider';
 import { type EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 import { normalizeNamespaces } from '@walletconnect/utils';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   ProviderRpcError,
   SwitchChainError,
@@ -9,14 +8,29 @@ import {
   createWalletClient,
   custom,
   getAddress,
-  numberToHex,
-  type WalletClient
+  numberToHex
 } from 'viem';
-import type { Chain } from 'viem/chains';
+
+import type { Account, Chain, Transport, WalletClient as WalletClient_ } from 'viem';
+import type { ConnectorData } from 'wagmi';
+
 import { Connector } from 'wagmi';
 
-// import { Connector } from './base';
-// import type { StorageStoreData, WalletClient } from './types';
+import {
+  EthereumProvider,
+  OPTIONAL_EVENTS,
+  OPTIONAL_METHODS
+} from '@walletconnect/ethereum-provider';
+
+export type StorageStoreData = {
+  state: { data?: ConnectorData };
+};
+
+export type WalletClient<
+  TTransport extends Transport = Transport,
+  TChain extends Chain = Chain,
+  TAccount extends Account = Account
+> = WalletClient_<TTransport, TChain, TAccount>;
 
 type WalletConnectOptions = {
   /**
@@ -59,23 +73,23 @@ type WalletConnectOptions = {
   isNewChainsStale?: boolean;
   /**
    * Metadata for your app.
-   * @link https://docs.walletconnect.com/2.0/advanced/providers/ethereum#initialization
+   * @link https://docs.walletconnect.com/2.0/javascript/providers/ethereum#initialization
    */
   metadata?: EthereumProviderOptions['metadata'];
   /**
    * Whether or not to show the QR code modal.
    * @default true
-   * @link https://docs.walletconnect.com/2.0/advanced/providers/ethereum#initialization
+   * @link https://docs.walletconnect.com/2.0/javascript/providers/ethereum#initialization
    */
   showQrModal?: EthereumProviderOptions['showQrModal'];
   /**
    * Options of QR code modal.
-   * @link https://docs.walletconnect.com/2.0/advanced/walletconnectmodal/options
+   * @link https://docs.walletconnect.com/2.0/web/walletConnectModal/modal/options
    */
   qrModalOptions?: EthereumProviderOptions['qrModalOptions'];
   /**
    * Option to override default relay url.
-   * @link https://docs.walletconnect.com/2.0/advanced/providers/ethereum
+   * @link https://docs.walletconnect.com/2.0/web/providers/ethereum
    */
   relayUrl?: string;
 };
@@ -97,23 +111,22 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
   readonly name = 'WalletConnect';
   readonly ready = true;
 
-  private provider?: WalletConnectProvider;
-  private initProviderPromise?: Promise<void>;
+  _provider?: WalletConnectProvider;
+  _initProviderPromise?: Promise<void>;
 
   constructor(config: { chains?: Chain[]; options: WalletConnectOptions }) {
     super({
       ...config,
       options: { isNewChainsStale: true, ...config.options }
     });
-    this.createProvider();
+    this._createProvider();
   }
 
   async connect({ chainId, pairingTopic }: ConnectConfig = {}) {
     try {
       let targetChainId = chainId;
       if (!targetChainId) {
-        const storeString = await AsyncStorage?.getItem(STORE_KEY);
-        const store = storeString ? JSON.parse(storeString) : undefined;
+        const store = this.storage?.getItem<StorageStoreData>(STORE_KEY);
         const lastUsedChainId = store?.state?.data?.chain?.id;
         if (lastUsedChainId && !this.isChainUnsupported(lastUsedChainId))
           targetChainId = lastUsedChainId;
@@ -122,9 +135,9 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
       if (!targetChainId) throw new Error('No chains found on connector.');
 
       const provider = await this.getProvider();
-      this.setupListeners();
+      this._setupListeners();
 
-      const isChainsStale = this.isChainsStale();
+      const isChainsStale = this._isChainsStale();
 
       // If there is an active session with stale chains, disconnect the current session.
       if (provider.session && isChainsStale) await provider.disconnect();
@@ -143,7 +156,7 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
           optionalChains: optionalChains.length ? optionalChains : undefined
         });
 
-        this.setRequestedChainsIds(this.chains.map(({ id }) => id));
+        this._setRequestedChainsIds(this.chains.map(({ id }) => id));
       }
 
       // If session exists and chains are authorized, enable provider for required chain
@@ -171,8 +184,8 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
     } catch (error) {
       if (!/No matching key/i.test((error as Error).message)) throw error;
     } finally {
-      this.removeListeners();
-      this.setRequestedChainsIds([]);
+      this._removeListeners();
+      this._setRequestedChainsIds([]);
     }
   }
 
@@ -189,10 +202,10 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
   }
 
   async getProvider({ chainId }: { chainId?: number } = {}) {
-    if (!this.provider) await this.createProvider();
+    if (!this._provider) await this._createProvider();
     if (chainId) await this.switchChain(chainId);
 
-    return this.provider!;
+    return this._provider!;
   }
 
   async getWalletClient({ chainId }: { chainId?: number } = {}): Promise<WalletClient> {
@@ -203,6 +216,7 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
     const chain = this.chains.find(x => x.id === chainId);
     if (!provider) throw new Error('provider is required.');
 
+    //@ts-ignore - TODO
     return createWalletClient({
       account,
       chain,
@@ -213,7 +227,7 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
   async isAuthorized() {
     try {
       const [account, provider] = await Promise.all([this.getAccount(), this.getProvider()]);
-      const isChainsStale = this.isChainsStale();
+      const isChainsStale = this._isChainsStale();
 
       // If an account does not exist on the session, then the connector is unauthorized.
       if (!account) return false;
@@ -239,8 +253,8 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
 
     try {
       const provider = await this.getProvider();
-      const namespaceChains = this.getNamespaceChainsIds();
-      const namespaceMethods = this.getNamespaceMethods();
+      const namespaceChains = this._getNamespaceChainsIds();
+      const namespaceMethods = this._getNamespaceMethods();
       const isChainApproved = namespaceChains.includes(chainId);
 
       if (!isChainApproved && namespaceMethods.includes(ADD_ETH_CHAIN_METHOD)) {
@@ -256,9 +270,9 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
             }
           ]
         });
-        const requestedChains = this.getRequestedChainsIds();
+        const requestedChains = this._getRequestedChainsIds();
         requestedChains.push(chainId);
-        this.setRequestedChainsIds(requestedChains);
+        this._setRequestedChainsIds(requestedChains);
       }
       await provider.request({
         method: 'wallet_switchEthereumChain',
@@ -275,22 +289,19 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
     }
   }
 
-  private async createProvider() {
-    if (!this.initProviderPromise) {
-      this.initProviderPromise = this.initProvider();
+  async _createProvider() {
+    if (!this._initProviderPromise) {
+      this._initProviderPromise = this._initProvider();
     }
 
-    return this.initProviderPromise;
+    return this._initProviderPromise;
   }
 
-  private async initProvider() {
-    const { EthereumProvider, OPTIONAL_EVENTS, OPTIONAL_METHODS } = await import(
-      '@walletconnect/ethereum-provider'
-    );
+  async _initProvider() {
     const [defaultChain, ...optionalChains] = this.chains.map(({ id }) => id);
     if (defaultChain) {
       const { projectId, showQrModal = true, qrModalOptions, metadata, relayUrl } = this.options;
-      this.provider = await EthereumProvider.init({
+      this._provider = await EthereumProvider.init({
         showQrModal,
         qrModalOptions,
         projectId,
@@ -329,14 +340,14 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
    *
    * Also check that dapp supports at least 1 chain from previously approved session.
    */
-  private isChainsStale() {
-    const namespaceMethods = this.getNamespaceMethods();
+  _isChainsStale() {
+    const namespaceMethods = this._getNamespaceMethods();
     if (namespaceMethods.includes(ADD_ETH_CHAIN_METHOD)) return false;
     if (!this.options.isNewChainsStale) return false;
 
-    const requestedChains = this.getRequestedChainsIds();
+    const requestedChains = this._getRequestedChainsIds();
     const connectorChains = this.chains.map(({ id }) => id);
-    const namespaceChains = this.getNamespaceChainsIds();
+    const namespaceChains = this._getNamespaceChainsIds();
 
     if (namespaceChains.length && !namespaceChains.some(id => connectorChains.includes(id)))
       return false;
@@ -344,38 +355,38 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
     return !connectorChains.every(id => requestedChains.includes(id));
   }
 
-  private setupListeners() {
-    if (!this.provider) return;
-    this.removeListeners();
-    this.provider.on('accountsChanged', this.onAccountsChanged);
-    this.provider.on('chainChanged', this.onChainChanged);
-    this.provider.on('disconnect', this.onDisconnect);
-    this.provider.on('session_delete', this.onDisconnect);
-    this.provider.on('display_uri', this.onDisplayUri);
-    this.provider.on('connect', this.onConnect);
+  _setupListeners() {
+    if (!this._provider) return;
+    this._removeListeners();
+    this._provider.on('accountsChanged', this.onAccountsChanged);
+    this._provider.on('chainChanged', this.onChainChanged);
+    this._provider.on('disconnect', this.onDisconnect);
+    this._provider.on('session_delete', this.onDisconnect);
+    this._provider.on('display_uri', this.onDisplayUri);
+    this._provider.on('connect', this.onConnect);
   }
 
-  private removeListeners() {
-    if (!this.provider) return;
-    this.provider.removeListener('accountsChanged', this.onAccountsChanged);
-    this.provider.removeListener('chainChanged', this.onChainChanged);
-    this.provider.removeListener('disconnect', this.onDisconnect);
-    this.provider.removeListener('session_delete', this.onDisconnect);
-    this.provider.removeListener('display_uri', this.onDisplayUri);
-    this.provider.removeListener('connect', this.onConnect);
+  _removeListeners() {
+    if (!this._provider) return;
+    this._provider.removeListener('accountsChanged', this.onAccountsChanged);
+    this._provider.removeListener('chainChanged', this.onChainChanged);
+    this._provider.removeListener('disconnect', this.onDisconnect);
+    this._provider.removeListener('session_delete', this.onDisconnect);
+    this._provider.removeListener('display_uri', this.onDisplayUri);
+    this._provider.removeListener('connect', this.onConnect);
   }
 
-  private setRequestedChainsIds(chains: number[]) {
+  _setRequestedChainsIds(chains: number[]) {
     this.storage?.setItem(REQUESTED_CHAINS_KEY, chains);
   }
 
-  private getRequestedChainsIds(): number[] {
+  _getRequestedChainsIds(): number[] {
     return this.storage?.getItem(REQUESTED_CHAINS_KEY) ?? [];
   }
 
-  private getNamespaceChainsIds() {
-    if (!this.provider) return [];
-    const namespaces = this.provider.session?.namespaces;
+  _getNamespaceChainsIds() {
+    if (!this._provider) return [];
+    const namespaces = this._provider.session?.namespaces;
     if (!namespaces) return [];
 
     const normalizedNamespaces = normalizeNamespaces(namespaces);
@@ -386,9 +397,9 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
     return chainIds ?? [];
   }
 
-  private getNamespaceMethods() {
-    if (!this.provider) return [];
-    const namespaces = this.provider.session?.namespaces;
+  _getNamespaceMethods() {
+    if (!this._provider) return [];
+    const namespaces = this._provider.session?.namespaces;
     if (!namespaces) return [];
 
     const normalizedNamespaces = normalizeNamespaces(namespaces);
@@ -409,11 +420,13 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
   };
 
   protected onDisconnect = () => {
-    this.setRequestedChainsIds([]);
+    this._setRequestedChainsIds([]);
     this.emit('disconnect');
   };
 
   protected onDisplayUri = (uri: string) => {
+    // eslint-disable-next-line no-console
+    console.log('From Wagmi Connector this is the URI', uri);
     this.emit('message', { type: 'display_uri', data: uri });
   };
 

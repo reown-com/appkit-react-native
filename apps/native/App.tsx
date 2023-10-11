@@ -23,6 +23,8 @@ import {
   celo,
   aurora
 } from 'wagmi/chains';
+import { AccountView } from './src/views/AccountView';
+import { ActionsView } from './src/views/ActionsView';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -61,6 +63,7 @@ const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 
 createWeb3Modal({
   projectId,
+  chains,
   wagmiConfig,
   clipboardClient
 });
@@ -79,6 +82,8 @@ export default function Native() {
           loadingLabel="Connecting..."
           balance="show"
         />
+        <AccountView />
+        <ActionsView />
         <Web3Modal />
       </View>
     </WagmiConfig>
