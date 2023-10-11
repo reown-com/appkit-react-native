@@ -27,6 +27,10 @@
   "bugs": {
     "url": "https://github.com/WalletConnect/web3modal-react-native/issues"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "devDependencies": {
     "@react-native-async-storage/async-storage": "1.19.3",
     "@types/jest": "^29.5.3",
