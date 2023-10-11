@@ -425,8 +425,6 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
   };
 
   protected onDisplayUri = (uri: string) => {
-    // eslint-disable-next-line no-console
-    console.log('From Wagmi Connector this is the URI', uri);
     this.emit('message', { type: 'display_uri', data: uri });
   };
 
