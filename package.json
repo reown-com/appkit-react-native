@@ -20,7 +20,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
     "pre-publish": "turbo clean lint prettier --parallel; yarn install; turbo run build;",
     "publish:latest": "yarn pre-publish && changeset version && changeset publish",
-    "publish:alpha": "yarn pre-publish && changeset pre enter alpha && changeset version && changeset publish && changeset pre exit"
+    "publish:alpha": "yarn pre-publish; yarn changeset pre enter alpha; yarn changeset version; changeset publish; changeset pre exit"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",

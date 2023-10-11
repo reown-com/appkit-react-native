@@ -1,13 +1,15 @@
 {
-  "mode": "exit",
+  "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
     "@apps/gallery": "1.0.0",
-    "@apps/native": "1.0.0",
-    "@web3modal/core-react-native": "1.0.0-alpha1",
-    "@web3modal/scaffold-react-native": "1.0.0-alpha1",
-    "@web3modal/ui-react-native": "1.0.0-alpha1",
-    "@web3modal/wagmi-react-native": "1.0.0-alpha1"
+    "@apps/native": "1.0.1-alpha.0",
+    "@web3modal/core-react-native": "1.0.0-alpha.2",
+    "@web3modal/scaffold-react-native": "1.0.0-alpha.2",
+    "@web3modal/ui-react-native": "1.0.0-alpha.2",
+    "@web3modal/wagmi-react-native": "1.0.0-alpha.2"
   },
-  "changesets": []
+  "changesets": [
+    "sharp-apples-boil"
+  ]
 }
