@@ -1,5 +1,5 @@
-// import type { ConnectorType } from '@web3modal/scaffold-react-native;
-export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED';
+import type { ConnectorType } from '@web3modal/scaffold-react-native';
+
 import {
   COINBASE_CONNECTOR_ID,
   LEDGER_CONNECTOR_ID,

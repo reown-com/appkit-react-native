@@ -18,6 +18,8 @@ export type ProjectId = string;
 
 export type Platform = 'mobile' | 'web' | 'qrcode' | 'unsupported';
 
+export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT';
+
 export type CaipNamespaces = Record<
   string,
   {
