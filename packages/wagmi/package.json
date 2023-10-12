@@ -63,7 +63,6 @@
     "wagmi": ">=1"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.10.1",
     "@walletconnect/react-native-compat": "2.10.1",
     "@walletconnect/utils": "2.10.1",
     "@web3modal/scaffold-react-native": "1.0.0-alpha.6"
