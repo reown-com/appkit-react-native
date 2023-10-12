@@ -30,5 +30,6 @@
     "prettier": "^3.0.1",
     "turbo": "1.10.15"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@1.22.19",
+  "version": "0.0.0"
 }
