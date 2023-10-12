@@ -15,7 +15,7 @@
     "@storybook/react": "^7.2.1",
     "@storybook/react-webpack5": "^7.2.1",
     "@storybook/testing-library": "^0.2.0",
-    "@web3modal/ui-react-native": "1.0.0-alpha.4",
+    "@web3modal/ui-react-native": "1.0.0-alpha.5",
     "babel-plugin-react-native-web": "^0.19.7",
     "metro-react-native-babel-preset": "^0.77.0",
     "prop-types": "^15.8.1",
