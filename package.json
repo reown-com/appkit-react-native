@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "turbo dev",
     "gallery": "turbo run dev:gallery",
-    "android": "turbo run dev:android",
+    "android": "cd apps/native && yarn android",
+    "ios": "cd apps/native && yarn ios",
     "build": "turbo build",
     "build:gallery": "turbo run build:gallery",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
