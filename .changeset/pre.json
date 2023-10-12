@@ -10,6 +10,7 @@
     "@web3modal/wagmi-react-native": "1.0.0-alpha.3"
   },
   "changesets": [
+    "early-toes-film",
     "eighty-planes-double",
     "gentle-chairs-retire",
     "sharp-apples-boil",
