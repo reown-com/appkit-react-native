@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/core-react-native",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "module": "./dist/index.mjs",
@@ -12,6 +12,9 @@
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "web3",
     "crypto",
