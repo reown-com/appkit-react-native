@@ -1,4 +1,3 @@
-import '@walletconnect/react-native-compat';
 export {
   W3mAccountButton,
   W3mButton,
