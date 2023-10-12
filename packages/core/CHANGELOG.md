@@ -1,5 +1,11 @@
 # @web3modal/core-react-native
 
+## 1.0.0-alpha.6
+
+### Patch Changes
+
+- alpha 6
+
 ## 1.0.0-alpha.5
 
 ### Patch Changes
