@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src", "index.tsx"],
+  "include": ["src", "src/index.tsx"],
   "exclude": ["dist", "node_modules"],
   "compilerOptions": {
     "outDir": "dist"

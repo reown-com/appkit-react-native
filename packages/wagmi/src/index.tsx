@@ -5,14 +5,14 @@ export {
   W3mConnectButton,
   Web3Modal
 } from '@web3modal/scaffold-react-native';
-export { defaultWagmiConfig } from './src/utils/defaultWagmiConfig';
+export { defaultWagmiConfig } from './utils/defaultWagmiConfig';
 import { useEffect, useState } from 'react';
-import type { Web3ModalOptions } from './src/client';
-import { Web3Modal } from './src/client';
-import { VERSION } from './src/utils/constants';
+import type { Web3ModalOptions } from './client';
+import { Web3Modal } from './client';
+import { VERSION } from './utils/constants';
 
 // -- Types -------------------------------------------------------------------
-export type { Web3ModalOptions } from './src/client';
+export type { Web3ModalOptions } from './client';
 
 type OpenOptions = Parameters<Web3Modal['open']>[0];
 
