@@ -22,6 +22,9 @@ build
 *.pem
 dist
 
+# generated files by bob
+lib
+
 # debug
 npm-debug.log*
 yarn-debug.log*

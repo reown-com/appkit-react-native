@@ -1,5 +1,11 @@
 # @web3modal/core-react-native
 
+## 1.0.0-alpha.8
+
+### Patch Changes
+
+- changed build tool
+
 ## 1.0.0-alpha.7
 
 ### Patch Changes
