@@ -52,6 +52,7 @@ export type TextType =
   | 'paragraph-500'
   | 'paragraph-600'
   | 'paragraph-700'
+  | 'small-400'
   | 'small-500'
   | 'small-600'
   | 'tiny-500'

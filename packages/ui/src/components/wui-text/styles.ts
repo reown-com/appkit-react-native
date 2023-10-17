@@ -28,6 +28,10 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: '700'
   },
+  'small-400': {
+    fontSize: 14,
+    fontWeight: '400'
+  },
   'small-500': {
     fontSize: 14,
     fontWeight: '500'

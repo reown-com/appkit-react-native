@@ -16,8 +16,8 @@ export function Header() {
       Networks: 'Choose Network',
       SwitchNetwork: networkName ?? 'Switch Network',
       AllWallets: 'All Wallets',
-      WhatIsANetwork: 'What is a network?',
-      WhatIsAWallet: 'What is a wallet?',
+      WhatIsANetwork: 'What is a Network?',
+      WhatIsAWallet: 'What is a Wallet?',
       GetWallet: 'Get a Wallet'
     };
   };

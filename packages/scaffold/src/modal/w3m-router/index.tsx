@@ -9,13 +9,10 @@ import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
 import { GetWalletView } from '../../views/w3m-get-wallet-view';
 import { AccountView } from '../../views/w3m-account-view';
 import { NetworksView } from '../../views/w3m-networks-view';
+import { WhatIsNetworkView } from '../../views/w3m-what-is-a-network-view';
 import { UiUtil } from '../../utils/UiUtil';
 
-interface Props {
-  // onCopyClipboard?: (value: string) => void;
-}
-
-export function Web3Router(props: Props) {
+export function Web3Router() {
   const { view } = useSnapshot(RouterController.state);
 
   useLayoutEffect(() => {
@@ -32,6 +29,8 @@ export function Web3Router(props: Props) {
         return ConnectingView;
       case 'WhatIsAWallet':
         return WhatIsAWalletView;
+      case 'WhatIsANetwork':
+        return WhatIsNetworkView;
       case 'GetWallet':
         return GetWalletView;
       case 'Networks':
@@ -43,5 +42,5 @@ export function Web3Router(props: Props) {
     }
   }, [view]);
 
-  return <ViewComponent {...props} />;
+  return <ViewComponent />;
 }
