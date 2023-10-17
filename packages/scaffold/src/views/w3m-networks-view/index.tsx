@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { ScrollView } from 'react-native';
-import { CardSelect, FlexView } from '@web3modal/ui-react-native';
+import { CardSelect, FlexView, Link, Separator, Text } from '@web3modal/ui-react-native';
 import {
   ApiController,
   AssetUtil,
@@ -19,6 +19,17 @@ export function NetworksView() {
   const networksTemplate = () => {
     if (!requestedCaipNetworks?.length) return undefined;
 
+    const approvedIds = approvedCaipNetworkIds;
+    const requested = [...requestedCaipNetworks];
+
+    if (approvedIds?.length) {
+      requested?.sort((a, b) => {
+        if (approvedIds.includes(a.id) && !approvedIds.includes(b.id)) return -1;
+        if (approvedIds.includes(b.id) && !approvedIds.includes(a.id)) return 1;
+        return 0;
+      });
+    }
+
     const onNetworkPress = async (network: CaipNetwork) => {
       if (isConnected) {
         if (caipNetwork?.id !== network.id) {
@@ -33,14 +44,14 @@ export function NetworksView() {
       }
     };
 
-    return requestedCaipNetworks.map(network => (
+    return requested.map(network => (
       <CardSelect
         key={network.id}
         name={network.name ?? 'Unknown'}
         type="network"
         imageSrc={AssetUtil.getNetworkImage(network)}
         imageHeaders={imageHeaders}
-        disabled={!supportsAllNetworks && approvedCaipNetworkIds?.includes(network.id)}
+        disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
         selected={caipNetwork?.id === network.id}
         onPress={() => onNetworkPress(network)}
       />
@@ -51,6 +62,19 @@ export function NetworksView() {
     <ScrollView bounces={false} fadingEdgeLength={20}>
       <FlexView flexDirection="row" flexWrap="wrap" gap="xs" padding="s" justifyContent="center">
         {networksTemplate()}
+      </FlexView>
+      <Separator />
+      <FlexView gap="s" padding="s" alignItems="center">
+        <Text variant="small-400" color="fg-300" center>
+          Your connected wallet may not support some of the networks available for this dApp
+        </Text>
+        <Link
+          size="sm"
+          iconLeft="helpCircle"
+          onPress={() => RouterController.push('WhatIsANetwork')}
+        >
+          What is a network
+        </Link>
       </FlexView>
     </ScrollView>
   );

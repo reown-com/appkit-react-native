@@ -8,14 +8,22 @@ export interface NetworkImageProps {
   imageHeaders?: Record<string, string>;
   selected?: boolean;
   size?: Exclude<SizeType, 'sm' | 'xs' | 'xxs'>;
+  disabled?: boolean;
 }
 
-export function NetworkImage({ imageSrc, imageHeaders, selected, size = 'md' }: NetworkImageProps) {
+export function NetworkImage({
+  imageSrc,
+  imageHeaders,
+  disabled,
+  selected,
+  size = 'md'
+}: NetworkImageProps) {
   const Theme = useTheme();
   const isLg = size === 'lg';
   const svgWidth = isLg ? 96 : 56;
   const svgHeight = isLg ? 96 : 56;
   const svgStroke = selected ? Theme['blue-100'] : Theme['overlay-010'];
+  const opacity = disabled ? 0.5 : 1;
 
   return (
     <Svg width={svgWidth} height={svgHeight} stroke={svgStroke} strokeWidth={1}>
@@ -26,12 +34,14 @@ export function NetworkImage({ imageSrc, imageHeaders, selected, size = 'md' }: 
             width={svgWidth}
             x="0"
             y="0"
+            opacity={opacity}
             href={{ uri: imageSrc, headers: imageHeaders }}
           />
         </Pattern>
       </Defs>
       <Path
         d={`${isLg ? PathLg : PathNormal}`}
+        opacity={opacity}
         fill={imageSrc ? 'url(#image-pattern)' : Theme['overlay-005']}
       />
     </Svg>

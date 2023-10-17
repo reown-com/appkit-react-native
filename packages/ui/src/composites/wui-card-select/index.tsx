@@ -60,6 +60,7 @@ function _CardSelect({
         size="md"
         style={disabled && styles.disabledImage}
         selected={selected}
+        disabled={disabled}
       />
       <Text variant="tiny-500" color={textColor} style={styles.text} numberOfLines={1}>
         {name}
