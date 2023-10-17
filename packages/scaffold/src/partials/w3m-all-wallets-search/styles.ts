@@ -8,8 +8,7 @@ export default StyleSheet.create({
     paddingHorizontal: Spacing.xs,
     alignItems: 'center'
   },
-  loader: {
-    height: '100%',
-    flexGrow: 1
+  emptyContainer: {
+    height: '50%'
   }
 });

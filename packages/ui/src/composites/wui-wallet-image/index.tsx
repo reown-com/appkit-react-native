@@ -45,7 +45,12 @@ export function WalletImage({
 
     return (
       <View style={[styles.container, styles[`${size}Image`]]}>
-        <Icon height={IconSize[size]} width={IconSize[size]} name="walletPlaceholder" />
+        <Icon
+          height={IconSize[size]}
+          width={IconSize[size]}
+          name="walletPlaceholder"
+          color="fg-200"
+        />
       </View>
     );
   };
