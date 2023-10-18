@@ -126,7 +126,7 @@ export function ConnectView() {
   };
 
   const filterOutRecentWallets = (wallets: WcWallet[]) => {
-    const recentIds = recentWallets?.slice(RECENT_COUNT).map(wallet => wallet.id);
+    const recentIds = recentWallets?.slice(0, RECENT_COUNT).map(wallet => wallet.id);
     if (!recentIds?.length) return wallets;
 
     const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id));
