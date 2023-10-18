@@ -14,13 +14,17 @@ export function ConnectView() {
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const imageHeaders = ApiController._getApiHeaders();
 
-  const RECENT_COUNT = installed.length ? 1 : 2;
+  const RECENT_COUNT = recentWallets?.length ? (installed.length ? 1 : 2) : 0;
+
   const INSTALLED_COUNT =
     installed.length >= UiUtil.TOTAL_VISIBLE_WALLETS
       ? UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT
       : installed.length;
 
-  const FEATURED_COUNT = UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT - INSTALLED_COUNT;
+  const FEATURED_COUNT = featured.length
+    ? UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT - INSTALLED_COUNT
+    : 0;
+
   const RECOMMENDED_COUNT =
     UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT - INSTALLED_COUNT - FEATURED_COUNT;
 

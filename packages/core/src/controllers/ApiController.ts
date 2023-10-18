@@ -109,23 +109,27 @@ export const ApiController = {
     const results = await Promise.all(promises);
     const installed = results.filter(({ isInstalled }) => isInstalled).map(({ id }) => id);
     const { excludeWalletIds } = OptionsController.state;
-    const { data } = await api.get<ApiGetWalletsResponse>({
-      path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
-      params: {
-        page: '1',
-        platform: this.platform(),
-        entries: '100',
-        include: installed?.join(','),
-        exclude: excludeWalletIds?.join(',')
-      }
-    });
 
-    const walletImages = data.map(d => d.image_id).filter(Boolean);
-    await Promise.allSettled(
-      (walletImages as string[]).map(id => ApiController._fetchWalletImage(id))
-    );
-    state.installed = data;
+    if (installed.length > 0) {
+      const { data } = await api.get<ApiGetWalletsResponse>({
+        path: '/getWallets',
+        headers: ApiController._getApiHeaders(),
+        params: {
+          page: '1',
+          platform: this.platform(),
+          entries: installed?.length.toString(),
+          include: installed?.join(','),
+          exclude: excludeWalletIds?.join(',')
+        }
+      });
+
+      const walletImages = data.map(d => d.image_id).filter(Boolean);
+      await Promise.allSettled(
+        (walletImages as string[]).map(id => ApiController._fetchWalletImage(id))
+      );
+
+      state.installed = data;
+    }
   },
 
   async fetchFeaturedWallets() {

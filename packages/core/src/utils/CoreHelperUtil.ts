@@ -12,10 +12,6 @@ export const CoreHelperUtil = {
     return Date.now() - lastRetry >= ConstantsUtil.ONE_SEC_MS;
   },
 
-  copyToClopboard(/*text: string*/) {
-    // navigator.clipboard.writeText(text)
-  },
-
   getPairingExpiry() {
     return Date.now() + ConstantsUtil.FOUR_MINUTES_MS;
   },
