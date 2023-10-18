@@ -5,6 +5,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { FetchUtil } from '../utils/FetchUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type {
+  ApiGetDataWalletsResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
   SdkVersion,
@@ -29,6 +30,7 @@ export interface ApiControllerState {
   count: number;
   featured: WcWallet[];
   recommended: WcWallet[];
+  installed: WcWallet[];
   wallets: WcWallet[];
   search: WcWallet[];
 }
@@ -43,7 +45,8 @@ const state = proxy<ApiControllerState>({
   featured: [],
   recommended: [],
   wallets: [],
-  search: []
+  search: [],
+  installed: []
 });
 
 // -- Controller ---------------------------------------- //
@@ -89,8 +92,46 @@ export const ApiController = {
     }
   },
 
+  async fetchInstalledWallets() {
+    const path = Platform.select({ default: 'getIosData', android: 'getAndroidData' });
+    const { data: walletData } = await api.get<ApiGetDataWalletsResponse>({
+      path,
+      headers: ApiController._getApiHeaders()
+    });
+
+    const promises = walletData.map(async item => {
+      return {
+        id: item.id,
+        isInstalled: await CoreHelperUtil.checkInstalled(item)
+      };
+    });
+
+    const results = await Promise.all(promises);
+    const installed = results.filter(({ isInstalled }) => isInstalled).map(({ id }) => id);
+    const { excludeWalletIds } = OptionsController.state;
+    const { data } = await api.get<ApiGetWalletsResponse>({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        platform: this.platform(),
+        entries: '100',
+        include: installed?.join(','),
+        exclude: excludeWalletIds?.join(',')
+      }
+    });
+
+    const walletImages = data.map(d => d.image_id).filter(Boolean);
+    await Promise.allSettled(
+      (walletImages as string[]).map(id => ApiController._fetchWalletImage(id))
+    );
+    state.installed = data;
+  },
+
   async fetchFeaturedWallets() {
     const { featuredWalletIds } = OptionsController.state;
+    const exclude = state.installed.map(({ id }) => id);
+
     if (featuredWalletIds?.length) {
       const { data } = await api.get<ApiGetWalletsResponse>({
         path: '/getWallets',
@@ -101,7 +142,8 @@ export const ApiController = {
           entries: featuredWalletIds?.length
             ? String(featuredWalletIds.length)
             : recommendedEntries,
-          include: featuredWalletIds?.join(',')
+          include: featuredWalletIds?.join(','),
+          exclude: exclude?.join(',')
         }
       });
       data.sort((a, b) => featuredWalletIds.indexOf(a.id) - featuredWalletIds.indexOf(b.id));
@@ -112,8 +154,15 @@ export const ApiController = {
   },
 
   async fetchRecommendedWallets() {
+    const { installed } = ApiController.state;
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state;
-    const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean);
+
+    const exclude = [
+      ...installed.map(({ id }) => id),
+      ...(excludeWalletIds ?? []),
+      ...(featuredWalletIds ?? [])
+    ].filter(Boolean);
+
     const { data, count } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
@@ -140,6 +189,7 @@ export const ApiController = {
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state;
     const exclude = [
+      ...state.installed.map(({ id }) => id),
       ...state.recommended.map(({ id }) => id),
       ...(excludeWalletIds ?? []),
       ...(featuredWalletIds ?? [])
@@ -189,7 +239,9 @@ export const ApiController = {
     state.search = data;
   },
 
-  prefetch() {
+  async prefetch() {
+    await ApiController.fetchInstalledWallets();
+
     state.prefetchPromise = Promise.race([
       Promise.allSettled([
         ApiController.fetchFeaturedWallets(),

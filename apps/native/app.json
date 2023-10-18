@@ -16,7 +16,46 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": [
+          "metamask",
+          "trust",
+          "safe",
+          "rainbow",
+          "uniswap",
+          "zerion",
+          "imtokenv2",
+          "argent",
+          "spot",
+          "omni",
+          "dfw",
+          "tpoutside",
+          "robinhood-wallet",
+          "frontier",
+          "blockchain-wallet",
+          "safepalwallet",
+          "bitkeep",
+          "zengo",
+          "oneinch",
+          "bnc",
+          "exodus",
+          "ledgerlive",
+          "mewwallet",
+          "awallet",
+          "keyring",
+          "lobstr",
+          "ontoprovider",
+          "mathwallet",
+          "unstoppabledomains",
+          "obvious",
+          "fireblocks-wc",
+          "ambire",
+          "internetmoney",
+          "walletnow",
+          "bitcoincom"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {

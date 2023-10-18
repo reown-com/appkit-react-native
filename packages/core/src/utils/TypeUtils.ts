@@ -46,6 +46,12 @@ export interface WcWallet {
   play_store?: string | null;
 }
 
+export interface DataWallet {
+  id: string;
+  ios_schema?: string;
+  android_app_id?: string;
+}
+
 export interface ApiGetWalletsRequest {
   page: number;
   entries: number;
@@ -56,6 +62,11 @@ export interface ApiGetWalletsRequest {
 
 export interface ApiGetWalletsResponse {
   data: WcWallet[];
+  count: number;
+}
+
+export interface ApiGetDataWalletsResponse {
+  data: DataWallet[];
   count: number;
 }
 
