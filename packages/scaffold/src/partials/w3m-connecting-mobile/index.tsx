@@ -26,11 +26,13 @@ interface Props {
 }
 
 export function ConnectingMobile({ onRetry }: Props) {
+  const { installed } = useSnapshot(ApiController.state);
   const { data } = useSnapshot(RouterController.state);
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
   const [linkingError, setLinkingError] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
   const [ready, setReady] = useState(false);
+  const isInstalled = !!installed?.find(wallet => wallet.id === data?.wallet?.id);
 
   const storeUrl = Platform.select({
     ios: data?.wallet?.app_store,
@@ -99,9 +101,8 @@ export function ConnectingMobile({ onRetry }: Props) {
   };
 
   const storeTemplate = () => {
-    if (!storeUrl) return null;
+    if (!storeUrl || isInstalled) return null;
 
-    //TODO: Add installed condition
     return (
       <ActionEntry style={styles.storeButton}>
         <Text numberOfLines={1} variant="paragraph-500" color="fg-200">
