@@ -8,12 +8,12 @@ import { useSnapshot } from 'valtio';
 
 export function ConnectingQrCode() {
   const { wcUri } = useSnapshot(ConnectionController.state);
-  const clipboardClient = OptionsController._getClipboardClient();
+  const showCopy = OptionsController.isClipboardAvailable();
 
   //TODO: Improve loading
   const onCopyAddress = () => {
-    if (clipboardClient && wcUri) {
-      clipboardClient.setString(wcUri);
+    if (wcUri) {
+      OptionsController.copyToClipboard(wcUri);
       SnackController.showSuccess('Link copied');
     }
   };
@@ -24,7 +24,7 @@ export function ConnectingQrCode() {
         <>
           <QrCode size={300} uri={wcUri} />
           <Text variant="paragraph-500">Scan this QR code with your phone</Text>
-          {clipboardClient && (
+          {showCopy && (
             <Link iconLeft="copy" color="fg-200" onPress={onCopyAddress}>
               Copy link
             </Link>

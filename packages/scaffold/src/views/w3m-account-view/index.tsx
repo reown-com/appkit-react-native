@@ -32,8 +32,8 @@ export function AccountView() {
   const [disconnecting, setDisconnecting] = useState(false);
   const { networkImages } = useSnapshot(AssetController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
-  const clipboardClient = OptionsController._getClipboardClient();
   const networkImage = networkImages[caipNetwork?.imageId ?? ''];
+  const showCopy = OptionsController.isClipboardAvailable();
 
   async function onDisconnect() {
     setDisconnecting(true);
@@ -50,8 +50,8 @@ export function AccountView() {
   };
 
   const onCopyAddress = () => {
-    if (clipboardClient && address) {
-      clipboardClient.setString(profileName ?? address);
+    if (address) {
+      OptionsController.copyToClipboard(profileName ?? address);
       SnackController.showSuccess('Address copied');
     }
   };
@@ -93,9 +93,7 @@ export function AccountView() {
                 truncate: 'middle'
               })}
         </Text>
-        {clipboardClient && (
-          <IconLink icon="copy" size="md" iconColor="fg-250" onPress={onCopyAddress} />
-        )}
+        {showCopy && <IconLink icon="copy" size="md" iconColor="fg-250" onPress={onCopyAddress} />}
       </FlexView>
       {balance && (
         <Text color="fg-200">{CoreHelperUtil.formatBalance(balance, balanceSymbol)}</Text>

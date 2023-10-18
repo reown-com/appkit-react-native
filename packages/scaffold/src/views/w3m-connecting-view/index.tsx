@@ -22,7 +22,6 @@ import { UiUtil } from '../../utils/UiUtil';
 export function ConnectingView() {
   const { data } = useSnapshot(RouterController.state);
   const [lastRetry, setLastRetry] = useState(Date.now());
-  const clipboardClient = OptionsController._getClipboardClient();
   const isQr = !data?.wallet;
 
   const [platform, setPlatform] = useState<Platform>();
@@ -62,8 +61,8 @@ export function ConnectingView() {
   };
 
   const onCopyUri = (uri?: string) => {
-    if (clipboardClient && uri) {
-      clipboardClient.setString(uri);
+    if (OptionsController.isClipboardAvailable() && uri) {
+      OptionsController.copyToClipboard(uri);
       SnackController.showSuccess('Link copied');
     }
   };

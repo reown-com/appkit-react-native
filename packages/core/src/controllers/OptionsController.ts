@@ -24,10 +24,6 @@ const state = proxy<OptionsControllerState>({
 export const OptionsController = {
   state,
 
-  _getClipboardClient() {
-    return state._clipboardClient;
-  },
-
   setClipboardClient(client: ClipboardClient) {
     state._clipboardClient = ref(client);
   },
@@ -50,5 +46,16 @@ export const OptionsController = {
 
   setTokens(tokens: OptionsControllerState['tokens']) {
     state.tokens = tokens;
+  },
+
+  isClipboardAvailable() {
+    return !!state._clipboardClient;
+  },
+
+  copyToClipboard(value: string) {
+    const client = state._clipboardClient;
+    if (client) {
+      client.setString(value);
+    }
   }
 };
