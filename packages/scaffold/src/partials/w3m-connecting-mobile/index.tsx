@@ -23,9 +23,10 @@ import styles from './styles';
 
 interface Props {
   onRetry: () => void;
+  onCopyUri: (uri?: string) => void;
 }
 
-export function ConnectingMobile({ onRetry }: Props) {
+export function ConnectingMobile({ onRetry, onCopyUri }: Props) {
   const { installed } = useSnapshot(ApiController.state);
   const { data } = useSnapshot(RouterController.state);
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
@@ -158,18 +159,21 @@ export function ConnectingMobile({ onRetry }: Props) {
         )}
       </LoadingThumbnail>
       {textTemplate()}
-      {wcError && (
-        <Button
-          variant="accent"
-          iconLeft="refresh"
-          style={styles.retryButton}
-          iconStyle={styles.copyIcon}
-          onPress={onRetryPress}
-        >
-          Try again
-        </Button>
-      )}
-      <Link iconLeft="copy" color="fg-200" style={styles.copyButton} onPress={() => {}}>
+      <Button
+        variant="accent"
+        iconLeft="refresh"
+        style={styles.retryButton}
+        iconStyle={styles.copyIcon}
+        onPress={onRetryPress}
+      >
+        Try again
+      </Button>
+      <Link
+        iconLeft="copy"
+        color="fg-200"
+        style={styles.copyButton}
+        onPress={() => onCopyUri(wcUri)}
+      >
         Copy link
       </Link>
       {storeTemplate()}

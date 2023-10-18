@@ -8,15 +8,25 @@ import {
   ModalController,
   RouterController,
   SnackController,
-  StorageUtil
+  StorageUtil,
+  type Platform,
+  OptionsController
 } from '@web3modal/core-react-native';
 
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
 import { ConnectingMobile } from '../../partials/w3m-connecting-mobile';
+import { ConnectingWeb } from '../../partials/w3m-connecting-web';
+import { ConnectingHeader } from '../../partials/w3m-connecting-header';
+import { UiUtil } from '../../utils/UiUtil';
 
 export function ConnectingView() {
   const { data } = useSnapshot(RouterController.state);
   const [lastRetry, setLastRetry] = useState(Date.now());
+  const clipboardClient = OptionsController._getClipboardClient();
+  const isQr = !data?.wallet;
+
+  const [platform, setPlatform] = useState<Platform>();
+  const [platforms, setPlatforms] = useState<Platform[]>([]);
 
   const initializeConnection = async (retry = false) => {
     try {
@@ -51,6 +61,54 @@ export function ConnectingView() {
     }
   };
 
+  const onCopyUri = (uri?: string) => {
+    if (clipboardClient && uri) {
+      clipboardClient.setString(uri);
+      SnackController.showSuccess('Link copied');
+    }
+  };
+
+  const onSelectPlatform = (tab: Platform) => {
+    UiUtil.createViewTransition();
+    setPlatform(tab);
+  };
+
+  const headerTemplate = () => {
+    if (isQr) return null;
+
+    if (platforms.length > 1) {
+      return <ConnectingHeader platforms={platforms} onSelectPlatform={onSelectPlatform} />;
+    }
+
+    return null;
+  };
+
+  const platformTemplate = () => {
+    switch (platform) {
+      case 'mobile':
+        return (
+          <ConnectingMobile onRetry={() => initializeConnection(true)} onCopyUri={onCopyUri} />
+        );
+      case 'web':
+        return <ConnectingWeb onCopyUri={onCopyUri} />;
+      default:
+        return undefined;
+    }
+  };
+
+  useEffect(() => {
+    const _platforms: Platform[] = [];
+    if (data?.wallet?.mobile_link) {
+      _platforms.push('mobile');
+    }
+    if (data?.wallet?.webapp_link) {
+      _platforms.push('web');
+    }
+
+    setPlatforms(_platforms);
+    setPlatform(_platforms[0]);
+  }, [data]);
+
   useEffect(() => {
     initializeConnection();
     const _interval = setInterval(initializeConnection, ConstantsUtil.TEN_SEC_MS);
@@ -61,5 +119,10 @@ export function ConnectingView() {
 
   if (!data?.wallet) return <ConnectingQrCode />;
 
-  return <ConnectingMobile onRetry={() => initializeConnection(true)} />;
+  return (
+    <>
+      {headerTemplate()}
+      {platformTemplate()}
+    </>
+  );
 }
