@@ -18,9 +18,11 @@ interface AllWalletsListProps {
 export function AllWalletsList({ columns, itemMargin = 0 }: AllWalletsListProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
-  const { featured, recommended, wallets, page, count } = useSnapshot(ApiController.state);
+  const { installed, featured, recommended, wallets, page, count } = useSnapshot(
+    ApiController.state
+  );
   const imageHeaders = ApiController._getApiHeaders();
-  const walletList = [...featured, ...recommended, ...wallets];
+  const walletList = [...installed, ...featured, ...recommended, ...wallets];
 
   const ITEM_HEIGHT = CardSelectHeight + itemMargin * 2;
 

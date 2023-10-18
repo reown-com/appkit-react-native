@@ -26,6 +26,7 @@ export function NetworksView() {
       requested?.sort((a, b) => {
         if (approvedIds.includes(a.id) && !approvedIds.includes(b.id)) return -1;
         if (approvedIds.includes(b.id) && !approvedIds.includes(a.id)) return 1;
+
         return 0;
       });
     }

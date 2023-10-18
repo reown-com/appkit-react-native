@@ -7,7 +7,14 @@ import {
   RouterController,
   type WcWallet
 } from '@web3modal/core-react-native';
-import { CardSelect, CardSelectHeight, FlexView, LoadingSpinner } from '@web3modal/ui-react-native';
+import {
+  CardSelect,
+  CardSelectHeight,
+  FlexView,
+  IconBox,
+  LoadingSpinner,
+  Text
+} from '@web3modal/ui-react-native';
 import styles from './styles';
 
 export interface AllWalletsSearchProps {
@@ -37,6 +44,29 @@ export function AllWalletsSearch({ searchQuery, columns, itemMargin = 0 }: AllWa
     );
   };
 
+  const emptyContainerTemplate = () => {
+    return (
+      <FlexView justifyContent="center" alignItems="center" gap="xl" style={styles.emptyContainer}>
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <>
+            <IconBox
+              icon="walletPlaceholder"
+              background
+              size="lg"
+              iconColor="fg-200"
+              backgroundColor="overlay-005"
+            />
+            <Text variant="paragraph-500" color="fg-200">
+              No Wallet found
+            </Text>
+          </>
+        )}
+      </FlexView>
+    );
+  };
+
   const searchFetch = useCallback(async () => {
     setLoading(true);
     await ApiController.searchWallet({ search: searchQuery });
@@ -50,11 +80,7 @@ export function AllWalletsSearch({ searchQuery, columns, itemMargin = 0 }: AllWa
     }
   }, [searchQuery, prevSearchQuery, searchFetch]);
 
-  return loading ? (
-    <FlexView alignItems="center" justifyContent="flex-start" style={styles.loader} padding="4xl">
-      <LoadingSpinner />
-    </FlexView>
-  ) : (
+  return (
     <FlatList
       key={columns}
       fadingEdgeLength={20}
@@ -63,6 +89,7 @@ export function AllWalletsSearch({ searchQuery, columns, itemMargin = 0 }: AllWa
       data={search}
       renderItem={walletTemplate}
       contentContainerStyle={styles.contentContainer}
+      ListEmptyComponent={emptyContainerTemplate()}
       getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,

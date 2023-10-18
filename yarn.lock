@@ -6035,13 +6035,6 @@
     "@walletconnect/window-getters" "^1.0.1"
     tslib "1.14.1"
 
-"@web3modal/ui-react-native@1.0.0-alpha.6":
-  version "1.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/@web3modal/ui-react-native/-/ui-react-native-1.0.0-alpha.6.tgz#7abc153b6f2f7cbba2c00a124a16cc4132284741"
-  integrity sha512-vEJNYCejzjRUGOIORaMFjLwFTUCdSibu3MuBMlrnDg7kJZ4ubSEiPCLFhvllQphtSyDrrGjvgz+sOry0bYJhgQ==
-  dependencies:
-    qrcode "1.5.3"
-
 "@webassemblyjs/ast@1.11.6", "@webassemblyjs/ast@^1.11.5":
   version "1.11.6"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.11.6.tgz#db046555d3c413f8966ca50a95176a0e2c642e24"

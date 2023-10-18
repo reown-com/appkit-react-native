@@ -1,6 +1,7 @@
 import { Linking } from 'react-native';
 import { ConstantsUtil } from './ConstantsUtil';
-import type { CaipAddress, LinkingRecord } from './TypeUtils';
+import type { CaipAddress, DataWallet, LinkingRecord } from './TypeUtils';
+import { isAppInstalled } from '../modules/AppInstalled';
 
 export const CoreHelperUtil = {
   isPairingExpired(expiry?: number) {
@@ -124,5 +125,18 @@ export const CoreHelperUtil = {
     return CoreHelperUtil.isRestrictedRegion()
       ? 'https://rpc.walletconnect.org'
       : 'https://rpc.walletconnect.com';
+  },
+
+  async checkInstalled(wallet: DataWallet): Promise<boolean> {
+    let isInstalled = false;
+    const scheme = wallet.ios_schema;
+    const appId = wallet.android_app_id;
+    try {
+      isInstalled = await isAppInstalled(scheme, appId);
+    } catch {
+      isInstalled = false;
+    }
+
+    return isInstalled;
   }
 };

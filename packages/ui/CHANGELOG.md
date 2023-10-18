@@ -1,5 +1,11 @@
 # @web3modal/ui-react-native
 
+## 1.0.0-alpha.9
+
+### Patch Changes
+
+- fixes in network view
+
 ## 1.0.0-alpha.8
 
 ### Patch Changes
