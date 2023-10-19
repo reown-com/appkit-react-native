@@ -3,11 +3,11 @@
   "tag": "alpha",
   "initialVersions": {
     "@apps/gallery": "1.0.0",
-    "@apps/native": "1.0.1-alpha.1",
-    "@web3modal/core-react-native": "1.0.0-alpha.3",
-    "@web3modal/scaffold-react-native": "1.0.0-alpha.3",
-    "@web3modal/ui-react-native": "1.0.0-alpha.3",
-    "@web3modal/wagmi-react-native": "1.0.0-alpha.3"
+    "@apps/native": "1.0.1-alpha.7",
+    "@web3modal/core-react-native": "1.0.0-alpha.9",
+    "@web3modal/scaffold-react-native": "1.0.0-alpha.9",
+    "@web3modal/ui-react-native": "1.0.0-alpha.9",
+    "@web3modal/wagmi-react-native": "1.0.0-alpha.9"
   },
   "changesets": [
     "early-toes-film",
@@ -16,6 +16,7 @@
     "gentle-chairs-retire",
     "sharp-apples-boil",
     "sharp-socks-repair",
-    "shy-readers-itch"
+    "shy-readers-itch",
+    "wicked-phones-mix"
   ]
 }

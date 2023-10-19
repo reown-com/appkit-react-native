@@ -7,9 +7,9 @@
     "**/.DS_Store": true,
     "**/.git": true,
     "**/node_modules": true,
-    "**/out": true,
-    "**/dist": true,
-    "**/.turbo": true
+    "**/out": false,
+    "**/dist": false,
+    "**/.turbo": false
   },
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsdk": "node_modules/typescript/lib",
