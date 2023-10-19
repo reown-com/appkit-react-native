@@ -24,16 +24,15 @@ import styles from './styles';
 interface Props {
   onRetry: () => void;
   onCopyUri: (uri?: string) => void;
+  isInstalled?: boolean;
 }
 
-export function ConnectingMobile({ onRetry, onCopyUri }: Props) {
-  const { installed } = useSnapshot(ApiController.state);
+export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const { data } = useSnapshot(RouterController.state);
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
   const [linkingError, setLinkingError] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
   const [ready, setReady] = useState(false);
-  const isInstalled = !!installed?.find(wallet => wallet.id === data?.wallet?.id);
 
   const storeUrl = Platform.select({
     ios: data?.wallet?.app_store,

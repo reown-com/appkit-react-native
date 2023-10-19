@@ -10,7 +10,8 @@ import {
   SnackController,
   StorageUtil,
   type Platform,
-  OptionsController
+  OptionsController,
+  ApiController
 } from '@web3modal/core-react-native';
 
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
@@ -20,9 +21,11 @@ import { ConnectingHeader } from '../../partials/w3m-connecting-header';
 import { UiUtil } from '../../utils/UiUtil';
 
 export function ConnectingView() {
+  const { installed } = useSnapshot(ApiController.state);
   const { data } = useSnapshot(RouterController.state);
   const [lastRetry, setLastRetry] = useState(Date.now());
   const isQr = !data?.wallet;
+  const isInstalled = !!installed?.find(wallet => wallet.id === data?.wallet?.id);
 
   const [platform, setPlatform] = useState<Platform>();
   const [platforms, setPlatforms] = useState<Platform[]>([]);
@@ -86,7 +89,11 @@ export function ConnectingView() {
     switch (platform) {
       case 'mobile':
         return (
-          <ConnectingMobile onRetry={() => initializeConnection(true)} onCopyUri={onCopyUri} />
+          <ConnectingMobile
+            onRetry={() => initializeConnection(true)}
+            onCopyUri={onCopyUri}
+            isInstalled={isInstalled}
+          />
         );
       case 'web':
         return <ConnectingWeb onCopyUri={onCopyUri} />;
@@ -100,13 +107,13 @@ export function ConnectingView() {
     if (data?.wallet?.mobile_link) {
       _platforms.push('mobile');
     }
-    if (data?.wallet?.webapp_link) {
+    if (data?.wallet?.webapp_link && !isInstalled) {
       _platforms.push('web');
     }
 
     setPlatforms(_platforms);
     setPlatform(_platforms[0]);
-  }, [data]);
+  }, [data, isInstalled]);
 
   useEffect(() => {
     initializeConnection();
