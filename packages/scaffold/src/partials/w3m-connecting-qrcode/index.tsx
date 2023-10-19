@@ -5,6 +5,7 @@ import {
 } from '@web3modal/core-react-native';
 import { FlexView, Link, LoadingSpinner, QrCode, Text } from '@web3modal/ui-react-native';
 import { useSnapshot } from 'valtio';
+import styles from './styles';
 
 export function ConnectingQrCode() {
   const { wcUri } = useSnapshot(ConnectionController.state);
@@ -31,7 +32,7 @@ export function ConnectingQrCode() {
           )}
         </>
       ) : (
-        <LoadingSpinner />
+        <LoadingSpinner style={styles.loader} />
       )}
     </FlexView>
   );
