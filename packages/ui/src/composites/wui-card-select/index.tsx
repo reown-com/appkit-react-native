@@ -7,6 +7,7 @@ import { NetworkImage } from '../wui-network-image';
 import { WalletImage } from '../wui-wallet-image';
 import styles, { getBackgroundColor, ITEM_HEIGHT } from './styles';
 import { memo } from 'react';
+import { UiUtil } from '../../utils/UiUtil';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -63,7 +64,7 @@ function _CardSelect({
         disabled={disabled}
       />
       <Text variant="tiny-500" color={textColor} style={styles.text} numberOfLines={1}>
-        {name}
+        {UiUtil.getWalletName(name)}
       </Text>
     </AnimatedPressable>
   );

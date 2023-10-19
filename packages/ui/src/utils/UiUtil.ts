@@ -64,5 +64,9 @@ export const UiUtil = {
     return `${string.substring(0, Math.floor(charsStart))}...${string.substring(
       string.length - Math.floor(charsEnd)
     )}`;
+  },
+
+  getWalletName(name: string, short = true) {
+    return short ? name.split(' ')[0] : name;
   }
 };
