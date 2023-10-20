@@ -17,8 +17,8 @@ export interface InputElementProps {
 export function InputElement({ icon, disabled, onPress, style }: InputElementProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
-    Theme['overlay-020'],
-    Theme['overlay-030']
+    Theme['gray-glass-020'],
+    Theme['gray-glass-030']
   );
 
   return (
@@ -30,7 +30,7 @@ export function InputElement({ icon, disabled, onPress, style }: InputElementPro
       hitSlop={10}
       style={[
         styles.container,
-        { backgroundColor: disabled ? Theme['overlay-010'] : animatedValue },
+        { backgroundColor: disabled ? Theme['gray-glass-010'] : animatedValue },
         style
       ]}
     >

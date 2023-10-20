@@ -19,7 +19,7 @@ export function CardSelectLoader({ style }: CardSelectLoaderProps) {
       gap="xs"
       alignItems="center"
       justifyContent="center"
-      style={[styles.container, { backgroundColor: Theme['overlay-002'] }, style]}
+      style={[styles.container, { backgroundColor: Theme['gray-glass-002'] }, style]}
     >
       <Shimmer
         height={WalletImageSize.md}

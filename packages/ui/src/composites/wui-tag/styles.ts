@@ -5,11 +5,11 @@ import type { TagType } from '../../utils/TypesUtil';
 export const getThemedColors = (variant?: TagType) =>
   ({
     main: {
-      background: 'blue-015',
-      text: 'blue-100'
+      background: 'accent-glass-015',
+      text: 'accent-100'
     },
     shade: {
-      background: 'overlay-010',
+      background: 'gray-glass-010',
       text: 'fg-200'
     },
     success: {
@@ -21,7 +21,7 @@ export const getThemedColors = (variant?: TagType) =>
       text: 'error-100'
     },
     disabled: {
-      background: 'overlay-010',
+      background: 'gray-glass-010',
       text: 'fg-200'
     }
   })[variant || 'disabled'];

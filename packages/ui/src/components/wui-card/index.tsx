@@ -16,7 +16,7 @@ export function Card({ children, style }: CardProps) {
     <View
       style={[
         styles.container,
-        { backgroundColor: Theme['bg-125'], borderColor: Theme['overlay-005'] },
+        { backgroundColor: Theme['bg-125'], borderColor: Theme['gray-glass-005'] },
         style
       ]}
     >

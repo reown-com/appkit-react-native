@@ -13,10 +13,10 @@ export const getBackgroundColor = ({
   disabled?: boolean;
   pressed?: boolean;
 }): ThemeKeys => {
-  if (disabled) return 'overlay-005';
-  if (selected) return 'blue-020';
+  if (disabled) return 'gray-glass-005';
+  if (selected) return 'accent-glass-020';
 
-  return pressed ? 'overlay-010' : 'overlay-002';
+  return pressed ? 'gray-glass-010' : 'gray-glass-002';
 };
 
 export default StyleSheet.create({

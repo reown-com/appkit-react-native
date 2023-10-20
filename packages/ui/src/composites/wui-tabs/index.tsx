@@ -32,13 +32,13 @@ export function Tabs({ tabs, onTabChange }: TabsProps) {
   });
 
   return (
-    <View style={[styles.container, { backgroundColor: Theme['overlay-002'] }]}>
+    <View style={[styles.container, { backgroundColor: Theme['gray-glass-002'] }]}>
       <Animated.View
         style={[
           styles.activeMark,
           {
-            backgroundColor: Theme['overlay-005'],
-            borderColor: Theme['overlay-005'],
+            backgroundColor: Theme['gray-glass-005'],
+            borderColor: Theme['gray-glass-005'],
             left: markPosition
           }
         ]}

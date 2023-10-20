@@ -9,26 +9,26 @@ export const getThemedButtonStyle = (
   pressed?: boolean
 ): StyleProp<any> => {
   const buttonBaseStyle = {
-    borderColor: theme['overlay-010']
+    borderColor: theme['gray-glass-010']
   };
 
   if (disabled) {
     return {
-      backgroundColor: variant === 'fill' ? theme['overlay-020'] : theme['overlay-010'],
-      borderColor: theme['overlay-005']
+      backgroundColor: variant === 'fill' ? theme['gray-glass-020'] : theme['gray-glass-010'],
+      borderColor: theme['gray-glass-005']
     };
   }
 
   if (pressed) {
     return {
       ...buttonBaseStyle,
-      backgroundColor: variant === 'fill' ? theme['blue-080'] : theme['overlay-010']
+      backgroundColor: variant === 'fill' ? theme['accent-020'] : theme['gray-glass-010']
     };
   }
 
   return {
     ...buttonBaseStyle,
-    backgroundColor: variant === 'fill' ? theme['blue-100'] : 'transparent'
+    backgroundColor: variant === 'fill' ? theme['accent-100'] : 'transparent'
   };
 };
 
@@ -38,13 +38,13 @@ export const getThemedTextStyle = (
   disabled?: boolean
 ): StyleProp<any> => {
   if (disabled) {
-    return variant === 'fill' ? { color: theme['fg-300'] } : { color: theme['overlay-020'] };
+    return variant === 'fill' ? { color: theme['fg-300'] } : { color: theme['gray-glass-020'] };
   }
 
   return variant === 'fill'
     ? { color: theme['inverse-100'] }
     : variant === 'accent'
-    ? { color: theme['blue-100'] }
+    ? { color: theme['accent-100'] }
     : { color: theme['fg-150'] };
 };
 

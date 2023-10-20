@@ -40,8 +40,8 @@ export function ListItem({
 }: ListItemProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
-    Theme['overlay-002'],
-    Theme['overlay-010']
+    Theme['gray-glass-002'],
+    Theme['gray-glass-010']
   );
 
   function visualTemplate() {
@@ -53,15 +53,15 @@ export function ListItem({
           style={[
             styles.image,
             (disabled || loading) && styles.disabledImage,
-            { borderColor: Theme['overlay-005'] }
+            { borderColor: Theme['gray-glass-005'] }
           ]}
         />
       );
     } else if (variant === 'icon' && iconVariant === 'square' && icon) {
       return <Icon name={icon} width={36} height={36} style={styles.squareIcon} />;
     } else if (variant === 'icon' && icon) {
-      const iconColor = iconVariant === 'blue' ? 'blue-100' : 'fg-200';
-      const borderColor = iconVariant === 'blue' ? 'blue-005' : 'overlay-002';
+      const iconColor = iconVariant === 'blue' ? 'accent-100' : 'fg-200';
+      const borderColor = iconVariant === 'blue' ? 'accent-glass-005' : 'gray-glass-002';
 
       return (
         <IconBox
@@ -92,7 +92,7 @@ export function ListItem({
       disabled={disabled || loading}
       style={[
         styles.container,
-        { backgroundColor: disabled || loading ? Theme['overlay-010'] : animatedValue },
+        { backgroundColor: disabled || loading ? Theme['gray-glass-010'] : animatedValue },
         style
       ]}
       onPress={onPress}

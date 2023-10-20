@@ -12,7 +12,7 @@ export function Overlay({ children, style }: OverlayProps) {
   const Theme = useTheme();
 
   return (
-    <View style={[styles.container, { backgroundColor: Theme['overlay-030'] }, style]}>
+    <View style={[styles.container, { backgroundColor: Theme['gray-glass-030'] }, style]}>
       {children}
     </View>
   );

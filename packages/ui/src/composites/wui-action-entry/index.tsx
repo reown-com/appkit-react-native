@@ -17,8 +17,8 @@ export interface ActionEntryProps {
 export function ActionEntry({ children, onPress, disabled, style }: ActionEntryProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
-    Theme['overlay-002'],
-    Theme['overlay-010']
+    Theme['gray-glass-002'],
+    Theme['gray-glass-010']
   );
   const isPressable = !!onPress;
 
@@ -26,7 +26,7 @@ export function ActionEntry({ children, onPress, disabled, style }: ActionEntryP
     <AnimatedPressable
       style={[
         styles.container,
-        { backgroundColor: disabled ? Theme['overlay-010'] : animatedValue },
+        { backgroundColor: disabled ? Theme['gray-glass-010'] : animatedValue },
         style
       ]}
       disabled={disabled}

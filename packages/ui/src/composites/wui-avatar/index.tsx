@@ -19,7 +19,7 @@ export function Avatar({ imageSrc, address, style }: AvatarProps) {
     return (
       <Image
         source={imageSrc}
-        style={[styles.container, styles.image, { borderColor: Theme['overlay-005'] }, style]}
+        style={[styles.container, styles.image, { borderColor: Theme['gray-glass-005'] }, style]}
       />
     );
   }
@@ -29,7 +29,7 @@ export function Avatar({ imageSrc, address, style }: AvatarProps) {
       <Svg width="100%" height="100%" viewBox="0 0 80 80" fill="none">
         <G clip-path="url(#clip)">
           <Circle cx="40" cy="40" r="32" fill="url(#radial)" />
-          <Circle cx="40" cy="40" r="31.5" stroke={Theme['overlay-005']} />
+          <Circle cx="40" cy="40" r="31.5" stroke={Theme['gray-glass-005']} />
         </G>
         <Rect
           x="4"
@@ -37,7 +37,7 @@ export function Avatar({ imageSrc, address, style }: AvatarProps) {
           width="72"
           height="72"
           rx="34"
-          stroke={Theme['overlay-005']}
+          stroke={Theme['gray-glass-005']}
           strokeWidth="8"
         />
         <Defs>

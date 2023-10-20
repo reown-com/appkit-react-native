@@ -43,7 +43,7 @@ function _CardSelect({
     Theme[pressedBackgroundColor]
   );
 
-  const textColor = disabled ? 'fg-300' : selected ? 'blue-100' : 'fg-100';
+  const textColor = disabled ? 'fg-300' : selected ? 'accent-100' : 'fg-100';
 
   const Image = type === 'wallet' ? WalletImage : NetworkImage;
 

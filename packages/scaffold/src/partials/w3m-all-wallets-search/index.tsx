@@ -56,7 +56,7 @@ export function AllWalletsSearch({ searchQuery, columns, itemMargin = 0 }: AllWa
               background
               size="lg"
               iconColor="fg-200"
-              backgroundColor="overlay-005"
+              backgroundColor="gray-glass-005"
             />
             <Text variant="paragraph-500" color="fg-200">
               No Wallet found

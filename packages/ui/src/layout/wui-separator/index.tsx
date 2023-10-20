@@ -5,5 +5,5 @@ import { useTheme } from '../../hooks/useTheme';
 export function Separator() {
   const Theme = useTheme();
 
-  return <View style={[styles.container, { backgroundColor: Theme['overlay-005'] }]} />;
+  return <View style={[styles.container, { backgroundColor: Theme['gray-glass-005'] }]} />;
 }

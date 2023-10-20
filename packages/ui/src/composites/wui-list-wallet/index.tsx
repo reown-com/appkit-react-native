@@ -41,8 +41,8 @@ export function ListWallet({
 }: ListWalletProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
-    Theme['overlay-002'],
-    Theme['overlay-010']
+    Theme['gray-glass-002'],
+    Theme['gray-glass-010']
   );
 
   function imageTemplate() {
@@ -98,7 +98,7 @@ export function ListWallet({
     <AnimatedPressable
       style={[
         styles.container,
-        { backgroundColor: disabled ? Theme['overlay-010'] : animatedValue }
+        { backgroundColor: disabled ? Theme['gray-glass-010'] : animatedValue }
       ]}
       disabled={disabled}
       onPress={onPress}

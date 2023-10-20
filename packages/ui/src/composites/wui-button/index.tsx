@@ -46,7 +46,7 @@ export function Button({
   const themedTextStyle = getThemedTextStyle(Theme, variant, disabled);
   const colorAnimation = useRef(new Animated.Value(0));
   const iconColor = (
-    variant === 'fill' ? 'inverse-100' : variant === 'accent' ? 'blue-100' : 'fg-150'
+    variant === 'fill' ? 'inverse-100' : variant === 'accent' ? 'accent-100' : 'fg-150'
   ) as ColorType;
 
   const themedNormalStyle = getThemedButtonStyle(Theme, variant, disabled, false);

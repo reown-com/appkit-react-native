@@ -8,26 +8,26 @@ export const getThemedButtonStyle = (
   pressed?: boolean
 ): StyleProp<any> => {
   const buttonBaseStyle = {
-    borderColor: theme['overlay-010']
+    borderColor: theme['gray-glass-010']
   };
 
   if (loading) {
     return {
-      backgroundColor: theme['overlay-015'],
-      borderColor: theme['overlay-005']
+      backgroundColor: theme['gray-glass-015'],
+      borderColor: theme['gray-glass-005']
     };
   }
 
   if (pressed) {
     return {
       ...buttonBaseStyle,
-      backgroundColor: theme['blue-080']
+      backgroundColor: theme['accent-020']
     };
   }
 
   return {
     ...buttonBaseStyle,
-    backgroundColor: theme['blue-100']
+    backgroundColor: theme['accent-100']
   };
 };
 
@@ -36,7 +36,7 @@ export const getThemedTextStyle = (
   loading?: boolean
 ): StyleProp<any> => {
   if (loading) {
-    return { color: theme['blue-100'] };
+    return { color: theme['accent-100'] };
   }
 
   return { color: theme['inverse-100'] };

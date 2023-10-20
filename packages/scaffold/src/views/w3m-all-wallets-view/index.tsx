@@ -29,7 +29,7 @@ export function AllWalletsView() {
         <SearchBar onChangeText={onInputChange} />
         <IconLink
           icon="qrCode"
-          iconColor="blue-100"
+          iconColor="accent-100"
           background
           size="lg"
           onPress={() => RouterController.push('ConnectingWalletConnect')}
