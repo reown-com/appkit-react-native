@@ -67,7 +67,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
   };
 
   return (
-    <FlexView alignItems="center" rowGap="xs" padding={['2xl', 'm', 'm', 'm']}>
+    <FlexView alignItems="center" rowGap="xs" padding={['2xl', 'm', '2xl', 'm']}>
       <LoadingThumbnail pause={wcError}>
         <WalletImage
           size="lg"
@@ -90,7 +90,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
       <Button
         variant="accent"
         iconLeft="externalLink"
-        style={styles.retryButton}
+        style={styles.openButton}
         onPress={onConnect}
       >
         Open

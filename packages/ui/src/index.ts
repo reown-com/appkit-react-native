@@ -47,7 +47,19 @@ export { Overlay, type OverlayProps } from './layout/wui-overlay';
 export { FlexView, type FlexViewProps } from './layout/wui-flex';
 export { Separator } from './layout/wui-separator';
 
-export type { ColorType, TextType, SizeType, IconType, LogoType } from './utils/TypesUtil';
+export type {
+  ButtonType,
+  CardSelectType,
+  ChipType,
+  ColorType,
+  IconType,
+  LogoType,
+  PlacementType,
+  SizeType,
+  TagType,
+  TextType,
+  VisualType
+} from './utils/TypesUtil';
 export { UiUtil } from './utils/UiUtil';
 export { Spacing, BorderRadius } from './utils/ThemeUtil';
 

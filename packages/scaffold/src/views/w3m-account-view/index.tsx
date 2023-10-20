@@ -74,11 +74,11 @@ export function AccountView() {
   };
 
   return (
-    <FlexView alignItems="center" padding="s">
+    <FlexView alignItems="center" padding={['s', 's', '2xl', 's']}>
       <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
       <Avatar imageSrc={profileImage} address={profileName ?? address} />
       <FlexView flexDirection="row" alignItems="center" gap="4xs" margin={['s', '0', '0', '0']}>
-        <Text variant="large-600">
+        <Text variant="medium-title-600">
           {profileName
             ? UiUtil.getTruncateString({
                 string: profileName,
@@ -96,7 +96,9 @@ export function AccountView() {
         {showCopy && <IconLink icon="copy" size="md" iconColor="fg-250" onPress={onCopyAddress} />}
       </FlexView>
       {balance && (
-        <Text color="fg-200">{CoreHelperUtil.formatBalance(balance, balanceSymbol)}</Text>
+        <Text variant="paragraph-400" color="fg-200">
+          {CoreHelperUtil.formatBalance(balance, balanceSymbol)}
+        </Text>
       )}
       {addressExplorerTemplate()}
       <FlexView gap="xs" margin={['s', '0', '0', '0']}>

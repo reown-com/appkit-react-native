@@ -50,7 +50,6 @@ export const getThemedTextStyle = (
 
 export default StyleSheet.create({
   button: {
-    flexDirection: 'row',
     paddingVertical: Spacing['3xs'],
     alignItems: 'center',
     justifyContent: 'center',
@@ -64,8 +63,5 @@ export default StyleSheet.create({
   mdButton: {
     height: 40,
     paddingHorizontal: Spacing.s
-  },
-  text: {
-    marginHorizontal: Spacing['3xs']
   }
 });

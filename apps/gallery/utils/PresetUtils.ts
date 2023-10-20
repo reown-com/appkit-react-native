@@ -1,4 +1,4 @@
-import {
+import type {
   ColorType,
   TextType,
   ButtonType,
@@ -47,18 +47,29 @@ export const colorOptions: ColorType[] = [
 ];
 
 export const textOptions: TextType[] = [
-  'micro-700',
-  'micro-600',
-  'tiny-500',
-  'tiny-600',
-  'small-500',
-  'small-600',
-  'paragraph-500',
-  'paragraph-600',
-  'paragraph-700',
+  'medium-title-400',
+  'medium-title-500',
+  'medium-title-600',
+  'small-title-400',
+  'small-title-500',
+  'small-title-600',
+  'large-400',
   'large-500',
   'large-600',
-  'large-700'
+  'medium-400',
+  'medium-500',
+  'medium-600',
+  'paragraph-400',
+  'paragraph-500',
+  'paragraph-600',
+  'small-400',
+  'small-500',
+  'small-600',
+  'tiny-400',
+  'tiny-500',
+  'tiny-600',
+  'micro-600',
+  'micro-700'
 ];
 
 export const buttonOptions: ButtonType[] = ['fill', 'accent', 'shade'];

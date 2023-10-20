@@ -13,6 +13,7 @@ import type { ButtonType, ColorType, IconType, SizeType } from '../../utils/Type
 
 import styles, { getThemedButtonStyle, getThemedTextStyle } from './styles';
 import type { SvgProps } from 'react-native-svg';
+import { FlexView } from '../../layout/wui-flex';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -86,18 +87,17 @@ export function Button({
       onPress={onPress}
       {...rest}
     >
-      {iconLeft && (
-        <Icon color={iconColor} name={iconLeft} size={iconSize ?? size} style={iconStyle} />
-      )}
-      <Text
-        variant={size === 'md' ? 'paragraph-600' : 'small-600'}
-        style={[styles.text, themedTextStyle]}
-      >
-        {children}
-      </Text>
-      {iconRight && (
-        <Icon color={iconColor} name={iconRight} size={iconSize ?? size} style={iconStyle} />
-      )}
+      <FlexView flexDirection="row" columnGap="2xs" alignItems="center" justifyContent="center">
+        {iconLeft && (
+          <Icon color={iconColor} name={iconLeft} size={iconSize ?? size} style={iconStyle} />
+        )}
+        <Text variant={size === 'md' ? 'paragraph-600' : 'small-600'} style={themedTextStyle}>
+          {children}
+        </Text>
+        {iconRight && (
+          <Icon color={iconColor} name={iconRight} size={iconSize ?? size} style={iconStyle} />
+        )}
+      </FlexView>
     </AnimatedPressable>
   );
 }

@@ -49,7 +49,7 @@ export function Header() {
         padding={['l', 'xl', 'l', 'xl']}
       >
         {dynamicButtonTemplate()}
-        <Text variant="paragraph-700" numberOfLines={1}>
+        <Text variant="paragraph-600" numberOfLines={1}>
           {header}
         </Text>
         <IconLink icon="close" size="md" onPress={ModalController.close} />

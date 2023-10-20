@@ -22,7 +22,7 @@ export function ConnectingQrCode() {
   };
 
   return (
-    <FlexView alignItems="center" gap="m" padding="m">
+    <FlexView alignItems="center" gap="m" padding={['m', 'm', '2xl', 'm']}>
       <QrCode size={qrSize} uri={wcUri} />
       <Text variant="paragraph-500">Scan this QR code with your phone</Text>
       {showCopy && (
