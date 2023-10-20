@@ -10,15 +10,15 @@ export function Header() {
     const networkName = RouterController.state.data?.network?.name;
 
     return {
-      Connect: 'Connect Wallet',
+      Connect: 'Connect wallet',
       Account: undefined,
       ConnectingWalletConnect: name ?? 'WalletConnect',
-      Networks: 'Choose Network',
-      SwitchNetwork: networkName ?? 'Switch Network',
-      AllWallets: 'All Wallets',
+      Networks: 'Choose network',
+      SwitchNetwork: networkName ?? 'Switch network',
+      AllWallets: 'All wallets',
       WhatIsANetwork: 'What is a Network?',
       WhatIsAWallet: 'What is a Wallet?',
-      GetWallet: 'Get a Wallet'
+      GetWallet: 'Get a wallet'
     };
   };
 
