@@ -15,9 +15,16 @@
     "src",
     "lib",
     "android",
+    "!android/build",
+    "!android/gradle",
+    "!android/gradlew",
+    "!android/gradlew.bat",
+    "!android/local.properties",
+    "!ios/build",
     "!**/__tests__",
     "!**/__fixtures__",
-    "!**/__mocks__"
+    "!**/__mocks__",
+    "!**/.*"
   ],
   "keywords": [
     "web3",
@@ -39,7 +46,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@react-native-async-storage/async-storage": "1.19.3",
+    "@react-native-async-storage/async-storage": "1.18.2",
     "@react-native/eslint-config": "0.72.2",
     "@types/jest": "^29.5.3",
     "@types/react": "^18.0.22",

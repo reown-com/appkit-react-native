@@ -41,3 +41,13 @@ yarn-error.log*
 
 # yarn
 .yarn
+
+# Android/IJ
+.classpath
+.cxx
+.gradle
+.idea
+.project
+.settings
+local.properties
+android.iml
