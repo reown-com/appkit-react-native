@@ -51,9 +51,7 @@ export const getThemedTextStyle = (
 export default StyleSheet.create({
   button: {
     flexDirection: 'row',
-    height: 40,
     paddingVertical: Spacing['3xs'],
-
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: BorderRadius.s,

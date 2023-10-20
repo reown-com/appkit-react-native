@@ -6,7 +6,7 @@ import styles from './styles';
 export function WhatIsAWalletView() {
   return (
     <ScrollView bounces={false} fadingEdgeLength={20}>
-      <FlexView alignItems="center" rowGap="xs" padding="l">
+      <FlexView alignItems="center" rowGap="xs" padding={['l', '4xl', '2xl', '4xl']}>
         <FlexView flexDirection="row" columnGap="s" padding={['0', '0', 'xs', '0']}>
           <Visual name="login" />
           <Visual name="profile" />
@@ -16,7 +16,7 @@ export function WhatIsAWalletView() {
         <Text variant="small-500" color="fg-200" center>
           Log in to any app by connecting your wallet. Say goodbye to countless passwords!
         </Text>
-        <FlexView flexDirection="row" columnGap="s" padding={['xs', '0', 'xs', '0']}>
+        <FlexView flexDirection="row" columnGap="s" padding={['2xl', '0', 'xs', '0']}>
           <Visual name="defi" />
           <Visual name="nft" />
           <Visual name="eth" />
@@ -25,7 +25,7 @@ export function WhatIsAWalletView() {
         <Text variant="small-500" color="fg-200" center>
           A wallet lets you store, send and receive digital assets like cryptocurrencies and NFTs.
         </Text>
-        <FlexView flexDirection="row" columnGap="s" padding={['xs', '0', 'xs', '0']}>
+        <FlexView flexDirection="row" columnGap="s" padding={['2xl', '0', 'xs', '0']}>
           <Visual name="browser" />
           <Visual name="noun" />
           <Visual name="dao" />
@@ -40,7 +40,7 @@ export function WhatIsAWalletView() {
           style={styles.getWalletButton}
           onPress={() => RouterController.push('GetWallet')}
         >
-          Get a Wallet
+          Get a wallet
         </Button>
       </FlexView>
     </ScrollView>
