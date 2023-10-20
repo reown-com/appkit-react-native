@@ -11,6 +11,7 @@ import useAnimatedValue from '../../hooks/useAnimatedValue';
 import { useTheme } from '../../hooks/useTheme';
 import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil';
 import styles from './styles';
+import { FlexView } from '../../layout/wui-flex';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -51,15 +52,13 @@ export function Link({
       style={[styles[`${size}Container`], { backgroundColor: animatedValue }, style]}
       {...rest}
     >
-      {iconLeft && <Icon color={_color} name={iconLeft} size={size} style={styles.padding} />}
-      <Text
-        variant={size === 'md' ? 'paragraph-600' : 'small-600'}
-        color={_color}
-        style={styles.padding}
-      >
-        {children}
-      </Text>
-      {iconRight && <Icon color={_color} name={iconRight} size={size} style={styles.padding} />}
+      <FlexView flexDirection="row" columnGap="2xs" alignItems="center" justifyContent="center">
+        {iconLeft && <Icon color={_color} name={iconLeft} size={size} />}
+        <Text variant={size === 'md' ? 'paragraph-600' : 'small-600'} color={_color}>
+          {children}
+        </Text>
+        {iconRight && <Icon color={_color} name={iconRight} size={size} />}
+      </FlexView>
     </AnimatedPressable>
   );
 }

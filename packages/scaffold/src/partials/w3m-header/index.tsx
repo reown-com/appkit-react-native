@@ -13,7 +13,7 @@ export function Header() {
       Connect: 'Connect wallet',
       Account: undefined,
       ConnectingWalletConnect: name ?? 'WalletConnect',
-      Networks: 'Choose network',
+      Networks: 'Select network',
       SwitchNetwork: networkName ?? 'Switch network',
       AllWallets: 'All wallets',
       WhatIsANetwork: 'What is a Network?',
