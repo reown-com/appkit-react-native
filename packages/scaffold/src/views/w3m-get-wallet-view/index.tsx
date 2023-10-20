@@ -28,7 +28,7 @@ export function GetWalletView() {
   };
 
   return (
-    <FlexView padding="s" rowGap="xs">
+    <FlexView padding={['s', 's', '2xl', 's']} rowGap="xs">
       {listTemplate()}
       <ListWallet
         name="Explore All"

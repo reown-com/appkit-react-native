@@ -3,6 +3,6 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   getWalletButton: {
-    marginTop: Spacing.l
+    marginTop: Spacing.xl
   }
 });

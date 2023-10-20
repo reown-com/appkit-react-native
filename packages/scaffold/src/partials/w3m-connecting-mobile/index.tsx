@@ -70,33 +70,33 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
     const walletName = data?.wallet?.name ?? 'Wallet';
     if (linkingError) {
       return (
-        <>
+        <FlexView padding={['0', '2xl', '0', '2xl']} alignItems="center" gap="xs">
           <Text variant="paragraph-500">{`${walletName} is not installed`}</Text>
           <Text center variant="small-500" color="fg-200" style={styles.descriptionText}>
             {`To connect with ${walletName}, install the application on your device`}
           </Text>
-        </>
+        </FlexView>
       );
     } else if (wcError) {
       return (
-        <>
+        <FlexView padding={['0', '2xl', '0', '2xl']} alignItems="center" gap="xs">
           <Text variant="paragraph-500" color="error-100">
             Connection declined
           </Text>
           <Text center variant="small-500" color="fg-200" style={styles.descriptionText}>
             Connection can be declined if a previous request is still active
           </Text>
-        </>
+        </FlexView>
       );
     }
 
     return (
-      <>
+      <FlexView padding={['0', '2xl', '0', '2xl']} alignItems="center" gap="xs">
         <Text variant="paragraph-500">{`Continue in ${walletName}`}</Text>
         <Text center variant="small-500" color="fg-200" style={styles.descriptionText}>
           Accept connection request in the wallet
         </Text>
-      </>
+      </FlexView>
     );
   };
 
@@ -138,7 +138,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   }, [wcUri, isRetrying, onConnect]);
 
   return (
-    <FlexView alignItems="center" rowGap="xs" padding={['2xl', 'm', 'm', 'm']}>
+    <FlexView alignItems="center" rowGap="xs" padding={['2xl', 'l', '2xl', 'l']}>
       <LoadingThumbnail pause={linkingError || wcError}>
         <WalletImage
           size="lg"

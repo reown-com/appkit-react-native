@@ -84,7 +84,7 @@ export function ListWallet({
       return (
         <Icon
           name={icon}
-          color={disabled ? 'fg-300' : 'fg-100'}
+          color={disabled ? 'fg-300' : 'fg-200'}
           size="sm"
           style={styles.rightIcon}
         />

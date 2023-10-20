@@ -9,7 +9,7 @@ export function WhatIsNetworkView() {
 
   return (
     <ScrollView bounces={false} fadingEdgeLength={20}>
-      <FlexView alignItems="center" rowGap="xs" padding="l">
+      <FlexView alignItems="center" rowGap="xs" padding={['l', '4xl', '2xl', '4xl']}>
         <FlexView flexDirection="row" columnGap="s" padding={['0', '0', 'xs', '0']}>
           <Visual name="network" />
           <Visual name="layers" />
@@ -20,7 +20,7 @@ export function WhatIsNetworkView() {
           A network is what brings the blockchain to life, as this technical infrastructure allows
           apps to access the ledger and smart contract services.
         </Text>
-        <FlexView flexDirection="row" columnGap="s" padding={['xs', '0', 'xs', '0']}>
+        <FlexView flexDirection="row" columnGap="s" padding={['2xl', '0', 'xs', '0']}>
           <Visual name="noun" />
           <Visual name="defiAlt" />
           <Visual name="dao" />
@@ -35,7 +35,7 @@ export function WhatIsNetworkView() {
           style={styles.learnButton}
           onPress={onLearnMorePress}
         >
-          Learn More
+          Learn more
         </Button>
       </FlexView>
     </ScrollView>

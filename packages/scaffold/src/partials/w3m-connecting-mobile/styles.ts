@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   retryButton: {
-    marginTop: Spacing['2xs']
+    marginTop: Spacing.xs
   },
   copyButton: {
     marginVertical: Spacing.xs
@@ -22,7 +22,6 @@ export default StyleSheet.create({
   },
   storeButton: {
     justifyContent: 'space-between',
-    paddingHorizontal: Spacing.l,
-    marginTop: Spacing.xs
+    paddingHorizontal: Spacing.l
   }
 });
