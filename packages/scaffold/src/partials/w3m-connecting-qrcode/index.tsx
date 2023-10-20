@@ -3,15 +3,17 @@ import {
   OptionsController,
   SnackController
 } from '@web3modal/core-react-native';
-import { FlexView, Link, LoadingSpinner, QrCode, Text } from '@web3modal/ui-react-native';
+import { FlexView, Link, QrCode, Text, Spacing } from '@web3modal/ui-react-native';
 import { useSnapshot } from 'valtio';
-import styles from './styles';
+import { useWindowDimensions } from 'react-native';
 
 export function ConnectingQrCode() {
   const { wcUri } = useSnapshot(ConnectionController.state);
   const showCopy = OptionsController.isClipboardAvailable();
+  const { height, width } = useWindowDimensions();
+  const windowSize = Math.min(height, width);
+  const qrSize = windowSize - Spacing.l * 2;
 
-  //TODO: Improve loading
   const onCopyAddress = () => {
     if (wcUri) {
       OptionsController.copyToClipboard(wcUri);
@@ -21,18 +23,12 @@ export function ConnectingQrCode() {
 
   return (
     <FlexView alignItems="center" gap="m" padding="m">
-      {wcUri ? (
-        <>
-          <QrCode size={300} uri={wcUri} />
-          <Text variant="paragraph-500">Scan this QR code with your phone</Text>
-          {showCopy && (
-            <Link iconLeft="copy" color="fg-200" onPress={onCopyAddress}>
-              Copy link
-            </Link>
-          )}
-        </>
-      ) : (
-        <LoadingSpinner style={styles.loader} />
+      <QrCode size={qrSize} uri={wcUri} />
+      <Text variant="paragraph-500">Scan this QR code with your phone</Text>
+      {showCopy && (
+        <Link iconLeft="copy" color="fg-200" onPress={onCopyAddress}>
+          Copy link
+        </Link>
       )}
     </FlexView>
   );
