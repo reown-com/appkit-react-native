@@ -5,13 +5,14 @@ import { useTheme } from '../../hooks/useTheme';
 import type { CardSelectType } from '../../utils/TypesUtil';
 import { NetworkImage } from '../wui-network-image';
 import { WalletImage } from '../wui-wallet-image';
-import styles, { getBackgroundColor, ITEM_HEIGHT } from './styles';
+import styles, { getBackgroundColor, ITEM_HEIGHT, ITEM_WIDTH } from './styles';
 import { memo } from 'react';
 import { UiUtil } from '../../utils/UiUtil';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const CardSelectHeight = ITEM_HEIGHT;
+export const CardSelectWidth = ITEM_WIDTH;
 
 export interface CardSelectProps {
   name: string;

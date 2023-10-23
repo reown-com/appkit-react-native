@@ -7,15 +7,21 @@ import {
   RouterController,
   type WcWallet
 } from '@web3modal/core-react-native';
-import { CardSelect, CardSelectHeight, FlexView, LoadingSpinner } from '@web3modal/ui-react-native';
+import {
+  CardSelect,
+  CardSelectLoader,
+  CardSelectHeight,
+  FlexView
+} from '@web3modal/ui-react-native';
 import styles from './styles';
+import { UiUtil } from '../../utils/UiUtil';
 
 interface AllWalletsListProps {
   columns: number;
-  itemMargin?: number;
+  gap?: number;
 }
 
-export function AllWalletsList({ columns, itemMargin = 0 }: AllWalletsListProps) {
+export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const { installed, featured, recommended, wallets, page, count } = useSnapshot(
@@ -24,7 +30,17 @@ export function AllWalletsList({ columns, itemMargin = 0 }: AllWalletsListProps)
   const imageHeaders = ApiController._getApiHeaders();
   const walletList = [...installed, ...featured, ...recommended, ...wallets];
 
-  const ITEM_HEIGHT = CardSelectHeight + itemMargin * 2;
+  const ITEM_HEIGHT = CardSelectHeight + gap * 2;
+
+  const shimmerTemplate = (items: number) => {
+    return (
+      <FlexView flexDirection="row" flexWrap="wrap">
+        {Array.from({ length: items }).map((_, index) => (
+          <CardSelectLoader key={index} style={{ margin: gap / 2 }} />
+        ))}
+      </FlexView>
+    );
+  };
 
   const walletTemplate = ({ item }: { item: WcWallet }) => {
     return (
@@ -34,7 +50,6 @@ export function AllWalletsList({ columns, itemMargin = 0 }: AllWalletsListProps)
         imageHeaders={imageHeaders}
         name={item?.name ?? 'Unknown'}
         onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
-        style={{ margin: itemMargin }}
       />
     );
   };
@@ -42,6 +57,7 @@ export function AllWalletsList({ columns, itemMargin = 0 }: AllWalletsListProps)
   const initialFetch = async () => {
     setLoading(true);
     await ApiController.fetchWallets({ page: 1 });
+    UiUtil.createViewTransition();
     setLoading(false);
   };
 
@@ -60,9 +76,7 @@ export function AllWalletsList({ columns, itemMargin = 0 }: AllWalletsListProps)
   }, [wallets]);
 
   return loading ? (
-    <FlexView alignItems="center" justifyContent="flex-start" style={styles.loader} padding="4xl">
-      <LoadingSpinner />
-    </FlexView>
+    shimmerTemplate(20)
   ) : (
     <FlatList
       key={columns}
@@ -71,10 +85,11 @@ export function AllWalletsList({ columns, itemMargin = 0 }: AllWalletsListProps)
       numColumns={columns}
       data={walletList}
       renderItem={walletTemplate}
-      contentContainerStyle={styles.contentContainer}
+      contentContainerStyle={[styles.contentContainer, { gap }]}
+      columnWrapperStyle={{ gap }}
       onEndReached={fetchNextPage}
-      onEndReachedThreshold={0.5}
-      ListFooterComponent={pageLoading ? <LoadingSpinner style={styles.pageLoader} /> : null}
+      onEndReachedThreshold={0.3}
+      ListFooterComponent={pageLoading ? shimmerTemplate(columns) : null}
       getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,

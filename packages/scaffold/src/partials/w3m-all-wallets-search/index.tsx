@@ -20,16 +20,16 @@ import styles from './styles';
 export interface AllWalletsSearchProps {
   searchQuery?: string;
   columns: number;
-  itemMargin?: number;
+  gap?: number;
 }
 
-export function AllWalletsSearch({ searchQuery, columns, itemMargin = 0 }: AllWalletsSearchProps) {
+export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSearchProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const { search } = useSnapshot(ApiController.state);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const imageHeaders = ApiController._getApiHeaders();
 
-  const ITEM_HEIGHT = CardSelectHeight + itemMargin * 2;
+  const ITEM_HEIGHT = CardSelectHeight;
 
   const walletTemplate = ({ item }: { item: WcWallet }) => {
     return (
@@ -39,7 +39,6 @@ export function AllWalletsSearch({ searchQuery, columns, itemMargin = 0 }: AllWa
         imageHeaders={imageHeaders}
         name={item?.name ?? 'Unknown'}
         onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
-        style={{ margin: itemMargin }}
       />
     );
   };
@@ -88,7 +87,8 @@ export function AllWalletsSearch({ searchQuery, columns, itemMargin = 0 }: AllWa
       numColumns={columns}
       data={search}
       renderItem={walletTemplate}
-      contentContainerStyle={styles.contentContainer}
+      contentContainerStyle={[styles.contentContainer, { gap }]}
+      columnWrapperStyle={{ gap }}
       ListEmptyComponent={emptyContainerTemplate()}
       getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT,

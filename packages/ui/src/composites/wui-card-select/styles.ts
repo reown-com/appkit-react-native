@@ -3,6 +3,7 @@ import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 import type { ThemeKeys } from '../../utils/TypesUtil';
 
 export const ITEM_HEIGHT = 96;
+export const ITEM_WIDTH = 76;
 
 export const getBackgroundColor = ({
   selected,
@@ -24,7 +25,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: ITEM_HEIGHT,
-    width: 76,
+    width: ITEM_WIDTH,
     borderRadius: BorderRadius.xs
   },
   text: {
