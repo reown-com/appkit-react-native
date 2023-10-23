@@ -47,7 +47,6 @@
     "react": "18.2.0",
     "react-native": "0.72.3",
     "react-native-builder-bob": "^0.23.1",
-    "react-native-svg": "13.11.0",
     "react-test-renderer": "^18.2.0",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
@@ -67,7 +66,6 @@
   },
   "dependencies": {
     "@walletconnect/react-native-compat": "2.10.1",
-    "@walletconnect/utils": "2.10.1",
     "@web3modal/scaffold-react-native": "1.0.0-alpha.10"
   },
   "react-native": "src/index.tsx",

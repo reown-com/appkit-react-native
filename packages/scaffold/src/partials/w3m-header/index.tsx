@@ -10,15 +10,15 @@ export function Header() {
     const networkName = RouterController.state.data?.network?.name;
 
     return {
-      Connect: 'Connect Wallet',
+      Connect: 'Connect wallet',
       Account: undefined,
       ConnectingWalletConnect: name ?? 'WalletConnect',
-      Networks: 'Choose Network',
-      SwitchNetwork: networkName ?? 'Switch Network',
-      AllWallets: 'All Wallets',
-      WhatIsANetwork: 'What is a Network?',
-      WhatIsAWallet: 'What is a Wallet?',
-      GetWallet: 'Get a Wallet'
+      Networks: 'Select network',
+      SwitchNetwork: networkName ?? 'Switch network',
+      AllWallets: 'All wallets',
+      WhatIsANetwork: 'What is a network?',
+      WhatIsAWallet: 'What is a wallet?',
+      GetWallet: 'Get a wallet'
     };
   };
 
@@ -49,7 +49,7 @@ export function Header() {
         padding={['l', 'xl', 'l', 'xl']}
       >
         {dynamicButtonTemplate()}
-        <Text variant="paragraph-700" numberOfLines={1}>
+        <Text variant="paragraph-600" numberOfLines={1}>
           {header}
         </Text>
         <IconLink icon="close" size="md" onPress={ModalController.close} />

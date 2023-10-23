@@ -1,7 +1,7 @@
 import { NativeModules, Platform, Linking } from 'react-native';
 
 const LINKING_ERROR =
-  `The package 'react-native-installed-app' doesn't seem to be linked. Make sure: \n\n` +
+  `The package to detect installed apps doesn't seem to be linked. Make sure: \n\n` +
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo\n';
 
@@ -12,8 +12,8 @@ const InstalledAppModule = isTurboModuleEnabled
   ? Platform.OS === 'android'
     ? require('./NativeInstalledApp').default
     : undefined
-  : // eslint-disable-next-line dot-notation
-    NativeModules['InstalledApp'];
+  : // @ts-expect-error
+    NativeModules.InstalledApp;
 
 const InstalledApp = InstalledAppModule
   ? InstalledAppModule

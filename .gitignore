@@ -38,3 +38,13 @@ yarn-error.log*
 
 # turbo
 .turbo
+
+# Android/IJ
+.classpath
+.cxx
+.gradle
+.idea
+.project
+.settings
+local.properties
+android.iml

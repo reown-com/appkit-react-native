@@ -4,6 +4,34 @@ export default StyleSheet.create({
   'base': {
     letterSpacing: -0.4
   },
+  'medium-title-400': {
+    fontSize: 24,
+    fontWeight: '400'
+  },
+  'medium-title-500': {
+    fontSize: 24,
+    fontWeight: '500'
+  },
+  'medium-title-600': {
+    fontSize: 24,
+    fontWeight: '600'
+  },
+  'small-title-400': {
+    fontSize: 22,
+    fontWeight: '400'
+  },
+  'small-title-500': {
+    fontSize: 22,
+    fontWeight: '500'
+  },
+  'small-title-600': {
+    fontSize: 22,
+    fontWeight: '600'
+  },
+  'large-400': {
+    fontSize: 20,
+    fontWeight: '400'
+  },
   'large-500': {
     fontSize: 20,
     fontWeight: '500'
@@ -12,9 +40,21 @@ export default StyleSheet.create({
     fontSize: 20,
     fontWeight: '600'
   },
-  'large-700': {
-    fontSize: 20,
-    fontWeight: '700'
+  'medium-400': {
+    fontSize: 18,
+    fontWeight: '400'
+  },
+  'medium-500': {
+    fontSize: 18,
+    fontWeight: '500'
+  },
+  'medium-600': {
+    fontSize: 18,
+    fontWeight: '600'
+  },
+  'paragraph-400': {
+    fontSize: 16,
+    fontWeight: '400'
   },
   'paragraph-500': {
     fontSize: 16,
@@ -23,10 +63,6 @@ export default StyleSheet.create({
   'paragraph-600': {
     fontSize: 16,
     fontWeight: '600'
-  },
-  'paragraph-700': {
-    fontSize: 16,
-    fontWeight: '700'
   },
   'small-400': {
     fontSize: 14,
@@ -40,8 +76,13 @@ export default StyleSheet.create({
     fontSize: 14,
     fontWeight: '600'
   },
+  'tiny-400': {
+    fontSize: 12,
+    fontWeight: '400'
+  },
   'tiny-500': {
-    fontSize: 12
+    fontSize: 12,
+    fontWeight: '500'
   },
   'tiny-600': {
     fontSize: 12,

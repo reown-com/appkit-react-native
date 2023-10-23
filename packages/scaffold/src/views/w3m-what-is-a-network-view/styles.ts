@@ -3,6 +3,6 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   learnButton: {
-    marginTop: Spacing.l
+    marginTop: Spacing.xl
   }
 });

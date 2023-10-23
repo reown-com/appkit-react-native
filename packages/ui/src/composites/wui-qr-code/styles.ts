@@ -1,11 +1,12 @@
 import { StyleSheet } from 'react-native';
+import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 
 export default StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 32,
-    padding: 16,
+    borderRadius: BorderRadius.l,
+    padding: Spacing.l,
     alignSelf: 'center'
   },
   icon: {

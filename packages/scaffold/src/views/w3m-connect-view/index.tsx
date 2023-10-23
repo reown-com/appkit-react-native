@@ -117,7 +117,7 @@ export function ConnectView() {
     return (
       <ListWallet
         walletIcon="allWallets"
-        name="All Wallets"
+        name="All wallets"
         tagLabel={`${Math.floor(count / 10) * 10}+`}
         tagVariant="shade"
         onPress={() => RouterController.push('AllWallets')}
