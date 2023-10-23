@@ -93,6 +93,8 @@ export function AccountButton({
         <Avatar
           imageSrc={avatarSrc}
           address={address}
+          size={20}
+          borderWidth={2}
           style={[styles.image, !avatarSrc && styles.avatarPlaceholder]}
         />
         {address && (

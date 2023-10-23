@@ -1,5 +1,5 @@
-import { type ImageStyle, type StyleProp, View } from 'react-native';
-import Svg, { Circle, ClipPath, Defs, G, RadialGradient, Rect, Stop } from 'react-native-svg';
+import { View, type ImageStyle, type StyleProp } from 'react-native';
+import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 import { Image } from '../../components/wui-image';
 import { useTheme } from '../../hooks/useTheme';
 import { UiUtil } from '../../utils/UiUtil';
@@ -9,58 +9,70 @@ export interface AvatarProps {
   imageSrc?: string;
   address?: string;
   style?: StyleProp<ImageStyle>;
+  size?: number;
+  borderWidth?: number;
 }
 
-export function Avatar({ imageSrc, address, style }: AvatarProps) {
+export function Avatar({ imageSrc, address, style, size = 64, borderWidth = 8 }: AvatarProps) {
   const Theme = useTheme();
   const colors = UiUtil.generateAvatarColors(address);
+  const containerSize = size + borderWidth * 2;
 
   if (imageSrc) {
     return (
-      <Image
-        source={imageSrc}
-        style={[styles.container, styles.image, { borderColor: Theme['gray-glass-005'] }, style]}
-      />
+      <View
+        style={[
+          styles.image,
+          {
+            height: containerSize,
+            width: containerSize,
+            borderColor: Theme['gray-glass-010'],
+            borderWidth
+          },
+          style
+        ]}
+      >
+        <Image
+          source={imageSrc}
+          style={[
+            styles.image,
+            {
+              height: size,
+              width: size
+            }
+          ]}
+        />
+      </View>
     );
   }
 
   return (
-    <View style={[styles.container, style]}>
-      <Svg width="100%" height="100%" viewBox="0 0 80 80" fill="none">
-        <G clip-path="url(#clip)">
-          <Circle cx="40" cy="40" r="32" fill="url(#radial)" />
-          <Circle cx="40" cy="40" r="31.5" stroke={Theme['gray-glass-005']} />
-        </G>
-        <Rect
-          x="4"
-          y="4"
-          width="72"
-          height="72"
-          rx="34"
-          stroke={Theme['gray-glass-005']}
-          strokeWidth="8"
-        />
-        <Defs>
-          <RadialGradient
-            id="radial"
-            cx="0"
-            cy="0"
-            r="1"
-            gradientUnits="userSpaceOnUse"
-            gradientTransform="translate(49.5736 23.5888) scale(48.186)"
-          >
-            <Stop offset="0.00520833" stopColor="#FFFFFF" stopOpacity={0.8} />
-            <Stop offset="0.3125" stopColor={colors[0]} />
-            <Stop offset="0.515625" stopColor={colors[1]} />
-            <Stop offset="0.65625" stopColor={colors[2]} />
-            <Stop offset="0.822917" stopColor={colors[3]} />
-            <Stop offset="1" stopColor={colors[4]} />
-          </RadialGradient>
-          <ClipPath id="clip">
-            <Rect x="8" y="8" width="64" height="64" rx="30" fill="white" />
-          </ClipPath>
-        </Defs>
-      </Svg>
-    </View>
+    <Svg width={containerSize} height={containerSize} fill="none" style={style}>
+      <Defs>
+        <RadialGradient
+          id="radial"
+          cx="0"
+          cy="0"
+          r="1"
+          gradientUnits="userSpaceOnUse"
+          gradientTransform={`translate(${size * 0.75} ${size * 0.35}) scale(${size * 0.75})`}
+        >
+          <Stop offset="0.52%" stopColor="#FFFFFF" />
+          <Stop offset="31.25%" stopColor={colors[0]} />
+          <Stop offset="51.56%" stopColor={colors[1]} />
+          <Stop offset="65.63%" stopColor={colors[2]} />
+          <Stop offset="82.29%" stopColor={colors[3]} />
+          <Stop offset="100%" stopColor={colors[4]} />
+        </RadialGradient>
+      </Defs>
+      <Circle cx="50%" cy="50%" r={size / 2} fill="url(#radial)" />
+      <Circle
+        cx="50%"
+        cy="50%"
+        r={(size + borderWidth) / 2}
+        stroke={Theme['gray-glass-010']}
+        strokeWidth={borderWidth}
+      />
+    </Svg>
   );
 }
