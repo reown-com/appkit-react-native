@@ -50,6 +50,8 @@ export function LoadingThumbnail({ children, pause }: LoadingThumbnailProps) {
           fill="transparent"
           strokeDasharray={'116 245'}
           strokeDashoffset={spin}
+          strokeLinejoin="round"
+          strokeLinecap="round"
         />
       </Svg>
       {children ?? null}

@@ -151,7 +151,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
             border
             background
             backgroundColor="icon-box-bg-error-100"
-            size="md"
+            size="sm"
             iconColor="error-100"
             style={styles.errorIcon}
           />

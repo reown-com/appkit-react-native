@@ -16,8 +16,8 @@ export default StyleSheet.create({
   },
   errorIcon: {
     position: 'absolute',
-    bottom: 2,
-    right: 2,
+    bottom: 6,
+    right: 6,
     zIndex: 2
   },
   storeButton: {
