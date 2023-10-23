@@ -47,11 +47,7 @@ export function Tabs({ tabs, onTabChange }: TabsProps) {
         const isActive = index === activeTab;
 
         return (
-          <Pressable
-            onPress={() => onTabPress(index)}
-            key={option.label}
-            style={styles.tabContainer}
-          >
+          <Pressable onPress={() => onTabPress(index)} key={option.label} style={styles.tabItem}>
             {option.icon && (
               <Icon name={option.icon} size="xs" color={isActive ? 'fg-100' : 'fg-200'} />
             )}

@@ -3,12 +3,13 @@ import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 
 export default StyleSheet.create({
   container: {
+    height: 34,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: Spacing['3xs'],
+    paddingHorizontal: Spacing['3xs'],
     borderRadius: BorderRadius['3xl']
   },
-  tabContainer: {
+  tabItem: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -18,7 +19,7 @@ export default StyleSheet.create({
   },
   activeMark: {
     position: 'absolute',
-    height: 30,
+    height: 28,
     width: 100,
     borderWidth: 1,
     borderRadius: BorderRadius['3xl'],
