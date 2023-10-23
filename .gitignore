@@ -39,9 +39,6 @@ yarn-error.log*
 # turbo
 .turbo
 
-# yarn
-.yarn
-
 # Android/IJ
 .classpath
 .cxx
