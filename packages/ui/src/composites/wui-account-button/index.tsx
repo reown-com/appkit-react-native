@@ -87,7 +87,7 @@ export function AccountButton({
       <View
         style={[
           styles.addressContainer,
-          { backgroundColor: Theme['gray-glass-010'], borderColor: Theme['gray-glass-005'] }
+          { backgroundColor: Theme['gray-glass-005'], borderColor: Theme['gray-glass-005'] }
         ]}
       >
         <Avatar
@@ -96,7 +96,7 @@ export function AccountButton({
           style={[styles.image, !avatarSrc && styles.avatarPlaceholder]}
         />
         {address && (
-          <Text variant="paragraph-600" color="fg-200" style={styles.address}>
+          <Text variant="paragraph-500" color="fg-200">
             {UiUtil.getTruncateString({
               string: address,
               charsStart: isProfileName ? 18 : 4,
