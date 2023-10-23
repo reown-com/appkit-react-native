@@ -65,7 +65,7 @@ export function NetworksView() {
         {networksTemplate()}
       </FlexView>
       <Separator />
-      <FlexView gap="s" padding="s" alignItems="center">
+      <FlexView gap="s" padding={['s', 's', '2xl', 's']} alignItems="center">
         <Text variant="small-400" color="fg-300" center>
           Your connected wallet may not support some of the networks available for this dApp
         </Text>

@@ -13,7 +13,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface ListItemProps {
   icon?: IconType;
-  iconVariant?: 'blue' | 'overlay' | 'square';
+  iconVariant?: 'blue' | 'overlay';
   variant?: 'image' | 'icon';
   imageSrc?: string;
   imageHeaders?: Record<string, string>;
@@ -47,18 +47,14 @@ export function ListItem({
   function visualTemplate() {
     if (variant === 'image' && imageSrc) {
       return (
-        <Image
-          source={imageSrc}
-          headers={imageHeaders}
-          style={[
-            styles.image,
-            (disabled || loading) && styles.disabledImage,
-            { borderColor: Theme['gray-glass-005'] }
-          ]}
-        />
+        <View style={[styles.imageContainer, { borderColor: Theme['gray-glass-005'] }]}>
+          <Image
+            source={imageSrc}
+            headers={imageHeaders}
+            style={[styles.image, (disabled || loading) && styles.disabledImage]}
+          />
+        </View>
       );
-    } else if (variant === 'icon' && iconVariant === 'square' && icon) {
-      return <Icon name={icon} width={36} height={36} style={styles.squareIcon} />;
     } else if (variant === 'icon' && icon) {
       const iconColor = iconVariant === 'blue' ? 'accent-100' : 'fg-200';
       const borderColor = iconVariant === 'blue' ? 'accent-glass-005' : 'gray-glass-002';
@@ -69,7 +65,8 @@ export function ListItem({
           iconColor={iconColor}
           size="md"
           background
-          style={[styles.icon, { borderColor: Theme[borderColor] }]}
+          border
+          style={{ borderColor: Theme[borderColor] }}
         />
       );
     }
