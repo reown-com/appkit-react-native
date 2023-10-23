@@ -23,7 +23,7 @@ export function Snackbar({ message, iconColor, icon, style }: SnackbarProps) {
         style
       ]}
     >
-      <IconBox icon={icon} iconColor={iconColor} size="md" background />
+      <IconBox icon={icon} iconColor={iconColor} size="sm" background />
       <Text variant="paragraph-500" color="fg-100" style={styles.text}>
         {message}
       </Text>
