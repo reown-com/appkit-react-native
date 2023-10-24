@@ -44,14 +44,14 @@ export function NetworksView() {
     }
 
     const onNetworkPress = async (network: CaipNetwork) => {
-      if (isConnected) {
-        if (caipNetwork?.id !== network.id) {
+      if (isConnected && caipNetwork?.id !== network.id) {
+        if (approvedCaipNetworkIds?.includes(network.id)) {
           await NetworkController.switchActiveNetwork(network);
           RouterController.goBack();
         } else if (supportsAllNetworks) {
-          //TODO: Switch network screen
+          RouterController.push('SwitchNetwork', { network });
         }
-      } else {
+      } else if (!isConnected) {
         NetworkController.setCaipNetwork(network);
         RouterController.push('Connect');
       }
@@ -78,7 +78,7 @@ export function NetworksView() {
           flexDirection="row"
           flexWrap="wrap"
           style={{ gap }}
-          padding={['s', 's', 's', 's']}
+          padding={['s', '0', 's', 's']}
         >
           {networksTemplate()}
         </FlexView>
