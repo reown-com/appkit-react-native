@@ -18,7 +18,12 @@ export {
   CardSelectLoaderHeight,
   type CardSelectLoaderProps
 } from './composites/wui-card-select-loader';
-export { CardSelect, CardSelectHeight, type CardSelectProps } from './composites/wui-card-select';
+export {
+  CardSelect,
+  CardSelectHeight,
+  CardSelectWidth,
+  type CardSelectProps
+} from './composites/wui-card-select';
 export { Chip, type ChipProps } from './composites/wui-chip';
 export { ConnectButton, type ConnectButtonProps } from './composites/wui-connect-button';
 export { EmailInput, type EmailInputProps } from './composites/wui-email-input';

@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { RouterController } from '@web3modal/core-react-native';
-import { FlexView, IconLink, SearchBar, useTheme } from '@web3modal/ui-react-native';
+import {
+  CardSelectWidth,
+  FlexView,
+  IconLink,
+  SearchBar,
+  Spacing,
+  useTheme
+} from '@web3modal/ui-react-native';
 
 import styles from './styles';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
@@ -12,8 +19,9 @@ export function AllWalletsView() {
   const Theme = useTheme();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { width } = useWindowDimensions();
-  const numColumns = Math.floor(width / 80);
-  const itemMargin = Math.trunc((width / numColumns - 70) / (numColumns - 1));
+  const usableWidth = width - Spacing.s * 2;
+  const numColumns = Math.floor(usableWidth / CardSelectWidth);
+  const gap = Math.abs(Math.trunc((usableWidth - numColumns * CardSelectWidth) / (numColumns - 1)));
 
   const onInputChange = useDebounceCallback({ callback: setSearchQuery });
 
@@ -29,7 +37,7 @@ export function AllWalletsView() {
         <SearchBar onChangeText={onInputChange} />
         <IconLink
           icon="qrCode"
-          iconColor="blue-100"
+          iconColor="accent-100"
           background
           size="lg"
           onPress={() => RouterController.push('ConnectingWalletConnect')}
@@ -41,12 +49,10 @@ export function AllWalletsView() {
 
   const listTemplate = () => {
     if (searchQuery) {
-      return (
-        <AllWalletsSearch columns={numColumns} itemMargin={itemMargin} searchQuery={searchQuery} />
-      );
+      return <AllWalletsSearch columns={numColumns} gap={gap} searchQuery={searchQuery} />;
     }
 
-    return <AllWalletsList columns={numColumns} itemMargin={itemMargin} />;
+    return <AllWalletsList columns={numColumns} gap={gap} />;
   };
 
   return (

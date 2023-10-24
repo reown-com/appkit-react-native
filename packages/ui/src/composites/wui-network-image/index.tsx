@@ -22,7 +22,7 @@ export function NetworkImage({
   const isLg = size === 'lg';
   const svgWidth = isLg ? 96 : 56;
   const svgHeight = isLg ? 96 : 56;
-  const svgStroke = selected ? Theme['blue-100'] : Theme['overlay-010'];
+  const svgStroke = selected ? Theme['accent-100'] : Theme['gray-glass-010'];
   const opacity = disabled ? 0.5 : 1;
 
   return (
@@ -42,7 +42,7 @@ export function NetworkImage({
       <Path
         d={`${isLg ? PathLg : PathNormal}`}
         opacity={opacity}
-        fill={imageSrc ? 'url(#image-pattern)' : Theme['overlay-005']}
+        fill={imageSrc ? 'url(#image-pattern)' : Theme['gray-glass-005']}
       />
     </Svg>
   );

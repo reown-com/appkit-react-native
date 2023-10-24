@@ -19,7 +19,7 @@ const meta: Meta<typeof ListItem> = {
       control: { type: 'select' }
     },
     iconVariant: {
-      options: ['blue', 'overlay', 'square'],
+      options: ['blue', 'overlay'],
       control: { type: 'select' }
     },
     disabled: {

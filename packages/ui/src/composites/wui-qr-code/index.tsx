@@ -43,7 +43,7 @@ export function QrCode({ size, uri, imageSrc }: QrCodeProps) {
     return (
       <Icon
         name="walletConnect"
-        color="blue-100"
+        color="accent-100"
         height={qrSize / 3}
         width={qrSize / 3}
         style={styles.icon}

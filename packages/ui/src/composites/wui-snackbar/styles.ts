@@ -2,8 +2,9 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
+    height: 40,
     flexDirection: 'row',
-    padding: 8,
+    paddingHorizontal: 8,
     borderRadius: 100,
     borderWidth: 1,
     alignItems: 'center'

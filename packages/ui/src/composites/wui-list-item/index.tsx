@@ -13,7 +13,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface ListItemProps {
   icon?: IconType;
-  iconVariant?: 'blue' | 'overlay' | 'square';
+  iconVariant?: 'blue' | 'overlay';
   variant?: 'image' | 'icon';
   imageSrc?: string;
   imageHeaders?: Record<string, string>;
@@ -40,28 +40,24 @@ export function ListItem({
 }: ListItemProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
-    Theme['overlay-002'],
-    Theme['overlay-010']
+    Theme['gray-glass-002'],
+    Theme['gray-glass-010']
   );
 
   function visualTemplate() {
     if (variant === 'image' && imageSrc) {
       return (
-        <Image
-          source={imageSrc}
-          headers={imageHeaders}
-          style={[
-            styles.image,
-            (disabled || loading) && styles.disabledImage,
-            { borderColor: Theme['overlay-005'] }
-          ]}
-        />
+        <View style={[styles.imageContainer, { borderColor: Theme['gray-glass-005'] }]}>
+          <Image
+            source={imageSrc}
+            headers={imageHeaders}
+            style={[styles.image, (disabled || loading) && styles.disabledImage]}
+          />
+        </View>
       );
-    } else if (variant === 'icon' && iconVariant === 'square' && icon) {
-      return <Icon name={icon} width={36} height={36} style={styles.squareIcon} />;
     } else if (variant === 'icon' && icon) {
-      const iconColor = iconVariant === 'blue' ? 'blue-100' : 'fg-200';
-      const borderColor = iconVariant === 'blue' ? 'blue-005' : 'overlay-002';
+      const iconColor = iconVariant === 'blue' ? 'accent-100' : 'fg-200';
+      const borderColor = iconVariant === 'blue' ? 'accent-glass-005' : 'gray-glass-002';
 
       return (
         <IconBox
@@ -69,7 +65,8 @@ export function ListItem({
           iconColor={iconColor}
           size="md"
           background
-          style={[styles.icon, { borderColor: Theme[borderColor] }]}
+          border
+          style={{ borderColor: Theme[borderColor] }}
         />
       );
     }
@@ -92,7 +89,7 @@ export function ListItem({
       disabled={disabled || loading}
       style={[
         styles.container,
-        { backgroundColor: disabled || loading ? Theme['overlay-010'] : animatedValue },
+        { backgroundColor: disabled || loading ? Theme['gray-glass-010'] : animatedValue },
         style
       ]}
       onPress={onPress}

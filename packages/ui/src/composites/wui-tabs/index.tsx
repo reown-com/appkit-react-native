@@ -32,13 +32,13 @@ export function Tabs({ tabs, onTabChange }: TabsProps) {
   });
 
   return (
-    <View style={[styles.container, { backgroundColor: Theme['overlay-002'] }]}>
+    <View style={[styles.container, { backgroundColor: Theme['gray-glass-002'] }]}>
       <Animated.View
         style={[
           styles.activeMark,
           {
-            backgroundColor: Theme['overlay-005'],
-            borderColor: Theme['overlay-005'],
+            backgroundColor: Theme['gray-glass-005'],
+            borderColor: Theme['gray-glass-005'],
             left: markPosition
           }
         ]}
@@ -47,11 +47,7 @@ export function Tabs({ tabs, onTabChange }: TabsProps) {
         const isActive = index === activeTab;
 
         return (
-          <Pressable
-            onPress={() => onTabPress(index)}
-            key={option.label}
-            style={styles.tabContainer}
-          >
+          <Pressable onPress={() => onTabPress(index)} key={option.label} style={styles.tabItem}>
             {option.icon && (
               <Icon name={option.icon} size="xs" color={isActive ? 'fg-100' : 'fg-200'} />
             )}

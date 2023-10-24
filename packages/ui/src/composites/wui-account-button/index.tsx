@@ -35,8 +35,8 @@ export function AccountButton({
 }: AccountButtonProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
-    Theme['overlay-002'],
-    Theme['overlay-010']
+    Theme['gray-glass-002'],
+    Theme['gray-glass-010']
   );
 
   function balanceTemplate() {
@@ -45,7 +45,7 @@ export function AccountButton({
         <Image
           source={networkSrc}
           headers={imageHeaders}
-          style={[styles.image, { borderColor: Theme['overlay-010'] }]}
+          style={[styles.image, { borderColor: Theme['gray-glass-010'] }]}
         />
       ) : (
         <IconBox
@@ -54,7 +54,7 @@ export function AccountButton({
           iconColor="fg-200"
           background
           border
-          style={{ borderColor: Theme['overlay-010'] }}
+          style={{ borderColor: Theme['gray-glass-010'] }}
         />
       );
 
@@ -79,7 +79,7 @@ export function AccountButton({
       disabled={disabled}
       style={[
         styles.container,
-        { backgroundColor: animatedValue, borderColor: Theme['overlay-005'] },
+        { backgroundColor: animatedValue, borderColor: Theme['gray-glass-005'] },
         style
       ]}
     >
@@ -87,16 +87,18 @@ export function AccountButton({
       <View
         style={[
           styles.addressContainer,
-          { backgroundColor: Theme['overlay-010'], borderColor: Theme['overlay-005'] }
+          { backgroundColor: Theme['gray-glass-005'], borderColor: Theme['gray-glass-005'] }
         ]}
       >
         <Avatar
           imageSrc={avatarSrc}
           address={address}
+          size={20}
+          borderWidth={2}
           style={[styles.image, !avatarSrc && styles.avatarPlaceholder]}
         />
         {address && (
-          <Text variant="paragraph-600" color="fg-200" style={styles.address}>
+          <Text variant="paragraph-500" color="fg-200">
             {UiUtil.getTruncateString({
               string: address,
               charsStart: isProfileName ? 18 : 4,

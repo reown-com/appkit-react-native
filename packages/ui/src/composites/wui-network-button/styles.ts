@@ -10,21 +10,21 @@ export const getThemedStyle = (
 ) => {
   if (disabled) {
     return {
-      borderColor: theme['overlay-005'],
-      backgroundColor: theme['overlay-020']
+      borderColor: theme['gray-glass-005'],
+      backgroundColor: theme['gray-glass-020']
     };
   }
 
   if (pressed) {
     return {
-      borderColor: variant === 'fill' ? theme['blue-090'] : theme['overlay-010'],
-      backgroundColor: variant === 'fill' ? theme['blue-080'] : theme['overlay-020']
+      borderColor: variant === 'fill' ? theme['accent-090'] : theme['gray-glass-010'],
+      backgroundColor: variant === 'fill' ? theme['accent-020'] : theme['gray-glass-020']
     };
   }
 
   return {
-    borderColor: theme['overlay-010'],
-    backgroundColor: variant === 'fill' ? theme['blue-100'] : theme['overlay-010']
+    borderColor: theme['gray-glass-010'],
+    backgroundColor: variant === 'fill' ? theme['accent-100'] : theme['gray-glass-010']
   };
 };
 

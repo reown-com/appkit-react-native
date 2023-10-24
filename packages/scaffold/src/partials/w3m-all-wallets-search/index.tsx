@@ -10,9 +10,9 @@ import {
 import {
   CardSelect,
   CardSelectHeight,
+  CardSelectLoader,
   FlexView,
   IconBox,
-  LoadingSpinner,
   Text
 } from '@web3modal/ui-react-native';
 import styles from './styles';
@@ -20,16 +20,16 @@ import styles from './styles';
 export interface AllWalletsSearchProps {
   searchQuery?: string;
   columns: number;
-  itemMargin?: number;
+  gap?: number;
 }
 
-export function AllWalletsSearch({ searchQuery, columns, itemMargin = 0 }: AllWalletsSearchProps) {
+export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSearchProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const { search } = useSnapshot(ApiController.state);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const imageHeaders = ApiController._getApiHeaders();
 
-  const ITEM_HEIGHT = CardSelectHeight + itemMargin * 2;
+  const ITEM_HEIGHT = CardSelectHeight + gap * 2;
 
   const walletTemplate = ({ item }: { item: WcWallet }) => {
     return (
@@ -39,30 +39,38 @@ export function AllWalletsSearch({ searchQuery, columns, itemMargin = 0 }: AllWa
         imageHeaders={imageHeaders}
         name={item?.name ?? 'Unknown'}
         onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
-        style={{ margin: itemMargin }}
       />
     );
   };
 
-  const emptyContainerTemplate = () => {
+  const loadingTemplate = (items: number) => {
     return (
-      <FlexView justifyContent="center" alignItems="center" gap="xl" style={styles.emptyContainer}>
-        {loading ? (
-          <LoadingSpinner />
-        ) : (
-          <>
-            <IconBox
-              icon="walletPlaceholder"
-              background
-              size="lg"
-              iconColor="fg-200"
-              backgroundColor="overlay-005"
-            />
-            <Text variant="paragraph-500" color="fg-200">
-              No Wallet found
-            </Text>
-          </>
-        )}
+      <FlexView
+        flexDirection="row"
+        flexWrap="wrap"
+        padding={['2xs', '0', 's', 's']}
+        style={{ gap }}
+      >
+        {Array.from({ length: items }).map((_, index) => (
+          <CardSelectLoader key={index} />
+        ))}
+      </FlexView>
+    );
+  };
+
+  const emptyTemplate = () => {
+    return (
+      <FlexView justifyContent="center" alignItems="center" gap="m" style={styles.emptyContainer}>
+        <IconBox
+          icon="walletPlaceholder"
+          background
+          size="lg"
+          iconColor="fg-200"
+          backgroundColor="gray-glass-005"
+        />
+        <Text variant="paragraph-500" color="fg-200">
+          No wallet found
+        </Text>
       </FlexView>
     );
   };
@@ -80,6 +88,10 @@ export function AllWalletsSearch({ searchQuery, columns, itemMargin = 0 }: AllWa
     }
   }, [searchQuery, prevSearchQuery, searchFetch]);
 
+  if (loading) {
+    return loadingTemplate(40);
+  }
+
   return (
     <FlatList
       key={columns}
@@ -88,8 +100,9 @@ export function AllWalletsSearch({ searchQuery, columns, itemMargin = 0 }: AllWa
       numColumns={columns}
       data={search}
       renderItem={walletTemplate}
-      contentContainerStyle={styles.contentContainer}
-      ListEmptyComponent={emptyContainerTemplate()}
+      contentContainerStyle={[styles.contentContainer, { gap }]}
+      columnWrapperStyle={{ gap }}
+      ListEmptyComponent={emptyTemplate()}
       getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,

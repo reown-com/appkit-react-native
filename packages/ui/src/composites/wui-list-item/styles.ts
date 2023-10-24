@@ -16,20 +16,18 @@ export default StyleSheet.create({
     paddingHorizontal: Spacing.s,
     gap: Spacing['3xs']
   },
-  image: {
-    width: 32,
-    height: 32,
+  imageContainer: {
+    width: 34,
+    height: 34,
     borderRadius: 100,
     borderWidth: 2
   },
+  image: {
+    width: 32,
+    height: 32,
+    borderRadius: 100
+  },
   disabledImage: {
     opacity: 0.4
-  },
-  icon: {
-    borderWidth: 2
-  },
-  squareIcon: {
-    width: 36,
-    height: 36
   }
 });

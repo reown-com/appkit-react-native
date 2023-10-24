@@ -61,16 +61,17 @@ export function IconBox({
         : background
         ? `${Theme[iconColor as ThemeKeys]}1E`
         : 'transparent',
-    height: boxSize,
-    width: boxSize,
     borderRadius: BorderRadius[borderRadius]
   };
+
+  const containerSize = boxSize + (border ? 4 : 0);
 
   return (
     <View
       style={[
         styles.box,
         backgroundStyle,
+        { height: containerSize, width: containerSize },
         border && { borderColor: Theme['bg-125'] },
         border && styles.border,
         style

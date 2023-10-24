@@ -14,7 +14,7 @@ const meta: Meta<typeof LoadingSpinner> = {
       control: { type: 'select' }
     },
     color: {
-      options: [undefined, 'blue-100', 'fg-200', 'fg-250', 'fg-275'],
+      options: [undefined, 'accent-100', 'fg-200', 'fg-250', 'fg-275'],
       control: { type: 'select' }
     }
   }

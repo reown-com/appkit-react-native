@@ -3,6 +3,7 @@ import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 import type { ThemeKeys } from '../../utils/TypesUtil';
 
 export const ITEM_HEIGHT = 96;
+export const ITEM_WIDTH = 76;
 
 export const getBackgroundColor = ({
   selected,
@@ -13,10 +14,10 @@ export const getBackgroundColor = ({
   disabled?: boolean;
   pressed?: boolean;
 }): ThemeKeys => {
-  if (disabled) return 'overlay-005';
-  if (selected) return 'blue-020';
+  if (disabled) return 'gray-glass-005';
+  if (selected) return 'accent-glass-020';
 
-  return pressed ? 'overlay-010' : 'overlay-002';
+  return pressed ? 'gray-glass-010' : 'gray-glass-002';
 };
 
 export default StyleSheet.create({
@@ -24,7 +25,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: ITEM_HEIGHT,
-    width: 76,
+    width: ITEM_WIDTH,
     borderRadius: BorderRadius.xs
   },
   text: {

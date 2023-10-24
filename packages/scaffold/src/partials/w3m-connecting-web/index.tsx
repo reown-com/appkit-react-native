@@ -49,7 +49,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
           <Text variant="paragraph-500" color="error-100">
             Connection declined
           </Text>
-          <Text center variant="small-500" color="fg-200" style={styles.descriptionText}>
+          <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
             Connection can be declined if a previous request is still active
           </Text>
         </>
@@ -59,7 +59,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
     return (
       <>
         <Text variant="paragraph-500">{`Continue in ${walletName}`}</Text>
-        <Text center variant="small-500" color="fg-200" style={styles.descriptionText}>
+        <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
           Open and continue in a browser tab
         </Text>
       </>
@@ -80,7 +80,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
             border
             background
             backgroundColor="icon-box-bg-error-100"
-            size="md"
+            size="sm"
             iconColor="error-100"
             style={styles.errorIcon}
           />

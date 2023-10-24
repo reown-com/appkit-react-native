@@ -18,7 +18,7 @@ export function AllWalletsImage({ walletImages, imageHeaders, style }: AllWallet
     <Animated.View
       style={[
         styles.container,
-        { backgroundColor: Theme['bg-200'], borderColor: Theme['overlay-010'] },
+        { backgroundColor: Theme['bg-200'], borderColor: Theme['gray-glass-010'] },
         style
       ]}
     >

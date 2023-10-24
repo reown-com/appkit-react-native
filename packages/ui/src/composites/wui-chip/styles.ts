@@ -9,13 +9,13 @@ export const getThemedChipStyle = (
   pressed?: boolean
 ): StyleProp<any> => {
   const chipBaseStyle = {
-    borderColor: theme['overlay-010']
+    borderColor: theme['gray-glass-010']
   };
 
   if (disabled) {
     return {
-      backgroundColor: theme['overlay-020'],
-      borderColor: theme['overlay-005']
+      backgroundColor: theme['gray-glass-020'],
+      borderColor: theme['gray-glass-005']
     };
   }
 
@@ -24,10 +24,10 @@ export const getThemedChipStyle = (
       ...chipBaseStyle,
       backgroundColor:
         variant === 'fill'
-          ? theme['blue-080']
+          ? theme['accent-020']
           : variant === 'shade'
-          ? theme['overlay-020']
-          : theme['overlay-010']
+          ? theme['gray-glass-020']
+          : theme['gray-glass-010']
     };
   }
 
@@ -35,9 +35,9 @@ export const getThemedChipStyle = (
     ...chipBaseStyle,
     backgroundColor:
       variant === 'fill'
-        ? theme['blue-100']
+        ? theme['accent-100']
         : variant === 'shade'
-        ? theme['overlay-010']
+        ? theme['gray-glass-010']
         : 'transparent'
   };
 };

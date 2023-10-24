@@ -15,8 +15,8 @@ export interface LogoSelectProps {
 export function LogoSelect({ logo, disabled }: LogoSelectProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
-    Theme['overlay-005'],
-    Theme['overlay-010']
+    Theme['gray-glass-005'],
+    Theme['gray-glass-010']
   );
 
   return (

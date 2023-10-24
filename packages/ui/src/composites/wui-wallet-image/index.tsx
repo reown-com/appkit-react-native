@@ -38,7 +38,12 @@ export function WalletImage({
     if (walletIcon) {
       return (
         <View style={[styles.container, styles[`${size}Image`]]}>
-          <Icon height={IconSize[size]} width={IconSize[size]} name={walletIcon} color="blue-100" />
+          <Icon
+            height={IconSize[size]}
+            width={IconSize[size]}
+            name={walletIcon}
+            color="accent-100"
+          />
         </View>
       );
     }
@@ -62,9 +67,9 @@ export function WalletImage({
         style={[
           styles.border,
           styles[`${size}Image`],
-          { borderColor: Theme['overlay-010'] },
-          !imageSrc && { backgroundColor: Theme['overlay-002'] },
-          walletIcon && { backgroundColor: `${Theme['blue-100']}1E` }
+          { borderColor: Theme['gray-glass-010'] },
+          !imageSrc && { backgroundColor: Theme['gray-glass-002'] },
+          walletIcon && { backgroundColor: `${Theme['accent-100']}1E` }
         ]}
       />
     </View>

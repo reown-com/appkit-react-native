@@ -38,8 +38,8 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
     const inputRef = useRef<TextInput>(null);
     const Theme = useTheme();
     const { animatedValue, valueRef, setStartValue, setEndValue } = useAnimatedValue(
-      Theme['overlay-005'],
-      Theme['overlay-010'],
+      Theme['gray-glass-005'],
+      Theme['gray-glass-010'],
       100
     );
 
@@ -63,12 +63,12 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
 
     const innerBorder = valueRef.current.interpolate({
       inputRange: [0, 1],
-      outputRange: [Theme['overlay-005'], Theme['blue-100']]
+      outputRange: [Theme['gray-glass-005'], Theme['accent-100']]
     });
 
     const outerBorder = valueRef.current.interpolate({
       inputRange: [0, 1],
-      outputRange: ['transparent', Theme['blue-015']]
+      outputRange: ['transparent', Theme['accent-glass-015']]
     });
 
     return (
@@ -82,7 +82,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
             style={[
               styles[`${size}Container`],
               { backgroundColor: animatedValue, borderColor: innerBorder },
-              disabled && { backgroundColor: Theme['overlay-015'] }
+              disabled && { backgroundColor: Theme['gray-glass-015'] }
             ]}
           >
             {icon && <Icon name={icon} size="md" color="fg-275" style={styles.icon} />}
@@ -98,7 +98,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
               autoCorrect={false}
               autoComplete="off"
               spellCheck={false}
-              selectionColor={Theme['blue-100']}
+              selectionColor={Theme['accent-100']}
               underlineColorAndroid="transparent"
               selectTextOnFocus={false}
               editable={!disabled}

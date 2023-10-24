@@ -25,6 +25,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     height: 32,
     gap: Spacing['3xs'],
+    paddingLeft: Spacing['3xs'],
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -33,13 +34,10 @@ export default StyleSheet.create({
     height: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: Spacing['3xs'],
-
+    paddingLeft: Spacing['3xs'],
+    paddingRight: Spacing.xs,
     gap: Spacing['3xs'],
     borderRadius: 100,
     borderWidth: 1
-  },
-  address: {
-    paddingRight: Spacing.xs
   }
 });

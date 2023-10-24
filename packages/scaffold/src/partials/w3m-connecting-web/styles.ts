@@ -13,8 +13,8 @@ export default StyleSheet.create({
   },
   errorIcon: {
     position: 'absolute',
-    bottom: 2,
-    right: 2,
+    bottom: 5,
+    right: 5,
     zIndex: 2
   }
 });

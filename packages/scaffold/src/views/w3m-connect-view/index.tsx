@@ -68,8 +68,6 @@ export function ConnectView() {
           imageHeaders={imageHeaders}
           name={wallet?.name ?? 'Unknown'}
           onPress={() => onWalletPress(wallet!)}
-          tagLabel="Installed"
-          tagVariant="success"
         />
       ));
   };

@@ -19,11 +19,11 @@ export function Snackbar({ message, iconColor, icon, style }: SnackbarProps) {
     <Animated.View
       style={[
         styles.container,
-        { backgroundColor: Theme['bg-175'], borderColor: Theme['overlay-005'] },
+        { backgroundColor: Theme['bg-175'], borderColor: Theme['gray-glass-005'] },
         style
       ]}
     >
-      <IconBox icon={icon} iconColor={iconColor} size="md" background />
+      <IconBox icon={icon} iconColor={iconColor} size="sm" background />
       <Text variant="paragraph-500" color="fg-100" style={styles.text}>
         {message}
       </Text>

@@ -30,7 +30,7 @@ export function IconLink({
   const bgColor = background ? `${Theme[iconColor]}1E` : 'transparent';
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
     bgColor,
-    Theme['overlay-010']
+    Theme['gray-glass-010']
   );
 
   return (
@@ -46,7 +46,11 @@ export function IconLink({
         style
       ]}
     >
-      <Icon name={icon} size={size} color={disabled ? ('overlay-020' as ColorType) : iconColor} />
+      <Icon
+        name={icon}
+        size={size}
+        color={disabled ? ('gray-glass-020' as ColorType) : iconColor}
+      />
     </AnimatedPressable>
   );
 }

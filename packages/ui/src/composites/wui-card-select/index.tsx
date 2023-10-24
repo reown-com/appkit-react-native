@@ -5,13 +5,14 @@ import { useTheme } from '../../hooks/useTheme';
 import type { CardSelectType } from '../../utils/TypesUtil';
 import { NetworkImage } from '../wui-network-image';
 import { WalletImage } from '../wui-wallet-image';
-import styles, { getBackgroundColor, ITEM_HEIGHT } from './styles';
+import styles, { getBackgroundColor, ITEM_HEIGHT, ITEM_WIDTH } from './styles';
 import { memo } from 'react';
 import { UiUtil } from '../../utils/UiUtil';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const CardSelectHeight = ITEM_HEIGHT;
+export const CardSelectWidth = ITEM_WIDTH;
 
 export interface CardSelectProps {
   name: string;
@@ -43,7 +44,7 @@ function _CardSelect({
     Theme[pressedBackgroundColor]
   );
 
-  const textColor = disabled ? 'fg-300' : selected ? 'blue-100' : 'fg-100';
+  const textColor = disabled ? 'fg-300' : selected ? 'accent-100' : 'fg-100';
 
   const Image = type === 'wallet' ? WalletImage : NetworkImage;
 

@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
-    marginTop: Spacing['2xs'],
+    marginTop: Spacing.s,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',

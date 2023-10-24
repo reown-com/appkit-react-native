@@ -20,7 +20,7 @@ export interface LoadingSpinnerProps {
 export function LoadingSpinner({ color, style, size = 'lg' }: LoadingSpinnerProps) {
   const Theme = useTheme();
   const spinValue = useRef(new Animated.Value(0));
-  const stroke = color ? Theme[color] : Theme['blue-100'];
+  const stroke = color ? Theme[color] : Theme['accent-100'];
 
   useEffect(() => {
     const animation = Animated.timing(spinValue.current, {

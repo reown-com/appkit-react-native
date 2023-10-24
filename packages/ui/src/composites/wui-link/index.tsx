@@ -37,10 +37,10 @@ export function Link({
   ...rest
 }: LinkProps) {
   const Theme = useTheme();
-  const _color = (disabled ? 'bg-300' : color ?? 'blue-100') as ColorType;
+  const _color = (disabled ? 'bg-300' : color ?? 'accent-100') as ColorType;
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
     'transparent',
-    Theme['overlay-010']
+    Theme['gray-glass-010']
   );
 
   return (

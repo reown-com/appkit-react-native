@@ -72,7 +72,7 @@ export function NetworkButton({
         <Image
           style={[
             styles.image,
-            { borderColor: Theme['overlay-010'] },
+            { borderColor: Theme['gray-glass-010'] },
             disabled && styles.imageDisabled
           ]}
           source={imageSrc}

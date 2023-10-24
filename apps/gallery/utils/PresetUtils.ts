@@ -36,7 +36,7 @@ export const externalLink = 'https://www.fireblocks.com';
 export const externalLabel = 'www.fireblocks.com';
 
 export const colorOptions: ColorType[] = [
-  'blue-100',
+  'accent-100',
   'error-100',
   'fg-100',
   'fg-200',

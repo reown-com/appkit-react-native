@@ -45,11 +45,13 @@ export function LoadingThumbnail({ children, pause }: LoadingThumbnailProps) {
           width={106}
           height={106}
           rx={36}
-          stroke={pause ? 'transparent' : Theme['blue-100']}
+          stroke={pause ? 'transparent' : Theme['accent-100']}
           strokeWidth={4}
           fill="transparent"
           strokeDasharray={'116 245'}
           strokeDashoffset={spin}
+          strokeLinejoin="round"
+          strokeLinecap="round"
         />
       </Svg>
       {children ?? null}
