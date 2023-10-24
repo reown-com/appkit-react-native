@@ -32,11 +32,16 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
 
   const ITEM_HEIGHT = CardSelectHeight + gap * 2;
 
-  const shimmerTemplate = (items: number) => {
+  const loadingTemplate = (items: number) => {
     return (
-      <FlexView flexDirection="row" flexWrap="wrap">
+      <FlexView
+        flexDirection="row"
+        flexWrap="wrap"
+        padding={['2xs', 's', 's', 's']}
+        style={{ gap }}
+      >
         {Array.from({ length: items }).map((_, index) => (
-          <CardSelectLoader key={index} style={{ margin: gap / 2 }} />
+          <CardSelectLoader key={index} />
         ))}
       </FlexView>
     );
@@ -51,6 +56,18 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
         name={item?.name ?? 'Unknown'}
         onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
       />
+    );
+  };
+
+  const pageLoadingTemplate = (items: number) => {
+    if (!pageLoading) return null;
+
+    return (
+      <FlexView flexDirection="row" flexWrap="wrap" style={{ gap }}>
+        {Array.from({ length: items }).map((_, index) => (
+          <CardSelectLoader key={index} />
+        ))}
+      </FlexView>
     );
   };
 
@@ -75,9 +92,11 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
     }
   }, [wallets]);
 
-  return loading ? (
-    shimmerTemplate(20)
-  ) : (
+  if (loading) {
+    return loadingTemplate(20);
+  }
+
+  return (
     <FlatList
       key={columns}
       fadingEdgeLength={20}
@@ -88,8 +107,8 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
       contentContainerStyle={[styles.contentContainer, { gap }]}
       columnWrapperStyle={{ gap }}
       onEndReached={fetchNextPage}
-      onEndReachedThreshold={0.3}
-      ListFooterComponent={pageLoading ? shimmerTemplate(columns) : null}
+      onEndReachedThreshold={0.7}
+      ListFooterComponent={pageLoadingTemplate(columns)}
       getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,
