@@ -78,7 +78,7 @@ export function NetworksView() {
           flexDirection="row"
           flexWrap="wrap"
           style={{ gap }}
-          padding={['s', 's', 's', 's']}
+          padding={['s', '0', 's', 's']}
         >
           {networksTemplate()}
         </FlexView>
