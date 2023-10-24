@@ -10,6 +10,7 @@ import { GetWalletView } from '../../views/w3m-get-wallet-view';
 import { AccountView } from '../../views/w3m-account-view';
 import { NetworksView } from '../../views/w3m-networks-view';
 import { WhatIsNetworkView } from '../../views/w3m-what-is-a-network-view';
+import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
 import { UiUtil } from '../../utils/UiUtil';
 
 export function Web3Router() {
@@ -35,6 +36,8 @@ export function Web3Router() {
         return GetWalletView;
       case 'Networks':
         return NetworksView;
+      case 'SwitchNetwork':
+        return NetworkSwitchView;
       case 'Account':
         return AccountView;
       default:

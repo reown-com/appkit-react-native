@@ -139,7 +139,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
 
   return (
     <FlexView alignItems="center" rowGap="xs" padding={['2xl', 'l', '2xl', 'l']}>
-      <LoadingThumbnail pause={linkingError || wcError}>
+      <LoadingThumbnail paused={linkingError || wcError}>
         <WalletImage
           size="lg"
           imageSrc={AssetUtil.getWalletImage(data?.wallet)}
@@ -162,7 +162,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         variant="accent"
         iconLeft="refresh"
         style={styles.retryButton}
-        iconStyle={styles.copyIcon}
+        iconStyle={styles.retryIcon}
         onPress={onRetryPress}
       >
         Try again

@@ -8,10 +8,10 @@ const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
 export interface LoadingThumbnailProps {
   children?: ReactNode;
-  pause?: boolean;
+  paused?: boolean;
 }
 
-export function LoadingThumbnail({ children, pause }: LoadingThumbnailProps) {
+export function LoadingThumbnail({ children, paused }: LoadingThumbnailProps) {
   const Theme = useTheme();
   const spinValue = useRef(new Animated.Value(0));
 
@@ -45,7 +45,7 @@ export function LoadingThumbnail({ children, pause }: LoadingThumbnailProps) {
           width={106}
           height={106}
           rx={36}
-          stroke={pause ? 'transparent' : Theme['accent-100']}
+          stroke={paused ? 'transparent' : Theme['accent-100']}
           strokeWidth={4}
           fill="transparent"
           strokeDasharray={'116 245'}

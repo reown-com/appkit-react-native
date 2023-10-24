@@ -8,7 +8,7 @@ export default StyleSheet.create({
   copyButton: {
     marginVertical: Spacing.xs
   },
-  copyIcon: {
+  retryIcon: {
     transform: [{ rotateY: '180deg' }]
   },
   descriptionText: {

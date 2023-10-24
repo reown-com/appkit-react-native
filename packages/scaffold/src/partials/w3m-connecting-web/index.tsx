@@ -68,7 +68,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
 
   return (
     <FlexView alignItems="center" rowGap="xs" padding={['2xl', 'm', '2xl', 'm']}>
-      <LoadingThumbnail pause={wcError}>
+      <LoadingThumbnail paused={wcError}>
         <WalletImage
           size="lg"
           imageSrc={AssetUtil.getWalletImage(data?.wallet)}
