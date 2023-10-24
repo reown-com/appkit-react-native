@@ -37,7 +37,7 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
       <FlexView
         flexDirection="row"
         flexWrap="wrap"
-        padding={['2xs', 's', 's', 's']}
+        padding={['2xs', '0', 's', 's']}
         style={{ gap }}
       >
         {Array.from({ length: items }).map((_, index) => (
@@ -60,10 +60,10 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
   };
 
   const pageLoadingTemplate = (items: number) => {
-    if (!pageLoading) return null;
+    if (pageLoading) return null;
 
     return (
-      <FlexView flexDirection="row" flexWrap="wrap" style={{ gap }}>
+      <FlexView flexDirection="row" style={{ gap }}>
         {Array.from({ length: items }).map((_, index) => (
           <CardSelectLoader key={index} />
         ))}
@@ -103,6 +103,7 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
       bounces={false}
       numColumns={columns}
       data={walletList}
+      extraData={pageLoading}
       renderItem={walletTemplate}
       contentContainerStyle={[styles.contentContainer, { gap }]}
       columnWrapperStyle={{ gap }}

@@ -48,7 +48,7 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
       <FlexView
         flexDirection="row"
         flexWrap="wrap"
-        padding={['2xs', 's', 's', 's']}
+        padding={['2xs', '0', 's', 's']}
         style={{ gap }}
       >
         {Array.from({ length: items }).map((_, index) => (
