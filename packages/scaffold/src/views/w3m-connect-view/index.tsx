@@ -133,7 +133,7 @@ export function ConnectView() {
   };
 
   return (
-    <FlexView padding="s" rowGap="2xs">
+    <FlexView padding={['s', 's', '2xl', 's']} rowGap="2xs">
       {recentTemplate()}
       {installedTemplate()}
       {featuredTemplate()}
