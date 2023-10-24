@@ -1,6 +1,14 @@
 import { useSnapshot } from 'valtio';
-import { ScrollView } from 'react-native';
-import { CardSelect, FlexView, Link, Separator, Text } from '@web3modal/ui-react-native';
+import { ScrollView, useWindowDimensions } from 'react-native';
+import {
+  CardSelect,
+  CardSelectWidth,
+  FlexView,
+  Link,
+  Separator,
+  Spacing,
+  Text
+} from '@web3modal/ui-react-native';
 import {
   ApiController,
   AssetUtil,
@@ -15,6 +23,10 @@ export function NetworksView() {
   const { caipNetwork, requestedCaipNetworks, approvedCaipNetworkIds, supportsAllNetworks } =
     useSnapshot(NetworkController.state);
   const imageHeaders = ApiController._getApiHeaders();
+  const { width } = useWindowDimensions();
+  const usableWidth = width - Spacing.s * 2;
+  const numColumns = Math.floor(usableWidth / CardSelectWidth);
+  const gap = Math.abs(Math.trunc((usableWidth - numColumns * CardSelectWidth) / (numColumns - 1)));
 
   const networksTemplate = () => {
     if (!requestedCaipNetworks?.length) return undefined;
@@ -61,7 +73,7 @@ export function NetworksView() {
 
   return (
     <ScrollView bounces={false} fadingEdgeLength={20}>
-      <FlexView flexDirection="row" flexWrap="wrap" gap="xs" padding="s" justifyContent="center">
+      <FlexView flexDirection="row" flexWrap="wrap" style={{ gap }} padding={['s', 's', 's', 's']}>
         {networksTemplate()}
       </FlexView>
       <Separator />
