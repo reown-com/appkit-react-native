@@ -60,7 +60,7 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
   };
 
   const pageLoadingTemplate = (items: number) => {
-    if (pageLoading) return null;
+    if (!pageLoading) return null;
 
     return (
       <FlexView flexDirection="row" style={{ gap }}>
