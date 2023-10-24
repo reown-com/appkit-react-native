@@ -1,5 +1,14 @@
 # @web3modal/scaffold-react-native
 
+## 1.0.0-alpha.11
+
+### Patch Changes
+
+- alpha 11
+- Updated dependencies
+  - @web3modal/core-react-native@1.0.0-alpha.11
+  - @web3modal/ui-react-native@1.0.0-alpha.11
+
 ## 1.0.0-alpha.10
 
 ### Patch Changes
