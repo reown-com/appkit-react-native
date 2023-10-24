@@ -72,10 +72,17 @@ export function NetworksView() {
   };
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20}>
-      <FlexView flexDirection="row" flexWrap="wrap" style={{ gap }} padding={['s', 's', 's', 's']}>
-        {networksTemplate()}
-      </FlexView>
+    <>
+      <ScrollView bounces fadingEdgeLength={20}>
+        <FlexView
+          flexDirection="row"
+          flexWrap="wrap"
+          style={{ gap }}
+          padding={['s', 's', 's', 's']}
+        >
+          {networksTemplate()}
+        </FlexView>
+      </ScrollView>
       <Separator />
       <FlexView gap="s" padding={['s', 's', '2xl', 's']} alignItems="center">
         <Text variant="small-400" color="fg-300" center>
@@ -89,6 +96,6 @@ export function NetworksView() {
           What is a network
         </Link>
       </FlexView>
-    </ScrollView>
+    </>
   );
 }
