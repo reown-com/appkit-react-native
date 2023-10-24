@@ -20,6 +20,7 @@ import styles from './styles';
 export function NetworkSwitchView() {
   const { data } = useSnapshot(RouterController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
+  const { caipNetwork } = useSnapshot(NetworkController.state);
   const [error, setError] = useState<boolean>(false);
   const [showRetry, setShowRetry] = useState<boolean>(false);
   const network = data?.network;
@@ -29,7 +30,6 @@ export function NetworkSwitchView() {
     try {
       setError(false);
       await NetworkController.switchActiveNetwork(network);
-      RouterController.goBack();
     } catch {
       setError(true);
       setShowRetry(true);
@@ -40,6 +40,13 @@ export function NetworkSwitchView() {
     onSwitchNetwork();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    // Go back if network is already switched
+    if (caipNetwork?.id === network?.id) {
+      RouterController.goBack();
+    }
+  }, [caipNetwork?.id, network?.id]);
 
   const retryTemplate = () => {
     if (!showRetry) return null;
