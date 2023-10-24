@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useWindowDimensions } from 'react-native';
-import { RouterController } from '@web3modal/core-react-native';
+import { ConnectionController, RouterController } from '@web3modal/core-react-native';
 import {
   CardSelectWidth,
   FlexView,
@@ -25,6 +25,11 @@ export function AllWalletsView() {
 
   const onInputChange = useDebounceCallback({ callback: setSearchQuery });
 
+  const onQrCodePress = () => {
+    ConnectionController.removePressedWallet();
+    RouterController.push('ConnectingWalletConnect');
+  };
+
   const headerTemplate = () => {
     return (
       <FlexView
@@ -40,7 +45,7 @@ export function AllWalletsView() {
           iconColor="accent-100"
           background
           size="lg"
-          onPress={() => RouterController.push('ConnectingWalletConnect')}
+          onPress={onQrCodePress}
           style={styles.icon}
         />
       </FlexView>

@@ -82,6 +82,10 @@ export const ConnectionController = {
     state.pressedWallet = wallet;
   },
 
+  removePressedWallet() {
+    state.pressedWallet = undefined;
+  },
+
   setRecentWallets(wallets: ConnectionControllerState['recentWallets']) {
     state.recentWallets = wallets;
   },
