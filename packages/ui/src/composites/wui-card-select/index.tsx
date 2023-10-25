@@ -71,4 +71,6 @@ function _CardSelect({
   );
 }
 
-export const CardSelect = memo(_CardSelect);
+export const CardSelect = memo(_CardSelect, (prevProps, nextProps) => {
+  return prevProps.name === nextProps.name;
+});
