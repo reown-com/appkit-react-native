@@ -17,10 +17,12 @@ export default StyleSheet.create({
     gap: Spacing['3xs']
   },
   imageContainer: {
-    width: 34,
-    height: 34,
+    width: 36,
+    height: 36,
     borderRadius: 100,
-    borderWidth: 2
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   image: {
     width: 32,
