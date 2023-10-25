@@ -13,4 +13,4 @@ export const ADD_CHAIN_METHOD = 'wallet_addEthereumChain';
 export const WALLET_CHOICE_KEY = 'wagmi.wallet';
 
 // DO NOT REMOVE, SHOULD MATCH CORE PACKAGE VERSION
-export const VERSION = '1.0.0-alpha.12';
+export const VERSION = '1.0.0-alpha.13';
