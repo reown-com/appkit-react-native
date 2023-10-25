@@ -40,14 +40,17 @@ export const StorageUtil = {
   async setWeb3ModalRecent(wallet: WcWallet) {
     try {
       const recentWallets = await StorageUtil.getRecentWallets();
-      const exists = recentWallets.find(w => w.id === wallet.id);
-      if (!exists) {
-        recentWallets.unshift(wallet);
-        if (recentWallets.length > 2) {
-          recentWallets.pop();
-        }
-        AsyncStorage.setItem(W3M_RECENT, JSON.stringify(recentWallets));
+      const recentIndex = recentWallets.findIndex(w => w.id === wallet.id);
+
+      if (recentIndex > -1) {
+        recentWallets.splice(recentIndex, 1);
       }
+
+      recentWallets.unshift(wallet);
+      if (recentWallets.length > 2) {
+        recentWallets.pop();
+      }
+      AsyncStorage.setItem(W3M_RECENT, JSON.stringify(recentWallets));
 
       return recentWallets;
     } catch {
