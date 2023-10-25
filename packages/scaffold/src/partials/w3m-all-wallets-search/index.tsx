@@ -103,6 +103,7 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
       contentContainerStyle={[styles.contentContainer, { gap }]}
       columnWrapperStyle={{ gap }}
       ListEmptyComponent={emptyTemplate()}
+      keyExtractor={item => item.id}
       getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,
