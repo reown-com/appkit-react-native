@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi-react-native",
-  "version": "1.0.0-alpha.12",
+  "version": "1.0.0-alpha.13",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -66,7 +66,7 @@
   },
   "dependencies": {
     "@walletconnect/react-native-compat": "2.10.1",
-    "@web3modal/scaffold-react-native": "1.0.0-alpha.12"
+    "@web3modal/scaffold-react-native": "1.0.0-alpha.13"
   },
   "react-native": "src/index.tsx",
   "react-native-builder-bob": {
