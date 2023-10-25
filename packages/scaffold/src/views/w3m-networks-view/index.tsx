@@ -73,7 +73,7 @@ export function NetworksView() {
 
   return (
     <>
-      <ScrollView bounces fadingEdgeLength={20}>
+      <ScrollView bounces={false} fadingEdgeLength={20}>
         <FlexView
           flexDirection="row"
           flexWrap="wrap"
