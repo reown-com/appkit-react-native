@@ -28,7 +28,16 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
     ApiController.state
   );
   const imageHeaders = ApiController._getApiHeaders();
-  const walletList = [...installed, ...featured, ...recommended, ...wallets];
+  const preloadedWallets = installed.length + featured.length + recommended.length;
+  const loadingItems = columns - ((100 + preloadedWallets) % columns);
+
+  const walletList = [
+    ...installed,
+    ...featured,
+    ...recommended,
+    ...wallets,
+    ...(pageLoading ? (Array.from({ length: loadingItems }) as WcWallet[]) : [])
+  ];
 
   const ITEM_HEIGHT = CardSelectHeight + gap * 2;
 
@@ -47,7 +56,11 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
     );
   };
 
-  const walletTemplate = ({ item }: { item: WcWallet }) => {
+  const walletTemplate = ({ item, index }: { item: WcWallet; index: number }) => {
+    if (!item?.id) {
+      return <CardSelectLoader key={index} />;
+    }
+
     return (
       <CardSelect
         key={item?.id}
@@ -56,18 +69,6 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
         name={item?.name ?? 'Unknown'}
         onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
       />
-    );
-  };
-
-  const pageLoadingTemplate = (items: number) => {
-    if (!pageLoading) return null;
-
-    return (
-      <FlexView flexDirection="row" style={{ gap }}>
-        {Array.from({ length: items }).map((_, index) => (
-          <CardSelectLoader key={index} />
-        ))}
-      </FlexView>
     );
   };
 
@@ -103,13 +104,13 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
       bounces={false}
       numColumns={columns}
       data={walletList}
-      extraData={pageLoading}
+      extraData={walletList}
       renderItem={walletTemplate}
       contentContainerStyle={[styles.contentContainer, { gap }]}
       columnWrapperStyle={{ gap }}
       onEndReached={fetchNextPage}
-      onEndReachedThreshold={0.7}
-      ListFooterComponent={pageLoadingTemplate(columns)}
+      onEndReachedThreshold={2}
+      keyExtractor={(item, index) => item?.id ?? index}
       getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,
