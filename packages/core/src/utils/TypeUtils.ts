@@ -54,7 +54,7 @@ export interface DataWallet {
 
 export interface ApiGetWalletsRequest {
   page: number;
-  entries?: number;
+  entries: number;
   search?: string;
   include?: string[];
   exclude?: string[];

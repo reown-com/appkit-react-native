@@ -18,7 +18,7 @@ import { OptionsController } from './OptionsController';
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl();
 const api = new FetchUtil({ baseUrl });
-const defaultEntries = '100';
+const defaultEntries = '48';
 const recommendedEntries = '4';
 const sdkType = 'w3m';
 
@@ -190,7 +190,7 @@ export const ApiController = {
     state.count = count ?? 0;
   },
 
-  async fetchWallets({ page, entries }: Pick<ApiGetWalletsRequest, 'page' | 'entries'>) {
+  async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state;
     const exclude = [
       ...state.installed.map(({ id }) => id),
@@ -204,7 +204,7 @@ export const ApiController = {
       params: {
         page: String(page),
         platform: this.platform(),
-        entries: String(entries ?? defaultEntries),
+        entries: String(defaultEntries),
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -229,7 +229,7 @@ export const ApiController = {
       params: {
         page: '1',
         platform: this.platform(),
-        entries: defaultEntries,
+        entries: String(defaultEntries),
         search,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
