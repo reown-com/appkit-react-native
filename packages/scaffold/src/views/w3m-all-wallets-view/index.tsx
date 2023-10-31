@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useWindowDimensions } from 'react-native';
 import { ConnectionController, RouterController } from '@web3modal/core-react-native';
 import {
   CardSelectWidth,
@@ -14,12 +13,13 @@ import styles from './styles';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { AllWalletsList } from '../../partials/w3m-all-wallets-list';
 import { AllWalletsSearch } from '../../partials/w3m-all-wallets-search';
+import { useViewWidth } from '../../hooks/useViewWidth';
 
 export function AllWalletsView() {
   const Theme = useTheme();
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const { width } = useWindowDimensions();
-  const usableWidth = width - Spacing.s * 2;
+  const { width: maxWidth } = useViewWidth();
+  const usableWidth = maxWidth - Spacing.s * 2;
   const numColumns = Math.floor(usableWidth / CardSelectWidth);
   const gap = Math.abs(Math.trunc((usableWidth - numColumns * CardSelectWidth) / (numColumns - 1)));
 
@@ -37,7 +37,10 @@ export function AllWalletsView() {
         flexDirection="row"
         alignItems="center"
         justifyContent="space-between"
-        style={[styles.header, { backgroundColor: Theme['bg-125'], shadowColor: Theme['bg-125'] }]}
+        style={[
+          styles.header,
+          { backgroundColor: Theme['bg-125'], shadowColor: Theme['bg-125'], width: maxWidth }
+        ]}
       >
         <SearchBar onChangeText={onInputChange} />
         <IconLink

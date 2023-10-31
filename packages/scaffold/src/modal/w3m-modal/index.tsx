@@ -9,10 +9,12 @@ import { Header } from '../../partials/w3m-header';
 
 import styles from './styles';
 import { Snackbar } from '../../partials/w3m-snackbar';
+import { useViewWidth } from '../../hooks/useViewWidth';
 
 export function Web3Modal() {
   const { open } = useSnapshot(ModalController.state);
   const { history } = useSnapshot(RouterController.state);
+  const { isLandscape } = useViewWidth();
 
   const onBackButtonPress = () => {
     if (history.length > 1) {
@@ -37,7 +39,7 @@ export function Web3Modal() {
       onBackdropPress={ModalController.close}
       onBackButtonPress={onBackButtonPress}
     >
-      <Card style={styles.card}>
+      <Card style={[styles.card, isLandscape && styles.cardLandscape]}>
         <Header />
         <Web3Router />
         <Snackbar />

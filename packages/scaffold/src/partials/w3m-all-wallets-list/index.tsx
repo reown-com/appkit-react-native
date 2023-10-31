@@ -15,6 +15,7 @@ import {
 } from '@web3modal/ui-react-native';
 import styles from './styles';
 import { UiUtil } from '../../utils/UiUtil';
+import { useViewWidth } from '../../hooks/useViewWidth';
 
 interface AllWalletsListProps {
   columns: number;
@@ -24,6 +25,7 @@ interface AllWalletsListProps {
 export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
+  const { width: maxWidth } = useViewWidth();
   const { installed, featured, recommended, wallets, page, count } = useSnapshot(
     ApiController.state
   );
@@ -46,8 +48,9 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
       <FlexView
         flexDirection="row"
         flexWrap="wrap"
+        alignSelf="center"
         padding={['2xs', '0', 's', 's']}
-        style={{ gap }}
+        style={{ gap, maxWidth }}
       >
         {Array.from({ length: items }).map((_, index) => (
           <CardSelectLoader key={index} />
@@ -104,8 +107,9 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
       bounces={false}
       numColumns={columns}
       data={walletList}
-      extraData={walletList}
       renderItem={walletTemplate}
+      showsVerticalScrollIndicator={false}
+      style={styles.container}
       contentContainerStyle={[styles.contentContainer, { gap }]}
       columnWrapperStyle={{ gap }}
       onEndReached={fetchNextPage}

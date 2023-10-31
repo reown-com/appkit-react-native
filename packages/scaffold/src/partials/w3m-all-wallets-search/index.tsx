@@ -15,6 +15,7 @@ import {
   IconBox,
   Text
 } from '@web3modal/ui-react-native';
+import { useViewWidth } from '../../hooks/useViewWidth';
 import styles from './styles';
 
 export interface AllWalletsSearchProps {
@@ -28,6 +29,7 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
   const { search } = useSnapshot(ApiController.state);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const imageHeaders = ApiController._getApiHeaders();
+  const { width: maxWidth } = useViewWidth();
 
   const ITEM_HEIGHT = CardSelectHeight + gap * 2;
 
@@ -48,8 +50,9 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
       <FlexView
         flexDirection="row"
         flexWrap="wrap"
+        alignSelf="center"
         padding={['2xs', '0', 's', 's']}
-        style={{ gap }}
+        style={{ gap, maxWidth }}
       >
         {Array.from({ length: items }).map((_, index) => (
           <CardSelectLoader key={index} />
@@ -89,7 +92,7 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
   }, [searchQuery, prevSearchQuery, searchFetch]);
 
   if (loading) {
-    return loadingTemplate(40);
+    return loadingTemplate(20);
   }
 
   return (
@@ -100,6 +103,8 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
       numColumns={columns}
       data={search}
       renderItem={walletTemplate}
+      showsVerticalScrollIndicator={false}
+      style={styles.container}
       contentContainerStyle={[styles.contentContainer, { gap }]}
       columnWrapperStyle={{ gap }}
       ListEmptyComponent={emptyTemplate()}

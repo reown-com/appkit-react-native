@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
-import { Linking, Platform } from 'react-native';
+import { Linking, Platform, ScrollView } from 'react-native';
 import {
   RouterController,
   ApiController,
@@ -19,6 +19,7 @@ import {
   ActionEntry
 } from '@web3modal/ui-react-native';
 
+import { useViewWidth } from '../../hooks/useViewWidth';
 import styles from './styles';
 
 interface Props {
@@ -29,6 +30,7 @@ interface Props {
 
 export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const { data } = useSnapshot(RouterController.state);
+  const { width } = useViewWidth();
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
   const [linkingError, setLinkingError] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
@@ -138,44 +140,52 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   }, [wcUri, isRetrying, onConnect]);
 
   return (
-    <FlexView alignItems="center" rowGap="xs" padding={['2xl', 'l', '2xl', 'l']}>
-      <LoadingThumbnail paused={linkingError || wcError}>
-        <WalletImage
-          size="lg"
-          imageSrc={AssetUtil.getWalletImage(data?.wallet)}
-          imageHeaders={ApiController._getApiHeaders()}
-        />
-        {(wcError || linkingError) && (
-          <IconBox
-            icon={linkingError ? 'warningCircle' : 'close'}
-            border
-            background
-            backgroundColor="icon-box-bg-error-100"
-            size="sm"
-            iconColor="error-100"
-            style={styles.errorIcon}
+    <ScrollView bounces={false} showsVerticalScrollIndicator={false} fadingEdgeLength={20}>
+      <FlexView
+        alignItems="center"
+        alignSelf="center"
+        rowGap="xs"
+        padding={['2xl', 'l', '2xl', 'l']}
+        style={{ width }}
+      >
+        <LoadingThumbnail paused={linkingError || wcError}>
+          <WalletImage
+            size="lg"
+            imageSrc={AssetUtil.getWalletImage(data?.wallet)}
+            imageHeaders={ApiController._getApiHeaders()}
           />
-        )}
-      </LoadingThumbnail>
-      {textTemplate()}
-      <Button
-        variant="accent"
-        iconLeft="refresh"
-        style={styles.retryButton}
-        iconStyle={styles.retryIcon}
-        onPress={onRetryPress}
-      >
-        Try again
-      </Button>
-      <Link
-        iconLeft="copy"
-        color="fg-200"
-        style={styles.copyButton}
-        onPress={() => onCopyUri(wcUri)}
-      >
-        Copy link
-      </Link>
+          {(wcError || linkingError) && (
+            <IconBox
+              icon={linkingError ? 'warningCircle' : 'close'}
+              border
+              background
+              backgroundColor="icon-box-bg-error-100"
+              size="sm"
+              iconColor="error-100"
+              style={styles.errorIcon}
+            />
+          )}
+        </LoadingThumbnail>
+        {textTemplate()}
+        <Button
+          variant="accent"
+          iconLeft="refresh"
+          style={styles.retryButton}
+          iconStyle={styles.retryIcon}
+          onPress={onRetryPress}
+        >
+          Try again
+        </Button>
+        <Link
+          iconLeft="copy"
+          color="fg-200"
+          style={styles.copyButton}
+          onPress={() => onCopyUri(wcUri)}
+        >
+          Copy link
+        </Link>
+      </FlexView>
       {storeTemplate()}
-    </FlexView>
+    </ScrollView>
   );
 }

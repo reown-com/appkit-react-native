@@ -5,7 +5,6 @@ export default StyleSheet.create({
   container: {
     borderRadius: BorderRadius.l,
     borderWidth: 1,
-    overflow: 'hidden',
-    maxHeight: '80%'
+    overflow: 'hidden'
   }
 });
