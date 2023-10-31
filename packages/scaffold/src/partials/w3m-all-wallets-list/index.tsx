@@ -15,7 +15,7 @@ import {
 } from '@web3modal/ui-react-native';
 import styles from './styles';
 import { UiUtil } from '../../utils/UiUtil';
-import { useViewWidth } from '../../hooks/useViewWidth';
+import { useDimensions } from '../../hooks/useDimensions';
 
 interface AllWalletsListProps {
   columns: number;
@@ -25,7 +25,7 @@ interface AllWalletsListProps {
 export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
-  const { width: maxWidth } = useViewWidth();
+  const { width: maxWidth } = useDimensions();
   const { installed, featured, recommended, wallets, page, count } = useSnapshot(
     ApiController.state
   );

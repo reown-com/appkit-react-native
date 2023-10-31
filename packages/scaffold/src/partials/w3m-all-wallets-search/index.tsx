@@ -15,7 +15,7 @@ import {
   IconBox,
   Text
 } from '@web3modal/ui-react-native';
-import { useViewWidth } from '../../hooks/useViewWidth';
+import { useDimensions } from '../../hooks/useDimensions';
 import styles from './styles';
 
 export interface AllWalletsSearchProps {
@@ -29,7 +29,7 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
   const { search } = useSnapshot(ApiController.state);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const imageHeaders = ApiController._getApiHeaders();
-  const { width: maxWidth } = useViewWidth();
+  const { width: maxWidth } = useDimensions();
 
   const ITEM_HEIGHT = CardSelectHeight + gap;
 

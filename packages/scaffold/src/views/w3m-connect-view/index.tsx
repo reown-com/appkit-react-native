@@ -9,14 +9,14 @@ import {
 import type { WcWallet } from '@web3modal/core-react-native';
 import { ListWallet, FlexView } from '@web3modal/ui-react-native';
 import { UiUtil } from '../../utils/UiUtil';
-import { useViewWidth } from '../../hooks/useViewWidth';
+import { useDimensions } from '../../hooks/useDimensions';
 import styles from './styles';
 
 export function ConnectView() {
   const { recommended, featured, installed, count } = useSnapshot(ApiController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const imageHeaders = ApiController._getApiHeaders();
-  const { width: maxWidth } = useViewWidth();
+  const { width: maxWidth } = useDimensions();
 
   const RECENT_COUNT = recentWallets?.length ? (installed.length ? 1 : 2) : 0;
 

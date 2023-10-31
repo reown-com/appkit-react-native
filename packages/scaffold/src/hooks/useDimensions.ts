@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useWindowDimensions } from 'react-native';
 
-export function useViewWidth() {
+export function useDimensions() {
   const { width, height } = useWindowDimensions();
   const [viewWidth, setViewWidth] = useState<number>(Math.min(width, height));
   const [isPortrait, setIsPortrait] = useState<boolean>(height > width);

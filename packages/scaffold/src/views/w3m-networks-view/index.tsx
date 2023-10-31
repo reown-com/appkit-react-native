@@ -17,7 +17,7 @@ import {
   type CaipNetwork,
   AccountController
 } from '@web3modal/core-react-native';
-import { useViewWidth } from '../../hooks/useViewWidth';
+import { useDimensions } from '../../hooks/useDimensions';
 import styles from './styles';
 
 export function NetworksView() {
@@ -25,7 +25,7 @@ export function NetworksView() {
   const { caipNetwork, requestedCaipNetworks, approvedCaipNetworkIds, supportsAllNetworks } =
     useSnapshot(NetworkController.state);
   const imageHeaders = ApiController._getApiHeaders();
-  const { width } = useViewWidth();
+  const { width } = useDimensions();
   const usableWidth = width - Spacing.s * 2;
   const numColumns = Math.floor(usableWidth / CardSelectWidth);
   const gap = Math.abs(Math.trunc((usableWidth - numColumns * CardSelectWidth) / (numColumns - 1)));

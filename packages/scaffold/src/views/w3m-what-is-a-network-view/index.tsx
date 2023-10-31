@@ -1,10 +1,10 @@
 import { Linking, ScrollView } from 'react-native';
 import { Button, FlexView, Text, Visual } from '@web3modal/ui-react-native';
-import { useViewWidth } from '../../hooks/useViewWidth';
+import { useDimensions } from '../../hooks/useDimensions';
 import styles from './styles';
 
 export function WhatIsNetworkView() {
-  const { width } = useViewWidth();
+  const { width } = useDimensions();
   const onLearnMorePress = () => {
     Linking.openURL('https://ethereum.org/en/developers/docs/networks/');
   };

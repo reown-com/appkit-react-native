@@ -23,7 +23,7 @@ import {
   ListItem
 } from '@web3modal/ui-react-native';
 import { useState } from 'react';
-import { useViewWidth } from '../../hooks/useViewWidth';
+import { useDimensions } from '../../hooks/useDimensions';
 import styles from './styles';
 
 export function AccountView() {
@@ -35,7 +35,7 @@ export function AccountView() {
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const networkImage = networkImages[caipNetwork?.imageId ?? ''];
   const showCopy = OptionsController.isClipboardAvailable();
-  const { width } = useViewWidth();
+  const { width } = useDimensions();
 
   async function onDisconnect() {
     setDisconnecting(true);

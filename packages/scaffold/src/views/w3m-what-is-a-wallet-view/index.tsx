@@ -1,11 +1,11 @@
 import { ScrollView } from 'react-native';
 import { Button, FlexView, Text, Visual } from '@web3modal/ui-react-native';
 import { RouterController } from '@web3modal/core-react-native';
-import { useViewWidth } from '../../hooks/useViewWidth';
+import { useDimensions } from '../../hooks/useDimensions';
 import styles from './styles';
 
 export function WhatIsAWalletView() {
-  const { width } = useViewWidth();
+  const { width } = useDimensions();
 
   return (
     <ScrollView
