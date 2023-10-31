@@ -18,14 +18,13 @@ import {
   AccountController
 } from '@web3modal/core-react-native';
 import { useDimensions } from '../../hooks/useDimensions';
-import styles from './styles';
 
 export function NetworksView() {
   const { isConnected } = useSnapshot(AccountController.state);
   const { caipNetwork, requestedCaipNetworks, approvedCaipNetworkIds, supportsAllNetworks } =
     useSnapshot(NetworkController.state);
   const imageHeaders = ApiController._getApiHeaders();
-  const { width } = useDimensions();
+  const { width, padding } = useDimensions();
   const usableWidth = width - Spacing.s * 2;
   const numColumns = Math.floor(usableWidth / CardSelectWidth);
   const gap = Math.abs(Math.trunc((usableWidth - numColumns * CardSelectWidth) / (numColumns - 1)));
@@ -75,12 +74,7 @@ export function NetworksView() {
 
   return (
     <>
-      <ScrollView
-        bounces={false}
-        fadingEdgeLength={20}
-        showsVerticalScrollIndicator={false}
-        style={[styles.container, { width }]}
-      >
+      <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
         <FlexView
           flexDirection="row"
           flexWrap="wrap"

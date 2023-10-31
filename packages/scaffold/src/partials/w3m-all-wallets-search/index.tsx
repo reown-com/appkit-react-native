@@ -13,6 +13,7 @@ import {
   CardSelectLoader,
   FlexView,
   IconBox,
+  Spacing,
   Text
 } from '@web3modal/ui-react-native';
 import { useDimensions } from '../../hooks/useDimensions';
@@ -29,7 +30,7 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
   const { search } = useSnapshot(ApiController.state);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const imageHeaders = ApiController._getApiHeaders();
-  const { width: maxWidth } = useDimensions();
+  const { width: maxWidth, padding } = useDimensions();
 
   const ITEM_HEIGHT = CardSelectHeight + gap;
 
@@ -103,9 +104,10 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
       numColumns={columns}
       data={search}
       renderItem={walletTemplate}
-      showsVerticalScrollIndicator={false}
-      style={styles.container}
-      contentContainerStyle={[styles.contentContainer, { gap }]}
+      contentContainerStyle={[
+        styles.contentContainer,
+        { gap, paddingHorizontal: padding + Spacing.s }
+      ]}
       columnWrapperStyle={{ gap }}
       ListEmptyComponent={emptyTemplate()}
       keyExtractor={item => item.id}

@@ -35,7 +35,7 @@ export function AccountView() {
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const networkImage = networkImages[caipNetwork?.imageId ?? ''];
   const showCopy = OptionsController.isClipboardAvailable();
-  const { width } = useDimensions();
+  const { padding } = useDimensions();
 
   async function onDisconnect() {
     setDisconnecting(true);
@@ -78,12 +78,7 @@ export function AccountView() {
   return (
     <>
       <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-        fadingEdgeLength={20}
-        style={[styles.container, { width }]}
-      >
+      <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
         <FlexView alignItems="center" padding={['3xl', 's', '2xl', 's']}>
           <Avatar imageSrc={profileImage} address={profileName ?? address} />
           <FlexView flexDirection="row" alignItems="center" gap="4xs" margin={['s', '0', '0', '0']}>

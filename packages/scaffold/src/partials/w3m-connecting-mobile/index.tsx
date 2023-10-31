@@ -140,7 +140,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   }, [wcUri, isRetrying, onConnect]);
 
   return (
-    <ScrollView bounces={false} showsVerticalScrollIndicator={false} fadingEdgeLength={20}>
+    <ScrollView bounces={false} fadingEdgeLength={20}>
       <FlexView
         alignItems="center"
         alignSelf="center"

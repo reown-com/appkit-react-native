@@ -3,10 +3,9 @@ import { Linking, Platform, ScrollView } from 'react-native';
 import { FlexView, ListWallet } from '@web3modal/ui-react-native';
 import { ApiController, AssetUtil, type WcWallet } from '@web3modal/core-react-native';
 import { useDimensions } from '../../hooks/useDimensions';
-import styles from './styles';
 
 export function GetWalletView() {
-  const { width } = useDimensions();
+  const { padding } = useDimensions();
   const { recommended } = useSnapshot(ApiController.state);
   const imageHeaders = ApiController._getApiHeaders();
 
@@ -31,12 +30,7 @@ export function GetWalletView() {
   };
 
   return (
-    <ScrollView
-      bounces={false}
-      showsVerticalScrollIndicator={false}
-      style={[styles.container, { width }]}
-      fadingEdgeLength={20}
-    >
+    <ScrollView bounces={false} style={{ paddingHorizontal: padding }} fadingEdgeLength={20}>
       <FlexView padding={['s', 's', '2xl', 's']} rowGap="xs">
         {listTemplate()}
         <ListWallet

@@ -5,15 +5,10 @@ import { useDimensions } from '../../hooks/useDimensions';
 import styles from './styles';
 
 export function WhatIsAWalletView() {
-  const { width } = useDimensions();
+  const { padding } = useDimensions();
 
   return (
-    <ScrollView
-      bounces={false}
-      fadingEdgeLength={20}
-      showsVerticalScrollIndicator={false}
-      style={[styles.container, { width }]}
-    >
+    <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
       <FlexView alignItems="center" rowGap="xs" padding={['l', '4xl', '2xl', '4xl']}>
         <FlexView flexDirection="row" columnGap="s" padding={['0', '0', 'xs', '0']}>
           <Visual name="login" />
