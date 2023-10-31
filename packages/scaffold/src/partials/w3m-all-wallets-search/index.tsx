@@ -31,7 +31,7 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
   const imageHeaders = ApiController._getApiHeaders();
   const { width: maxWidth } = useViewWidth();
 
-  const ITEM_HEIGHT = CardSelectHeight + gap * 2;
+  const ITEM_HEIGHT = CardSelectHeight + gap;
 
   const walletTemplate = ({ item }: { item: WcWallet }) => {
     return (

@@ -41,7 +41,7 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
     ...(pageLoading ? (Array.from({ length: loadingItems }) as WcWallet[]) : [])
   ];
 
-  const ITEM_HEIGHT = CardSelectHeight + gap * 2;
+  const ITEM_HEIGHT = CardSelectHeight + gap;
 
   const loadingTemplate = (items: number) => {
     return (

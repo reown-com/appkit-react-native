@@ -9,8 +9,5 @@ export default StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     maxHeight: '80%'
-  },
-  cardLandscape: {
-    maxHeight: '95%'
   }
 });
