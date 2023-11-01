@@ -34,6 +34,7 @@ export function SearchBar({
       icon="search"
       inputStyle={inputStyle}
       returnKeyType="search"
+      disableFullscreenUI
     >
       {showClear && (
         <InputElement

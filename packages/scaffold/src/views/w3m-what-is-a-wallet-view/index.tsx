@@ -1,11 +1,14 @@
 import { ScrollView } from 'react-native';
 import { Button, FlexView, Text, Visual } from '@web3modal/ui-react-native';
 import { RouterController } from '@web3modal/core-react-native';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function WhatIsAWalletView() {
+  const { padding } = useCustomDimensions();
+
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20}>
+    <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
       <FlexView alignItems="center" rowGap="xs" padding={['l', '4xl', '2xl', '4xl']}>
         <FlexView flexDirection="row" columnGap="s" padding={['0', '0', 'xs', '0']}>
           <Visual name="login" />

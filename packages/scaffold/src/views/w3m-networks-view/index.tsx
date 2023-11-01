@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { ScrollView, useWindowDimensions } from 'react-native';
+import { ScrollView } from 'react-native';
 import {
   CardSelect,
   CardSelectWidth,
@@ -17,13 +17,14 @@ import {
   type CaipNetwork,
   AccountController
 } from '@web3modal/core-react-native';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function NetworksView() {
   const { isConnected } = useSnapshot(AccountController.state);
   const { caipNetwork, requestedCaipNetworks, approvedCaipNetworkIds, supportsAllNetworks } =
     useSnapshot(NetworkController.state);
   const imageHeaders = ApiController._getApiHeaders();
-  const { width } = useWindowDimensions();
+  const { maxWidth: width, padding } = useCustomDimensions();
   const usableWidth = width - Spacing.s * 2;
   const numColumns = Math.floor(usableWidth / CardSelectWidth);
   const gap = Math.abs(Math.trunc((usableWidth - numColumns * CardSelectWidth) / (numColumns - 1)));
@@ -73,7 +74,7 @@ export function NetworksView() {
 
   return (
     <>
-      <ScrollView bounces={false} fadingEdgeLength={20}>
+      <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
         <FlexView
           flexDirection="row"
           flexWrap="wrap"
@@ -84,7 +85,13 @@ export function NetworksView() {
         </FlexView>
       </ScrollView>
       <Separator />
-      <FlexView gap="s" padding={['s', 's', '2xl', 's']} alignItems="center">
+      <FlexView
+        gap="s"
+        padding={['s', 's', '2xl', 's']}
+        alignItems="center"
+        alignSelf="center"
+        style={{ width }}
+      >
         <Text variant="small-400" color="fg-300" center>
           Your connected wallet may not support some of the networks available for this dApp
         </Text>

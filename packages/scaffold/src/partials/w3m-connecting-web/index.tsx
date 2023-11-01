@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useCallback } from 'react';
-import { Linking } from 'react-native';
+import { Linking, ScrollView } from 'react-native';
 import {
   RouterController,
   ApiController,
@@ -67,42 +67,44 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
   };
 
   return (
-    <FlexView alignItems="center" rowGap="xs" padding={['2xl', 'm', '2xl', 'm']}>
-      <LoadingThumbnail paused={wcError}>
-        <WalletImage
-          size="lg"
-          imageSrc={AssetUtil.getWalletImage(data?.wallet)}
-          imageHeaders={ApiController._getApiHeaders()}
-        />
-        {wcError && (
-          <IconBox
-            icon={'close'}
-            border
-            background
-            backgroundColor="icon-box-bg-error-100"
-            size="sm"
-            iconColor="error-100"
-            style={styles.errorIcon}
+    <ScrollView bounces={false} fadingEdgeLength={20}>
+      <FlexView alignItems="center" rowGap="xs" padding={['2xl', 'm', '2xl', 'm']}>
+        <LoadingThumbnail paused={wcError}>
+          <WalletImage
+            size="lg"
+            imageSrc={AssetUtil.getWalletImage(data?.wallet)}
+            imageHeaders={ApiController._getApiHeaders()}
           />
-        )}
-      </LoadingThumbnail>
-      {textTemplate()}
-      <Button
-        variant="accent"
-        iconLeft="externalLink"
-        style={styles.openButton}
-        onPress={onConnect}
-      >
-        Open
-      </Button>
-      <Link
-        iconLeft="copy"
-        color="fg-200"
-        style={styles.copyButton}
-        onPress={() => onCopyUri(wcUri)}
-      >
-        Copy link
-      </Link>
-    </FlexView>
+          {wcError && (
+            <IconBox
+              icon={'close'}
+              border
+              background
+              backgroundColor="icon-box-bg-error-100"
+              size="sm"
+              iconColor="error-100"
+              style={styles.errorIcon}
+            />
+          )}
+        </LoadingThumbnail>
+        {textTemplate()}
+        <Button
+          variant="accent"
+          iconLeft="externalLink"
+          style={styles.openButton}
+          onPress={onConnect}
+        >
+          Open
+        </Button>
+        <Link
+          iconLeft="copy"
+          color="fg-200"
+          style={styles.copyButton}
+          onPress={() => onCopyUri(wcUri)}
+        >
+          Copy link
+        </Link>
+      </FlexView>
+    </ScrollView>
   );
 }

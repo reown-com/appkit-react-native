@@ -1,4 +1,5 @@
 import { useSnapshot } from 'valtio';
+import { ScrollView } from 'react-native';
 import {
   ApiController,
   AssetUtil,
@@ -8,11 +9,13 @@ import {
 import type { WcWallet } from '@web3modal/core-react-native';
 import { ListWallet, FlexView } from '@web3modal/ui-react-native';
 import { UiUtil } from '../../utils/UiUtil';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function ConnectView() {
   const { recommended, featured, installed, count } = useSnapshot(ApiController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const imageHeaders = ApiController._getApiHeaders();
+  const { padding } = useCustomDimensions();
 
   const RECENT_COUNT = recentWallets?.length ? (installed.length ? 1 : 2) : 0;
 
@@ -133,12 +136,14 @@ export function ConnectView() {
   };
 
   return (
-    <FlexView padding={['s', 's', '2xl', 's']} rowGap="2xs">
-      {recentTemplate()}
-      {installedTemplate()}
-      {featuredTemplate()}
-      {recommendedTemplate()}
-      {allWalletsTemplate()}
-    </FlexView>
+    <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
+      <FlexView padding={['s', 's', '2xl', 's']} rowGap="2xs">
+        {recentTemplate()}
+        {installedTemplate()}
+        {featuredTemplate()}
+        {recommendedTemplate()}
+        {allWalletsTemplate()}
+      </FlexView>
+    </ScrollView>
   );
 }

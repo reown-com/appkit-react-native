@@ -11,10 +11,12 @@ import {
   CardSelect,
   CardSelectLoader,
   CardSelectHeight,
-  FlexView
+  FlexView,
+  Spacing
 } from '@web3modal/ui-react-native';
 import styles from './styles';
 import { UiUtil } from '../../utils/UiUtil';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 interface AllWalletsListProps {
   columns: number;
@@ -24,6 +26,7 @@ interface AllWalletsListProps {
 export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
+  const { maxWidth, padding } = useCustomDimensions();
   const { installed, featured, recommended, wallets, page, count } = useSnapshot(
     ApiController.state
   );
@@ -39,15 +42,16 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
     ...(pageLoading ? (Array.from({ length: loadingItems }) as WcWallet[]) : [])
   ];
 
-  const ITEM_HEIGHT = CardSelectHeight + gap * 2;
+  const ITEM_HEIGHT = CardSelectHeight + gap;
 
   const loadingTemplate = (items: number) => {
     return (
       <FlexView
         flexDirection="row"
         flexWrap="wrap"
+        alignSelf="center"
         padding={['2xs', '0', 's', 's']}
-        style={{ gap }}
+        style={{ gap, maxWidth }}
       >
         {Array.from({ length: items }).map((_, index) => (
           <CardSelectLoader key={index} />
@@ -104,9 +108,11 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
       bounces={false}
       numColumns={columns}
       data={walletList}
-      extraData={walletList}
       renderItem={walletTemplate}
-      contentContainerStyle={[styles.contentContainer, { gap }]}
+      contentContainerStyle={[
+        styles.contentContainer,
+        { gap, paddingHorizontal: padding + Spacing.s }
+      ]}
       columnWrapperStyle={{ gap }}
       onEndReached={fetchNextPage}
       onEndReachedThreshold={2}

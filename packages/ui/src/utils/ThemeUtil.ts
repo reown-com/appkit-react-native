@@ -169,5 +169,5 @@ export const WalletImageSize = {
   xs: 15,
   sm: 40,
   md: 56,
-  lg: 90
+  lg: 80
 };

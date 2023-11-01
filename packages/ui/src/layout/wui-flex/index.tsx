@@ -1,7 +1,7 @@
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 
 import type {
-  FlexAlignItemsType,
+  FlexAlignType,
   FlexDirectionType,
   FlexGrowType,
   FlexJustifyContentType,
@@ -19,7 +19,8 @@ export interface FlexViewProps {
   flexWrap?: FlexWrapType;
   flexGrow?: FlexGrowType;
   flexShrink?: FlexShrinkType;
-  alignItems?: FlexAlignItemsType;
+  alignItems?: FlexAlignType;
+  alignSelf?: FlexAlignType;
   justifyContent?: FlexJustifyContentType;
   columnGap?: SpacingType;
   rowGap?: SpacingType;
@@ -36,6 +37,7 @@ export function FlexView(props: FlexViewProps) {
     flexGrow: props.flexGrow,
     flexShrink: props.flexShrink,
     alignItems: props.alignItems,
+    alignSelf: props.alignSelf,
     justifyContent: props.justifyContent,
     columnGap: props.columnGap && Spacing[props.columnGap],
     rowGap: props.rowGap && Spacing[props.rowGap],

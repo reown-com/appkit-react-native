@@ -8,6 +8,7 @@ export default StyleSheet.create({
   },
   header: {
     zIndex: 1,
+    alignSelf: 'center',
     ...Platform.select({
       ios: {
         shadowOpacity: 1,

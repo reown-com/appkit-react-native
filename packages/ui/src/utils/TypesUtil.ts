@@ -204,7 +204,7 @@ export type FlexGrowType = 0 | 1;
 
 export type FlexShrinkType = 0 | 1;
 
-export type FlexAlignItemsType = 'baseline' | 'center' | 'flex-end' | 'flex-start' | 'stretch';
+export type FlexAlignType = 'baseline' | 'center' | 'flex-end' | 'flex-start' | 'stretch';
 
 export type FlexJustifyContentType =
   | 'center'

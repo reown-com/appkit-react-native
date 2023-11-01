@@ -22,6 +22,8 @@ export default StyleSheet.create({
   },
   storeButton: {
     justifyContent: 'space-between',
-    paddingHorizontal: Spacing.l
+    paddingHorizontal: Spacing.l,
+    marginHorizontal: Spacing.xl,
+    marginBottom: Spacing['2xl']
   }
 });
