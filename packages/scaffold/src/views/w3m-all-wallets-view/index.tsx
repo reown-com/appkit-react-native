@@ -27,6 +27,7 @@ export function AllWalletsView() {
 
   const onQrCodePress = () => {
     ConnectionController.removePressedWallet();
+    ConnectionController.removeWcLinking();
     RouterController.push('ConnectingWalletConnect');
   };
 

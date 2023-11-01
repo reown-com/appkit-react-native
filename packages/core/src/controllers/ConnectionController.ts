@@ -74,6 +74,10 @@ export const ConnectionController = {
     state.wcLinking = wcLinking;
   },
 
+  removeWcLinking() {
+    state.wcLinking = undefined;
+  },
+
   setWcError(wcError: ConnectionControllerState['wcError']) {
     state.wcError = wcError;
   },
