@@ -19,7 +19,7 @@ import {
   ActionEntry
 } from '@web3modal/ui-react-native';
 
-import { useDimensions } from '../../hooks/useDimensions';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 interface Props {
@@ -30,7 +30,7 @@ interface Props {
 
 export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const { data } = useSnapshot(RouterController.state);
-  const { width } = useDimensions();
+  const { maxWidth: width } = useCustomDimensions();
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
   const [linkingError, setLinkingError] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);

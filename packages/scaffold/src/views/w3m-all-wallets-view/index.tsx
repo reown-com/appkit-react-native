@@ -13,12 +13,12 @@ import styles from './styles';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { AllWalletsList } from '../../partials/w3m-all-wallets-list';
 import { AllWalletsSearch } from '../../partials/w3m-all-wallets-search';
-import { useDimensions } from '../../hooks/useDimensions';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function AllWalletsView() {
   const Theme = useTheme();
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const { width: maxWidth } = useDimensions();
+  const { maxWidth } = useCustomDimensions();
   const usableWidth = maxWidth - Spacing.s * 2;
   const numColumns = Math.floor(usableWidth / CardSelectWidth);
   const gap = Math.abs(Math.trunc((usableWidth - numColumns * CardSelectWidth) / (numColumns - 1)));

@@ -2,10 +2,10 @@ import { useSnapshot } from 'valtio';
 import { Linking, Platform, ScrollView } from 'react-native';
 import { FlexView, ListWallet } from '@web3modal/ui-react-native';
 import { ApiController, AssetUtil, type WcWallet } from '@web3modal/core-react-native';
-import { useDimensions } from '../../hooks/useDimensions';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function GetWalletView() {
-  const { padding } = useDimensions();
+  const { padding } = useCustomDimensions();
   const { recommended } = useSnapshot(ApiController.state);
   const imageHeaders = ApiController._getApiHeaders();
 

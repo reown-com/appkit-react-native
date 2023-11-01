@@ -5,12 +5,12 @@ import {
   SnackController
 } from '@web3modal/core-react-native';
 import { FlexView, Link, QrCode, Text, Spacing } from '@web3modal/ui-react-native';
-import { useDimensions } from '../../hooks/useDimensions';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function ConnectingQrCode() {
   const { wcUri } = useSnapshot(ConnectionController.state);
   const showCopy = OptionsController.isClipboardAvailable();
-  const { width: windowSize, isPortrait } = useDimensions();
+  const { maxWidth: windowSize, isPortrait } = useCustomDimensions();
   const qrSize = (windowSize - Spacing.l * 2) / (isPortrait ? 1 : 1.5);
 
   const onCopyAddress = () => {

@@ -17,14 +17,14 @@ import {
   type CaipNetwork,
   AccountController
 } from '@web3modal/core-react-native';
-import { useDimensions } from '../../hooks/useDimensions';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function NetworksView() {
   const { isConnected } = useSnapshot(AccountController.state);
   const { caipNetwork, requestedCaipNetworks, approvedCaipNetworkIds, supportsAllNetworks } =
     useSnapshot(NetworkController.state);
   const imageHeaders = ApiController._getApiHeaders();
-  const { width, padding } = useDimensions();
+  const { maxWidth: width, padding } = useCustomDimensions();
   const usableWidth = width - Spacing.s * 2;
   const numColumns = Math.floor(usableWidth / CardSelectWidth);
   const gap = Math.abs(Math.trunc((usableWidth - numColumns * CardSelectWidth) / (numColumns - 1)));

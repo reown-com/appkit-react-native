@@ -10,13 +10,13 @@ import { Header } from '../../partials/w3m-header';
 
 import styles from './styles';
 import { Snackbar } from '../../partials/w3m-snackbar';
-import { useDimensions } from '../../hooks/useDimensions';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function Web3Modal() {
   const { open } = useSnapshot(ModalController.state);
   const { history } = useSnapshot(RouterController.state);
   const { height } = useWindowDimensions();
-  const { isLandscape } = useDimensions();
+  const { isLandscape } = useCustomDimensions();
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
 
   const onBackButtonPress = () => {

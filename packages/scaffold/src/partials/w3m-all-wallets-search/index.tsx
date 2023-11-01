@@ -16,7 +16,7 @@ import {
   Spacing,
   Text
 } from '@web3modal/ui-react-native';
-import { useDimensions } from '../../hooks/useDimensions';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export interface AllWalletsSearchProps {
@@ -30,7 +30,7 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
   const { search } = useSnapshot(ApiController.state);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const imageHeaders = ApiController._getApiHeaders();
-  const { width: maxWidth, padding } = useDimensions();
+  const { maxWidth, padding } = useCustomDimensions();
 
   const ITEM_HEIGHT = CardSelectHeight + gap;
 
