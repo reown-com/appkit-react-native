@@ -22,6 +22,8 @@ import {
   OPTIONAL_METHODS
 } from '@walletconnect/ethereum-provider';
 
+import { StorageUtils } from '../utils/storageUtils';
+
 export type StorageStoreData = {
   state: { data?: ConnectorData };
 };
@@ -126,7 +128,7 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
     try {
       let targetChainId = chainId;
       if (!targetChainId) {
-        const store = this.storage?.getItem<StorageStoreData>(STORE_KEY);
+        const store = await StorageUtils.getItem<StorageStoreData>(STORE_KEY);
         const lastUsedChainId = store?.state?.data?.chain?.id;
         if (lastUsedChainId && !this.isChainUnsupported(lastUsedChainId))
           targetChainId = lastUsedChainId;
@@ -137,10 +139,12 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
       const provider = await this.getProvider();
       this._setupListeners();
 
-      const isChainsStale = this._isChainsStale();
+      const isChainsStale = await this._isChainsStale();
 
       // If there is an active session with stale chains, disconnect the current session.
-      if (provider.session && isChainsStale) await provider.disconnect();
+      if (provider.session && isChainsStale) {
+        await provider.disconnect();
+      }
 
       // If there no active session, or the chains are stale, connect.
       if (!provider.session || isChainsStale) {
@@ -227,7 +231,7 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
   async isAuthorized() {
     try {
       const [account, provider] = await Promise.all([this.getAccount(), this.getProvider()]);
-      const isChainsStale = this._isChainsStale();
+      const isChainsStale = await this._isChainsStale();
 
       // If an account does not exist on the session, then the connector is unauthorized.
       if (!account) return false;
@@ -270,7 +274,7 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
             }
           ]
         });
-        const requestedChains = this._getRequestedChainsIds();
+        const requestedChains = await this._getRequestedChainsIds();
         requestedChains.push(chainId);
         this._setRequestedChainsIds(requestedChains);
       }
@@ -340,12 +344,12 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
    *
    * Also check that dapp supports at least 1 chain from previously approved session.
    */
-  _isChainsStale() {
+  async _isChainsStale() {
     const namespaceMethods = this._getNamespaceMethods();
     if (namespaceMethods.includes(ADD_ETH_CHAIN_METHOD)) return false;
     if (!this.options.isNewChainsStale) return false;
 
-    const requestedChains = this._getRequestedChainsIds();
+    const requestedChains = await this._getRequestedChainsIds();
     const connectorChains = this.chains.map(({ id }) => id);
     const namespaceChains = this._getNamespaceChainsIds();
 
@@ -377,11 +381,13 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
   }
 
   _setRequestedChainsIds(chains: number[]) {
-    this.storage?.setItem(REQUESTED_CHAINS_KEY, chains);
+    StorageUtils.setItem(REQUESTED_CHAINS_KEY, chains);
   }
 
-  _getRequestedChainsIds(): number[] {
-    return this.storage?.getItem(REQUESTED_CHAINS_KEY) ?? [];
+  async _getRequestedChainsIds(): Promise<number[]> {
+    const requestedChains = await StorageUtils.getItem<number[]>(REQUESTED_CHAINS_KEY);
+
+    return requestedChains || [];
   }
 
   _getNamespaceChainsIds() {
