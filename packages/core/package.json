@@ -58,15 +58,14 @@
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
     "tsconfig": "*",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "valtio": "1.11.2"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": ">=1.17.0",
     "react": ">=17",
-    "react-native": ">=0.68.5"
-  },
-  "dependencies": {
-    "valtio": "1.11.2"
+    "react-native": ">=0.68.5",
+    "valtio": ">=1.10.0"
   },
   "react-native": "src/index.ts",
   "react-native-builder-bob": {

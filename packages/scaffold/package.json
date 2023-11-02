@@ -51,7 +51,8 @@
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
     "tsconfig": "*",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "valtio": "1.11.2"
   },
   "peerDependencies": {
     "react": ">=17",
@@ -60,8 +61,7 @@
   },
   "dependencies": {
     "@web3modal/core-react-native": "1.0.0-alpha.13",
-    "@web3modal/ui-react-native": "1.0.0-alpha.13",
-    "valtio": "1.11.2"
+    "@web3modal/ui-react-native": "1.0.0-alpha.13"
   },
   "react-native": "src/index.ts",
   "react-native-builder-bob": {
