@@ -1,7 +1,7 @@
 import { configureChains, createConfig, type Chain } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
-import { walletConnectProvider } from './provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
+import { walletConnectProvider } from './provider';
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector';
 
 export interface ConfigOptions {
