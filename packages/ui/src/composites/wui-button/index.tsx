@@ -55,7 +55,7 @@ export function Button({
   const onPressIn = () => {
     Animated.timing(colorAnimation.current, {
       toValue: 1,
-      useNativeDriver: true,
+      useNativeDriver: false,
       duration: 200
     }).start();
   };
@@ -63,7 +63,7 @@ export function Button({
   const onPressOut = () => {
     Animated.timing(colorAnimation.current, {
       toValue: 0,
-      useNativeDriver: true,
+      useNativeDriver: false,
       duration: 200
     }).start();
   };

@@ -47,7 +47,7 @@ export function Chip({
   const onPressIn = () => {
     Animated.timing(colorAnimation.current, {
       toValue: 1,
-      useNativeDriver: true,
+      useNativeDriver: false,
       duration: 200
     }).start();
     setPressed(true);
@@ -56,7 +56,7 @@ export function Chip({
   const onPressOut = () => {
     Animated.timing(colorAnimation.current, {
       toValue: 0,
-      useNativeDriver: true,
+      useNativeDriver: false,
       duration: 200
     }).start();
     setPressed(false);
