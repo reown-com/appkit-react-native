@@ -1,5 +1,13 @@
 # @web3modal/wagmi-react-native
 
+## 1.0.0-alpha.14
+
+### Patch Changes
+
+- alpha 14
+- Updated dependencies
+  - @web3modal/scaffold-react-native@1.0.0-alpha.14
+
 ## 1.0.0-alpha.13
 
 ### Patch Changes
