@@ -1,5 +1,11 @@
 # @web3modal/ui-react-native
 
+## 1.0.0-alpha.14
+
+### Patch Changes
+
+- alpha 14
+
 ## 1.0.0-alpha.13
 
 ### Patch Changes
