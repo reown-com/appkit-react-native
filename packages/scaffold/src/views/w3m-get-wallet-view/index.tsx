@@ -36,8 +36,8 @@ export function GetWalletView() {
       <FlexView padding={['s', 's', '2xl', 's']}>
         {listTemplate()}
         <ListWallet
-          name="Explore All"
-          walletIcon="allWallets"
+          name="Explore all"
+          showAllWallets
           icon="externalLink"
           onPress={() => Linking.openURL('https://walletconnect.com/explorer?type=wallet')}
         />

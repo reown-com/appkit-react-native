@@ -5,7 +5,6 @@ import { useTheme } from '../../hooks/useTheme';
 import type { IconType, TagType } from '../../utils/TypesUtil';
 import { Tag } from '../wui-tag';
 import { WalletImage } from '../wui-wallet-image';
-import { AllWalletsImage } from '../wui-all-wallets-image';
 import { Icon } from '../../components/wui-icon';
 
 import styles from './styles';
@@ -17,8 +16,6 @@ export interface ListWalletProps {
   onPress?: () => void;
   imageSrc?: string;
   imageHeaders?: Record<string, string>;
-  walletImages?: string[];
-  walletIcon?: IconType;
   showAllWallets?: boolean;
   tagLabel?: string;
   tagVariant?: TagType;
@@ -32,9 +29,7 @@ export function ListWallet({
   onPress,
   imageSrc,
   imageHeaders,
-  walletImages,
-  walletIcon,
-  showAllWallets = false,
+  showAllWallets,
   tagLabel,
   tagVariant,
   icon,
@@ -48,26 +43,12 @@ export function ListWallet({
   );
 
   function imageTemplate() {
-    if (showAllWallets) {
-      return (
-        <AllWalletsImage
-          walletImages={walletImages}
-          imageHeaders={imageHeaders}
-          style={[
-            styles.image,
-            { backgroundColor: animatedValue },
-            disabled && styles.imageDisabled
-          ]}
-        />
-      );
-    }
-
     return (
       <WalletImage
         style={[styles.image, disabled && styles.imageDisabled]}
         imageSrc={imageSrc}
         imageHeaders={imageHeaders}
-        walletIcon={walletIcon}
+        showAllWallets={showAllWallets}
         size="sm"
       />
     );
