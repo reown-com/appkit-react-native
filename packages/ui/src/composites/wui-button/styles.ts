@@ -63,5 +63,11 @@ export default StyleSheet.create({
   mdButton: {
     height: 40,
     paddingHorizontal: Spacing.s
+  },
+  iconRight: {
+    marginLeft: Spacing['2xs']
+  },
+  iconLeft: {
+    marginRight: Spacing['2xs']
   }
 });

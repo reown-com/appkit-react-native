@@ -46,7 +46,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
     if (wcError) {
       return (
         <>
-          <Text variant="paragraph-500" color="error-100">
+          <Text variant="paragraph-500" color="error-100" style={styles.mainText}>
             Connection declined
           </Text>
           <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
@@ -58,7 +58,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
 
     return (
       <>
-        <Text variant="paragraph-500">{`Continue in ${walletName}`}</Text>
+        <Text variant="paragraph-500" style={styles.mainText}>{`Continue in ${walletName}`}</Text>
         <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
           Open and continue in a browser tab
         </Text>
@@ -68,7 +68,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
 
   return (
     <ScrollView bounces={false} fadingEdgeLength={20}>
-      <FlexView alignItems="center" rowGap="xs" padding={['2xl', 'm', '2xl', 'm']}>
+      <FlexView alignItems="center" padding={['2xl', 'm', '2xl', 'm']}>
         <LoadingThumbnail paused={wcError}>
           <WalletImage
             size="lg"

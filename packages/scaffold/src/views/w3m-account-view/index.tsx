@@ -81,7 +81,7 @@ export function AccountView() {
       <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
         <FlexView alignItems="center" padding={['3xl', 's', '2xl', 's']}>
           <Avatar imageSrc={profileImage} address={profileName ?? address} />
-          <FlexView flexDirection="row" alignItems="center" gap="4xs" margin={['s', '0', '0', '0']}>
+          <FlexView flexDirection="row" alignItems="center" margin={['s', '0', '0', '0']}>
             <Text variant="medium-title-600">
               {profileName
                 ? UiUtil.getTruncateString({
@@ -98,7 +98,13 @@ export function AccountView() {
                   })}
             </Text>
             {showCopy && (
-              <IconLink icon="copy" size="md" iconColor="fg-250" onPress={onCopyAddress} />
+              <IconLink
+                icon="copy"
+                size="md"
+                iconColor="fg-250"
+                onPress={onCopyAddress}
+                style={styles.copyButton}
+              />
             )}
           </FlexView>
           {balance && (
@@ -107,7 +113,7 @@ export function AccountView() {
             </Text>
           )}
           {addressExplorerTemplate()}
-          <FlexView gap="xs" margin={['s', '0', '0', '0']}>
+          <FlexView margin={['s', '0', '0', '0']}>
             <ListItem
               variant={networkImage ? 'image' : 'icon'}
               chevron
@@ -127,6 +133,7 @@ export function AccountView() {
               iconVariant="overlay"
               onPress={onDisconnect}
               loading={disconnecting}
+              style={styles.disconnectButton}
             >
               <Text color="fg-200">Disconnect</Text>
             </ListItem>

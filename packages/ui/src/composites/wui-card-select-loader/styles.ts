@@ -10,10 +10,6 @@ export default StyleSheet.create({
     borderRadius: BorderRadius.xs
   },
   text: {
-    marginTop: Spacing.xs,
-    marginHorizontal: Spacing['2xs']
-  },
-  disabledImage: {
-    opacity: 0.4
+    marginTop: Spacing.xs
   }
 });

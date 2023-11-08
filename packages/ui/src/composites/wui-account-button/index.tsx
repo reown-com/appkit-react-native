@@ -61,7 +61,7 @@ export function AccountButton({
       return (
         <View style={styles.networkContainer}>
           {network}
-          <Text variant="paragraph-600" color="fg-100">
+          <Text variant="paragraph-600" color="fg-100" style={styles.balance}>
             {balance}
           </Text>
         </View>
@@ -98,7 +98,7 @@ export function AccountButton({
           style={[styles.image, !avatarSrc && styles.avatarPlaceholder]}
         />
         {address && (
-          <Text variant="paragraph-500" color="fg-200">
+          <Text variant="paragraph-500" color="fg-200" style={styles.address}>
             {UiUtil.getTruncateString({
               string: address,
               charsStart: isProfileName ? 18 : 4,

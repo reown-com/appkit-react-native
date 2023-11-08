@@ -87,15 +87,25 @@ export function Button({
       onPress={onPress}
       {...rest}
     >
-      <FlexView flexDirection="row" columnGap="2xs" alignItems="center" justifyContent="center">
+      <FlexView flexDirection="row" alignItems="center" justifyContent="center">
         {iconLeft && (
-          <Icon color={iconColor} name={iconLeft} size={iconSize ?? size} style={iconStyle} />
+          <Icon
+            color={iconColor}
+            name={iconLeft}
+            size={iconSize ?? size}
+            style={[styles.iconLeft, iconStyle]}
+          />
         )}
         <Text variant={size === 'md' ? 'paragraph-600' : 'small-600'} style={themedTextStyle}>
           {children}
         </Text>
         {iconRight && (
-          <Icon color={iconColor} name={iconRight} size={iconSize ?? size} style={iconStyle} />
+          <Icon
+            color={iconColor}
+            name={iconRight}
+            size={iconSize ?? size}
+            style={[styles.iconRight, iconStyle]}
+          />
         )}
       </FlexView>
     </AnimatedPressable>

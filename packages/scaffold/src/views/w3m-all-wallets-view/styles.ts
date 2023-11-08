@@ -1,11 +1,6 @@
 import { Platform, StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  contentContainer: {
-    paddingBottom: 24,
-    paddingHorizontal: 8,
-    alignItems: 'center'
-  },
   header: {
     zIndex: 1,
     alignSelf: 'center',
@@ -17,6 +12,7 @@ export default StyleSheet.create({
     })
   },
   icon: {
-    marginLeft: 8
+    marginLeft: 8,
+    borderWidth: 1
   }
 });

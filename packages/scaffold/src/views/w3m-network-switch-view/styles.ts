@@ -12,9 +12,12 @@ export default StyleSheet.create({
     zIndex: 2
   },
   retryButton: {
-    marginTop: Spacing.xs
+    marginTop: Spacing.xl
   },
   retryIcon: {
     transform: [{ rotateY: '180deg' }]
+  },
+  text: {
+    marginVertical: Spacing.xs
   }
 });

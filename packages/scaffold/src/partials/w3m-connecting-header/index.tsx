@@ -12,7 +12,7 @@ export function ConnectingHeader({ platforms, onSelectPlatform }: ConnectingHead
       if (platform === 'mobile') {
         return { label: 'Mobile', icon: 'mobile', platform: 'mobile' } as const;
       } else if (platform === 'web') {
-        return { label: 'Webapp', icon: 'browser', platform: 'web' } as const;
+        return { label: 'Web', icon: 'browser', platform: 'web' } as const;
       } else {
         return { label: 'QR Code', icon: 'qrCode', platform: 'qrcode' } as const;
       }

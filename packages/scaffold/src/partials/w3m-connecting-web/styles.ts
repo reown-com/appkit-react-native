@@ -3,12 +3,16 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   openButton: {
-    marginTop: Spacing.xs
+    marginVertical: Spacing.xs
   },
   copyButton: {
     marginVertical: Spacing.xs
   },
+  mainText: {
+    marginVertical: Spacing.xs
+  },
   descriptionText: {
+    marginBottom: Spacing.xs,
     marginHorizontal: Spacing['3xl']
   },
   errorIcon: {
@@ -16,5 +20,8 @@ export default StyleSheet.create({
     bottom: 5,
     right: 5,
     zIndex: 2
+  },
+  marginBottom: {
+    marginBottom: Spacing.xs
   }
 });

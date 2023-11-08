@@ -9,8 +9,7 @@ export default StyleSheet.create({
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: Spacing['3xs'],
-    gap: Spacing.xs
+    paddingHorizontal: Spacing['3xs']
   },
   image: {
     height: 24,
@@ -24,7 +23,6 @@ export default StyleSheet.create({
   networkContainer: {
     flexDirection: 'row',
     height: 32,
-    gap: Spacing['3xs'],
     paddingLeft: Spacing['3xs'],
     justifyContent: 'center',
     alignItems: 'center'
@@ -36,8 +34,14 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingLeft: Spacing['3xs'],
     paddingRight: Spacing.xs,
-    gap: Spacing['3xs'],
+    marginLeft: Spacing.xs,
     borderRadius: 100,
     borderWidth: 1
+  },
+  address: {
+    marginLeft: Spacing['3xs']
+  },
+  balance: {
+    marginLeft: Spacing['3xs']
   }
 });

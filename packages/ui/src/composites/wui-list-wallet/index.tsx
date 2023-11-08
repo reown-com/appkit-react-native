@@ -1,4 +1,4 @@
-import { Animated, Pressable, View } from 'react-native';
+import { Animated, Pressable, View, type StyleProp, type ViewStyle } from 'react-native';
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import { useTheme } from '../../hooks/useTheme';
@@ -24,6 +24,7 @@ export interface ListWalletProps {
   tagVariant?: TagType;
   icon?: IconType;
   disabled?: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function ListWallet({
@@ -37,7 +38,8 @@ export function ListWallet({
   tagLabel,
   tagVariant,
   icon,
-  disabled
+  disabled,
+  style
 }: ListWalletProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
@@ -98,7 +100,8 @@ export function ListWallet({
     <AnimatedPressable
       style={[
         styles.container,
-        { backgroundColor: disabled ? Theme['gray-glass-010'] : animatedValue }
+        { backgroundColor: disabled ? Theme['gray-glass-010'] : animatedValue },
+        style
       ]}
       disabled={disabled}
       onPress={onPress}

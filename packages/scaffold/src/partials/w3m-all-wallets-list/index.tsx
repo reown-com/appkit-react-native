@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 import {
   ApiController,
   AssetUtil,
@@ -20,10 +20,10 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 interface AllWalletsListProps {
   columns: number;
-  gap?: number;
+  itemWidth?: number;
 }
 
-export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
+export function AllWalletsList({ columns, itemWidth }: AllWalletsListProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const { maxWidth, padding } = useCustomDimensions();
@@ -42,7 +42,7 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
     ...(pageLoading ? (Array.from({ length: loadingItems }) as WcWallet[]) : [])
   ];
 
-  const ITEM_HEIGHT = CardSelectHeight + gap;
+  const ITEM_HEIGHT = CardSelectHeight + Spacing.xs * 2;
 
   const loadingTemplate = (items: number) => {
     return (
@@ -50,11 +50,13 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
         flexDirection="row"
         flexWrap="wrap"
         alignSelf="center"
-        padding={['2xs', '0', 's', 's']}
-        style={{ gap, maxWidth }}
+        padding={['0', '0', 's', 'xs']}
+        style={[styles.container, { maxWidth }]}
       >
         {Array.from({ length: items }).map((_, index) => (
-          <CardSelectLoader key={index} />
+          <View key={index} style={[styles.itemContainer, { width: itemWidth }]}>
+            <CardSelectLoader />
+          </View>
         ))}
       </FlexView>
     );
@@ -62,17 +64,22 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
 
   const walletTemplate = ({ item, index }: { item: WcWallet; index: number }) => {
     if (!item?.id) {
-      return <CardSelectLoader key={index} />;
+      return (
+        <View key={index} style={[styles.itemContainer, { width: itemWidth }]}>
+          <CardSelectLoader />
+        </View>
+      );
     }
 
     return (
-      <CardSelect
-        key={item?.id}
-        imageSrc={AssetUtil.getWalletImage(item)}
-        imageHeaders={imageHeaders}
-        name={item?.name ?? 'Unknown'}
-        onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
-      />
+      <View key={item?.id} style={[styles.itemContainer, { width: itemWidth }]}>
+        <CardSelect
+          imageSrc={AssetUtil.getWalletImage(item)}
+          imageHeaders={imageHeaders}
+          name={item?.name ?? 'Unknown'}
+          onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
+        />
+      </View>
     );
   };
 
@@ -109,11 +116,8 @@ export function AllWalletsList({ columns, gap = 0 }: AllWalletsListProps) {
       numColumns={columns}
       data={walletList}
       renderItem={walletTemplate}
-      contentContainerStyle={[
-        styles.contentContainer,
-        { gap, paddingHorizontal: padding + Spacing.s }
-      ]}
-      columnWrapperStyle={{ gap }}
+      style={styles.container}
+      contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding + Spacing.xs }]}
       onEndReached={fetchNextPage}
       onEndReachedThreshold={2}
       keyExtractor={(item, index) => item?.id ?? index}

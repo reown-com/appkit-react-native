@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   retryButton: {
-    marginTop: Spacing.xs
+    marginVertical: Spacing.xs
   },
   copyButton: {
     marginVertical: Spacing.xs
@@ -11,7 +11,11 @@ export default StyleSheet.create({
   retryIcon: {
     transform: [{ rotateY: '180deg' }]
   },
+  textContainer: {
+    marginVertical: Spacing.xs
+  },
   descriptionText: {
+    marginVertical: Spacing.xs,
     marginHorizontal: Spacing['3xl']
   },
   errorIcon: {

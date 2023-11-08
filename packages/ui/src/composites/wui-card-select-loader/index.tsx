@@ -16,7 +16,6 @@ export function CardSelectLoader({ style }: CardSelectLoaderProps) {
 
   return (
     <FlexView
-      gap="xs"
       alignItems="center"
       justifyContent="center"
       style={[styles.container, { backgroundColor: Theme['gray-glass-002'] }, style]}
@@ -26,7 +25,12 @@ export function CardSelectLoader({ style }: CardSelectLoaderProps) {
         width={WalletImageSize.md}
         borderRadius={BorderRadius.xs}
       />
-      <Shimmer height={14} width={WalletImageSize.md - Spacing.xs} borderRadius={6} />
+      <Shimmer
+        height={14}
+        width={WalletImageSize.md - Spacing.xs}
+        borderRadius={6}
+        style={styles.text}
+      />
     </FlexView>
   );
 }

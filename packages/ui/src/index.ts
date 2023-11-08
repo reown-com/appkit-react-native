@@ -57,6 +57,7 @@ export type {
   CardSelectType,
   ChipType,
   ColorType,
+  ThemeKeys as ThemeColorType,
   IconType,
   LogoType,
   PlacementType,
