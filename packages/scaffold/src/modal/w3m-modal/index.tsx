@@ -17,6 +17,7 @@ export function Web3Modal() {
   const { history } = useSnapshot(RouterController.state);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
+  const portraitHeight = height - 120;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
 
   const onBackButtonPress = () => {
@@ -42,7 +43,7 @@ export function Web3Modal() {
       onBackdropPress={ModalController.close}
       onBackButtonPress={onBackButtonPress}
     >
-      <Card style={[styles.card, isLandscape && { maxHeight: landScapeHeight }]}>
+      <Card style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}>
         <Header />
         <Web3Router />
         <Snackbar />
