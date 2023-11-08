@@ -43,7 +43,6 @@ export function ConnectingView() {
     } catch {
       ConnectionController.setWcError(true);
       if (CoreHelperUtil.isAllowedRetry(lastRetry)) {
-        SnackController.showError('Declined');
         setLastRetry(Date.now());
         initializeConnection(true);
       }

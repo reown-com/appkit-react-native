@@ -2,7 +2,7 @@ import { Animated, Pressable, type StyleProp, type ViewStyle } from 'react-nativ
 import { Icon } from '../../components/wui-icon';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import { useTheme } from '../../hooks/useTheme';
-import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil';
+import type { ColorType, IconType, SizeType, ThemeKeys } from '../../utils/TypesUtil';
 import styles from './styles';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -15,6 +15,8 @@ export interface IconLinkProps {
   disabled?: boolean;
   background?: boolean;
   style?: StyleProp<ViewStyle>;
+  backgroundColor?: ThemeKeys;
+  pressedColor?: ThemeKeys;
 }
 
 export function IconLink({
@@ -22,15 +24,16 @@ export function IconLink({
   onPress,
   size = 'md',
   iconColor = 'fg-100',
-  background,
+  backgroundColor,
+  pressedColor = 'gray-glass-010',
   disabled,
   style
 }: IconLinkProps) {
   const Theme = useTheme();
-  const bgColor = background ? `${Theme[iconColor]}1E` : 'transparent';
+  const bgColor = backgroundColor ? Theme[backgroundColor] : 'transparent';
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
     bgColor,
-    Theme['gray-glass-010']
+    Theme[pressedColor]
   );
 
   return (

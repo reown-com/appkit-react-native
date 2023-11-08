@@ -58,10 +58,19 @@ export default StyleSheet.create({
   },
   smButton: {
     height: 32,
-    paddingHorizontal: Spacing.xs
+    paddingHorizontal: Spacing['2xs']
   },
   mdButton: {
     height: 40,
     paddingHorizontal: Spacing.s
+  },
+  text: {
+    marginHorizontal: Spacing['3xs']
+  },
+  iconRight: {
+    marginRight: Spacing['3xs']
+  },
+  iconLeft: {
+    marginLeft: Spacing['3xs']
   }
 });

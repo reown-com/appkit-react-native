@@ -38,6 +38,7 @@ export function Link({
 }: LinkProps) {
   const Theme = useTheme();
   const _color = (disabled ? 'bg-300' : color ?? 'accent-100') as ColorType;
+  const iconSize = size === 'md' ? 'sm' : 'xs';
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
     'transparent',
     Theme['gray-glass-010']
@@ -52,12 +53,16 @@ export function Link({
       style={[styles[`${size}Container`], { backgroundColor: animatedValue }, style]}
       {...rest}
     >
-      <FlexView flexDirection="row" columnGap="2xs" alignItems="center" justifyContent="center">
-        {iconLeft && <Icon color={_color} name={iconLeft} size={size} />}
+      <FlexView flexDirection="row" alignItems="center" justifyContent="center">
+        {iconLeft && (
+          <Icon color={_color} name={iconLeft} size={iconSize} style={styles.iconLeft} />
+        )}
         <Text variant={size === 'md' ? 'paragraph-600' : 'small-600'} color={_color}>
           {children}
         </Text>
-        {iconRight && <Icon color={_color} name={iconRight} size={size} />}
+        {iconRight && (
+          <Icon color={_color} name={iconRight} size={iconSize} style={styles.iconRight} />
+        )}
       </FlexView>
     </AnimatedPressable>
   );

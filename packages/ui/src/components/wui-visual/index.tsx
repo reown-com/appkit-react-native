@@ -33,10 +33,11 @@ const svgOptions: Record<VisualType, (props: SvgProps) => JSX.Element> = {
 
 export interface VisualProps {
   name: VisualType;
+  style?: SvgProps['style'];
 }
 
-export function Visual({ name }: VisualProps) {
+export function Visual({ name, style }: VisualProps) {
   const Component = svgOptions[name];
 
-  return <Component width={60} height={60} />;
+  return <Component width={60} height={60} style={style} />;
 }

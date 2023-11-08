@@ -69,7 +69,9 @@ export function NetworkSwitchView() {
     if (error) {
       return (
         <>
-          <Text variant="paragraph-500">Switch declined</Text>
+          <Text variant="paragraph-500" style={styles.text}>
+            Switch declined
+          </Text>
           <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
             Switch can be declined if chain is not supported by a wallet or previous request is
             still active
@@ -80,7 +82,7 @@ export function NetworkSwitchView() {
 
     return (
       <>
-        <Text variant="paragraph-500">{`Approve in ${walletName}`}</Text>
+        <Text variant="paragraph-500" style={styles.text}>{`Approve in ${walletName}`}</Text>
         <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
           Accept switch request in your wallet
         </Text>
@@ -89,7 +91,7 @@ export function NetworkSwitchView() {
   };
 
   return (
-    <FlexView alignItems="center" gap="xs" padding={['2xl', 's', '4xl', 's']}>
+    <FlexView alignItems="center" padding={['2xl', 's', '4xl', 's']}>
       <LoadingHexagon paused={error}>
         <NetworkImage
           imageSrc={AssetUtil.getNetworkImage(network)}

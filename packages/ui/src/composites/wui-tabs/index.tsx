@@ -49,7 +49,12 @@ export function Tabs({ tabs, onTabChange }: TabsProps) {
         return (
           <Pressable onPress={() => onTabPress(index)} key={option.label} style={styles.tabItem}>
             {option.icon && (
-              <Icon name={option.icon} size="xs" color={isActive ? 'fg-100' : 'fg-200'} />
+              <Icon
+                name={option.icon}
+                size="xs"
+                color={isActive ? 'fg-100' : 'fg-200'}
+                style={styles.tabIcon}
+              />
             )}
             <Text variant="small-600" color={isActive ? 'fg-100' : 'fg-200'}>
               {option.label}

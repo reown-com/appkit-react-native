@@ -27,6 +27,14 @@ const meta: Meta<typeof IconLink> = {
     icon: {
       options: iconOptions,
       control: { type: 'select' }
+    },
+    backgroundColor: {
+      options: themeColorOptions,
+      control: { type: 'select' }
+    },
+    pressedColor: {
+      options: themeColorOptions,
+      control: { type: 'select' }
     }
   }
 };
@@ -39,6 +47,8 @@ export const Default: Story = {
     <IconLink
       size={args.size}
       iconColor={args.iconColor}
+      backgroundColor={args.backgroundColor}
+      pressedColor={args.pressedColor}
       icon={args.icon}
       disabled={args.disabled}
     />

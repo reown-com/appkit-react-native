@@ -14,8 +14,10 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: 100,
-    gap: Spacing['3xs'],
     paddingVertical: Spacing['2xs']
+  },
+  tabIcon: {
+    marginRight: Spacing['3xs']
   },
   activeMark: {
     position: 'absolute',

@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 import {
   ApiController,
   AssetUtil,
@@ -22,27 +22,28 @@ import styles from './styles';
 export interface AllWalletsSearchProps {
   searchQuery?: string;
   columns: number;
-  gap?: number;
+  itemWidth?: number;
 }
 
-export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSearchProps) {
+export function AllWalletsSearch({ searchQuery, columns, itemWidth }: AllWalletsSearchProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const { search } = useSnapshot(ApiController.state);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const imageHeaders = ApiController._getApiHeaders();
-  const { maxWidth, padding } = useCustomDimensions();
+  const { maxWidth, padding, isLandscape } = useCustomDimensions();
 
-  const ITEM_HEIGHT = CardSelectHeight + gap;
+  const ITEM_HEIGHT = CardSelectHeight + Spacing.xs * 2;
 
   const walletTemplate = ({ item }: { item: WcWallet }) => {
     return (
-      <CardSelect
-        key={item?.id}
-        imageSrc={AssetUtil.getWalletImage(item)}
-        imageHeaders={imageHeaders}
-        name={item?.name ?? 'Unknown'}
-        onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
-      />
+      <View key={item?.id} style={[styles.itemContainer, { width: itemWidth }]}>
+        <CardSelect
+          imageSrc={AssetUtil.getWalletImage(item)}
+          imageHeaders={imageHeaders}
+          name={item?.name ?? 'Unknown'}
+          onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
+        />
+      </View>
     );
   };
 
@@ -52,11 +53,13 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
         flexDirection="row"
         flexWrap="wrap"
         alignSelf="center"
-        padding={['2xs', '0', 's', 's']}
-        style={{ gap, maxWidth }}
+        padding={['0', '0', 's', 'xs']}
+        style={[styles.container, { maxWidth }]}
       >
         {Array.from({ length: items }).map((_, index) => (
-          <CardSelectLoader key={index} />
+          <View key={index} style={[styles.itemContainer, { width: itemWidth }]}>
+            <CardSelectLoader />
+          </View>
         ))}
       </FlexView>
     );
@@ -64,7 +67,10 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
 
   const emptyTemplate = () => {
     return (
-      <FlexView justifyContent="center" alignItems="center" gap="m" style={styles.emptyContainer}>
+      <FlexView
+        alignItems="center"
+        style={[styles.emptyContainer, isLandscape && styles.emptyLandscape]}
+      >
         <IconBox
           icon="walletPlaceholder"
           background
@@ -72,7 +78,7 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
           iconColor="fg-200"
           backgroundColor="gray-glass-005"
         />
-        <Text variant="paragraph-500" color="fg-200">
+        <Text variant="paragraph-500" color="fg-200" style={styles.text}>
           No wallet found
         </Text>
       </FlexView>
@@ -96,6 +102,10 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
     return loadingTemplate(20);
   }
 
+  if (search.length === 0) {
+    return emptyTemplate();
+  }
+
   return (
     <FlatList
       key={columns}
@@ -104,11 +114,8 @@ export function AllWalletsSearch({ searchQuery, columns, gap = 0 }: AllWalletsSe
       numColumns={columns}
       data={search}
       renderItem={walletTemplate}
-      contentContainerStyle={[
-        styles.contentContainer,
-        { gap, paddingHorizontal: padding + Spacing.s }
-      ]}
-      columnWrapperStyle={{ gap }}
+      style={styles.container}
+      contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding + Spacing.xs }]}
       ListEmptyComponent={emptyTemplate()}
       keyExtractor={item => item.id}
       getItemLayout={(_, index) => ({

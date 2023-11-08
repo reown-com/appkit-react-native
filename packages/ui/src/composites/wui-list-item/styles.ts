@@ -13,8 +13,7 @@ export default StyleSheet.create({
   content: {
     flexDirection: 'row',
     flexGrow: 1,
-    paddingHorizontal: Spacing.s,
-    gap: Spacing['3xs']
+    paddingHorizontal: Spacing.s
   },
   imageContainer: {
     width: 36,

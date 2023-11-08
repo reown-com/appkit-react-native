@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import {
   CardSelect,
   CardSelectWidth,
@@ -18,6 +18,7 @@ import {
   AccountController
 } from '@web3modal/core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import styles from './styles';
 
 export function NetworksView() {
   const { isConnected } = useSnapshot(AccountController.state);
@@ -25,9 +26,12 @@ export function NetworksView() {
     useSnapshot(NetworkController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const { maxWidth: width, padding } = useCustomDimensions();
-  const usableWidth = width - Spacing.s * 2;
-  const numColumns = Math.floor(usableWidth / CardSelectWidth);
-  const gap = Math.abs(Math.trunc((usableWidth - numColumns * CardSelectWidth) / (numColumns - 1)));
+  const numColumns = 4;
+  const usableWidth = width - Spacing.l * 2 - Spacing['3xs'];
+  const itemWidth = Math.abs(Math.trunc(usableWidth / numColumns));
+  const itemGap = Math.abs(
+    Math.trunc((usableWidth - numColumns * CardSelectWidth) / numColumns) / 2
+  );
 
   const networksTemplate = () => {
     if (!requestedCaipNetworks?.length) return undefined;
@@ -59,34 +63,38 @@ export function NetworksView() {
     };
 
     return requested.map(network => (
-      <CardSelect
+      <View
         key={network.id}
-        name={network.name ?? 'Unknown'}
-        type="network"
-        imageSrc={AssetUtil.getNetworkImage(network)}
-        imageHeaders={imageHeaders}
-        disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
-        selected={caipNetwork?.id === network.id}
-        onPress={() => onNetworkPress(network)}
-      />
+        style={[
+          styles.itemContainer,
+          {
+            width: itemWidth,
+            marginVertical: itemGap
+          }
+        ]}
+      >
+        <CardSelect
+          name={network.name ?? 'Unknown'}
+          type="network"
+          imageSrc={AssetUtil.getNetworkImage(network)}
+          imageHeaders={imageHeaders}
+          disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
+          selected={caipNetwork?.id === network.id}
+          onPress={() => onNetworkPress(network)}
+        />
+      </View>
     ));
   };
 
   return (
     <>
       <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
-        <FlexView
-          flexDirection="row"
-          flexWrap="wrap"
-          style={{ gap }}
-          padding={['s', '0', 's', 's']}
-        >
+        <FlexView flexDirection="row" flexWrap="wrap" padding={['s', 'l', 's', 'l']}>
           {networksTemplate()}
         </FlexView>
       </ScrollView>
       <Separator />
       <FlexView
-        gap="s"
         padding={['s', 's', '2xl', 's']}
         alignItems="center"
         alignSelf="center"
@@ -99,6 +107,7 @@ export function NetworksView() {
           size="sm"
           iconLeft="helpCircle"
           onPress={() => RouterController.push('WhatIsANetwork')}
+          style={styles.helpButton}
         >
           What is a network
         </Link>

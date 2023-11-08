@@ -11,5 +11,11 @@ export default StyleSheet.create({
     paddingVertical: Spacing['4xs'],
     paddingHorizontal: Spacing.xs,
     borderRadius: BorderRadius['3xs']
+  },
+  iconRight: {
+    marginLeft: Spacing['2xs']
+  },
+  iconLeft: {
+    marginRight: Spacing['2xs']
   }
 });

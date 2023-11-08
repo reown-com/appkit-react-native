@@ -4,7 +4,7 @@ import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 export default StyleSheet.create({
   'container': {
     padding: Spacing.xs,
-    borderRadius: BorderRadius['3xs'],
+    borderRadius: BorderRadius.xxs,
     alignItems: 'center',
     justifyContent: 'center'
   },

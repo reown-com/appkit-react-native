@@ -10,7 +10,6 @@ export { Shimmer, type ShimmerProps } from './components/wui-shimmer';
 
 export { AccountButton, type AccountButtonProps } from './composites/wui-account-button';
 export { ActionEntry, type ActionEntryProps } from './composites/wui-action-entry';
-export { AllWalletsImage, type AllWalletsImageProps } from './composites/wui-all-wallets-image';
 export { Avatar, type AvatarProps } from './composites/wui-avatar';
 export { Button, type ButtonProps } from './composites/wui-button';
 export {
@@ -57,6 +56,7 @@ export type {
   CardSelectType,
   ChipType,
   ColorType,
+  ThemeKeys as ThemeColorType,
   IconType,
   LogoType,
   PlacementType,

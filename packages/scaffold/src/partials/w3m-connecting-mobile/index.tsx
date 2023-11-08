@@ -72,7 +72,11 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
     const walletName = data?.wallet?.name ?? 'Wallet';
     if (linkingError) {
       return (
-        <FlexView padding={['0', '2xl', '0', '2xl']} alignItems="center" gap="xs">
+        <FlexView
+          padding={['0', '2xl', '0', '2xl']}
+          alignItems="center"
+          style={styles.textContainer}
+        >
           <Text variant="paragraph-500">{`${walletName} is not installed`}</Text>
           <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
             {`To connect with ${walletName}, install the application on your device`}
@@ -81,7 +85,11 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
       );
     } else if (wcError) {
       return (
-        <FlexView padding={['0', '2xl', '0', '2xl']} alignItems="center" gap="xs">
+        <FlexView
+          padding={['0', '2xl', '0', '2xl']}
+          alignItems="center"
+          style={styles.textContainer}
+        >
           <Text variant="paragraph-500" color="error-100">
             Connection declined
           </Text>
@@ -93,7 +101,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
     }
 
     return (
-      <FlexView padding={['0', '2xl', '0', '2xl']} alignItems="center" gap="xs">
+      <FlexView padding={['0', '2xl', '0', '2xl']} alignItems="center" style={styles.textContainer}>
         <Text variant="paragraph-500">{`Continue in ${walletName}`}</Text>
         <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
           Accept connection request in the wallet
@@ -112,8 +120,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         </Text>
         <Button
           variant="accent"
-          iconRight="chevronRight"
-          iconSize="xs"
+          iconRight="chevronRightSmall"
           onPress={onStorePress}
           size="sm"
           hitSlop={20}
@@ -144,7 +151,6 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
       <FlexView
         alignItems="center"
         alignSelf="center"
-        rowGap="xs"
         padding={['2xl', 'l', '2xl', 'l']}
         style={{ width }}
       >
@@ -154,9 +160,9 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
             imageSrc={AssetUtil.getWalletImage(data?.wallet)}
             imageHeaders={ApiController._getApiHeaders()}
           />
-          {(wcError || linkingError) && (
+          {wcError && (
             <IconBox
-              icon={linkingError ? 'warningCircle' : 'close'}
+              icon={'close'}
               border
               background
               backgroundColor="icon-box-bg-error-100"
@@ -167,17 +173,19 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
           )}
         </LoadingThumbnail>
         {textTemplate()}
-        <Button
-          variant="accent"
-          iconLeft="refresh"
-          style={styles.retryButton}
-          iconStyle={styles.retryIcon}
-          onPress={onRetryPress}
-        >
-          Try again
-        </Button>
+        {!linkingError && (
+          <Button
+            variant="accent"
+            iconLeft="refresh"
+            style={styles.retryButton}
+            iconStyle={styles.retryIcon}
+            onPress={onRetryPress}
+          >
+            Try again
+          </Button>
+        )}
         <Link
-          iconLeft="copy"
+          iconLeft="copySmall"
           color="fg-200"
           style={styles.copyButton}
           onPress={() => onCopyUri(wcUri)}

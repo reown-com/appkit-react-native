@@ -33,13 +33,11 @@ export default StyleSheet.create({
   },
   input: {
     flex: 1,
-    marginHorizontal: Spacing['4xs']
+    marginHorizontal: Spacing['4xs'],
+    fontSize: 16,
+    fontWeight: '400'
   },
   icon: {
     marginRight: Spacing.xs
-  },
-  text: {
-    fontSize: 16,
-    fontWeight: '500'
   }
 });

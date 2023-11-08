@@ -3,6 +3,7 @@ import { Linking, Platform, ScrollView } from 'react-native';
 import { FlexView, ListWallet } from '@web3modal/ui-react-native';
 import { ApiController, AssetUtil, type WcWallet } from '@web3modal/core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import styles from './styles';
 
 export function GetWalletView() {
   const { padding } = useCustomDimensions();
@@ -25,17 +26,18 @@ export function GetWalletView() {
         imageSrc={AssetUtil.getWalletImage(wallet)}
         imageHeaders={imageHeaders}
         onPress={() => onWalletPress(wallet)}
+        style={styles.item}
       />
     ));
   };
 
   return (
     <ScrollView bounces={false} style={{ paddingHorizontal: padding }} fadingEdgeLength={20}>
-      <FlexView padding={['s', 's', '2xl', 's']} rowGap="xs">
+      <FlexView padding={['s', 's', '2xl', 's']}>
         {listTemplate()}
         <ListWallet
-          name="Explore All"
-          walletIcon="allWallets"
+          name="Explore all"
+          showAllWallets
           icon="externalLink"
           onPress={() => Linking.openURL('https://walletconnect.com/explorer?type=wallet')}
         />

@@ -10,6 +10,7 @@ import type { WcWallet } from '@web3modal/core-react-native';
 import { ListWallet, FlexView } from '@web3modal/ui-react-native';
 import { UiUtil } from '../../utils/UiUtil';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import styles from './styles';
 
 export function ConnectView() {
   const { recommended, featured, installed, count } = useSnapshot(ApiController.state);
@@ -51,6 +52,7 @@ export function ConnectView() {
           onPress={() => onWalletPress(wallet!)}
           tagLabel="Recent"
           tagVariant="shade"
+          style={styles.item}
         />
       ));
   };
@@ -91,6 +93,7 @@ export function ConnectView() {
           imageHeaders={imageHeaders}
           name={wallet?.name ?? 'Unknown'}
           onPress={() => onWalletPress(wallet!)}
+          style={styles.item}
         />
       ));
   };
@@ -110,6 +113,7 @@ export function ConnectView() {
           imageHeaders={imageHeaders}
           name={wallet?.name ?? 'Unknown'}
           onPress={() => onWalletPress(wallet!)}
+          style={styles.item}
         />
       ));
   };
@@ -117,11 +121,12 @@ export function ConnectView() {
   const allWalletsTemplate = () => {
     return (
       <ListWallet
-        walletIcon="allWallets"
         name="All wallets"
+        showAllWallets
         tagLabel={`${Math.floor(count / 10) * 10}+`}
         tagVariant="shade"
         onPress={() => RouterController.push('AllWallets')}
+        style={styles.item}
       />
     );
   };
@@ -137,7 +142,7 @@ export function ConnectView() {
 
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
-      <FlexView padding={['s', 's', '2xl', 's']} rowGap="2xs">
+      <FlexView padding={['xs', 's', '2xl', 's']}>
         {recentTemplate()}
         {installedTemplate()}
         {featuredTemplate()}
