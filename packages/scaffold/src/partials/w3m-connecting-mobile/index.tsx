@@ -120,8 +120,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         </Text>
         <Button
           variant="accent"
-          iconRight="chevronRight"
-          iconSize="xs"
+          iconRight="chevronRightSmall"
           onPress={onStorePress}
           size="sm"
           hitSlop={20}
@@ -161,9 +160,9 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
             imageSrc={AssetUtil.getWalletImage(data?.wallet)}
             imageHeaders={ApiController._getApiHeaders()}
           />
-          {(wcError || linkingError) && (
+          {wcError && (
             <IconBox
-              icon={linkingError ? 'warningCircle' : 'close'}
+              icon={'close'}
               border
               background
               backgroundColor="icon-box-bg-error-100"
@@ -174,17 +173,19 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
           )}
         </LoadingThumbnail>
         {textTemplate()}
-        <Button
-          variant="accent"
-          iconLeft="refresh"
-          style={styles.retryButton}
-          iconStyle={styles.retryIcon}
-          onPress={onRetryPress}
-        >
-          Try again
-        </Button>
+        {!linkingError && (
+          <Button
+            variant="accent"
+            iconLeft="refresh"
+            style={styles.retryButton}
+            iconStyle={styles.retryIcon}
+            onPress={onRetryPress}
+          >
+            Try again
+          </Button>
+        )}
         <Link
-          iconLeft="copy"
+          iconLeft="copySmall"
           color="fg-200"
           style={styles.copyButton}
           onPress={() => onCopyUri(wcUri)}

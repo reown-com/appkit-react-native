@@ -12,7 +12,7 @@ export function ConnectingQrCode() {
   const { wcUri } = useSnapshot(ConnectionController.state);
   const showCopy = OptionsController.isClipboardAvailable();
   const { maxWidth: windowSize, isPortrait } = useCustomDimensions();
-  const qrSize = (windowSize - Spacing.l * 2) / (isPortrait ? 1 : 1.5);
+  const qrSize = (windowSize - Spacing.xl * 2) / (isPortrait ? 1 : 1.5);
 
   const onCopyAddress = () => {
     if (wcUri) {
@@ -26,13 +26,18 @@ export function ConnectingQrCode() {
       alignItems="center"
       justifyContent="center"
       flexDirection={isPortrait ? 'column' : 'row'}
-      padding={['m', 'm', '2xl', 'm']}
+      padding={['xl', 'xl', '2xl', 'xl']}
     >
       <QrCode size={qrSize} uri={wcUri} />
       <FlexView alignItems="center" margin="m">
         <Text variant="paragraph-500">Scan this QR code with your phone</Text>
         {showCopy && (
-          <Link iconLeft="copy" color="fg-200" style={styles.copyButton} onPress={onCopyAddress}>
+          <Link
+            iconLeft="copySmall"
+            color="fg-200"
+            style={styles.copyButton}
+            onPress={onCopyAddress}
+          >
             Copy link
           </Link>
         )}

@@ -26,7 +26,7 @@ export function Avatar({ imageSrc, address, style, size = 64, borderWidth = 8 }:
           {
             height: containerSize,
             width: containerSize,
-            borderColor: Theme['gray-glass-010'],
+            borderColor: Theme['gray-glass-005'],
             borderWidth
           },
           style
@@ -70,7 +70,7 @@ export function Avatar({ imageSrc, address, style, size = 64, borderWidth = 8 }:
         cx="50%"
         cy="50%"
         r={(size + borderWidth) / 2}
-        stroke={Theme['gray-glass-010']}
+        stroke={Theme['gray-glass-005']}
         strokeWidth={borderWidth}
       />
     </Svg>

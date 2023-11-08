@@ -13,12 +13,14 @@ import CheckmarkSvg from '../../assets/svg/Checkmark';
 import ChevronBottomSvg from '../../assets/svg/ChevronBottom';
 import ChevronLeftSvg from '../../assets/svg/ChevronLeft';
 import ChevronRightSvg from '../../assets/svg/ChevronRight';
+import ChevronRightSmallSvg from '../../assets/svg/ChevronRightSmall';
 import ChevronTopSvg from '../../assets/svg/ChevronTop';
 import ClockSvg from '../../assets/svg/Clock';
 import CloseSvg from '../../assets/svg/Close';
 import CompassSvg from '../../assets/svg/Compass';
 import CoinPlaceholderSvg from '../../assets/svg/CoinPlaceholder';
 import CopySvg from '../../assets/svg/Copy';
+import CopySmallSvg from '../../assets/svg/CopySmall';
 import CursorSvg from '../../assets/svg/Cursor';
 import DesktopSvg from '../../assets/svg/Desktop';
 import DisconnectSvg from '../../assets/svg/Disconnect';
@@ -46,6 +48,7 @@ import TelegramSvg from '../../assets/svg/Telegram';
 import TwitterSvg from '../../assets/svg/Twitter';
 import WalletConnectSvg from '../../assets/svg/WalletConnect';
 import WalletSvg from '../../assets/svg/Wallet';
+import WalletSmallSvg from '../../assets/svg/WalletSmall';
 import WarningCircleSvg from '../../assets/svg/WarningCircle';
 import TwitchSvg from '../../assets/svg/Twitch';
 import TwitterIconSvg from '../../assets/svg/TwitterIcon';
@@ -65,12 +68,14 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   chevronBottom: ChevronBottomSvg,
   chevronLeft: ChevronLeftSvg,
   chevronRight: ChevronRightSvg,
+  chevronRightSmall: ChevronRightSmallSvg,
   chevronTop: ChevronTopSvg,
   clock: ClockSvg,
   close: CloseSvg,
   compass: CompassSvg,
   coinPlaceholder: CoinPlaceholderSvg,
   copy: CopySvg,
+  copySmall: CopySmallSvg,
   cursor: CursorSvg,
   desktop: DesktopSvg,
   disconnect: DisconnectSvg,
@@ -99,9 +104,10 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   twitter: TwitterSvg,
   twitterIcon: TwitterIconSvg,
   wallet: WalletSvg,
+  walletSmall: WalletSmallSvg,
+  warningCircle: WarningCircleSvg,
   walletConnect: WalletConnectSvg,
-  walletPlaceholder: WalletPlaceholderSvg,
-  warningCircle: WarningCircleSvg
+  walletPlaceholder: WalletPlaceholderSvg
 };
 
 export type IconProps = SvgProps & {

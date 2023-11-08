@@ -6,8 +6,8 @@ export default StyleSheet.create({
     alignSelf: 'flex-end',
     position: 'absolute',
     zIndex: 1,
-    top: 16,
-    right: 16
+    top: Spacing.l,
+    right: Spacing.xl
   },
   copyButton: {
     marginLeft: Spacing['4xs']

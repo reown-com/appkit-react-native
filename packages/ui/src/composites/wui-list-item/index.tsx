@@ -65,6 +65,7 @@ export function ListItem({
           iconColor={iconColor}
           size="md"
           background
+          backgroundColor="gray-glass-010"
           border
           style={{ borderColor: Theme[borderColor] }}
         />

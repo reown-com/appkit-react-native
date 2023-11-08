@@ -90,14 +90,14 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
         {textTemplate()}
         <Button
           variant="accent"
-          iconLeft="externalLink"
+          iconRight="externalLink"
           style={styles.openButton}
           onPress={onConnect}
         >
           Open
         </Button>
         <Link
-          iconLeft="copy"
+          iconLeft="copySmall"
           color="fg-200"
           style={styles.copyButton}
           onPress={() => onCopyUri(wcUri)}

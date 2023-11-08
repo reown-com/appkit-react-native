@@ -45,7 +45,7 @@ export function WhatIsAWalletView() {
         </Text>
         <Button
           size="sm"
-          iconLeft="wallet"
+          iconLeft="walletSmall"
           style={styles.getWalletButton}
           onPress={() => RouterController.push('GetWallet')}
         >

@@ -26,7 +26,6 @@ export type ButtonProps = NativeProps & {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   iconStyle?: SvgProps['style'];
-  iconSize?: SizeType;
 };
 
 export function Button({
@@ -39,12 +38,12 @@ export function Button({
   iconLeft,
   iconRight,
   iconStyle,
-  iconSize,
   ...rest
 }: ButtonProps) {
   const Theme = useTheme();
   const themedTextStyle = getThemedTextStyle(Theme, variant, disabled);
   const colorAnimation = useRef(new Animated.Value(0));
+  const iconSize = size === 'md' ? 'sm' : 'xs';
   const iconColor = (
     variant === 'fill' ? 'inverse-100' : variant === 'accent' ? 'accent-100' : 'fg-150'
   ) as ColorType;
@@ -92,18 +91,21 @@ export function Button({
           <Icon
             color={iconColor}
             name={iconLeft}
-            size={iconSize ?? size}
+            size={iconSize}
             style={[styles.iconLeft, iconStyle]}
           />
         )}
-        <Text variant={size === 'md' ? 'paragraph-600' : 'small-600'} style={themedTextStyle}>
+        <Text
+          variant={size === 'md' ? 'paragraph-600' : 'small-600'}
+          style={[styles.text, themedTextStyle]}
+        >
           {children}
         </Text>
         {iconRight && (
           <Icon
             color={iconColor}
             name={iconRight}
-            size={iconSize ?? size}
+            size={iconSize}
             style={[styles.iconRight, iconStyle]}
           />
         )}
