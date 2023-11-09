@@ -77,9 +77,9 @@ export function ListItem({
 
   function rightTemplate() {
     if (loading) {
-      return <LoadingSpinner color="fg-200" size="lg" />;
+      return <LoadingSpinner color="fg-200" size="lg" style={styles.rightIcon} />;
     } else if (chevron) {
-      return <Icon name="chevronRight" size="sm" color="fg-200" />;
+      return <Icon name="chevronRight" size="sm" color="fg-200" style={styles.rightIcon} />;
     }
 
     return null;
