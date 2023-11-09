@@ -10,6 +10,7 @@
     "@web3modal/wagmi-react-native": "1.0.0-alpha.14"
   },
   "changesets": [
-    "dull-suns-swim"
+    "dull-suns-swim",
+    "slimy-dancers-compete"
   ]
 }
