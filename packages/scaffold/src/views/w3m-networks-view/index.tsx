@@ -95,7 +95,7 @@ export function NetworksView() {
       </ScrollView>
       <Separator />
       <FlexView
-        padding={['s', 's', '2xl', 's']}
+        padding={['s', 's', '3xl', 's']}
         alignItems="center"
         alignSelf="center"
         style={{ width }}

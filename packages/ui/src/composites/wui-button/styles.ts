@@ -62,7 +62,7 @@ export default StyleSheet.create({
   },
   mdButton: {
     height: 40,
-    paddingHorizontal: Spacing.s
+    paddingHorizontal: Spacing.xs
   },
   text: {
     marginHorizontal: Spacing['3xs']

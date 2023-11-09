@@ -142,7 +142,7 @@ export function ConnectView() {
 
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
-      <FlexView padding={['xs', 's', '2xl', 's']}>
+      <FlexView padding={['xs', 's', '3xl', 's']}>
         {recentTemplate()}
         {installedTemplate()}
         {featuredTemplate()}

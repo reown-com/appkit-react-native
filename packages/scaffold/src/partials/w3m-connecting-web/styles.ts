@@ -3,10 +3,10 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   openButton: {
-    marginVertical: Spacing.xs
+    marginTop: Spacing.m
   },
   copyButton: {
-    marginVertical: Spacing.xs
+    marginTop: Spacing.m
   },
   mainText: {
     marginVertical: Spacing.xs

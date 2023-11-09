@@ -79,7 +79,7 @@ export function AccountView() {
     <>
       <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
       <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
-        <FlexView alignItems="center" padding={['3xl', 's', '2xl', 's']}>
+        <FlexView alignItems="center" padding={['3xl', 's', '3xl', 's']}>
           <Avatar imageSrc={profileImage} address={profileName ?? address} />
           <FlexView flexDirection="row" alignItems="center" margin={['s', '0', '0', '0']}>
             <Text variant="medium-title-600">
