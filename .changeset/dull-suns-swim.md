@@ -5,4 +5,4 @@
 '@web3modal/ui-react-native': patch
 ---
 
-alpha 11
+beta 1
