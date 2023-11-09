@@ -12,6 +12,7 @@ export default StyleSheet.create({
     transform: [{ rotateY: '180deg' }]
   },
   copyButton: {
+    alignSelf: 'center',
     marginTop: Spacing.m
   },
   textContainer: {
