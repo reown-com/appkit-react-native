@@ -6,7 +6,8 @@ import {
   ApiController,
   AssetUtil,
   ConnectionController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  OptionsController
 } from '@web3modal/core-react-native';
 import {
   Button,
@@ -27,6 +28,7 @@ interface ConnectingWebProps {
 export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
   const { data } = useSnapshot(RouterController.state);
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
+  const showCopy = OptionsController.isClipboardAvailable();
 
   const onConnect = useCallback(async () => {
     try {
@@ -68,7 +70,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
 
   return (
     <ScrollView bounces={false} fadingEdgeLength={20}>
-      <FlexView alignItems="center" padding={['2xl', 'm', '2xl', 'm']}>
+      <FlexView alignItems="center" padding={['2xl', 'm', '3xl', 'm']}>
         <LoadingThumbnail paused={wcError}>
           <WalletImage
             size="lg"
@@ -96,14 +98,16 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
         >
           Open
         </Button>
-        <Link
-          iconLeft="copySmall"
-          color="fg-200"
-          style={styles.copyButton}
-          onPress={() => onCopyUri(wcUri)}
-        >
-          Copy link
-        </Link>
+        {showCopy && (
+          <Link
+            iconLeft="copySmall"
+            color="fg-200"
+            style={styles.copyButton}
+            onPress={() => onCopyUri(wcUri)}
+          >
+            Copy link
+          </Link>
+        )}
       </FlexView>
     </ScrollView>
   );

@@ -6,7 +6,8 @@ import {
   ApiController,
   AssetUtil,
   ConnectionController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  OptionsController
 } from '@web3modal/core-react-native';
 import {
   Button,
@@ -35,6 +36,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const [linkingError, setLinkingError] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
   const [ready, setReady] = useState(false);
+  const showCopy = OptionsController.isClipboardAvailable();
 
   const storeUrl = Platform.select({
     ios: data?.wallet?.app_store,
@@ -147,11 +149,11 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   }, [wcUri, isRetrying, onConnect]);
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20}>
+    <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.container}>
       <FlexView
         alignItems="center"
         alignSelf="center"
-        padding={['2xl', 'l', '2xl', 'l']}
+        padding={['2xl', 'l', '0', 'l']}
         style={{ width }}
       >
         <LoadingThumbnail paused={linkingError || wcError}>
@@ -184,6 +186,8 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
             Try again
           </Button>
         )}
+      </FlexView>
+      {showCopy && (
         <Link
           iconLeft="copySmall"
           color="fg-200"
@@ -192,7 +196,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         >
           Copy link
         </Link>
-      </FlexView>
+      )}
       {storeTemplate()}
     </ScrollView>
   );

@@ -2,20 +2,23 @@ import { Spacing } from '@web3modal/ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  retryButton: {
-    marginVertical: Spacing.xs
+  container: {
+    paddingBottom: Spacing['3xl']
   },
-  copyButton: {
-    marginVertical: Spacing.xs
+  retryButton: {
+    marginTop: Spacing.m
   },
   retryIcon: {
     transform: [{ rotateY: '180deg' }]
+  },
+  copyButton: {
+    marginTop: Spacing.m
   },
   textContainer: {
     marginVertical: Spacing.xs
   },
   descriptionText: {
-    marginVertical: Spacing.xs,
+    marginTop: Spacing.xs,
     marginHorizontal: Spacing['3xl']
   },
   errorIcon: {
@@ -28,6 +31,6 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: Spacing.l,
     marginHorizontal: Spacing.xl,
-    marginBottom: Spacing['2xl']
+    marginTop: Spacing.l
   }
 });

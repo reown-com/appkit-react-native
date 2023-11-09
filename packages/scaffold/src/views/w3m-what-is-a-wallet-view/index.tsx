@@ -9,7 +9,7 @@ export function WhatIsAWalletView() {
 
   return (
     <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
-      <FlexView alignItems="center" padding={['l', '4xl', '2xl', '4xl']}>
+      <FlexView alignItems="center" padding={['l', '4xl', '3xl', '4xl']}>
         <FlexView flexDirection="row" padding={['0', '0', 'xs', '0']}>
           <Visual name="login" />
           <Visual name="profile" style={styles.visual} />

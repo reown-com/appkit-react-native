@@ -33,7 +33,7 @@ export function GetWalletView() {
 
   return (
     <ScrollView bounces={false} style={{ paddingHorizontal: padding }} fadingEdgeLength={20}>
-      <FlexView padding={['s', 's', '2xl', 's']}>
+      <FlexView padding={['s', 's', '3xl', 's']}>
         {listTemplate()}
         <ListWallet
           name="Explore all"

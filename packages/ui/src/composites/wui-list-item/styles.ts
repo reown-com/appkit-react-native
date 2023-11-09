@@ -30,5 +30,8 @@ export default StyleSheet.create({
   },
   disabledImage: {
     opacity: 0.4
+  },
+  rightIcon: {
+    marginRight: Spacing['2xs']
   }
 });

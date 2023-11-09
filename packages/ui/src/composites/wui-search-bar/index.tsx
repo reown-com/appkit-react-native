@@ -3,6 +3,7 @@ import { TextInput, type TextInputProps } from 'react-native';
 
 import { InputElement } from '../wui-input-element';
 import { InputText } from '../wui-input-text';
+import { Spacing } from '../../utils/ThemeUtil';
 
 export interface SearchBarProps {
   placeholder?: string;
@@ -39,6 +40,7 @@ export function SearchBar({
       {showClear && (
         <InputElement
           icon="close"
+          style={{ marginRight: Spacing['4xs'] }}
           onPress={() => {
             inputRef.current?.clear();
             inputRef.current?.focus();
