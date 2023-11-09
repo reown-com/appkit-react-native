@@ -6,7 +6,7 @@ const baseStyle = {
   height: 40,
   borderRadius: BorderRadius.xxs,
   alignItems: 'center',
-  paddingHorizontal: Spacing.m,
+  paddingHorizontal: Spacing.xs,
   borderWidth: 1
 } as ViewStyle;
 
@@ -38,6 +38,7 @@ export default StyleSheet.create({
     fontWeight: '400'
   },
   icon: {
+    marginLeft: Spacing['3xs'],
     marginRight: Spacing.xs
   }
 });
