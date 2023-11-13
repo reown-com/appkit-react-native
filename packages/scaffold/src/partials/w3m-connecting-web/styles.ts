@@ -9,7 +9,8 @@ export default StyleSheet.create({
     marginTop: Spacing.m
   },
   mainText: {
-    marginVertical: Spacing.xs
+    marginTop: Spacing.s,
+    marginBottom: Spacing.xs
   },
   descriptionText: {
     marginBottom: Spacing.xs,

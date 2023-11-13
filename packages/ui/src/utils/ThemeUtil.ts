@@ -85,7 +85,7 @@ export const LightTheme: { [key in ThemeKeys]: string } = {
   'fg-300': '#9ea9a9',
 
   'bg-100': '#ffffff',
-  'bg-125': '#f5fafa',
+  'bg-125': '#ffffff',
   'bg-150': '#f3f8f8',
   'bg-175': '#eef4f4',
   'bg-200': '#eaf1f1',

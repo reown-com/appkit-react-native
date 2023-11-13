@@ -45,7 +45,7 @@ export function AccountButton({
         <Image
           source={networkSrc}
           headers={imageHeaders}
-          style={[styles.image, { borderColor: Theme['gray-glass-010'] }]}
+          style={[styles.image, { borderColor: Theme['gray-glass-005'] }]}
         />
       ) : (
         <IconBox
@@ -54,7 +54,7 @@ export function AccountButton({
           iconColor="fg-200"
           background
           border
-          style={{ borderColor: Theme['gray-glass-010'] }}
+          style={{ borderColor: Theme['gray-glass-005'] }}
         />
       );
 
