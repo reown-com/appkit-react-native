@@ -57,18 +57,18 @@ export function ListItem({
       );
     } else if (variant === 'icon' && icon) {
       const iconColor = iconVariant === 'blue' ? 'accent-100' : 'fg-200';
-      const borderColor = iconVariant === 'blue' ? 'accent-glass-005' : 'gray-glass-002';
+      const borderColor = iconVariant === 'blue' ? 'accent-glass-005' : 'gray-glass-005';
 
       return (
-        <IconBox
-          icon={icon}
-          iconColor={iconColor}
-          size="md"
-          background
-          backgroundColor="gray-glass-010"
-          border
-          style={{ borderColor: Theme[borderColor] }}
-        />
+        <View style={[styles.imageContainer, { borderColor: Theme[borderColor] }]}>
+          <IconBox
+            icon={icon}
+            iconColor={iconColor}
+            size="md"
+            background
+            backgroundColor="gray-glass-010"
+          />
+        </View>
       );
     }
 

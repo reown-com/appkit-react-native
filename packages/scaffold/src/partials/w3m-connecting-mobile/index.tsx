@@ -36,7 +36,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const [linkingError, setLinkingError] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
   const [ready, setReady] = useState(false);
-  const showCopy = OptionsController.isClipboardAvailable();
+  const showCopy = OptionsController.isClipboardAvailable() && !linkingError;
 
   const storeUrl = Platform.select({
     ios: data?.wallet?.app_store,
@@ -75,20 +75,17 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
     if (linkingError) {
       return (
         <FlexView
-          padding={['0', '2xl', '0', '2xl']}
+          padding={['3xs', '2xl', '0', '2xl']}
           alignItems="center"
           style={styles.textContainer}
         >
-          <Text variant="paragraph-500">{`${walletName} is not installed`}</Text>
-          <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
-            {`To connect with ${walletName}, install the application on your device`}
-          </Text>
+          <Text variant="paragraph-500">App not installed</Text>
         </FlexView>
       );
     } else if (wcError) {
       return (
         <FlexView
-          padding={['0', '2xl', '0', '2xl']}
+          padding={['3xs', '2xl', '0', '2xl']}
           alignItems="center"
           style={styles.textContainer}
         >
@@ -103,7 +100,11 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
     }
 
     return (
-      <FlexView padding={['0', '2xl', '0', '2xl']} alignItems="center" style={styles.textContainer}>
+      <FlexView
+        padding={['3xs', '2xl', '0', '2xl']}
+        alignItems="center"
+        style={styles.textContainer}
+      >
         <Text variant="paragraph-500">{`Continue in ${walletName}`}</Text>
         <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
           Accept connection request in the wallet

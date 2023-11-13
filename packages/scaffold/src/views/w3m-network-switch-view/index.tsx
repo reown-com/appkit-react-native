@@ -100,7 +100,7 @@ export function NetworkSwitchView() {
         />
         {error && (
           <IconBox
-            icon={'close'}
+            icon="close"
             border
             background
             backgroundColor="icon-box-bg-error-100"
