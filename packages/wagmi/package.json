@@ -39,7 +39,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@walletconnect/react-native-compat": "2.10.1",
     "@web3modal/scaffold-react-native": "1.0.0-beta.2"
   },
   "peerDependencies": {

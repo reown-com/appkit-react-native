@@ -1,8 +1,31 @@
-import { Linking } from 'react-native';
+import { Linking, Platform } from 'react-native';
 import { ConstantsUtil } from './ConstantsUtil';
 import type { CaipAddress, DataWallet, LinkingRecord } from './TypeUtils';
-import { isAppInstalled } from '../modules/AppInstalled';
 
+// -- Helpers -----------------------------------------------------------------
+async function isAppInstalledIos(deepLink?: string): Promise<boolean> {
+  try {
+    return deepLink ? Linking.canOpenURL(deepLink) : Promise.resolve(false);
+  } catch (error) {
+    return Promise.resolve(false);
+  }
+}
+
+async function isAppInstalledAndroid(packageName?: string): Promise<boolean> {
+  try {
+    //@ts-ignore
+    if (!packageName || typeof global?.Application?.isAppInstalled !== 'function') {
+      return Promise.resolve(false);
+    }
+
+    //@ts-ignore
+    return global?.Application?.isAppInstalled(packageName);
+  } catch (error) {
+    return Promise.resolve(false);
+  }
+}
+
+// -- Utility --------------------------------------------------------------------
 export const CoreHelperUtil = {
   isPairingExpired(expiry?: number) {
     return expiry ? expiry - Date.now() <= ConstantsUtil.TEN_SEC_MS : true;
@@ -128,7 +151,11 @@ export const CoreHelperUtil = {
     const scheme = wallet.ios_schema;
     const appId = wallet.android_app_id;
     try {
-      isInstalled = await isAppInstalled(scheme, appId);
+      isInstalled = await Platform.select({
+        ios: isAppInstalledIos(scheme),
+        android: isAppInstalledAndroid(appId),
+        default: Promise.resolve(false)
+      });
     } catch {
       isInstalled = false;
     }
