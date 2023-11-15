@@ -69,7 +69,8 @@ export const ApiController = {
     return {
       'x-project-id': OptionsController.state.projectId,
       'x-sdk-type': sdkType,
-      'x-sdk-version': state.sdkVersion
+      'x-sdk-version': state.sdkVersion,
+      'User-Agent': `${Platform.OS}-${Platform.Version}`
     };
   },
 
