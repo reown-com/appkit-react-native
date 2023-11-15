@@ -107,6 +107,7 @@ const NAMESPACE = 'eip155';
 const STORE_KEY = 'store';
 const REQUESTED_CHAINS_KEY = 'requestedChains';
 const ADD_ETH_CHAIN_METHOD = 'wallet_addEthereumChain';
+const SWITCH_ETH_CHAIN_METHOD = 'wallet_switchEthereumChain';
 
 export class WalletConnectConnector extends Connector<WalletConnectProvider, WalletConnectOptions> {
   readonly id = 'walletConnect';
@@ -279,7 +280,7 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
         this._setRequestedChainsIds(requestedChains);
       }
       await provider.request({
-        method: 'wallet_switchEthereumChain',
+        method: SWITCH_ETH_CHAIN_METHOD,
         params: [{ chainId: numberToHex(chainId) }]
       });
 
