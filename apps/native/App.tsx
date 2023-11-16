@@ -1,6 +1,9 @@
 import { StyleSheet, View, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
+import '@walletconnect/react-native-compat';
+import { WagmiConfig } from 'wagmi';
+
 import {
   Web3Modal,
   W3mButton,
@@ -8,7 +11,6 @@ import {
   defaultWagmiConfig
 } from '@web3modal/wagmi-react-native';
 
-import { WagmiConfig } from 'wagmi';
 import {
   arbitrum,
   mainnet,
