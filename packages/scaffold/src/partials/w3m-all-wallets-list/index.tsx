@@ -102,7 +102,7 @@ export function AllWalletsList({ columns, itemWidth }: AllWalletsListProps) {
     if (!wallets.length) {
       initialFetch();
     }
-  }, [wallets]);
+  }, []);
 
   if (loading) {
     return loadingTemplate(20);
