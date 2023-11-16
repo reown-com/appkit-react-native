@@ -27,8 +27,8 @@
     "react-native-svg": "13.9.0",
     "react-native-web": "~0.19.6",
     "uuid": "3.4.0",
-    "viem": "1.16.3",
-    "wagmi": "1.4.3"
+    "viem": "1.19.3",
+    "wagmi": "1.4.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
