@@ -120,11 +120,12 @@ export function ConnectView() {
   };
 
   const allWalletsTemplate = () => {
+    const label = count > 10 ? `${Math.floor(count / 10) * 10}+` : count;
     return (
       <ListWallet
         name="All wallets"
         showAllWallets
-        tagLabel={`${Math.floor(count / 10) * 10}+`}
+        tagLabel={String(label)}
         tagVariant="shade"
         onPress={() => RouterController.push('AllWallets')}
         style={styles.item}
