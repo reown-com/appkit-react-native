@@ -1,10 +1,10 @@
 import { useSnapshot } from 'valtio';
 import {
   AccountController,
-  AssetController,
   CoreHelperUtil,
   NetworkController,
-  ModalController
+  ModalController,
+  AssetUtil
 } from '@web3modal/core-react-native';
 
 import { AccountButton } from '@web3modal/ui-react-native';
@@ -18,7 +18,6 @@ export interface W3mAccountButtonProps {
 }
 
 export function W3mAccountButton({ balance, disabled, style }: W3mAccountButtonProps) {
-  const { networkImages } = useSnapshot(AssetController.state);
   const {
     address,
     balance: balanceVal,
@@ -28,7 +27,7 @@ export function W3mAccountButton({ balance, disabled, style }: W3mAccountButtonP
   } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
 
-  const networkImage = networkImages[caipNetwork?.imageId ?? ''];
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showBalance = balance === 'show';
 
   return (

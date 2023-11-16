@@ -161,7 +161,7 @@ export class Web3ModalScaffold {
 
   // -- Private ------------------------------------------------------------------
   private initControllers(options: ScaffoldOptions) {
-    this.initRecentWallets();
+    this.initRecentWallets(options);
     NetworkController.setClient(options.networkControllerClient);
     NetworkController.setDefaultCaipNetwork(options.defaultChain);
 
@@ -187,8 +187,20 @@ export class Web3ModalScaffold {
     }
   }
 
-  private async initRecentWallets() {
+  private async initRecentWallets(options: ScaffoldOptions) {
     const wallets = await StorageUtil.getRecentWallets();
-    ConnectionController.setRecentWallets(wallets);
+
+    const filteredWallets = wallets.filter(wallet => {
+      const { includeWalletIds, excludeWalletIds } = options;
+      if (includeWalletIds) {
+        return includeWalletIds.includes(wallet.id);
+      }
+      if (excludeWalletIds) {
+        return !excludeWalletIds.includes(wallet.id);
+      }
+      return true;
+    });
+
+    ConnectionController.setRecentWallets(filteredWallets);
   }
 }

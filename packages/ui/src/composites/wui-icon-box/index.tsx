@@ -31,7 +31,7 @@ export function IconBox({
       iconSize = 'lg';
       break;
     case 'md':
-      iconSize = 'md';
+      iconSize = 'sm';
       break;
     case 'sm':
       iconSize = 'xs';

@@ -139,9 +139,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.syncRequestedNetworks(chains);
 
-    // this.syncConnectors(wagmiConfig.connectors);
-    // this.listenConnectors(wagmiConfig.connectors);
-
     watchAccount(() => this.syncAccount());
     watchNetwork(() => this.syncNetwork());
   }
@@ -259,19 +256,4 @@ export class Web3Modal extends Web3ModalScaffold {
     });
     this.setBalance(balance.formatted, balance.symbol);
   }
-
-  // private syncConnectors(connectors: Web3ModalClientOptions['wagmiConfig']['connectors']) {
-  //   const w3mConnectors: Connector[] = [];
-  //   connectors.forEach(({ id, name }) => {
-  //     w3mConnectors.push({
-  //       id,
-  //       explorerId: ConnectorExplorerIds[id],
-  //       imageId: ConnectorImageIds[id],
-  //       imageUrl: this.options?.connectorImages?.[id],
-  //       name: ConnectorNamesMap[id] ?? name,
-  //       type: ConnectorTypesMap[id] ?? 'EXTERNAL'
-  //     });
-  //   });
-  //   this.setConnectors(w3mConnectors);
-  // }
 }
