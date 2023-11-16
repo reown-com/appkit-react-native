@@ -3,7 +3,7 @@ import { Linking, ScrollView } from 'react-native';
 import {
   AccountController,
   ApiController,
-  AssetController,
+  AssetUtil,
   ConnectionController,
   CoreHelperUtil,
   ModalController,
@@ -31,9 +31,8 @@ export function AccountView() {
     useSnapshot(AccountController.state);
 
   const [disconnecting, setDisconnecting] = useState(false);
-  const { networkImages } = useSnapshot(AssetController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
-  const networkImage = networkImages[caipNetwork?.imageId ?? ''];
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
   const { padding } = useCustomDimensions();
 
