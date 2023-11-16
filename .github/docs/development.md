@@ -14,7 +14,6 @@ To create your ProjectID, head to [cloud.walletconnect.com](https://cloud.wallet
 
 Execute all commands from the root.
 
-- `yarn dev` - Run packages
 - `yarn ios` - Run the example project in an iOS simulator.
 - `yarn android` - Run the example project in an Android simulator.
 - `yarn lint` - Run the linter.
