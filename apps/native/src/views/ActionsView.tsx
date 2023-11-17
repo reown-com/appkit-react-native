@@ -6,7 +6,7 @@ import { parseEther } from 'viem';
 export function ActionsView() {
   const { isConnected } = useAccount();
   const { data, isError, isLoading, isSuccess, signMessage } = useSignMessage({
-    message: 'wenas y santas'
+    message: 'Hello Web3Modal!'
   });
 
   const {
