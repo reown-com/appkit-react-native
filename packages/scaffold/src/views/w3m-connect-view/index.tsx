@@ -1,5 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { ScrollView } from 'react-native';
+import type WebView from 'react-native-webview';
 import {
   ApiController,
   AssetUtil,
@@ -7,13 +8,20 @@ import {
   RouterController
 } from '@web3modal/core-react-native';
 import type { WcWallet } from '@web3modal/core-react-native';
-import { ListWallet, FlexView } from '@web3modal/ui-react-native';
+import { ListWallet, FlexView, EmailInput } from '@web3modal/ui-react-native';
 import { UiUtil } from '../../utils/UiUtil';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
+import { useState, type RefObject } from 'react';
+import * as FrameSdk from '../../modal/w3m-modal/FrameSdk';
 
-export function ConnectView() {
+interface ConnectViewProps {
+  webviewRef: RefObject<WebView>;
+}
+
+export function ConnectView({ webviewRef }: ConnectViewProps) {
   const { recommended, featured, installed, count } = useSnapshot(ApiController.state);
+  const [email, setEmail] = useState('');
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const { padding } = useCustomDimensions();
@@ -34,6 +42,15 @@ export function ConnectView() {
 
   const onWalletPress = (wallet: WcWallet) => {
     RouterController.push('ConnectingWalletConnect', { wallet });
+  };
+
+  const onEmailSubmit = () => {
+    const message = FrameSdk.connectEmail(email);
+    webviewRef?.current?.injectJavaScript(message);
+  };
+
+  const emailTemplate = () => {
+    return <EmailInput onChangeText={setEmail} onSubmitEditing={onEmailSubmit} />;
   };
 
   const recentTemplate = () => {
@@ -121,6 +138,7 @@ export function ConnectView() {
 
   const allWalletsTemplate = () => {
     const label = count > 10 ? `${Math.floor(count / 10) * 10}+` : count;
+
     return (
       <ListWallet
         name="All wallets"
@@ -145,6 +163,7 @@ export function ConnectView() {
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
       <FlexView padding={['xs', 's', '2xl', 's']}>
+        {emailTemplate()}
         {recentTemplate()}
         {installedTemplate()}
         {featuredTemplate()}

@@ -15,10 +15,15 @@ export function W3mConnectButton({
   size = 'md',
   style
 }: W3mConnectButtonProps) {
-  const { open } = useSnapshot(ModalController.state);
+  const { open, loading } = useSnapshot(ModalController.state);
 
   return (
-    <ConnectButton onPress={() => ModalController.open()} size={size} loading={open} style={style}>
+    <ConnectButton
+      onPress={() => ModalController.open()}
+      size={size}
+      loading={open || loading}
+      style={style}
+    >
       {open ? loadingLabel : label}
     </ConnectButton>
   );

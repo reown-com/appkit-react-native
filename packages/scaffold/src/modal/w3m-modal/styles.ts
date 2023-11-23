@@ -9,5 +9,10 @@ export default StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     maxHeight: '80%'
+  },
+  webview: {
+    width: 0,
+    height: 0,
+    position: 'absolute'
   }
 });

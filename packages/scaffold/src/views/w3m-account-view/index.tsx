@@ -22,11 +22,17 @@ import {
   Spacing,
   ListItem
 } from '@web3modal/ui-react-native';
-import { useState } from 'react';
+import { useState, type RefObject } from 'react';
+import type WebView from 'react-native-webview';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
+import { disconnect } from '../../modal/w3m-modal/FrameSdk';
 
-export function AccountView() {
+interface AccountViewProps {
+  webviewRef: RefObject<WebView>;
+}
+
+export function AccountView({ webviewRef }: AccountViewProps) {
   const { address, profileName, profileImage, balance, balanceSymbol, addressExplorerUrl } =
     useSnapshot(AccountController.state);
 
@@ -38,6 +44,10 @@ export function AccountView() {
 
   async function onDisconnect() {
     setDisconnecting(true);
+
+    // Hack for email only
+    webviewRef?.current?.injectJavaScript(disconnect());
+
     await ConnectionController.disconnect();
     AccountController.setIsConnected(false);
     ModalController.close();

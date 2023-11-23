@@ -4,6 +4,7 @@ import type {
   AccountControllerState,
   ApiControllerState,
   ConnectionControllerClient,
+  ModalControllerState,
   NetworkControllerClient,
   NetworkControllerState,
   OptionsControllerState,
@@ -104,6 +105,10 @@ export class Web3ModalScaffold {
     return AccountController.subscribeConnection(callback);
   }
 
+  public setLoading(loading: ModalControllerState['loading']) {
+    ModalController.setLoading(loading);
+  }
+
   // -- Protected ----------------------------------------------------------------
   protected setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
     AccountController.setIsConnected(isConnected);
@@ -198,6 +203,7 @@ export class Web3ModalScaffold {
       if (excludeWalletIds) {
         return !excludeWalletIds.includes(wallet.id);
       }
+
       return true;
     });
 
