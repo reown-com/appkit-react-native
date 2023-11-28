@@ -121,6 +121,7 @@ export function ConnectView() {
 
   const allWalletsTemplate = () => {
     const label = count > 10 ? `${Math.floor(count / 10) * 10}+` : count;
+
     return (
       <ListWallet
         name="All wallets"

@@ -198,6 +198,7 @@ export class Web3ModalScaffold {
       if (excludeWalletIds) {
         return !excludeWalletIds.includes(wallet.id);
       }
+
       return true;
     });
 
