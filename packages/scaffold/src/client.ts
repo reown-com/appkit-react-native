@@ -11,13 +11,15 @@ import type {
   PublicStateControllerState,
   ThemeControllerState,
   ThemeMode,
-  ThemeVariables
+  ThemeVariables,
+  Connector
 } from '@web3modal/core-react-native';
 import {
   AccountController,
   ApiController,
   BlockchainApiController,
   ConnectionController,
+  ConnectorController,
   ModalController,
   NetworkController,
   OptionsController,
@@ -151,6 +153,19 @@ export class Web3ModalScaffold {
   protected resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
     NetworkController.resetNetwork();
   };
+
+  protected setConnectors: (typeof ConnectorController)['setConnectors'] = (
+    connectors: Connector[]
+  ) => {
+    ConnectorController.setConnectors(connectors);
+  };
+
+  protected addConnector: (typeof ConnectorController)['addConnector'] = (connector: Connector) => {
+    ConnectorController.addConnector(connector);
+  };
+
+  protected getConnectors: (typeof ConnectorController)['getConnectors'] = () =>
+    ConnectorController.getConnectors();
 
   protected resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {
     ConnectionController.resetWcConnection();

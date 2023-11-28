@@ -1,8 +1,8 @@
 import { subscribeKey as subKey } from 'valtio/utils';
-import { proxy, ref } from 'valtio/vanilla';
+import { proxy, ref } from 'valtio';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
-import type { WcWallet } from '../utils/TypeUtils';
+import type { WcWallet } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
 export interface ConnectionControllerClient {

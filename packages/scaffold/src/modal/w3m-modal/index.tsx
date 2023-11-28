@@ -46,6 +46,7 @@ export function Web3Modal() {
   }, []);
 
   const handleMessage = (event: any) => {
+    // eslint-disable-next-line no-console
     console.log('SECURE RESPONSE: ', event.nativeEvent.data);
     const response = JSON.parse(event.nativeEvent.data);
 

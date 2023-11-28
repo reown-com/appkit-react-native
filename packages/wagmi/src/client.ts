@@ -17,6 +17,7 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ConnectionControllerClient,
+  Connector,
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
@@ -26,12 +27,19 @@ import { Web3ModalScaffold } from '@web3modal/scaffold-react-native';
 
 import {
   ADD_CHAIN_METHOD,
+  EMAIL_CONNECTOR_ID,
   NAMESPACE,
   VERSION,
   WALLET_CONNECT_CONNECTOR_ID
 } from './utils/constants';
 import { caipNetworkIdToNumber, getCaipDefaultChain, getCaipTokens } from './utils/helpers';
-import { NetworkImageIds } from './utils/presets';
+import {
+  ConnectorExplorerIds,
+  ConnectorImageIds,
+  ConnectorNamesMap,
+  ConnectorTypesMap,
+  NetworkImageIds
+} from './utils/presets';
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -138,6 +146,10 @@ export class Web3Modal extends Web3ModalScaffold {
     this.options = options;
 
     this.syncRequestedNetworks(chains);
+
+    this.syncConnectors(wagmiConfig);
+    this.syncEmailConnector(wagmiConfig);
+    this.listenEmailConnector(wagmiConfig);
 
     watchAccount(() => this.syncAccount());
     watchNetwork(() => this.syncNetwork());
@@ -255,5 +267,53 @@ export class Web3Modal extends Web3ModalScaffold {
       token: this.options?.tokens?.[chain.id]?.address as Address
     });
     this.setBalance(balance.formatted, balance.symbol);
+  }
+
+  private syncConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+    const w3mConnectors: Connector[] = [];
+    wagmiConfig.connectors.forEach(({ id, name }) => {
+      if (![EMAIL_CONNECTOR_ID].includes(id)) {
+        w3mConnectors.push({
+          id,
+          explorerId: ConnectorExplorerIds[id],
+          imageId: ConnectorImageIds[id],
+          imageUrl: this.options?.connectorImages?.[id],
+          name: ConnectorNamesMap[id] ?? name,
+          type: ConnectorTypesMap[id] ?? 'WALLET_CONNECT'
+        });
+      }
+    });
+    this.setConnectors(w3mConnectors);
+  }
+
+  private async syncEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+    const emailConnector = wagmiConfig.connectors.find(({ id }) => id === 'w3mEmail');
+    if (emailConnector) {
+      const provider = await emailConnector.getProvider();
+      this.addConnector({
+        id: EMAIL_CONNECTOR_ID,
+        type: 'EMAIL',
+        name: 'Email',
+        provider
+      });
+    }
+  }
+
+  private async listenEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+    const connector = wagmiConfig.connectors.find(c => c.id === EMAIL_CONNECTOR_ID);
+
+    if (connector) {
+      super.setLoading(true);
+      const provider = await connector.getProvider();
+      provider.onRpcRequest(() => {
+        // super.open({ view: 'ApproveTransaction' });
+      });
+      provider.onRpcResponse(() => {
+        super.close();
+      });
+      provider.onIsConnected(() => {
+        super.setLoading(false);
+      });
+    }
   }
 }

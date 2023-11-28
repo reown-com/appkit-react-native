@@ -1,5 +1,5 @@
 import { proxy, ref } from 'valtio';
-import type { ProjectId, Tokens } from '../utils/TypeUtils';
+import type { ProjectId, Tokens } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
 export interface ClipboardClient {

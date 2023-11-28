@@ -6,7 +6,7 @@
   "files.exclude": {
     "**/.DS_Store": true,
     "**/.git": true,
-    "**/node_modules": true,
+    "**/node_modules": false,
     "**/out": false,
     "**/dist": false,
     "**/.turbo": false

@@ -18,7 +18,22 @@ export type ProjectId = string;
 
 export type Platform = 'mobile' | 'web' | 'qrcode' | 'unsupported';
 
-export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT';
+export type ConnectorType = 'WALLET_CONNECT' | 'EMAIL';
+
+export type Connector = {
+  id: string;
+  type: ConnectorType;
+  name?: string;
+  imageId?: string;
+  explorerId?: string;
+  imageUrl?: string;
+  info?: { rdns?: string };
+  provider?: unknown;
+};
+
+export interface EmailConnector extends Connector {
+  provider: any; //TODO Define this
+}
 
 export type CaipNamespaces = Record<
   string,

@@ -14,12 +14,12 @@ export const FrameSdk = `
 
   const init = async () => {
     const { W3mFrameProvider } = await import("https://esm.sh/@web3modal/smart-account@3.4.0-e3959a31")
-    provider = new W3mFrameProvider("PROJECT_ID")
+    provider = new W3mFrameProvider("90369b5c91c6f7fffe308df2b30f3ace")
     initFrame();
   }
 
   init();
-  
+
   const initFrame = () => {
     iframe = document.createElement('iframe')
     iframe.id = 'w3m-iframe'
@@ -38,16 +38,15 @@ export const FrameSdk = `
     }
   }
 
-
   // ------------- Helpers -----------------------
   const checkConnected = async () => {
-    // const { isConnected } = await provider.isConnected();
+    // await provider.isConnected();
     // TODO: use provider once indexdb issue is solved
     iframe.contentWindow.postMessage({ type: '@w3m-app/IS_CONNECTED' }, '*')
   }
 
   const connectEmail = async (email) => {
-    const { action } = await provider.connectEmail({ email })
+    await provider.connectEmail({ email })
   }
 
   const verifyOtp = async (otp) => {
@@ -55,7 +54,7 @@ export const FrameSdk = `
   }
 
   const connect = async () => {
-    const response = await provider.connect()
+    await provider.connect()
   }
 
   const disconnect = async () => {

@@ -2,6 +2,7 @@ import type { ConnectorType } from '@web3modal/scaffold-react-native';
 
 import {
   COINBASE_CONNECTOR_ID,
+  EMAIL_CONNECTOR_ID,
   LEDGER_CONNECTOR_ID,
   SAFE_CONNECTOR_ID,
   WALLET_CONNECT_CONNECTOR_ID
@@ -69,5 +70,6 @@ export const ConnectorNamesMap = {
 } as Record<string, string>;
 
 export const ConnectorTypesMap = {
-  [WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT'
+  [WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT',
+  [EMAIL_CONNECTOR_ID]: 'EMAIL'
 } as Record<string, ConnectorType>;

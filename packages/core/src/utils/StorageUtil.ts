@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { WcWallet } from './TypeUtils';
+import type { WcWallet } from './TypeUtil';
 
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE';

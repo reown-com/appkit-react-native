@@ -102,6 +102,7 @@ export function AllWalletsList({ columns, itemWidth }: AllWalletsListProps) {
     if (!wallets.length) {
       initialFetch();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {

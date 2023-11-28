@@ -1,6 +1,6 @@
 import { Image, Platform } from 'react-native';
 import { subscribeKey as subKey } from 'valtio/utils';
-import { proxy } from 'valtio/vanilla';
+import { proxy } from 'valtio';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { FetchUtil } from '../utils/FetchUtil';
 import { StorageUtil } from '../utils/StorageUtil';
@@ -10,7 +10,7 @@ import type {
   ApiGetWalletsResponse,
   SdkVersion,
   WcWallet
-} from '../utils/TypeUtils';
+} from '../utils/TypeUtil';
 import { AssetController } from './AssetController';
 import { NetworkController } from './NetworkController';
 import { OptionsController } from './OptionsController';

@@ -1,5 +1,5 @@
 import { AssetController } from '../controllers/AssetController';
-import type { CaipNetwork, WcWallet } from './TypeUtils';
+import type { CaipNetwork, WcWallet } from './TypeUtil';
 
 export const AssetUtil = {
   getWalletImage(wallet?: WcWallet) {
