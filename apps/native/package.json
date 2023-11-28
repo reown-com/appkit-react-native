@@ -1,6 +1,6 @@
 {
   "name": "@apps/native",
-  "version": "1.0.1-beta.3",
+  "version": "1.0.1",
   "main": "index.js",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
     "@react-native-async-storage/async-storage": "1.18.2",
     "@react-native-community/netinfo": "9.3.10",
     "@walletconnect/react-native-compat": "2.10.5",
-    "@web3modal/wagmi-react-native": "1.0.0-beta.3",
+    "@web3modal/wagmi-react-native": "1.0.0",
     "expo": "^49.0.0",
     "expo-clipboard": "~4.3.1",
     "expo-status-bar": "~1.6.0",
