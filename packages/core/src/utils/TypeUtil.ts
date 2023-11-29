@@ -31,10 +31,6 @@ export type Connector = {
   provider?: unknown;
 };
 
-export interface EmailConnector extends Connector {
-  provider: any; //TODO Define this
-}
-
 export type CaipNamespaces = Record<
   string,
   {

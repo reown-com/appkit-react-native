@@ -12,7 +12,6 @@ export interface RouterControllerState {
     | 'AllWallets'
     | 'WhatIsAWallet'
     | 'WhatIsANetwork'
-    | 'EmailVerifyOtp'
     | 'GetWallet';
   history: RouterControllerState['view'][];
   data?: {

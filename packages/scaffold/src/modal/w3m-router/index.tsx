@@ -11,10 +11,9 @@ import { AccountView } from '../../views/w3m-account-view';
 import { NetworksView } from '../../views/w3m-networks-view';
 import { WhatIsNetworkView } from '../../views/w3m-what-is-a-network-view';
 import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
-import { EmailVerifyOtpView } from '../../views/w3m-email-verify-otp-view';
 import { UiUtil } from '../../utils/UiUtil';
 
-export function Web3Router(props: any) {
+export function Web3Router() {
   const { view } = useSnapshot(RouterController.state);
 
   useLayoutEffect(() => {
@@ -39,8 +38,6 @@ export function Web3Router(props: any) {
         return NetworksView;
       case 'SwitchNetwork':
         return NetworkSwitchView;
-      case 'EmailVerifyOtp':
-        return EmailVerifyOtpView;
       case 'Account':
         return AccountView;
       default:
@@ -48,5 +45,5 @@ export function Web3Router(props: any) {
     }
   }, [view]);
 
-  return <ViewComponent {...props} />;
+  return <ViewComponent />;
 }

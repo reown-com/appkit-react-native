@@ -27,7 +27,6 @@ import { Web3ModalScaffold } from '@web3modal/scaffold-react-native';
 
 import {
   ADD_CHAIN_METHOD,
-  EMAIL_CONNECTOR_ID,
   NAMESPACE,
   VERSION,
   WALLET_CONNECT_CONNECTOR_ID
@@ -40,6 +39,7 @@ import {
   ConnectorTypesMap,
   NetworkImageIds
 } from './utils/presets';
+import { StorageUtils } from './utils/storageUtils';
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -75,10 +75,6 @@ export class Web3Modal extends Web3ModalScaffold {
       throw new Error('web3modal:constructor - projectId is undefined');
     }
 
-    if (!wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_CONNECTOR_ID)) {
-      throw new Error('web3modal:constructor - WalletConnectConnector is required');
-    }
-
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         const chainId = caipNetworkIdToNumber(caipNetwork?.id);
@@ -88,7 +84,8 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       async getApprovedCaipNetworksData() {
-        const walletChoice = WALLET_CONNECT_CONNECTOR_ID;
+        // TODO: HAY QUE MIGRAR
+        const walletChoice = await StorageUtils.getItem<string>('@w3m/connected_connector');
         if (walletChoice?.includes(WALLET_CONNECT_CONNECTOR_ID)) {
           const connector = wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_CONNECTOR_ID);
           if (!connector) {
@@ -131,6 +128,17 @@ export class Web3Modal extends Web3ModalScaffold {
         await connect({ connector, chainId });
       },
 
+      connectExternal: async ({ id }) => {
+        const connector = wagmiConfig.connectors.find(c => c.id === id);
+        if (!connector) {
+          throw new Error('connectionControllerClient:connectExternal - connector is undefined');
+        }
+
+        const chainId = caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+
+        await connect({ connector, chainId });
+      },
+
       disconnect
     };
 
@@ -148,8 +156,6 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains);
 
     this.syncConnectors(wagmiConfig);
-    this.syncEmailConnector(wagmiConfig);
-    this.listenEmailConnector(wagmiConfig);
 
     watchAccount(() => this.syncAccount());
     watchNetwork(() => this.syncNetwork());
@@ -272,48 +278,15 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const w3mConnectors: Connector[] = [];
     wagmiConfig.connectors.forEach(({ id, name }) => {
-      if (![EMAIL_CONNECTOR_ID].includes(id)) {
-        w3mConnectors.push({
-          id,
-          explorerId: ConnectorExplorerIds[id],
-          imageId: ConnectorImageIds[id],
-          imageUrl: this.options?.connectorImages?.[id],
-          name: ConnectorNamesMap[id] ?? name,
-          type: ConnectorTypesMap[id] ?? 'WALLET_CONNECT'
-        });
-      }
+      w3mConnectors.push({
+        id,
+        explorerId: ConnectorExplorerIds[id],
+        imageId: ConnectorImageIds[id],
+        imageUrl: this.options?.connectorImages?.[id],
+        name: ConnectorNamesMap[id] ?? name,
+        type: ConnectorTypesMap[id] ?? 'WALLET_CONNECT'
+      });
     });
     this.setConnectors(w3mConnectors);
-  }
-
-  private async syncEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
-    const emailConnector = wagmiConfig.connectors.find(({ id }) => id === 'w3mEmail');
-    if (emailConnector) {
-      const provider = await emailConnector.getProvider();
-      this.addConnector({
-        id: EMAIL_CONNECTOR_ID,
-        type: 'EMAIL',
-        name: 'Email',
-        provider
-      });
-    }
-  }
-
-  private async listenEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
-    const connector = wagmiConfig.connectors.find(c => c.id === EMAIL_CONNECTOR_ID);
-
-    if (connector) {
-      super.setLoading(true);
-      const provider = await connector.getProvider();
-      provider.onRpcRequest(() => {
-        // super.open({ view: 'ApproveTransaction' });
-      });
-      provider.onRpcResponse(() => {
-        super.close();
-      });
-      provider.onIsConnected(() => {
-        super.setLoading(false);
-      });
-    }
   }
 }

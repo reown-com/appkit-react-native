@@ -1,28 +1,22 @@
 import { useSnapshot } from 'valtio';
 import { ScrollView } from 'react-native';
-import type WebView from 'react-native-webview';
 import {
   ApiController,
   AssetUtil,
   ConnectionController,
+  ConnectorController,
   RouterController
 } from '@web3modal/core-react-native';
 import type { WcWallet } from '@web3modal/core-react-native';
-import { ListWallet, FlexView, EmailInput } from '@web3modal/ui-react-native';
+import { ListWallet, FlexView } from '@web3modal/ui-react-native';
 import { UiUtil } from '../../utils/UiUtil';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
-import { useState, type RefObject } from 'react';
-import * as FrameSdk from '../../modal/w3m-modal/FrameSdk';
 
-interface ConnectViewProps {
-  webviewRef: RefObject<WebView>;
-}
-
-export function ConnectView({ webviewRef }: ConnectViewProps) {
+export function ConnectView() {
   const { recommended, featured, installed, count } = useSnapshot(ApiController.state);
-  const [email, setEmail] = useState('');
   const { recentWallets } = useSnapshot(ConnectionController.state);
+  const { connectors } = useSnapshot(ConnectorController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const { padding } = useCustomDimensions();
 
@@ -44,17 +38,10 @@ export function ConnectView({ webviewRef }: ConnectViewProps) {
     RouterController.push('ConnectingWalletConnect', { wallet });
   };
 
-  const onEmailSubmit = () => {
-    const message = FrameSdk.connectEmail(email);
-    webviewRef?.current?.injectJavaScript(message);
-  };
-
-  const emailTemplate = () => {
-    return <EmailInput onChangeText={setEmail} onSubmitEditing={onEmailSubmit} />;
-  };
-
   const recentTemplate = () => {
-    if (!recentWallets?.length) {
+    const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
+
+    if (!connector || !recentWallets?.length) {
       return null;
     }
 
@@ -75,7 +62,9 @@ export function ConnectView({ webviewRef }: ConnectViewProps) {
   };
 
   const installedTemplate = () => {
-    if (!installed.length) {
+    const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
+
+    if (!connector || !installed.length) {
       return null;
     }
 
@@ -96,7 +85,9 @@ export function ConnectView({ webviewRef }: ConnectViewProps) {
   };
 
   const featuredTemplate = () => {
-    if (!featured.length || FEATURED_COUNT < 1) {
+    const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
+
+    if (!connector || !featured.length || FEATURED_COUNT < 1) {
       return null;
     }
 
@@ -117,7 +108,9 @@ export function ConnectView({ webviewRef }: ConnectViewProps) {
   };
 
   const recommendedTemplate = () => {
-    if (!recommended.length || featured.length || RECOMMENDED_COUNT < 1) {
+    const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
+
+    if (!connector || !recommended.length || featured.length || RECOMMENDED_COUNT < 1) {
       return null;
     }
     const list = filterOutRecentWallets([...recommended]);
@@ -137,6 +130,12 @@ export function ConnectView({ webviewRef }: ConnectViewProps) {
   };
 
   const allWalletsTemplate = () => {
+    const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
+
+    if (!connector) {
+      return null;
+    }
+
     const label = count > 10 ? `${Math.floor(count / 10) * 10}+` : count;
 
     return (
@@ -163,7 +162,6 @@ export function ConnectView({ webviewRef }: ConnectViewProps) {
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
       <FlexView padding={['xs', 's', '2xl', 's']}>
-        {emailTemplate()}
         {recentTemplate()}
         {installedTemplate()}
         {featuredTemplate()}
