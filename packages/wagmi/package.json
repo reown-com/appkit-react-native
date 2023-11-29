@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi-react-native",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -39,7 +39,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@web3modal/scaffold-react-native": "1.0.0"
+    "@web3modal/scaffold-react-native": "1.0.1"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": ">=1.17.0",
