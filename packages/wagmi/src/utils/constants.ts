@@ -13,4 +13,4 @@ export const ADD_CHAIN_METHOD = 'wallet_addEthereumChain';
 export const WALLET_CHOICE_KEY = 'wagmi.wallet';
 
 // DO NOT REMOVE, SHOULD MATCH @web3modal/core-react-native VERSION
-export const VERSION = '1.0.0-beta.3';
+export const VERSION = '1.0.0';
