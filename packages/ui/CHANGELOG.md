@@ -1,5 +1,20 @@
 # @web3modal/ui-react-native
 
+## 1.0.1
+
+### Patch Changes
+
+- 1.0.1
+
+## 1.0.0
+
+### Patch Changes
+
+- 6be20e0: beta 1
+- 1b5e72f: beta 3
+- 7aaf640: beta 2
+- 1.0.0
+
 ## 1.0.0-beta.3
 
 ### Patch Changes
