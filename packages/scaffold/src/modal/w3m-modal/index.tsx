@@ -32,23 +32,21 @@ export function Web3Modal() {
   }, []);
 
   return (
-    <>
-      <Modal
-        style={styles.modal}
-        isVisible={open}
-        useNativeDriver
-        statusBarTranslucent
-        hideModalContentWhileAnimating
-        propagateSwipe
-        onBackdropPress={ModalController.close}
-        onBackButtonPress={onBackButtonPress}
-      >
-        <Card style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}>
-          <Header />
-          <Web3Router />
-          <Snackbar />
-        </Card>
-      </Modal>
-    </>
+    <Modal
+      style={styles.modal}
+      isVisible={open}
+      useNativeDriver
+      statusBarTranslucent
+      hideModalContentWhileAnimating
+      propagateSwipe
+      onBackdropPress={ModalController.close}
+      onBackButtonPress={onBackButtonPress}
+    >
+      <Card style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}>
+        <Header />
+        <Web3Router />
+        <Snackbar />
+      </Card>
+    </Modal>
   );
 }

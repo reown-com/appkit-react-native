@@ -38,7 +38,6 @@ export function AccountView() {
 
   async function onDisconnect() {
     setDisconnecting(true);
-
     await ConnectionController.disconnect();
     AccountController.setIsConnected(false);
     ModalController.close();

@@ -26,7 +26,6 @@
     "react-native-modal": "13.0.1",
     "react-native-svg": "13.9.0",
     "react-native-web": "~0.19.6",
-    "react-native-webview": "13.6.3",
     "uuid": "3.4.0",
     "viem": "1.19.3",
     "wagmi": "1.4.7"

@@ -18,8 +18,7 @@ export function Header() {
       AllWallets: 'All wallets',
       WhatIsANetwork: 'What is a network?',
       WhatIsAWallet: 'What is a wallet?',
-      GetWallet: 'Get a wallet',
-      EmailVerifyOtp: 'Confirm email'
+      GetWallet: 'Get a wallet'
     };
   };
 

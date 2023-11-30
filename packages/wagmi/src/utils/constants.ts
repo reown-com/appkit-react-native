@@ -10,8 +10,6 @@ export const NAMESPACE = 'eip155';
 
 export const ADD_CHAIN_METHOD = 'wallet_addEthereumChain';
 
-export const WALLET_CHOICE_KEY = 'wagmi.wallet';
-
 export const EMAIL_CONNECTOR_ID = 'w3mEmail';
 
 // DO NOT REMOVE, SHOULD MATCH @web3modal/wagmi-react-native VERSION
