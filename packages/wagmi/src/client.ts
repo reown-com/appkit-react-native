@@ -24,6 +24,7 @@ import type {
   Token
 } from '@web3modal/scaffold-react-native';
 import { Web3ModalScaffold } from '@web3modal/scaffold-react-native';
+import { StorageUtil } from '@web3modal/core-react-native';
 
 import {
   ADD_CHAIN_METHOD,
@@ -39,7 +40,6 @@ import {
   ConnectorTypesMap,
   NetworkImageIds
 } from './utils/presets';
-import { StorageUtils } from './utils/storageUtils';
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -84,8 +84,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       async getApprovedCaipNetworksData() {
-        // TODO: HAY QUE MIGRAR
-        const walletChoice = await StorageUtils.getItem<string>('@w3m/connected_connector');
+        const walletChoice = await StorageUtil.getConnectedConnector();
         if (walletChoice?.includes(WALLET_CONNECT_CONNECTOR_ID)) {
           const connector = wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_CONNECTOR_ID);
           if (!connector) {

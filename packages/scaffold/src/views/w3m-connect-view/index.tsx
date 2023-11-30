@@ -19,6 +19,7 @@ export function ConnectView() {
   const { connectors } = useSnapshot(ConnectorController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const { padding } = useCustomDimensions();
+  const isWalletConnectEnabled = connectors.find(c => c.type === 'WALLET_CONNECT');
 
   const RECENT_COUNT = recentWallets?.length ? (installed.length ? 1 : 2) : 0;
 
@@ -39,9 +40,7 @@ export function ConnectView() {
   };
 
   const recentTemplate = () => {
-    const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
-
-    if (!connector || !recentWallets?.length) {
+    if (!isWalletConnectEnabled || !recentWallets?.length) {
       return null;
     }
 
@@ -62,9 +61,7 @@ export function ConnectView() {
   };
 
   const installedTemplate = () => {
-    const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
-
-    if (!connector || !installed.length) {
+    if (!isWalletConnectEnabled || !installed.length) {
       return null;
     }
 
@@ -85,9 +82,7 @@ export function ConnectView() {
   };
 
   const featuredTemplate = () => {
-    const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
-
-    if (!connector || !featured.length || FEATURED_COUNT < 1) {
+    if (!isWalletConnectEnabled || !featured.length || FEATURED_COUNT < 1) {
       return null;
     }
 
@@ -108,9 +103,12 @@ export function ConnectView() {
   };
 
   const recommendedTemplate = () => {
-    const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
-
-    if (!connector || !recommended.length || featured.length || RECOMMENDED_COUNT < 1) {
+    if (
+      !isWalletConnectEnabled ||
+      !recommended.length ||
+      featured.length ||
+      RECOMMENDED_COUNT < 1
+    ) {
       return null;
     }
     const list = filterOutRecentWallets([...recommended]);
@@ -130,9 +128,7 @@ export function ConnectView() {
   };
 
   const allWalletsTemplate = () => {
-    const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
-
-    if (!connector) {
+    if (!isWalletConnectEnabled) {
       return null;
     }
 
