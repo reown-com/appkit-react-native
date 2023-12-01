@@ -18,7 +18,7 @@ export type ProjectId = string;
 
 export type Platform = 'mobile' | 'web' | 'qrcode' | 'unsupported';
 
-export type ConnectorType = 'WALLET_CONNECT' | 'EMAIL';
+export type ConnectorType = 'WALLET_CONNECT' | 'EMAIL' | 'EXTERNAL';
 
 export type Connector = {
   id: string;

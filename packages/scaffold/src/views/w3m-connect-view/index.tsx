@@ -35,6 +35,10 @@ export function ConnectView() {
   const RECOMMENDED_COUNT =
     UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT - INSTALLED_COUNT - FEATURED_COUNT;
 
+  const onExternalWalletPress = async (connector: any) => {
+    await ConnectionController.connectExternal(connector);
+  };
+
   const onWalletPress = (wallet: WcWallet) => {
     RouterController.push('ConnectingWalletConnect', { wallet });
   };
@@ -127,6 +131,25 @@ export function ConnectView() {
       ));
   };
 
+  const connectorsTemplate = () => {
+    return connectors.map(connector => {
+      if (connector.type === 'WALLET_CONNECT') return null;
+
+      return (
+        <ListWallet
+          key={connector.type}
+          imageSrc={AssetUtil.getConnectorImage(connector)}
+          imageHeaders={imageHeaders}
+          name={connector.name || 'Unknown'}
+          onPress={() => {
+            onExternalWalletPress(connector);
+          }}
+          style={styles.item}
+        />
+      );
+    });
+  };
+
   const allWalletsTemplate = () => {
     if (!isWalletConnectEnabled) {
       return null;
@@ -162,6 +185,7 @@ export function ConnectView() {
         {installedTemplate()}
         {featuredTemplate()}
         {recommendedTemplate()}
+        {connectorsTemplate()}
         {allWalletsTemplate()}
       </FlexView>
     </ScrollView>

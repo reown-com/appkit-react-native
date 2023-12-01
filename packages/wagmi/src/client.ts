@@ -283,7 +283,7 @@ export class Web3Modal extends Web3ModalScaffold {
         imageId: ConnectorImageIds[id],
         imageUrl: this.options?.connectorImages?.[id],
         name: ConnectorNamesMap[id] ?? name,
-        type: ConnectorTypesMap[id] ?? 'WALLET_CONNECT'
+        type: ConnectorTypesMap[id] ?? 'EXTERNAL'
       });
     });
     this.setConnectors(w3mConnectors);
