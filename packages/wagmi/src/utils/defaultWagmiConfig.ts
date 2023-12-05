@@ -3,14 +3,13 @@ import { publicProvider } from 'wagmi/providers/public';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 import { walletConnectProvider } from './provider';
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector';
-import { CoinbaseWalletConnector } from '../connectors/CoinbaseWalletConnector';
 
 export interface ConfigOptions {
   metadata?: EthereumProviderOptions['metadata'];
   projectId: string;
   chains: Chain[];
   enableWalletConnect?: boolean;
-  enableCoinbase?: boolean;
+  extraConnectors?: Connector[];
 }
 
 export function defaultWagmiConfig({
@@ -18,7 +17,7 @@ export function defaultWagmiConfig({
   chains,
   metadata,
   enableWalletConnect = true,
-  enableCoinbase
+  extraConnectors
 }: ConfigOptions) {
   const { publicClient } = configureChains(chains, [
     walletConnectProvider({ projectId }),
@@ -31,13 +30,8 @@ export function defaultWagmiConfig({
     connectors.push(new WalletConnectConnector({ chains, options: { projectId, metadata } }));
   }
 
-  if (enableCoinbase) {
-    connectors.push(
-      new CoinbaseWalletConnector({
-        chains,
-        options: { chainId: chains?.[0]?.id, callbackURL: metadata?.redirect?.native || '' }
-      })
-    );
+  if (extraConnectors) {
+    connectors.push(...extraConnectors);
   }
 
   return createConfig({

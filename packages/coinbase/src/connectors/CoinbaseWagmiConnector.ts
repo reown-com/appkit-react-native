@@ -11,22 +11,18 @@ import {
   type Chain
 } from 'viem';
 import { WalletMobileSDKEVMProvider, configure } from '@coinbase/wallet-mobile-sdk';
-// import type { WalletMobileSDKProviderOptions } from '@coinbase/wallet-mobile-sdk/src/WalletMobileSDKEVMProvider';
+import type { WalletMobileSDKProviderOptions } from '@coinbase/wallet-mobile-sdk/build/WalletMobileSDKEVMProvider';
 
 const ADD_ETH_CHAIN_METHOD = 'wallet_addEthereumChain';
 const SWITCH_ETH_CHAIN_METHOD = 'wallet_switchEthereumChain';
 
-interface WalletMobileSDKProviderOptions {
-  chainId?: number;
-  jsonRpcUrl?: string;
-  address?: string;
-  callbackURL: string;
-  //storage
-}
+type CoinbaseWagmiConnectorOptions = WalletMobileSDKProviderOptions & {
+  redirect: string;
+};
 
-export class CoinbaseWalletConnector extends Connector<
+export class CoinbaseWagmiConnector extends Connector<
   WalletMobileSDKEVMProvider,
-  WalletMobileSDKProviderOptions
+  CoinbaseWagmiConnectorOptions
 > {
   readonly id = 'coinbaseWallet';
   readonly name = 'Coinbase Wallet';
@@ -35,7 +31,7 @@ export class CoinbaseWalletConnector extends Connector<
   _provider?: WalletMobileSDKEVMProvider;
   _initProviderPromise?: Promise<void>;
 
-  constructor(config: { chains?: Chain[]; options: WalletMobileSDKProviderOptions }) {
+  constructor(config: { chains?: Chain[]; options: CoinbaseWagmiConnectorOptions }) {
     super(config);
     this._createProvider();
   }
@@ -69,8 +65,12 @@ export class CoinbaseWalletConnector extends Connector<
         chain: { id, unsupported }
       };
     } catch (error) {
-      if (/(user closed modal|accounts received is empty)/i.test((error as Error).message))
+      if (/(Error error 0.)/i.test((error as Error).message))
         throw new UserRejectedRequestError(error as Error);
+
+      if (/(Error error 5.)/i.test((error as Error).message))
+        throw new Error(`Wallet not found. SDK Error: ${(error as Error).message}`);
+
       throw error;
     }
   }
@@ -131,6 +131,11 @@ export class CoinbaseWalletConnector extends Connector<
   override async switchChain(chainId: number) {
     const provider = await this.getProvider();
     const id = numberToHex(chainId);
+    const chain = this.chains.find(_chain => _chain.id === chainId);
+    if (!chain)
+      throw new SwitchChainError(
+        new Error(`Chain "${chainId}" not configured for connector "${this.id}".`)
+      );
 
     try {
       await provider.request({
@@ -138,19 +143,8 @@ export class CoinbaseWalletConnector extends Connector<
         params: [{ chainId: id }]
       });
 
-      return (
-        this.chains.find(x => x.id === chainId) ?? {
-          id: chainId,
-          name: `Chain ${id}`,
-          network: `${id}`,
-          nativeCurrency: { name: 'Ether', decimals: 18, symbol: 'ETH' },
-          rpcUrls: { default: { http: [''] }, public: { http: [''] } }
-        }
-      );
+      return chain;
     } catch (error) {
-      const chain = this.chains.find(x => x.id === chainId);
-      if (!chain) throw new Error(`Chain "${chainId}" not configured for connector "${this.id}".`);
-
       // Indicates chain is not added to provider
       if ((error as ProviderRpcError).code === 4902) {
         try {
@@ -203,7 +197,7 @@ export class CoinbaseWalletConnector extends Connector<
 
   async _initProvider() {
     configure({
-      callbackURL: new URL(this.options.callbackURL),
+      callbackURL: new URL(this.options.redirect),
       hostPackageName: 'org.toshi' // Coinbase wallet deeplink
     });
 

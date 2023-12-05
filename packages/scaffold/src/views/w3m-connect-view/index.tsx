@@ -36,7 +36,7 @@ export function ConnectView() {
     UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT - INSTALLED_COUNT - FEATURED_COUNT;
 
   const onExternalWalletPress = async (connector: any) => {
-    await ConnectionController.connectExternal(connector);
+    RouterController.push('ConnectingExternal', { connector });
   };
 
   const onWalletPress = (wallet: WcWallet) => {

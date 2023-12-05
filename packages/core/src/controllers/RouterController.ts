@@ -7,6 +7,7 @@ export interface RouterControllerState {
     | 'Account'
     | 'Connect'
     | 'ConnectingWalletConnect'
+    | 'ConnectingExternal'
     | 'Networks'
     | 'SwitchNetwork'
     | 'AllWallets'
