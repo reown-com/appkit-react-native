@@ -28,17 +28,17 @@ export class CoinbaseWagmiConnector extends Connector<
   readonly name = 'Coinbase Wallet';
   readonly ready = true;
 
-  _provider?: WalletMobileSDKEVMProvider;
-  _initProviderPromise?: Promise<void>;
+  private _provider?: WalletMobileSDKEVMProvider;
+  private _initProviderPromise?: Promise<void>;
 
   constructor(config: { chains?: Chain[]; options: CoinbaseWagmiConnectorOptions }) {
     super(config);
     this._createProvider();
   }
 
-  override async connect(
+  override connect = async (
     config?: { chainId?: number | undefined } | undefined
-  ): Promise<Required<ConnectorData>> {
+  ): Promise<Required<ConnectorData>> => {
     try {
       await this._setupListeners();
       const provider = await this.getProvider();
@@ -53,11 +53,11 @@ export class CoinbaseWagmiConnector extends Connector<
 
       // Switch to chain if provided
       let id = await this.getChainId();
-      let unsupported = this.isChainUnsupported?.(id);
+      let unsupported = this.isChainUnsupported(id);
       if (chainId && id !== chainId) {
         const chain = await this.switchChain(chainId);
         id = chain.id;
-        unsupported = this.isChainUnsupported?.(id);
+        unsupported = this.isChainUnsupported(id);
       }
 
       return {
@@ -73,15 +73,15 @@ export class CoinbaseWagmiConnector extends Connector<
 
       throw error;
     }
-  }
+  };
 
-  override async disconnect(): Promise<void> {
+  override disconnect = async (): Promise<void> => {
     if (!this._provider) return;
 
     const provider = await this.getProvider();
     this.__removeListeners();
     provider.disconnect();
-  }
+  };
 
   override async getAccount(): Promise<`0x${string}`> {
     const provider = await this.getProvider();
@@ -92,20 +92,22 @@ export class CoinbaseWagmiConnector extends Connector<
     return getAddress(accounts[0] as string);
   }
 
-  override async getChainId(): Promise<number> {
+  override getChainId = async (): Promise<number> => {
     const provider = await this.getProvider();
 
     return this._normalizeChainId(provider.chainId);
-  }
+  };
 
-  override async getProvider({ chainId }: { chainId?: number } = {}) {
+  override getProvider = async ({ chainId }: { chainId?: number } = {}) => {
     if (!this._provider) await this._createProvider();
     if (chainId) await this.switchChain(chainId);
 
     return this._provider!;
-  }
+  };
 
-  override async getWalletClient({ chainId }: { chainId?: number } = {}): Promise<WalletClient> {
+  override getWalletClient = async ({
+    chainId
+  }: { chainId?: number } = {}): Promise<WalletClient> => {
     const [provider, account] = await Promise.all([this.getProvider(), this.getAccount()]);
     const chain = this.chains.find(x => x.id === chainId);
     if (!provider) throw new Error('provider is required.');
@@ -116,9 +118,9 @@ export class CoinbaseWagmiConnector extends Connector<
       chain,
       transport: custom(provider)
     });
-  }
+  };
 
-  override async isAuthorized(): Promise<boolean> {
+  override isAuthorized = async (): Promise<boolean> => {
     try {
       const account = await this.getAccount();
 
@@ -126,9 +128,9 @@ export class CoinbaseWagmiConnector extends Connector<
     } catch {
       return false;
     }
-  }
+  };
 
-  override async switchChain(chainId: number) {
+  override switchChain = async (chainId: number) => {
     const provider = await this.getProvider();
     const id = numberToHex(chainId);
     const chain = this.chains.find(_chain => _chain.id === chainId);
@@ -169,23 +171,22 @@ export class CoinbaseWagmiConnector extends Connector<
 
       throw new SwitchChainError(error as Error);
     }
-  }
+  };
 
-  protected override onAccountsChanged(accounts: `0x${string}`[]): void {
+  protected override onAccountsChanged = (accounts: `0x${string}`[]): void => {
     if (accounts.length === 0) this.emit('disconnect');
     else this.emit('change', { account: getAddress(accounts[0] as string) });
-  }
+  };
 
-  protected override onChainChanged(chain: string | number): void {
+  protected override onChainChanged = (chain: string | number): void => {
     const id = Number(chain);
-    //TODO: check this
-    const unsupported = this.isChainUnsupported?.(id);
+    const unsupported = this.isChainUnsupported(id);
     this.emit('change', { chain: { id, unsupported } });
-  }
+  };
 
-  protected override onDisconnect(): void {
+  protected override onDisconnect = (): void => {
     this.emit('disconnect');
-  }
+  };
 
   async _createProvider() {
     if (!this._initProviderPromise) {
@@ -195,7 +196,7 @@ export class CoinbaseWagmiConnector extends Connector<
     return this._initProviderPromise;
   }
 
-  async _initProvider() {
+  _initProvider = async () => {
     configure({
       callbackURL: new URL(this.options.redirect),
       hostPackageName: 'org.toshi' // Coinbase wallet deeplink
@@ -203,29 +204,29 @@ export class CoinbaseWagmiConnector extends Connector<
 
     const defaultChainId = this.chains?.[0]?.id;
     this._provider = new WalletMobileSDKEVMProvider({ ...this.options, chainId: defaultChainId });
-  }
+  };
 
-  async _setupListeners() {
+  _setupListeners = async () => {
     const provider = await this.getProvider();
     this.__removeListeners();
     provider.on('accountsChanged', this.onAccountsChanged);
     provider.on('chainChanged', this.onChainChanged);
     provider.on('disconnect', this.onDisconnect);
-  }
+  };
 
-  __removeListeners() {
+  __removeListeners = () => {
     if (!this._provider) return;
 
     this._provider.removeListener('accountsChanged', this.onAccountsChanged);
     this._provider.removeListener('chainChanged', this.onChainChanged);
     this._provider.removeListener('disconnect', this.onDisconnect);
-  }
+  };
 
-  _normalizeChainId(chainId: string | number | bigint) {
+  _normalizeChainId = (chainId: string | number | bigint) => {
     if (typeof chainId === 'string')
       return Number.parseInt(chainId, chainId.trim().substring(0, 2) === '0x' ? 16 : 10);
     if (typeof chainId === 'bigint') return Number(chainId);
 
     return chainId;
-  }
+  };
 }
