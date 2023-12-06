@@ -199,7 +199,8 @@ export class CoinbaseWagmiConnector extends Connector<
   _initProvider = async () => {
     configure({
       callbackURL: new URL(this.options.redirect),
-      hostPackageName: 'org.toshi' // Coinbase wallet deeplink
+      hostURL: new URL('https://wallet.coinbase.com/wsegue'), // Don't change -> Coinbase url
+      hostPackageName: 'org.toshi' // Don't change -> Coinbase wallet scheme
     });
 
     this._provider = new WalletMobileSDKEVMProvider({ ...this.options });
