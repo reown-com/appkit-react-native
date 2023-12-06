@@ -202,8 +202,7 @@ export class CoinbaseWagmiConnector extends Connector<
       hostPackageName: 'org.toshi' // Coinbase wallet deeplink
     });
 
-    const defaultChainId = this.chains?.[0]?.id;
-    this._provider = new WalletMobileSDKEVMProvider({ ...this.options, chainId: defaultChainId });
+    this._provider = new WalletMobileSDKEVMProvider({ ...this.options });
   };
 
   _setupListeners = async () => {
