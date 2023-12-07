@@ -74,6 +74,7 @@ export function ConnectView() {
           name={wallet?.name ?? 'Unknown'}
           onPress={() => onWalletPress(wallet!)}
           style={styles.item}
+          installed
         />
       ));
   };
