@@ -9,9 +9,12 @@ export interface IconBoxProps {
   icon: IconType;
   size?: Exclude<SizeType, 'xs' | 'xxs'>;
   iconColor?: ColorType;
+  iconSize?: SizeType;
   background?: boolean;
   backgroundColor?: ThemeKeys;
   border?: boolean;
+  borderColor?: ThemeKeys;
+  borderSize?: number;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -19,25 +22,28 @@ export function IconBox({
   size,
   iconColor = 'fg-100',
   icon,
+  iconSize,
   background,
   backgroundColor,
   border,
+  borderColor,
+  borderSize = 4,
   style
 }: IconBoxProps) {
   const Theme = useTheme();
-  let iconSize: SizeType = 'xxs';
+  let _iconSize: SizeType;
   switch (size) {
     case 'lg':
-      iconSize = 'lg';
+      _iconSize = 'lg';
       break;
     case 'md':
-      iconSize = 'sm';
+      _iconSize = 'sm';
       break;
     case 'sm':
-      iconSize = 'xs';
+      _iconSize = 'xs';
       break;
     default:
-      iconSize = 'xxs';
+      _iconSize = 'xxs';
   }
 
   let boxSize: number;
@@ -64,7 +70,7 @@ export function IconBox({
     borderRadius: BorderRadius[borderRadius]
   };
 
-  const containerSize = boxSize + (border ? 4 : 0);
+  const containerSize = boxSize + (border ? borderSize : 0);
 
   return (
     <View
@@ -72,12 +78,11 @@ export function IconBox({
         styles.box,
         backgroundStyle,
         { height: containerSize, width: containerSize },
-        border && { borderColor: Theme['bg-125'] },
-        border && styles.border,
+        border && { borderColor: Theme[borderColor || 'bg-125'], borderWidth: borderSize / 2 },
         style
       ]}
     >
-      <Icon size={iconSize} color={iconColor} name={icon} />
+      <Icon size={iconSize || _iconSize} color={iconColor} name={icon} />
     </View>
   );
 }

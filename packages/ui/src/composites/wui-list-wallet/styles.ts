@@ -28,5 +28,13 @@ export default StyleSheet.create({
   },
   imageDisabled: {
     opacity: 0.4
+  },
+  installedBox: {
+    position: 'absolute',
+    bottom: -2,
+    right: Spacing['2xs'],
+    height: 18,
+    width: 18,
+    zIndex: 2
   }
 });

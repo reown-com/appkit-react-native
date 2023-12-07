@@ -63,6 +63,7 @@ export function AllWalletsList({ columns, itemWidth }: AllWalletsListProps) {
   };
 
   const walletTemplate = ({ item, index }: { item: WcWallet; index: number }) => {
+    const isInstalled = installed.find(wallet => wallet?.id === item?.id);
     if (!item?.id) {
       return (
         <View key={index} style={[styles.itemContainer, { width: itemWidth }]}>
@@ -78,6 +79,7 @@ export function AllWalletsList({ columns, itemWidth }: AllWalletsListProps) {
           imageHeaders={imageHeaders}
           name={item?.name ?? 'Unknown'}
           onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
+          installed={!!isInstalled}
         />
       </View>
     );

@@ -34,5 +34,13 @@ export default StyleSheet.create({
   },
   disabledImage: {
     opacity: 0.4
+  },
+  installedBox: {
+    position: 'absolute',
+    bottom: -5,
+    right: -5,
+    height: 24,
+    width: 24,
+    zIndex: 2
   }
 });
