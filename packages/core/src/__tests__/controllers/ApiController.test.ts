@@ -1,4 +1,4 @@
-import { ApiController } from '../../index.js';
+import { ApiController } from '../../index';
 
 // -- Tests --------------------------------------------------------------------
 describe('ApiController', () => {
@@ -7,6 +7,8 @@ describe('ApiController', () => {
       page: 1,
       count: 0,
       recommended: [],
+      featured: [],
+      installed: [],
       wallets: [],
       search: [],
       sdkVersion: 'react-native-undefined'

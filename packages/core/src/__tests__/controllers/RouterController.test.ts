@@ -1,4 +1,4 @@
-import { RouterController } from '../../index.js';
+import { RouterController } from '../../index';
 
 // -- Tests --------------------------------------------------------------------
 describe('RouterController', () => {
