@@ -8,7 +8,6 @@
   "scripts": {
     "build": "./scripts/bump-version.sh && bob build",
     "clean": "rm -rf lib",
-    "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "files": [
