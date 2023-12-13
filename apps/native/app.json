@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "native",
-    "slug": "native",
+    "slug": "web3modal-sdk",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -12,10 +12,19 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/2d3ad657-c612-4f65-ba0f-62c277388fa6"
     },
-    "assetBundlePatterns": ["**/*"],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "owner": "nacho.walletconnect",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
+      "buildNumber": "1",
+      "bundleIdentifier": "com.walletconnect.web3modal.rnsdk",
       "supportsTablet": true,
       "infoPlist": {
         "LSApplicationQueriesSchemes": [
@@ -58,6 +67,8 @@
       }
     },
     "android": {
+      "versionCode": 1,
+      "package": "com.walletconnect.web3modal.rnsdk",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -65,6 +76,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2d3ad657-c612-4f65-ba0f-62c277388fa6"
+      }
     }
   }
 }
