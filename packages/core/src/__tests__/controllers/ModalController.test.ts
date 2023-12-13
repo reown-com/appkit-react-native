@@ -1,4 +1,4 @@
-import { ModalController } from '../../index.js';
+import { ModalController } from '../../index';
 
 // -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {

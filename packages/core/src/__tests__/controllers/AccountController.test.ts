@@ -1,4 +1,4 @@
-import { AccountController } from '../../index.js';
+import { AccountController } from '../../index';
 
 // -- Setup --------------------------------------------------------------------
 const caipAddress = 'eip155:1:0x123';

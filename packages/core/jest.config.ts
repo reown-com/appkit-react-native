@@ -1,5 +1,5 @@
-const uiConfig = {
+const coreConfig = {
   ...require('../../jest.config'),
   setupFilesAfterEnv: ['../../jest-setup.ts']
 };
-module.exports = uiConfig;
+module.exports = coreConfig;

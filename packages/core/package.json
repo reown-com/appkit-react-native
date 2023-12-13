@@ -8,12 +8,15 @@
   "scripts": {
     "build": "bob build",
     "clean": "rm -rf lib",
-    "test": "jest",
+    "test": "jest --coverage",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "files": [
     "src",
-    "lib"
+    "lib",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
   ],
   "keywords": [
     "web3",

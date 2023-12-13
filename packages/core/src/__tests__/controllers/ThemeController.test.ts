@@ -1,4 +1,4 @@
-import { ThemeController } from '../../index.js';
+import { ThemeController } from '../../index';
 
 // -- Tests --------------------------------------------------------------------
 describe('ThemeController', () => {

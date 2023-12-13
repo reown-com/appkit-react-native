@@ -1,5 +1,5 @@
-import type { CaipNetwork, CaipNetworkId, NetworkControllerClient } from '../../index.js';
-import { NetworkController } from '../../index.js';
+import type { CaipNetwork, CaipNetworkId, NetworkControllerClient } from '../../index';
+import { NetworkController } from '../../index';
 
 // -- Setup --------------------------------------------------------------------
 const caipNetwork = { id: 'eip155:1', name: 'Ethereum' } as const;

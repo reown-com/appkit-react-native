@@ -1,4 +1,4 @@
-import { SnackController } from '../../index.js';
+import { SnackController } from '../../index';
 
 // -- Tests --------------------------------------------------------------------
 describe('SnackController', () => {
