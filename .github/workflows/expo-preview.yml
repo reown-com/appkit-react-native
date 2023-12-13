@@ -31,12 +31,19 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      - name: Create .env file in native app
+        run: |
+          cd apps/native && echo "EXPO_PUBLIC_PROJECT_ID=$EXPO_PUBLIC_PROJECT_ID" >> .env
+        shell: bash
+        env:
+          EXPO_PUBLIC_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
+
       - name: Create preview
         id: preview
         uses: expo/expo-github-action/preview@v8
         with:
-          command: eas update --branch preview
+          command: eas update --auto --branch preview
           comment: true
           working-directory: apps/native
         env:
-          PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
+          EXPO_PUBLIC_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}

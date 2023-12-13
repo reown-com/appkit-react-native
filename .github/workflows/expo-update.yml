@@ -28,9 +28,12 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Publish update
-        run: eas update --branch staging
-        with:
-          working-directory: apps/native
+      - name: Create .env file in native app
+        run: |
+          cd apps/native && echo "EXPO_PUBLIC_PROJECT_ID=$EXPO_PUBLIC_PROJECT_ID" >> .env
+        shell: bash
         env:
-          PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
+          EXPO_PUBLIC_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
+
+      - name: Publish update
+        run: cd apps/native && eas update --branch staging --auto --non-interactive
