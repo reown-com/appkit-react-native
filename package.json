@@ -53,5 +53,5 @@
     "viem": "1.19.3",
     "wagmi": "1.4.7"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@4.0.2"
 }
