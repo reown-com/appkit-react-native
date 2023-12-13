@@ -9,7 +9,10 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "dev:android": "expo start --android"
+    "dev:android": "expo start --android",
+    "eas:build": "eas build --platform all",
+    "eas:build:local": "eas build --local --platform all",
+    "eas:update": "eas update --branch preview"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.18.2",
@@ -19,6 +22,7 @@
     "expo": "^49.0.0",
     "expo-clipboard": "~4.3.1",
     "expo-status-bar": "~1.6.0",
+    "expo-updates": "~0.18.17",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.72.6",
