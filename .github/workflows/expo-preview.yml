@@ -5,7 +5,7 @@ on:
       - V1
 
 jobs:
-  update:
+  preview:
     name: EAS Update Preview
     runs-on: ubuntu-latest
     permissions:
