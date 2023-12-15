@@ -15,9 +15,10 @@ export interface W3mAccountButtonProps {
   balance?: 'show' | 'hide';
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
-export function W3mAccountButton({ balance, disabled, style }: W3mAccountButtonProps) {
+export function W3mAccountButton({ balance, disabled, style, testID }: W3mAccountButtonProps) {
   const {
     address,
     balance: balanceVal,
@@ -41,6 +42,7 @@ export function W3mAccountButton({ balance, disabled, style }: W3mAccountButtonP
       disabled={disabled}
       style={style}
       balance={showBalance ? CoreHelperUtil.formatBalance(balanceVal, balanceSymbol) : ''}
+      testID={testID}
     />
   );
 }

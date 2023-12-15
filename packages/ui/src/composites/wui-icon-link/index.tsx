@@ -17,6 +17,7 @@ export interface IconLinkProps {
   style?: StyleProp<ViewStyle>;
   backgroundColor?: ThemeKeys;
   pressedColor?: ThemeKeys;
+  testID?: string;
 }
 
 export function IconLink({
@@ -27,7 +28,8 @@ export function IconLink({
   backgroundColor,
   pressedColor = 'gray-glass-010',
   disabled,
-  style
+  style,
+  testID
 }: IconLinkProps) {
   const Theme = useTheme();
   const bgColor = backgroundColor ? Theme[backgroundColor] : 'transparent';
@@ -42,6 +44,7 @@ export function IconLink({
       onPressIn={setEndValue}
       onPressOut={setStartValue}
       disabled={disabled}
+      testID={testID}
       style={[
         styles.container,
         styles[`container-${size}`],

@@ -28,12 +28,18 @@ export function Header() {
     const showBack = history.length > 1;
 
     return showBack ? (
-      <IconLink icon="chevronLeft" size="md" onPress={RouterController.goBack} />
+      <IconLink
+        icon="chevronLeft"
+        size="md"
+        onPress={RouterController.goBack}
+        testID="button-back"
+      />
     ) : (
       <IconLink
         icon="helpCircle"
         size="md"
         onPress={() => RouterController.push('WhatIsAWallet')}
+        testID="button-help"
       />
     );
   };
@@ -52,7 +58,7 @@ export function Header() {
         <Text variant="paragraph-600" numberOfLines={1}>
           {header}
         </Text>
-        <IconLink icon="close" size="md" onPress={ModalController.close} />
+        <IconLink icon="close" size="md" onPress={ModalController.close} testID="button-close" />
       </FlexView>
       <Separator />
     </>

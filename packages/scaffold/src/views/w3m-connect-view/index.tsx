@@ -131,6 +131,7 @@ export function ConnectView() {
         tagVariant="shade"
         onPress={() => RouterController.push('AllWallets')}
         style={styles.item}
+        testID="button-all-wallets"
       />
     );
   };

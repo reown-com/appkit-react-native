@@ -1,0 +1,63 @@
+appId: com.walletconnect.web3modal.rnclisdk
+---
+- launchApp
+
+- extendedWaitUntil:
+    visible: 'Connect'
+    timeout: 60000
+
+- tapOn: 'Connect'
+
+## Assuming that MetaMask is one of the first wallets in the list
+- assertVisible:
+    text: 'MetaMask'
+
+- tapOn:
+    id: 'button-help'
+
+- tapOn:
+    id: 'button-back'
+
+- tapOn:
+    id: 'button-all-wallets'
+
+- tapOn:
+    id: 'button-qr-code'
+
+- assertVisible:
+    id: 'qr-code'
+
+- tapOn:
+    id: 'button-back'
+
+- tapOn:
+    id: 'input-search'
+
+## Get a wallet that doesn't come in the first page
+- inputText: 'Abra Wallet'
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible:
+    text: 'Abra'
+
+- hideKeyboard
+
+- tapOn:
+    text: 'Abra'
+
+- assertVisible:
+    text: 'App not installed'
+
+- tapOn:
+    text: 'Web'
+
+- assertVisible:
+    text: 'Open'
+
+- tapOn:
+    id: 'button-close'
+
+- assertNotVisible:
+    text: 'Abra Wallet'

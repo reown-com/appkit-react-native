@@ -121,6 +121,7 @@ export function AccountView() {
               imageSrc={networkImage}
               imageHeaders={ApiController._getApiHeaders()}
               onPress={() => RouterController.push('Networks')}
+              testID="button-network"
             >
               <Text numberOfLines={1} color="fg-100">
                 {caipNetwork?.name}
@@ -133,6 +134,7 @@ export function AccountView() {
               onPress={onDisconnect}
               loading={disconnecting}
               style={styles.disconnectButton}
+              testID="button-disconnect"
             >
               <Text color="fg-200">Disconnect</Text>
             </ListItem>

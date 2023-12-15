@@ -77,6 +77,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
           style={[styles.outerBorder, { borderColor: outerBorder }]}
           disabled={disabled}
           onPress={() => inputRef.current?.focus()}
+          testID={rest.testID}
         >
           <Animated.View
             style={[
