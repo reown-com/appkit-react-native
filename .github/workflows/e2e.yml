@@ -7,8 +7,11 @@ on:
 jobs:
   maestro-cloud:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/native-cli
     outputs:
-      app: apps/native-cli/android/app/build/outputs/apk/release
+      app: app/build/outputs/apk/release
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -20,17 +23,12 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - run: cd apps/native-cli && touch .env && echo "PROJECT_ID=${{ secrets.CLOUD_PROJECT_ID }}" >> .env
+      - run: touch .env && echo "PROJECT_ID=${{ secrets.CLOUD_PROJECT_ID }}" >> .env
 
       - name: Setup
         uses: ./.github/actions/setup
 
-      - run: cd apps/native-cli && yarn android:build
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: android-build
-          path: apps/native-cli/android/app/build/outputs/apk/release/app-release.apk
+      - run: yarn android:build
 
       - uses: mobile-dev-inc/action-maestro-cloud@v1
         with:
