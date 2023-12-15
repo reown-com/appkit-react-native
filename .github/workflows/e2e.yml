@@ -27,6 +27,11 @@ jobs:
 
       - run: cd apps/native-cli && yarn android:build
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-build
+          path: apps/native-cli/android/app/build/outputs/apk/release/app-release.apk
+
       - uses: mobile-dev-inc/action-maestro-cloud@v1
         with:
           api-key: ${{ secrets.MAESTRO_CLOUD_API_KEY }}
