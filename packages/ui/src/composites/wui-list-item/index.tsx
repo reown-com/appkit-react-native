@@ -23,6 +23,7 @@ export interface ListItemProps {
   onPress?: () => void;
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
 export function ListItem({
@@ -36,7 +37,8 @@ export function ListItem({
   loading,
   disabled,
   onPress,
-  style
+  style,
+  testID
 }: ListItemProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
@@ -96,6 +98,7 @@ export function ListItem({
       onPress={onPress}
       onPressIn={setEndValue}
       onPressOut={setStartValue}
+      testID={testID}
     >
       {visualTemplate()}
       <View style={styles.content}>{children}</View>

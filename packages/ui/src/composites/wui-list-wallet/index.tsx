@@ -8,6 +8,7 @@ import { WalletImage } from '../wui-wallet-image';
 import { Icon } from '../../components/wui-icon';
 
 import styles from './styles';
+import { IconBox } from '../wui-icon-box';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -21,7 +22,9 @@ export interface ListWalletProps {
   tagVariant?: TagType;
   icon?: IconType;
   disabled?: boolean;
+  installed?: boolean;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
 export function ListWallet({
@@ -34,7 +37,9 @@ export function ListWallet({
   tagVariant,
   icon,
   disabled,
-  style
+  installed,
+  style,
+  testID
 }: ListWalletProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
@@ -42,15 +47,36 @@ export function ListWallet({
     Theme['gray-glass-010']
   );
 
+  const templateInstalled = () => {
+    if (!installed) return null;
+
+    return (
+      <IconBox
+        icon="checkmark"
+        iconSize="xxs"
+        iconColor={'success-100'}
+        border
+        borderColor="bg-150"
+        background
+        backgroundColor="icon-box-bg-success-100"
+        size="sm"
+        style={styles.installedBox}
+      />
+    );
+  };
+
   function imageTemplate() {
     return (
-      <WalletImage
-        style={[styles.image, disabled && styles.imageDisabled]}
-        imageSrc={imageSrc}
-        imageHeaders={imageHeaders}
-        showAllWallets={showAllWallets}
-        size="sm"
-      />
+      <View>
+        <WalletImage
+          style={[styles.image, disabled && styles.imageDisabled]}
+          imageSrc={imageSrc}
+          imageHeaders={imageHeaders}
+          showAllWallets={showAllWallets}
+          size="sm"
+        />
+        {templateInstalled()}
+      </View>
     );
   }
 
@@ -88,6 +114,7 @@ export function ListWallet({
       onPress={onPress}
       onPressIn={setEndValue}
       onPressOut={setStartValue}
+      testID={testID}
     >
       <View style={styles.leftSide}>
         {imageTemplate()}

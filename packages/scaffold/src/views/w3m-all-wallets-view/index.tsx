@@ -35,7 +35,7 @@ export function AllWalletsView() {
           { backgroundColor: Theme['bg-125'], shadowColor: Theme['bg-125'], width: maxWidth }
         ]}
       >
-        <SearchBar onChangeText={onInputChange} />
+        <SearchBar onChangeText={onInputChange} testID="input-search" />
         <IconLink
           icon="qrCode"
           iconColor="accent-100"
@@ -44,6 +44,7 @@ export function AllWalletsView() {
           size="lg"
           onPress={onQrCodePress}
           style={[styles.icon, { borderColor: Theme['accent-glass-010'] }]}
+          testID="button-qr-code"
         />
       </FlexView>
     );

@@ -8,7 +8,7 @@
   "scripts": {
     "build": "bob build",
     "clean": "rm -rf lib",
-    "test": "jest",
+    "test": "jest  --passWithNoTests",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "files": [

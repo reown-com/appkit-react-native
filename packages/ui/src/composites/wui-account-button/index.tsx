@@ -20,6 +20,7 @@ export interface AccountButtonProps {
   onPress?: () => void;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
 export function AccountButton({
@@ -31,7 +32,8 @@ export function AccountButton({
   balance,
   onPress,
   disabled,
-  style
+  style,
+  testID
 }: AccountButtonProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
@@ -77,6 +79,7 @@ export function AccountButton({
       onPressIn={setEndValue}
       onPressOut={setStartValue}
       disabled={disabled}
+      testID={testID}
       style={[
         styles.container,
         { backgroundColor: animatedValue, borderColor: Theme['gray-glass-005'] },

@@ -17,9 +17,9 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "prettier": "prettier --check .",
     "test": "turbo run test --parallel",
-    "clean": "turbo clean && rm -rf node_modules",
+    "clean": "turbo clean && rm -rf node_modules && watchman watch-del-all",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
-    "pre-publish": "turbo clean lint prettier --parallel; yarn install; turbo run build;",
+    "pre-publish": "turbo clean lint prettier test --parallel; yarn install; turbo run build;",
     "publish:latest": "yarn pre-publish && changeset version && changeset publish",
     "publish:alpha": "yarn pre-publish; yarn changeset pre enter alpha; yarn changeset version; changeset publish; changeset pre exit"
   },
@@ -35,6 +35,7 @@
     "@types/react": "18.2.34",
     "@types/react-native": "0.72.2",
     "@walletconnect/react-native-compat": "2.10.5",
+    "babel-jest": "^29.7.0",
     "eslint": "^8.46.0",
     "eslint-plugin-ft-flow": "2.0.3",
     "eslint-plugin-prettier": "5.0.1",
@@ -42,7 +43,7 @@
     "prettier": "3.0.1",
     "react": "18.2.0",
     "react-native": "0.72.3",
-    "react-native-builder-bob": "0.23.1",
+    "react-native-builder-bob": "0.23.2",
     "react-native-modal": "13.0.1",
     "react-native-svg": "13.9.0",
     "react-test-renderer": "18.2.0",
@@ -54,5 +55,5 @@
     "viem": "1.19.3",
     "wagmi": "1.4.7"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@4.0.2"
 }

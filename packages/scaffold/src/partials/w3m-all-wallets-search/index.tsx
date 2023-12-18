@@ -27,7 +27,7 @@ export interface AllWalletsSearchProps {
 
 export function AllWalletsSearch({ searchQuery, columns, itemWidth }: AllWalletsSearchProps) {
   const [loading, setLoading] = useState<boolean>(false);
-  const { search } = useSnapshot(ApiController.state);
+  const { search, installed } = useSnapshot(ApiController.state);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const imageHeaders = ApiController._getApiHeaders();
   const { maxWidth, padding, isLandscape } = useCustomDimensions();
@@ -35,6 +35,8 @@ export function AllWalletsSearch({ searchQuery, columns, itemWidth }: AllWallets
   const ITEM_HEIGHT = CardSelectHeight + Spacing.xs * 2;
 
   const walletTemplate = ({ item }: { item: WcWallet }) => {
+    const isInstalled = installed.find(wallet => wallet?.id === item?.id);
+
     return (
       <View key={item?.id} style={[styles.itemContainer, { width: itemWidth }]}>
         <CardSelect
@@ -42,6 +44,7 @@ export function AllWalletsSearch({ searchQuery, columns, itemWidth }: AllWallets
           imageHeaders={imageHeaders}
           name={item?.name ?? 'Unknown'}
           onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
+          installed={!!isInstalled}
         />
       </View>
     );
