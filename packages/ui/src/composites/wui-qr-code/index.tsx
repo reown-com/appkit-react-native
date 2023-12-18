@@ -12,9 +12,10 @@ export interface QrCodeProps {
   size: number;
   uri?: string;
   imageSrc?: string;
+  testID?: string;
 }
 
-export function QrCode({ size, uri, imageSrc }: QrCodeProps) {
+export function QrCode({ size, uri, imageSrc, testID }: QrCodeProps) {
   const Theme = LightTheme;
   const containerPadding = Spacing.l;
   const qrSize = size - containerPadding * 2;
@@ -57,6 +58,7 @@ export function QrCode({ size, uri, imageSrc }: QrCodeProps) {
         styles.container,
         { height: size, width: size, backgroundColor: Theme['bg-100'], padding: containerPadding }
       ]}
+      testID={testID}
     >
       <Svg height={qrSize} width={qrSize}>
         {dots}

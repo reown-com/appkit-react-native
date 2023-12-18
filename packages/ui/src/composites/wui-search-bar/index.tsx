@@ -10,13 +10,15 @@ export interface SearchBarProps {
   onSubmitEditing?: TextInputProps['onSubmitEditing'];
   onChangeText?: TextInputProps['onChangeText'];
   inputStyle?: TextInputProps['style'];
+  testID?: string;
 }
 
 export function SearchBar({
   placeholder = 'Search wallet',
   onSubmitEditing,
   onChangeText,
-  inputStyle
+  inputStyle,
+  testID
 }: SearchBarProps) {
   const [showClear, setShowClear] = useState(false);
   const inputRef = useRef<TextInput>(null);
@@ -36,6 +38,7 @@ export function SearchBar({
       inputStyle={inputStyle}
       returnKeyType="search"
       disableFullscreenUI
+      testID={testID}
     >
       {showClear && (
         <InputElement

@@ -28,7 +28,7 @@ export function ConnectingQrCode() {
       flexDirection={isPortrait ? 'column' : 'row'}
       padding={['xl', 'xl', '2xl', 'xl']}
     >
-      <QrCode size={qrSize} uri={wcUri} />
+      <QrCode size={qrSize} uri={wcUri} testID="qr-code" />
       <FlexView alignItems="center" margin="m">
         <Text variant="paragraph-500">Scan this QR code with your phone</Text>
         {showCopy && (
@@ -37,6 +37,7 @@ export function ConnectingQrCode() {
             color="fg-200"
             style={styles.copyButton}
             onPress={onCopyAddress}
+            testID="button-copy-uri"
           >
             Copy link
           </Link>

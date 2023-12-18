@@ -24,6 +24,7 @@ export interface ListWalletProps {
   disabled?: boolean;
   installed?: boolean;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
 export function ListWallet({
@@ -37,7 +38,8 @@ export function ListWallet({
   icon,
   disabled,
   installed,
-  style
+  style,
+  testID
 }: ListWalletProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
@@ -112,6 +114,7 @@ export function ListWallet({
       onPress={onPress}
       onPressIn={setEndValue}
       onPressOut={setStartValue}
+      testID={testID}
     >
       <View style={styles.leftSide}>
         {imageTemplate()}
