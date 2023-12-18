@@ -34,3 +34,4 @@ jobs:
         with:
           api-key: ${{ secrets.MAESTRO_CLOUD_API_KEY }}
           app-file: apps/native-cli/android/app/build/outputs/apk/release/app-release.apk
+          android-api-level: 31
