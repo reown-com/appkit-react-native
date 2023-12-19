@@ -2915,9 +2915,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@coinbase/wallet-mobile-sdk@npm:^1.0.7":
-  version: 1.0.8
-  resolution: "@coinbase/wallet-mobile-sdk@npm:1.0.8"
+"@coinbase/wallet-mobile-sdk@npm:1.0.9":
+  version: 1.0.9
+  resolution: "@coinbase/wallet-mobile-sdk@npm:1.0.9"
   dependencies:
     "@coinbase/wallet-sdk": "npm:^3.5.1"
     "@metamask/safe-event-emitter": "npm:2.0.0"
@@ -2929,7 +2929,7 @@ __metadata:
     expo: "*"
     react: "*"
     react-native: "*"
-  checksum: d2ee0f24ccaceed14ec97f5d3c6e07a2d6dbc168800e61a9962c7c0597a3233b97aef9e797ed68a340b74e6635921cab6e363c330816350b5ddd07ae4ca738a1
+  checksum: 4c3f36357b66cbf4d96a1e6c1fea75326209237c677ac581f20e7b4f3f3aa044c337d52e64faf80d77349d723bc19d22fd52cb7861e2036b5d4e8ad95991fe80
   languageName: node
   linkType: hard
 
@@ -9153,7 +9153,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@web3modal/coinbase-react-native@workspace:packages/coinbase"
   peerDependencies:
-    "@coinbase/wallet-mobile-sdk": ">=1"
+    "@coinbase/wallet-mobile-sdk": ">=1.0.9"
   languageName: unknown
   linkType: soft
 
@@ -21410,7 +21410,7 @@ __metadata:
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
     "@changesets/cli": "npm:2.26.2"
-    "@coinbase/wallet-mobile-sdk": "npm:^1.0.7"
+    "@coinbase/wallet-mobile-sdk": "npm:1.0.9"
     "@react-native-async-storage/async-storage": "npm:1.18.2"
     "@react-native/eslint-config": "npm:0.72.2"
     "@testing-library/jest-native": "npm:5.4.2"
