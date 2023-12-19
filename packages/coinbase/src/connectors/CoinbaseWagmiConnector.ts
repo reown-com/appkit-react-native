@@ -42,11 +42,17 @@ export class CoinbaseWagmiConnector extends Connector<
     try {
       await this._setupListeners();
       const provider = await this.getProvider();
-      const accounts: string[] = await provider.request({
-        method: 'eth_requestAccounts',
-        params: []
-      });
 
+      const isConnected = provider.connected;
+
+      if (!isConnected) {
+        await provider.request({
+          method: 'eth_requestAccounts',
+          params: []
+        });
+      }
+
+      const address = provider.selectedAddress!;
       const chainId = config?.chainId;
 
       this.emit('message', { type: 'connecting' });
@@ -61,7 +67,7 @@ export class CoinbaseWagmiConnector extends Connector<
       }
 
       return {
-        account: accounts?.[0] as `0x${string}`,
+        account: address as `0x${string}`,
         chain: { id, unsupported }
       };
     } catch (error) {
@@ -79,7 +85,7 @@ export class CoinbaseWagmiConnector extends Connector<
     if (!this._provider) return;
 
     const provider = await this.getProvider();
-    this.__removeListeners();
+    this._removeListeners();
     provider.disconnect();
   };
 
@@ -208,13 +214,13 @@ export class CoinbaseWagmiConnector extends Connector<
 
   _setupListeners = async () => {
     const provider = await this.getProvider();
-    this.__removeListeners();
+    this._removeListeners();
     provider.on('accountsChanged', this.onAccountsChanged);
     provider.on('chainChanged', this.onChainChanged);
     provider.on('disconnect', this.onDisconnect);
   };
 
-  __removeListeners = () => {
+  _removeListeners = () => {
     if (!this._provider) return;
 
     this._provider.removeListener('accountsChanged', this.onAccountsChanged);
