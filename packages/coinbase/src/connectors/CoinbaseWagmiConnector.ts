@@ -27,6 +27,7 @@ export class CoinbaseWagmiConnector extends Connector<
   readonly id = 'coinbaseWallet';
   readonly name = 'Coinbase Wallet';
   readonly ready = true;
+  readonly packageName = 'org.toshi'; // Don't change -> Coinbase wallet scheme
 
   private _provider?: WalletMobileSDKEVMProvider;
   private _initProviderPromise?: Promise<void>;
@@ -71,10 +72,10 @@ export class CoinbaseWagmiConnector extends Connector<
         chain: { id, unsupported }
       };
     } catch (error) {
-      if (/(Error error 0.)/i.test((error as Error).message))
+      if (/(Error error 0|User rejected the request)/i.test((error as Error).message))
         throw new UserRejectedRequestError(error as Error);
 
-      if (/(Error error 5.)/i.test((error as Error).message))
+      if (/(Error error 5|Could not open wallet)/i.test((error as Error).message))
         throw new Error(`Wallet not found. SDK Error: ${(error as Error).message}`);
 
       throw error;
@@ -194,7 +195,7 @@ export class CoinbaseWagmiConnector extends Connector<
     this.emit('disconnect');
   };
 
-  async _createProvider() {
+  private async _createProvider() {
     if (!this._initProviderPromise) {
       this._initProviderPromise = this._initProvider();
     }
@@ -202,17 +203,17 @@ export class CoinbaseWagmiConnector extends Connector<
     return this._initProviderPromise;
   }
 
-  _initProvider = async () => {
+  private _initProvider = async () => {
     configure({
       callbackURL: new URL(this.options.redirect),
       hostURL: new URL('https://wallet.coinbase.com/wsegue'), // Don't change -> Coinbase url
-      hostPackageName: 'org.toshi' // Don't change -> Coinbase wallet scheme
+      hostPackageName: this.packageName
     });
 
     this._provider = new WalletMobileSDKEVMProvider({ ...this.options });
   };
 
-  _setupListeners = async () => {
+  private _setupListeners = async () => {
     const provider = await this.getProvider();
     this._removeListeners();
     provider.on('accountsChanged', this.onAccountsChanged);
@@ -220,7 +221,7 @@ export class CoinbaseWagmiConnector extends Connector<
     provider.on('disconnect', this.onDisconnect);
   };
 
-  _removeListeners = () => {
+  private _removeListeners = () => {
     if (!this._provider) return;
 
     this._provider.removeListener('accountsChanged', this.onAccountsChanged);
@@ -228,7 +229,7 @@ export class CoinbaseWagmiConnector extends Connector<
     this._provider.removeListener('disconnect', this.onDisconnect);
   };
 
-  _normalizeChainId = (chainId: string | number | bigint) => {
+  private _normalizeChainId = (chainId: string | number | bigint) => {
     if (typeof chainId === 'string')
       return Number.parseInt(chainId, chainId.trim().substring(0, 2) === '0x' ? 16 : 10);
     if (typeof chainId === 'bigint') return Number(chainId);

@@ -18,6 +18,7 @@ export function ConnectingExternalView() {
   const connector = data?.connector;
   const { maxWidth: width } = useCustomDimensions();
   const [connectionError, setConnectionError] = useState(false);
+  const [installedError, setInstalledError] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
   const [ready, setReady] = useState(false);
 
@@ -29,11 +30,18 @@ export function ConnectingExternalView() {
     try {
       if (connector) {
         setConnectionError(false);
+        setInstalledError(false);
         await ConnectionController.connectExternal(connector);
         ModalController.close();
       }
     } catch (error) {
-      setConnectionError(true);
+      if (/(Wallet not found)/i.test((error as Error).message)) {
+        setInstalledError(true);
+        setConnectionError(false);
+      } else {
+        setConnectionError(true);
+        setInstalledError(false);
+      }
     }
   }, [connector]);
 
@@ -54,6 +62,16 @@ export function ConnectingExternalView() {
           </Text>
         </FlexView>
       );
+    } else if (installedError) {
+      return (
+        <FlexView
+          padding={['3xs', '2xl', '0', '2xl']}
+          alignItems="center"
+          style={styles.textContainer}
+        >
+          <Text variant="paragraph-500">App not installed</Text>
+        </FlexView>
+      );
     }
 
     return (
@@ -71,6 +89,8 @@ export function ConnectingExternalView() {
   };
 
   const retryTemplate = () => {
+    if (installedError) return null;
+
     return (
       <Button
         variant="accent"
@@ -107,7 +127,7 @@ export function ConnectingExternalView() {
         padding={['2xl', 'l', '0', 'l']}
         style={{ width }}
       >
-        <LoadingThumbnail paused={connectionError}>
+        <LoadingThumbnail paused={connectionError || installedError}>
           <WalletImage
             size="lg"
             imageSrc={AssetUtil.getConnectorImage(connector)}
