@@ -146,6 +146,7 @@ export function ConnectView() {
             onExternalWalletPress(connector);
           }}
           style={styles.item}
+          installed={connector.installed}
         />
       );
     });

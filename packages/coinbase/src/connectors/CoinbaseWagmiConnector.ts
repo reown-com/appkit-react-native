@@ -31,7 +31,8 @@ export class CoinbaseWagmiConnector extends Connector<
   readonly id = 'coinbaseWallet';
   readonly name = 'Coinbase Wallet';
   readonly ready = true;
-  readonly installed = isCoinbaseWalletInstalled();
+
+  installed = false;
 
   private _provider?: WalletMobileSDKEVMProvider;
   private _initProviderPromise?: Promise<void>;
@@ -39,6 +40,7 @@ export class CoinbaseWagmiConnector extends Connector<
   constructor(config: { chains?: Chain[]; options: CoinbaseWagmiConnectorOptions }) {
     super(config);
     this._createProvider();
+    this.installed = isCoinbaseWalletInstalled();
   }
 
   override connect = async (
