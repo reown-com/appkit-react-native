@@ -53,6 +53,7 @@ export function ConnectView() {
           tagLabel="Recent"
           tagVariant="shade"
           style={styles.item}
+          installed={!!installed.find(installedWallet => installedWallet.id === wallet.id)}
         />
       ));
   };
