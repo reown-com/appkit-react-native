@@ -29,6 +29,7 @@ export type Connector = {
   imageUrl?: string;
   info?: { rdns?: string };
   provider?: unknown;
+  installed?: boolean;
 };
 
 export type CaipNamespaces = Record<

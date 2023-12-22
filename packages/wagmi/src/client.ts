@@ -1,4 +1,4 @@
-import type { Address, Chain, Config } from '@wagmi/core';
+import type { Address, Chain, Config, Connector as WagmiConnector } from '@wagmi/core';
 import {
   connect,
   disconnect,
@@ -42,8 +42,17 @@ import {
 } from './utils/presets';
 
 // -- Types ---------------------------------------------------------------------
+interface CustomConnector<T, S> extends WagmiConnector<T, S> {
+  // Add boolean to show installed checkmark
+  installed?: boolean;
+}
+
+interface WagmiConfig extends Config<any, any> {
+  connectors: CustomConnector<any, any>[];
+}
+
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
-  wagmiConfig: Config<any, any>;
+  wagmiConfig: WagmiConfig;
   chains?: Chain[];
   defaultChain?: Chain;
   chainImages?: Record<number, string>;
@@ -276,14 +285,15 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private syncConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const w3mConnectors: Connector[] = [];
-    wagmiConfig.connectors.forEach(({ id, name }) => {
+    wagmiConfig.connectors.forEach(({ id, name, installed }) => {
       w3mConnectors.push({
         id,
         explorerId: ConnectorExplorerIds[id],
         imageId: ConnectorImageIds[id],
         imageUrl: this.options?.connectorImages?.[id],
         name: ConnectorNamesMap[id] ?? name,
-        type: ConnectorTypesMap[id] ?? 'EXTERNAL'
+        type: ConnectorTypesMap[id] ?? 'EXTERNAL',
+        installed
       });
     });
     this.setConnectors(w3mConnectors);

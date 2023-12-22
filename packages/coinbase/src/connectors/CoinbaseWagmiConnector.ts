@@ -10,7 +10,11 @@ import {
   SwitchChainError,
   type Chain
 } from 'viem';
-import { WalletMobileSDKEVMProvider, configure } from '@coinbase/wallet-mobile-sdk';
+import {
+  WalletMobileSDKEVMProvider,
+  configure,
+  isCoinbaseWalletInstalled
+} from '@coinbase/wallet-mobile-sdk';
 import type { WalletMobileSDKProviderOptions } from '@coinbase/wallet-mobile-sdk/build/WalletMobileSDKEVMProvider';
 
 const ADD_ETH_CHAIN_METHOD = 'wallet_addEthereumChain';
@@ -27,7 +31,7 @@ export class CoinbaseWagmiConnector extends Connector<
   readonly id = 'coinbaseWallet';
   readonly name = 'Coinbase Wallet';
   readonly ready = true;
-  readonly packageName = 'org.toshi'; // Don't change -> Coinbase wallet scheme
+  readonly installed = isCoinbaseWalletInstalled();
 
   private _provider?: WalletMobileSDKEVMProvider;
   private _initProviderPromise?: Promise<void>;
@@ -207,7 +211,7 @@ export class CoinbaseWagmiConnector extends Connector<
     configure({
       callbackURL: new URL(this.options.redirect),
       hostURL: new URL('https://wallet.coinbase.com/wsegue'), // Don't change -> Coinbase url
-      hostPackageName: this.packageName
+      hostPackageName: 'org.toshi' // Don't change -> Coinbase wallet scheme
     });
 
     this._provider = new WalletMobileSDKEVMProvider({ ...this.options });
