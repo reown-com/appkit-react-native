@@ -7,7 +7,7 @@ import {
   ConnectorController,
   RouterController
 } from '@web3modal/core-react-native';
-import type { WcWallet } from '@web3modal/core-react-native';
+import type { ConnectorType, WcWallet } from '@web3modal/core-react-native';
 import { ListWallet, FlexView } from '@web3modal/ui-react-native';
 import { UiUtil } from '../../utils/UiUtil';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
@@ -35,12 +35,13 @@ export function ConnectView() {
   const RECOMMENDED_COUNT =
     UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT - INSTALLED_COUNT - FEATURED_COUNT;
 
-  const onExternalWalletPress = async (connector: any) => {
-    RouterController.push('ConnectingExternal', { connector });
-  };
-
   const onWalletPress = (wallet: WcWallet) => {
-    RouterController.push('ConnectingWalletConnect', { wallet });
+    const connector = connectors.find(c => c.explorerId === wallet.id);
+    if (connector) {
+      RouterController.push('ConnectingExternal', { connector, wallet });
+    } else {
+      RouterController.push('ConnectingWalletConnect', { wallet });
+    }
   };
 
   const recentTemplate = () => {
@@ -133,8 +134,12 @@ export function ConnectView() {
   };
 
   const connectorsTemplate = () => {
+    const excludeConnectors: ConnectorType[] = ['WALLET_CONNECT', 'COINBASE'];
+
     return connectors.map(connector => {
-      if (connector.type === 'WALLET_CONNECT') return null;
+      if (excludeConnectors.includes(connector.type)) {
+        return null;
+      }
 
       return (
         <ListWallet
@@ -142,9 +147,7 @@ export function ConnectView() {
           imageSrc={AssetUtil.getConnectorImage(connector)}
           imageHeaders={imageHeaders}
           name={connector.name || 'Unknown'}
-          onPress={() => {
-            onExternalWalletPress(connector);
-          }}
+          onPress={() => RouterController.push('ConnectingExternal', { connector })}
           style={styles.item}
           installed={connector.installed}
         />

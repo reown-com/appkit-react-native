@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { FlatList, View } from 'react-native';
-import {
-  ApiController,
-  AssetUtil,
-  RouterController,
-  type WcWallet
-} from '@web3modal/core-react-native';
+import { ApiController, AssetUtil, type WcWallet } from '@web3modal/core-react-native';
 import {
   CardSelect,
   CardSelectLoader,
@@ -20,10 +15,11 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 interface AllWalletsListProps {
   columns: number;
+  onItemPress: (wallet: WcWallet) => void;
   itemWidth?: number;
 }
 
-export function AllWalletsList({ columns, itemWidth }: AllWalletsListProps) {
+export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsListProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const { maxWidth, padding } = useCustomDimensions();
@@ -78,7 +74,7 @@ export function AllWalletsList({ columns, itemWidth }: AllWalletsListProps) {
           imageSrc={AssetUtil.getWalletImage(item)}
           imageHeaders={imageHeaders}
           name={item?.name ?? 'Unknown'}
-          onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
+          onPress={() => onItemPress(item)}
           installed={!!isInstalled}
         />
       </View>

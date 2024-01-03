@@ -72,7 +72,7 @@ export const ConnectionController = {
 
   async connectExternal(options: ConnectExternalOptions) {
     await this._getClient().connectExternal?.(options);
-    StorageUtil.setConnectedConnector(options.type);
+    await StorageUtil.setConnectedConnector(options.type);
   },
 
   resetWcConnection() {

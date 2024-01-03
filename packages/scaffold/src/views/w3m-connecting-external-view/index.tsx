@@ -12,6 +12,7 @@ import { Button, FlexView, LoadingThumbnail, Text, WalletImage } from '@web3moda
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
+import { StorageUtil } from '@web3modal/core-react-native';
 
 export function ConnectingExternalView() {
   const { data } = useSnapshot(RouterController.state);
@@ -26,12 +27,22 @@ export function ConnectingExternalView() {
     setIsRetrying(true);
   };
 
+  const storeDeeplink = useCallback(async () => {
+    if (data?.wallet) {
+      const recentWallets = await StorageUtil.setWeb3ModalRecent(data.wallet);
+      if (recentWallets) {
+        ConnectionController.setRecentWallets(recentWallets);
+      }
+    }
+  }, [data?.wallet]);
+
   const onConnect = useCallback(async () => {
     try {
       if (connector) {
         setConnectionError(false);
         setInstalledError(false);
         await ConnectionController.connectExternal(connector);
+        storeDeeplink();
         ModalController.close();
       }
     } catch (error) {
@@ -43,7 +54,7 @@ export function ConnectingExternalView() {
         setInstalledError(false);
       }
     }
-  }, [connector]);
+  }, [connector, storeDeeplink]);
 
   const textTemplate = () => {
     const connectorName = data?.connector?.name ?? 'Wallet';

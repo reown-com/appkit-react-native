@@ -26,20 +26,8 @@ import type {
 import { Web3ModalScaffold } from '@web3modal/scaffold-react-native';
 import { StorageUtil } from '@web3modal/core-react-native';
 
-import {
-  ADD_CHAIN_METHOD,
-  NAMESPACE,
-  VERSION,
-  WALLET_CONNECT_CONNECTOR_ID
-} from './utils/constants';
-import { caipNetworkIdToNumber, getCaipDefaultChain, getCaipTokens } from './utils/helpers';
-import {
-  ConnectorExplorerIds,
-  ConnectorImageIds,
-  ConnectorNamesMap,
-  ConnectorTypesMap,
-  NetworkImageIds
-} from './utils/presets';
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils-react-native';
+import { getCaipDefaultChain } from './utils/helpers';
 
 // -- Types ---------------------------------------------------------------------
 interface CustomConnector<T, S> extends WagmiConnector<T, S> {
@@ -86,7 +74,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = caipNetworkIdToNumber(caipNetwork?.id);
+        const chainId = HelpersUtil.caipNetworkIdToNumber(caipNetwork?.id);
         if (chainId) {
           await switchNetwork({ chainId });
         }
@@ -94,8 +82,10 @@ export class Web3Modal extends Web3ModalScaffold {
 
       async getApprovedCaipNetworksData() {
         const walletChoice = await StorageUtil.getConnectedConnector();
-        if (walletChoice?.includes(WALLET_CONNECT_CONNECTOR_ID)) {
-          const connector = wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_CONNECTOR_ID);
+        if (walletChoice?.includes(ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
+          const connector = wagmiConfig.connectors.find(
+            c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+          );
           if (!connector) {
             throw new Error(
               'networkControllerClient:getApprovedCaipNetworks - connector is undefined'
@@ -103,11 +93,11 @@ export class Web3Modal extends Web3ModalScaffold {
           }
           const provider = await connector.getProvider();
           const ns = provider.signer?.session?.namespaces;
-          const nsMethods = ns?.[NAMESPACE]?.methods;
-          const nsChains = ns?.[NAMESPACE]?.chains;
+          const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods;
+          const nsChains = ns?.[ConstantsUtil.EIP155]?.chains;
 
           return {
-            supportsAllNetworks: nsMethods?.includes(ADD_CHAIN_METHOD),
+            supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD),
             approvedCaipNetworkIds: nsChains as CaipNetworkId[]
           };
         }
@@ -118,7 +108,9 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const connectionControllerClient: ConnectionControllerClient = {
       connectWalletConnect: async onUri => {
-        const connector = wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_CONNECTOR_ID);
+        const connector = wagmiConfig.connectors.find(
+          c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+        );
         if (!connector) {
           throw new Error(
             'connectionControllerClient:getWalletConnectUri - connector is undefined'
@@ -132,7 +124,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         });
 
-        const chainId = caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+        const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
         await connect({ connector, chainId });
       },
 
@@ -142,7 +134,7 @@ export class Web3Modal extends Web3ModalScaffold {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined');
         }
 
-        const chainId = caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+        const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
 
         await connect({ connector, chainId });
       },
@@ -154,8 +146,8 @@ export class Web3Modal extends Web3ModalScaffold {
       networkControllerClient,
       connectionControllerClient,
       defaultChain: getCaipDefaultChain(defaultChain),
-      tokens: getCaipTokens(tokens),
-      _sdkVersion: _sdkVersion ?? `react-native-wagmi-${VERSION}`,
+      tokens: HelpersUtil.getCaipTokens(tokens),
+      _sdkVersion: _sdkVersion ?? `react-native-wagmi-${ConstantsUtil.VERSION}`,
       ...w3mOptions
     });
 
@@ -177,7 +169,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     return {
       ...state,
-      selectedNetworkId: caipNetworkIdToNumber(state.selectedNetworkId)
+      selectedNetworkId: HelpersUtil.caipNetworkIdToNumber(state.selectedNetworkId)
     };
   }
 
@@ -186,7 +178,7 @@ export class Web3Modal extends Web3ModalScaffold {
     return super.subscribeState(state =>
       callback({
         ...state,
-        selectedNetworkId: caipNetworkIdToNumber(state.selectedNetworkId)
+        selectedNetworkId: HelpersUtil.caipNetworkIdToNumber(state.selectedNetworkId)
       })
     );
   }
@@ -196,9 +188,9 @@ export class Web3Modal extends Web3ModalScaffold {
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
-          id: `${NAMESPACE}:${chain.id}`,
+          id: `${ConstantsUtil.EIP155}:${chain.id}`,
           name: chain.name,
-          imageId: NetworkImageIds[chain.id],
+          imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
           imageUrl: this.options?.chainImages?.[chain.id]
         }) as CaipNetwork
     );
@@ -210,7 +202,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const { chain } = getNetwork();
     this.resetAccount();
     if (isConnected && address && chain) {
-      const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`;
+      const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chain.id}:${address}`;
       this.setIsConnected(isConnected);
       this.setCaipAddress(caipAddress);
       await Promise.all([
@@ -231,15 +223,15 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (chain) {
       const chainId = String(chain.id);
-      const caipChainId: CaipNetworkId = `${NAMESPACE}:${chainId}`;
+      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chainId}`;
       this.setCaipNetwork({
         id: caipChainId,
         name: chain.name,
-        imageId: NetworkImageIds[chain.id],
+        imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
         imageUrl: this.options?.chainImages?.[chain.id]
       });
       if (isConnected && address) {
-        const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`;
+        const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chain.id}:${address}`;
         this.setCaipAddress(caipAddress);
         if (chain.blockExplorers?.default?.url) {
           const url = `${chain.blockExplorers.default.url}/address/${address}`;
@@ -257,7 +249,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncProfile(address: Address) {
     try {
       const { name, avatar } = await this.fetchIdentity({
-        caipChainId: `${NAMESPACE}:${mainnet.id}`,
+        caipChainId: `${ConstantsUtil.EIP155}:${mainnet.id}`,
         address
       });
       this.setProfileName(name);
@@ -288,11 +280,11 @@ export class Web3Modal extends Web3ModalScaffold {
     wagmiConfig.connectors.forEach(({ id, name, installed }) => {
       w3mConnectors.push({
         id,
-        explorerId: ConnectorExplorerIds[id],
-        imageId: ConnectorImageIds[id],
+        explorerId: PresetsUtil.ConnectorExplorerIds[id],
+        imageId: PresetsUtil.ConnectorImageIds[id],
         imageUrl: this.options?.connectorImages?.[id],
-        name: ConnectorNamesMap[id] ?? name,
-        type: ConnectorTypesMap[id] ?? 'EXTERNAL',
+        name: PresetsUtil.ConnectorNamesMap[id] ?? name,
+        type: PresetsUtil.ConnectorTypesMap[id] ?? 'EXTERNAL',
         installed
       });
     });
