@@ -1,5 +1,11 @@
 # @web3modal/ui-react-native
 
+## 1.1.0-canary.0
+
+### Minor Changes
+
+- 1.1.0
+
 ## 1.0.1
 
 ### Patch Changes

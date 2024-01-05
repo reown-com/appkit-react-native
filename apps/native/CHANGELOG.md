@@ -1,5 +1,12 @@
 # @apps/native
 
+## 1.0.3-canary.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @web3modal/wagmi-react-native@1.1.0-canary.0
+
 ## 1.0.2
 
 ### Patch Changes
