@@ -19,7 +19,7 @@ body:
     attributes:
       label: Web3Modal SDK version
       description: What is the latest version of Web3Modal SDK that this issue reproduces on?
-      placeholder: ex. @web3modal/wagmi-react-native: 1.0.0
+      placeholder: ex. @web3modal/wagmi-react-native 1.0.0
     validations:
       required: true
   - type: textarea
