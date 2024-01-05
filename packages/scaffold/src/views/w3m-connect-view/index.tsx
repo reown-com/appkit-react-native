@@ -21,7 +21,7 @@ export function ConnectView() {
   const { padding } = useCustomDimensions();
   const isWalletConnectEnabled = connectors.find(c => c.type === 'WALLET_CONNECT');
 
-  const RECENT_COUNT = recentWallets?.length ? (installed.length ? 1 : 2) : 0;
+  const RECENT_COUNT = recentWallets?.length ? (installed.length ? 1 : recentWallets?.length) : 0;
 
   const onWalletPress = (wallet: WcWallet) => {
     const connector = connectors.find(c => c.explorerId === wallet.id);
@@ -55,6 +55,10 @@ export function ConnectView() {
   };
 
   const walletsTemplate = () => {
+    if (!isWalletConnectEnabled) {
+      return null;
+    }
+
     const list = filterOutRecentWallets([...installed, ...featured, ...recommended]);
 
     return list
@@ -73,7 +77,12 @@ export function ConnectView() {
   };
 
   const connectorsTemplate = () => {
-    const excludeConnectors: ConnectorType[] = ['WALLET_CONNECT', 'COINBASE'];
+    const excludeConnectors: ConnectorType[] = ['WALLET_CONNECT'];
+
+    if (isWalletConnectEnabled) {
+      // use wallet from api list
+      excludeConnectors.push('COINBASE');
+    }
 
     return connectors.map(connector => {
       if (excludeConnectors.includes(connector.type)) {
