@@ -23,18 +23,6 @@ export function ConnectView() {
 
   const RECENT_COUNT = recentWallets?.length ? (installed.length ? 1 : 2) : 0;
 
-  const INSTALLED_COUNT =
-    installed.length >= UiUtil.TOTAL_VISIBLE_WALLETS
-      ? UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT
-      : installed.length;
-
-  const FEATURED_COUNT = featured.length
-    ? UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT - INSTALLED_COUNT
-    : 0;
-
-  const RECOMMENDED_COUNT =
-    UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT - INSTALLED_COUNT - FEATURED_COUNT;
-
   const onWalletPress = (wallet: WcWallet) => {
     const connector = connectors.find(c => c.explorerId === wallet.id);
     if (connector) {
@@ -66,15 +54,11 @@ export function ConnectView() {
       ));
   };
 
-  const installedTemplate = () => {
-    if (!isWalletConnectEnabled || !installed.length) {
-      return null;
-    }
-
-    const list = filterOutRecentWallets([...installed]);
+  const walletsTemplate = () => {
+    const list = filterOutRecentWallets([...installed, ...featured, ...recommended]);
 
     return list
-      .slice(0, INSTALLED_COUNT)
+      .slice(0, UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT)
       .map(wallet => (
         <ListWallet
           key={wallet?.id}
@@ -83,53 +67,7 @@ export function ConnectView() {
           name={wallet?.name ?? 'Unknown'}
           onPress={() => onWalletPress(wallet!)}
           style={styles.item}
-          installed
-        />
-      ));
-  };
-
-  const featuredTemplate = () => {
-    if (!isWalletConnectEnabled || !featured.length || FEATURED_COUNT < 1) {
-      return null;
-    }
-
-    const list = filterOutRecentWallets([...featured]);
-
-    return list
-      .slice(0, FEATURED_COUNT)
-      .map(wallet => (
-        <ListWallet
-          key={wallet?.id}
-          imageSrc={AssetUtil.getWalletImage(wallet)}
-          imageHeaders={imageHeaders}
-          name={wallet?.name ?? 'Unknown'}
-          onPress={() => onWalletPress(wallet!)}
-          style={styles.item}
-        />
-      ));
-  };
-
-  const recommendedTemplate = () => {
-    if (
-      !isWalletConnectEnabled ||
-      !recommended.length ||
-      featured.length ||
-      RECOMMENDED_COUNT < 1
-    ) {
-      return null;
-    }
-    const list = filterOutRecentWallets([...recommended]);
-
-    return list
-      .slice(0, RECOMMENDED_COUNT)
-      .map(wallet => (
-        <ListWallet
-          key={wallet?.id}
-          imageSrc={AssetUtil.getWalletImage(wallet)}
-          imageHeaders={imageHeaders}
-          name={wallet?.name ?? 'Unknown'}
-          onPress={() => onWalletPress(wallet!)}
-          style={styles.item}
+          installed={!!installed.find(installedWallet => installedWallet.id === wallet.id)}
         />
       ));
   };
@@ -156,7 +94,7 @@ export function ConnectView() {
     });
   };
 
-  const allWalletsTemplate = () => {
+  const allWalletsButton = () => {
     if (!isWalletConnectEnabled) {
       return null;
     }
@@ -189,11 +127,9 @@ export function ConnectView() {
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
       <FlexView padding={['xs', 's', '2xl', 's']}>
         {recentTemplate()}
-        {installedTemplate()}
-        {featuredTemplate()}
-        {recommendedTemplate()}
+        {walletsTemplate()}
         {connectorsTemplate()}
-        {allWalletsTemplate()}
+        {allWalletsButton()}
       </FlexView>
     </ScrollView>
   );
