@@ -107,11 +107,16 @@ export const ApiController = {
   },
 
   async fetchInstalledWallets() {
+    const { includeWalletIds } = OptionsController.state;
     const path = Platform.select({ default: 'getIosData', android: 'getAndroidData' });
-    const { data: walletData } = await api.get<ApiGetDataWalletsResponse>({
+    let { data: walletData } = await api.get<ApiGetDataWalletsResponse>({
       path,
       headers: ApiController._getApiHeaders()
     });
+
+    if (includeWalletIds?.length) {
+      walletData = walletData.filter(({ id }) => includeWalletIds.includes(id));
+    }
 
     const promises = walletData.map(async item => {
       return {

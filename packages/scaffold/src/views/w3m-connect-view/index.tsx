@@ -108,7 +108,8 @@ export function ConnectView() {
       return null;
     }
 
-    const label = count > 10 ? `${Math.floor(count / 10) * 10}+` : count;
+    const total = installed.length + count;
+    const label = total > 10 ? `${Math.floor(total / 10) * 10}+` : total;
 
     return (
       <ListWallet
