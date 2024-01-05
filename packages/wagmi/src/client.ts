@@ -30,13 +30,8 @@ import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-uti
 import { getCaipDefaultChain } from './utils/helpers';
 
 // -- Types ---------------------------------------------------------------------
-interface CustomConnector<T, S> extends WagmiConnector<T, S> {
-  // Add boolean to show installed checkmark
-  installed?: boolean;
-}
-
 interface WagmiConfig extends Config<any, any> {
-  connectors: CustomConnector<any, any>[];
+  connectors: WagmiConnector<any, any>[];
 }
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -277,15 +272,14 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private syncConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const w3mConnectors: Connector[] = [];
-    wagmiConfig.connectors.forEach(({ id, name, installed }) => {
+    wagmiConfig.connectors.forEach(({ id, name }) => {
       w3mConnectors.push({
         id,
         explorerId: PresetsUtil.ConnectorExplorerIds[id],
         imageId: PresetsUtil.ConnectorImageIds[id],
         imageUrl: this.options?.connectorImages?.[id],
         name: PresetsUtil.ConnectorNamesMap[id] ?? name,
-        type: PresetsUtil.ConnectorTypesMap[id] ?? 'EXTERNAL',
-        installed
+        type: PresetsUtil.ConnectorTypesMap[id] ?? 'EXTERNAL'
       });
     });
     this.setConnectors(w3mConnectors);

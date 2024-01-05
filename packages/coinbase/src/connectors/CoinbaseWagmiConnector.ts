@@ -10,11 +10,7 @@ import {
   SwitchChainError,
   type Chain
 } from 'viem';
-import {
-  WalletMobileSDKEVMProvider,
-  configure,
-  isCoinbaseWalletInstalled
-} from '@coinbase/wallet-mobile-sdk';
+import { WalletMobileSDKEVMProvider, configure } from '@coinbase/wallet-mobile-sdk';
 import type { WalletMobileSDKProviderOptions } from '@coinbase/wallet-mobile-sdk/build/WalletMobileSDKEVMProvider';
 
 const ADD_ETH_CHAIN_METHOD = 'wallet_addEthereumChain';
@@ -32,15 +28,12 @@ export class CoinbaseWagmiConnector extends Connector<
   readonly name = 'Coinbase Wallet';
   readonly ready = true;
 
-  installed = false;
-
   private _provider?: WalletMobileSDKEVMProvider;
   private _initProviderPromise?: Promise<void>;
 
   constructor(config: { chains?: Chain[]; options: CoinbaseWagmiConnectorOptions }) {
     super(config);
     this._createProvider();
-    this.installed = isCoinbaseWalletInstalled();
   }
 
   override connect = async (
