@@ -79,6 +79,42 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@apps/native-cli@workspace:apps/native-cli":
+  version: 0.0.0-use.local
+  resolution: "@apps/native-cli@workspace:apps/native-cli"
+  dependencies:
+    "@babel/core": "npm:^7.20.0"
+    "@babel/preset-env": "npm:^7.20.0"
+    "@babel/runtime": "npm:^7.20.0"
+    "@react-native-async-storage/async-storage": "npm:1.18.2"
+    "@react-native-clipboard/clipboard": "npm:1.13.0"
+    "@react-native-community/netinfo": "npm:9.3.10"
+    "@react-native/eslint-config": "npm:^0.72.2"
+    "@react-native/metro-config": "npm:^0.72.11"
+    "@tsconfig/react-native": "npm:^3.0.0"
+    "@types/react": "npm:^18.0.24"
+    "@types/react-test-renderer": "npm:^18.0.0"
+    "@walletconnect/react-native-compat": "npm:2.10.5"
+    "@web3modal/wagmi-react-native": "npm:1.0.1"
+    babel-jest: "npm:^29.2.1"
+    babel-plugin-module-resolver: "npm:^5.0.0"
+    eslint: "npm:^8.19.0"
+    jest: "npm:^29.2.1"
+    metro-react-native-babel-preset: "npm:0.76.8"
+    prettier: "npm:^2.4.1"
+    react: "npm:18.2.0"
+    react-native: "npm:0.72.6"
+    react-native-dotenv: "npm:^3.4.9"
+    react-native-get-random-values: "npm:~1.9.0"
+    react-native-modal: "npm:13.0.1"
+    react-native-svg: "npm:13.9.0"
+    react-test-renderer: "npm:18.2.0"
+    typescript: "npm:4.8.4"
+    viem: "npm:1.19.3"
+    wagmi: "npm:1.4.7"
+  languageName: unknown
+  linkType: soft
+
 "@apps/native@workspace:apps/native":
   version: 0.0.0-use.local
   resolution: "@apps/native@workspace:apps/native"
@@ -2915,6 +2951,41 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@coinbase/wallet-mobile-sdk@npm:1.0.10":
+  version: 1.0.10
+  resolution: "@coinbase/wallet-mobile-sdk@npm:1.0.10"
+  dependencies:
+    "@coinbase/wallet-sdk": "npm:^3.5.1"
+    "@metamask/safe-event-emitter": "npm:2.0.0"
+    bn.js: "npm:5.2.1"
+    buffer: "npm:6.0.3"
+    eth-rpc-errors: "npm:4.0.3"
+    react-native-mmkv: "npm:2.4.3"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: fee75d3a46ae3c6e3e6a381078f31925b72144c5e52f177a6f905e52eb76573aa49073c56d9cc1d37e727723f6cb386584128820e07ac3d4fa03ae5f41a08946
+  languageName: node
+  linkType: hard
+
+"@coinbase/wallet-sdk@npm:^3.5.1":
+  version: 3.9.1
+  resolution: "@coinbase/wallet-sdk@npm:3.9.1"
+  dependencies:
+    bn.js: "npm:^5.2.1"
+    buffer: "npm:^6.0.3"
+    clsx: "npm:^1.2.1"
+    eth-block-tracker: "npm:^7.1.0"
+    eth-json-rpc-filters: "npm:^6.0.0"
+    eventemitter3: "npm:^5.0.1"
+    keccak: "npm:^3.0.3"
+    preact: "npm:^10.16.0"
+    sha.js: "npm:^2.4.11"
+  checksum: d63e97876743894bb004f0f35bad668585a39f0e41cbb91d9f88f0646ff52830b50165667c3af0b9d8058ed456910ead7f342f6cccf8de0ec2735d23bde40361
+  languageName: node
+  linkType: hard
+
 "@coinbase/wallet-sdk@npm:^3.6.6":
   version: 3.7.2
   resolution: "@coinbase/wallet-sdk@npm:3.7.2"
@@ -3189,6 +3260,48 @@ __metadata:
   version: 8.46.0
   resolution: "@eslint/js@npm:8.46.0"
   checksum: 674c5800e4e9829322aa84195b23c59db326cb42190ac0284bdfe70b2442d544837f3006d8d8c166afaa86ab7072df1b77f7fdb43a60aa2bb1ede90d82e38540
+  languageName: node
+  linkType: hard
+
+"@ethereumjs/common@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "@ethereumjs/common@npm:3.2.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    crc-32: "npm:^1.2.0"
+  checksum: 4e2256eb54cc544299f4d7ebc9daab7a3613c174de3981ea5ed84bd10c41a03d013d15b1abad292da62fd0c4b8ce5b220a258a25861ccffa32f2cc9a8a4b25d8
+  languageName: node
+  linkType: hard
+
+"@ethereumjs/rlp@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@ethereumjs/rlp@npm:4.0.1"
+  bin:
+    rlp: bin/rlp
+  checksum: 78379f288e9d88c584c2159c725c4a667a9742981d638bad760ed908263e0e36bdbd822c0a902003e0701195fd1cbde7adad621cd97fdfbf552c45e835ce022c
+  languageName: node
+  linkType: hard
+
+"@ethereumjs/tx@npm:^4.1.2, @ethereumjs/tx@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@ethereumjs/tx@npm:4.2.0"
+  dependencies:
+    "@ethereumjs/common": "npm:^3.2.0"
+    "@ethereumjs/rlp": "npm:^4.0.1"
+    "@ethereumjs/util": "npm:^8.1.0"
+    ethereum-cryptography: "npm:^2.0.0"
+  checksum: f168303edf5970673db06d2469a899632c64ba0cd5d24480e97683bd0e19cc22a7b0a7bc7db3a49760f09826d4c77bed89b65d65252daf54857dd3d97324fb9a
+  languageName: node
+  linkType: hard
+
+"@ethereumjs/util@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@ethereumjs/util@npm:8.1.0"
+  dependencies:
+    "@ethereumjs/rlp": "npm:^4.0.1"
+    ethereum-cryptography: "npm:^2.0.0"
+    micro-ftch: "npm:^0.3.1"
+  checksum: 4e6e0449236f66b53782bab3b387108f0ddc050835bfe1381c67a7c038fea27cb85ab38851d98b700957022f0acb6e455ca0c634249cfcce1a116bad76500160
   languageName: node
   linkType: hard
 
@@ -4214,10 +4327,49 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-json-rpc-provider@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "@metamask/eth-json-rpc-provider@npm:1.0.1"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^7.0.0"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^5.0.1"
+  checksum: 842f999d7a1c49b625fd863b453d076f393ac9090a1b9c7531aa24ec033e7e844c98a1c433ac02f4e66a62262d68c0d37c218dc724123da4eea1abcc12a63492
+  languageName: node
+  linkType: hard
+
+"@metamask/json-rpc-engine@npm:^7.0.0":
+  version: 7.3.0
+  resolution: "@metamask/json-rpc-engine@npm:7.3.0"
+  dependencies:
+    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^8.2.0"
+  checksum: fcc70d15854dda72d5b353e8157b3f1d749fbd7c09d23bdd022c92fceb1101a2f83623cd9032c36d41fdfaa400131574c587bef2c7d7ca95bb29976b0f12faf6
+  languageName: node
+  linkType: hard
+
+"@metamask/rpc-errors@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@metamask/rpc-errors@npm:6.1.0"
+  dependencies:
+    "@metamask/utils": "npm:^8.1.0"
+    fast-safe-stringify: "npm:^2.0.6"
+  checksum: 2085ad2df9cfddc49d84662adc864e9950725706704206e93491fb9d95181404519f989f40ca2171ed1badaeccfac69271159106540a9bf32654cf62c5243106
+  languageName: node
+  linkType: hard
+
 "@metamask/safe-event-emitter@npm:2.0.0, @metamask/safe-event-emitter@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/safe-event-emitter@npm:2.0.0"
   checksum: a86b91f909834dc14de7eadd38b22d4975f6529001d265cd0f5c894351f69f39447f1ef41b690b9849c86dd2a25a39515ef5f316545d36aea7b3fc50ee930933
+  languageName: node
+  linkType: hard
+
+"@metamask/safe-event-emitter@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/safe-event-emitter@npm:3.0.0"
+  checksum: 9f2b3ab88733136f8d8ca50bff73a9d03dadb441782cac16165da78f096a09857f6606530c44fcc079d0d8aca1948fadf518901425d01f870ce5334a39edb3b9
   languageName: node
   linkType: hard
 
@@ -4230,6 +4382,35 @@ __metadata:
     semver: "npm:^7.3.8"
     superstruct: "npm:^1.0.3"
   checksum: 4efcdb04d65dabada1c6918a76a2b7ee226bea309a351670d46737e58bf8d9fb17dfe1b707eaee69f865ccc237dcd6df75b487ccdbe6dd77de52c4cd9ee08cf8
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^5.0.1":
+  version: 5.0.2
+  resolution: "@metamask/utils@npm:5.0.2"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.1.2"
+    "@types/debug": "npm:^4.1.7"
+    debug: "npm:^4.3.4"
+    semver: "npm:^7.3.8"
+    superstruct: "npm:^1.0.3"
+  checksum: fa82d856362c3da9fa80262ffde776eeafb0e6f23c7e6d6401f824513a8b2641aa115c2eaae61c391950cdf4a56c57a10082c73a00a1840f8159d709380c4809
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^8.1.0, @metamask/utils@npm:^8.2.0":
+  version: 8.2.1
+  resolution: "@metamask/utils@npm:8.2.1"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@noble/hashes": "npm:^1.3.1"
+    "@scure/base": "npm:^1.1.3"
+    "@types/debug": "npm:^4.1.7"
+    debug: "npm:^4.3.4"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.5.4"
+    superstruct: "npm:^1.0.3"
+  checksum: 7f6f02138f69f544dc7e27b52af995a630622c7e884bdf94f8c8ee78232a659a128c77088659f7ff9b030839fb52b14cc1655bdac85688ca435b46b5ecdbb844
   languageName: node
   linkType: hard
 
@@ -4338,6 +4519,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/curves@npm:1.1.0, @noble/curves@npm:~1.1.0":
+  version: 1.1.0
+  resolution: "@noble/curves@npm:1.1.0"
+  dependencies:
+    "@noble/hashes": "npm:1.3.1"
+  checksum: 81115c3ebfa7e7da2d7e18d44d686f98dc6d35dbde3964412c05707c92d0994a01545bc265d5c0bc05c8c49333f75b99c9acef6750f5a79b3abcc8e0546acf88
+  languageName: node
+  linkType: hard
+
 "@noble/curves@npm:1.2.0, @noble/curves@npm:^1.2.0, @noble/curves@npm:~1.2.0":
   version: 1.2.0
   resolution: "@noble/curves@npm:1.2.0"
@@ -4347,10 +4537,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/hashes@npm:1.3.1":
+  version: 1.3.1
+  resolution: "@noble/hashes@npm:1.3.1"
+  checksum: 86512713aaf338bced594bc2046ab249fea4e1ba1e7f2ecd02151ef1b8536315e788c11608fafe1b56f04fad1aa3c602da7e5f8e5fcd5f8b0aa94435fe65278e
+  languageName: node
+  linkType: hard
+
 "@noble/hashes@npm:1.3.2, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:~1.3.0, @noble/hashes@npm:~1.3.2":
   version: 1.3.2
   resolution: "@noble/hashes@npm:1.3.2"
   checksum: 2482cce3bce6a596626f94ca296e21378e7a5d4c09597cbc46e65ffacc3d64c8df73111f2265444e36a3168208628258bbbaccba2ef24f65f58b2417638a20e7
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:~1.3.1":
+  version: 1.3.3
+  resolution: "@noble/hashes@npm:1.3.3"
+  checksum: 23c020b33da4172c988e44100e33cd9f8f6250b68b43c467d3551f82070ebd9716e0d9d2347427aa3774c85934a35fa9ee6f026fca2117e3fa12db7bedae7668
   languageName: node
   linkType: hard
 
@@ -6005,10 +6209,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@scure/base@npm:^1.1.3":
+  version: 1.1.5
+  resolution: "@scure/base@npm:1.1.5"
+  checksum: 6eb07be0202fac74a57c79d0d00a45f6f7e57447010c1e3d90a4275d197829727b7abc54b248fc6f9bef9ae374f7be5ee9154dde5b5b73da773560bf17aa8504
+  languageName: node
+  linkType: hard
+
 "@scure/base@npm:~1.1.0, @scure/base@npm:~1.1.2":
   version: 1.1.3
   resolution: "@scure/base@npm:1.1.3"
   checksum: 4eb1d8b58da503ecdff743be36ae3562bbff724da82fb3401468d348659841ae4bb271aeae3a8cf6c4d06cd887dee3825ce6fdac2f699afc63838ae68c499baa
+  languageName: node
+  linkType: hard
+
+"@scure/bip32@npm:1.3.1":
+  version: 1.3.1
+  resolution: "@scure/bip32@npm:1.3.1"
+  dependencies:
+    "@noble/curves": "npm:~1.1.0"
+    "@noble/hashes": "npm:~1.3.1"
+    "@scure/base": "npm:~1.1.0"
+  checksum: 9ff0ad56f512794aed1ed62e582bf855db829e688235420a116b210169dc31e3e2a8cc4a908126aaa07b6dcbcc4cd085eb12f9d0a8b507a88946d6171a437195
   languageName: node
   linkType: hard
 
@@ -8963,6 +9185,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@web3modal/coinbase-react-native@workspace:packages/coinbase":
+  version: 0.0.0-use.local
+  resolution: "@web3modal/coinbase-react-native@workspace:packages/coinbase"
+  peerDependencies:
+    "@coinbase/wallet-mobile-sdk": ">=1.0.10"
+  languageName: unknown
+  linkType: soft
+
 "@web3modal/core-react-native@npm:1.0.1, @web3modal/core-react-native@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@web3modal/core-react-native@workspace:packages/core"
@@ -8976,6 +9206,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@web3modal/core-react-native@npm:1.0.2-canary.7":
+  version: 1.0.2-canary.7
+  resolution: "@web3modal/core-react-native@npm:1.0.2-canary.7"
+  dependencies:
+    valtio: "npm:1.10.5"
+  peerDependencies:
+    "@react-native-async-storage/async-storage": ">=1.17.0"
+    "@walletconnect/react-native-compat": ">=2.10.5"
+    react: ">=17"
+    react-native: ">=0.68.5"
+  checksum: 22ead5e925d4b0181fed2df5d36179a30fc6d197b3c10a6e2114bd86e1be1fefc07bc8666d2adefc215d93f1690dcdcbaa63077f740dd262b84e2dd6e7a1d791
+  languageName: node
+  linkType: hard
+
 "@web3modal/scaffold-react-native@npm:1.0.1, @web3modal/scaffold-react-native@workspace:packages/scaffold":
   version: 0.0.0-use.local
   resolution: "@web3modal/scaffold-react-native@workspace:packages/scaffold"
@@ -8986,6 +9230,37 @@ __metadata:
     react: ">=17"
     react-native: ">=0.68.5"
     react-native-modal: ">=13"
+  languageName: unknown
+  linkType: soft
+
+"@web3modal/scaffold-react-native@npm:1.0.2-canary.7":
+  version: 1.0.2-canary.7
+  resolution: "@web3modal/scaffold-react-native@npm:1.0.2-canary.7"
+  dependencies:
+    "@web3modal/core-react-native": "npm:1.0.2-canary.7"
+    "@web3modal/ui-react-native": "npm:1.0.2-canary.7"
+  peerDependencies:
+    react: ">=17"
+    react-native: ">=0.68.5"
+    react-native-modal: ">=13"
+  checksum: 10ad67725b81a09487d3b5868eb36800e5c7c5837ea661919c26228f6c1c6bf4281a32e064c8fbb1f53ad86c6b1a58dcffd2a9aad157df72498e88c65b4603ba
+  languageName: node
+  linkType: hard
+
+"@web3modal/scaffold-utils-react-native@npm:1.0.2-canary.7":
+  version: 1.0.2-canary.7
+  resolution: "@web3modal/scaffold-utils-react-native@npm:1.0.2-canary.7"
+  dependencies:
+    "@web3modal/scaffold-react-native": "npm:1.0.2-canary.7"
+  checksum: 4df0c2d357d392348f46921e4756b5389749c817426b0663e24b3ddb8b907f34d15137bbc57d152e7ab4d93070f3bb5123898c6870404ed1a0d5ad1a6d234428
+  languageName: node
+  linkType: hard
+
+"@web3modal/scaffold-utils-react-native@workspace:packages/scaffold-utils":
+  version: 0.0.0-use.local
+  resolution: "@web3modal/scaffold-utils-react-native@workspace:packages/scaffold-utils"
+  dependencies:
+    "@web3modal/scaffold-react-native": "npm:1.0.1"
   languageName: unknown
   linkType: soft
 
@@ -9001,11 +9276,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@web3modal/ui-react-native@npm:1.0.2-canary.7":
+  version: 1.0.2-canary.7
+  resolution: "@web3modal/ui-react-native@npm:1.0.2-canary.7"
+  dependencies:
+    qrcode: "npm:1.5.3"
+  peerDependencies:
+    react: ">=17"
+    react-native: ">=0.68.5"
+    react-native-svg: ">=13"
+  checksum: 1ce5a42b80dd8bf61d1a0b0c0d0bc08aafb161fa6ea14f8449af9b10ec0bde44f670939bcd910d11accb7816afea2c4608712a983ffc77ec3a5332882d9c2389
+  languageName: node
+  linkType: hard
+
 "@web3modal/wagmi-react-native@npm:1.0.1, @web3modal/wagmi-react-native@workspace:packages/wagmi":
   version: 0.0.0-use.local
   resolution: "@web3modal/wagmi-react-native@workspace:packages/wagmi"
   dependencies:
     "@web3modal/scaffold-react-native": "npm:1.0.1"
+    "@web3modal/scaffold-utils-react-native": "npm:1.0.2-canary.7"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
     "@react-native-community/netinfo": "*"
@@ -10271,7 +10560,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bn.js@npm:^5.1.1, bn.js@npm:^5.2.0, bn.js@npm:^5.2.1":
+"bn.js@npm:5.2.1, bn.js@npm:^5.1.1, bn.js@npm:^5.2.0, bn.js@npm:^5.2.1":
   version: 5.2.1
   resolution: "bn.js@npm:5.2.1"
   checksum: bed3d8bd34ec89dbcf9f20f88bd7d4a49c160fda3b561c7bb227501f974d3e435a48fb9b61bc3de304acab9215a3bda0803f7017ffb4d0016a0c3a740a283caa
@@ -11015,7 +11304,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clsx@npm:^1.1.0":
+"clsx@npm:^1.1.0, clsx@npm:^1.2.1":
   version: 1.2.1
   resolution: "clsx@npm:1.2.1"
   checksum: 34dead8bee24f5e96f6e7937d711978380647e936a22e76380290e35486afd8634966ce300fc4b74a32f3762c7d4c0303f442c3e259f4ce02374eb0c82834f27
@@ -11344,6 +11633,15 @@ __metadata:
     path-type: "npm:^4.0.0"
     yaml: "npm:^1.10.0"
   checksum: b923ff6af581638128e5f074a5450ba12c0300b71302398ea38dbeabd33bbcaa0245ca9adbedfcf284a07da50f99ede5658c80bb3e39e2ce770a99d28a21ef03
+  languageName: node
+  linkType: hard
+
+"crc-32@npm:^1.2.0":
+  version: 1.2.2
+  resolution: "crc-32@npm:1.2.2"
+  bin:
+    crc32: bin/crc32.njs
+  checksum: 11dcf4a2e77ee793835d49f2c028838eae58b44f50d1ff08394a610bfd817523f105d6ae4d9b5bef0aad45510f633eb23c903e9902e4409bed1ce70cb82b9bf0
   languageName: node
   linkType: hard
 
@@ -13017,6 +13315,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eth-block-tracker@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "eth-block-tracker@npm:7.1.0"
+  dependencies:
+    "@metamask/eth-json-rpc-provider": "npm:^1.0.0"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^5.0.1"
+    json-rpc-random-id: "npm:^1.0.1"
+    pify: "npm:^3.0.0"
+  checksum: 86a5cabef7fa8505c27b5fad1b2f0100c21fda11ad64a701f76eb4224f8c7edab706181fd0934e106a71f5465d57278448af401eb3e584b3529d943ddd4d7dfb
+  languageName: node
+  linkType: hard
+
 "eth-json-rpc-filters@npm:5.1.0":
   version: 5.1.0
   resolution: "eth-json-rpc-filters@npm:5.1.0"
@@ -13027,6 +13338,19 @@ __metadata:
     json-rpc-engine: "npm:^6.1.0"
     pify: "npm:^5.0.0"
   checksum: 70598749ed369e1ae2013d7f48421a82636f3dc803976f5e7a4a7109e8df6ef0532010a635645e5f83fa8ed8054b5338d4dbd4901d41392155eec91c69df5492
+  languageName: node
+  linkType: hard
+
+"eth-json-rpc-filters@npm:^6.0.0":
+  version: 6.0.1
+  resolution: "eth-json-rpc-filters@npm:6.0.1"
+  dependencies:
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    async-mutex: "npm:^0.2.6"
+    eth-query: "npm:^2.1.2"
+    json-rpc-engine: "npm:^6.1.0"
+    pify: "npm:^5.0.0"
+  checksum: 69699460fd7837e13e42c1c74fbbfc44c01139ffd694e50235c78773c06059988be5c83dbe3a14d175ecc2bf3e385c4bfd3d6ab5d2d4714788b0b461465a3f56
   languageName: node
   linkType: hard
 
@@ -13049,12 +13373,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-rpc-errors@npm:^4.0.2":
+"eth-rpc-errors@npm:4.0.3, eth-rpc-errors@npm:^4.0.2":
   version: 4.0.3
   resolution: "eth-rpc-errors@npm:4.0.3"
   dependencies:
     fast-safe-stringify: "npm:^2.0.6"
   checksum: 332cbc5a957b62bb66ea01da2a467da65026df47e6516a286a969cad74d6002f2b481335510c93f12ca29c46ebc8354e39e2240769d86184f9b4c30832cf5466
+  languageName: node
+  linkType: hard
+
+"ethereum-cryptography@npm:^2.0.0":
+  version: 2.1.2
+  resolution: "ethereum-cryptography@npm:2.1.2"
+  dependencies:
+    "@noble/curves": "npm:1.1.0"
+    "@noble/hashes": "npm:1.3.1"
+    "@scure/bip32": "npm:1.3.1"
+    "@scure/bip39": "npm:1.2.1"
+  checksum: 784552709e3afd4ae9c606f3cf04ced49ab69f3864df58aca64f15317641470afd44573cbda821b9cf6781dac6dd3a95559fcc062299e23394094a3370387ec6
   languageName: node
   linkType: hard
 
@@ -13069,6 +13405,13 @@ __metadata:
   version: 4.0.7
   resolution: "eventemitter3@npm:4.0.7"
   checksum: 5f6d97cbcbac47be798e6355e3a7639a84ee1f7d9b199a07017f1d2f1e2fe236004d14fa5dfaeba661f94ea57805385e326236a6debbc7145c8877fbc0297c6b
+  languageName: node
+  linkType: hard
+
+"eventemitter3@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "eventemitter3@npm:5.0.1"
+  checksum: 4ba5c00c506e6c786b4d6262cfbce90ddc14c10d4667e5c83ae993c9de88aa856033994dd2b35b83e8dc1170e224e66a319fa80adc4c32adcd2379bbc75da814
   languageName: node
   linkType: hard
 
@@ -16622,7 +16965,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"keccak@npm:^3.0.1":
+"keccak@npm:^3.0.1, keccak@npm:^3.0.3":
   version: 3.0.4
   resolution: "keccak@npm:3.0.4"
   dependencies:
@@ -18207,6 +18550,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"micro-ftch@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "micro-ftch@npm:0.3.1"
+  checksum: b87d35a52aded13cf2daca8d4eaa84e218722b6f83c75ddd77d74f32cc62e699a672e338e1ee19ceae0de91d19cc24dcc1a7c7d78c81f51042fe55f01b196ed3
+  languageName: node
+  linkType: hard
+
 "micromatch@npm:^4.0.2, micromatch@npm:^4.0.4":
   version: 4.0.5
   resolution: "micromatch@npm:4.0.5"
@@ -19576,6 +19926,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pony-cause@npm:^2.1.10":
+  version: 2.1.10
+  resolution: "pony-cause@npm:2.1.10"
+  checksum: 55ad0ca52039895f273c69e55fc9fe882deff38689dc5962558bfa16cce0ea7cb5bb7b67d0c43ec9c3e7edeb81f81ee8c1113014930d77b2cbac5adc4ac7fb64
+  languageName: node
+  linkType: hard
+
 "postcss-modules-extract-imports@npm:^3.0.0":
   version: 3.0.0
   resolution: "postcss-modules-extract-imports@npm:3.0.0"
@@ -19652,6 +20009,13 @@ __metadata:
   version: 10.18.1
   resolution: "preact@npm:10.18.1"
   checksum: b157c46d5dbece48cf0f31b0e24d27c989ea019e77730427b4c7549953da7de015b34f13f93d0034966f033738ec582829da918c28d084bbb31d59f320f56aa0
+  languageName: node
+  linkType: hard
+
+"preact@npm:^10.16.0":
+  version: 10.19.3
+  resolution: "preact@npm:10.19.3"
+  checksum: 251b237cc6fc8c39e4dc6cd65df1964b9622ec6005ccdaa57ea43171ba3e1e0f1e3386bbade370b2ce26ea480ceb73ea36b40e635e35e017e2d8614a233e1bed
   languageName: node
   linkType: hard
 
@@ -20315,6 +20679,16 @@ __metadata:
   peerDependencies:
     react-native: ">=0.56"
   checksum: 529359778b7933ca3d7eeca732d0a21c38980c6f80e5a1b0407797f5c0d09d7ef90e61e80b87b7f0f667e9ec5f225771246487aa93833108f8a993513d87f930
+  languageName: node
+  linkType: hard
+
+"react-native-mmkv@npm:2.4.3":
+  version: 2.4.3
+  resolution: "react-native-mmkv@npm:2.4.3"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 7f8bb5004b90eeeb05a60f99ffbc4d3e7798e98f3cc55ad7f8f6502de8673f7e6f9013662d6fd678d48b9ddfd9936ff10b4f76dc2a58854c8e20d839893ddb5e
   languageName: node
   linkType: hard
 
@@ -21131,6 +21505,7 @@ __metadata:
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
     "@changesets/cli": "npm:2.26.2"
+    "@coinbase/wallet-mobile-sdk": "npm:1.0.10"
     "@react-native-async-storage/async-storage": "npm:1.18.2"
     "@react-native/eslint-config": "npm:0.72.2"
     "@testing-library/jest-native": "npm:5.4.2"
@@ -23636,42 +24011,6 @@ __metadata:
   checksum: a8ec5c95d747c840198f20b4973327fa317b98397f341e7a2f352bfcf385aeb73c0eea01cc6d406c20169298375397e259efc317aec53c8ffc001ec998204aed
   languageName: node
   linkType: hard
-
-"w3mrn@workspace:apps/native-cli":
-  version: 0.0.0-use.local
-  resolution: "w3mrn@workspace:apps/native-cli"
-  dependencies:
-    "@babel/core": "npm:^7.20.0"
-    "@babel/preset-env": "npm:^7.20.0"
-    "@babel/runtime": "npm:^7.20.0"
-    "@react-native-async-storage/async-storage": "npm:1.18.2"
-    "@react-native-clipboard/clipboard": "npm:1.13.0"
-    "@react-native-community/netinfo": "npm:9.3.10"
-    "@react-native/eslint-config": "npm:^0.72.2"
-    "@react-native/metro-config": "npm:^0.72.11"
-    "@tsconfig/react-native": "npm:^3.0.0"
-    "@types/react": "npm:^18.0.24"
-    "@types/react-test-renderer": "npm:^18.0.0"
-    "@walletconnect/react-native-compat": "npm:2.10.5"
-    "@web3modal/wagmi-react-native": "npm:1.0.1"
-    babel-jest: "npm:^29.2.1"
-    babel-plugin-module-resolver: "npm:^5.0.0"
-    eslint: "npm:^8.19.0"
-    jest: "npm:^29.2.1"
-    metro-react-native-babel-preset: "npm:0.76.8"
-    prettier: "npm:^2.4.1"
-    react: "npm:18.2.0"
-    react-native: "npm:0.72.6"
-    react-native-dotenv: "npm:^3.4.9"
-    react-native-get-random-values: "npm:~1.9.0"
-    react-native-modal: "npm:13.0.1"
-    react-native-svg: "npm:13.9.0"
-    react-test-renderer: "npm:18.2.0"
-    typescript: "npm:4.8.4"
-    viem: "npm:1.19.3"
-    wagmi: "npm:1.4.7"
-  languageName: unknown
-  linkType: soft
 
 "wagmi@npm:1.4.7":
   version: 1.4.7

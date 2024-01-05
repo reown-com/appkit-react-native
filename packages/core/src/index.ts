@@ -20,6 +20,9 @@ export type {
   ConnectionControllerState
 } from './controllers/ConnectionController';
 
+export { ConnectorController } from './controllers/ConnectorController';
+export type { ConnectorControllerState } from './controllers/ConnectorController';
+
 export { SnackController } from './controllers/SnackController';
 export type { SnackControllerState } from './controllers/SnackController';
 
@@ -46,4 +49,4 @@ export { ConstantsUtil } from './utils/ConstantsUtil';
 export { CoreHelperUtil } from './utils/CoreHelperUtil';
 export { StorageUtil } from './utils/StorageUtil';
 
-export type * from './utils/TypeUtils';
+export type * from './utils/TypeUtil';

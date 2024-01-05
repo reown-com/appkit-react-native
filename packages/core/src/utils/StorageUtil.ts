@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { WcWallet } from './TypeUtils';
+import type { ConnectorType, WcWallet } from './TypeUtil';
 
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE';
 const W3M_RECENT = '@w3m/recent';
+const W3M_CONNECTED_CONNECTOR = '@w3m/connected_connector';
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -29,9 +30,9 @@ export const StorageUtil = {
     return undefined;
   },
 
-  deleteWalletConnectDeepLink() {
+  async removeWalletConnectDeepLink() {
     try {
-      AsyncStorage.removeItem(WC_DEEPLINK);
+      await AsyncStorage.removeItem(WC_DEEPLINK);
     } catch {
       console.info('Unable to delete WalletConnect deep link');
     }
@@ -70,5 +71,33 @@ export const StorageUtil = {
     }
 
     return [];
+  },
+
+  async setConnectedConnector(connectorType: ConnectorType) {
+    try {
+      await AsyncStorage.setItem(W3M_CONNECTED_CONNECTOR, JSON.stringify(connectorType));
+    } catch {
+      console.info('Unable to set Connected Connector');
+    }
+  },
+
+  async getConnectedConnector() {
+    try {
+      const connector = (await AsyncStorage.getItem(W3M_CONNECTED_CONNECTOR)) as ConnectorType;
+
+      return connector ? JSON.parse(connector) : undefined;
+    } catch {
+      console.info('Unable to get Connected Connector');
+    }
+
+    return undefined;
+  },
+
+  async removeConnectedConnector() {
+    try {
+      await AsyncStorage.removeItem(W3M_CONNECTED_CONNECTOR);
+    } catch {
+      console.info('Unable to remove Connected Connector');
+    }
   }
 };

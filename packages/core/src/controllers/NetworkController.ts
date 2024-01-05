@@ -1,5 +1,5 @@
 import { proxy, ref } from 'valtio';
-import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtils';
+import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil';
 import { PublicStateController } from './PublicStateController';
 
 // -- Types --------------------------------------------- //

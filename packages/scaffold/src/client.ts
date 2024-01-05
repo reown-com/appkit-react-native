@@ -4,19 +4,22 @@ import type {
   AccountControllerState,
   ApiControllerState,
   ConnectionControllerClient,
+  ModalControllerState,
   NetworkControllerClient,
   NetworkControllerState,
   OptionsControllerState,
   PublicStateControllerState,
   ThemeControllerState,
   ThemeMode,
-  ThemeVariables
+  ThemeVariables,
+  Connector
 } from '@web3modal/core-react-native';
 import {
   AccountController,
   ApiController,
   BlockchainApiController,
   ConnectionController,
+  ConnectorController,
   ModalController,
   NetworkController,
   OptionsController,
@@ -104,6 +107,10 @@ export class Web3ModalScaffold {
     return AccountController.subscribeConnection(callback);
   }
 
+  public setLoading(loading: ModalControllerState['loading']) {
+    ModalController.setLoading(loading);
+  }
+
   // -- Protected ----------------------------------------------------------------
   protected setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
     AccountController.setIsConnected(isConnected);
@@ -146,6 +153,19 @@ export class Web3ModalScaffold {
   protected resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
     NetworkController.resetNetwork();
   };
+
+  protected setConnectors: (typeof ConnectorController)['setConnectors'] = (
+    connectors: Connector[]
+  ) => {
+    ConnectorController.setConnectors(connectors);
+  };
+
+  protected addConnector: (typeof ConnectorController)['addConnector'] = (connector: Connector) => {
+    ConnectorController.addConnector(connector);
+  };
+
+  protected getConnectors: (typeof ConnectorController)['getConnectors'] = () =>
+    ConnectorController.getConnectors();
 
   protected resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {
     ConnectionController.resetWcConnection();

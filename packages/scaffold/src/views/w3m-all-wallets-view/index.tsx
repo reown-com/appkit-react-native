@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { ConnectionController, RouterController } from '@web3modal/core-react-native';
+import { useSnapshot } from 'valtio';
+import {
+  ConnectionController,
+  ConnectorController,
+  RouterController,
+  type WcWallet
+} from '@web3modal/core-react-native';
 import { FlexView, IconLink, SearchBar, Spacing, useTheme } from '@web3modal/ui-react-native';
 
 import styles from './styles';
@@ -10,6 +16,7 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function AllWalletsView() {
   const Theme = useTheme();
+  const { connectors } = useSnapshot(ConnectorController.state);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { maxWidth } = useCustomDimensions();
   const numColumns = 4;
@@ -17,6 +24,15 @@ export function AllWalletsView() {
   const itemWidth = Math.abs(Math.trunc(usableWidth / numColumns));
 
   const onInputChange = useDebounceCallback({ callback: setSearchQuery });
+
+  const onWalletPress = (wallet: WcWallet) => {
+    const connector = connectors.find(c => c.explorerId === wallet.id);
+    if (connector) {
+      RouterController.push('ConnectingExternal', { connector, wallet });
+    } else {
+      RouterController.push('ConnectingWalletConnect', { wallet });
+    }
+  };
 
   const onQrCodePress = () => {
     ConnectionController.removePressedWallet();
@@ -53,11 +69,18 @@ export function AllWalletsView() {
   const listTemplate = () => {
     if (searchQuery) {
       return (
-        <AllWalletsSearch columns={numColumns} itemWidth={itemWidth} searchQuery={searchQuery} />
+        <AllWalletsSearch
+          columns={numColumns}
+          itemWidth={itemWidth}
+          searchQuery={searchQuery}
+          onItemPress={onWalletPress}
+        />
       );
     }
 
-    return <AllWalletsList columns={numColumns} itemWidth={itemWidth} />;
+    return (
+      <AllWalletsList columns={numColumns} itemWidth={itemWidth} onItemPress={onWalletPress} />
+    );
   };
 
   return (

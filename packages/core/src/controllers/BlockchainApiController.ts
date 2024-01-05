@@ -2,7 +2,7 @@ import { FetchUtil } from '../utils/FetchUtil';
 import type {
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse
-} from '../utils/TypeUtils';
+} from '../utils/TypeUtil';
 import { OptionsController } from './OptionsController';
 
 // -- Helpers ------------------------------------------- //

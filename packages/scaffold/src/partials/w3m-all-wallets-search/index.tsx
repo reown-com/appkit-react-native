@@ -1,12 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
-import {
-  ApiController,
-  AssetUtil,
-  RouterController,
-  type WcWallet
-} from '@web3modal/core-react-native';
+import { ApiController, AssetUtil, type WcWallet } from '@web3modal/core-react-native';
 import {
   CardSelect,
   CardSelectHeight,
@@ -20,12 +15,18 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export interface AllWalletsSearchProps {
-  searchQuery?: string;
   columns: number;
+  onItemPress: (wallet: WcWallet) => void;
   itemWidth?: number;
+  searchQuery?: string;
 }
 
-export function AllWalletsSearch({ searchQuery, columns, itemWidth }: AllWalletsSearchProps) {
+export function AllWalletsSearch({
+  searchQuery,
+  columns,
+  itemWidth,
+  onItemPress
+}: AllWalletsSearchProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const { search, installed } = useSnapshot(ApiController.state);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
@@ -43,7 +44,7 @@ export function AllWalletsSearch({ searchQuery, columns, itemWidth }: AllWallets
           imageSrc={AssetUtil.getWalletImage(item)}
           imageHeaders={imageHeaders}
           name={item?.name ?? 'Unknown'}
-          onPress={() => RouterController.push('ConnectingWalletConnect', { wallet: item })}
+          onPress={() => onItemPress(item)}
           installed={!!isInstalled}
         />
       </View>

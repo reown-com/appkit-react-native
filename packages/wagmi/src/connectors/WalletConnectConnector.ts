@@ -75,23 +75,11 @@ type WalletConnectOptions = {
   isNewChainsStale?: boolean;
   /**
    * Metadata for your app.
-   * @link https://docs.walletconnect.com/2.0/javascript/providers/ethereum#initialization
+   * @link https://docs.walletconnect.com/web3modal/react-native/about#implementation
    */
   metadata?: EthereumProviderOptions['metadata'];
   /**
-   * Whether or not to show the QR code modal.
-   * @default true
-   * @link https://docs.walletconnect.com/2.0/javascript/providers/ethereum#initialization
-   */
-  showQrModal?: EthereumProviderOptions['showQrModal'];
-  /**
-   * Options of QR code modal.
-   * @link https://docs.walletconnect.com/2.0/web/walletConnectModal/modal/options
-   */
-  qrModalOptions?: EthereumProviderOptions['qrModalOptions'];
-  /**
    * Option to override default relay url.
-   * @link https://docs.walletconnect.com/2.0/web/providers/ethereum
    */
   relayUrl?: string;
 };
@@ -305,10 +293,10 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
   async _initProvider() {
     const [defaultChain, ...optionalChains] = this.chains.map(({ id }) => id);
     if (defaultChain) {
-      const { projectId, showQrModal = true, qrModalOptions, metadata, relayUrl } = this.options;
+      const { projectId, metadata, relayUrl } = this.options;
       this._provider = await EthereumProvider.init({
-        showQrModal,
-        qrModalOptions,
+        showQrModal: false,
+        qrModalOptions: undefined,
         projectId,
         optionalMethods: OPTIONAL_METHODS,
         optionalEvents: OPTIONAL_EVENTS,

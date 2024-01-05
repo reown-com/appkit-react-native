@@ -7,6 +7,7 @@ import { PublicStateController } from './PublicStateController';
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
   open: boolean;
+  loading: boolean;
 }
 
 export interface ModalControllerArguments {
@@ -17,7 +18,8 @@ export interface ModalControllerArguments {
 
 // -- State --------------------------------------------- //
 const state = proxy<ModalControllerState>({
-  open: false
+  open: false,
+  loading: false
 });
 
 // -- Controller ---------------------------------------- //
@@ -39,5 +41,9 @@ export const ModalController = {
   close() {
     state.open = false;
     PublicStateController.set({ open: false });
+  },
+
+  setLoading(loading: ModalControllerState['loading']) {
+    state.loading = loading;
   }
 };

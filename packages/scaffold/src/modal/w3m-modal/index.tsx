@@ -7,10 +7,9 @@ import { ApiController, ModalController, RouterController } from '@web3modal/cor
 
 import { Web3Router } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
-
-import styles from './styles';
 import { Snackbar } from '../../partials/w3m-snackbar';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import styles from './styles';
 
 export function Web3Modal() {
   const { open } = useSnapshot(ModalController.state);

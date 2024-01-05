@@ -1,6 +1,6 @@
 import { proxy, subscribe as sub } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
-import type { CaipNetworkId } from '../utils/TypeUtils.js';
+import type { CaipNetworkId } from '../utils/TypeUtil.js';
 
 // -- Types --------------------------------------------- //
 export interface PublicStateControllerState {

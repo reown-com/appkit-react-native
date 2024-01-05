@@ -12,6 +12,7 @@ import { NetworksView } from '../../views/w3m-networks-view';
 import { WhatIsNetworkView } from '../../views/w3m-what-is-a-network-view';
 import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
 import { UiUtil } from '../../utils/UiUtil';
+import { ConnectingExternalView } from '../../views/w3m-connecting-external-view';
 
 export function Web3Router() {
   const { view } = useSnapshot(RouterController.state);
@@ -28,6 +29,8 @@ export function Web3Router() {
         return AllWalletsView;
       case 'ConnectingWalletConnect':
         return ConnectingView;
+      case 'ConnectingExternal':
+        return ConnectingExternalView;
       case 'WhatIsAWallet':
         return WhatIsAWalletView;
       case 'WhatIsANetwork':

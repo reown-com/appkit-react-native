@@ -1,6 +1,6 @@
 import { Linking, Platform } from 'react-native';
 import { ConstantsUtil } from './ConstantsUtil';
-import type { CaipAddress, DataWallet, LinkingRecord } from './TypeUtils';
+import type { CaipAddress, DataWallet, LinkingRecord } from './TypeUtil';
 
 // -- Helpers -----------------------------------------------------------------
 async function isAppInstalledIos(deepLink?: string): Promise<boolean> {

@@ -5,11 +5,11 @@ export {
   W3mConnectButton,
   Web3Modal
 } from '@web3modal/scaffold-react-native';
+import { ConstantsUtil } from '@web3modal/scaffold-utils-react-native';
 export { defaultWagmiConfig } from './utils/defaultWagmiConfig';
 import { useEffect, useState } from 'react';
 import type { Web3ModalOptions } from './client';
 import { Web3Modal } from './client';
-import { VERSION } from './utils/constants';
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from './client';
@@ -21,7 +21,10 @@ let modal: Web3Modal | undefined;
 
 export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
-    modal = new Web3Modal({ ...options, _sdkVersion: `react-native-wagmi-${VERSION}` });
+    modal = new Web3Modal({
+      ...options,
+      _sdkVersion: `react-native-wagmi-${ConstantsUtil.VERSION}`
+    });
   }
 
   return modal;

@@ -1,12 +1,20 @@
 import { subscribeKey as subKey } from 'valtio/utils';
-import { proxy, ref } from 'valtio/vanilla';
+import { proxy, ref } from 'valtio';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
-import type { WcWallet } from '../utils/TypeUtils';
+import type { Connector, WcWallet } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
+export interface ConnectExternalOptions {
+  id: Connector['id'];
+  type: Connector['type'];
+  provider?: Connector['provider'];
+  info?: Connector['info'];
+}
+
 export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>;
+  connectExternal?: (options: ConnectExternalOptions) => Promise<void>;
   disconnect: () => Promise<void>;
 }
 
@@ -58,7 +66,13 @@ export const ConnectionController = {
     state.wcPromise = this._getClient().connectWalletConnect(uri => {
       state.wcUri = uri;
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry();
+      StorageUtil.setConnectedConnector('WALLET_CONNECT');
     });
+  },
+
+  async connectExternal(options: ConnectExternalOptions) {
+    await this._getClient().connectExternal?.(options);
+    await StorageUtil.setConnectedConnector(options.type);
   },
 
   resetWcConnection() {
@@ -67,7 +81,8 @@ export const ConnectionController = {
     state.wcPromise = undefined;
     state.wcLinking = undefined;
     state.pressedWallet = undefined;
-    StorageUtil.deleteWalletConnectDeepLink();
+    StorageUtil.removeWalletConnectDeepLink();
+    StorageUtil.removeConnectedConnector();
   },
 
   setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {

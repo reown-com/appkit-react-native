@@ -6,13 +6,15 @@ export function Header() {
   const { view, history } = useSnapshot(RouterController.state);
 
   const headings = () => {
-    const name = RouterController.state.data?.wallet?.name;
+    const connectorName = RouterController.state.data?.connector?.name;
+    const walletName = RouterController.state.data?.wallet?.name;
     const networkName = RouterController.state.data?.network?.name;
 
     return {
       Connect: 'Connect wallet',
       Account: undefined,
-      ConnectingWalletConnect: name ?? 'WalletConnect',
+      ConnectingWalletConnect: walletName ?? 'WalletConnect',
+      ConnectingExternal: connectorName ?? 'Connect Wallet',
       Networks: 'Select network',
       SwitchNetwork: networkName ?? 'Switch network',
       AllWallets: 'All wallets',
