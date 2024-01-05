@@ -65,7 +65,7 @@ __metadata:
     "@storybook/react-webpack5": "npm:^7.4.6"
     "@storybook/testing-library": "npm:^0.2.2"
     "@storybook/theming": "npm:^7.4.6"
-    "@web3modal/ui-react-native": "npm:1.0.2-canary.4"
+    "@web3modal/ui-react-native": "npm:1.0.1"
     babel-plugin-react-native-web: "npm:^0.19.7"
     babel-plugin-react-require: "npm:^4.0.1"
     metro-react-native-babel-preset: "npm:^0.77.0"
@@ -95,7 +95,7 @@ __metadata:
     "@types/react": "npm:^18.0.24"
     "@types/react-test-renderer": "npm:^18.0.0"
     "@walletconnect/react-native-compat": "npm:2.10.5"
-    "@web3modal/wagmi-react-native": "npm:1.0.2-canary.4"
+    "@web3modal/wagmi-react-native": "npm:1.0.1"
     babel-jest: "npm:^29.2.1"
     babel-plugin-module-resolver: "npm:^5.0.0"
     eslint: "npm:^8.19.0"
@@ -125,7 +125,7 @@ __metadata:
     "@types/react": "npm:~18.2.14"
     "@types/react-native": "npm:0.72.2"
     "@walletconnect/react-native-compat": "npm:2.10.5"
-    "@web3modal/wagmi-react-native": "npm:1.0.2-canary.4"
+    "@web3modal/wagmi-react-native": "npm:1.0.1"
     babel-plugin-module-resolver: "npm:^5.0.0"
     expo: "npm:^49.0.0"
     expo-clipboard: "npm:~4.3.1"
@@ -9193,7 +9193,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/core-react-native@npm:1.0.2-canary.4, @web3modal/core-react-native@workspace:packages/core":
+"@web3modal/core-react-native@npm:1.0.1, @web3modal/core-react-native@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@web3modal/core-react-native@workspace:packages/core"
   dependencies:
@@ -9206,12 +9206,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/scaffold-react-native@npm:1.0.2-canary.4, @web3modal/scaffold-react-native@workspace:packages/scaffold":
+"@web3modal/core-react-native@npm:1.0.2-canary.7":
+  version: 1.0.2-canary.7
+  resolution: "@web3modal/core-react-native@npm:1.0.2-canary.7"
+  dependencies:
+    valtio: "npm:1.10.5"
+  peerDependencies:
+    "@react-native-async-storage/async-storage": ">=1.17.0"
+    "@walletconnect/react-native-compat": ">=2.10.5"
+    react: ">=17"
+    react-native: ">=0.68.5"
+  checksum: 22ead5e925d4b0181fed2df5d36179a30fc6d197b3c10a6e2114bd86e1be1fefc07bc8666d2adefc215d93f1690dcdcbaa63077f740dd262b84e2dd6e7a1d791
+  languageName: node
+  linkType: hard
+
+"@web3modal/scaffold-react-native@npm:1.0.1, @web3modal/scaffold-react-native@workspace:packages/scaffold":
   version: 0.0.0-use.local
   resolution: "@web3modal/scaffold-react-native@workspace:packages/scaffold"
   dependencies:
-    "@web3modal/core-react-native": "npm:1.0.2-canary.4"
-    "@web3modal/ui-react-native": "npm:1.0.2-canary.4"
+    "@web3modal/core-react-native": "npm:1.0.1"
+    "@web3modal/ui-react-native": "npm:1.0.1"
   peerDependencies:
     react: ">=17"
     react-native: ">=0.68.5"
@@ -9219,15 +9233,38 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/scaffold-utils-react-native@npm:1.0.2-canary.4, @web3modal/scaffold-utils-react-native@workspace:packages/scaffold-utils":
+"@web3modal/scaffold-react-native@npm:1.0.2-canary.7":
+  version: 1.0.2-canary.7
+  resolution: "@web3modal/scaffold-react-native@npm:1.0.2-canary.7"
+  dependencies:
+    "@web3modal/core-react-native": "npm:1.0.2-canary.7"
+    "@web3modal/ui-react-native": "npm:1.0.2-canary.7"
+  peerDependencies:
+    react: ">=17"
+    react-native: ">=0.68.5"
+    react-native-modal: ">=13"
+  checksum: 10ad67725b81a09487d3b5868eb36800e5c7c5837ea661919c26228f6c1c6bf4281a32e064c8fbb1f53ad86c6b1a58dcffd2a9aad157df72498e88c65b4603ba
+  languageName: node
+  linkType: hard
+
+"@web3modal/scaffold-utils-react-native@npm:1.0.2-canary.7":
+  version: 1.0.2-canary.7
+  resolution: "@web3modal/scaffold-utils-react-native@npm:1.0.2-canary.7"
+  dependencies:
+    "@web3modal/scaffold-react-native": "npm:1.0.2-canary.7"
+  checksum: 4df0c2d357d392348f46921e4756b5389749c817426b0663e24b3ddb8b907f34d15137bbc57d152e7ab4d93070f3bb5123898c6870404ed1a0d5ad1a6d234428
+  languageName: node
+  linkType: hard
+
+"@web3modal/scaffold-utils-react-native@workspace:packages/scaffold-utils":
   version: 0.0.0-use.local
   resolution: "@web3modal/scaffold-utils-react-native@workspace:packages/scaffold-utils"
   dependencies:
-    "@web3modal/scaffold-react-native": "npm:1.0.2-canary.4"
+    "@web3modal/scaffold-react-native": "npm:1.0.1"
   languageName: unknown
   linkType: soft
 
-"@web3modal/ui-react-native@npm:1.0.2-canary.4, @web3modal/ui-react-native@workspace:packages/ui":
+"@web3modal/ui-react-native@npm:1.0.1, @web3modal/ui-react-native@workspace:packages/ui":
   version: 0.0.0-use.local
   resolution: "@web3modal/ui-react-native@workspace:packages/ui"
   dependencies:
@@ -9239,12 +9276,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/wagmi-react-native@npm:1.0.2-canary.4, @web3modal/wagmi-react-native@workspace:packages/wagmi":
+"@web3modal/ui-react-native@npm:1.0.2-canary.7":
+  version: 1.0.2-canary.7
+  resolution: "@web3modal/ui-react-native@npm:1.0.2-canary.7"
+  dependencies:
+    qrcode: "npm:1.5.3"
+  peerDependencies:
+    react: ">=17"
+    react-native: ">=0.68.5"
+    react-native-svg: ">=13"
+  checksum: 1ce5a42b80dd8bf61d1a0b0c0d0bc08aafb161fa6ea14f8449af9b10ec0bde44f670939bcd910d11accb7816afea2c4608712a983ffc77ec3a5332882d9c2389
+  languageName: node
+  linkType: hard
+
+"@web3modal/wagmi-react-native@npm:1.0.1, @web3modal/wagmi-react-native@workspace:packages/wagmi":
   version: 0.0.0-use.local
   resolution: "@web3modal/wagmi-react-native@workspace:packages/wagmi"
   dependencies:
-    "@web3modal/scaffold-react-native": "npm:1.0.2-canary.4"
-    "@web3modal/scaffold-utils-react-native": "npm:1.0.2-canary.4"
+    "@web3modal/scaffold-react-native": "npm:1.0.1"
+    "@web3modal/scaffold-utils-react-native": "npm:1.0.2-canary.7"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
     "@react-native-community/netinfo": "*"
