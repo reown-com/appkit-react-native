@@ -1,5 +1,23 @@
 # @apps/gallery
 
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [2b52099]
+- Updated dependencies [2b52099]
+- Updated dependencies
+- Updated dependencies [2b52099]
+- Updated dependencies [2b52099]
+  - @web3modal/ui-react-native@1.1.0
+
+## 1.0.3-canary.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @web3modal/ui-react-native@1.1.0-canary.0
+
 ## 1.0.2
 
 ### Patch Changes
