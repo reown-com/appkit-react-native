@@ -2,7 +2,7 @@ name: expo-update
 on:
   push:
     branches:
-      - V1
+      - main
 
 jobs:
   update:
