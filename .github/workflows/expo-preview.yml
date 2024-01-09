@@ -2,7 +2,7 @@ name: expo-preview
 on:
   pull_request:
     branches:
-      - V1
+      - main
 
 jobs:
   preview:
