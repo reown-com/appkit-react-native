@@ -1,6 +1,5 @@
-
 name: 🐛 Bug Report
-description: Report a reproducible bug or regression in @web3modal/react-native.
+description: Report a reproducible bug or regression in Web3Modal for React Native.
 title: '[bug]: '
 labels: ['bug', 'needs review']
 body:
@@ -19,8 +18,8 @@ body:
     id: version
     attributes:
       label: Web3Modal SDK version
-      description: What is the latest version of @web3modal/react-native that this issue reproduces on?
-      placeholder: ex. 1.0.0-alpha.5
+      description: What is the latest version of Web3Modal SDK that this issue reproduces on?
+      placeholder: ex. @web3modal/wagmi-react-native 1.0.0
     validations:
       required: true
   - type: textarea

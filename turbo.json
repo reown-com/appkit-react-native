@@ -1,0 +1,33 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "pipeline": {
+    "build": {
+      "outputs": ["lib/**"],
+      "dependsOn": ["^build"]
+    },
+    "build:gallery": {
+      "dependsOn": ["build", "^build:gallery"],
+      "outputs": ["out/**"]
+    },
+    "dev:gallery": {
+      "dependsOn": ["build", "^dev:gallery"],
+      "cache": false
+    },
+    "test": {
+      "dependsOn": ["^test"],
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": ["^lint"],
+      "cache": false
+    },
+    "prettier": {
+      "dependsOn": ["^prettier"],
+      "cache": false
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

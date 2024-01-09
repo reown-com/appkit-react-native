@@ -1,40 +1,13 @@
-name: CI
+name: build
 on:
   push:
     branches:
-      - main
+      - V1
   pull_request:
     branches:
-      - main
+      - V1
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Lint files
-        run: yarn lint
-
-      - name: Typecheck files
-        run: yarn typecheck
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Run unit tests
-        run: yarn test --maxWorkers=2 --coverage
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -45,29 +18,4 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Build package
-        run: yarn prepack
-
-  update:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🏗 Setup repo
-        uses: actions/checkout@v3
-
-      - name: 📦 Setup node & Install dependencies
-        uses: ./.github/actions/setup
-
-      - name: 🏗 Setup EAS
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-
-      - name: 🚀 Create preview
-        uses: expo/expo-github-action/preview@v8
-        id: preview
-        with:
-          command: eas update --auto
-          comment: true
-          working-directory: example/
-        env:
-          PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
+        run: yarn pre-publish
