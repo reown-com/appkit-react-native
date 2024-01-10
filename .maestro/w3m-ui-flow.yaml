@@ -8,7 +8,7 @@ appId: com.walletconnect.web3modal.rnclisdk
 
 - tapOn: 'Connect'
 
-## Assuming that MetaMask is one of the first wallets in the list
+# Assuming that MetaMask is one of the first wallets in the list
 - assertVisible:
     text: 'MetaMask'
 
@@ -33,7 +33,7 @@ appId: com.walletconnect.web3modal.rnclisdk
 - tapOn:
     id: 'input-search'
 
-## Get a wallet that doesn't come in the first page
+# Get a wallet that doesn't come in the first page
 - inputText: 'Abra Wallet'
 
 - waitForAnimationToEnd:

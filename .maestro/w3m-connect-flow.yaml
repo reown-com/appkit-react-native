@@ -24,8 +24,8 @@ appId: com.walletconnect.web3modal.rnclisdk
     link: https://react-wallet.walletconnect.com/walletconnect
     browser: true
 
-## Hack until maestro supports accesing clipboard
-## https://github.com/mobile-dev-inc/maestro/issues/830
+# Hack until maestro supports accesing clipboard
+# https://github.com/mobile-dev-inc/maestro/issues/830
 - tapOn:
     text: 'e.g. wc:a281567bb3e4...'
 
