@@ -7,6 +7,7 @@ import { WagmiConfig } from 'wagmi';
 import {
   Web3Modal,
   W3mButton,
+  W3mNetworkButton,
   createWeb3Modal,
   defaultWagmiConfig
 } from '@web3modal/wagmi-react-native';
@@ -84,6 +85,7 @@ export default function Native() {
           loadingLabel="Connecting..."
           balance="show"
         />
+        <W3mNetworkButton />
         <AccountView />
         <ActionsView />
         <Web3Modal />

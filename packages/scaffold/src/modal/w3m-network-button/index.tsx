@@ -23,7 +23,6 @@ export function W3mNetworkButton({ disabled, style }: W3mNetworkButtonProps) {
       imageSrc={AssetUtil.getNetworkImage(caipNetwork)}
       imageHeaders={ApiController._getApiHeaders()}
       disabled={disabled}
-      variant="shade"
       style={style}
       onPress={() => ModalController.open({ view: 'Networks' })}
     >

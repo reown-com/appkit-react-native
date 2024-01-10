@@ -1,47 +1,5 @@
 import { StyleSheet } from 'react-native';
 import { Spacing } from '../../utils/ThemeUtil';
-import type { ButtonType, ColorType, ThemeKeys } from '../../utils/TypesUtil';
-
-export const getThemedStyle = (
-  theme: { [key in ThemeKeys]: string },
-  variant: Exclude<ButtonType, 'accent'>,
-  pressed: boolean,
-  disabled?: boolean
-) => {
-  if (disabled) {
-    return {
-      borderColor: theme['gray-glass-005'],
-      backgroundColor: theme['gray-glass-020']
-    };
-  }
-
-  if (pressed) {
-    return {
-      borderColor: variant === 'fill' ? theme['accent-090'] : theme['gray-glass-010'],
-      backgroundColor: variant === 'fill' ? theme['accent-020'] : theme['gray-glass-020']
-    };
-  }
-
-  return {
-    borderColor: theme['gray-glass-010'],
-    backgroundColor: variant === 'fill' ? theme['accent-100'] : theme['gray-glass-010']
-  };
-};
-
-export const getTextColor = (
-  variant: Exclude<ButtonType, 'accent'>,
-  disabled?: boolean
-): ColorType => {
-  if (disabled) {
-    return 'fg-300';
-  }
-
-  if (variant === 'fill') {
-    return 'inverse-100';
-  }
-
-  return 'fg-100';
-};
 
 export default StyleSheet.create({
   container: {
