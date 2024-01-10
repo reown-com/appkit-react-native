@@ -3,6 +3,7 @@ export {
   W3mAccountButton,
   W3mButton,
   W3mConnectButton,
+  W3mNetworkButton,
   Web3Modal
 } from '@web3modal/scaffold-react-native';
 import { ConstantsUtil } from '@web3modal/scaffold-utils-react-native';
