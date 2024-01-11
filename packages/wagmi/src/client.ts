@@ -24,9 +24,13 @@ import type {
   Token
 } from '@web3modal/scaffold-react-native';
 import { Web3ModalScaffold } from '@web3modal/scaffold-react-native';
-import { StorageUtil } from '@web3modal/core-react-native';
 
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils-react-native';
+import {
+  ConstantsUtil,
+  HelpersUtil,
+  PresetsUtil,
+  StorageUtil
+} from '@web3modal/scaffold-utils-react-native';
 import { getCaipDefaultChain } from './utils/helpers';
 
 // -- Types ---------------------------------------------------------------------
