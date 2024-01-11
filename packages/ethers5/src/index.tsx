@@ -82,3 +82,31 @@ export function useWeb3ModalProvider() {
     walletProviderType
   };
 }
+
+export function useDisconnect() {
+  async function disconnect() {
+    await modal?.disconnect();
+  }
+
+  return {
+    disconnect
+  };
+}
+
+export function useWeb3ModalAccount() {
+  const { address, isConnected, chainId } = useSnapshot(EthersStoreUtil.state);
+
+  return {
+    address,
+    isConnected,
+    chainId
+  };
+}
+
+export function useWeb3ModalError() {
+  const { error } = useSnapshot(EthersStoreUtil.state);
+
+  return {
+    error
+  };
+}
