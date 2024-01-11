@@ -598,6 +598,19 @@ export class Web3Modal extends Web3ModalScaffold {
 
         if (WalletConnectProvider) {
           try {
+            const ns = WalletConnectProvider.signer?.session?.namespaces;
+            const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods;
+            const nsChains = this.getChainsIds(ns?.[ConstantsUtil.EIP155]?.chains);
+
+            const isChainApproved = nsChains.includes(chainId);
+
+            if (!isChainApproved && nsMethods?.includes('wallet_addEthereumChain')) {
+              await EthersHelpersUtil.addEthereumChain(
+                WalletConnectProvider as unknown as Provider,
+                chain
+              );
+            }
+
             await WalletConnectProvider.request({
               method: 'wallet_switchEthereumChain',
               params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
@@ -605,23 +618,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
             EthersStoreUtil.setChainId(chainId);
           } catch (switchError: any) {
-            console.log(switchError);
-            if (
-              switchError.code === EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === EthersConstantsUtil.ERROR_CODE_DEFAULT ||
-              switchError?.message?.contains(
-                EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-              ) ||
-              switchError?.message?.contains('Unrecognized chain ID')
-            ) {
-              console.log('ADD CHAIN');
-              await EthersHelpersUtil.addEthereumChain(
-                WalletConnectProvider as unknown as Provider,
-                chain
-              );
-            } else {
-              throw new Error('Chain is not supported');
-            }
+            throw new Error('Chain is not supported');
           }
         }
       } else if (providerType === coinbaseType && chain) {
@@ -676,5 +673,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     this.setConnectors(w3mConnectors);
+  }
+
+  private getChainsIds(chains?: string[]) {
+    if (!chains) return [];
+    const chainIds = chains?.map(chain => parseInt(chain.split(':')[1] || ''));
+
+    return chainIds ?? [];
   }
 }

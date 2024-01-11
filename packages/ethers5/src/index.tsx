@@ -1,4 +1,6 @@
 import '@walletconnect/react-native-compat';
+import { useSnapshot } from 'valtio';
+import { ethers } from 'ethers';
 import '@ethersproject/shims';
 export {
   W3mAccountButton,
@@ -7,7 +9,7 @@ export {
   W3mNetworkButton,
   Web3Modal
 } from '@web3modal/scaffold-react-native';
-import { ConstantsUtil } from '@web3modal/scaffold-utils-react-native';
+import { ConstantsUtil, EthersStoreUtil } from '@web3modal/scaffold-utils-react-native';
 export { defaultConfig } from './utils/defaultConfig';
 import { useEffect, useState } from 'react';
 import type { Web3ModalOptions } from './client';
@@ -67,4 +69,16 @@ export function useWeb3ModalState() {
   }, []);
 
   return state;
+}
+
+export function useWeb3ModalProvider() {
+  const { provider, providerType } = useSnapshot(EthersStoreUtil.state);
+
+  const walletProvider = provider as ethers.providers.ExternalProvider | undefined;
+  const walletProviderType = providerType;
+
+  return {
+    walletProvider,
+    walletProviderType
+  };
 }
