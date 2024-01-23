@@ -158,6 +158,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
           try {
             this.setCoinbaseProvider(ethersConfig);
+            // Don't call if it's connected
             await CoinbaseProvider.request({ method: 'eth_requestAccounts' });
           } catch (error) {
             EthersStoreUtil.setError(error);

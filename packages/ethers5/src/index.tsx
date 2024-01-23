@@ -27,7 +27,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({
       ...options,
-      _sdkVersion: `react-native-wagmi-${ConstantsUtil.VERSION}`
+      _sdkVersion: `react-native-ethers5-${ConstantsUtil.VERSION}`
     });
   }
 
