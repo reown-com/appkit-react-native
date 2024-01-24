@@ -61,12 +61,7 @@ export function ConnectView() {
       return null;
     }
 
-    const list = filterOutRecentWallets([
-      ...installed,
-      ...featured,
-      ...(customWallets ?? []),
-      ...recommended
-    ]);
+    const list = filterOutRecentWallets([...installed, ...featured, ...recommended]);
 
     return list
       .slice(0, UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT)
@@ -81,6 +76,24 @@ export function ConnectView() {
           installed={!!installed.find(installedWallet => installedWallet.id === wallet.id)}
         />
       ));
+  };
+
+  const customWalletsTemplate = () => {
+    if (!isWalletConnectEnabled || !customWallets?.length) {
+      return null;
+    }
+
+    const list = filterOutRecentWallets([...customWallets]);
+
+    return list.map(wallet => (
+      <ListWallet
+        key={wallet.id}
+        imageSrc={wallet.image_url}
+        name={wallet.name}
+        onPress={() => onWalletPress(wallet)}
+        style={styles.item}
+      />
+    ));
   };
 
   const connectorsTemplate = () => {
@@ -145,6 +158,7 @@ export function ConnectView() {
       <FlexView padding={['xs', 's', '2xl', 's']}>
         {recentTemplate()}
         {walletsTemplate()}
+        {customWalletsTemplate()}
         {connectorsTemplate()}
         {allWalletsButton()}
       </FlexView>

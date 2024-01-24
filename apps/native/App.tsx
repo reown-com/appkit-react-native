@@ -67,7 +67,9 @@ const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 const customWallets = [
   {
     id: 'rn-wallet',
-    name: 'rn-wallet',
+    name: 'RN Wallet',
+    image_url:
+      'https://docs.walletconnect.com/assets/images/web3walletLogo-54d3b546146931ceaf47a3500868a73a.png',
     mobile_link: 'rn-web3wallet://'
   }
 ];
