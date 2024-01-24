@@ -36,6 +36,7 @@ export interface LibraryOptions {
   includeWalletIds?: OptionsControllerState['includeWalletIds'];
   excludeWalletIds?: OptionsControllerState['excludeWalletIds'];
   featuredWalletIds?: OptionsControllerState['featuredWalletIds'];
+  customWallets?: OptionsControllerState['customWallets'];
   defaultChain?: NetworkControllerState['caipNetwork'];
   tokens?: OptionsControllerState['tokens'];
   _sdkVersion: ApiControllerState['sdkVersion'];
@@ -190,6 +191,7 @@ export class Web3ModalScaffold {
     OptionsController.setExcludeWalletIds(options.excludeWalletIds);
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
     OptionsController.setTokens(options.tokens);
+    OptionsController.setCustomWallets(options.customWallets);
 
     if (options.clipboardClient) {
       OptionsController.setClipboardClient(options.clipboardClient);

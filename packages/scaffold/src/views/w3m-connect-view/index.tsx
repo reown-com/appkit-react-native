@@ -5,6 +5,7 @@ import {
   AssetUtil,
   ConnectionController,
   ConnectorController,
+  OptionsController,
   RouterController
 } from '@web3modal/core-react-native';
 import type { ConnectorType, WcWallet } from '@web3modal/core-react-native';
@@ -17,6 +18,7 @@ export function ConnectView() {
   const { recommended, featured, installed, count } = useSnapshot(ApiController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const { connectors } = useSnapshot(ConnectorController.state);
+  const { customWallets } = useSnapshot(OptionsController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const { padding } = useCustomDimensions();
   const isWalletConnectEnabled = connectors.find(c => c.type === 'WALLET_CONNECT');
@@ -74,6 +76,24 @@ export function ConnectView() {
           installed={!!installed.find(installedWallet => installedWallet.id === wallet.id)}
         />
       ));
+  };
+
+  const customWalletsTemplate = () => {
+    if (!isWalletConnectEnabled || !customWallets?.length) {
+      return null;
+    }
+
+    const list = filterOutRecentWallets([...customWallets]);
+
+    return list.map(wallet => (
+      <ListWallet
+        key={wallet.id}
+        imageSrc={wallet.image_url}
+        name={wallet.name}
+        onPress={() => onWalletPress(wallet)}
+        style={styles.item}
+      />
+    ));
   };
 
   const connectorsTemplate = () => {
@@ -138,6 +158,7 @@ export function ConnectView() {
       <FlexView padding={['xs', 's', '2xl', 's']}>
         {recentTemplate()}
         {walletsTemplate()}
+        {customWalletsTemplate()}
         {connectorsTemplate()}
         {allWalletsButton()}
       </FlexView>

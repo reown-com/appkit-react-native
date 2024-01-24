@@ -1,5 +1,5 @@
 import { proxy, ref } from 'valtio';
-import type { ProjectId, Tokens } from '../utils/TypeUtil';
+import type { CustomWallet, ProjectId, Tokens } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
 export interface ClipboardClient {
@@ -12,6 +12,7 @@ export interface OptionsControllerState {
   includeWalletIds?: string[];
   excludeWalletIds?: string[];
   featuredWalletIds?: string[];
+  customWallets?: CustomWallet[];
   tokens?: Tokens;
 }
 
@@ -46,6 +47,10 @@ export const OptionsController = {
 
   setTokens(tokens: OptionsControllerState['tokens']) {
     state.tokens = tokens;
+  },
+
+  setCustomWallets(customWallets: OptionsControllerState['customWallets']) {
+    state.customWallets = customWallets;
   },
 
   isClipboardAvailable() {
