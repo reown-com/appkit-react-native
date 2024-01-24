@@ -5,6 +5,7 @@ import {
   AssetUtil,
   ConnectionController,
   ConnectorController,
+  OptionsController,
   RouterController
 } from '@web3modal/core-react-native';
 import type { ConnectorType, WcWallet } from '@web3modal/core-react-native';
@@ -17,6 +18,7 @@ export function ConnectView() {
   const { recommended, featured, installed, count } = useSnapshot(ApiController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const { connectors } = useSnapshot(ConnectorController.state);
+  const { customWallets } = useSnapshot(OptionsController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const { padding } = useCustomDimensions();
   const isWalletConnectEnabled = connectors.find(c => c.type === 'WALLET_CONNECT');
@@ -59,7 +61,12 @@ export function ConnectView() {
       return null;
     }
 
-    const list = filterOutRecentWallets([...installed, ...featured, ...recommended]);
+    const list = filterOutRecentWallets([
+      ...installed,
+      ...featured,
+      ...(customWallets ?? []),
+      ...recommended
+    ]);
 
     return list
       .slice(0, UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT)

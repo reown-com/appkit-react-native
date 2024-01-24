@@ -64,11 +64,20 @@ const clipboardClient = {
 
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 
+const customWallets = [
+  {
+    id: 'rn-wallet',
+    name: 'rn-wallet',
+    mobile_link: 'rn-web3wallet://'
+  }
+];
+
 createWeb3Modal({
   projectId,
   chains,
   wagmiConfig,
-  clipboardClient
+  clipboardClient,
+  customWallets
 });
 
 export default function Native() {
