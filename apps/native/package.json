@@ -18,7 +18,7 @@
     "@react-native-async-storage/async-storage": "1.18.2",
     "@react-native-community/netinfo": "9.3.10",
     "@walletconnect/react-native-compat": "2.10.5",
-    "@web3modal/wagmi-react-native": "1.2.0-canary.0",
+    "@web3modal/wagmi-react-native": "1.1.1",
     "expo": "^49.0.0",
     "expo-clipboard": "~4.3.1",
     "expo-status-bar": "~1.6.0",

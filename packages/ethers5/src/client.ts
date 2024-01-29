@@ -9,6 +9,7 @@ import type {
   PublicStateControllerState,
   Token
 } from '@web3modal/scaffold-react-native';
+import { ethers, utils } from 'ethers';
 import { Web3ModalScaffold } from '@web3modal/scaffold-react-native';
 import {
   ConstantsUtil,
@@ -25,7 +26,6 @@ import type {
   Provider,
   EthersStoreUtilState
 } from '@web3modal/scaffold-utils-react-native';
-import { ethers, utils } from 'ethers';
 import {
   EthersConstantsUtil,
   EthersHelpersUtil,
@@ -35,7 +35,7 @@ import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
-  ethersConfig: ProviderType;
+  config: ProviderType;
   chains: Chain[];
   defaultChain?: Chain;
   chainImages?: Record<number, string>;
@@ -57,7 +57,7 @@ interface Web3ModalState extends PublicStateControllerState {
 }
 
 interface ExternalProvider extends EthereumProvider {
-  _addresses?: string[];
+  address?: string;
 }
 
 // -- Client --------------------------------------------------------------------
@@ -77,11 +77,11 @@ export class Web3Modal extends Web3ModalScaffold {
   private options: Web3ModalClientOptions | undefined = undefined;
 
   public constructor(options: Web3ModalClientOptions) {
-    const { ethersConfig, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
+    const { config, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
       options;
 
-    if (!ethersConfig) {
-      throw new Error('web3modal:constructor - ethersConfig is undefined');
+    if (!config) {
+      throw new Error('web3modal:constructor - config is undefined');
     }
 
     if (!w3mOptions.projectId) {
@@ -151,14 +151,13 @@ export class Web3Modal extends Web3ModalScaffold {
       //  @ts-expect-error TODO expected types in arguments are incomplete
       connectExternal: async ({ id }: { id: string; provider: Provider }) => {
         if (id === ConstantsUtil.COINBASE_CONNECTOR_ID) {
-          const CoinbaseProvider = ethersConfig.coinbase;
+          const CoinbaseProvider = config.coinbase;
           if (!CoinbaseProvider) {
             throw new Error('connectionControllerClient:connectCoinbase - connector is undefined');
           }
 
           try {
-            this.setCoinbaseProvider(ethersConfig);
-            // Don't call if it's connected
+            this.setCoinbaseProvider(config);
             await CoinbaseProvider.request({ method: 'eth_requestAccounts' });
           } catch (error) {
             EthersStoreUtil.setError(error);
@@ -207,7 +206,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.options = options;
 
-    this.metadata = ethersConfig.metadata;
+    this.metadata = config.metadata;
 
     this.projectId = w3mOptions.projectId;
     this.chains = chains;
@@ -223,10 +222,10 @@ export class Web3Modal extends Web3ModalScaffold {
     });
 
     this.syncRequestedNetworks(chains, chainImages);
-    this.syncConnectors(ethersConfig);
+    this.syncConnectors(config);
 
-    if (ethersConfig.coinbase) {
-      this.checkActiveCoinbaseProvider(ethersConfig);
+    if (config.coinbase) {
+      this.checkActiveCoinbaseProvider(config);
     }
   }
 
@@ -374,7 +373,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (CoinbaseProvider) {
       if (walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
-        if (CoinbaseProvider._addresses && CoinbaseProvider._addresses?.length > 0) {
+        if (CoinbaseProvider.address) {
           this.setCoinbaseProvider(config);
           this.watchCoinbase(config);
         } else {
@@ -570,12 +569,12 @@ export class Web3Modal extends Web3ModalScaffold {
       const chain = this.chains.find(c => c.chainId === chainId);
 
       if (chain) {
-        const JsonRpcProvider = new ethers.providers.JsonRpcProvider(chain.rpcUrl, {
+        const jsonRpcProvider = new ethers.providers.JsonRpcProvider(chain.rpcUrl, {
           chainId,
           name: chain.name
         });
-        if (JsonRpcProvider) {
-          const balance = await JsonRpcProvider.getBalance(address);
+        if (jsonRpcProvider) {
+          const balance = await jsonRpcProvider.getBalance(address);
           const formattedBalance = utils.formatEther(balance);
           this.setBalance(formattedBalance, chain.currency);
         }

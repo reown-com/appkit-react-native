@@ -1,21 +1,29 @@
 import { configure, WalletMobileSDKEVMProvider } from '@coinbase/wallet-mobile-sdk';
 import type { WalletMobileSDKProviderOptions } from '@coinbase/wallet-mobile-sdk/build/WalletMobileSDKEVMProvider';
 
-import type { RequestArguments } from '@web3modal/scaffold-utils-react-native';
+interface RequestArguments {
+  readonly method: string;
+  readonly params?: readonly unknown[] | object;
+}
 
-type CoinbaseEthers5ProviderOptions = WalletMobileSDKProviderOptions & {
+type CoinbaseProviderOptions = WalletMobileSDKProviderOptions & {
   redirect: string;
+  rpcUrl: string;
 };
 
-export class CoinbaseEthers5Provider {
+export class CoinbaseProvider {
   private _provider?: WalletMobileSDKEVMProvider;
   private _initProviderPromise?: Promise<void>;
-  private readonly options: CoinbaseEthers5ProviderOptions;
+  private readonly options: CoinbaseProviderOptions;
 
-  constructor(config: { options: CoinbaseEthers5ProviderOptions }) {
-    this.options = config.options;
+  constructor(options: CoinbaseProviderOptions) {
+    this.options = options;
     this._createProvider();
   }
+
+  public address = async () => {
+    return (await this.getProvider()).selectedAddress;
+  };
 
   public emit = (event: string) => {
     this.getProvider().then(provider => provider.emit(event));
@@ -50,12 +58,14 @@ export class CoinbaseEthers5Provider {
       hostPackageName: 'org.toshi' // Don't change -> Coinbase wallet scheme
     });
 
-    this._provider = new WalletMobileSDKEVMProvider({ ...this.options });
+    this._provider = new WalletMobileSDKEVMProvider({
+      ...this.options,
+      jsonRpcUrl: this.options.rpcUrl
+    });
   };
 
   public getProvider = async () => {
     if (!this._provider) await this._createProvider();
-    // if (chainId) await this.switchChain(chainId);
 
     return this._provider!;
   };

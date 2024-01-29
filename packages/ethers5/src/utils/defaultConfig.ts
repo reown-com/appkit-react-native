@@ -1,8 +1,6 @@
 import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils-react-native';
 
 export interface ConfigOptions {
-  rpcUrl?: string;
-  defaultChainId?: number;
   metadata: Metadata;
   coinbase?: Provider;
 }

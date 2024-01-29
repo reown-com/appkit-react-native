@@ -16,13 +16,13 @@ import type { WalletMobileSDKProviderOptions } from '@coinbase/wallet-mobile-sdk
 const ADD_ETH_CHAIN_METHOD = 'wallet_addEthereumChain';
 const SWITCH_ETH_CHAIN_METHOD = 'wallet_switchEthereumChain';
 
-type CoinbaseWagmiConnectorOptions = WalletMobileSDKProviderOptions & {
+type CoinbaseConnectorOptions = WalletMobileSDKProviderOptions & {
   redirect: string;
 };
 
-export class CoinbaseWagmiConnector extends Connector<
+export class CoinbaseConnector extends Connector<
   WalletMobileSDKEVMProvider,
-  CoinbaseWagmiConnectorOptions
+  CoinbaseConnectorOptions
 > {
   readonly id = 'coinbaseWallet';
   readonly name = 'Coinbase Wallet';
@@ -31,7 +31,7 @@ export class CoinbaseWagmiConnector extends Connector<
   private _provider?: WalletMobileSDKEVMProvider;
   private _initProviderPromise?: Promise<void>;
 
-  constructor(config: { chains?: Chain[]; options: CoinbaseWagmiConnectorOptions }) {
+  constructor(config: { chains?: Chain[]; options: CoinbaseConnectorOptions }) {
     super(config);
     this._createProvider();
   }

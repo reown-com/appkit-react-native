@@ -38,8 +38,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@web3modal/scaffold-react-native": "1.2.0-canary.0",
-    "@web3modal/scaffold-utils-react-native": "1.2.0-canary.0"
+    "@web3modal/scaffold-react-native": "1.1.1",
+    "@web3modal/scaffold-utils-react-native": "1.1.1"
   },
   "devDependencies": {
     "@ethersproject/shims": "5.7.0",
@@ -47,7 +47,7 @@
     "ethers": "5.7.2"
   },
   "peerDependencies": {
-    "@ethersproject/shims": ">=5.0.0 <6.0.0",
+    "@ethersproject/shims": ">=5.0.0",
     "@react-native-async-storage/async-storage": ">=1.17.0",
     "@react-native-community/netinfo": "*",
     "@walletconnect/ethereum-provider": ">=2.11.0",
