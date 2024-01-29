@@ -1,6 +1,6 @@
 {
   "name": "@apps/gallery",
-  "version": "1.0.5-canary.0",
+  "version": "1.0.4",
   "main": "index.js",
   "private": true,
   "devDependencies": {
