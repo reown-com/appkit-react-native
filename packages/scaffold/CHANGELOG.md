@@ -1,5 +1,17 @@
 # @web3modal/scaffold-react-native
 
+## 1.2.0
+
+### Minor Changes
+
+- 1.2.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @web3modal/core-react-native@1.2.0
+  - @web3modal/ui-react-native@1.2.0
+
 ## 1.1.1
 
 ### Patch Changes
