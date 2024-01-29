@@ -157,7 +157,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }
 
           try {
-            this.setCoinbaseProvider(config);
+            await this.setCoinbaseProvider(config);
             await CoinbaseProvider.request({ method: 'eth_requestAccounts' });
           } catch (error) {
             EthersStoreUtil.setError(error);
@@ -369,10 +369,10 @@ export class Web3Modal extends Web3ModalScaffold {
     if (CoinbaseProvider) {
       if (walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
         if (CoinbaseProvider.address) {
-          this.setCoinbaseProvider(config);
-          this.watchCoinbase(config);
+          await this.setCoinbaseProvider(config);
+          await this.watchCoinbase(config);
         } else {
-          StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
+          await StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
           EthersStoreUtil.reset();
         }
       }
@@ -389,12 +389,12 @@ export class Web3Modal extends Web3ModalScaffold {
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider);
       EthersStoreUtil.setIsConnected(true);
       this.setAddress(WalletConnectProvider.accounts?.[0]);
-      this.watchWalletConnect();
+      await this.watchWalletConnect();
     }
   }
 
   private async setCoinbaseProvider(config: ProviderType) {
-    StorageUtil.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.COINBASE_CONNECTOR_ID);
+    await StorageUtil.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.COINBASE_CONNECTOR_ID);
     const CoinbaseProvider = config.coinbase;
 
     if (CoinbaseProvider) {
@@ -406,7 +406,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProvider(config.coinbase);
         EthersStoreUtil.setIsConnected(true);
         this.setAddress(address);
-        this.watchCoinbase(config);
+        await this.watchCoinbase(config);
       }
     }
   }
