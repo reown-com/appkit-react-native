@@ -27,6 +27,10 @@ export type Metadata = {
   description: string;
   url: string;
   icons: string[];
+  redirect: {
+    native: string;
+    universal?: string;
+  };
 };
 
 export type Chain = {

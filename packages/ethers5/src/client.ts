@@ -315,12 +315,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }, {})
         : ({} as Record<number, string>),
       optionalChains: [...this.chains.map(chain => chain.chainId)] as [number],
-      metadata: {
-        name: this.metadata ? this.metadata.name : '',
-        description: this.metadata ? this.metadata.description : '',
-        url: this.metadata ? this.metadata.url : '',
-        icons: this.metadata ? this.metadata.icons : ['']
-      }
+      metadata: this.metadata
     };
 
     this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions);
