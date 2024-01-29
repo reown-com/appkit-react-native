@@ -22,7 +22,7 @@ import {
   OPTIONAL_METHODS
 } from '@walletconnect/ethereum-provider';
 
-import { StorageUtils } from '../utils/storageUtils';
+import { StorageUtil } from '@web3modal/scaffold-utils-react-native';
 
 export type StorageStoreData = {
   state: { data?: ConnectorData };
@@ -117,7 +117,7 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
     try {
       let targetChainId = chainId;
       if (!targetChainId) {
-        const store = await StorageUtils.getItem<StorageStoreData>(STORE_KEY);
+        const store = await StorageUtil.getItem<StorageStoreData>(STORE_KEY);
         const lastUsedChainId = store?.state?.data?.chain?.id;
         if (lastUsedChainId && !this.isChainUnsupported(lastUsedChainId))
           targetChainId = lastUsedChainId;
@@ -370,11 +370,11 @@ export class WalletConnectConnector extends Connector<WalletConnectProvider, Wal
   }
 
   _setRequestedChainsIds(chains: number[]) {
-    StorageUtils.setItem(REQUESTED_CHAINS_KEY, chains);
+    StorageUtil.setItem(REQUESTED_CHAINS_KEY, chains);
   }
 
   async _getRequestedChainsIds(): Promise<number[]> {
-    const requestedChains = await StorageUtils.getItem<number[]>(REQUESTED_CHAINS_KEY);
+    const requestedChains = await StorageUtil.getItem<number[]>(REQUESTED_CHAINS_KEY);
 
     return requestedChains || [];
   }

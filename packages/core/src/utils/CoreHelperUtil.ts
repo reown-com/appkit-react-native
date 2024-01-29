@@ -120,7 +120,7 @@ export const CoreHelperUtil = {
       }
     }
 
-    return formattedBalance ? `${formattedBalance} ${symbol}` : '0.000';
+    return formattedBalance ? `${formattedBalance} ${symbol}` : `0.000 ${symbol || ''}`;
   },
 
   isRestrictedRegion() {

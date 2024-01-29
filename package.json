@@ -6,7 +6,9 @@
     "packages/scaffold-utils",
     "packages/scaffold",
     "packages/wagmi",
-    "packages/coinbase",
+    "packages/coinbase-wagmi",
+    "packages/coinbase-ethers",
+    "packages/ethers5",
     "apps/*"
   ],
   "scripts": {
