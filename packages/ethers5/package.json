@@ -38,9 +38,9 @@
     "access": "public"
   },
   "dependencies": {
+    "@walletconnect/ethereum-provider": "2.11.0",
     "@web3modal/scaffold-react-native": "1.2.0",
-    "@web3modal/scaffold-utils-react-native": "1.2.0",
-    "@walletconnect/ethereum-provider": "2.11.0"
+    "@web3modal/scaffold-utils-react-native": "1.2.0"
   },
   "peerDependencies": {
     "@ethersproject/shims": ">=5.0.0",
