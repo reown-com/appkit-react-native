@@ -1,0 +1,20 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@apps/gallery": "1.0.4",
+    "@apps/native": "1.0.4",
+    "@apps/native-cli": "1.0.4",
+    "@web3modal/coinbase-ethers-react-native": "1.2.0-alpha.0",
+    "@web3modal/coinbase-wagmi-react-native": "1.2.0",
+    "@web3modal/core-react-native": "1.2.0",
+    "@web3modal/ethers5-react-native": "1.2.0-alpha.0",
+    "@web3modal/scaffold-react-native": "1.2.0",
+    "@web3modal/scaffold-utils-react-native": "1.2.0",
+    "@web3modal/ui-react-native": "1.2.0",
+    "@web3modal/wagmi-react-native": "1.2.0"
+  },
+  "changesets": [
+    "curvy-toys-press"
+  ]
+}
