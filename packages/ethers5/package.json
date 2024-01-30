@@ -38,6 +38,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@walletconnect/ethereum-provider": "2.11.0",
     "@web3modal/scaffold-react-native": "1.2.0",
     "@web3modal/scaffold-utils-react-native": "1.2.0"
   },
@@ -45,7 +46,6 @@
     "@ethersproject/shims": ">=5.0.0",
     "@react-native-async-storage/async-storage": ">=1.17.0",
     "@react-native-community/netinfo": "*",
-    "@walletconnect/ethereum-provider": ">=2.11.0",
     "ethers": ">=5.0.0 <6.0.0",
     "react": ">=17",
     "react-native": ">=0.68.5",
@@ -53,7 +53,6 @@
   },
   "devDependencies": {
     "@ethersproject/shims": "5.7.0",
-    "@walletconnect/ethereum-provider": "2.11.0",
     "ethers": "5.7.2"
   },
   "react-native": "src/index.tsx"

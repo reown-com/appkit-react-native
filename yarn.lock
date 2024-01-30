@@ -9931,7 +9931,6 @@ __metadata:
     "@ethersproject/shims": ">=5.0.0"
     "@react-native-async-storage/async-storage": ">=1.17.0"
     "@react-native-community/netinfo": "*"
-    "@walletconnect/ethereum-provider": ">=2.11.0"
     ethers: ">=5.0.0 <6.0.0"
     react: ">=17"
     react-native: ">=0.68.5"
