@@ -9,7 +9,7 @@ import type {
   PublicStateControllerState,
   Token
 } from '@web3modal/scaffold-react-native';
-import { ethers, utils } from 'ethers';
+import { InfuraProvider, JsonRpcProvider, formatEther, getAddress } from 'ethers';
 import { Web3ModalScaffold } from '@web3modal/scaffold-react-native';
 import {
   ConstantsUtil,
@@ -246,14 +246,14 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public setAddress(address?: string) {
-    const originalAddress = address ? (utils.getAddress(address) as Address) : undefined;
+    const originalAddress = address ? (getAddress(address) as Address) : undefined;
     EthersStoreUtil.setAddress(originalAddress);
   }
 
   public getAddress() {
     const { address } = EthersStoreUtil.state;
 
-    return address ? utils.getAddress(address) : address;
+    return address ? getAddress(address) : address;
   }
 
   public getError() {
@@ -536,7 +536,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const chainId = EthersStoreUtil.state.chainId;
 
     if (chainId === 1) {
-      const ensProvider = new ethers.providers.InfuraProvider('mainnet');
+      const ensProvider = new InfuraProvider('mainnet');
       const name = await ensProvider.lookupAddress(address);
       const avatar = await ensProvider.getAvatar(address);
 
@@ -558,13 +558,13 @@ export class Web3Modal extends Web3ModalScaffold {
       const chain = this.chains.find(c => c.chainId === chainId);
 
       if (chain) {
-        const jsonRpcProvider = new ethers.providers.JsonRpcProvider(chain.rpcUrl, {
+        const jsonRpcProvider = new JsonRpcProvider(chain.rpcUrl, {
           chainId,
           name: chain.name
         });
         if (jsonRpcProvider) {
           const balance = await jsonRpcProvider.getBalance(address);
-          const formattedBalance = utils.formatEther(balance);
+          const formattedBalance = formatEther(balance);
           this.setBalance(formattedBalance, chain.currency);
         }
       }

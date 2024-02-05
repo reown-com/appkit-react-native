@@ -4,5 +4,6 @@ exclude:
   - name: All
     paths:
       - .yarn/
+  - name: JSIgnoredPromiseFromCall
 include:
-    - name: Eslint
+  - name: Eslint
