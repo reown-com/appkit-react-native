@@ -71,13 +71,6 @@ const customWallets = [
     image_url:
       'https://docs.walletconnect.com/assets/images/web3walletLogo-54d3b546146931ceaf47a3500868a73a.png',
     mobile_link: 'rn-web3wallet://'
-  },
-  {
-    id: 'se-wallet',
-    name: 'SE SDK Wallet',
-    image_url:
-      'https://docs.walletconnect.com/assets/images/web3walletLogo-54d3b546146931ceaf47a3500868a73a.png',
-    mobile_link: 'https://se-sdk-wallet.vercel.app/'
   }
 ];
 
