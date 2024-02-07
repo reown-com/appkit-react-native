@@ -14,7 +14,5 @@
     "@web3modal/ui-react-native": "1.2.0",
     "@web3modal/wagmi-react-native": "1.2.0"
   },
-  "changesets": [
-    "curvy-toys-press"
-  ]
+  "changesets": []
 }
