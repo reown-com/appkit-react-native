@@ -12,7 +12,10 @@
     "@web3modal/scaffold-react-native": "1.2.0",
     "@web3modal/scaffold-utils-react-native": "1.2.0",
     "@web3modal/ui-react-native": "1.2.0",
-    "@web3modal/wagmi-react-native": "1.2.0"
+    "@web3modal/wagmi-react-native": "1.2.0",
+    "@web3modal/ethers-react-native": "1.2.0-alpha.0"
   },
-  "changesets": []
+  "changesets": [
+    "shy-ravens-perform"
+  ]
 }
