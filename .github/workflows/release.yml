@@ -1,4 +1,4 @@
-name: Release
+name: Create release pull request
 
 on:
   push:
@@ -21,6 +21,6 @@ jobs:
       - name: Create Release Pull Request
         uses: changesets/action@v1
         with:
-          version: yarn pre-publish && yarn changeset version
+          version: yarn changeset version && yarn pre-publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
