@@ -151,8 +151,8 @@ export class Web3Modal extends Web3ModalScaffold {
           }
 
           try {
-            await this.setCoinbaseProvider(config);
             await CoinbaseProvider.request({ method: 'eth_requestAccounts' });
+            await this.setCoinbaseProvider(config);
           } catch (error) {
             EthersStoreUtil.setError(error);
           }
