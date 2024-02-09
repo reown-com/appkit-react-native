@@ -111,3 +111,23 @@ export function useWeb3ModalError() {
     error
   };
 }
+
+export function useWeb3ModalEvents() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalEvents" hook');
+  }
+
+  const [event, setEvents] = useState(modal.getEvent());
+
+  useEffect(() => {
+    const unsubscribe = modal?.subscribeEvents(newEvent => {
+      setEvents({ ...newEvent });
+    });
+
+    return () => {
+      unsubscribe?.();
+    };
+  }, []);
+
+  return event;
+}

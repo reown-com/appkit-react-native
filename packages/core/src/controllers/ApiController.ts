@@ -8,7 +8,6 @@ import type {
   ApiGetDataWalletsResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
-  SdkVersion,
   WcWallet
 } from '../utils/TypeUtil';
 import { AssetController } from './AssetController';
@@ -21,12 +20,10 @@ const baseUrl = CoreHelperUtil.getApiUrl();
 const api = new FetchUtil({ baseUrl });
 const defaultEntries = '48';
 const recommendedEntries = '4';
-const sdkType = 'w3m';
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
   prefetchPromise?: Promise<unknown>;
-  sdkVersion: SdkVersion;
   page: number;
   count: number;
   featured: WcWallet[];
@@ -40,7 +37,6 @@ type StateKey = keyof ApiControllerState;
 
 // -- State --------------------------------------------- //
 const state = proxy<ApiControllerState>({
-  sdkVersion: 'react-native-undefined',
   page: 1,
   count: 0,
   featured: [],
@@ -62,15 +58,13 @@ export const ApiController = {
     return subKey(state, key, callback);
   },
 
-  setSdkVersion(sdkVersion: ApiControllerState['sdkVersion']) {
-    state.sdkVersion = sdkVersion;
-  },
-
   _getApiHeaders() {
+    const { projectId, sdkType, sdkVersion } = OptionsController.state;
+
     return {
-      'x-project-id': OptionsController.state.projectId,
+      'x-project-id': projectId,
       'x-sdk-type': sdkType,
-      'x-sdk-version': state.sdkVersion,
+      'x-sdk-version': sdkVersion,
       'User-Agent': `${Platform.OS}-${Platform.Version}`
     };
   },

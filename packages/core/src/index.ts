@@ -43,6 +43,9 @@ export type { PublicStateControllerState } from './controllers/PublicStateContro
 
 export { BlockchainApiController } from './controllers/BlockchainApiController';
 
+export { EventsController } from './controllers/EventsController';
+export type { EventsControllerState } from './controllers/EventsController';
+
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './utils/AssetUtil';
 export { ConstantsUtil } from './utils/ConstantsUtil';

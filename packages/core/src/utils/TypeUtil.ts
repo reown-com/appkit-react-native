@@ -119,3 +119,69 @@ export type CustomWallet = Pick<
   | 'app_store'
   | 'play_store'
 >;
+
+// -- EventsController Types ----------------------------------------------------
+
+export type Event =
+  | {
+      type: 'track';
+      event: 'MODAL_CREATED';
+    }
+  | {
+      type: 'track';
+      event: 'MODAL_LOADED';
+    }
+  | {
+      type: 'track';
+      event: 'MODAL_OPEN';
+    }
+  | {
+      type: 'track';
+      event: 'MODAL_CLOSE';
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_ALL_WALLETS';
+    }
+  | {
+      type: 'track';
+      event: 'SELECT_WALLET';
+      properties: {
+        name: string;
+        platform: Platform;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'CONNECT_SUCCESS';
+      properties: {
+        method: 'qrcode' | 'mobile' | 'external' | 'browser' | 'email';
+      };
+    }
+  | {
+      type: 'track';
+      event: 'CONNECT_ERROR';
+      properties: {
+        message: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'DISCONNECT_SUCCESS';
+    }
+  | {
+      type: 'track';
+      event: 'DISCONNECT_ERROR';
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_WALLET_HELP';
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_NETWORK_HELP';
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_GET_WALLET';
+    };

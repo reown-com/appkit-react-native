@@ -146,6 +146,23 @@ export const CoreHelperUtil = {
       : 'https://rpc.walletconnect.com';
   },
 
+  getAnalyticsUrl() {
+    return CoreHelperUtil.isRestrictedRegion()
+      ? 'https://pulse.walletconnect.org'
+      : 'https://pulse.walletconnect.com';
+  },
+
+  getUUID() {
+    // if (crypto?.randomUUID) {
+    //   return crypto.randomUUID()
+    // }
+    // return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/gu, c => {
+    //   const r = (Math.random() * 16) | 0
+    //   const v = c === 'x' ? r : (r & 0x3) | 0x8
+    //   return v.toString(16)
+    // })
+  },
+
   async checkInstalled(wallet: DataWallet): Promise<boolean> {
     let isInstalled = false;
     const scheme = wallet.ios_schema;
