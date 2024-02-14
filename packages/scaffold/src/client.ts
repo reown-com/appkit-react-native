@@ -39,8 +39,9 @@ export interface LibraryOptions {
   customWallets?: OptionsControllerState['customWallets'];
   defaultChain?: NetworkControllerState['caipNetwork'];
   tokens?: OptionsControllerState['tokens'];
-  _sdkVersion: OptionsControllerState['sdkVersion'];
   clipboardClient?: OptionsControllerState['_clipboardClient'];
+  enableAnalytics?: OptionsControllerState['enableAnalytics'];
+  _sdkVersion: OptionsControllerState['sdkVersion'];
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -200,6 +201,7 @@ export class Web3ModalScaffold {
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
     OptionsController.setTokens(options.tokens);
     OptionsController.setCustomWallets(options.customWallets);
+    OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setSdkVersion(options._sdkVersion);
 
     if (options.clipboardClient) {

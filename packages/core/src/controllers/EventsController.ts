@@ -1,9 +1,9 @@
+import { Platform } from 'react-native';
 import { proxy, subscribe as sub } from 'valtio/vanilla';
+import { OptionsController } from './OptionsController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { FetchUtil } from '../utils/FetchUtil';
 import type { Event } from '../utils/TypeUtil';
-import { OptionsController } from './OptionsController';
-import { ApiController } from './ApiController';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getAnalyticsUrl();
@@ -33,6 +33,17 @@ export const EventsController = {
     return sub(state, () => callback(state));
   },
 
+  _getApiHeaders() {
+    const { projectId, sdkType, sdkVersion } = OptionsController.state;
+
+    return {
+      'x-project-id': projectId,
+      'x-sdk-type': sdkType,
+      'x-sdk-version': sdkVersion,
+      'User-Agent': `${Platform.OS}-${Platform.Version}`
+    };
+  },
+
   async _sendAnalyticsEvent(payload: EventsControllerState) {
     if (excluded.includes(payload.data.event)) {
       return;
@@ -40,7 +51,7 @@ export const EventsController = {
     try {
       await api.post({
         path: '/e',
-        headers: ApiController._getApiHeaders(),
+        headers: this._getApiHeaders(),
         body: {
           // eventId: CoreHelperUtil.getUUID(),
           // url: window.location.href,
