@@ -3,6 +3,7 @@ import { useSnapshot } from 'valtio';
 import {
   ConnectionController,
   ConnectorController,
+  EventsController,
   RouterController,
   type WcWallet
 } from '@web3modal/core-react-native';
@@ -32,12 +33,24 @@ export function AllWalletsView() {
     } else {
       RouterController.push('ConnectingWalletConnect', { wallet });
     }
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_WALLET',
+      properties: { name: wallet.name ?? 'Unknown', platform: 'mobile' }
+    });
   };
 
   const onQrCodePress = () => {
     ConnectionController.removePressedWallet();
     ConnectionController.removeWcLinking();
     RouterController.push('ConnectingWalletConnect');
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_WALLET',
+      properties: { name: 'WalletConnect', platform: 'qrcode' }
+    });
   };
 
   const headerTemplate = () => {

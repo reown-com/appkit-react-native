@@ -11,7 +11,8 @@ import {
   StorageUtil,
   type Platform,
   OptionsController,
-  ApiController
+  ApiController,
+  EventsController
 } from '@web3modal/core-react-native';
 
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
@@ -32,20 +33,35 @@ export function ConnectingView() {
 
   const initializeConnection = async (retry = false) => {
     try {
-      const { wcPairingExpiry } = ConnectionController.state;
+      const { wcPairingExpiry, wcLinking, pressedWallet } = ConnectionController.state;
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.connectWalletConnect();
         await ConnectionController.state.wcPromise;
         storeWalletConnectDeeplink();
         AccountController.setIsConnected(true);
         ModalController.close();
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_SUCCESS',
+          properties: {
+            method: wcLinking ? 'mobile' : 'qrcode',
+            name: pressedWallet?.name ?? 'Unknown'
+          }
+        });
       }
-    } catch {
+    } catch (error) {
       ConnectionController.setWcError(true);
       if (CoreHelperUtil.isAllowedRetry(lastRetry)) {
         setLastRetry(Date.now());
         initializeConnection(true);
       }
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'CONNECT_ERROR',
+        properties: {
+          message: (error as Error)?.message ?? 'Unknown'
+        }
+      });
     }
   };
 

@@ -5,6 +5,7 @@ import {
   AssetUtil,
   ConnectionController,
   ConnectorController,
+  EventsController,
   OptionsController,
   RouterController
 } from '@web3modal/core-react-native';
@@ -32,6 +33,17 @@ export function ConnectView() {
     } else {
       RouterController.push('ConnectingWalletConnect', { wallet });
     }
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_WALLET',
+      properties: { name: wallet.name ?? 'Unknown', platform: 'mobile' }
+    });
+  };
+
+  const onViewAllPress = () => {
+    RouterController.push('AllWallets');
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_ALL_WALLETS' });
   };
 
   const recentTemplate = () => {
@@ -137,7 +149,7 @@ export function ConnectView() {
         showAllWallets
         tagLabel={String(label)}
         tagVariant="shade"
-        onPress={() => RouterController.push('AllWallets')}
+        onPress={onViewAllPress}
         style={styles.item}
         testID="button-all-wallets"
       />

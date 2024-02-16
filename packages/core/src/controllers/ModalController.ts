@@ -3,6 +3,8 @@ import { AccountController } from './AccountController';
 import type { RouterControllerState } from './RouterController';
 import { RouterController } from './RouterController';
 import { PublicStateController } from './PublicStateController';
+import { EventsController } from './EventsController';
+import { ApiController } from './ApiController';
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
@@ -26,7 +28,9 @@ const state = proxy<ModalControllerState>({
 export const ModalController = {
   state,
 
-  open(options?: ModalControllerArguments['open']) {
+  async open(options?: ModalControllerArguments['open']) {
+    await ApiController.state.prefetchPromise;
+    const connected = AccountController.state.isConnected;
     if (options?.view) {
       RouterController.reset(options.view);
     } else if (AccountController.state.isConnected) {
@@ -36,11 +40,22 @@ export const ModalController = {
     }
     state.open = true;
     PublicStateController.set({ open: true });
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'MODAL_OPEN',
+      properties: { connected }
+    });
   },
 
   close() {
+    const connected = AccountController.state.isConnected;
     state.open = false;
     PublicStateController.set({ open: false });
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'MODAL_CLOSE',
+      properties: { connected }
+    });
   },
 
   setLoading(loading: ModalControllerState['loading']) {

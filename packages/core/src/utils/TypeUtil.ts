@@ -134,14 +134,31 @@ export type Event =
   | {
       type: 'track';
       event: 'MODAL_OPEN';
+      properties: {
+        connected: boolean;
+      };
     }
   | {
       type: 'track';
       event: 'MODAL_CLOSE';
+      properties: {
+        connected: boolean;
+      };
     }
   | {
       type: 'track';
       event: 'CLICK_ALL_WALLETS';
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_NETWORKS';
+    }
+  | {
+      type: 'track';
+      event: 'SWITCH_NETWORK';
+      properties: {
+        network: string;
+      };
     }
   | {
       type: 'track';
@@ -155,6 +172,7 @@ export type Event =
       type: 'track';
       event: 'CONNECT_SUCCESS';
       properties: {
+        name: string;
         method: 'qrcode' | 'mobile' | 'external' | 'browser' | 'email';
       };
     }

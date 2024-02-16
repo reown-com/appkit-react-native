@@ -16,7 +16,8 @@ import {
   RouterController,
   type CaipNetwork,
   AccountController,
-  ModalController
+  ModalController,
+  EventsController
 } from '@web3modal/core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
@@ -34,6 +35,11 @@ export function NetworksView() {
   const itemGap = Math.abs(
     Math.trunc((usableWidth - numColumns * CardSelectWidth) / numColumns) / 2
   );
+
+  const onHelpPress = () => {
+    RouterController.push('WhatIsANetwork');
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORK_HELP' });
+  };
 
   const networksTemplate = () => {
     if (!requestedCaipNetworks?.length) return undefined;
@@ -59,6 +65,13 @@ export function NetworksView() {
           } else {
             ModalController.close();
           }
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'SWITCH_NETWORK',
+            properties: {
+              network: network.id
+            }
+          });
         } else if (supportsAllNetworks) {
           RouterController.push('SwitchNetwork', { network });
         }
@@ -109,13 +122,8 @@ export function NetworksView() {
         <Text variant="small-400" color="fg-300" center>
           Your connected wallet may not support some of the networks available for this dApp
         </Text>
-        <Link
-          size="sm"
-          iconLeft="helpCircle"
-          onPress={() => RouterController.push('WhatIsANetwork')}
-          style={styles.helpButton}
-        >
-          What is a network
+        <Link size="sm" iconLeft="helpCircle" onPress={onHelpPress} style={styles.helpButton}>
+          What is a network?
         </Link>
       </FlexView>
     </>

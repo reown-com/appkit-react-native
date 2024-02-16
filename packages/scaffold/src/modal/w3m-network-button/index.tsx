@@ -4,6 +4,7 @@ import {
   AccountController,
   ApiController,
   AssetUtil,
+  EventsController,
   ModalController,
   NetworkController
 } from '@web3modal/core-react-native';
@@ -18,13 +19,21 @@ export function W3mNetworkButton({ disabled, style }: W3mNetworkButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
 
+  const onNetworkPress = () => {
+    ModalController.open({ view: 'Networks' });
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CLICK_NETWORKS'
+    });
+  };
+
   return (
     <NetworkButton
       imageSrc={AssetUtil.getNetworkImage(caipNetwork)}
       imageHeaders={ApiController._getApiHeaders()}
       disabled={disabled}
       style={style}
-      onPress={() => ModalController.open({ view: 'Networks' })}
+      onPress={onNetworkPress}
     >
       {caipNetwork?.name ?? (isConnected ? 'Unknown Network' : 'Select Network')}
     </NetworkButton>
