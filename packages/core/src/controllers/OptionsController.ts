@@ -22,7 +22,6 @@ export interface OptionsControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
   projectId: '',
-  enableAnalytics: false,
   sdkType: 'w3m',
   sdkVersion: 'react-native-undefined'
 });

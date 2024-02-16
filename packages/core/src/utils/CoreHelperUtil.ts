@@ -153,14 +153,38 @@ export const CoreHelperUtil = {
   },
 
   getUUID() {
-    // if (crypto?.randomUUID) {
-    //   return crypto.randomUUID()
-    // }
-    // return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/gu, c => {
-    //   const r = (Math.random() * 16) | 0
-    //   const v = c === 'x' ? r : (r & 0x3) | 0x8
-    //   return v.toString(16)
-    // })
+    if ((global as any)?.crypto.getRandomValues) {
+      const buffer = new Uint8Array(16);
+      (global as any)?.crypto.getRandomValues(buffer);
+
+      // Set the version (4) and variant (8, 9, A, or B) bits
+      buffer[6] = (buffer[6] ?? 0 & 0x0f) | 0x40;
+      buffer[8] = (buffer[8] ?? 0 & 0x3f) | 0x80;
+
+      // Convert the buffer to a hexadecimal string
+      const hexString = Array.from(buffer, byte => byte.toString(16).padStart(2, '0')).join('');
+      const formatted = `${hexString.slice(0, 8)}-${hexString.slice(8, 12)}-${hexString.slice(
+        12,
+        16
+      )}-${hexString.slice(16, 20)}-${hexString.slice(20)}`;
+
+      return formatted;
+    }
+
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/gu, c => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+
+      return v.toString(16);
+    });
+  },
+
+  getBundleId() {
+    if ((global as any)?.Application?.applicationId) {
+      return (global as any)?.Application?.applicationId;
+    }
+
+    return undefined;
   },
 
   async checkInstalled(wallet: DataWallet): Promise<boolean> {

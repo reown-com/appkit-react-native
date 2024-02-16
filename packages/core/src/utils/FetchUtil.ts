@@ -22,50 +22,43 @@ export class FetchUtil {
   }
 
   public async get<T>({ headers, ...args }: RequestArguments) {
-    const url = this.createUrl(args).toString();
+    const url = this.createUrl(args);
     const response = await fetch(url, { method: 'GET', headers });
 
-    return response.json() as T;
-  }
-
-  public async getBlob({ headers, ...args }: RequestArguments) {
-    const url = this.createUrl(args).toString();
-    const response = await fetch(url, { method: 'GET', headers });
-
-    return response.blob();
+    return this.processResponse<T>(response);
   }
 
   public async post<T>({ body, headers, ...args }: PostArguments) {
-    const url = this.createUrl(args).toString();
+    const url = this.createUrl(args);
     const response = await fetch(url, {
       method: 'POST',
       headers,
       body: body ? JSON.stringify(body) : undefined
     });
 
-    return response.json() as T;
+    return this.processResponse<T>(response);
   }
 
   public async put<T>({ body, headers, ...args }: PostArguments) {
-    const url = this.createUrl(args).toString();
+    const url = this.createUrl(args);
     const response = await fetch(url, {
       method: 'PUT',
       headers,
       body: body ? JSON.stringify(body) : undefined
     });
 
-    return response.json() as T;
+    return this.processResponse<T>(response);
   }
 
   public async delete<T>({ body, headers, ...args }: PostArguments) {
-    const url = this.createUrl(args).toString();
+    const url = this.createUrl(args);
     const response = await fetch(url, {
       method: 'DELETE',
       headers,
       body: body ? JSON.stringify(body) : undefined
     });
 
-    return response.json() as T;
+    return this.processResponse<T>(response);
   }
 
   private createUrl({ path, params }: RequestArguments) {
@@ -78,6 +71,26 @@ export class FetchUtil {
       });
     }
 
-    return url;
+    return url.toString();
+  }
+
+  private async processResponse<T>(response: Response) {
+    if (!response.ok) {
+      return Promise.reject(`Code: ${response.status} - ${response.statusText}`);
+    }
+
+    if (response.headers.get('content-length') === '0') {
+      return;
+    }
+
+    if (response.headers.get('content-type')?.includes('application/json')) {
+      return response.json() as T;
+    }
+
+    if (response.headers.get('content-type')?.includes('text')) {
+      return response.text();
+    }
+
+    return;
   }
 }

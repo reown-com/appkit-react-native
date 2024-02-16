@@ -40,7 +40,8 @@ export const EventsController = {
       'x-project-id': projectId,
       'x-sdk-type': sdkType,
       'x-sdk-version': sdkVersion,
-      'User-Agent': `${Platform.OS}-${Platform.Version}`
+      'User-Agent': `${Platform.OS}-${Platform.Version}`,
+      'Content-Type': 'application/json'
     };
   },
 
@@ -48,14 +49,14 @@ export const EventsController = {
     if (excluded.includes(payload.data.event)) {
       return;
     }
+
     try {
       await api.post({
         path: '/e',
         headers: this._getApiHeaders(),
         body: {
-          // eventId: CoreHelperUtil.getUUID(),
-          // url: window.location.href,
-          // domain: window.location.hostname,
+          eventId: CoreHelperUtil.getUUID(),
+          bundleId: CoreHelperUtil.getBundleId(),
           timestamp: payload.timestamp,
           props: payload.data
         }
