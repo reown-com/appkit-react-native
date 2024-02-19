@@ -1,7 +1,7 @@
-import { EventsController } from '../../index';
+import { Event, EventsController } from '../../index';
 
 // -- Setup --------------------------------------------------------------------
-const event = { type: 'track', event: 'MODAL_CLOSE' } as const;
+const event: Event = { type: 'track', event: 'MODAL_CLOSE', properties: { connected: false } };
 
 // -- Tests --------------------------------------------------------------------
 

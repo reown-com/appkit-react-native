@@ -76,7 +76,9 @@ export class FetchUtil {
 
   private async processResponse<T>(response: Response) {
     if (!response.ok) {
-      return Promise.reject(`Code: ${response.status} - ${response.statusText}`);
+      const errorText = await response.text();
+
+      return Promise.reject(`Code: ${response.status} - ${response.statusText} - ${errorText}`);
     }
 
     if (response.headers.get('content-length') === '0') {
@@ -85,10 +87,6 @@ export class FetchUtil {
 
     if (response.headers.get('content-type')?.includes('application/json')) {
       return response.json() as T;
-    }
-
-    if (response.headers.get('content-type')?.includes('text')) {
-      return response.text();
     }
 
     return;
