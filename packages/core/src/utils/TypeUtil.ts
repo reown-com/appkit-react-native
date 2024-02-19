@@ -16,7 +16,7 @@ export interface LinkingRecord {
 
 export type ProjectId = string;
 
-export type Platform = 'mobile' | 'web' | 'qrcode' | 'unsupported';
+export type Platform = 'mobile' | 'web' | 'qrcode' | 'email' | 'external' | 'unsupported';
 
 export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'EMAIL' | 'EXTERNAL';
 
@@ -165,7 +165,7 @@ export type Event =
       event: 'SELECT_WALLET';
       properties: {
         name: string;
-        platform: Platform;
+        platform?: Platform;
       };
     }
   | {
@@ -173,7 +173,7 @@ export type Event =
       event: 'CONNECT_SUCCESS';
       properties: {
         name: string;
-        method: 'qrcode' | 'mobile' | 'external' | 'browser' | 'email';
+        method: Platform;
       };
     }
   | {

@@ -51,5 +51,6 @@ export { AssetUtil } from './utils/AssetUtil';
 export { ConstantsUtil } from './utils/ConstantsUtil';
 export { CoreHelperUtil } from './utils/CoreHelperUtil';
 export { StorageUtil } from './utils/StorageUtil';
+export { EventUtil } from './utils/EventUtil';
 
 export type * from './utils/TypeUtil';

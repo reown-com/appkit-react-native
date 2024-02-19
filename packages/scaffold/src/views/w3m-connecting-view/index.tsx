@@ -33,21 +33,24 @@ export function ConnectingView() {
 
   const initializeConnection = async (retry = false) => {
     try {
-      const { wcPairingExpiry, wcLinking, pressedWallet } = ConnectionController.state;
+      const { wcPairingExpiry, wcLinking } = ConnectionController.state;
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.connectWalletConnect();
         await ConnectionController.state.wcPromise;
         storeWalletConnectDeeplink();
         AccountController.setIsConnected(true);
         ModalController.close();
-        EventsController.sendEvent({
-          type: 'track',
-          event: 'CONNECT_SUCCESS',
-          properties: {
-            method: wcLinking ? 'mobile' : 'qrcode',
-            name: pressedWallet?.name ?? 'Unknown'
-          }
-        });
+
+        if (!wcLinking) {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'CONNECT_SUCCESS',
+            properties: {
+              method: 'qrcode',
+              name: 'WalletConnect'
+            }
+          });
+        }
       }
     } catch (error) {
       ConnectionController.setWcError(true);
