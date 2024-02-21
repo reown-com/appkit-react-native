@@ -33,7 +33,7 @@ export function ConnectingView() {
 
   const initializeConnection = async (retry = false) => {
     try {
-      const { wcPairingExpiry, wcLinking } = ConnectionController.state;
+      const { wcPairingExpiry } = ConnectionController.state;
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.connectWalletConnect();
         await ConnectionController.state.wcPromise;
@@ -41,7 +41,7 @@ export function ConnectingView() {
         AccountController.setIsConnected(true);
         ModalController.close();
 
-        if (!wcLinking) {
+        if (!ConnectionController.state.wcLinking) {
           EventsController.sendEvent({
             type: 'track',
             event: 'CONNECT_SUCCESS',
