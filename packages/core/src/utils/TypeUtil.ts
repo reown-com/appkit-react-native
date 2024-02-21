@@ -16,7 +16,7 @@ export interface LinkingRecord {
 
 export type ProjectId = string;
 
-export type Platform = 'mobile' | 'web' | 'qrcode' | 'email' | 'external' | 'unsupported';
+export type Platform = 'mobile' | 'web' | 'qrcode' | 'email' | 'unsupported';
 
 export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'EMAIL' | 'EXTERNAL';
 

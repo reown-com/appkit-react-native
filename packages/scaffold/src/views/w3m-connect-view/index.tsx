@@ -35,7 +35,7 @@ export function ConnectView() {
       RouterController.push('ConnectingWalletConnect', { wallet });
     }
 
-    const platform = EventUtil.getWalletPlatform(wallet, isInstalled, !!connector);
+    const platform = EventUtil.getWalletPlatform(wallet, isInstalled);
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
