@@ -40,8 +40,7 @@ export const EventsController = {
       'x-project-id': projectId,
       'x-sdk-type': sdkType,
       'x-sdk-version': sdkVersion,
-      'User-Agent': `${Platform.OS}-${Platform.Version}`,
-      'Content-Type': 'application/json'
+      'User-Agent': `${Platform.OS}-${Platform.Version}`
     };
   },
 
