@@ -1,7 +1,6 @@
 name: Create release pull request
-
 on:
-  push:
+  workflow_dispatch:
     branches:
       - main
 
