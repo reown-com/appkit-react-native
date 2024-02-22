@@ -1,3 +1,5 @@
+/* eslint-disable no-bitwise */
+
 import { Linking, Platform } from 'react-native';
 import { ConstantsUtil } from './ConstantsUtil';
 import type { CaipAddress, DataWallet, LinkingRecord } from './TypeUtil';

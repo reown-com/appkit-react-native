@@ -8,8 +8,7 @@
     "react-hooks/exhaustive-deps": "warn",
     "no-console": ["error", { "allow": ["warn"] }],
     "newline-before-return": "error",
-    "radix": "off",
-    "no-bitwise": "off"
+    "radix": "off"
   },
   "parserOptions": {
     "requireConfigFile": false
