@@ -1,11 +1,16 @@
 import { ScrollView } from 'react-native';
 import { Button, FlexView, Text, Visual } from '@web3modal/ui-react-native';
-import { RouterController } from '@web3modal/core-react-native';
+import { EventsController, RouterController } from '@web3modal/core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function WhatIsAWalletView() {
   const { padding } = useCustomDimensions();
+
+  const onGetWalletPress = () => {
+    RouterController.push('GetWallet');
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_GET_WALLET' });
+  };
 
   return (
     <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
@@ -47,7 +52,7 @@ export function WhatIsAWalletView() {
           size="sm"
           iconLeft="walletSmall"
           style={styles.getWalletButton}
-          onPress={() => RouterController.push('GetWallet')}
+          onPress={onGetWalletPress}
         >
           Get a wallet
         </Button>

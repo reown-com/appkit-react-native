@@ -3,7 +3,12 @@ import { useEffect } from 'react';
 import { useWindowDimensions, StatusBar } from 'react-native';
 import Modal from 'react-native-modal';
 import { Card } from '@web3modal/ui-react-native';
-import { ApiController, ModalController, RouterController } from '@web3modal/core-react-native';
+import {
+  ApiController,
+  EventsController,
+  ModalController,
+  RouterController
+} from '@web3modal/core-react-native';
 
 import { Web3Router } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
@@ -27,8 +32,13 @@ export function Web3Modal() {
     return ModalController.close();
   };
 
+  const prefetch = async () => {
+    await ApiController.prefetch();
+    EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' });
+  };
+
   useEffect(() => {
-    ApiController.prefetch();
+    prefetch();
   }, []);
 
   return (

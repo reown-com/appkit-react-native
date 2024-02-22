@@ -6,7 +6,8 @@ import {
   ApiController,
   AssetUtil,
   ConnectionController,
-  ModalController
+  ModalController,
+  EventsController
 } from '@web3modal/core-react-native';
 import { Button, FlexView, LoadingThumbnail, Text, WalletImage } from '@web3modal/ui-react-native';
 
@@ -44,6 +45,11 @@ export function ConnectingExternalView() {
         await ConnectionController.connectExternal(connector);
         storeDeeplink();
         ModalController.close();
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_SUCCESS',
+          properties: { name: data.wallet?.name ?? 'Unknown', method: 'mobile' }
+        });
       }
     } catch (error) {
       if (/(Wallet not found)/i.test((error as Error).message)) {
@@ -53,8 +59,13 @@ export function ConnectingExternalView() {
         setConnectionError(true);
         setInstalledError(false);
       }
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'CONNECT_ERROR',
+        properties: { message: (error as Error)?.message ?? 'Unknown' }
+      });
     }
-  }, [connector, storeDeeplink]);
+  }, [connector, storeDeeplink, data?.wallet]);
 
   const textTemplate = () => {
     const connectorName = data?.connector?.name ?? 'Wallet';

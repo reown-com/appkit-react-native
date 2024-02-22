@@ -2,12 +2,12 @@ import './config/animations';
 
 import type {
   AccountControllerState,
-  ApiControllerState,
   ConnectionControllerClient,
   ModalControllerState,
   NetworkControllerClient,
   NetworkControllerState,
   OptionsControllerState,
+  EventsControllerState,
   PublicStateControllerState,
   ThemeControllerState,
   ThemeMode,
@@ -16,10 +16,10 @@ import type {
 } from '@web3modal/core-react-native';
 import {
   AccountController,
-  ApiController,
   BlockchainApiController,
   ConnectionController,
   ConnectorController,
+  EventsController,
   ModalController,
   NetworkController,
   OptionsController,
@@ -39,8 +39,9 @@ export interface LibraryOptions {
   customWallets?: OptionsControllerState['customWallets'];
   defaultChain?: NetworkControllerState['caipNetwork'];
   tokens?: OptionsControllerState['tokens'];
-  _sdkVersion: ApiControllerState['sdkVersion'];
   clipboardClient?: OptionsControllerState['_clipboardClient'];
+  enableAnalytics?: OptionsControllerState['enableAnalytics'];
+  _sdkVersion: OptionsControllerState['sdkVersion'];
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -110,6 +111,14 @@ export class Web3ModalScaffold {
 
   public setLoading(loading: ModalControllerState['loading']) {
     ModalController.setLoading(loading);
+  }
+
+  public getEvent() {
+    return { ...EventsController.state };
+  }
+
+  public subscribeEvents(callback: (newEvent: EventsControllerState) => void) {
+    return EventsController.subscribe(callback);
   }
 
   // -- Protected ----------------------------------------------------------------
@@ -192,14 +201,14 @@ export class Web3ModalScaffold {
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
     OptionsController.setTokens(options.tokens);
     OptionsController.setCustomWallets(options.customWallets);
+    OptionsController.setEnableAnalytics(options.enableAnalytics);
+    OptionsController.setSdkVersion(options._sdkVersion);
 
     if (options.clipboardClient) {
       OptionsController.setClipboardClient(options.clipboardClient);
     }
 
     ConnectionController.setClient(options.connectionControllerClient);
-
-    ApiController.setSdkVersion(options._sdkVersion);
 
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode);

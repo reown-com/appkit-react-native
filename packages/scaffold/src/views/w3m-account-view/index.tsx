@@ -6,6 +6,7 @@ import {
   AssetUtil,
   ConnectionController,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   NetworkController,
   OptionsController,
@@ -37,11 +38,22 @@ export function AccountView() {
   const { padding } = useCustomDimensions();
 
   async function onDisconnect() {
-    setDisconnecting(true);
-    await ConnectionController.disconnect();
-    AccountController.setIsConnected(false);
-    ModalController.close();
-    setDisconnecting(false);
+    try {
+      setDisconnecting(true);
+      await ConnectionController.disconnect();
+      AccountController.setIsConnected(false);
+      ModalController.close();
+      setDisconnecting(false);
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_SUCCESS'
+      });
+    } catch (error) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_ERROR'
+      });
+    }
   }
 
   const onExplorerPress = () => {
@@ -55,6 +67,15 @@ export function AccountView() {
       OptionsController.copyToClipboard(profileName ?? address);
       SnackController.showSuccess('Address copied');
     }
+  };
+
+  const onNetworkPress = () => {
+    RouterController.push('Networks');
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CLICK_NETWORKS'
+    });
   };
 
   const addressExplorerTemplate = () => {
@@ -120,7 +141,7 @@ export function AccountView() {
               iconVariant="overlay"
               imageSrc={networkImage}
               imageHeaders={ApiController._getApiHeaders()}
-              onPress={() => RouterController.push('Networks')}
+              onPress={onNetworkPress}
               testID="button-network"
             >
               <Text numberOfLines={1} color="fg-100">

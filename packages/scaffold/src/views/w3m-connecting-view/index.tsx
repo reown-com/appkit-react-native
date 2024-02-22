@@ -11,7 +11,8 @@ import {
   StorageUtil,
   type Platform,
   OptionsController,
-  ApiController
+  ApiController,
+  EventsController
 } from '@web3modal/core-react-native';
 
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
@@ -39,13 +40,31 @@ export function ConnectingView() {
         storeWalletConnectDeeplink();
         AccountController.setIsConnected(true);
         ModalController.close();
+
+        if (!ConnectionController.state.wcLinking) {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'CONNECT_SUCCESS',
+            properties: {
+              method: 'qrcode',
+              name: 'WalletConnect'
+            }
+          });
+        }
       }
-    } catch {
+    } catch (error) {
       ConnectionController.setWcError(true);
       if (CoreHelperUtil.isAllowedRetry(lastRetry)) {
         setLastRetry(Date.now());
         initializeConnection(true);
       }
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'CONNECT_ERROR',
+        properties: {
+          message: (error as Error)?.message ?? 'Unknown'
+        }
+      });
     }
   };
 

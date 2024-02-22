@@ -4,6 +4,7 @@ import {
   ApiController,
   AssetUtil,
   ConnectionController,
+  EventsController,
   NetworkController,
   RouterController
 } from '@web3modal/core-react-native';
@@ -23,13 +24,20 @@ export function NetworkSwitchView() {
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const [error, setError] = useState<boolean>(false);
   const [showRetry, setShowRetry] = useState<boolean>(false);
-  const network = data?.network;
+  const network = data?.network!;
   const wallet = recentWallets?.[0];
 
   const onSwitchNetwork = async () => {
     try {
       setError(false);
       await NetworkController.switchActiveNetwork(network);
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWITCH_NETWORK',
+        properties: {
+          network: network.id
+        }
+      });
     } catch {
       setError(true);
       setShowRetry(true);

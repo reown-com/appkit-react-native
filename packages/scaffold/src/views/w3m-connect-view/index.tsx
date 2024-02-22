@@ -5,6 +5,8 @@ import {
   AssetUtil,
   ConnectionController,
   ConnectorController,
+  EventUtil,
+  EventsController,
   OptionsController,
   RouterController
 } from '@web3modal/core-react-native';
@@ -25,13 +27,25 @@ export function ConnectView() {
 
   const RECENT_COUNT = recentWallets?.length ? (installed.length ? 1 : recentWallets?.length) : 0;
 
-  const onWalletPress = (wallet: WcWallet) => {
+  const onWalletPress = (wallet: WcWallet, isInstalled?: boolean) => {
     const connector = connectors.find(c => c.explorerId === wallet.id);
     if (connector) {
       RouterController.push('ConnectingExternal', { connector, wallet });
     } else {
       RouterController.push('ConnectingWalletConnect', { wallet });
     }
+
+    const platform = EventUtil.getWalletPlatform(wallet, isInstalled);
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_WALLET',
+      properties: { name: wallet.name ?? connector?.name ?? 'Unknown', platform }
+    });
+  };
+
+  const onViewAllPress = () => {
+    RouterController.push('AllWallets');
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_ALL_WALLETS' });
   };
 
   const recentTemplate = () => {
@@ -39,21 +53,23 @@ export function ConnectView() {
       return null;
     }
 
-    return recentWallets
-      .slice(0, RECENT_COUNT)
-      .map(wallet => (
+    return recentWallets.slice(0, RECENT_COUNT).map(wallet => {
+      const isInstalled = !!installed.find(installedWallet => installedWallet.id === wallet.id);
+
+      return (
         <ListWallet
           key={wallet?.id}
           imageSrc={AssetUtil.getWalletImage(wallet)}
           imageHeaders={imageHeaders}
           name={wallet?.name ?? 'Unknown'}
-          onPress={() => onWalletPress(wallet!)}
+          onPress={() => onWalletPress(wallet!, isInstalled)}
           tagLabel="Recent"
           tagVariant="shade"
           style={styles.item}
-          installed={!!installed.find(installedWallet => installedWallet.id === wallet.id)}
+          installed={isInstalled}
         />
-      ));
+      );
+    });
   };
 
   const walletsTemplate = () => {
@@ -137,7 +153,7 @@ export function ConnectView() {
         showAllWallets
         tagLabel={String(label)}
         tagVariant="shade"
-        onPress={() => RouterController.push('AllWallets')}
+        onPress={onViewAllPress}
         style={styles.item}
         testID="button-all-wallets"
       />

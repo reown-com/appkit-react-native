@@ -10,8 +10,7 @@ describe('ApiController', () => {
       featured: [],
       installed: [],
       wallets: [],
-      search: [],
-      sdkVersion: 'react-native-undefined'
+      search: []
     });
   });
 });

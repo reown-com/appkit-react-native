@@ -16,7 +16,7 @@ export interface LinkingRecord {
 
 export type ProjectId = string;
 
-export type Platform = 'mobile' | 'web' | 'qrcode' | 'unsupported';
+export type Platform = 'mobile' | 'web' | 'qrcode' | 'email' | 'unsupported';
 
 export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'EMAIL' | 'EXTERNAL';
 
@@ -82,6 +82,10 @@ export interface ApiGetDataWalletsResponse {
   count: number;
 }
 
+export interface ApiGetAnalyticsConfigResponse {
+  isAnalyticsEnabled: boolean;
+}
+
 export type ThemeMode = 'dark' | 'light';
 
 export interface ThemeVariables {
@@ -119,3 +123,87 @@ export type CustomWallet = Pick<
   | 'app_store'
   | 'play_store'
 >;
+
+// -- EventsController Types ----------------------------------------------------
+
+export type Event =
+  | {
+      type: 'track';
+      event: 'MODAL_CREATED';
+    }
+  | {
+      type: 'track';
+      event: 'MODAL_LOADED';
+    }
+  | {
+      type: 'track';
+      event: 'MODAL_OPEN';
+      properties: {
+        connected: boolean;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'MODAL_CLOSE';
+      properties: {
+        connected: boolean;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_ALL_WALLETS';
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_NETWORKS';
+    }
+  | {
+      type: 'track';
+      event: 'SWITCH_NETWORK';
+      properties: {
+        network: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SELECT_WALLET';
+      properties: {
+        name: string;
+        platform?: Platform;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'CONNECT_SUCCESS';
+      properties: {
+        name: string;
+        method: Platform;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'CONNECT_ERROR';
+      properties: {
+        message: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'DISCONNECT_SUCCESS';
+    }
+  | {
+      type: 'track';
+      event: 'DISCONNECT_ERROR';
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_WALLET_HELP';
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_NETWORK_HELP';
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_GET_WALLET';
+    };

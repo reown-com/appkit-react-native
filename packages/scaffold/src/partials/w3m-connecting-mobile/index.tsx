@@ -7,7 +7,8 @@ import {
   AssetUtil,
   ConnectionController,
   CoreHelperUtil,
-  OptionsController
+  OptionsController,
+  EventsController
 } from '@web3modal/core-react-native';
 import {
   Button,
@@ -64,6 +65,16 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         ConnectionController.setWcLinking({ name, href });
         ConnectionController.setPressedWallet(data?.wallet);
         await Linking.openURL(redirect);
+        await ConnectionController.state.wcPromise;
+
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_SUCCESS',
+          properties: {
+            method: 'mobile',
+            name: data?.wallet?.name ?? 'Unknown'
+          }
+        });
       }
     } catch (error) {
       setLinkingError(true);

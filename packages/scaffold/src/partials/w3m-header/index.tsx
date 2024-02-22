@@ -1,9 +1,14 @@
 import { useSnapshot } from 'valtio';
-import { RouterController, ModalController } from '@web3modal/core-react-native';
+import { RouterController, ModalController, EventsController } from '@web3modal/core-react-native';
 import { IconLink, Text, FlexView, Separator } from '@web3modal/ui-react-native';
 
 export function Header() {
   const { view, history } = useSnapshot(RouterController.state);
+
+  const onHelpPress = () => {
+    RouterController.push('WhatIsAWallet');
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' });
+  };
 
   const headings = () => {
     const connectorName = RouterController.state.data?.connector?.name;
@@ -37,12 +42,7 @@ export function Header() {
         testID="button-back"
       />
     ) : (
-      <IconLink
-        icon="helpCircle"
-        size="md"
-        onPress={() => RouterController.push('WhatIsAWallet')}
-        testID="button-help"
-      />
+      <IconLink icon="helpCircle" size="md" onPress={onHelpPress} testID="button-help" />
     );
   };
 

@@ -13,7 +13,9 @@ const MOCK_CLIPBOARD_CLIENT = {
 describe('OptionsController', () => {
   it('should have valid default state', () => {
     expect(OptionsController.state).toEqual({
-      projectId: ''
+      projectId: '',
+      sdkType: 'w3m',
+      sdkVersion: 'react-native-undefined'
     });
   });
 
@@ -57,5 +59,10 @@ describe('OptionsController', () => {
     OptionsController.setClipboardClient(MOCK_CLIPBOARD_CLIENT);
     expect(OptionsController.isClipboardAvailable()).toBeTruthy();
     expect(OptionsController.copyToClipboard('')).toBeUndefined();
+  });
+
+  it('should update state correctly on setSdkVersion()', () => {
+    OptionsController.setSdkVersion('react-native-wagmi-1.0.0');
+    expect(OptionsController.state.sdkVersion).toEqual('react-native-wagmi-1.0.0');
   });
 });

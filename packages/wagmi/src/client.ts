@@ -249,10 +249,17 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async syncProfile(address: Address) {
     try {
-      const { name, avatar } = await this.fetchIdentity({
+      const response = await this.fetchIdentity({
         caipChainId: `${ConstantsUtil.EIP155}:${mainnet.id}`,
         address
       });
+
+      if (!response) {
+        throw new Error('Couldnt fetch idendity');
+      }
+
+      const { name, avatar } = response;
+
       this.setProfileName(name);
       this.setProfileImage(avatar);
     } catch {

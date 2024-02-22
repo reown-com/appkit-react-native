@@ -7,7 +7,8 @@ import {
   AssetUtil,
   ConnectionController,
   CoreHelperUtil,
-  OptionsController
+  OptionsController,
+  EventsController
 } from '@web3modal/core-react-native';
 import {
   Button,
@@ -39,6 +40,16 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
         ConnectionController.setWcLinking({ name, href });
         ConnectionController.setPressedWallet(data?.wallet);
         await Linking.openURL(redirect);
+        await ConnectionController.state.wcPromise;
+
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_SUCCESS',
+          properties: {
+            method: 'web',
+            name: data?.wallet?.name ?? 'Unknown'
+          }
+        });
       }
     } catch {}
   }, [data?.wallet, wcUri]);

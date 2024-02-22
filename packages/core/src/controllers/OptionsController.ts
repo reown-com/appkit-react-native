@@ -1,5 +1,5 @@
 import { proxy, ref } from 'valtio';
-import type { CustomWallet, ProjectId, Tokens } from '../utils/TypeUtil';
+import type { CustomWallet, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
 export interface ClipboardClient {
@@ -14,11 +14,16 @@ export interface OptionsControllerState {
   featuredWalletIds?: string[];
   customWallets?: CustomWallet[];
   tokens?: Tokens;
+  enableAnalytics?: boolean;
+  sdkType: string;
+  sdkVersion: SdkVersion;
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
-  projectId: ''
+  projectId: '',
+  sdkType: 'w3m',
+  sdkVersion: 'react-native-undefined'
 });
 
 // -- Controller ---------------------------------------- //
@@ -51,6 +56,14 @@ export const OptionsController = {
 
   setCustomWallets(customWallets: OptionsControllerState['customWallets']) {
     state.customWallets = customWallets;
+  },
+
+  setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {
+    state.enableAnalytics = enableAnalytics;
+  },
+
+  setSdkVersion(sdkVersion: OptionsControllerState['sdkVersion']) {
+    state.sdkVersion = sdkVersion;
   },
 
   isClipboardAvailable() {
