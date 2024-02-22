@@ -1,5 +1,12 @@
 # @apps/gallery
 
+## 1.0.5-alpha.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/ui-react-native@1.3.0-alpha.0
+
 ## 1.0.4
 
 ### Patch Changes
