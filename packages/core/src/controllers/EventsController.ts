@@ -45,8 +45,8 @@ export const EventsController = {
     };
   },
 
-  async _sendAnalyticsEvent(payload: EventsControllerState) {
-    if (excluded.includes(payload.data.event)) {
+  async _sendAnalyticsEvent(data: EventsControllerState['data'], timestamp: number) {
+    if (excluded.includes(data.event)) {
       return;
     }
 
@@ -57,8 +57,8 @@ export const EventsController = {
         body: {
           eventId: CoreHelperUtil.getUUID(),
           bundleId: CoreHelperUtil.getBundleId(),
-          timestamp: payload.timestamp,
-          props: payload.data
+          timestamp,
+          props: data
         }
       });
     } catch {
@@ -67,12 +67,13 @@ export const EventsController = {
   },
 
   async sendEvent(data: EventsControllerState['data']) {
-    state.timestamp = Date.now();
+    const timestamp = Date.now();
+    state.timestamp = timestamp;
     state.data = data;
     await ApiController.state.prefetchPromise;
 
     if (OptionsController.state.enableAnalytics) {
-      EventsController._sendAnalyticsEvent(state);
+      EventsController._sendAnalyticsEvent(data, timestamp);
     }
   }
 };
