@@ -1,4 +1,4 @@
-name: Create release pull request
+name: release
 on:
   workflow_dispatch:
     branches:
