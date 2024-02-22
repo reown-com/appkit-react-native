@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.CHANGESETS_ACTION_TOKEN }}
 
       - name: Setup
         uses: ./.github/actions/setup
