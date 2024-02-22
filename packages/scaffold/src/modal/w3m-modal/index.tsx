@@ -32,9 +32,13 @@ export function Web3Modal() {
     return ModalController.close();
   };
 
-  useEffect(() => {
-    ApiController.prefetch();
+  const prefetch = async () => {
+    await ApiController.prefetch();
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' });
+  };
+
+  useEffect(() => {
+    prefetch();
   }, []);
 
   return (

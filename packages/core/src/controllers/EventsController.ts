@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import { proxy, subscribe as sub } from 'valtio/vanilla';
+import { ApiController } from './ApiController';
 import { OptionsController } from './OptionsController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { FetchUtil } from '../utils/FetchUtil';
@@ -65,9 +66,11 @@ export const EventsController = {
     }
   },
 
-  sendEvent(data: EventsControllerState['data']) {
+  async sendEvent(data: EventsControllerState['data']) {
     state.timestamp = Date.now();
     state.data = data;
+    await ApiController.state.prefetchPromise;
+
     if (OptionsController.state.enableAnalytics) {
       EventsController._sendAnalyticsEvent(state);
     }

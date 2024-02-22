@@ -82,6 +82,10 @@ export interface ApiGetDataWalletsResponse {
   count: number;
 }
 
+export interface ApiGetAnalyticsConfigResponse {
+  isAnalyticsEnabled: boolean;
+}
+
 export type ThemeMode = 'dark' | 'light';
 
 export interface ThemeVariables {

@@ -5,6 +5,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { FetchUtil } from '../utils/FetchUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type {
+  ApiGetAnalyticsConfigResponse,
   ApiGetDataWalletsResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
@@ -278,14 +279,24 @@ export const ApiController = {
   async prefetch() {
     await ApiController.fetchInstalledWallets();
 
-    state.prefetchPromise = Promise.race([
-      Promise.allSettled([
-        ApiController.fetchFeaturedWallets(),
-        ApiController.fetchRecommendedWallets(),
-        ApiController.fetchNetworkImages(),
-        ApiController.fetchConnectorImages()
-      ]),
-      CoreHelperUtil.wait(3000)
-    ]);
+    const promises = [
+      ApiController.fetchFeaturedWallets(),
+      ApiController.fetchRecommendedWallets(),
+      ApiController.fetchNetworkImages(),
+      ApiController.fetchConnectorImages()
+    ];
+    if (OptionsController.state.enableAnalytics === undefined) {
+      promises.push(ApiController.fetchAnalyticsConfig());
+    }
+    state.prefetchPromise = Promise.race([Promise.allSettled(promises), CoreHelperUtil.wait(3000)]);
+  },
+
+  async fetchAnalyticsConfig() {
+    const response = await api.get<ApiGetAnalyticsConfigResponse>({
+      path: '/getAnalyticsConfig',
+      headers: ApiController._getApiHeaders()
+    });
+    if (!response) return;
+    OptionsController.setEnableAnalytics(response.isAnalyticsEnabled);
   }
 };
