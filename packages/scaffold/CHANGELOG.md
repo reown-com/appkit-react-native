@@ -1,5 +1,12 @@
 # @web3modal/scaffold-react-native
 
+## 1.3.0-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [[`1971a40`](https://github.com/WalletConnect/web3modal-react-native/commit/1971a409df8a6a66ff6c4bc93d0a458bdc943789)]:
+  - @web3modal/core-react-native@1.3.0-alpha.1
+
 ## 1.3.0-alpha.0
 
 ### Minor Changes
