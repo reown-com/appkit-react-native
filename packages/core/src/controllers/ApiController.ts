@@ -277,6 +277,7 @@ export const ApiController = {
   },
 
   async prefetch() {
+    // this fetch must resolve first so we filter them in the other wallet requests
     await ApiController.fetchInstalledWallets();
 
     const promises = [
