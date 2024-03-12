@@ -63,7 +63,7 @@ export class FetchUtil {
 
   public async fetchImage(path: string, headers?: Record<string, string>) {
     try {
-      const url = new URL(path, this.baseUrl).toString();
+      const url = this.createUrl({ path }).toString();
       const response = await fetch(url, { headers });
       const blob = await response.blob();
       const reader = new FileReader();
