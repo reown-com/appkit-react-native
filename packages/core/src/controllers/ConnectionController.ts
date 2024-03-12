@@ -3,6 +3,7 @@ import { proxy, ref } from 'valtio';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type { Connector, WcWallet } from '../utils/TypeUtil';
+import { RouterController } from './RouterController';
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -112,5 +113,6 @@ export const ConnectionController = {
   async disconnect() {
     await this._getClient().disconnect();
     this.resetWcConnection();
+    RouterController.reset('Connect');
   }
 };
