@@ -1,4 +1,4 @@
-import { Image, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy } from 'valtio';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
@@ -71,20 +71,27 @@ export const ApiController = {
   },
 
   async _fetchWalletImage(imageId: string) {
-    const imageUrl = `${api.baseUrl}/getWalletImage/${imageId}`;
-    AssetController.setWalletImage(imageId, imageUrl);
+    const headers = ApiController._getApiHeaders();
+    const url = await api.fetchImage(`/getWalletImage/${imageId}`, headers);
+    if (url) {
+      AssetController.setWalletImage(imageId, url);
+    }
   },
 
   async _fetchConnectorImage(imageId: string) {
-    const imageUrl = `${api.baseUrl}/public/getAssetImage/${imageId}`;
-    Image.getSizeWithHeaders(imageUrl, ApiController._getApiHeaders(), () => {});
-    AssetController.setConnectorImage(imageId, imageUrl);
+    const headers = ApiController._getApiHeaders();
+    const url = await api.fetchImage(`/public/getAssetImage/${imageId}`, headers);
+    if (url) {
+      AssetController.setConnectorImage(imageId, url);
+    }
   },
 
   async _fetchNetworkImage(imageId: string) {
-    const imageUrl = `${api.baseUrl}/public/getAssetImage/${imageId}`;
-    Image.getSizeWithHeaders(imageUrl, ApiController._getApiHeaders(), () => {});
-    AssetController.setNetworkImage(imageId, imageUrl);
+    const headers = ApiController._getApiHeaders();
+    const url = await api.fetchImage(`/public/getAssetImage/${imageId}`, headers);
+    if (url) {
+      AssetController.setNetworkImage(imageId, url);
+    }
   },
 
   async fetchConnectorImages() {
