@@ -62,7 +62,7 @@ const clipboardClient = {
   }
 };
 
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
+const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata, enableEmail: true });
 
 const customWallets = [
   {

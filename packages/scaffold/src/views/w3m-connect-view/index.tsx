@@ -15,6 +15,7 @@ import { ListWallet, FlexView } from '@web3modal/ui-react-native';
 import { UiUtil } from '../../utils/UiUtil';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
+import { EmailInputView } from '../../partials/w3m-email-input';
 
 export function ConnectView() {
   const { recommended, featured, installed, count } = useSnapshot(ApiController.state);
@@ -24,6 +25,7 @@ export function ConnectView() {
   const imageHeaders = ApiController._getApiHeaders();
   const { padding } = useCustomDimensions();
   const isWalletConnectEnabled = connectors.find(c => c.type === 'WALLET_CONNECT');
+  const hasEmail = connectors.some(c => c.type === 'EMAIL');
 
   const RECENT_COUNT = recentWallets?.length ? (installed.length ? 1 : recentWallets?.length) : 0;
 
@@ -46,6 +48,14 @@ export function ConnectView() {
   const onViewAllPress = () => {
     RouterController.push('AllWallets');
     EventsController.sendEvent({ type: 'track', event: 'CLICK_ALL_WALLETS' });
+  };
+
+  const emailTemplate = () => {
+    if (!hasEmail) {
+      return null;
+    }
+
+    return <EmailInputView />;
   };
 
   const recentTemplate = () => {
@@ -113,7 +123,7 @@ export function ConnectView() {
   };
 
   const connectorsTemplate = () => {
-    const excludeConnectors: ConnectorType[] = ['WALLET_CONNECT'];
+    const excludeConnectors: ConnectorType[] = ['WALLET_CONNECT', 'EMAIL'];
 
     if (isWalletConnectEnabled) {
       // use wallet from api list
@@ -172,6 +182,7 @@ export function ConnectView() {
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
       <FlexView padding={['xs', 's', '2xl', 's']}>
+        {emailTemplate()}
         {recentTemplate()}
         {walletsTemplate()}
         {customWalletsTemplate()}

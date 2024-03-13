@@ -32,6 +32,7 @@ import {
   StorageUtil
 } from '@web3modal/scaffold-utils-react-native';
 import { getCaipDefaultChain } from './utils/helpers';
+import type { EmailConnector } from './connectors/EmailConnector';
 
 // -- Types ---------------------------------------------------------------------
 interface WagmiConfig extends Config<any, any> {
@@ -101,6 +102,13 @@ export class Web3Modal extends Web3ModalScaffold {
             supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD),
             approvedCaipNetworkIds: nsChains as CaipNetworkId[]
           };
+        } else if (walletChoice?.includes(ConstantsUtil.EMAIL_CONNECTOR_ID)) {
+          return {
+            supportsAllNetworks: false,
+            approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
+              id => `${ConstantsUtil.EIP155}:${id}`
+            ) as CaipNetworkId[]
+          };
         }
 
         return { approvedCaipNetworkIds: undefined, supportsAllNetworks: true };
@@ -157,6 +165,8 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains);
 
     this.syncConnectors(wagmiConfig);
+    this.syncEmailConnector(wagmiConfig);
+    this.listenEmailConnector(wagmiConfig);
 
     watchAccount(() => this.syncAccount());
     watchNetwork(() => this.syncNetwork());
@@ -286,15 +296,46 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const w3mConnectors: Connector[] = [];
     wagmiConfig.connectors.forEach(({ id, name }) => {
-      w3mConnectors.push({
-        id,
-        explorerId: PresetsUtil.ConnectorExplorerIds[id],
-        imageId: PresetsUtil.ConnectorImageIds[id],
-        imageUrl: this.options?.connectorImages?.[id],
-        name: PresetsUtil.ConnectorNamesMap[id] ?? name,
-        type: PresetsUtil.ConnectorTypesMap[id] ?? 'EXTERNAL'
-      });
+      if (![ConstantsUtil.EMAIL_CONNECTOR_ID].includes(id)) {
+        w3mConnectors.push({
+          id,
+          explorerId: PresetsUtil.ConnectorExplorerIds[id],
+          imageId: PresetsUtil.ConnectorImageIds[id],
+          imageUrl: this.options?.connectorImages?.[id],
+          name: PresetsUtil.ConnectorNamesMap[id] ?? name,
+          type: PresetsUtil.ConnectorTypesMap[id] ?? 'EXTERNAL'
+        });
+      }
     });
+
     this.setConnectors(w3mConnectors);
+  }
+
+  private async syncEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+    const emailConnector = wagmiConfig.connectors.find(
+      ({ id }) => id === ConstantsUtil.EMAIL_CONNECTOR_ID
+    );
+    if (emailConnector) {
+      const provider = await emailConnector.getProvider();
+      this.addConnector({
+        id: ConstantsUtil.EMAIL_CONNECTOR_ID,
+        type: 'EMAIL',
+        name: 'Email',
+        provider
+      });
+    }
+  }
+
+  private async listenEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+    const connector = wagmiConfig.connectors.find(
+      c => c.id === ConstantsUtil.EMAIL_CONNECTOR_ID
+    ) as EmailConnector;
+
+    if (connector) {
+      super.setLoading(true);
+      const provider = await connector.getProvider();
+      const isLoginEmailUsed = await provider.getLoginEmailUsed();
+      super.setLoading(isLoginEmailUsed);
+    }
   }
 }

@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/scaffold-react-native",
-  "version": "1.3.0-alpha.1",
+  "name": "@web3modal/email-react-native",
+  "version": "1.3.0-email-alpha.0",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -8,14 +8,12 @@
   "scripts": {
     "build": "bob build",
     "clean": "rm -rf lib",
+    "test": "jest  --passWithNoTests",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "files": [
     "src",
-    "lib",
-    "!**/__tests__",
-    "!**/__fixtures__",
-    "!**/__mocks__"
+    "lib"
   ],
   "keywords": [
     "web3",
@@ -23,7 +21,8 @@
     "ethereum",
     "web3modal",
     "walletconnect",
-    "react-native"
+    "react-native",
+    "email"
   ],
   "repository": "https://github.com/WalletConnect/web3modal-react-native",
   "author": "WalletConnect <support@walletconnect.com> (https://web3modal.com)",
@@ -37,13 +36,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@web3modal/core-react-native": "1.3.0-alpha.1",
-    "@web3modal/ui-react-native": "1.3.0-alpha.0"
+    "zod": "3.22.4"
   },
   "peerDependencies": {
-    "react": ">=17",
-    "react-native": ">=0.68.5",
-    "react-native-modal": ">=13",
     "react-native-webview": ">=11"
   },
   "react-native": "src/index.ts",
