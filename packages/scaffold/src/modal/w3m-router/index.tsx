@@ -13,6 +13,8 @@ import { WhatIsNetworkView } from '../../views/w3m-what-is-a-network-view';
 import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
 import { UiUtil } from '../../utils/UiUtil';
 import { ConnectingExternalView } from '../../views/w3m-connecting-external-view';
+import { EmailVerifyOtpView } from '../../views/w3m-email-verify-otp-view';
+import { EmailVerifyDeviceView } from '../../views/w3m-email-verify-device-view';
 
 export function Web3Router() {
   const { view } = useSnapshot(RouterController.state);
@@ -43,6 +45,10 @@ export function Web3Router() {
         return NetworkSwitchView;
       case 'Account':
         return AccountView;
+      case 'EmailVerifyDevice':
+        return EmailVerifyDeviceView;
+      case 'EmailVerifyOtp':
+        return EmailVerifyOtpView;
       default:
         return ConnectView;
     }

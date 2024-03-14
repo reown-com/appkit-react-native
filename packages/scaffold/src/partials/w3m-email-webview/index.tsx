@@ -8,6 +8,7 @@ import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 import { View } from 'react-native';
 import { W3mFrameConstants, W3mFrameProvider } from '@web3modal/email-react-native';
 import { useEffect, useRef, useState } from 'react';
+import styles from './styles';
 
 // TODO: move to frame constants
 const injectedJavaScript = `
@@ -28,7 +29,13 @@ export function EmailWebview() {
   const uri = `${W3mFrameConstants.SECURE_SITE_SDK}?projectId=${projectId}`;
 
   const handleMessage = (e: WebViewMessageEvent) => {
-    const event = JSON.parse(e.nativeEvent.data);
+    let event = JSON.parse(e.nativeEvent.data);
+
+    if (typeof event === 'string') {
+      //TODO: Check why this double parsing is needed
+      event = JSON.parse(event);
+    }
+
     provider.onMessage(event);
 
     provider.onRpcRequest(event, () => {
@@ -49,14 +56,16 @@ export function EmailWebview() {
   }, [provider, webviewRef]);
 
   return provider ? (
-    <View style={{ height: isVisible ? 200 : 0, width: isVisible ? 200 : 0 }}>
+    <View style={[styles.container, isVisible ? styles.visible : styles.hidden]}>
       <WebView
         source={{
           uri,
           headers: { 'X-Bundle-Id': 'host.exp.exponent' } // TODO: use CoreHelper
         }}
+        bounces={false}
         scalesPageToFit
         onMessage={handleMessage}
+        style={styles.webview}
         injectedJavaScript={injectedJavaScript}
         ref={webviewRef}
         webviewDebuggingEnabled={__DEV__}

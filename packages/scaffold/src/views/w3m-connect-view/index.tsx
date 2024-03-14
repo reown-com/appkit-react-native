@@ -15,7 +15,7 @@ import { ListWallet, FlexView } from '@web3modal/ui-react-native';
 import { UiUtil } from '../../utils/UiUtil';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
-import { EmailInputView } from '../../partials/w3m-email-input';
+import { ConnectEmailInput } from '../../partials/w3m-connect-email-input';
 
 export function ConnectView() {
   const { recommended, featured, installed, count } = useSnapshot(ApiController.state);
@@ -55,7 +55,7 @@ export function ConnectView() {
       return null;
     }
 
-    return <EmailInputView />;
+    return <ConnectEmailInput />;
   };
 
   const recentTemplate = () => {

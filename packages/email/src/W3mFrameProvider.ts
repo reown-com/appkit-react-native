@@ -88,14 +88,9 @@ export class W3mFrameProvider {
   }
 
   public onMessage(e: W3mFrameTypes.FrameEvent) {
-    // eslint-disable-next-line no-console
-    console.log('💻 received', e);
-
     this.onFrameEvent(e, event => {
-      if (!event.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY)) {
-        return;
-      }
-
+      // eslint-disable-next-line no-console
+      console.log('💻 received', e);
       switch (event.type) {
         case W3mFrameConstants.FRAME_CONNECT_EMAIL_SUCCESS:
           return this.onConnectEmailSuccess(event);
@@ -175,6 +170,7 @@ export class W3mFrameProvider {
   }
 
   public onWebviewLoaded() {
+    console.log('📡 webview loaded'); // eslint-disable-line no-console
     this.webviewLoadPromiseResolver?.resolve(undefined);
   }
 
@@ -344,7 +340,8 @@ export class W3mFrameProvider {
 
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
-    const chainId = payload?.chainId ?? (await this.getLastUsedChainId()) ?? 1; // TODO: Check this
+    const lastUsedChain = await this.getLastUsedChainId();
+    const chainId = payload?.chainId ?? lastUsedChain ?? 1;
     await this.webviewLoadPromise;
 
     this.postAppEvent({
@@ -690,8 +687,11 @@ export class W3mFrameProvider {
 
   private async getLastUsedChainId() {
     const chainId = await W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY);
+    if (chainId) {
+      return Number(chainId);
+    }
 
-    return Number(chainId);
+    return undefined;
   }
 
   private persistPreferredAccount(type: 'eoa' | 'smartAccount') {
@@ -726,12 +726,14 @@ export class W3mFrameProvider {
     }
 
     W3mFrameSchema.appEvent.parse(event);
-    console.log('📡 sending', JSON.stringify(event)); // eslint-disable-line no-console
+    const strEvent = JSON.stringify(event);
+    console.log('📡 sending', strEvent); // eslint-disable-line no-console
     const send = `
     (function() {
-      iframe.contentWindow.postMessage(${JSON.stringify(event)}, '*')
+      iframe.contentWindow.postMessage(${strEvent}, '*');
     })()
     `;
     this.webviewRef.current.injectJavaScript(send);
+    this.webviewRef.current.postMessage(strEvent);
   }
 }

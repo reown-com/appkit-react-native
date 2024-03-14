@@ -143,6 +143,7 @@ export type IconType =
   | 'twitch'
   | 'twitter'
   | 'twitterIcon'
+  | 'verify'
   | 'wallet'
   | 'walletSmall'
   | 'walletConnect'

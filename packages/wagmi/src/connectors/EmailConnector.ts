@@ -32,7 +32,7 @@ export class EmailConnector extends Connector<W3mFrameProvider, EmailProviderOpt
   }
 
   async connect(options: { chainId?: number }): Promise<Required<ConnectorData>> {
-    const { address, chainId } = await this.provider.connect({ chainId: options.chainId });
+    const { address, chainId } = await this.provider.connect({ chainId: options?.chainId });
 
     return {
       account: address as `0x${string}`,

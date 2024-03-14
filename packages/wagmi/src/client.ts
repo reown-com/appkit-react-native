@@ -144,7 +144,6 @@ export class Web3Modal extends Web3ModalScaffold {
         }
 
         const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
-
         await connect({ connector, chainId });
       },
 

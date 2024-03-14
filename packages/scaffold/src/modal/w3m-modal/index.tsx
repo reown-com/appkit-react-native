@@ -15,7 +15,7 @@ import { Web3Router } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
 import { Snackbar } from '../../partials/w3m-snackbar';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import { EmailWebview } from '../w3m-email-webview';
+import { EmailWebview } from '../../partials/w3m-email-webview';
 import styles from './styles';
 
 export function Web3Modal() {

@@ -1,11 +1,10 @@
+import { useState } from 'react';
 import { View } from 'react-native';
 import { Text } from '../../components/wui-text';
 import { InputText, type InputTextProps } from '../wui-input-text';
-
-import styles from './styles';
 import { Icon } from '../../components/wui-icon';
 import { LoadingSpinner } from '../../components/wui-loading-spinner';
-import { useState } from 'react';
+import styles from './styles';
 
 export type EmailInputProps = InputTextProps & {
   errorMessage?: string;
