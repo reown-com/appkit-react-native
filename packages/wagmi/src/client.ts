@@ -82,9 +82,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
       async getApprovedCaipNetworksData() {
         const walletChoice = await StorageUtil.getConnectedConnector();
-        const walletConnectType =
-          PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
-        if (walletChoice?.includes(walletConnectType)) {
+        if (
+          walletChoice?.includes(
+            PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]
+          )
+        ) {
           const connector = wagmiConfig.connectors.find(
             c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
           );
@@ -102,7 +104,9 @@ export class Web3Modal extends Web3ModalScaffold {
             supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD),
             approvedCaipNetworkIds: nsChains as CaipNetworkId[]
           };
-        } else if (walletChoice?.includes(ConstantsUtil.EMAIL_CONNECTOR_ID)) {
+        } else if (
+          walletChoice?.includes(PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID])
+        ) {
           return {
             supportsAllNetworks: false,
             approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(

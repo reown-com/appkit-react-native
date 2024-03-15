@@ -1,5 +1,5 @@
 import { type Chain, type ConnectorData, Connector } from 'wagmi';
-import { createWalletClient, custom, getAddress } from 'viem';
+import { SwitchChainError, createWalletClient, custom, getAddress } from 'viem';
 import { W3mFrameProvider } from '@web3modal/email-react-native';
 
 export type StorageStoreData = {
@@ -45,6 +45,26 @@ export class EmailConnector extends Connector<W3mFrameProvider, EmailProviderOpt
 
   async disconnect(): Promise<void> {
     await this.provider.disconnect();
+  }
+
+  override async switchChain(chainId: number): Promise<Chain> {
+    try {
+      const chain = this.chains?.find(c => c.id === chainId);
+      if (!chain) {
+        throw new SwitchChainError(new Error('chain not found on connector.'));
+      }
+
+      await this.provider.switchNetwork(chainId);
+      const unsupported = this.isChainUnsupported(chainId);
+      this.emit('change', { chain: { id: chainId, unsupported } });
+
+      return chain;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new SwitchChainError(error);
+      }
+      throw error;
+    }
   }
 
   async getAccount(): Promise<`0x${string}`> {
