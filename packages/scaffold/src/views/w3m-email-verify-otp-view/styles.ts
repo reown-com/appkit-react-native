@@ -11,5 +11,8 @@ export default StyleSheet.create({
   },
   otpContainer: {
     height: 60
+  },
+  errorText: {
+    marginTop: Spacing['2xs']
   }
 });

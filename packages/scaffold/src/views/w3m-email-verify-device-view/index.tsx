@@ -1,7 +1,11 @@
 import { useSnapshot } from 'valtio';
 import { View } from 'react-native';
-import { FlexView, Icon, Text, useTheme } from '@web3modal/ui-react-native';
-import { ConnectorController, RouterController } from '@web3modal/core-react-native';
+import { FlexView, Icon, Link, Text, useTheme } from '@web3modal/ui-react-native';
+import {
+  ConnectorController,
+  RouterController,
+  SnackController
+} from '@web3modal/core-react-native';
 import type { W3mFrameProvider } from '@web3modal/email-react-native';
 import styles from './styles';
 import { useEffect } from 'react';
@@ -13,13 +17,23 @@ export function EmailVerifyDeviceView() {
   const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
 
   const listenForDeviceApproval = async () => {
-    if (emailProvider) {
+    if (emailProvider && data?.email) {
       try {
         await emailProvider.connectDevice();
         RouterController.replace('EmailVerifyOtp', { email: data.email });
       } catch (error: any) {
         RouterController.goBack();
       }
+    }
+  };
+
+  const onResendEmail = async () => {
+    try {
+      if (!data?.email || !emailProvider) return;
+      emailProvider?.connectEmail({ email: data.email });
+      SnackController.showSuccess('Email sent');
+    } catch (e) {
+      //TODO: handle resend error
     }
   };
 
@@ -42,7 +56,9 @@ export function EmailVerifyDeviceView() {
       <Text variant="small-400" color="fg-200" style={styles.expiryText}>
         The code expires in 20 minutes
       </Text>
-      <Text variant="small-400">Didn't receive it? Resend email</Text>
+      <Text variant="small-400">
+        Didn't receive it? <Link onPress={onResendEmail}>Resend email</Link>
+      </Text>
     </FlexView>
   );
 }
