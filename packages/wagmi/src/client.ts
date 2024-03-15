@@ -337,6 +337,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (connector) {
       super.setLoading(true);
       const provider = await connector.getProvider();
+      await provider.webviewLoadPromise;
       const isLoginEmailUsed = await provider.getLoginEmailUsed();
       super.setLoading(isLoginEmailUsed);
     }

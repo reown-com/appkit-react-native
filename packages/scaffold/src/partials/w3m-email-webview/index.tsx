@@ -69,8 +69,10 @@ export function EmailWebview() {
         injectedJavaScript={injectedJavaScript}
         ref={webviewRef}
         webviewDebuggingEnabled={__DEV__}
-        onLoadEnd={() => {
-          provider?.onWebviewLoaded();
+        onLoadEnd={({ nativeEvent }) => {
+          if (!nativeEvent.loading) {
+            provider?.onWebviewLoaded();
+          }
         }}
         onError={error => {
           provider?.onWebviewLoadError(error.nativeEvent.description);
