@@ -56,9 +56,10 @@ export function EmailVerifyDeviceView() {
       <Text variant="small-400" color="fg-200" style={styles.expiryText}>
         The code expires in 20 minutes
       </Text>
-      <Text variant="small-400">
-        Didn't receive it? <Link onPress={onResendEmail}>Resend email</Link>
-      </Text>
+      <FlexView alignItems="center" justifyContent="center" flexDirection="row">
+        <Text variant="small-400">Didn't receive it?</Text>
+        <Link onPress={onResendEmail}>Resend email</Link>
+      </FlexView>
     </FlexView>
   );
 }

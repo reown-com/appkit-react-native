@@ -68,7 +68,7 @@ export function EmailVerifyOtpView() {
       <Text style={styles.expiryText} variant="small-400" color="fg-200">
         The code expires in 20 minutes
       </Text>
-      <FlexView alignItems="center" style={styles.otpContainer}>
+      <FlexView justifyContent="center" style={styles.otpContainer}>
         {loading ? <LoadingSpinner /> : <Otp length={6} onChangeText={setOtp} />}
       </FlexView>
       {error && (

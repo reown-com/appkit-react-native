@@ -74,8 +74,8 @@ export function EmailWebview() {
             provider?.onWebviewLoaded();
           }
         }}
-        onError={error => {
-          provider?.onWebviewLoadError(error.nativeEvent.description);
+        onError={({ nativeEvent }) => {
+          provider?.onWebviewLoadError(nativeEvent.description);
         }}
       />
     </View>
