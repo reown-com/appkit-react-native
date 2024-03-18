@@ -4,7 +4,7 @@ import { Icon } from '../../components/wui-icon';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import { useTheme } from '../../hooks/useTheme';
 import type { IconType, SizeType } from '../../utils/TypesUtil';
-import styles from './styles';
+import styles, { outerBorderRadius } from './styles';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -42,6 +42,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
       Theme['gray-glass-010'],
       100
     );
+    const outerRadius = outerBorderRadius[size];
 
     useImperativeHandle(ref, () => ({
       clear: () => {
@@ -74,7 +75,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
     return (
       <>
         <AnimatedPressable
-          style={[styles.outerBorder, { borderColor: outerBorder }]}
+          style={[styles.outerBorder, { borderColor: outerBorder, borderRadius: outerRadius }]}
           disabled={disabled}
           onPress={() => inputRef.current?.focus()}
           testID={rest.testID}

@@ -10,6 +10,12 @@ const baseStyle = {
   borderWidth: 1
 } as ViewStyle;
 
+export const outerBorderRadius = {
+  xs: BorderRadius.xs,
+  sm: BorderRadius.xs,
+  md: BorderRadius.s
+};
+
 export default StyleSheet.create({
   xsContainer: {
     ...baseStyle,

@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { View } from 'react-native';
 import { Text } from '../../components/wui-text';
 import { InputText, type InputTextProps } from '../wui-input-text';
-import { Icon } from '../../components/wui-icon';
 import { LoadingSpinner } from '../../components/wui-loading-spinner';
+import { IconLink } from '../wui-icon-link';
 import styles from './styles';
 
 export type EmailInputProps = InputTextProps & {
@@ -12,13 +11,21 @@ export type EmailInputProps = InputTextProps & {
   onSubmit?: (value: string) => any;
 };
 
-function RightIcon({ loading, showChevron }: { loading?: boolean; showChevron: boolean }) {
+function RightIcon({
+  loading,
+  showChevron,
+  onPress
+}: {
+  loading?: boolean;
+  showChevron: boolean;
+  onPress?: () => void;
+}) {
   if (loading) {
-    return <LoadingSpinner size="md" color="accent-100" />;
+    return <LoadingSpinner size="md" color="accent-100" style={styles.spinner} />;
   }
 
   if (showChevron) {
-    return <Icon name="chevronRight" size="sm" color="accent-100" />;
+    return <IconLink icon="chevronRight" onPress={onPress} size="sm" iconColor="accent-100" />;
   }
 
   return null;
@@ -32,7 +39,12 @@ export function EmailInput({
   disabled,
   ...rest
 }: EmailInputProps) {
-  const [showChevron, setShowChevron] = useState(false); // TODO: Improve this
+  const [showChevron, setShowChevron] = useState(false);
+  const [email, setEmail] = useState('');
+
+  const onChevronPress = () => {
+    onSubmit?.(email);
+  };
 
   const handleSubmitEditing = ({ nativeEvent: { text } }: { nativeEvent: { text: string } }) => {
     onSubmit?.(text);
@@ -40,11 +52,12 @@ export function EmailInput({
 
   const handleChangeText = (text: string) => {
     setShowChevron(text.length > 0);
+    setEmail(text);
     onChangeText?.(text);
   };
 
   return (
-    <View>
+    <>
       <InputText
         icon="mail"
         placeholder="Email"
@@ -53,14 +66,16 @@ export function EmailInput({
         onChangeText={handleChangeText}
         keyboardType="email-address"
         returnKeyType="go"
+        enablesReturnKeyAutomatically
         disabled={disabled || loading}
+        value={email}
         {...rest}
       >
-        <RightIcon loading={loading} showChevron={showChevron} />
+        <RightIcon loading={loading} showChevron={showChevron} onPress={onChevronPress} />
       </InputText>
       <Text color="error-100" variant="tiny-500" style={styles.text}>
         {errorMessage}
       </Text>
-    </View>
+    </>
   );
 }

@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useRef, useState } from 'react';
-import { Appearance, View } from 'react-native';
+import { Appearance, Platform, View } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 import { W3mFrameProvider } from '@web3modal/email-react-native';
 import {
@@ -75,6 +75,9 @@ export function EmailWebview() {
         webviewDebuggingEnabled={__DEV__}
         onLoadEnd={({ nativeEvent }) => {
           if (!nativeEvent.loading) {
+            if (Platform.OS === 'android') {
+              webviewRef.current?.injectJavaScript(injectedJavaScript);
+            }
             const themeMode = Appearance.getColorScheme() ?? undefined;
             provider?.syncTheme({ themeMode });
             provider?.syncDappData?.({ projectId, sdkVersion });

@@ -5,5 +5,8 @@ export default StyleSheet.create({
   text: {
     marginTop: Spacing['4xs'],
     marginLeft: Spacing.xl
+  },
+  spinner: {
+    marginRight: Spacing.xs
   }
 });
