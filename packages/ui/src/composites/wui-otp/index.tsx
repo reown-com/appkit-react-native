@@ -3,7 +3,8 @@ import {
   type NativeSyntheticEvent,
   TextInput,
   type TextInputKeyPressEventData,
-  View
+  View,
+  Platform
 } from 'react-native';
 import { InputNumeric, type InputNumericProps } from '../wui-input-numeric';
 import styles from './styles';
@@ -23,12 +24,21 @@ export function Otp({ length, style, onChangeText }: OtpProps) {
   );
 
   const _onChangeText = (text: string, index: number) => {
-    const newValue = [...value.slice(0, index), text, ...value.slice(index + 1)];
+    let newValue = [...value];
+
+    if (text.length <= 1) {
+      newValue = [...value.slice(0, index), text, ...value.slice(index + 1)];
+    } else {
+      newValue = text.split('', length);
+    }
+
     setValue(newValue);
     onChangeText?.(newValue.join(''));
 
     if (text.length === 1 && index < length - 1) {
       refArray[index + 1]?.current?.focus();
+    } else if (text.length > 1) {
+      refArray[newValue.length]?.current?.focus();
     }
   };
 
@@ -58,6 +68,9 @@ export function Otp({ length, style, onChangeText }: OtpProps) {
           inputRef={refArray[index]}
           onChangeText={text => _onChangeText(text, index)}
           onKeyPress={(e: any) => onKeyPress(e, index)}
+          selectTextOnFocus
+          textContentType="oneTimeCode"
+          autoComplete={Platform.OS === 'android' ? 'sms-otp' : 'one-time-code'}
         />
       ))}
     </View>
