@@ -1,5 +1,5 @@
 import { proxy, ref } from 'valtio';
-import type { CustomWallet, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil';
+import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
 export interface ClipboardClient {
@@ -17,13 +17,14 @@ export interface OptionsControllerState {
   enableAnalytics?: boolean;
   sdkType: string;
   sdkVersion: SdkVersion;
+  metadata?: Metadata;
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
   projectId: '',
   sdkType: 'w3m',
-  sdkVersion: 'react-native-undefined'
+  sdkVersion: 'react-native-wagmi-undefined'
 });
 
 // -- Controller ---------------------------------------- //
@@ -64,6 +65,10 @@ export const OptionsController = {
 
   setSdkVersion(sdkVersion: OptionsControllerState['sdkVersion']) {
     state.sdkVersion = sdkVersion;
+  },
+
+  setMetadata(metadata: OptionsControllerState['metadata']) {
+    state.metadata = metadata;
   },
 
   isClipboardAvailable() {

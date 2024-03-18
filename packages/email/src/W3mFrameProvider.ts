@@ -1,10 +1,10 @@
+import type { RefObject } from 'react';
+import type WebView from 'react-native-webview';
 import type { W3mFrameTypes } from './W3mFrameTypes';
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants';
 import { W3mFrameStorage } from './W3mFrameStorage';
 import { W3mFrameHelpers } from './W3mFrameHelpers';
 import { W3mFrameSchema } from './W3mFrameSchema';
-import type { RefObject } from 'react';
-import type WebView from 'react-native-webview';
 
 // -- Types -----------------------------------------------------------
 type Resolver<T> = { resolve: (value: T) => void; reject: (reason?: unknown) => void } | undefined;
@@ -30,9 +30,20 @@ type SmartAccountEnabledNetworksResolver = Resolver<
 type InitSmartAccountResolver = Resolver<W3mFrameTypes.Responses['FrameInitSmartAccountResponse']>;
 type SetPreferredAccountResolver = Resolver<undefined>;
 
+type Metadata = {
+  name: string;
+  description: string;
+  url: string;
+  icons: string[];
+};
+
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
   private webviewRef: RefObject<WebView> | undefined;
+
+  private projectId: string;
+
+  private metadata: Metadata | undefined;
 
   public webviewLoadPromise: Promise<void>;
 
@@ -77,10 +88,12 @@ export class W3mFrameProvider {
 
   private setPreferredAccountResolver: SetPreferredAccountResolver = undefined;
 
-  public constructor(/*projectId: string*/) {
+  public constructor(projectId: string, metadata: Metadata) {
     this.webviewLoadPromise = new Promise((resolve, reject) => {
       this.webviewLoadPromiseResolver = { resolve, reject };
     });
+    this.metadata = metadata;
+    this.projectId = projectId;
   }
 
   public setWebviewRef(webviewRef: RefObject<WebView>) {
@@ -179,6 +192,10 @@ export class W3mFrameProvider {
   }
 
   // -- Extended Methods ------------------------------------------------
+  public getSecureSiteURL() {
+    return `${W3mFrameConstants.SECURE_SITE_SDK}?projectId=${this.projectId}`;
+  }
+
   public async getLoginEmailUsed() {
     const email = await W3mFrameStorage.get(W3mFrameConstants.EMAIL_LOGIN_USED_KEY);
 
@@ -295,7 +312,11 @@ export class W3mFrameProvider {
 
   public async syncDappData(payload: W3mFrameTypes.Requests['AppSyncDappDataRequest']) {
     await this.webviewLoadPromise;
-    this.postAppEvent({ type: W3mFrameConstants.APP_SYNC_DAPP_DATA, payload });
+    const metadata = payload.metadata ?? this.metadata;
+    this.postAppEvent({
+      type: W3mFrameConstants.APP_SYNC_DAPP_DATA,
+      payload: { ...payload, metadata }
+    });
 
     return new Promise((resolve, reject) => {
       this.syncDappDataResolver = { resolve, reject };
@@ -705,8 +726,9 @@ export class W3mFrameProvider {
     if (!event.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY)) {
       return;
     }
-    const frameEvent = W3mFrameSchema.frameEvent.parse(event);
-    callback(frameEvent);
+    //TODO: Check OTP validation failure
+    // const frameEvent = W3mFrameSchema.frameEvent.parse(event);
+    callback(event);
   }
 
   private onAppEvent(

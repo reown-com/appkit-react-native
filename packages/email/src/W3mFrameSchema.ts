@@ -50,9 +50,9 @@ export const AppSyncDappDataRequest = z.object({
     })
     .optional(),
   sdkVersion: z.string() as z.ZodType<
-    | `${'html' | 'react' | 'vue'}-wagmi-${string}`
-    | `${'html' | 'react' | 'vue'}-ethers5-${string}`
-    | `${'html' | 'react' | 'vue'}-ethers-${string}`
+    | `react-native-wagmi-${string}`
+    | `react-native-ethers5-${string}`
+    | `react-native-ethers-${string}`
   >,
   projectId: z.string()
 });

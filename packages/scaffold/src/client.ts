@@ -42,6 +42,7 @@ export interface LibraryOptions {
   clipboardClient?: OptionsControllerState['_clipboardClient'];
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
   _sdkVersion: OptionsControllerState['sdkVersion'];
+  metadata?: OptionsControllerState['metadata'];
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -215,6 +216,9 @@ export class Web3ModalScaffold {
     }
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables);
+    }
+    if (options.metadata) {
+      OptionsController.setMetadata(options.metadata);
     }
   }
 

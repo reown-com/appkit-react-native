@@ -107,7 +107,7 @@ export const LightTheme: { [key in ThemeKeys]: string } = {
   'purple-100': '#794cff',
   'yellow-100': '#eccc1c',
 
-  'gray-glass-001': 'rgba(255, 255, 255, 0.01)',
+  'gray-glass-001': 'rgba(0, 0, 0, 0.01)',
   'gray-glass-002': 'rgba(0, 0, 0, 0.02)',
   'gray-glass-005': 'rgba(0, 0, 0, 0.05)',
   'gray-glass-010': 'rgba(0, 0, 0, 0.1)',

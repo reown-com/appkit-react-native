@@ -80,7 +80,8 @@ createWeb3Modal({
   wagmiConfig,
   clipboardClient,
   customWallets,
-  enableAnalytics: true
+  enableAnalytics: true,
+  metadata
 });
 
 export default function Native() {

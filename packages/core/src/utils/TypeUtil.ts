@@ -41,7 +41,10 @@ export type CaipNamespaces = Record<
   }
 >;
 
-export type SdkVersion = `react-native-${string}`;
+export type SdkVersion =
+  | `react-native-wagmi-${string}`
+  | `react-native-ethers5-${string}`
+  | `react-native-ethers-${string}`;
 
 // -- ApiController Types -------------------------------------------------------
 export interface WcWallet {
@@ -110,6 +113,13 @@ export interface Token {
 }
 
 export type Tokens = Record<CaipNetworkId, Token>;
+
+export type Metadata = {
+  name: string;
+  description: string;
+  url: string;
+  icons: string[];
+};
 
 export type CustomWallet = Pick<
   WcWallet,

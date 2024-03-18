@@ -11,12 +11,20 @@ interface Config {
   options: EmailProviderOptions;
 }
 
+export type Metadata = {
+  name: string;
+  description: string;
+  url: string;
+  icons: string[];
+};
+
 type EmailProviderOptions = {
   /**
    * WalletConnect Cloud Project ID.
    * @link https://cloud.walletconnect.com/sign-in.
    */
   projectId: string;
+  metadata: Metadata;
 };
 
 export class EmailConnector extends Connector<W3mFrameProvider, EmailProviderOptions> {
@@ -28,7 +36,7 @@ export class EmailConnector extends Connector<W3mFrameProvider, EmailProviderOpt
 
   constructor(config: Config) {
     super(config);
-    this.provider = new W3mFrameProvider();
+    this.provider = new W3mFrameProvider(config.options.projectId, config.options.metadata);
   }
 
   async connect(options: { chainId?: number }): Promise<Required<ConnectorData>> {

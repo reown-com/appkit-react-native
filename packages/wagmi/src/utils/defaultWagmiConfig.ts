@@ -6,8 +6,8 @@ import { WalletConnectConnector } from '../connectors/WalletConnectConnector';
 import { EmailConnector } from '../connectors/EmailConnector';
 
 export interface ConfigOptions {
-  metadata?: EthereumProviderOptions['metadata'];
   projectId: string;
+  metadata: Exclude<EthereumProviderOptions['metadata'], undefined>;
   chains: Chain[];
   enableWalletConnect?: boolean;
   enableEmail?: boolean;
@@ -34,7 +34,7 @@ export function defaultWagmiConfig({
   }
 
   if (enableEmail) {
-    connectors.push(new EmailConnector({ chains, options: { projectId } }));
+    connectors.push(new EmailConnector({ chains, options: { projectId, metadata } }));
   }
 
   if (extraConnectors) {

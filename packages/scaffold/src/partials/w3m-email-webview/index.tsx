@@ -1,13 +1,13 @@
 import { useSnapshot } from 'valtio';
+import { useEffect, useRef, useState } from 'react';
+import { Appearance, View } from 'react-native';
+import { WebView, type WebViewMessageEvent } from 'react-native-webview';
+import { W3mFrameProvider } from '@web3modal/email-react-native';
 import {
   ConnectorController,
   OptionsController,
   ModalController
 } from '@web3modal/core-react-native';
-import { WebView, type WebViewMessageEvent } from 'react-native-webview';
-import { View } from 'react-native';
-import { W3mFrameConstants, W3mFrameProvider } from '@web3modal/email-react-native';
-import { useEffect, useRef, useState } from 'react';
 import styles from './styles';
 
 // TODO: move to frame constants
@@ -23,10 +23,10 @@ const injectedJavaScript = `
 export function EmailWebview() {
   const webviewRef = useRef<WebView>(null);
   const { connectors } = useSnapshot(ConnectorController.state);
+  const { projectId, sdkVersion } = useSnapshot(OptionsController.state);
   const [isVisible, setIsVisible] = useState(false);
-  const { projectId } = useSnapshot(OptionsController.state);
-  const provider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
-  const uri = `${W3mFrameConstants.SECURE_SITE_SDK}?projectId=${projectId}`;
+  const emailConnector = connectors.find(c => c.type === 'EMAIL');
+  const provider = emailConnector?.provider as W3mFrameProvider;
 
   const handleMessage = (e: WebViewMessageEvent) => {
     let event = JSON.parse(e.nativeEvent.data);
@@ -49,6 +49,10 @@ export function EmailWebview() {
     provider.onIsConnected(event, () => {
       ModalController.setLoading(false);
     });
+
+    provider.onNotConnected(event, () => {
+      ModalController.setLoading(false);
+    });
   };
 
   useEffect(() => {
@@ -59,7 +63,7 @@ export function EmailWebview() {
     <View style={[styles.container, isVisible ? styles.visible : styles.hidden]}>
       <WebView
         source={{
-          uri,
+          uri: provider.getSecureSiteURL(),
           headers: { 'X-Bundle-Id': 'host.exp.exponent' } // TODO: use CoreHelper
         }}
         bounces={false}
@@ -71,6 +75,9 @@ export function EmailWebview() {
         webviewDebuggingEnabled={__DEV__}
         onLoadEnd={({ nativeEvent }) => {
           if (!nativeEvent.loading) {
+            const themeMode = Appearance.getColorScheme() ?? undefined;
+            provider?.syncTheme({ themeMode });
+            provider?.syncDappData?.({ projectId, sdkVersion });
             provider?.onWebviewLoaded();
           }
         }}

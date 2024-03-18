@@ -9944,6 +9944,7 @@ __metadata:
   dependencies:
     zod: "npm:3.22.4"
   peerDependencies:
+    "@react-native-async-storage/async-storage": ">=1.17.0"
     react-native-webview: ">=11"
   languageName: unknown
   linkType: soft

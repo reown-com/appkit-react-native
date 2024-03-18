@@ -7,13 +7,13 @@ import {
   AssetUtil,
   ConnectionController,
   ModalController,
-  EventsController
+  EventsController,
+  StorageUtil
 } from '@web3modal/core-react-native';
 import { Button, FlexView, LoadingThumbnail, Text, WalletImage } from '@web3modal/ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
-import { StorageUtil } from '@web3modal/core-react-native';
 
 export function ConnectingExternalView() {
   const { data } = useSnapshot(RouterController.state);
