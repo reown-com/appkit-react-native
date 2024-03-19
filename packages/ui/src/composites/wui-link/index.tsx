@@ -37,7 +37,7 @@ export function Link({
   ...rest
 }: LinkProps) {
   const Theme = useTheme();
-  const _color = (disabled ? 'bg-300' : color ?? 'accent-100') as ColorType;
+  const _color = (disabled ? 'fg-300' : color ?? 'accent-100') as ColorType;
   const iconSize = size === 'md' ? 'sm' : 'xs';
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
     'transparent',

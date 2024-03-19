@@ -214,7 +214,7 @@ export class W3mFrameProvider {
 
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     await this.webviewLoadPromise;
-    W3mFrameHelpers.checkIfAllowedToTriggerEmail();
+    await W3mFrameHelpers.checkIfAllowedToTriggerEmail();
     this.postAppEvent({ type: W3mFrameConstants.APP_CONNECT_EMAIL, payload });
 
     return new Promise<W3mFrameTypes.Responses['FrameConnectEmailResponse']>((resolve, reject) => {
@@ -263,7 +263,7 @@ export class W3mFrameProvider {
 
   public async updateEmail(payload: W3mFrameTypes.Requests['AppUpdateEmailRequest']) {
     await this.webviewLoadPromise;
-    W3mFrameHelpers.checkIfAllowedToTriggerEmail();
+    await W3mFrameHelpers.checkIfAllowedToTriggerEmail();
     this.postAppEvent({ type: W3mFrameConstants.APP_UPDATE_EMAIL, payload });
 
     return new Promise((resolve, reject) => {

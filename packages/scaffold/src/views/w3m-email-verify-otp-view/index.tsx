@@ -1,19 +1,22 @@
 import { useSnapshot } from 'valtio';
 import { useState, useEffect, useCallback } from 'react';
 import { FlexView, Link, LoadingSpinner, Otp, Text } from '@web3modal/ui-react-native';
-import type { W3mFrameProvider } from '@web3modal/email-react-native';
+import { W3mFrameHelpers, type W3mFrameProvider } from '@web3modal/email-react-native';
 import {
   ConnectionController,
   ConnectorController,
+  CoreHelperUtil,
   EventsController,
   ModalController,
   RouterController,
   SnackController
 } from '@web3modal/core-react-native';
 import styles from './styles';
+import useTimeout from '../../hooks/useTimeout';
 
 export function EmailVerifyOtpView() {
   const [otp, setOtp] = useState<string>('');
+  const { timeLeft, startTimer } = useTimeout(0);
   const { connectors } = useSnapshot(ConnectorController.state);
   const { data } = useSnapshot(RouterController.state);
   const [loading, setLoading] = useState(false);
@@ -23,11 +26,16 @@ export function EmailVerifyOtpView() {
   const onOtpResend = async () => {
     try {
       if (!data?.email || !emailConnector) return;
+      setLoading(true);
       const provider = emailConnector?.provider as W3mFrameProvider;
       await provider.connectEmail({ email: data.email });
       SnackController.showSuccess('Code sent');
+      const timer = await W3mFrameHelpers.getTimeToNextEmailLogin();
+      startTimer(timer);
+      setLoading(false);
     } catch (e) {
-      //TODO: Handle resend error
+      const parsedError = CoreHelperUtil.parseError(e);
+      SnackController.showError(parsedError);
     }
   };
 
@@ -76,11 +84,13 @@ export function EmailVerifyOtpView() {
           Invalid code. Try Again
         </Text>
       )}
-      <FlexView alignItems="center" justifyContent="center" flexDirection="row" margin="3xs">
+      <FlexView alignItems="center" flexDirection="row" margin="3xs">
         <Text variant="small-400" color="fg-200">
           Didn't receive it?
         </Text>
-        <Link onPress={onOtpResend}>Resend code</Link>
+        <Link onPress={onOtpResend} disabled={timeLeft > 0}>
+          {timeLeft > 0 ? `Resend in ${timeLeft}s` : 'Resend code'}
+        </Link>
       </FlexView>
     </FlexView>
   );

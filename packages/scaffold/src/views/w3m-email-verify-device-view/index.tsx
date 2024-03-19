@@ -1,19 +1,23 @@
 import { useSnapshot } from 'valtio';
 import { View } from 'react-native';
+import { useEffect, useState } from 'react';
 import { FlexView, Icon, Link, Text, useTheme } from '@web3modal/ui-react-native';
 import {
   ConnectorController,
+  CoreHelperUtil,
   RouterController,
   SnackController
 } from '@web3modal/core-react-native';
 import type { W3mFrameProvider } from '@web3modal/email-react-native';
+import useTimeout from '../../hooks/useTimeout';
 import styles from './styles';
-import { useEffect } from 'react';
 
 export function EmailVerifyDeviceView() {
   const Theme = useTheme();
   const { connectors } = useSnapshot(ConnectorController.state);
   const { data } = useSnapshot(RouterController.state);
+  const { timeLeft, startTimer } = useTimeout(0);
+  const [loading, setLoading] = useState(false);
   const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
 
   const listenForDeviceApproval = async () => {
@@ -30,10 +34,15 @@ export function EmailVerifyDeviceView() {
   const onResendEmail = async () => {
     try {
       if (!data?.email || !emailProvider) return;
+      setLoading(true);
       emailProvider?.connectEmail({ email: data.email });
+      listenForDeviceApproval();
       SnackController.showSuccess('Email sent');
+      startTimer(30);
+      setLoading(false);
     } catch (e) {
-      //TODO: handle resend error
+      const parsedError = CoreHelperUtil.parseError(e);
+      SnackController.showError(parsedError);
     }
   };
 
@@ -58,7 +67,9 @@ export function EmailVerifyDeviceView() {
       </Text>
       <FlexView alignItems="center" justifyContent="center" flexDirection="row">
         <Text variant="small-400">Didn't receive it?</Text>
-        <Link onPress={onResendEmail}>Resend email</Link>
+        <Link onPress={onResendEmail} disabled={timeLeft > 0 || loading}>
+          {timeLeft > 0 ? `Resend in ${timeLeft}s` : 'Resend email'}
+        </Link>
       </FlexView>
     </FlexView>
   );

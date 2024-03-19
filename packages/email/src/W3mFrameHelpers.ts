@@ -31,8 +31,8 @@ export const W3mFrameHelpers = {
     }
   },
 
-  checkIfAllowedToTriggerEmail() {
-    const lastEmailLoginTime = W3mFrameStorage.get(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME);
+  async checkIfAllowedToTriggerEmail() {
+    const lastEmailLoginTime = await W3mFrameStorage.get(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME);
     if (lastEmailLoginTime) {
       const difference = Date.now() - Number(lastEmailLoginTime);
       if (difference < EMAIL_MINIMUM_TIMEOUT) {
@@ -42,8 +42,8 @@ export const W3mFrameHelpers = {
     }
   },
 
-  getTimeToNextEmailLogin() {
-    const lastEmailLoginTime = W3mFrameStorage.get(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME);
+  async getTimeToNextEmailLogin() {
+    const lastEmailLoginTime = await W3mFrameStorage.get(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME);
     if (lastEmailLoginTime) {
       const difference = Date.now() - Number(lastEmailLoginTime);
       if (difference < EMAIL_MINIMUM_TIMEOUT) {

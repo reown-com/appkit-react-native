@@ -8,6 +8,7 @@ import {
   OptionsController,
   ModalController
 } from '@web3modal/core-react-native';
+import { useTheme } from '@web3modal/ui-react-native';
 import styles from './styles';
 
 // TODO: move to frame constants
@@ -22,6 +23,7 @@ const injectedJavaScript = `
 
 export function EmailWebview() {
   const webviewRef = useRef<WebView>(null);
+  const Theme = useTheme();
   const { connectors } = useSnapshot(ConnectorController.state);
   const { projectId, sdkVersion } = useSnapshot(OptionsController.state);
   const [isVisible, setIsVisible] = useState(false);
@@ -60,7 +62,13 @@ export function EmailWebview() {
   }, [provider, webviewRef]);
 
   return provider ? (
-    <View style={[styles.container, isVisible ? styles.visible : styles.hidden]}>
+    <View
+      style={[
+        styles.container,
+        { borderColor: Theme['gray-glass-020'] },
+        isVisible ? styles.visible : styles.hidden
+      ]}
+    >
       <WebView
         source={{
           uri: provider.getSecureSiteURL(),

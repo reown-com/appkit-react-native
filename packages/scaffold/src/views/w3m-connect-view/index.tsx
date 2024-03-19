@@ -14,8 +14,8 @@ import type { ConnectorType, WcWallet } from '@web3modal/core-react-native';
 import { ListWallet, FlexView } from '@web3modal/ui-react-native';
 import { UiUtil } from '../../utils/UiUtil';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import styles from './styles';
 import { ConnectEmailInput } from '../../partials/w3m-connect-email-input';
+import styles from './styles';
 
 export function ConnectView() {
   const { recommended, featured, installed, count } = useSnapshot(ApiController.state);
