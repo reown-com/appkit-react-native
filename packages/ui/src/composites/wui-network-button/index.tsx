@@ -6,6 +6,7 @@ import { IconBox } from '../wui-icon-box';
 
 import styles from './styles';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
+import { LoadingSpinner } from '../../components/wui-loading-spinner';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -16,6 +17,7 @@ export interface NetworkButtonProps {
   imageHeaders?: Record<string, string>;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
+  loading?: boolean;
 }
 
 export function NetworkButton({
@@ -24,11 +26,12 @@ export function NetworkButton({
   disabled,
   onPress,
   style,
+  loading,
   children
 }: NetworkButtonProps) {
   const Theme = useTheme();
   const textColor = disabled ? 'fg-300' : 'fg-100';
-  const borderColor = disabled ? 'gray-glass-005' : 'gray-glass-010';
+  const borderColor = disabled ? 'gray-glass-005' : 'gray-glass-005';
 
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
     Theme['gray-glass-002'],
@@ -45,7 +48,9 @@ export function NetworkButton({
       onPressOut={setStartValue}
       disabled={disabled}
     >
-      {imageSrc ? (
+      {loading ? (
+        <LoadingSpinner size="md" />
+      ) : imageSrc ? (
         <Image
           style={[
             styles.image,
