@@ -14,7 +14,8 @@ export default StyleSheet.create({
     width: '100%',
     borderBottomColor: 'transparent',
     borderTopLeftRadius: BorderRadius.l,
-    borderTopRightRadius: BorderRadius.l
+    borderTopRightRadius: BorderRadius.l,
+    zIndex: 999
   },
   hidden: {
     display: 'none'

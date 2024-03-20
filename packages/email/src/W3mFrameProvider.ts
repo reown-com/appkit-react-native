@@ -758,7 +758,6 @@ export class W3mFrameProvider {
 
     this.webviewRef.current.injectJavaScript(send);
 
-    // this.webviewRef.current.postMessage doesn't work on Android
     this.webviewRef.current.injectJavaScript(
       `window.ReactNativeWebView.postMessage('${strEvent}')`
     );
