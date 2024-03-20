@@ -23,13 +23,18 @@ export function EmailWebview() {
   const emailConnector = connectors.find(c => c.type === 'EMAIL');
   const provider = emailConnector?.provider as W3mFrameProvider;
 
-  const handleMessage = (e: WebViewMessageEvent) => {
-    let event = JSON.parse(e.nativeEvent.data);
-
-    if (typeof event === 'string') {
-      //TODO: Check why this double parsing is needed
-      event = JSON.parse(event);
+  const parseMessage = (event: WebViewMessageEvent) => {
+    if (!event.nativeEvent.data) return;
+    let message: any = event.nativeEvent.data;
+    if (typeof message === 'string') {
+      message = JSON.parse(message);
     }
+
+    return message;
+  };
+
+  const handleMessage = (e: WebViewMessageEvent) => {
+    let event = parseMessage(e);
 
     provider.onMessage(event);
 
@@ -100,10 +105,9 @@ export function EmailWebview() {
           bounces={false}
           scalesPageToFit
           onMessage={handleMessage}
-          style={styles.webview}
+          containerStyle={styles.webview}
           injectedJavaScript={W3mFrameConstants.FRAME_MESSAGES_HANDLER}
           ref={webviewRef}
-          webviewDebuggingEnabled={__DEV__}
           onLoadEnd={({ nativeEvent }) => {
             if (!nativeEvent.loading) {
               if (Platform.OS === 'android') {

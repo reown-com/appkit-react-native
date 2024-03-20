@@ -751,11 +751,16 @@ export class W3mFrameProvider {
     const strEvent = JSON.stringify(event);
     console.log('📡 sending', strEvent); // eslint-disable-line no-console
     const send = `
-    (function() {
-      iframe.contentWindow.postMessage(${strEvent}, '*');
-    })()
-    `;
+      (function() {
+        iframe.contentWindow.postMessage(${strEvent}, '*');
+      })()
+      `;
+
     this.webviewRef.current.injectJavaScript(send);
-    this.webviewRef.current.postMessage(strEvent);
+
+    // this.webviewRef.current.postMessage doesn't work on Android
+    this.webviewRef.current.injectJavaScript(
+      `window.ReactNativeWebView.postMessage('${strEvent}')`
+    );
   }
 }

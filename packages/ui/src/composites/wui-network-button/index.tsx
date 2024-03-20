@@ -38,7 +38,7 @@ export function NetworkButton({
     Theme['gray-glass-010']
   );
 
-  const backgroundColor = disabled ? Theme['gray-glass-020'] : animatedValue;
+  const backgroundColor = disabled ? Theme['gray-glass-015'] : animatedValue;
 
   return (
     <AnimatedPressable
@@ -49,7 +49,7 @@ export function NetworkButton({
       disabled={disabled}
     >
       {loading ? (
-        <LoadingSpinner size="md" />
+        <LoadingSpinner size="md" style={styles.loader} />
       ) : imageSrc ? (
         <Image
           style={[
