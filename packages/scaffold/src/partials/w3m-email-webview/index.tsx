@@ -62,40 +62,49 @@ export function EmailWebview() {
   }, [provider, webviewRef]);
 
   return provider ? (
-    <View
-      style={[
-        styles.container,
-        { borderColor: Theme['gray-glass-020'] },
-        isVisible ? styles.visible : styles.hidden
-      ]}
-    >
-      <WebView
-        source={{
-          uri: provider.getSecureSiteURL(),
-          headers: { 'X-Bundle-Id': 'host.exp.exponent' } // TODO: use CoreHelper
-        }}
-        bounces={false}
-        scalesPageToFit
-        onMessage={handleMessage}
-        style={styles.webview}
-        injectedJavaScript={injectedJavaScript}
-        ref={webviewRef}
-        webviewDebuggingEnabled={__DEV__}
-        onLoadEnd={({ nativeEvent }) => {
-          if (!nativeEvent.loading) {
-            if (Platform.OS === 'android') {
-              webviewRef.current?.injectJavaScript(injectedJavaScript);
-            }
-            const themeMode = Appearance.getColorScheme() ?? undefined;
-            provider?.syncTheme({ themeMode });
-            provider?.syncDappData?.({ projectId, sdkVersion });
-            provider?.onWebviewLoaded();
-          }
-        }}
-        onError={({ nativeEvent }) => {
-          provider?.onWebviewLoadError(nativeEvent.description);
-        }}
+    <>
+      <View
+        style={[
+          styles.backdrop,
+          !isVisible && styles.hidden,
+          { backgroundColor: Theme['gray-glass-080'] }
+        ]}
       />
-    </View>
+      <View
+        style={[
+          styles.container,
+          { borderColor: Theme['gray-glass-020'] },
+          isVisible ? styles.visible : styles.hidden
+        ]}
+      >
+        <WebView
+          source={{
+            uri: provider.getSecureSiteURL(),
+            headers: { 'X-Bundle-Id': 'host.exp.exponent' } // TODO: use CoreHelper
+          }}
+          bounces={false}
+          scalesPageToFit
+          onMessage={handleMessage}
+          style={styles.webview}
+          injectedJavaScript={injectedJavaScript}
+          ref={webviewRef}
+          webviewDebuggingEnabled={__DEV__}
+          onLoadEnd={({ nativeEvent }) => {
+            if (!nativeEvent.loading) {
+              if (Platform.OS === 'android') {
+                webviewRef.current?.injectJavaScript(injectedJavaScript);
+              }
+              const themeMode = Appearance.getColorScheme() ?? undefined;
+              provider?.syncTheme({ themeMode });
+              provider?.syncDappData?.({ projectId, sdkVersion });
+              provider?.onWebviewLoaded();
+            }
+          }}
+          onError={({ nativeEvent }) => {
+            provider?.onWebviewLoadError(nativeEvent.description);
+          }}
+        />
+      </View>
+    </>
   ) : null;
 }
