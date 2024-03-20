@@ -54,6 +54,7 @@ export const DarkTheme: { [key in ThemeKeys]: string } = {
   'gray-glass-025': 'rgba(255, 255, 255, 0.25)',
   'gray-glass-030': 'rgba(255, 255, 255, 0.3)',
   'gray-glass-060': 'rgba(255, 255, 255, 0.6)',
+  'gray-glass-070': 'rgba(255, 255, 255, 0.7)',
   'gray-glass-080': 'rgba(255, 255, 255, 0.8)',
   'gray-glass-090': 'rgba(255, 255, 255, 0.9)',
 
@@ -116,6 +117,7 @@ export const LightTheme: { [key in ThemeKeys]: string } = {
   'gray-glass-025': 'rgba(0, 0, 0, 0.25)',
   'gray-glass-030': 'rgba(0, 0, 0, 0.3)',
   'gray-glass-060': 'rgba(0, 0, 0, 0.6)',
+  'gray-glass-070': 'rgba(0, 0, 0, 0.7)',
   'gray-glass-080': 'rgba(0, 0, 0, 0.8)',
   'gray-glass-090': 'rgba(0, 0, 0, 0.9)',
 

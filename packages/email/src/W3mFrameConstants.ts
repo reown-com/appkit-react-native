@@ -13,6 +13,15 @@ export const W3mFrameConstants = {
   EMAIL: 'EMAIL',
   PREFERRED_ACCOUNT_TYPE: 'PREFERRED_ACCOUNT_TYPE',
 
+  FRAME_MESSAGES_HANDLER: `
+  const iframe = document.getElementById("frame-mobile-sdk");
+  iframe.onload = () => {
+    window.addEventListener('message', ({ data }) => {
+      window.ReactNativeWebView.postMessage(JSON.stringify(data))
+    })
+  }
+`,
+
   APP_SWITCH_NETWORK: '@w3m-app/SWITCH_NETWORK',
   APP_CONNECT_EMAIL: '@w3m-app/CONNECT_EMAIL',
   APP_CONNECT_DEVICE: '@w3m-app/CONNECT_DEVICE',

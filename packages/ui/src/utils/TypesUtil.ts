@@ -46,6 +46,7 @@ export type ThemeKeys =
   | 'gray-glass-025'
   | 'gray-glass-030'
   | 'gray-glass-060'
+  | 'gray-glass-070'
   | 'gray-glass-080'
   | 'gray-glass-090'
   | 'icon-box-bg-error-100'
