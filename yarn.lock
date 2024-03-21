@@ -10067,7 +10067,6 @@ __metadata:
   resolution: "@web3modal/ethers-react-native@workspace:packages/ethers"
   dependencies:
     "@walletconnect/ethereum-provider": "npm:2.11.3"
-    "@web3modal/email-react-native": "npm:1.4.0-email-alpha.0"
     "@web3modal/scaffold-react-native": "npm:1.4.0-email-alpha.0"
     "@web3modal/scaffold-utils-react-native": "npm:1.4.0-email-alpha.0"
     ethers: "npm:6.10.0"

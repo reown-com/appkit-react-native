@@ -31,7 +31,11 @@ import {
   PresetsUtil,
   StorageUtil
 } from '@web3modal/scaffold-utils-react-native';
-import { getCaipDefaultChain } from './utils/helpers';
+import {
+  getCaipDefaultChain,
+  getEmailCaipNetworks,
+  getWalletConnectCaipNetworks
+} from './utils/helpers';
 import type { EmailConnector } from './connectors/EmailConnector';
 
 // -- Types ---------------------------------------------------------------------
@@ -82,37 +86,19 @@ export class Web3Modal extends Web3ModalScaffold {
 
       async getApprovedCaipNetworksData() {
         const walletChoice = await StorageUtil.getConnectedConnector();
-        if (
-          walletChoice?.includes(
-            PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]
-          )
-        ) {
+        const walletConnectType =
+          PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
+
+        const emailType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID];
+
+        if (walletChoice?.includes(walletConnectType)) {
           const connector = wagmiConfig.connectors.find(
             c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
           );
-          if (!connector) {
-            throw new Error(
-              'networkControllerClient:getApprovedCaipNetworks - connector is undefined'
-            );
-          }
-          const provider = await connector.getProvider();
-          const ns = provider.signer?.session?.namespaces;
-          const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods;
-          const nsChains = ns?.[ConstantsUtil.EIP155]?.chains;
 
-          return {
-            supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD),
-            approvedCaipNetworkIds: nsChains as CaipNetworkId[]
-          };
-        } else if (
-          walletChoice?.includes(PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID])
-        ) {
-          return {
-            supportsAllNetworks: false,
-            approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
-              id => `${ConstantsUtil.EIP155}:${id}`
-            ) as CaipNetworkId[]
-          };
+          return getWalletConnectCaipNetworks(connector);
+        } else if (emailType) {
+          return getEmailCaipNetworks();
         }
 
         return { approvedCaipNetworkIds: undefined, supportsAllNetworks: true };
