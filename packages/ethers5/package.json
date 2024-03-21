@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ethers5-react-native",
-  "version": "1.4.0-email-alpha.0",
+  "version": "1.3.0-alpha.1",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -39,8 +39,8 @@
   },
   "dependencies": {
     "@walletconnect/ethereum-provider": "2.11.1",
-    "@web3modal/scaffold-react-native": "1.4.0-email-alpha.0",
-    "@web3modal/scaffold-utils-react-native": "1.4.0-email-alpha.0"
+    "@web3modal/scaffold-react-native": "1.3.0-alpha.1",
+    "@web3modal/scaffold-utils-react-native": "1.3.0-alpha.1"
   },
   "peerDependencies": {
     "@ethersproject/shims": ">=5.0.0",
