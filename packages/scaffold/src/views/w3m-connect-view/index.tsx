@@ -11,7 +11,7 @@ import {
   RouterController
 } from '@web3modal/core-react-native';
 import type { ConnectorType, WcWallet } from '@web3modal/core-react-native';
-import { ListWallet, FlexView } from '@web3modal/ui-react-native';
+import { ListWallet, FlexView, Separator } from '@web3modal/ui-react-native';
 import { UiUtil } from '../../utils/UiUtil';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectEmailInput } from '../../partials/w3m-connect-email-input';
@@ -25,7 +25,7 @@ export function ConnectView() {
   const imageHeaders = ApiController._getApiHeaders();
   const { padding } = useCustomDimensions();
   const isWalletConnectEnabled = connectors.find(c => c.type === 'WALLET_CONNECT');
-  const hasEmail = connectors.some(c => c.type === 'EMAIL');
+  const isEmailEnabled = connectors.some(c => c.type === 'EMAIL');
 
   const RECENT_COUNT = recentWallets?.length ? (installed.length ? 1 : recentWallets?.length) : 0;
 
@@ -51,11 +51,16 @@ export function ConnectView() {
   };
 
   const emailTemplate = () => {
-    if (!hasEmail) {
+    if (!isEmailEnabled) {
       return null;
     }
 
-    return <ConnectEmailInput />;
+    return (
+      <>
+        <ConnectEmailInput />
+        {isWalletConnectEnabled && <Separator text="or" style={styles.emailSeparator} />}
+      </>
+    );
   };
 
   const recentTemplate = () => {

@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useState } from 'react';
-import { EmailInput, FlexView } from '@web3modal/ui-react-native';
+import { EmailInput } from '@web3modal/ui-react-native';
 import {
   ConnectorController,
   CoreHelperUtil,
@@ -43,13 +43,11 @@ export function ConnectEmailInput() {
   };
 
   return (
-    <FlexView justifyContent="center" margin={['0', '0', 's', '0']}>
-      <EmailInput
-        onSubmit={onEmailSubmit}
-        loading={loading}
-        errorMessage={error}
-        onChangeText={onChangeText}
-      />
-    </FlexView>
+    <EmailInput
+      onSubmit={onEmailSubmit}
+      loading={loading}
+      errorMessage={error}
+      onChangeText={onChangeText}
+    />
   );
 }

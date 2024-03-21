@@ -73,9 +73,11 @@ export function EmailInput({
       >
         <RightIcon loading={loading} showChevron={showChevron} onPress={onChevronPress} />
       </InputText>
-      <Text color="error-100" variant="tiny-500" style={styles.text}>
-        {errorMessage}
-      </Text>
+      {errorMessage && (
+        <Text color="error-100" variant="tiny-500" style={styles.text}>
+          {errorMessage}
+        </Text>
+      )}
     </>
   );
 }
