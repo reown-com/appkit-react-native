@@ -11,9 +11,7 @@ export default StyleSheet.create({
   container: {
     bottom: 0,
     position: 'absolute',
-    borderWidth: 1,
     width: '100%',
-    borderBottomColor: 'transparent',
     borderTopLeftRadius: BorderRadius.l,
     borderTopRightRadius: BorderRadius.l,
     zIndex: 999

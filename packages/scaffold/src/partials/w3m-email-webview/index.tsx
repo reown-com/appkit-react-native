@@ -19,7 +19,8 @@ export function EmailWebview() {
   const [isVisible, setIsVisible] = useState(false);
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   const animatedHeight = useRef(new Animated.Value(0));
-  const animatedOpacity = useRef(new Animated.Value(0));
+  const backdropOpacity = useRef(new Animated.Value(0));
+  const webviewOpacity = useRef(new Animated.Value(0));
   const emailConnector = connectors.find(c => c.type === 'EMAIL');
   const provider = emailConnector?.provider as W3mFrameProvider;
 
@@ -72,16 +73,22 @@ export function EmailWebview() {
       useNativeDriver: false
     }).start();
 
+    Animated.timing(webviewOpacity.current, {
+      toValue: isVisible ? 1 : 0,
+      duration: 300,
+      useNativeDriver: false
+    }).start();
+
     if (isVisible) {
       setIsBackdropVisible(true);
     }
 
-    Animated.timing(animatedOpacity.current, {
-      toValue: isVisible ? 1 : 0,
+    Animated.timing(backdropOpacity.current, {
+      toValue: isVisible ? 0.7 : 0,
       duration: 300,
       useNativeDriver: false
     }).start(() => setIsBackdropVisible(isVisible));
-  }, [animatedHeight, animatedOpacity, isVisible, setIsBackdropVisible]);
+  }, [animatedHeight, backdropOpacity, isVisible, setIsBackdropVisible]);
 
   useEffect(() => {
     provider?.setWebviewRef(webviewRef);
@@ -93,15 +100,10 @@ export function EmailWebview() {
         style={[
           styles.backdrop,
           !isBackdropVisible && styles.hidden,
-          { backgroundColor: Theme['gray-glass-070'], opacity: animatedOpacity.current }
+          { backgroundColor: Theme['inverse-000'], opacity: backdropOpacity.current }
         ]}
       />
-      <Animated.View
-        style={[
-          styles.container,
-          { borderColor: Theme['gray-glass-020'], height: show, opacity: animatedOpacity.current }
-        ]}
-      >
+      <Animated.View style={[styles.container, { height: show, opacity: webviewOpacity.current }]}>
         <WebView
           source={{
             uri: provider.getSecureSiteURL(),
