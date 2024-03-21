@@ -27,7 +27,12 @@ export function EmailWebview() {
     if (!event.nativeEvent.data) return;
     let message: any = event.nativeEvent.data;
     if (typeof message === 'string') {
-      message = JSON.parse(message);
+      // Solves issues parsing eth_signTypedData_v4. Replace escaped double quotes and extra quotes around curly braces
+      const cleanedJsonString = message
+        .replace(/\\"/g, '"')
+        .replace(/"{/g, '{')
+        .replace(/}"/g, '}');
+      message = JSON.parse(cleanedJsonString);
     }
 
     return message;
