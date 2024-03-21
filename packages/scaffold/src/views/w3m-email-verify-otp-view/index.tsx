@@ -54,7 +54,7 @@ export function EmailVerifyOtpView() {
         event: 'CONNECT_SUCCESS',
         properties: { method: 'email', name: emailConnector.name || 'Unknown' }
       });
-    } catch (e) {
+    } catch {
       setError(true);
     }
     setLoading(false);

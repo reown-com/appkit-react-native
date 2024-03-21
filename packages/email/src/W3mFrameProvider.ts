@@ -115,7 +115,7 @@ export class W3mFrameProvider {
         case W3mFrameConstants.FRAME_CONNECT_OTP_SUCCESS:
           return this.onConnectOtpSuccess();
         case W3mFrameConstants.FRAME_CONNECT_OTP_ERROR:
-          return this.onConnectOtpError(event);
+          return this.onConnectOtpError();
         case W3mFrameConstants.FRAME_GET_USER_SUCCESS:
           return this.onConnectSuccess(event);
         case W3mFrameConstants.FRAME_GET_USER_ERROR:
