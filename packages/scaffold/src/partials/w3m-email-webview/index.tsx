@@ -6,7 +6,8 @@ import { W3mFrameConstants, W3mFrameProvider } from '@web3modal/email-react-nati
 import {
   ConnectorController,
   OptionsController,
-  ModalController
+  ModalController,
+  CoreHelperUtil
 } from '@web3modal/core-react-native';
 import { useTheme } from '@web3modal/ui-react-native';
 import styles from './styles';
@@ -107,7 +108,7 @@ export function EmailWebview() {
         <WebView
           source={{
             uri: provider.getSecureSiteURL(),
-            headers: { 'X-Bundle-Id': 'host.exp.exponent' } // TODO: use CoreHelper
+            headers: { 'X-Bundle-Id': CoreHelperUtil.getBundleId() }
           }}
           bounces={false}
           scalesPageToFit

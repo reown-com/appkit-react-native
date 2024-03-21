@@ -368,7 +368,7 @@ export const W3mFrameSchema = {
       z.object({ type: zType('FRAME_CONNECT_EMAIL_SUCCESS'), payload: FrameConnectEmailResponse })
     )
 
-    .or(z.object({ type: zType('FRAME_CONNECT_OTP_ERROR'), payload: zError }))
+    .or(z.object({ type: zType('FRAME_CONNECT_OTP_ERROR') }))
 
     .or(z.object({ type: zType('FRAME_CONNECT_OTP_SUCCESS') }))
 

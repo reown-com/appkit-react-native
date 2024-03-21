@@ -36,6 +36,7 @@ export function EmailVerifyOtpView() {
     } catch (e) {
       const parsedError = CoreHelperUtil.parseError(e);
       SnackController.showError(parsedError);
+      setLoading(false);
     }
   };
 
@@ -88,7 +89,7 @@ export function EmailVerifyOtpView() {
         <Text variant="small-400" color="fg-200">
           Didn't receive it?
         </Text>
-        <Link onPress={onOtpResend} disabled={timeLeft > 0}>
+        <Link onPress={onOtpResend} disabled={timeLeft > 0 || loading}>
           {timeLeft > 0 ? `Resend in ${timeLeft}s` : 'Resend code'}
         </Link>
       </FlexView>

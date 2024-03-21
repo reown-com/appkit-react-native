@@ -102,8 +102,7 @@ export class W3mFrameProvider {
 
   public onMessage(e: W3mFrameTypes.FrameEvent) {
     this.onFrameEvent(e, event => {
-      // eslint-disable-next-line no-console
-      console.log('💻 received', e);
+      // console.log('💻 received', e); // eslint-disable-line no-console
       switch (event.type) {
         case W3mFrameConstants.FRAME_CONNECT_EMAIL_SUCCESS:
           return this.onConnectEmailSuccess(event);
@@ -183,7 +182,6 @@ export class W3mFrameProvider {
   }
 
   public onWebviewLoaded() {
-    console.log('📡 webview loaded'); // eslint-disable-line no-console
     this.webviewLoadPromiseResolver?.resolve(undefined);
   }
 
@@ -490,10 +488,8 @@ export class W3mFrameProvider {
     this.connectOtpResolver?.resolve(undefined);
   }
 
-  private onConnectOtpError(
-    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_OTP_ERROR' }>
-  ) {
-    this.connectOtpResolver?.reject(event.payload.message);
+  private onConnectOtpError() {
+    this.connectOtpResolver?.reject();
   }
 
   private onConnectSuccess(
@@ -726,9 +722,8 @@ export class W3mFrameProvider {
     if (!event.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY)) {
       return;
     }
-    //TODO: Check OTP validation failure
-    // const frameEvent = W3mFrameSchema.frameEvent.parse(event);
-    callback(event);
+    const frameEvent = W3mFrameSchema.frameEvent.parse(event);
+    callback(frameEvent);
   }
 
   private onAppEvent(
@@ -749,7 +744,7 @@ export class W3mFrameProvider {
 
     W3mFrameSchema.appEvent.parse(event);
     const strEvent = JSON.stringify(event);
-    console.log('📡 sending', strEvent); // eslint-disable-line no-console
+    // console.log('📡 sending', strEvent); // eslint-disable-line no-console
     const send = `
       (function() {
         iframe.contentWindow.postMessage(${strEvent}, '*');
