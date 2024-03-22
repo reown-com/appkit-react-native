@@ -38,7 +38,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.11.3",
+    "@walletconnect/ethereum-provider": "2.11.1",
     "@web3modal/scaffold-react-native": "1.4.0-email-alpha.0",
     "@web3modal/scaffold-utils-react-native": "1.4.0-email-alpha.0"
   },
