@@ -27,6 +27,7 @@ export function ConnectView() {
   const { padding } = useCustomDimensions();
   const isWalletConnectEnabled = connectors.find(c => c.type === 'WALLET_CONNECT');
   const isEmailEnabled = connectors.some(c => c.type === 'EMAIL');
+  const isCoinbaseEnabled = connectors.some(c => c.type === 'COINBASE');
   const { keyboardShown, keyboardHeight } = useKeyboard();
   const paddingBottom = Platform.select({
     android: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
@@ -57,6 +58,7 @@ export function ConnectView() {
   };
 
   const emailTemplate = () => {
+    const showSeparator = isWalletConnectEnabled || isCoinbaseEnabled;
     if (!isEmailEnabled) {
       return null;
     }
@@ -64,7 +66,7 @@ export function ConnectView() {
     return (
       <>
         <ConnectEmailInput />
-        {isWalletConnectEnabled && <Separator text="or" style={styles.emailSeparator} />}
+        {showSeparator && <Separator text="or" style={styles.emailSeparator} />}
       </>
     );
   };
