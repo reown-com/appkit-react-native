@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useState } from 'react';
-import { EmailInput } from '@web3modal/ui-react-native';
+import { EmailInput, Separator, Spacing } from '@web3modal/ui-react-native';
 import {
   ConnectorController,
   CoreHelperUtil,
@@ -8,8 +8,14 @@ import {
   SnackController
 } from '@web3modal/core-react-native';
 import type { W3mFrameProvider } from '@web3modal/email-react-native';
+import { StyleSheet } from 'react-native';
 
-export function ConnectEmailInput() {
+interface Props {
+  isEmailEnabled: boolean;
+  showSeparator: boolean;
+}
+
+export function ConnectEmailInput({ isEmailEnabled, showSeparator }: Props) {
   const { connectors } = useSnapshot(ConnectorController.state);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -42,12 +48,25 @@ export function ConnectEmailInput() {
     }
   };
 
+  if (!isEmailEnabled) {
+    return null;
+  }
+
   return (
-    <EmailInput
-      onSubmit={onEmailSubmit}
-      loading={loading}
-      errorMessage={error}
-      onChangeText={onChangeText}
-    />
+    <>
+      <EmailInput
+        onSubmit={onEmailSubmit}
+        loading={loading}
+        errorMessage={error}
+        onChangeText={onChangeText}
+      />
+      {showSeparator && <Separator text="or" style={styles.emailSeparator} />}
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  emailSeparator: {
+    marginVertical: Spacing.xs
+  }
+});
