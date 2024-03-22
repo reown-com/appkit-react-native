@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { ScrollView } from 'react-native';
+import { Platform, ScrollView } from 'react-native';
 import {
   ApiController,
   AssetUtil,
@@ -11,10 +11,11 @@ import {
   RouterController
 } from '@web3modal/core-react-native';
 import type { ConnectorType, WcWallet } from '@web3modal/core-react-native';
-import { ListWallet, FlexView, Separator } from '@web3modal/ui-react-native';
+import { ListWallet, FlexView, Separator, Spacing } from '@web3modal/ui-react-native';
 import { UiUtil } from '../../utils/UiUtil';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectEmailInput } from '../../partials/w3m-connect-email-input';
+import { useKeyboard } from '../../hooks/useKeyboard';
 import styles from './styles';
 
 export function ConnectView() {
@@ -26,6 +27,11 @@ export function ConnectView() {
   const { padding } = useCustomDimensions();
   const isWalletConnectEnabled = connectors.find(c => c.type === 'WALLET_CONNECT');
   const isEmailEnabled = connectors.some(c => c.type === 'EMAIL');
+  const { keyboardShown, keyboardHeight } = useKeyboard();
+  const paddingBottom = Platform.select({
+    android: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
+    default: Spacing['2xl']
+  });
 
   const RECENT_COUNT = recentWallets?.length ? (installed.length ? 1 : recentWallets?.length) : 0;
 
@@ -186,7 +192,7 @@ export function ConnectView() {
 
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
-      <FlexView padding={['xs', 's', '2xl', 's']}>
+      <FlexView padding={['xs', 's', '0', 's']} style={{ paddingBottom }}>
         {emailTemplate()}
         {recentTemplate()}
         {walletsTemplate()}

@@ -1,6 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { useState, useEffect, useCallback } from 'react';
-import { FlexView, Link, LoadingSpinner, Otp, Text } from '@web3modal/ui-react-native';
+import { Platform } from 'react-native';
+import { FlexView, Link, LoadingSpinner, Otp, Spacing, Text } from '@web3modal/ui-react-native';
 import { W3mFrameHelpers, type W3mFrameProvider } from '@web3modal/email-react-native';
 import {
   ConnectionController,
@@ -13,6 +14,7 @@ import {
 } from '@web3modal/core-react-native';
 import styles from './styles';
 import useTimeout from '../../hooks/useTimeout';
+import { useKeyboard } from '../../hooks/useKeyboard';
 
 export function EmailVerifyOtpView() {
   const [otp, setOtp] = useState<string>('');
@@ -22,6 +24,11 @@ export function EmailVerifyOtpView() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const emailConnector = connectors.find(c => c.type === 'EMAIL');
+  const { keyboardShown, keyboardHeight } = useKeyboard();
+  const paddingBottom = Platform.select({
+    android: keyboardShown ? keyboardHeight + Spacing['3xl'] : Spacing['3xl'],
+    default: Spacing['3xl']
+  });
 
   const onOtpResend = async () => {
     try {
@@ -67,7 +74,7 @@ export function EmailVerifyOtpView() {
   }, [onOtpSubmit, otp]);
 
   return (
-    <FlexView padding={['l', 'l', '3xl', 'l']} alignItems="center">
+    <FlexView padding={['l', 'l', '3xl', 'l']} alignItems="center" style={{ paddingBottom }}>
       <Text center variant="paragraph-500">
         Enter the code we sent to your email{' '}
         <Text variant="paragraph-600" style={styles.emailText}>
