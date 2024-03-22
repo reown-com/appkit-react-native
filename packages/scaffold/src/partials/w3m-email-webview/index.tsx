@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Appearance, Platform } from 'react-native';
+import { Animated, Appearance, Platform, SafeAreaView } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 import { W3mFrameConstants, W3mFrameProvider } from '@web3modal/email-react-native';
 import {
@@ -11,6 +11,8 @@ import {
 } from '@web3modal/core-react-native';
 import { useTheme } from '@web3modal/ui-react-native';
 import styles from './styles';
+
+const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
 export function EmailWebview() {
   const webviewRef = useRef<WebView>(null);
@@ -104,7 +106,12 @@ export function EmailWebview() {
           { backgroundColor: Theme['inverse-000'], opacity: backdropOpacity.current }
         ]}
       />
-      <Animated.View style={[styles.container, { height: show, opacity: webviewOpacity.current }]}>
+      <AnimatedSafeAreaView
+        style={[
+          styles.container,
+          { backgroundColor: Theme['bg-100'], height: show, opacity: webviewOpacity.current }
+        ]}
+      >
         <WebView
           source={{
             uri: provider.getSecureSiteURL(),
@@ -131,7 +138,7 @@ export function EmailWebview() {
             provider?.onWebviewLoadError(nativeEvent.description);
           }}
         />
-      </Animated.View>
+      </AnimatedSafeAreaView>
     </>
   ) : null;
 }
