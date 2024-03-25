@@ -1,5 +1,16 @@
 # @web3modal/core-react-native
 
+## 1.3.0
+
+### Minor Changes
+
+- 1.3.0
+
+### Patch Changes
+
+- 1971a40: duplicated events fix
+- 1ce1614: events fix
+
 ## 1.3.0-alpha.1
 
 ### Patch Changes
