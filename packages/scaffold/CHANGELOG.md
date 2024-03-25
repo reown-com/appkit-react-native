@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- email-alpha.0
+- 1.4.0-email-alpha.0
 
 ### Patch Changes
 
@@ -12,14 +12,18 @@
   - @web3modal/email-react-native@1.4.0-email-alpha.0
   - @web3modal/core-react-native@1.4.0-email-alpha.0
   - @web3modal/ui-react-native@1.4.0-email-alpha.0
+## 1.3.0
+
+### Minor Changes
+
+- 1.3.0
 
 ### Patch Changes
 
 - Updated dependencies [1971a40]
-- Updated dependencies [1ce1614]
 - Updated dependencies
+- Updated dependencies [1ce1614]
   - @web3modal/core-react-native@1.3.0
-  - @web3modal/email-react-native@1.3.0
   - @web3modal/ui-react-native@1.3.0
 
 ## 1.3.0-alpha.1

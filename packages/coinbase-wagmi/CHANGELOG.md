@@ -1,10 +1,10 @@
 # @web3modal/coinbase-wagmi-react-native
 
-## 1.4.0-email-alpha.0
+## 1.3.0
 
 ### Minor Changes
 
-- email-alpha.0
+- 1.3.0
 
 ## 1.3.0-alpha.0
 
