@@ -1,5 +1,11 @@
 # @web3modal/coinbase-ethers-react-native
 
+## 1.3.0
+
+### Minor Changes
+
+- 1.3.0
+
 ## 1.3.0-alpha.0
 
 ### Minor Changes

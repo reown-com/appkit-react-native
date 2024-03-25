@@ -1,5 +1,12 @@
 # @apps/native-cli
 
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies
+  - @web3modal/wagmi-react-native@1.3.0
+
 ## 1.0.5-alpha.1
 
 ### Patch Changes
