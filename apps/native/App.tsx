@@ -28,6 +28,7 @@ import {
 } from 'wagmi/chains';
 import { AccountView } from './src/views/AccountView';
 import { ActionsView } from './src/views/ActionsView';
+import { getCustomWallets } from './src/utils/misc';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -64,15 +65,7 @@ const clipboardClient = {
 
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata, enableEmail: true });
 
-const customWallets = [
-  {
-    id: 'rn-wallet',
-    name: 'RN Wallet',
-    image_url:
-      'https://docs.walletconnect.com/assets/images/web3walletLogo-54d3b546146931ceaf47a3500868a73a.png',
-    mobile_link: 'rn-web3wallet://'
-  }
-];
+const customWallets = getCustomWallets();
 
 createWeb3Modal({
   projectId,
