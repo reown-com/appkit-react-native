@@ -4,11 +4,13 @@ import { InputText, type InputTextProps } from '../wui-input-text';
 import { LoadingSpinner } from '../../components/wui-loading-spinner';
 import { IconLink } from '../wui-icon-link';
 import styles from './styles';
+import { View } from 'react-native';
 
 export type EmailInputProps = InputTextProps & {
   errorMessage?: string;
   loading?: boolean;
   onSubmit?: (value: string) => any;
+  initialValue?: string;
 };
 
 function RightIcon({
@@ -37,10 +39,12 @@ export function EmailInput({
   onChangeText,
   loading,
   disabled,
+  style,
+  initialValue,
   ...rest
 }: EmailInputProps) {
   const [showChevron, setShowChevron] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(initialValue ?? '');
 
   const onChevronPress = () => {
     onSubmit?.(email);
@@ -57,7 +61,7 @@ export function EmailInput({
   };
 
   return (
-    <>
+    <View style={style}>
       <InputText
         icon="mail"
         placeholder="Email"
@@ -78,6 +82,6 @@ export function EmailInput({
           {errorMessage}
         </Text>
       )}
-    </>
+    </View>
   );
 }

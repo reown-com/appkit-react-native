@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 function useTimeout(delay: number) {
   const timeLeftRef = useRef(delay);
   const [timeLeft, setTimeLeft] = useState(delay);
   const interval = useRef<NodeJS.Timer>();
 
-  const startTimer = (newDelay: number) => {
+  const startTimer = useCallback((newDelay: number) => {
     timeLeftRef.current = newDelay;
     setTimeLeft(newDelay);
     interval.current = setInterval(() => {
@@ -16,7 +16,7 @@ function useTimeout(delay: number) {
         clearInterval(interval.current);
       }
     }, 1000);
-  };
+  }, []);
 
   useEffect(() => {
     return () => clearInterval(interval.current);

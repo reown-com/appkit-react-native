@@ -15,7 +15,10 @@ export interface RouterControllerState {
     | 'WhatIsANetwork'
     | 'GetWallet'
     | 'EmailVerifyDevice'
-    | 'EmailVerifyOtp';
+    | 'EmailVerifyOtp'
+    | 'UpdateEmailWallet'
+    | 'UpdateEmailPrimaryOtp'
+    | 'UpdateEmailSecondaryOtp';
   history: RouterControllerState['view'][];
   data?: {
     connector?: Connector;

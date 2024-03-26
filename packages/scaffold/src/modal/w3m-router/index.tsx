@@ -15,6 +15,9 @@ import { UiUtil } from '../../utils/UiUtil';
 import { ConnectingExternalView } from '../../views/w3m-connecting-external-view';
 import { EmailVerifyOtpView } from '../../views/w3m-email-verify-otp-view';
 import { EmailVerifyDeviceView } from '../../views/w3m-email-verify-device-view';
+import { UpdateEmailWalletView } from '../../views/w3m-update-email-wallet-view';
+import { UpdateEmailPrimaryOtpView } from '../../views/w3m-update-email-primary-otp-view';
+import { UpdateEmailSecondaryOtpView } from '../../views/w3m-update-email-secondary-otp-view';
 
 export function Web3Router() {
   const { view } = useSnapshot(RouterController.state);
@@ -49,6 +52,12 @@ export function Web3Router() {
         return EmailVerifyDeviceView;
       case 'EmailVerifyOtp':
         return EmailVerifyOtpView;
+      case 'UpdateEmailWallet':
+        return UpdateEmailWalletView;
+      case 'UpdateEmailPrimaryOtp':
+        return UpdateEmailPrimaryOtpView;
+      case 'UpdateEmailSecondaryOtp':
+        return UpdateEmailSecondaryOtpView;
       default:
         return ConnectView;
     }

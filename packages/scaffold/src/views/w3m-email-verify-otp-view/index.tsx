@@ -1,7 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useState, useEffect, useCallback } from 'react';
-import { Platform } from 'react-native';
-import { FlexView, Link, LoadingSpinner, Otp, Spacing, Text } from '@web3modal/ui-react-native';
+import { useState, useEffect } from 'react';
 import { W3mFrameHelpers, type W3mFrameProvider } from '@web3modal/email-react-native';
 import {
   ConnectionController,
@@ -12,23 +10,15 @@ import {
   RouterController,
   SnackController
 } from '@web3modal/core-react-native';
-import styles from './styles';
 import useTimeout from '../../hooks/useTimeout';
-import { useKeyboard } from '../../hooks/useKeyboard';
+import { OtpCodeView } from '../../partials/w3m-otp-code';
 
 export function EmailVerifyOtpView() {
-  const [otp, setOtp] = useState<string>('');
   const { timeLeft, startTimer } = useTimeout(0);
-  const { connectors } = useSnapshot(ConnectorController.state);
   const { data } = useSnapshot(RouterController.state);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const emailConnector = connectors.find(c => c.type === 'EMAIL');
-  const { keyboardShown, keyboardHeight } = useKeyboard();
-  const paddingBottom = Platform.select({
-    android: keyboardShown ? keyboardHeight + Spacing['3xl'] : Spacing['3xl'],
-    default: Spacing['3xl']
-  });
+  const emailConnector = ConnectorController.getEmailConnector();
 
   const onOtpResend = async () => {
     try {
@@ -47,7 +37,7 @@ export function EmailVerifyOtpView() {
     }
   };
 
-  const onOtpSubmit = useCallback(async () => {
+  const onOtpSubmit = async (otp: string) => {
     if (!emailConnector) return;
     setLoading(true);
     setError(false);
@@ -65,41 +55,20 @@ export function EmailVerifyOtpView() {
       setError(true);
     }
     setLoading(false);
-  }, [otp, emailConnector]);
+  };
 
   useEffect(() => {
-    if (otp.length === 6) {
-      onOtpSubmit();
-    }
-  }, [onOtpSubmit, otp]);
+    startTimer(30);
+  }, [startTimer]);
 
   return (
-    <FlexView padding={['l', 'l', '3xl', 'l']} alignItems="center" style={{ paddingBottom }}>
-      <Text center variant="paragraph-500">
-        Enter the code we sent to your email{' '}
-        <Text variant="paragraph-600" style={styles.emailText}>
-          {data?.email ?? 'your email'}
-        </Text>
-      </Text>
-      <Text style={styles.expiryText} variant="small-400" color="fg-200">
-        The code expires in 20 minutes
-      </Text>
-      <FlexView justifyContent="center" style={styles.otpContainer}>
-        {loading ? <LoadingSpinner /> : <Otp length={6} onChangeText={setOtp} />}
-      </FlexView>
-      {error && (
-        <Text variant="small-400" color="error-100" style={styles.errorText}>
-          Invalid code. Try Again
-        </Text>
-      )}
-      <FlexView alignItems="center" flexDirection="row" margin="3xs">
-        <Text variant="small-400" color="fg-200">
-          Didn't receive it?
-        </Text>
-        <Link onPress={onOtpResend} disabled={timeLeft > 0 || loading}>
-          {timeLeft > 0 ? `Resend in ${timeLeft}s` : 'Resend code'}
-        </Link>
-      </FlexView>
-    </FlexView>
+    <OtpCodeView
+      loading={loading}
+      error={error}
+      timeLeft={timeLeft}
+      email={data?.email}
+      onRetry={onOtpResend}
+      onSubmit={onOtpSubmit}
+    />
   );
 }

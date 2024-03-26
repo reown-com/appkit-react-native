@@ -32,5 +32,9 @@ export const ConnectorController = {
 
   getConnectors() {
     return state.connectors;
+  },
+
+  getEmailConnector() {
+    return state.connectors.find(c => c.type === 'EMAIL');
   }
 };
