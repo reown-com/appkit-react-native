@@ -14,5 +14,8 @@ export default StyleSheet.create({
   },
   networkButton: {
     marginVertical: Spacing.xs
+  },
+  upgradeButton: {
+    marginBottom: Spacing.s
   }
 });

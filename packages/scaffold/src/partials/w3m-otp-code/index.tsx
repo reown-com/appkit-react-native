@@ -9,7 +9,7 @@ interface Props {
   onSubmit: (code: string) => void;
   onRetry: () => void;
   loading?: boolean;
-  error?: boolean;
+  error?: string;
   email?: string;
   timeLeft: number;
   codeExpiry?: number;
@@ -59,7 +59,7 @@ export function OtpCodeView({
       </FlexView>
       {error && (
         <Text variant="small-400" color="error-100" style={styles.errorText}>
-          Invalid code. Try Again
+          {error}
         </Text>
       )}
       <FlexView alignItems="center" flexDirection="row" margin="3xs">

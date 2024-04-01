@@ -18,7 +18,8 @@ export interface RouterControllerState {
     | 'EmailVerifyOtp'
     | 'UpdateEmailWallet'
     | 'UpdateEmailPrimaryOtp'
-    | 'UpdateEmailSecondaryOtp';
+    | 'UpdateEmailSecondaryOtp'
+    | 'UpgradeEmailWallet';
   history: RouterControllerState['view'][];
   data?: {
     connector?: Connector;

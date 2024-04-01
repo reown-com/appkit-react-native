@@ -27,10 +27,11 @@ export function Header() {
       WhatIsAWallet: 'What is a wallet?',
       GetWallet: 'Get a wallet',
       EmailVerifyDevice: 'Register Device',
-      EmailVerifyOtp: 'Confirm email',
-      UpdateEmailWallet: 'Edit email',
+      EmailVerifyOtp: 'Confirm Email',
+      UpdateEmailWallet: 'Edit Email',
       UpdateEmailPrimaryOtp: 'Confirm Current Email',
-      UpdateEmailSecondaryOtp: 'Confirm New Email'
+      UpdateEmailSecondaryOtp: 'Confirm New Email',
+      UpgradeEmailWallet: 'Upgrade your Wallet'
     };
   };
 

@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react';
 import { Animated } from 'react-native';
 
-function useAnimatedValue<T extends string | number>(
+export function useAnimatedValue<T extends string | number>(
   startValue: T,
   endValue: T,
   duration?: number

@@ -45,6 +45,8 @@ export class W3mFrameProvider {
 
   private metadata: Metadata | undefined;
 
+  private email: string | undefined;
+
   public webviewLoadPromise: Promise<void>;
 
   public webviewLoadPromiseResolver:
@@ -94,6 +96,10 @@ export class W3mFrameProvider {
     });
     this.metadata = metadata;
     this.projectId = projectId;
+
+    this.getAsyncEmail().then(email => {
+      this.email = email;
+    });
   }
 
   public setWebviewRef(webviewRef: RefObject<WebView>) {
@@ -115,7 +121,7 @@ export class W3mFrameProvider {
         case W3mFrameConstants.FRAME_CONNECT_OTP_SUCCESS:
           return this.onConnectOtpSuccess();
         case W3mFrameConstants.FRAME_CONNECT_OTP_ERROR:
-          return this.onConnectOtpError();
+          return this.onConnectOtpError(event);
         case W3mFrameConstants.FRAME_GET_USER_SUCCESS:
           return this.onConnectSuccess(event);
         case W3mFrameConstants.FRAME_GET_USER_ERROR:
@@ -200,10 +206,8 @@ export class W3mFrameProvider {
     return Boolean(email);
   }
 
-  public async getEmail() {
-    const email = await W3mFrameStorage.get(W3mFrameConstants.EMAIL);
-
-    return email;
+  public getEmail() {
+    return this.email;
   }
 
   public rejectRpcRequest() {
@@ -488,8 +492,10 @@ export class W3mFrameProvider {
     this.connectOtpResolver?.resolve(undefined);
   }
 
-  private onConnectOtpError() {
-    this.connectOtpResolver?.reject();
+  private onConnectOtpError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_OTP_ERROR' }>
+  ) {
+    this.connectOtpResolver?.reject(event.payload.message);
   }
 
   private onConnectSuccess(
@@ -690,12 +696,14 @@ export class W3mFrameProvider {
     W3mFrameStorage.set(W3mFrameConstants.EMAIL, email);
     W3mFrameStorage.set(W3mFrameConstants.EMAIL_LOGIN_USED_KEY, 'true');
     W3mFrameStorage.delete(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME);
+    this.email = email;
   }
 
   private deleteEmailLoginCache() {
     W3mFrameStorage.delete(W3mFrameConstants.EMAIL_LOGIN_USED_KEY);
     W3mFrameStorage.delete(W3mFrameConstants.EMAIL);
     W3mFrameStorage.delete(W3mFrameConstants.LAST_USED_CHAIN_KEY);
+    this.email = undefined;
   }
 
   private setLastUsedChainId(chainId: number) {
@@ -756,5 +764,11 @@ export class W3mFrameProvider {
     this.webviewRef.current.injectJavaScript(
       `window.ReactNativeWebView.postMessage('${strEvent}')`
     );
+  }
+
+  private async getAsyncEmail() {
+    const email = await W3mFrameStorage.get(W3mFrameConstants.EMAIL);
+
+    return email;
   }
 }

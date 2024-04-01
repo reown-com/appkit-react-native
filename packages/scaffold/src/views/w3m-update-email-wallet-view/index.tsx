@@ -50,7 +50,7 @@ export function UpdateEmailWalletView() {
         autoFocus
       />
       <FlexView flexDirection="row" justifyContent="center" alignItems="center">
-        <Button onPress={() => {}} variant="shade" style={styles.cancelButton}>
+        <Button onPress={RouterController.goBack} variant="shade" style={styles.cancelButton}>
           <Text variant="paragraph-600">Cancel</Text>
         </Button>
         <Button

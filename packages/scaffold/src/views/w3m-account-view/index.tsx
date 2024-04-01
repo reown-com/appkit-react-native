@@ -1,4 +1,5 @@
 import { useSnapshot } from 'valtio';
+import { useState } from 'react';
 import { Linking, ScrollView } from 'react-native';
 import {
   AccountController,
@@ -24,10 +25,10 @@ import {
   Spacing,
   ListItem
 } from '@web3modal/ui-react-native';
-import { useState } from 'react';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import styles from './styles';
 import type { W3mFrameProvider } from '@web3modal/email-react-native';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { UpgradeWalletButton } from './components/upgrade-wallet-button';
+import styles from './styles';
 
 export function AccountView() {
   const { address, profileName, profileImage, balance, balanceSymbol, addressExplorerUrl } =
@@ -145,18 +146,24 @@ export function AccountView() {
           {addressExplorerTemplate()}
           <FlexView margin={['s', '0', '0', '0']}>
             {isEmail && (
-              <ListItem
-                variant="icon"
-                icon="mail"
-                iconVariant="overlay"
-                onPress={() =>
-                  RouterController.push('UpdateEmailWallet', { email: getUserEmail() })
-                }
-                chevron
-                testID="button-email"
-              >
-                <Text color="fg-100">{getUserEmail()}</Text>
-              </ListItem>
+              <>
+                <UpgradeWalletButton
+                  onPress={() => RouterController.push('UpgradeEmailWallet')}
+                  style={styles.upgradeButton}
+                />
+                <ListItem
+                  variant="icon"
+                  icon="mail"
+                  iconVariant="overlay"
+                  onPress={() =>
+                    RouterController.push('UpdateEmailWallet', { email: getUserEmail() })
+                  }
+                  chevron
+                  testID="button-email"
+                >
+                  <Text color="fg-100">{getUserEmail()}</Text>
+                </ListItem>
+              </>
             )}
             <ListItem
               variant={networkImage ? 'image' : 'icon'}

@@ -1,6 +1,8 @@
 export const W3mFrameConstants = {
   SECURE_SITE_SDK: 'https://secure-mobile.walletconnect.com/mobile-sdk',
   SECURE_SITE_ORIGIN: 'https://secure.walletconnect.com',
+  SECURE_SITE_DASHBOARD: `https://secure.walletconnect.com/dashboard`,
+  SECURE_SITE_ICON: `https://secure.walletconnect.com/images/favicon.png`,
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',
