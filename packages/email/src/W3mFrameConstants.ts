@@ -18,8 +18,9 @@ export const W3mFrameConstants = {
   FRAME_MESSAGES_HANDLER: `
   const iframe = document.getElementById("frame-mobile-sdk");
   iframe.onload = () => {
-    window.addEventListener('message', ({ data }) => {
-      window.ReactNativeWebView.postMessage(JSON.stringify(data))
+    window.addEventListener('message', ({ data, origin }) => {
+      console.log('Received message from parent:', origin)
+      window.ReactNativeWebView.postMessage(JSON.stringify({ ...data, origin }))
     })
   }
 `,

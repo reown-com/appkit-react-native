@@ -29,7 +29,7 @@ export function UpdateEmailPrimaryOtpView() {
       RouterController.replace('UpdateEmailSecondaryOtp', data);
     } catch (e) {
       const parsedError = CoreHelperUtil.parseError(e);
-      if (parsedError?.includes('Invalid code')) {
+      if (parsedError?.includes('Invalid Otp')) {
         setError('Invalid code. Try again.');
       } else {
         SnackController.showError(parsedError);

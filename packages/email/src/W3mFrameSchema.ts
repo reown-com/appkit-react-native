@@ -356,99 +356,166 @@ export const W3mFrameSchema = {
 
   // -- Frame Events ---------------------------------------------------------
   frameEvent: z
-    .object({ type: zType('FRAME_SWITCH_NETWORK_ERROR'), payload: zError })
+    .object({ type: zType('FRAME_SWITCH_NETWORK_ERROR'), payload: zError, origin: z.string() })
 
     .or(
-      z.object({ type: zType('FRAME_SWITCH_NETWORK_SUCCESS'), payload: FrameSwitchNetworkResponse })
+      z.object({
+        type: zType('FRAME_SWITCH_NETWORK_SUCCESS'),
+        payload: FrameSwitchNetworkResponse,
+        origin: z.string()
+      })
     )
 
-    .or(z.object({ type: zType('FRAME_CONNECT_EMAIL_ERROR'), payload: zError }))
+    .or(z.object({ type: zType('FRAME_CONNECT_EMAIL_ERROR'), payload: zError, origin: z.string() }))
 
     .or(
-      z.object({ type: zType('FRAME_CONNECT_EMAIL_SUCCESS'), payload: FrameConnectEmailResponse })
+      z.object({
+        type: zType('FRAME_CONNECT_EMAIL_SUCCESS'),
+        payload: FrameConnectEmailResponse,
+        origin: z.string()
+      })
     )
 
-    .or(z.object({ type: zType('FRAME_CONNECT_OTP_ERROR'), payload: zError }))
+    .or(z.object({ type: zType('FRAME_CONNECT_OTP_ERROR'), payload: zError, origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_CONNECT_OTP_SUCCESS') }))
+    .or(z.object({ type: zType('FRAME_CONNECT_OTP_SUCCESS'), origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_CONNECT_DEVICE_ERROR'), payload: zError }))
+    .or(
+      z.object({ type: zType('FRAME_CONNECT_DEVICE_ERROR'), payload: zError, origin: z.string() })
+    )
 
-    .or(z.object({ type: zType('FRAME_CONNECT_DEVICE_SUCCESS') }))
+    .or(z.object({ type: zType('FRAME_CONNECT_DEVICE_SUCCESS'), origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_GET_USER_ERROR'), payload: zError }))
+    .or(z.object({ type: zType('FRAME_GET_USER_ERROR'), payload: zError, origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_GET_USER_SUCCESS'), payload: FrameGetUserResponse }))
+    .or(
+      z.object({
+        type: zType('FRAME_GET_USER_SUCCESS'),
+        payload: FrameGetUserResponse,
+        origin: z.string()
+      })
+    )
 
-    .or(z.object({ type: zType('FRAME_SIGN_OUT_ERROR'), payload: zError }))
+    .or(z.object({ type: zType('FRAME_SIGN_OUT_ERROR'), payload: zError, origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_SIGN_OUT_SUCCESS') }))
+    .or(z.object({ type: zType('FRAME_SIGN_OUT_SUCCESS'), origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_IS_CONNECTED_ERROR'), payload: zError }))
+    .or(z.object({ type: zType('FRAME_IS_CONNECTED_ERROR'), payload: zError, origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_IS_CONNECTED_SUCCESS'), payload: FrameIsConnectedResponse }))
+    .or(
+      z.object({
+        type: zType('FRAME_IS_CONNECTED_SUCCESS'),
+        payload: FrameIsConnectedResponse,
+        origin: z.string()
+      })
+    )
 
-    .or(z.object({ type: zType('FRAME_GET_CHAIN_ID_ERROR'), payload: zError }))
+    .or(z.object({ type: zType('FRAME_GET_CHAIN_ID_ERROR'), payload: zError, origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_GET_CHAIN_ID_SUCCESS'), payload: FrameGetChainIdResponse }))
+    .or(
+      z.object({
+        type: zType('FRAME_GET_CHAIN_ID_SUCCESS'),
+        payload: FrameGetChainIdResponse,
+        origin: z.string()
+      })
+    )
 
-    .or(z.object({ type: zType('FRAME_RPC_REQUEST_ERROR'), payload: zError }))
+    .or(z.object({ type: zType('FRAME_RPC_REQUEST_ERROR'), payload: zError, origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_RPC_REQUEST_SUCCESS'), payload: RpcResponse }))
+    .or(
+      z.object({
+        type: zType('FRAME_RPC_REQUEST_SUCCESS'),
+        payload: RpcResponse,
+        origin: z.string()
+      })
+    )
 
-    .or(z.object({ type: zType('FRAME_SESSION_UPDATE'), payload: FrameSession }))
+    .or(
+      z.object({ type: zType('FRAME_SESSION_UPDATE'), payload: FrameSession, origin: z.string() })
+    )
 
-    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_ERROR'), payload: zError }))
+    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_ERROR'), payload: zError, origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_SUCCESS') }))
+    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_SUCCESS'), origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_PRIMARY_OTP_ERROR'), payload: zError }))
+    .or(
+      z.object({
+        type: zType('FRAME_UPDATE_EMAIL_PRIMARY_OTP_ERROR'),
+        payload: zError,
+        origin: z.string()
+      })
+    )
 
-    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_PRIMARY_OTP_SUCCESS') }))
+    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_PRIMARY_OTP_SUCCESS'), origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_SECONDARY_OTP_ERROR'), payload: zError }))
+    .or(
+      z.object({
+        type: zType('FRAME_UPDATE_EMAIL_SECONDARY_OTP_ERROR'),
+        payload: zError,
+        origin: z.string()
+      })
+    )
 
     .or(
       z.object({
         type: zType('FRAME_UPDATE_EMAIL_SECONDARY_OTP_SUCCESS'),
-        payload: FrameUpdateEmailSecondaryOtpResolver
+        payload: FrameUpdateEmailSecondaryOtpResolver,
+        origin: z.string()
       })
     )
 
-    .or(z.object({ type: zType('FRAME_SYNC_THEME_ERROR'), payload: zError }))
+    .or(z.object({ type: zType('FRAME_SYNC_THEME_ERROR'), payload: zError, origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_SYNC_THEME_SUCCESS') }))
+    .or(z.object({ type: zType('FRAME_SYNC_THEME_SUCCESS'), origin: z.string() }))
 
-    .or(z.object({ type: zType('FRAME_SYNC_DAPP_DATA_ERROR'), payload: zError }))
+    .or(
+      z.object({ type: zType('FRAME_SYNC_DAPP_DATA_ERROR'), payload: zError, origin: z.string() })
+    )
 
-    .or(z.object({ type: zType('FRAME_SYNC_DAPP_DATA_SUCCESS') }))
+    .or(z.object({ type: zType('FRAME_SYNC_DAPP_DATA_SUCCESS'), origin: z.string() }))
 
     .or(
       z.object({
         type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS'),
-        payload: FrameGetSmartAccountEnabledNetworksResponse
+        payload: FrameGetSmartAccountEnabledNetworksResponse,
+        origin: z.string()
       })
     )
 
     .or(
       z.object({
         type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR'),
-        payload: zError
+        payload: zError,
+        origin: z.string()
       })
     )
 
     .or(
       z.object({
         type: zType('FRAME_INIT_SMART_ACCOUNT_SUCCESS'),
-        payload: FrameInitSmartAccountResponse
+        payload: FrameInitSmartAccountResponse,
+        origin: z.string()
       })
     )
-    .or(z.object({ type: zType('FRAME_INIT_SMART_ACCOUNT_ERROR'), payload: zError }))
+    .or(
+      z.object({
+        type: zType('FRAME_INIT_SMART_ACCOUNT_ERROR'),
+        payload: zError,
+        origin: z.string()
+      })
+    )
     .or(
       z.object({
         type: zType('FRAME_SET_PREFERRED_ACCOUNT_SUCCESS'),
-        payload: FrameSetPreferredAccountResponse
+        payload: FrameSetPreferredAccountResponse,
+        origin: z.string()
       })
     )
-    .or(z.object({ type: zType('FRAME_SET_PREFERRED_ACCOUNT_ERROR'), payload: zError }))
+    .or(
+      z.object({
+        type: zType('FRAME_SET_PREFERRED_ACCOUNT_ERROR'),
+        payload: zError,
+        origin: z.string()
+      })
+    )
 };

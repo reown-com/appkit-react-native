@@ -727,7 +727,10 @@ export class W3mFrameProvider {
     event: W3mFrameTypes.FrameEvent,
     callback: (event: W3mFrameTypes.FrameEvent) => void
   ) {
-    if (!event.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY)) {
+    if (
+      !event.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY) ||
+      event.origin !== W3mFrameConstants.SECURE_SITE_ORIGIN
+    ) {
       return;
     }
     const frameEvent = W3mFrameSchema.frameEvent.parse(event);
