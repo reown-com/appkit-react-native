@@ -320,7 +320,8 @@ export class Web3Modal extends Web3ModalScaffold {
       c => c.id === ConstantsUtil.EMAIL_CONNECTOR_ID
     ) as EmailConnector;
 
-    if (connector) {
+    const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
+    if (connector && connectedConnector === 'EMAIL') {
       super.setLoading(true);
     }
   }

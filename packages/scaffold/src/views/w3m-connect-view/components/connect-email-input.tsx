@@ -13,11 +13,12 @@ import { StyleSheet } from 'react-native';
 interface Props {
   isEmailEnabled: boolean;
   showSeparator: boolean;
+  loading?: boolean;
 }
 
-export function ConnectEmailInput({ isEmailEnabled, showSeparator }: Props) {
+export function ConnectEmailInput({ isEmailEnabled, showSeparator, loading }: Props) {
   const { connectors } = useSnapshot(ConnectorController.state);
-  const [loading, setLoading] = useState(false);
+  const [inputLoading, setInputLoading] = useState(false);
   const [error, setError] = useState('');
   const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
 
@@ -29,7 +30,7 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator }: Props) {
     try {
       if (email.length === 0) return;
 
-      setLoading(true);
+      setInputLoading(true);
       const response = await emailProvider.connectEmail({ email });
       if (response.action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email });
@@ -44,7 +45,7 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator }: Props) {
         SnackController.showError(parsedError);
       }
     } finally {
-      setLoading(false);
+      setInputLoading(false);
     }
   };
 
@@ -56,7 +57,7 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator }: Props) {
     <>
       <EmailInput
         onSubmit={onEmailSubmit}
-        loading={loading}
+        loading={inputLoading || loading}
         errorMessage={error}
         onChangeText={onChangeText}
       />

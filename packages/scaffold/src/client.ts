@@ -243,7 +243,7 @@ export class Web3ModalScaffold {
   private async initConnectedConnector() {
     const connectedConnector = await StorageUtil.getConnectedConnector();
     if (connectedConnector) {
-      ConnectionController.setConnectedConnector(connectedConnector);
+      ConnectorController.setConnectedConnector(connectedConnector);
     }
   }
 

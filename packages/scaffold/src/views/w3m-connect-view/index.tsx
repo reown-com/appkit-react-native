@@ -19,7 +19,7 @@ import { RecentWalletList } from './components/recent-wallet-list';
 import styles from './styles';
 
 export function ConnectView() {
-  const { connectors } = useSnapshot(ConnectorController.state);
+  const { connectors, emailLoading } = useSnapshot(ConnectorController.state);
   const { padding } = useCustomDimensions();
   const { keyboardShown, keyboardHeight } = useKeyboard();
 
@@ -59,6 +59,7 @@ export function ConnectView() {
         <ConnectEmailInput
           isEmailEnabled={isEmailEnabled}
           showSeparator={isWalletConnectEnabled || isCoinbaseEnabled}
+          loading={emailLoading}
         />
         <RecentWalletList
           itemStyle={styles.item}

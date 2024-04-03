@@ -7,7 +7,8 @@ import {
   ConnectorController,
   OptionsController,
   ModalController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  type OptionsControllerState
 } from '@web3modal/core-react-native';
 import { useTheme } from '@web3modal/ui-react-native';
 import styles from './styles';
@@ -18,7 +19,7 @@ export function EmailWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
   const { connectors } = useSnapshot(ConnectorController.state);
-  const { projectId, sdkVersion } = useSnapshot(OptionsController.state);
+  const { projectId, sdkVersion } = useSnapshot(OptionsController.state) as OptionsControllerState;
   const [isVisible, setIsVisible] = useState(false);
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   const animatedHeight = useRef(new Animated.Value(0));
@@ -56,10 +57,12 @@ export function EmailWebview() {
     });
 
     provider.onIsConnected(event, () => {
+      ConnectorController.setEmailLoading(false);
       ModalController.setLoading(false);
     });
 
     provider.onNotConnected(event, () => {
+      ConnectorController.setEmailLoading(false);
       ModalController.setLoading(false);
     });
   };
@@ -123,6 +126,9 @@ export function EmailWebview() {
           containerStyle={styles.webview}
           injectedJavaScript={W3mFrameConstants.FRAME_MESSAGES_HANDLER}
           ref={webviewRef}
+          onLoadStart={() => {
+            ConnectorController.setEmailLoading(true);
+          }}
           onLoadEnd={({ nativeEvent }) => {
             if (!nativeEvent.loading) {
               if (Platform.OS === 'android') {

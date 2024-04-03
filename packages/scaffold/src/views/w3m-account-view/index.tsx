@@ -35,7 +35,7 @@ export function AccountView() {
     useSnapshot(AccountController.state);
   const [disconnecting, setDisconnecting] = useState(false);
   const { caipNetwork } = useSnapshot(NetworkController.state);
-  const { connectedConnector } = useSnapshot(ConnectionController.state);
+  const { connectedConnector } = useSnapshot(ConnectorController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
   const isEmail = connectedConnector === 'EMAIL';
