@@ -710,8 +710,12 @@ export class Web3Modal extends Web3ModalScaffold {
       provider: this.emailProvider
     });
 
-    this.setLoading(true);
-    const isConnected = await this.emailProvider.isConnected();
+    const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
+    if (connectedConnector === 'EMAIL') {
+      this.setLoading(true);
+    }
+
+    const { isConnected } = await this.emailProvider.isConnected();
     if (isConnected) {
       this.setEmailProvider();
     }
