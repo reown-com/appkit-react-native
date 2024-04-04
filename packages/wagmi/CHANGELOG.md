@@ -1,5 +1,19 @@
 # @web3modal/wagmi-react-native
 
+## 1.4.0-email-beta.1
+
+### Minor Changes
+
+- ad2f408: email-alpha.0
+
+### Patch Changes
+
+- added update-email and graduation flows
+- Updated dependencies
+- Updated dependencies [ad2f408]
+  - @web3modal/scaffold-utils-react-native@1.4.0-email-beta.1
+  - @web3modal/scaffold-react-native@1.4.0-email-beta.1
+
 ## 1.4.0-email-alpha.0
 
 ### Minor Changes

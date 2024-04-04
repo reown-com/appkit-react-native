@@ -1,5 +1,13 @@
 # @apps/gallery
 
+## 1.0.6-email-beta.1
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies [ad2f408]
+  - @web3modal/ui-react-native@1.4.0-email-beta.1
+
 ## 1.0.6-email-alpha.0
 
 ### Patch Changes

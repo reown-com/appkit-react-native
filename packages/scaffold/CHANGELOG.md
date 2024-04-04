@@ -1,5 +1,20 @@
 # @web3modal/scaffold-react-native
 
+## 1.4.0-email-beta.1
+
+### Minor Changes
+
+- ad2f408: email-alpha.0
+
+### Patch Changes
+
+- added update-email and graduation flows
+- Updated dependencies
+- Updated dependencies [ad2f408]
+  - @web3modal/email-react-native@1.4.0-email-beta.1
+  - @web3modal/core-react-native@1.4.0-email-beta.1
+  - @web3modal/ui-react-native@1.4.0-email-beta.1
+
 ## 1.4.0-email-alpha.0
 
 ### Minor Changes
@@ -12,6 +27,7 @@
   - @web3modal/email-react-native@1.4.0-email-alpha.0
   - @web3modal/core-react-native@1.4.0-email-alpha.0
   - @web3modal/ui-react-native@1.4.0-email-alpha.0
+
 ## 1.3.0
 
 ### Minor Changes

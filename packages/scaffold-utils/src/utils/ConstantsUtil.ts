@@ -1,5 +1,5 @@
 export const ConstantsUtil = {
-  VERSION: '1.4.0-email-alpha.0',
+  VERSION: '1.4.0-email-beta.1',
   WALLET_CONNECT_CONNECTOR_ID: 'walletConnect',
   COINBASE_CONNECTOR_ID: 'coinbaseWallet',
   EMAIL_CONNECTOR_ID: 'w3mEmail',

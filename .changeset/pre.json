@@ -1,0 +1,23 @@
+{
+  "mode": "pre",
+  "tag": "email-beta",
+  "initialVersions": {
+    "@apps/gallery": "1.0.6-email-alpha.0",
+    "@apps/native": "1.0.6-email-alpha.0",
+    "@apps/native-cli": "1.0.6-email-alpha.0",
+    "@web3modal/coinbase-ethers-react-native": "1.4.0-email-alpha.0",
+    "@web3modal/coinbase-wagmi-react-native": "1.4.0-email-alpha.0",
+    "@web3modal/core-react-native": "1.4.0-email-alpha.0",
+    "@web3modal/email-react-native": "1.4.0-email-alpha.0",
+    "@web3modal/ethers-react-native": "1.4.0-email-alpha.0",
+    "@web3modal/ethers5-react-native": "1.4.0-email-alpha.0",
+    "@web3modal/scaffold-react-native": "1.4.0-email-alpha.0",
+    "@web3modal/scaffold-utils-react-native": "1.4.0-email-alpha.0",
+    "@web3modal/ui-react-native": "1.4.0-email-alpha.0",
+    "@web3modal/wagmi-react-native": "1.4.0-email-alpha.0"
+  },
+  "changesets": [
+    "ten-geckos-arrive",
+    "tricky-insects-invent"
+  ]
+}
