@@ -198,7 +198,7 @@ export class Web3Modal extends Web3ModalScaffold {
       connectionControllerClient,
       defaultChain: EthersHelpersUtil.getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
-      _sdkVersion: _sdkVersion ?? `react-native-ethers5-${ConstantsUtil.VERSION}`,
+      _sdkVersion: _sdkVersion ?? `react-native-ethers-${ConstantsUtil.VERSION}`,
       ...w3mOptions
     });
 

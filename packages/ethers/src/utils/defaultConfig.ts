@@ -7,7 +7,7 @@ export interface ConfigOptions {
 }
 
 export function defaultConfig(options: ConfigOptions) {
-  const { metadata, enableEmail } = options;
+  const { metadata } = options;
 
   let providers: ProviderType = { metadata };
 
@@ -15,7 +15,7 @@ export function defaultConfig(options: ConfigOptions) {
     providers.coinbase = options.coinbase;
   }
 
-  if (enableEmail) {
+  if (options.enableEmail) {
     providers.email = true;
   }
 

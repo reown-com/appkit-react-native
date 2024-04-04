@@ -3,6 +3,7 @@ import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils
 export interface ConfigOptions {
   metadata: Metadata;
   coinbase?: Provider;
+  enableEmail?: boolean;
 }
 
 export function defaultConfig(options: ConfigOptions) {
@@ -12,6 +13,10 @@ export function defaultConfig(options: ConfigOptions) {
 
   if (options.coinbase) {
     providers.coinbase = options.coinbase;
+  }
+
+  if (options.enableEmail) {
+    providers.email = true;
   }
 
   return providers;
