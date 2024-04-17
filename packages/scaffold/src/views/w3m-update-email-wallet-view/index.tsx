@@ -5,7 +5,8 @@ import {
   ConnectorController,
   CoreHelperUtil,
   RouterController,
-  SnackController
+  SnackController,
+  EventsController
 } from '@web3modal/core-react-native';
 import { Button, EmailInput, FlexView, Spacing, Text } from '@web3modal/ui-react-native';
 import type { W3mFrameProvider } from '@web3modal/email-react-native';
@@ -31,8 +32,13 @@ export function UpdateEmailWalletView() {
     setError('');
 
     try {
-      await provider.updateEmail({ email: value });
-      RouterController.push('UpdateEmailPrimaryOtp', { email: value });
+      const response = await provider.updateEmail({ email: value });
+      EventsController.sendEvent({ type: 'track', event: 'EMAIL_EDIT' });
+      if (response.action === 'VERIFY_SECONDARY_OTP') {
+        RouterController.push('UpdateEmailSecondaryOtp', { email: value });
+      } else {
+        RouterController.push('UpdateEmailPrimaryOtp', { email: value });
+      }
     } catch (e) {
       const parsedError = CoreHelperUtil.parseError(e);
       if (parsedError?.includes('Invalid email')) {

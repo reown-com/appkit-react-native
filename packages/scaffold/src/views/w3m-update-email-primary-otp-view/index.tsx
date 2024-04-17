@@ -4,6 +4,7 @@ import { type W3mFrameProvider } from '@web3modal/email-react-native';
 import {
   ConnectorController,
   CoreHelperUtil,
+  EventsController,
   RouterController,
   SnackController
 } from '@web3modal/core-react-native';
@@ -26,8 +27,10 @@ export function UpdateEmailPrimaryOtpView() {
     setError('');
     try {
       await emailProvider.updateEmailPrimaryOtp({ otp: value });
+      EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' });
       RouterController.replace('UpdateEmailSecondaryOtp', data);
     } catch (e) {
+      EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_FAIL' });
       const parsedError = CoreHelperUtil.parseError(e);
       if (parsedError?.includes('Invalid Otp')) {
         setError('Invalid code. Try again.');

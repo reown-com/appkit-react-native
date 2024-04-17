@@ -5,7 +5,8 @@ import {
   ConnectorController,
   CoreHelperUtil,
   RouterController,
-  SnackController
+  SnackController,
+  EventsController
 } from '@web3modal/core-react-native';
 
 import useTimeout from '../../hooks/useTimeout';
@@ -25,8 +26,11 @@ export function UpdateEmailSecondaryOtpView() {
     try {
       const provider = emailConnector?.provider as W3mFrameProvider;
       await provider.updateEmailSecondaryOtp({ otp: value });
+      EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' });
+      EventsController.sendEvent({ type: 'track', event: 'EMAIL_EDIT_COMPLETE' });
       RouterController.reset('Account');
     } catch (e) {
+      EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_FAIL' });
       const parsedError = CoreHelperUtil.parseError(e);
       if (parsedError?.includes('Invalid Otp')) {
         setError('Invalid code. Try again.');

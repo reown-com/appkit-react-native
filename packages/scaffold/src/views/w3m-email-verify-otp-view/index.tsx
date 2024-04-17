@@ -44,6 +44,7 @@ export function EmailVerifyOtpView() {
     try {
       const provider = emailConnector?.provider as W3mFrameProvider;
       await provider.connectOtp({ otp });
+      EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' });
       await ConnectionController.connectExternal(emailConnector);
       ModalController.close();
       EventsController.sendEvent({
@@ -52,6 +53,7 @@ export function EmailVerifyOtpView() {
         properties: { method: 'email', name: emailConnector.name || 'Unknown' }
       });
     } catch (e) {
+      EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_FAIL' });
       const parsedError = CoreHelperUtil.parseError(e);
       if (parsedError?.includes('Invalid code')) {
         setError('Invalid code. Try again.');

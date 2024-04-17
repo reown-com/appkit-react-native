@@ -82,6 +82,11 @@ export function AccountView() {
     });
   };
 
+  const onUpgradePress = () => {
+    EventsController.sendEvent({ type: 'track', event: 'EMAIL_UPGRADE_FROM_MODAL' });
+    RouterController.push('UpgradeEmailWallet');
+  };
+
   const getUserEmail = () => {
     const provider = ConnectorController.getEmailConnector()?.provider as W3mFrameProvider;
     if (!provider) return '';
@@ -147,10 +152,7 @@ export function AccountView() {
           <FlexView margin={['s', '0', '0', '0']}>
             {isEmail && (
               <>
-                <UpgradeWalletButton
-                  onPress={() => RouterController.push('UpgradeEmailWallet')}
-                  style={styles.upgradeButton}
-                />
+                <UpgradeWalletButton onPress={onUpgradePress} style={styles.upgradeButton} />
                 <ListItem
                   variant="icon"
                   icon="mail"

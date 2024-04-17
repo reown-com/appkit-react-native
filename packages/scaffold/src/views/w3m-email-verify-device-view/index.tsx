@@ -5,6 +5,7 @@ import { FlexView, Icon, Link, Text, useTheme } from '@web3modal/ui-react-native
 import {
   ConnectorController,
   CoreHelperUtil,
+  EventsController,
   RouterController,
   SnackController
 } from '@web3modal/core-react-native';
@@ -24,6 +25,8 @@ export function EmailVerifyDeviceView() {
     if (emailProvider && data?.email) {
       try {
         await emailProvider.connectDevice();
+        EventsController.sendEvent({ type: 'track', event: 'DEVICE_REGISTERED_FOR_EMAIL' });
+        EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_SENT' });
         RouterController.replace('EmailVerifyOtp', { email: data.email });
       } catch (error: any) {
         RouterController.goBack();

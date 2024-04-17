@@ -4,6 +4,7 @@ import { EmailInput, Separator, Spacing } from '@web3modal/ui-react-native';
 import {
   ConnectorController,
   CoreHelperUtil,
+  EventsController,
   RouterController,
   SnackController
 } from '@web3modal/core-react-native';
@@ -26,12 +27,17 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator, loading }: Pr
     setError('');
   };
 
+  const onEmailFocus = () => {
+    EventsController.sendEvent({ type: 'track', event: 'EMAIL_LOGIN_SELECTED' });
+  };
+
   const onEmailSubmit = async (email: string) => {
     try {
       if (email.length === 0) return;
 
       setInputLoading(true);
       const response = await emailProvider.connectEmail({ email });
+      EventsController.sendEvent({ type: 'track', event: 'EMAIL_SUBMITTED' });
       if (response.action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email });
       } else if (response.action === 'VERIFY_OTP') {
@@ -57,6 +63,7 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator, loading }: Pr
     <>
       <EmailInput
         onSubmit={onEmailSubmit}
+        onFocus={onEmailFocus}
         loading={inputLoading || loading}
         errorMessage={error}
         onChangeText={onChangeText}
