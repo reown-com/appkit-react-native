@@ -17,7 +17,7 @@ type IsConnectedResolver = Resolver<W3mFrameTypes.Responses['FrameIsConnectedRes
 type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdResponse']>;
 type SwitchChainResolver = Resolver<W3mFrameTypes.Responses['FrameSwitchNetworkResponse']>;
 type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>;
-type UpdateEmailResolver = Resolver<undefined>;
+type UpdateEmailResolver = Resolver<W3mFrameTypes.Responses['FrameUpdateEmailResponse']>;
 type UpdateEmailPrimaryOtpResolver = Resolver<undefined>;
 type UpdateEmailSecondaryOtpResolver = Resolver<
   W3mFrameTypes.Responses['FrameUpdateEmailSecondaryOtpResolver']
@@ -108,7 +108,7 @@ export class W3mFrameProvider {
 
   public onMessage(e: W3mFrameTypes.FrameEvent) {
     this.onFrameEvent(e, event => {
-      // console.log('💻 received', e); // eslint-disable-line no-console
+      console.log('💻 received', e); // eslint-disable-line no-console
       switch (event.type) {
         case W3mFrameConstants.FRAME_CONNECT_EMAIL_SUCCESS:
           return this.onConnectEmailSuccess(event);
@@ -149,7 +149,7 @@ export class W3mFrameProvider {
         case W3mFrameConstants.FRAME_SESSION_UPDATE:
           return this.onSessionUpdate(event);
         case W3mFrameConstants.FRAME_UPDATE_EMAIL_SUCCESS:
-          return this.onUpdateEmailSuccess();
+          return this.onUpdateEmailSuccess(event);
         case W3mFrameConstants.FRAME_UPDATE_EMAIL_ERROR:
           return this.onUpdateEmailError(event);
         case W3mFrameConstants.FRAME_UPDATE_EMAIL_PRIMARY_OTP_SUCCESS:
@@ -268,7 +268,7 @@ export class W3mFrameProvider {
     await W3mFrameHelpers.checkIfAllowedToTriggerEmail();
     this.postAppEvent({ type: W3mFrameConstants.APP_UPDATE_EMAIL, payload });
 
-    return new Promise((resolve, reject) => {
+    return new Promise<W3mFrameTypes.Responses['FrameUpdateEmailResponse']>((resolve, reject) => {
       this.updateEmailResolver = { resolve, reject };
     });
   }
@@ -585,8 +585,10 @@ export class W3mFrameProvider {
     }
   }
 
-  private onUpdateEmailSuccess() {
-    this.updateEmailResolver?.resolve(undefined);
+  private onUpdateEmailSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/UPDATE_EMAIL_SUCCESS' }>
+  ) {
+    this.updateEmailResolver?.resolve(event.payload);
     this.setNewLastEmailLoginTime();
   }
 
@@ -755,7 +757,7 @@ export class W3mFrameProvider {
 
     W3mFrameSchema.appEvent.parse(event);
     const strEvent = JSON.stringify(event);
-    // console.log('📡 sending', strEvent); // eslint-disable-line no-console
+    console.log('📡 sending', strEvent); // eslint-disable-line no-console
     const send = `
       (function() {
         iframe.contentWindow.postMessage(${strEvent}, '*');

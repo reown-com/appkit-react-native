@@ -56,7 +56,8 @@ import {
   FrameSwitchNetworkResponse,
   AppSyncDappDataRequest,
   FrameGetSmartAccountEnabledNetworksResponse,
-  FrameInitSmartAccountResponse
+  FrameInitSmartAccountResponse,
+  FrameUpdateEmailResponse
 } from './W3mFrameSchema';
 
 export namespace W3mFrameTypes {
@@ -87,6 +88,7 @@ export namespace W3mFrameTypes {
       typeof FrameGetSmartAccountEnabledNetworksResponse
     >;
     FrameInitSmartAccountResponse: z.infer<typeof FrameInitSmartAccountResponse>;
+    FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>;
   }
 
   export interface Network {
