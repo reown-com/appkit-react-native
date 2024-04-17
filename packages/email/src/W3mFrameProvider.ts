@@ -108,7 +108,7 @@ export class W3mFrameProvider {
 
   public onMessage(e: W3mFrameTypes.FrameEvent) {
     this.onFrameEvent(e, event => {
-      console.log('💻 received', e); // eslint-disable-line no-console
+      // console.log('💻 received', e); // eslint-disable-line no-console
       switch (event.type) {
         case W3mFrameConstants.FRAME_CONNECT_EMAIL_SUCCESS:
           return this.onConnectEmailSuccess(event);
@@ -757,7 +757,7 @@ export class W3mFrameProvider {
 
     W3mFrameSchema.appEvent.parse(event);
     const strEvent = JSON.stringify(event);
-    console.log('📡 sending', strEvent); // eslint-disable-line no-console
+    // console.log('📡 sending', strEvent); // eslint-disable-line no-console
     const send = `
       (function() {
         iframe.contentWindow.postMessage(${strEvent}, '*');
