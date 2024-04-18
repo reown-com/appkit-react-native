@@ -73,14 +73,6 @@ export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() });
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() });
 export const FrameSwitchNetworkResponse = z.object({ chainId: z.number() });
 export const FrameUpdateEmailSecondaryOtpResolver = z.object({ newEmail: z.string().email() });
-export const FrameGetSmartAccountEnabledNetworksResponse = z.object({
-  smartAccountEnabledNetworks: z.array(z.number())
-});
-export const FrameInitSmartAccountResponse = z.object({
-  address: z.string(),
-  isDeployed: z.boolean()
-});
-export const FrameSetPreferredAccountResponse = z.object({ type: z.string() });
 
 export const RpcResponse = z.any();
 
@@ -285,14 +277,6 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_GET_CHAIN_ID') }))
 
-    .or(z.object({ type: zType('APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS') }))
-
-    .or(z.object({ type: zType('APP_INIT_SMART_ACCOUNT') }))
-
-    .or(
-      z.object({ type: zType('APP_SET_PREFERRED_ACCOUNT'), payload: AppSetPreferredAccountRequest })
-    )
-
     .or(
       z.object({
         type: zType('APP_RPC_REQUEST'),
@@ -482,49 +466,4 @@ export const W3mFrameSchema = {
     )
 
     .or(z.object({ type: zType('FRAME_SYNC_DAPP_DATA_SUCCESS'), origin: z.string() }))
-
-    .or(
-      z.object({
-        type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS'),
-        payload: FrameGetSmartAccountEnabledNetworksResponse,
-        origin: z.string()
-      })
-    )
-
-    .or(
-      z.object({
-        type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR'),
-        payload: zError,
-        origin: z.string()
-      })
-    )
-
-    .or(
-      z.object({
-        type: zType('FRAME_INIT_SMART_ACCOUNT_SUCCESS'),
-        payload: FrameInitSmartAccountResponse,
-        origin: z.string()
-      })
-    )
-    .or(
-      z.object({
-        type: zType('FRAME_INIT_SMART_ACCOUNT_ERROR'),
-        payload: zError,
-        origin: z.string()
-      })
-    )
-    .or(
-      z.object({
-        type: zType('FRAME_SET_PREFERRED_ACCOUNT_SUCCESS'),
-        payload: FrameSetPreferredAccountResponse,
-        origin: z.string()
-      })
-    )
-    .or(
-      z.object({
-        type: zType('FRAME_SET_PREFERRED_ACCOUNT_ERROR'),
-        payload: zError,
-        origin: z.string()
-      })
-    )
 };

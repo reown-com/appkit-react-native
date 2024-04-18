@@ -24,11 +24,6 @@ type UpdateEmailSecondaryOtpResolver = Resolver<
 >;
 type SyncThemeResolver = Resolver<undefined>;
 type SyncDappDataResolver = Resolver<undefined>;
-type SmartAccountEnabledNetworksResolver = Resolver<
-  W3mFrameTypes.Responses['FrameGetSmartAccountEnabledNetworksResponse']
->;
-type InitSmartAccountResolver = Resolver<W3mFrameTypes.Responses['FrameInitSmartAccountResponse']>;
-type SetPreferredAccountResolver = Resolver<undefined>;
 
 type Metadata = {
   name: string;
@@ -83,12 +78,6 @@ export class W3mFrameProvider {
   private syncThemeResolver: SyncThemeResolver = undefined;
 
   private syncDappDataResolver: SyncDappDataResolver = undefined;
-
-  private smartAccountEnabledNetworksResolver: SmartAccountEnabledNetworksResolver = undefined;
-
-  private initSmartAccountResolver: InitSmartAccountResolver = undefined;
-
-  private setPreferredAccountResolver: SetPreferredAccountResolver = undefined;
 
   public constructor(projectId: string, metadata: Metadata) {
     this.webviewLoadPromise = new Promise((resolve, reject) => {
@@ -168,19 +157,6 @@ export class W3mFrameProvider {
           return this.onSyncDappDataSuccess();
         case W3mFrameConstants.FRAME_SYNC_DAPP_DATA_ERROR:
           return this.onSyncDappDataError(event);
-        case W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS:
-          return this.onSmartAccountEnabledNetworksSuccess(event);
-        case W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR:
-          return this.onSmartAccountEnabledNetworksError(event);
-        case W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_SUCCESS:
-          return this.onInitSmartAccountSuccess(event);
-        case W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_ERROR:
-          return this.onInitSmartAccountError(event);
-        case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS:
-          return this.onPreferSmartAccountSuccess(event);
-        case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_ERROR:
-          return this.onPreferSmartAccountError();
-
         default:
           return null;
       }
@@ -325,42 +301,6 @@ export class W3mFrameProvider {
     });
   }
 
-  public async getSmartAccountEnabledNetworks() {
-    await this.webviewLoadPromise;
-    this.postAppEvent({
-      type: W3mFrameConstants.APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS
-    });
-
-    return new Promise<W3mFrameTypes.Responses['FrameGetSmartAccountEnabledNetworksResponse']>(
-      (resolve, reject) => {
-        this.smartAccountEnabledNetworksResolver = { resolve, reject };
-      }
-    );
-  }
-
-  public async initSmartAccount() {
-    await this.webviewLoadPromise;
-    this.postAppEvent({ type: W3mFrameConstants.APP_INIT_SMART_ACCOUNT });
-
-    return new Promise<W3mFrameTypes.Responses['FrameInitSmartAccountResponse']>(
-      (resolve, reject) => {
-        this.initSmartAccountResolver = { resolve, reject };
-      }
-    );
-  }
-
-  public async setPreferredAccount(type: 'eoa' | 'smartAccount') {
-    await this.webviewLoadPromise;
-    this.postAppEvent({
-      type: W3mFrameConstants.APP_SET_PREFERRED_ACCOUNT,
-      payload: { type }
-    });
-
-    return new Promise((resolve, reject) => {
-      this.setPreferredAccountResolver = { resolve, reject };
-    });
-  }
-
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     const lastUsedChain = await this.getLastUsedChainId();
@@ -447,19 +387,6 @@ export class W3mFrameProvider {
         !frameEvent.payload.isConnected
       ) {
         callback();
-      }
-    });
-  }
-
-  public onInitSmartAccount(
-    event: W3mFrameTypes.FrameEvent,
-    callback: (isDeployed: boolean) => void
-  ) {
-    this.onFrameEvent(event, frameEvent => {
-      if (frameEvent.type === W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_SUCCESS) {
-        callback(frameEvent.payload.isDeployed);
-      } else if (frameEvent.type === W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_ERROR) {
-        callback(false);
       }
     });
   }
@@ -648,47 +575,6 @@ export class W3mFrameProvider {
     this.syncDappDataResolver?.reject(event.payload.message);
   }
 
-  private onSmartAccountEnabledNetworksSuccess(
-    event: Extract<
-      W3mFrameTypes.FrameEvent,
-      { type: '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS' }
-    >
-  ) {
-    this.smartAccountEnabledNetworksResolver?.resolve(event.payload);
-  }
-
-  private onSmartAccountEnabledNetworksError(
-    event: Extract<
-      W3mFrameTypes.FrameEvent,
-      { type: '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR' }
-    >
-  ) {
-    this.smartAccountEnabledNetworksResolver?.reject(event.payload.message);
-  }
-
-  private onInitSmartAccountSuccess(
-    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/INIT_SMART_ACCOUNT_SUCCESS' }>
-  ) {
-    this.initSmartAccountResolver?.resolve(event.payload);
-  }
-
-  private onInitSmartAccountError(
-    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/INIT_SMART_ACCOUNT_ERROR' }>
-  ) {
-    this.initSmartAccountResolver?.reject(event.payload.message);
-  }
-
-  private onPreferSmartAccountSuccess(
-    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SET_PREFERRED_ACCOUNT_SUCCESS' }>
-  ) {
-    this.persistPreferredAccount(event.payload.type as 'eoa' | 'smartAccount');
-    this.setPreferredAccountResolver?.resolve(undefined);
-  }
-
-  private onPreferSmartAccountError() {
-    this.setPreferredAccountResolver?.reject();
-  }
-
   // -- Private Methods -------------------------------------------------
   private setNewLastEmailLoginTime() {
     W3mFrameStorage.set(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME, Date.now().toString());
@@ -719,10 +605,6 @@ export class W3mFrameProvider {
     }
 
     return undefined;
-  }
-
-  private persistPreferredAccount(type: 'eoa' | 'smartAccount') {
-    W3mFrameStorage.set(W3mFrameConstants.PREFERRED_ACCOUNT_TYPE, type);
   }
 
   private onFrameEvent(

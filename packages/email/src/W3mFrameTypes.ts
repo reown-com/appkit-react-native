@@ -55,8 +55,6 @@ import {
   RpcEthChainId,
   FrameSwitchNetworkResponse,
   AppSyncDappDataRequest,
-  FrameGetSmartAccountEnabledNetworksResponse,
-  FrameInitSmartAccountResponse,
   FrameUpdateEmailResponse
 } from './W3mFrameSchema';
 
@@ -84,10 +82,6 @@ export namespace W3mFrameTypes {
     FrameIsConnectedResponse: z.infer<typeof FrameIsConnectedResponse>;
     FrameUpdateEmailSecondaryOtpResolver: z.infer<typeof FrameUpdateEmailSecondaryOtpResolver>;
     FrameSwitchNetworkResponse: z.infer<typeof FrameSwitchNetworkResponse>;
-    FrameGetSmartAccountEnabledNetworksResponse: z.infer<
-      typeof FrameGetSmartAccountEnabledNetworksResponse
-    >;
-    FrameInitSmartAccountResponse: z.infer<typeof FrameInitSmartAccountResponse>;
     FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>;
   }
 
