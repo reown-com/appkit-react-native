@@ -1,16 +1,20 @@
+import { useSnapshot } from 'valtio';
 import { StyleSheet } from 'react-native';
 import { Chip, FlexView, Spacing, Text } from '@web3modal/ui-react-native';
-import { W3mFrameConstants } from '@web3modal/email-react-native';
+import { ConnectorController, type W3mFrameProvider } from '@web3modal/core-react-native';
 
 export function UpgradeEmailWalletView() {
+  const { connectors } = useSnapshot(ConnectorController.state);
+  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
+
   return (
     <FlexView padding={['l', 'l', '3xl', 'l']} alignItems="center">
       <Text variant="paragraph-400">Follow the instructions on</Text>
       <Chip
         label="secure.walletconnect.com"
         icon="externalLink"
-        imageSrc={W3mFrameConstants.SECURE_SITE_ICON}
-        link={W3mFrameConstants.SECURE_SITE_DASHBOARD}
+        imageSrc={emailProvider.getSecureSiteIconURL()}
+        link={emailProvider.getSecureSiteDashboardURL()}
         style={styles.chip}
       />
       <Text variant="small-400" color="fg-200">

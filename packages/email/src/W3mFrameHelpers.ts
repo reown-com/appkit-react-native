@@ -42,18 +42,6 @@ export const W3mFrameHelpers = {
     }
   },
 
-  async getTimeToNextEmailLogin() {
-    const lastEmailLoginTime = await W3mFrameStorage.get(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME);
-    if (lastEmailLoginTime) {
-      const difference = Date.now() - Number(lastEmailLoginTime);
-      if (difference < EMAIL_MINIMUM_TIMEOUT) {
-        return Math.ceil((EMAIL_MINIMUM_TIMEOUT - difference) / 1000);
-      }
-    }
-
-    return 0;
-  },
-
   checkIfRequestExists(request: unknown) {
     const method = this.getRequestMethod(request);
 

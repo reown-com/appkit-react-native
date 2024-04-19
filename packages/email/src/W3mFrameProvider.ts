@@ -1,10 +1,12 @@
 import type { RefObject } from 'react';
 import type WebView from 'react-native-webview';
+import { CoreHelperUtil } from '@web3modal/core-react-native';
 import type { W3mFrameTypes } from './W3mFrameTypes';
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants';
 import { W3mFrameStorage } from './W3mFrameStorage';
 import { W3mFrameHelpers } from './W3mFrameHelpers';
 import { W3mFrameSchema } from './W3mFrameSchema';
+import { EmailWebview } from './W3mEmailWebview';
 
 // -- Types -----------------------------------------------------------
 type Resolver<T> = { resolve: (value: T) => void; reject: (reason?: unknown) => void } | undefined;
@@ -25,20 +27,13 @@ type UpdateEmailSecondaryOtpResolver = Resolver<
 type SyncThemeResolver = Resolver<undefined>;
 type SyncDappDataResolver = Resolver<undefined>;
 
-type Metadata = {
-  name: string;
-  description: string;
-  url: string;
-  icons: string[];
-};
-
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
   private webviewRef: RefObject<WebView> | undefined;
 
   private projectId: string;
 
-  private metadata: Metadata | undefined;
+  private metadata: W3mFrameTypes.Metadata | undefined;
 
   private email: string | undefined;
 
@@ -50,6 +45,8 @@ export class W3mFrameProvider {
         reject: (reason?: unknown) => void;
       }
     | undefined;
+
+  public EmailView = EmailWebview;
 
   private connectEmailResolver: ConnectEmailResolver = undefined;
 
@@ -79,7 +76,7 @@ export class W3mFrameProvider {
 
   private syncDappDataResolver: SyncDappDataResolver = undefined;
 
-  public constructor(projectId: string, metadata: Metadata) {
+  public constructor(projectId: string, metadata: W3mFrameTypes.Metadata) {
     this.webviewLoadPromise = new Promise((resolve, reject) => {
       this.webviewLoadPromiseResolver = { resolve, reject };
     });
@@ -174,6 +171,18 @@ export class W3mFrameProvider {
   // -- Extended Methods ------------------------------------------------
   public getSecureSiteURL() {
     return `${W3mFrameConstants.SECURE_SITE_SDK}?projectId=${this.projectId}`;
+  }
+
+  public getSecureSiteDashboardURL() {
+    return W3mFrameConstants.SECURE_SITE_DASHBOARD;
+  }
+
+  public getSecureSiteIconURL() {
+    return W3mFrameConstants.SECURE_SITE_ICON;
+  }
+
+  public getSecureSiteHeaders() {
+    return { 'X-Bundle-Id': CoreHelperUtil.getBundleId() };
   }
 
   public async getLoginEmailUsed() {

@@ -11,6 +11,7 @@ import {
   createWeb3Modal,
   defaultWagmiConfig
 } from '@web3modal/wagmi-react-native';
+import { EmailConnector } from '@web3modal/email-wagmi-react-native';
 
 import {
   arbitrum,
@@ -63,7 +64,14 @@ const clipboardClient = {
   }
 };
 
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata, enableEmail: true });
+const emailConnector = new EmailConnector({ chains, options: { projectId, metadata } });
+
+const wagmiConfig = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata,
+  extraConnectors: [emailConnector]
+});
 
 const customWallets = getCustomWallets();
 

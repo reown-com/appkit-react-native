@@ -125,6 +125,7 @@ __metadata:
     "@types/react": "npm:~18.2.45"
     "@types/react-native": "npm:0.72.2"
     "@walletconnect/react-native-compat": "npm:2.10.5"
+    "@web3modal/email-wagmi-react-native": "npm:1.4.0-email-beta.1"
     "@web3modal/wagmi-react-native": "npm:1.4.0-email-beta.1"
     babel-plugin-module-resolver: "npm:^5.0.0"
     expo: "npm:^50.0.14"
@@ -10461,6 +10462,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@web3modal/email-ethers-react-native@workspace:packages/email-ethers":
+  version: 0.0.0-use.local
+  resolution: "@web3modal/email-ethers-react-native@workspace:packages/email-ethers"
+  dependencies:
+    "@web3modal/email-react-native": "npm:1.4.0-email-beta.1"
+  peerDependencies:
+    ethers: ">=5"
+  languageName: unknown
+  linkType: soft
+
 "@web3modal/email-react-native@npm:1.4.0-email-beta.1, @web3modal/email-react-native@workspace:packages/email":
   version: 0.0.0-use.local
   resolution: "@web3modal/email-react-native@workspace:packages/email"
@@ -10468,7 +10479,19 @@ __metadata:
     zod: "npm:3.22.4"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
+    "@web3modal/core-react-native": 1.4.0-email-beta.1
+    "@web3modal/ui-react-native": 1.4.0-email-beta.1
     react-native-webview: ">=11"
+  languageName: unknown
+  linkType: soft
+
+"@web3modal/email-wagmi-react-native@npm:1.4.0-email-beta.1, @web3modal/email-wagmi-react-native@workspace:packages/email-wagmi":
+  version: 0.0.0-use.local
+  resolution: "@web3modal/email-wagmi-react-native@workspace:packages/email-wagmi"
+  dependencies:
+    "@web3modal/email-react-native": "npm:1.4.0-email-beta.1"
+  peerDependencies:
+    wagmi: ">=1 <2"
   languageName: unknown
   linkType: soft
 
@@ -10515,13 +10538,11 @@ __metadata:
   resolution: "@web3modal/scaffold-react-native@workspace:packages/scaffold"
   dependencies:
     "@web3modal/core-react-native": "npm:1.4.0-email-beta.1"
-    "@web3modal/email-react-native": "npm:1.4.0-email-beta.1"
     "@web3modal/ui-react-native": "npm:1.4.0-email-beta.1"
   peerDependencies:
     react: ">=17"
     react-native: ">=0.68.5"
     react-native-modal: ">=13"
-    react-native-webview: ">=11"
   languageName: unknown
   linkType: soft
 
@@ -22695,19 +22716,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-webview@npm:13.2.2":
-  version: 13.2.2
-  resolution: "react-native-webview@npm:13.2.2"
-  dependencies:
-    escape-string-regexp: "npm:2.0.0"
-    invariant: "npm:2.2.4"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: b0af1dafd8ea4e84c46c5d40efa307f8eea38687283e23df08eadc3fc9e6ecb498c4ddb529795a161911a43d91dcda3d49fb763f16fa05efb8d899ad8feccb06
-  languageName: node
-  linkType: hard
-
 "react-native-webview@npm:13.6.4":
   version: 13.6.4
   resolution: "react-native-webview@npm:13.6.4"
@@ -23572,7 +23580,7 @@ __metadata:
     react-native-builder-bob: "npm:0.23.2"
     react-native-modal: "npm:13.0.1"
     react-native-svg: "npm:13.9.0"
-    react-native-webview: "npm:13.2.2"
+    react-native-webview: "npm:13.6.4"
     react-test-renderer: "npm:18.2.0"
     ts-jest: "npm:29.1.1"
     ts-node: "npm:10.9.1"

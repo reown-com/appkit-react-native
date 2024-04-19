@@ -90,6 +90,13 @@ export namespace W3mFrameTypes {
     chainId: number;
   }
 
+  export type Metadata = {
+    name: string;
+    description: string;
+    url: string;
+    icons: string[];
+  };
+
   export type RPCRequest =
     | z.infer<typeof RpcEthAccountsRequest>
     | z.infer<typeof RpcEthBlockNumber>

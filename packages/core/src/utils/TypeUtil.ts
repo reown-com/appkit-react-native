@@ -253,3 +253,58 @@ export type Event =
       type: 'track';
       event: 'EMAIL_UPGRADE_FROM_MODAL';
     };
+
+// -- Email Types ------------------------------------------------
+/**
+ * Matches type defined for packages/email/src/W3mFrameProvider.ts
+ * It's duplicated in order to decouple scaffold from email package
+ */
+export interface W3mFrameProvider {
+  readonly id: string;
+  readonly name: string;
+  getSecureSiteURL(): string;
+  getSecureSiteDashboardURL(): string;
+  getSecureSiteIconURL(): string;
+  getSecureSiteHeaders(): Record<string, string>;
+  getLoginEmailUsed(): Promise<boolean>;
+  getEmail(): string | undefined;
+  rejectRpcRequest(): void;
+  connectEmail(payload: { email: string }): Promise<{
+    action: 'VERIFY_DEVICE' | 'VERIFY_OTP';
+  }>;
+  connectDevice(): Promise<unknown>;
+  connectOtp(payload: { otp: string }): Promise<unknown>;
+  isConnected(): Promise<{
+    isConnected: boolean;
+  }>;
+  getChainId(): Promise<{
+    chainId: number;
+  }>;
+  updateEmail(payload: { email: string }): Promise<{
+    action: 'VERIFY_PRIMARY_OTP' | 'VERIFY_SECONDARY_OTP';
+  }>;
+  updateEmailPrimaryOtp(payload: { otp: string }): Promise<unknown>;
+  updateEmailSecondaryOtp(payload: { otp: string }): Promise<{
+    newEmail: string;
+  }>;
+  syncTheme(payload: {
+    themeMode?: ThemeMode | undefined;
+    themeVariables?: Record<string, string | number> | undefined;
+  }): Promise<unknown>;
+  syncDappData(payload: {
+    projectId: string;
+    sdkVersion: SdkVersion;
+    metadata?: Metadata;
+  }): Promise<unknown>;
+  connect(payload?: { chainId?: number | undefined }): Promise<{
+    chainId: number;
+    email: string;
+    address: string;
+  }>;
+  switchNetwork(chainId: number): Promise<{
+    chainId: number;
+  }>;
+  disconnect(): Promise<unknown>;
+  request(req: any): Promise<any>;
+  EmailView: () => JSX.Element | null;
+}

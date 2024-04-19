@@ -6,12 +6,13 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController,
-  EventsController
+  EventsController,
+  type W3mFrameProvider
 } from '@web3modal/core-react-native';
 import { Button, EmailInput, FlexView, Spacing, Text } from '@web3modal/ui-react-native';
-import type { W3mFrameProvider } from '@web3modal/email-react-native';
-import styles from './styles';
 import { useKeyboard } from '../../hooks/useKeyboard';
+
+import styles from './styles';
 
 export function UpdateEmailWalletView() {
   const { data } = useSnapshot(RouterController.state);

@@ -1,5 +1,8 @@
-import type { Address, Chain, Config, Connector as WagmiConnector } from '@wagmi/core';
 import {
+  type Address,
+  type Chain,
+  type Config,
+  type Connector as WagmiConnector,
   connect,
   disconnect,
   fetchBalance,
@@ -12,19 +15,18 @@ import {
   watchNetwork
 } from '@wagmi/core';
 import { mainnet } from '@wagmi/core/chains';
-import type {
-  CaipAddress,
-  CaipNetwork,
-  CaipNetworkId,
-  ConnectionControllerClient,
-  Connector,
-  LibraryOptions,
-  NetworkControllerClient,
-  PublicStateControllerState,
-  Token
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ConnectionControllerClient,
+  type Connector,
+  type LibraryOptions,
+  type NetworkControllerClient,
+  type PublicStateControllerState,
+  type Token,
+  Web3ModalScaffold
 } from '@web3modal/scaffold-react-native';
-import { Web3ModalScaffold } from '@web3modal/scaffold-react-native';
-
 import {
   ConstantsUtil,
   HelpersUtil,
@@ -36,7 +38,6 @@ import {
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers';
-import type { EmailConnector } from './connectors/EmailConnector';
 
 // -- Types ---------------------------------------------------------------------
 interface WagmiConfig extends Config<any, any> {
@@ -316,9 +317,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async listenEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
-    const connector = wagmiConfig.connectors.find(
-      c => c.id === ConstantsUtil.EMAIL_CONNECTOR_ID
-    ) as EmailConnector;
+    const connector = wagmiConfig.connectors.find(c => c.id === ConstantsUtil.EMAIL_CONNECTOR_ID);
 
     const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
     if (connector && connectedConnector === 'EMAIL') {

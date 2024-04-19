@@ -1,17 +1,17 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Appearance, Platform, SafeAreaView } from 'react-native';
+import { Animated, Appearance, Platform, SafeAreaView, StyleSheet } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
-import { W3mFrameConstants, W3mFrameProvider } from '@web3modal/email-react-native';
+
 import {
   ConnectorController,
   OptionsController,
   ModalController,
-  CoreHelperUtil,
   type OptionsControllerState
 } from '@web3modal/core-react-native';
-import { useTheme } from '@web3modal/ui-react-native';
-import styles from './styles';
+import { useTheme, BorderRadius } from '@web3modal/ui-react-native';
+import type { W3mFrameProvider } from './W3mFrameProvider';
+import { W3mFrameConstants } from './W3mFrameConstants';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
@@ -118,7 +118,7 @@ export function EmailWebview() {
         <WebView
           source={{
             uri: provider.getSecureSiteURL(),
-            headers: { 'X-Bundle-Id': CoreHelperUtil.getBundleId() }
+            headers: provider.getSecureSiteHeaders()
           }}
           bounces={false}
           scalesPageToFit
@@ -148,3 +148,27 @@ export function EmailWebview() {
     </>
   ) : null;
 }
+
+const styles = StyleSheet.create({
+  backdrop: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: 0
+  },
+  container: {
+    bottom: 0,
+    position: 'absolute',
+    width: '100%',
+    borderTopLeftRadius: BorderRadius.l,
+    borderTopRightRadius: BorderRadius.l,
+    zIndex: 999
+  },
+  hidden: {
+    display: 'none'
+  },
+  webview: {
+    borderTopLeftRadius: BorderRadius.l,
+    borderTopRightRadius: BorderRadius.l
+  }
+});

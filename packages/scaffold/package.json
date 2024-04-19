@@ -38,14 +38,12 @@
   },
   "dependencies": {
     "@web3modal/core-react-native": "1.4.0-email-beta.1",
-    "@web3modal/email-react-native": "1.4.0-email-beta.1",
     "@web3modal/ui-react-native": "1.4.0-email-beta.1"
   },
   "peerDependencies": {
     "react": ">=17",
     "react-native": ">=0.68.5",
-    "react-native-modal": ">=13",
-    "react-native-webview": ">=11"
+    "react-native-modal": ">=13"
   },
   "react-native": "src/index.ts",
   "react-native-builder-bob": {

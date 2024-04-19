@@ -1,14 +1,15 @@
 import { useSnapshot } from 'valtio';
 import { useState, useEffect } from 'react';
-import { W3mFrameHelpers, type W3mFrameProvider } from '@web3modal/email-react-native';
 import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  StorageUtil,
   EventsController,
   ModalController,
   RouterController,
-  SnackController
+  SnackController,
+  type W3mFrameProvider
 } from '@web3modal/core-react-native';
 import useTimeout from '../../hooks/useTimeout';
 import { OtpCodeView } from '../../partials/w3m-otp-code';
@@ -27,7 +28,7 @@ export function EmailVerifyOtpView() {
       const provider = emailConnector?.provider as W3mFrameProvider;
       await provider.connectEmail({ email: data.email });
       SnackController.showSuccess('Code sent');
-      const timer = await W3mFrameHelpers.getTimeToNextEmailLogin();
+      const timer = await StorageUtil.getTimeToNextEmailLogin();
       startTimer(timer);
       setLoading(false);
     } catch (e) {
