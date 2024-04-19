@@ -140,14 +140,17 @@ export class Web3Modal extends Web3ModalScaffold {
       //  @ts-expect-error TODO expected types in arguments are incomplete
       connectExternal: async ({ id }: { id: string; provider: Provider }) => {
         if (id === ConstantsUtil.COINBASE_CONNECTOR_ID) {
-          const CoinbaseProvider = config.coinbase;
+          const CoinbaseProvider = config.extraConnectors?.find(
+            connector => connector.id === ConstantsUtil.COINBASE_CONNECTOR_ID
+          ) as Provider;
+
           if (!CoinbaseProvider) {
             throw new Error('connectionControllerClient:connectCoinbase - connector is undefined');
           }
 
           try {
             await CoinbaseProvider.request({ method: 'eth_requestAccounts' });
-            await this.setCoinbaseProvider(config);
+            await this.setCoinbaseProvider(CoinbaseProvider);
           } catch (error) {
             EthersStoreUtil.setError(error);
           }
@@ -218,14 +221,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.syncRequestedNetworks(chains, chainImages);
     this.syncConnectors(config);
-
-    if (config.email) {
-      this.syncEmailConnector(config.email);
-    }
-
-    if (config.coinbase) {
-      this.checkActiveCoinbaseProvider(config);
-    }
+    this.syncEmailConnector(config);
   }
 
   // -- Public ------------------------------------------------------------------
@@ -361,15 +357,15 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async checkActiveCoinbaseProvider(config: ProviderType) {
-    const CoinbaseProvider = config.coinbase as unknown as ExternalProvider;
+  private async checkActiveCoinbaseProvider(provider: Provider) {
+    const CoinbaseProvider = provider as unknown as ExternalProvider;
     const walletId = await StorageUtil.getItem(EthersConstantsUtil.WALLET_ID);
 
     if (CoinbaseProvider) {
       if (walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
         if (CoinbaseProvider.address) {
-          await this.setCoinbaseProvider(config);
-          await this.watchCoinbase(config);
+          await this.setCoinbaseProvider(provider);
+          await this.watchCoinbase(provider);
         } else {
           await StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
           EthersStoreUtil.reset();
@@ -392,20 +388,19 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async setCoinbaseProvider(config: ProviderType) {
+  private async setCoinbaseProvider(provider: Provider) {
     await StorageUtil.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.COINBASE_CONNECTOR_ID);
-    const CoinbaseProvider = config.coinbase;
 
-    if (CoinbaseProvider) {
-      const { address, chainId } = await EthersHelpersUtil.getUserInfo(CoinbaseProvider);
+    if (provider) {
+      const { address, chainId } = await EthersHelpersUtil.getUserInfo(provider);
       if (address && chainId) {
         const providerType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.COINBASE_CONNECTOR_ID];
         EthersStoreUtil.setChainId(chainId);
         EthersStoreUtil.setProviderType(providerType);
-        EthersStoreUtil.setProvider(config.coinbase);
+        EthersStoreUtil.setProvider(provider);
         EthersStoreUtil.setIsConnected(true);
         this.setAddress(address);
-        await this.watchCoinbase(config);
+        await this.watchCoinbase(provider);
       }
     }
   }
@@ -459,17 +454,16 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async watchCoinbase(config: ProviderType) {
-    const CoinbaseProvider = config.coinbase;
+  private async watchCoinbase(provider: Provider) {
     const walletId = await StorageUtil.getItem(EthersConstantsUtil.WALLET_ID);
 
     function disconnectHandler() {
       StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
       EthersStoreUtil.reset();
 
-      CoinbaseProvider?.removeListener('disconnect', disconnectHandler);
-      CoinbaseProvider?.removeListener('accountsChanged', accountsChangedHandler);
-      CoinbaseProvider?.removeListener('chainChanged', chainChangedHandler);
+      provider?.removeListener('disconnect', disconnectHandler);
+      provider?.removeListener('accountsChanged', accountsChangedHandler);
+      provider?.removeListener('chainChanged', chainChangedHandler);
     }
 
     function accountsChangedHandler(accounts: string[]) {
@@ -488,10 +482,10 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
-    if (CoinbaseProvider) {
-      CoinbaseProvider.on('disconnect', disconnectHandler);
-      CoinbaseProvider.on('accountsChanged', accountsChangedHandler);
-      CoinbaseProvider.on('chainChanged', chainChangedHandler);
+    if (provider) {
+      provider.on('disconnect', disconnectHandler);
+      provider.on('accountsChanged', accountsChangedHandler);
+      provider.on('chainChanged', chainChangedHandler);
     }
   }
 
@@ -669,35 +663,48 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private syncConnectors(config: ProviderType) {
     const w3mConnectors: Connector[] = [];
+    const EXCLUDED_CONNECTORS = [ConstantsUtil.EMAIL_CONNECTOR_ID];
 
-    const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
-    if (connectorType) {
-      w3mConnectors.push({
-        id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
-        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-        imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-        imageUrl: this.options?.connectorImages?.[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-        name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-        type: connectorType
-      });
-    }
+    w3mConnectors.push({
+      id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
+      explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+      imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+      imageUrl: this.options?.connectorImages?.[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+      name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+      type: PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]!
+    });
 
-    const coinbaseType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.COINBASE_CONNECTOR_ID];
-    if (config.coinbase && coinbaseType) {
-      w3mConnectors.push({
-        id: ConstantsUtil.COINBASE_CONNECTOR_ID,
-        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
-        imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
-        imageUrl: this.options?.connectorImages?.[ConstantsUtil.COINBASE_CONNECTOR_ID],
-        name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID],
-        type: coinbaseType
-      });
-    }
+    config.extraConnectors?.forEach(connector => {
+      if (!EXCLUDED_CONNECTORS.includes(connector.id)) {
+        if (connector.id === ConstantsUtil.COINBASE_CONNECTOR_ID) {
+          w3mConnectors.push({
+            id: ConstantsUtil.COINBASE_CONNECTOR_ID,
+            explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
+            imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
+            imageUrl: this.options?.connectorImages?.[ConstantsUtil.COINBASE_CONNECTOR_ID],
+            name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID],
+            type: PresetsUtil.ConnectorTypesMap[ConstantsUtil.COINBASE_CONNECTOR_ID]!
+          });
+          this.checkActiveCoinbaseProvider(connector as Provider);
+        } else {
+          w3mConnectors.push({
+            id: connector.id,
+            name: connector.name,
+            type: 'EXTERNAL'
+          });
+        }
+      }
+    });
 
     this.setConnectors(w3mConnectors);
   }
 
-  private async syncEmailConnector(provider: W3mFrameProvider) {
+  private async syncEmailConnector(config: ProviderType) {
+    const provider = config.extraConnectors?.find(
+      connector => connector.id === ConstantsUtil.EMAIL_CONNECTOR_ID
+    ) as W3mFrameProvider;
+    if (!provider) return;
+
     this.emailProvider = provider;
 
     this.addConnector({

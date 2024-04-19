@@ -10,8 +10,7 @@ export type Address = `0x${string}`;
 
 export type ProviderType = {
   metadata: Metadata;
-  coinbase?: Provider;
-  email?: W3mFrameProvider;
+  extraConnectors?: (Provider | W3mFrameProvider)[];
 };
 
 export interface RequestArguments {
@@ -20,6 +19,8 @@ export interface RequestArguments {
 }
 
 export interface Provider {
+  readonly id: string;
+  readonly name: string;
   request: <T>(args: RequestArguments) => Promise<T>;
   on: <T>(event: string, listener: (data: T) => void) => void;
   removeListener: <T>(event: string, listener: (data: T) => void) => void;

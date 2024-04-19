@@ -140,6 +140,7 @@ __metadata:
     react-native-modal: "npm:13.0.1"
     react-native-svg: "npm:14.1.0"
     react-native-web: "npm:~0.19.6"
+    react-native-webview: "npm:13.6.4"
     typescript: "npm:^5.3.0"
     uuid: "npm:3.4.0"
     viem: "npm:1.19.3"

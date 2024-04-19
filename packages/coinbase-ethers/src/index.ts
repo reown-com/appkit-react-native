@@ -12,6 +12,9 @@ type CoinbaseProviderOptions = WalletMobileSDKProviderOptions & {
 };
 
 export class CoinbaseProvider {
+  readonly id = 'coinbaseWallet';
+  readonly name = 'Coinbase Wallet';
+
   private _provider?: WalletMobileSDKEVMProvider;
   private _initProviderPromise?: Promise<void>;
   private readonly options: CoinbaseProviderOptions;

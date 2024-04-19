@@ -7,22 +7,13 @@ import type {
 
 export interface ConfigOptions {
   metadata: Metadata;
-  coinbase?: Provider;
-  email?: W3mFrameProvider;
+  extraConnectors: (Provider | W3mFrameProvider)[];
 }
 
 export function defaultConfig(options: ConfigOptions) {
-  const { metadata } = options;
+  const { metadata, extraConnectors } = options;
 
-  let providers: ProviderType = { metadata };
-
-  if (options.coinbase) {
-    providers.coinbase = options.coinbase;
-  }
-
-  if (options.email) {
-    providers.email = options.email;
-  }
+  let providers: ProviderType = { metadata, extraConnectors };
 
   return providers;
 }

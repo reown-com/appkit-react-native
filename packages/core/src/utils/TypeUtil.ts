@@ -260,6 +260,8 @@ export type Event =
  * It's duplicated in order to decouple scaffold from email package
  */
 export interface W3mFrameProvider {
+  readonly id: string;
+  readonly name: string;
   getSecureSiteURL(): string;
   getSecureSiteDashboardURL(): string;
   getSecureSiteIconURL(): string;
