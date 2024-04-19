@@ -6,9 +6,9 @@ import {
   CoreHelperUtil,
   EventsController,
   RouterController,
-  SnackController
+  SnackController,
+  type W3mFrameProvider
 } from '@web3modal/core-react-native';
-import type { W3mFrameProvider } from '@web3modal/email-react-native';
 import { StyleSheet } from 'react-native';
 
 interface Props {

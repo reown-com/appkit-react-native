@@ -1,9 +1,14 @@
-import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils-react-native';
+import type {
+  Metadata,
+  Provider,
+  ProviderType,
+  W3mFrameProvider
+} from '@web3modal/scaffold-utils-react-native';
 
 export interface ConfigOptions {
   metadata: Metadata;
   coinbase?: Provider;
-  enableEmail?: boolean;
+  email?: W3mFrameProvider;
 }
 
 export function defaultConfig(options: ConfigOptions) {
@@ -15,8 +20,8 @@ export function defaultConfig(options: ConfigOptions) {
     providers.coinbase = options.coinbase;
   }
 
-  if (options.enableEmail) {
-    providers.email = true;
+  if (options.email) {
+    providers.email = options.email;
   }
 
   return providers;

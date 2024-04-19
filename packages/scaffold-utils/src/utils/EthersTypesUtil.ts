@@ -1,4 +1,5 @@
-import type { W3mFrameProvider } from '@web3modal/email-react-native';
+import type { W3mFrameProvider } from '@web3modal/core-react-native';
+export type { W3mFrameProvider } from '@web3modal/core-react-native';
 
 export interface IEthersConfig {
   providers: ProviderType;
@@ -10,7 +11,7 @@ export type Address = `0x${string}`;
 export type ProviderType = {
   metadata: Metadata;
   coinbase?: Provider;
-  email?: boolean;
+  email?: W3mFrameProvider;
 };
 
 export interface RequestArguments {
@@ -36,7 +37,8 @@ export type Metadata = {
   };
 };
 
-export type CombinedProvider = W3mFrameProvider & Provider;
+export type CombinedProviderType = Provider & W3mFrameProvider;
+
 export type Chain = {
   rpcUrl: string;
   explorerUrl: string;

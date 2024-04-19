@@ -1,6 +1,6 @@
 export const W3mFrameConstants = {
-  SECURE_SITE_SDK: 'http://localhost:3010/mobile-sdk',
-  SECURE_SITE_ORIGIN: 'http://localhost:3010',
+  SECURE_SITE_SDK: 'https://secure-mobile.walletconnect.com/mobile-sdk',
+  SECURE_SITE_ORIGIN: 'https://secure.walletconnect.com',
   SECURE_SITE_DASHBOARD: `https://secure.walletconnect.com/dashboard`,
   SECURE_SITE_ICON: `https://secure.walletconnect.com/images/favicon.png`,
   APP_EVENT_KEY: '@w3m-app/',
@@ -11,7 +11,7 @@ export const W3mFrameConstants = {
   SESSION_TOKEN_KEY: 'SESSION_TOKEN_KEY',
   EMAIL_LOGIN_USED_KEY: 'EMAIL_LOGIN_USED_KEY',
   LAST_USED_CHAIN_KEY: 'LAST_USED_CHAIN_KEY',
-  LAST_EMAIL_LOGIN_TIME: 'LAST_EMAIL_LOGIN_TIME',
+  LAST_EMAIL_LOGIN_TIME: 'LAST_EMAIL_LOGIN_TIME', // Also present in core/src/utils/StorageUtil.ts
   EMAIL: 'EMAIL',
 
   FRAME_MESSAGES_HANDLER: `

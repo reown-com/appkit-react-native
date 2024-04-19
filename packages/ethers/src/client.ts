@@ -1,39 +1,36 @@
-import type {
-  CaipAddress,
-  CaipNetwork,
-  CaipNetworkId,
-  ConnectionControllerClient,
-  Connector,
-  LibraryOptions,
-  NetworkControllerClient,
-  PublicStateControllerState,
-  Token
-} from '@web3modal/scaffold-react-native';
 import { InfuraProvider, JsonRpcProvider, formatEther, getAddress } from 'ethers';
-import { Web3ModalScaffold } from '@web3modal/scaffold-react-native';
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ConnectionControllerClient,
+  type Connector,
+  type LibraryOptions,
+  type NetworkControllerClient,
+  type PublicStateControllerState,
+  type Token,
+  Web3ModalScaffold
+} from '@web3modal/scaffold-react-native';
 import {
   ConstantsUtil,
   PresetsUtil,
   HelpersUtil,
-  StorageUtil
-} from '@web3modal/scaffold-utils-react-native';
-import EthereumProvider from '@walletconnect/ethereum-provider';
-import type {
-  Address,
-  Metadata,
-  ProviderType,
-  Chain,
-  Provider,
-  EthersStoreUtilState,
-  CombinedProvider
-} from '@web3modal/scaffold-utils-react-native';
-import {
+  StorageUtil,
   EthersConstantsUtil,
   EthersHelpersUtil,
-  EthersStoreUtil
+  EthersStoreUtil,
+  type Address,
+  type Metadata,
+  type ProviderType,
+  type Chain,
+  type Provider,
+  type EthersStoreUtilState,
+  type CombinedProviderType,
+  type W3mFrameProvider
 } from '@web3modal/scaffold-utils-react-native';
+import EthereumProvider from '@walletconnect/ethereum-provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
-import { W3mFrameProvider } from '@web3modal/email-react-native';
+
 import { getEmailCaipNetworks, getWalletConnectCaipNetworks } from './utils/helpers';
 
 // -- Types ---------------------------------------------------------------------
@@ -223,7 +220,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncConnectors(config);
 
     if (config.email) {
-      this.syncEmailConnector(w3mOptions.projectId, config.metadata);
+      this.syncEmailConnector(config.email);
     }
 
     if (config.coinbase) {
@@ -423,7 +420,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType(
           PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID]
         );
-        EthersStoreUtil.setProvider(this.emailProvider as CombinedProvider);
+        EthersStoreUtil.setProvider(this.emailProvider as CombinedProviderType);
         EthersStoreUtil.setIsConnected(true);
         EthersStoreUtil.setAddress(address as Address);
       }
@@ -700,14 +697,14 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setConnectors(w3mConnectors);
   }
 
-  private async syncEmailConnector(projectId: string, metadata: Metadata) {
-    this.emailProvider = new W3mFrameProvider(projectId, metadata);
+  private async syncEmailConnector(provider: W3mFrameProvider) {
+    this.emailProvider = provider;
 
     this.addConnector({
       id: ConstantsUtil.EMAIL_CONNECTOR_ID,
       name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.EMAIL_CONNECTOR_ID],
       type: PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID]!,
-      provider: this.emailProvider
+      provider: provider
     });
 
     const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');

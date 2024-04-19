@@ -6,6 +6,9 @@ import type { ConnectorType, WcWallet } from './TypeUtil';
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE';
 const W3M_RECENT = '@w3m/recent';
 const W3M_CONNECTED_CONNECTOR = '@w3m/connected_connector';
+const LAST_EMAIL_LOGIN_TIME = 'LAST_EMAIL_LOGIN_TIME'; // Also present in email/src/W3mFrameConstants.ts
+
+const EMAIL_MINIMUM_TIMEOUT = 30 * 1000;
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -99,5 +102,17 @@ export const StorageUtil = {
     } catch {
       console.info('Unable to remove Connected Connector');
     }
+  },
+
+  async getTimeToNextEmailLogin() {
+    const lastEmailLoginTime = await AsyncStorage.getItem(LAST_EMAIL_LOGIN_TIME);
+    if (lastEmailLoginTime) {
+      const difference = Date.now() - Number(lastEmailLoginTime);
+      if (difference < EMAIL_MINIMUM_TIMEOUT) {
+        return Math.ceil((EMAIL_MINIMUM_TIMEOUT - difference) / 1000);
+      }
+    }
+
+    return 0;
   }
 };

@@ -13,7 +13,8 @@ import {
   NetworkController,
   OptionsController,
   RouterController,
-  SnackController
+  SnackController,
+  type W3mFrameProvider
 } from '@web3modal/core-react-native';
 import {
   Avatar,
@@ -25,7 +26,6 @@ import {
   Spacing,
   ListItem
 } from '@web3modal/ui-react-native';
-import type { W3mFrameProvider } from '@web3modal/email-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { UpgradeWalletButton } from './components/upgrade-wallet-button';
 import styles from './styles';

@@ -8,14 +8,14 @@ import {
   ConnectorController,
   EventsController,
   ModalController,
-  RouterController
+  RouterController,
+  type W3mFrameProvider
 } from '@web3modal/core-react-native';
 
 import { Web3Router } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
 import { Snackbar } from '../../partials/w3m-snackbar';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import { EmailWebview } from '../../partials/w3m-email-webview';
 import styles from './styles';
 
 export function Web3Modal() {
@@ -27,6 +27,8 @@ export function Web3Modal() {
   const portraitHeight = height - 120;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
   const hasEmail = connectors.some(c => c.type === 'EMAIL');
+  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
+  const EmailView = emailProvider?.EmailView;
 
   const onBackButtonPress = () => {
     if (history.length > 1) {
@@ -47,7 +49,7 @@ export function Web3Modal() {
 
   return (
     <>
-      {hasEmail && <EmailWebview />}
+      {hasEmail && EmailView && <EmailView />}
       <Modal
         style={styles.modal}
         isVisible={open}

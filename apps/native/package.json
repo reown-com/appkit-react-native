@@ -18,6 +18,7 @@
     "@react-native-async-storage/async-storage": "1.21.0",
     "@react-native-community/netinfo": "11.1.0",
     "@walletconnect/react-native-compat": "2.10.5",
+    "@web3modal/email-wagmi-react-native": "1.4.0-email-beta.1",
     "@web3modal/wagmi-react-native": "1.4.0-email-beta.1",
     "expo": "^50.0.14",
     "expo-application": "~5.8.3",
@@ -31,7 +32,6 @@
     "react-native-modal": "13.0.1",
     "react-native-svg": "14.1.0",
     "react-native-web": "~0.19.6",
-    "react-native-webview": "13.6.4",
     "uuid": "3.4.0",
     "viem": "1.19.3",
     "wagmi": "1.4.7"

@@ -3,14 +3,12 @@ import { publicProvider } from 'wagmi/providers/public';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 import { walletConnectProvider } from './provider';
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector';
-import { EmailConnector } from '../connectors/EmailConnector';
 
 export interface ConfigOptions {
   projectId: string;
   metadata: Exclude<EthereumProviderOptions['metadata'], undefined>;
   chains: Chain[];
   enableWalletConnect?: boolean;
-  enableEmail?: boolean;
   extraConnectors?: Connector[];
 }
 
@@ -19,7 +17,6 @@ export function defaultWagmiConfig({
   chains,
   metadata,
   enableWalletConnect = true,
-  enableEmail,
   extraConnectors
 }: ConfigOptions) {
   const { publicClient } = configureChains(chains, [
@@ -31,10 +28,6 @@ export function defaultWagmiConfig({
 
   if (enableWalletConnect) {
     connectors.push(new WalletConnectConnector({ chains, options: { projectId, metadata } }));
-  }
-
-  if (enableEmail) {
-    connectors.push(new EmailConnector({ chains, options: { projectId, metadata } }));
   }
 
   if (extraConnectors) {

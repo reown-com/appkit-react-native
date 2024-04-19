@@ -1,12 +1,13 @@
 import { useSnapshot } from 'valtio';
 import { useState, useEffect } from 'react';
-import { type W3mFrameProvider } from '@web3modal/email-react-native';
+
 import {
   ConnectorController,
   CoreHelperUtil,
   RouterController,
   SnackController,
-  EventsController
+  EventsController,
+  type W3mFrameProvider
 } from '@web3modal/core-react-native';
 
 import useTimeout from '../../hooks/useTimeout';
