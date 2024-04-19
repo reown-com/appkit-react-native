@@ -45,7 +45,7 @@
   "peerDependencies": {
     "@react-native-async-storage/async-storage": ">=1.17.0",
     "@react-native-community/netinfo": "*",
-    "ethers": "<=6.0.0",
+    "ethers": ">=6.0.0",
     "react": ">=17",
     "react-native": ">=0.68.5",
     "react-native-get-random-values": "*"
