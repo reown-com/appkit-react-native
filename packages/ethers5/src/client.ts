@@ -140,17 +140,14 @@ export class Web3Modal extends Web3ModalScaffold {
       //  @ts-expect-error TODO expected types in arguments are incomplete
       connectExternal: async ({ id }: { id: string; provider: Provider }) => {
         if (id === ConstantsUtil.COINBASE_CONNECTOR_ID) {
-          const CoinbaseProvider = config.extraConnectors?.find(
-            connector => connector.id === ConstantsUtil.COINBASE_CONNECTOR_ID
-          ) as Provider;
-
-          if (!CoinbaseProvider) {
+          const coinbaseProvider = config.extraConnectors?.find(connector => connector.id === id);
+          if (!coinbaseProvider) {
             throw new Error('connectionControllerClient:connectCoinbase - connector is undefined');
           }
 
           try {
-            await CoinbaseProvider.request({ method: 'eth_requestAccounts' });
-            await this.setCoinbaseProvider(CoinbaseProvider);
+            await coinbaseProvider.request({ method: 'eth_requestAccounts' });
+            await this.setCoinbaseProvider(coinbaseProvider as Provider);
           } catch (error) {
             EthersStoreUtil.setError(error);
           }
@@ -407,6 +404,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async setEmailProvider() {
     StorageUtil.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.EMAIL_CONNECTOR_ID);
+
     if (this.emailProvider) {
       const { address, chainId } = await this.emailProvider.connect();
       super.setLoading(false);
@@ -700,18 +698,21 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncEmailConnector(config: ProviderType) {
-    const provider = config.extraConnectors?.find(
+    const emailConnector = config.extraConnectors?.find(
       connector => connector.id === ConstantsUtil.EMAIL_CONNECTOR_ID
-    ) as W3mFrameProvider;
-    if (!provider) return;
+    );
 
-    this.emailProvider = provider;
+    if (!emailConnector) {
+      return;
+    }
+
+    this.emailProvider = emailConnector as W3mFrameProvider;
 
     this.addConnector({
       id: ConstantsUtil.EMAIL_CONNECTOR_ID,
       name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.EMAIL_CONNECTOR_ID],
       type: PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID]!,
-      provider: provider
+      provider: emailConnector
     });
 
     const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
