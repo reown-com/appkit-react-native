@@ -453,16 +453,15 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async watchCoinbase(provider: Provider) {
-    const coinbaseProvider = provider;
     const walletId = await StorageUtil.getItem(EthersConstantsUtil.WALLET_ID);
 
     function disconnectHandler() {
       StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
       EthersStoreUtil.reset();
 
-      coinbaseProvider?.removeListener('disconnect', disconnectHandler);
-      coinbaseProvider?.removeListener('accountsChanged', accountsChangedHandler);
-      coinbaseProvider?.removeListener('chainChanged', chainChangedHandler);
+      provider?.removeListener('disconnect', disconnectHandler);
+      provider?.removeListener('accountsChanged', accountsChangedHandler);
+      provider?.removeListener('chainChanged', chainChangedHandler);
     }
 
     function accountsChangedHandler(accounts: string[]) {
@@ -481,10 +480,10 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
-    if (coinbaseProvider) {
-      coinbaseProvider.on('disconnect', disconnectHandler);
-      coinbaseProvider.on('accountsChanged', accountsChangedHandler);
-      coinbaseProvider.on('chainChanged', chainChangedHandler);
+    if (provider) {
+      provider.on('disconnect', disconnectHandler);
+      provider.on('accountsChanged', accountsChangedHandler);
+      provider.on('chainChanged', chainChangedHandler);
     }
   }
 
