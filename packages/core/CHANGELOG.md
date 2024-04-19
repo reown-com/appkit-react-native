@@ -1,5 +1,11 @@
 # @web3modal/core-react-native
 
+## 1.4.0-email-beta.2
+
+### Patch Changes
+
+- email beta 2
+
 ## 1.4.0-email-beta.1
 
 ### Minor Changes

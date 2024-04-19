@@ -14,9 +14,12 @@
     "@web3modal/scaffold-react-native": "1.4.0-email-alpha.0",
     "@web3modal/scaffold-utils-react-native": "1.4.0-email-alpha.0",
     "@web3modal/ui-react-native": "1.4.0-email-alpha.0",
-    "@web3modal/wagmi-react-native": "1.4.0-email-alpha.0"
+    "@web3modal/wagmi-react-native": "1.4.0-email-alpha.0",
+    "@web3modal/email-ethers-react-native": "1.4.0-email-beta.1",
+    "@web3modal/email-wagmi-react-native": "1.4.0-email-beta.1"
   },
   "changesets": [
+    "blue-roses-hide",
     "ten-geckos-arrive",
     "tricky-insects-invent"
   ]

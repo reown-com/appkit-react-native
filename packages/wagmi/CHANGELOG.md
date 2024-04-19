@@ -1,5 +1,14 @@
 # @web3modal/wagmi-react-native
 
+## 1.4.0-email-beta.2
+
+### Patch Changes
+
+- email beta 2
+- Updated dependencies
+  - @web3modal/scaffold-utils-react-native@1.4.0-email-beta.2
+  - @web3modal/scaffold-react-native@1.4.0-email-beta.2
+
 ## 1.4.0-email-beta.1
 
 ### Minor Changes
