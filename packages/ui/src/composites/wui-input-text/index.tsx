@@ -47,8 +47,8 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
     const inputRef = useRef<TextInput>(null);
     const Theme = useTheme();
     const { animatedValue, valueRef, setStartValue, setEndValue } = useAnimatedValue(
+      Theme['gray-glass-002'],
       Theme['gray-glass-005'],
-      Theme['gray-glass-010'],
       100
     );
     const outerRadius = outerBorderRadius[size];
@@ -103,7 +103,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
             style={[
               styles[`${size}Container`],
               { backgroundColor: animatedValue, borderColor: innerBorder },
-              disabled && { backgroundColor: Theme['gray-glass-015'] }
+              disabled && { backgroundColor: Theme['gray-glass-002'] }
             ]}
           >
             {icon && <Icon name={icon} size="md" color="fg-275" style={styles.icon} />}

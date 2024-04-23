@@ -7,6 +7,7 @@ export interface W3mConnectButtonProps {
   loadingLabel: string;
   size?: ConnectButtonProps['size'];
   style?: ConnectButtonProps['style'];
+  disabled?: ConnectButtonProps['disabled'];
   testID?: string;
 }
 
@@ -15,6 +16,7 @@ export function W3mConnectButton({
   loadingLabel,
   size = 'md',
   style,
+  disabled,
   testID
 }: W3mConnectButtonProps) {
   const { open, loading } = useSnapshot(ModalController.state);
@@ -26,6 +28,7 @@ export function W3mConnectButton({
       loading={loading || open}
       style={style}
       testID={testID}
+      disabled={disabled}
     >
       {loading || open ? loadingLabel : label}
     </ConnectButton>

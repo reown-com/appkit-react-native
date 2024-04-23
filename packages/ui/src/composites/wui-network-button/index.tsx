@@ -31,10 +31,9 @@ export function NetworkButton({
 }: NetworkButtonProps) {
   const Theme = useTheme();
   const textColor = disabled ? 'fg-300' : 'fg-100';
-  const borderColor = disabled ? 'gray-glass-005' : 'gray-glass-005';
 
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
-    Theme['gray-glass-002'],
+    Theme['gray-glass-005'],
     Theme['gray-glass-010']
   );
 
@@ -42,7 +41,7 @@ export function NetworkButton({
 
   return (
     <AnimatedPressable
-      style={[styles.container, { backgroundColor, borderColor: Theme[borderColor] }, style]}
+      style={[styles.container, { backgroundColor, borderColor: Theme['gray-glass-005'] }, style]}
       onPress={onPress}
       onPressIn={setEndValue}
       onPressOut={setStartValue}
@@ -54,7 +53,7 @@ export function NetworkButton({
         <Image
           style={[
             styles.image,
-            { borderColor: Theme[borderColor] },
+            { borderColor: Theme['gray-glass-005'] },
             disabled && styles.imageDisabled
           ]}
           source={imageSrc}

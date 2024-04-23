@@ -34,7 +34,7 @@ export function UpdateEmailWalletView() {
   };
 
   const onEmailSubmit = async (value: string) => {
-    if (!emailConnector || !isValidNewEmail) return;
+    if (!emailConnector) return;
 
     const provider = emailConnector.provider as W3mFrameProvider;
     setLoading(true);
@@ -79,7 +79,9 @@ export function UpdateEmailWalletView() {
         margin={['0', 'xs', '0', 'xs']}
       >
         <Button onPress={RouterController.goBack} variant="shade" style={styles.cancelButton}>
-          <Text variant="paragraph-600">Cancel</Text>
+          <Text variant="paragraph-600" color="inverse-100">
+            Cancel
+          </Text>
         </Button>
         <Button
           onPress={() => onEmailSubmit(email)}
@@ -87,9 +89,7 @@ export function UpdateEmailWalletView() {
           style={styles.saveButton}
           disabled={loading || !isValidNewEmail}
         >
-          <Text color="inverse-100" variant="paragraph-600">
-            Save
-          </Text>
+          Save
         </Button>
       </FlexView>
     </FlexView>
