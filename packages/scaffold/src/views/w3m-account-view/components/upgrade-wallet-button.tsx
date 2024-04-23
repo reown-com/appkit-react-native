@@ -32,13 +32,15 @@ export function UpgradeWalletButton({ style, onPress }: Props) {
       style={[styles.container, { backgroundColor: animatedValue }, style]}
     >
       <IconBox icon="wallet" size="lg" background iconColor="accent-100" />
-      <FlexView flexGrow={1} margin={['0', 'm', '0', 'm']}>
-        <Text color="fg-100">Upgrade your wallet</Text>
-        <Text variant="small-400" color="fg-200">
+      <FlexView flexGrow={1} margin={['0', 's', '0', 's']}>
+        <Text style={styles.upgradeText} color="fg-100">
+          Upgrade your wallet
+        </Text>
+        <Text variant="small-400" color="fg-150">
           Transition to a self-custodial wallet
         </Text>
       </FlexView>
-      <Icon name="chevronRight" size="sm" color="fg-200" style={styles.chevron} />
+      <Icon name="chevronRight" size="md" color="fg-150" style={styles.chevron} />
     </AnimatedPressable>
   );
 }
@@ -46,7 +48,7 @@ export function UpgradeWalletButton({ style, onPress }: Props) {
 const styles = StyleSheet.create({
   container: {
     height: 75,
-    borderRadius: BorderRadius.xs,
+    borderRadius: BorderRadius.s,
     backgroundColor: 'red',
     flexDirection: 'row',
     alignItems: 'center',
@@ -55,6 +57,9 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     marginHorizontal: Spacing.m
+  },
+  upgradeText: {
+    marginBottom: Spacing['3xs']
   },
   chevron: {
     marginRight: Spacing['2xs']

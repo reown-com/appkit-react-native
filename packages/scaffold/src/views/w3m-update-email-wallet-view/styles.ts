@@ -1,4 +1,4 @@
-import { Spacing } from '@web3modal/ui-react-native';
+import { BorderRadius, Spacing } from '@web3modal/ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
@@ -7,16 +7,18 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
   emailInput: {
-    marginBottom: Spacing.m
+    marginBottom: Spacing.s
   },
   cancelButton: {
     flex: 1,
-    height: 40,
-    marginRight: Spacing['2xs']
+    height: 48,
+    marginRight: Spacing['2xs'],
+    borderRadius: BorderRadius.xs
   },
   saveButton: {
     flex: 1,
     height: 48,
-    marginLeft: Spacing['2xs']
+    marginLeft: Spacing['2xs'],
+    borderRadius: BorderRadius.xs
   }
 });

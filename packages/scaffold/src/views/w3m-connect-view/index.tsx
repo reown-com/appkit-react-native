@@ -55,33 +55,35 @@ export function ConnectView() {
 
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
-      <FlexView padding={['xs', 's', '0', 's']} style={{ paddingBottom }}>
+      <FlexView padding={['xs', '0', '0', '0']} style={{ paddingBottom }}>
         <ConnectEmailInput
           isEmailEnabled={isEmailEnabled}
           showSeparator={isWalletConnectEnabled || isCoinbaseEnabled}
           loading={emailLoading}
         />
-        <RecentWalletList
-          itemStyle={styles.item}
-          onWalletPress={onWalletPress}
-          isWalletConnectEnabled={isWalletConnectEnabled}
-        />
-        <AllWalletList
-          itemStyle={styles.item}
-          onWalletPress={onWalletPress}
-          isWalletConnectEnabled={isWalletConnectEnabled}
-        />
-        <CustomWalletList
-          itemStyle={styles.item}
-          onWalletPress={onWalletPress}
-          isWalletConnectEnabled={isWalletConnectEnabled}
-        />
-        <ConnectorList itemStyle={styles.item} isWalletConnectEnabled={isWalletConnectEnabled} />
-        <AllWalletsButton
-          itemStyle={styles.item}
-          onPress={onViewAllPress}
-          isWalletConnectEnabled={isWalletConnectEnabled}
-        />
+        <FlexView padding={['0', 's', '0', 's']}>
+          <RecentWalletList
+            itemStyle={styles.item}
+            onWalletPress={onWalletPress}
+            isWalletConnectEnabled={isWalletConnectEnabled}
+          />
+          <AllWalletList
+            itemStyle={styles.item}
+            onWalletPress={onWalletPress}
+            isWalletConnectEnabled={isWalletConnectEnabled}
+          />
+          <CustomWalletList
+            itemStyle={styles.item}
+            onWalletPress={onWalletPress}
+            isWalletConnectEnabled={isWalletConnectEnabled}
+          />
+          <ConnectorList itemStyle={styles.item} isWalletConnectEnabled={isWalletConnectEnabled} />
+          <AllWalletsButton
+            itemStyle={styles.item}
+            onPress={onViewAllPress}
+            isWalletConnectEnabled={isWalletConnectEnabled}
+          />
+        </FlexView>
       </FlexView>
     </ScrollView>
   );

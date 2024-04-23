@@ -3,12 +3,15 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   iconContainer: {
-    padding: Spacing['2xl'],
-    borderRadius: Spacing['2xl'],
-    marginBottom: Spacing.l
+    height: 64,
+    width: 64,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: Spacing.xl,
+    marginBottom: Spacing['2xl']
   },
-  emailText: {
-    fontWeight: 'bold'
+  headingText: {
+    marginBottom: Spacing.s
   },
   expiryText: {
     marginVertical: Spacing.l

@@ -11,7 +11,7 @@ interface Props {
   loading?: boolean;
   error?: string;
   email?: string;
-  timeLeft: number;
+  timeLeft?: number;
   codeExpiry?: number;
   retryDisabledLabel?: string;
   retryLabel?: string;
@@ -24,15 +24,15 @@ export function OtpCodeView({
   error,
   loading,
   email,
-  timeLeft,
+  timeLeft = 0,
   codeExpiry = 20,
   retryDisabledLabel = 'Resend',
   retryLabel = 'Resend code'
 }: Props) {
   const { keyboardShown, keyboardHeight } = useKeyboard();
   const paddingBottom = Platform.select({
-    android: keyboardShown ? keyboardHeight + Spacing['3xl'] : Spacing['3xl'],
-    default: Spacing['3xl']
+    android: keyboardShown ? keyboardHeight + Spacing.l : Spacing.l,
+    default: Spacing.l
   });
 
   const handleCodeChange = (code: string) => {
@@ -45,31 +45,35 @@ export function OtpCodeView({
 
   return (
     <FlexView padding={['l', 'l', '3xl', 'l']} alignItems="center" style={{ paddingBottom }}>
-      <Text center variant="paragraph-500">
-        Enter the code we sent to your email{' '}
-        <Text variant="paragraph-600" style={styles.emailText}>
-          {email ?? 'your email'}
-        </Text>
+      <Text center variant="paragraph-400">
+        Enter the code we sent to{' '}
       </Text>
+      <Text variant="paragraph-500">{email ?? 'your email'}</Text>
       <Text style={styles.expiryText} variant="small-400" color="fg-200">
         {`The code expires in ${codeExpiry} minutes`}
       </Text>
       <FlexView justifyContent="center" style={styles.otpContainer}>
-        {loading ? <LoadingSpinner /> : <Otp length={6} onChangeText={handleCodeChange} />}
+        {loading ? (
+          <LoadingSpinner size="xl" />
+        ) : (
+          <Otp length={6} onChangeText={handleCodeChange} autoFocus />
+        )}
       </FlexView>
       {error && (
         <Text variant="small-400" color="error-100" style={styles.errorText}>
           {error}
         </Text>
       )}
-      <FlexView alignItems="center" flexDirection="row" margin="3xs">
-        <Text variant="small-400" color="fg-200">
-          Didn't receive it?
-        </Text>
-        <Link onPress={onRetry} disabled={timeLeft > 0 || loading}>
-          {timeLeft > 0 ? `${retryDisabledLabel} in ${timeLeft}s` : retryLabel}
-        </Link>
-      </FlexView>
+      {!loading && (
+        <FlexView alignItems="center" flexDirection="row" margin={['s', '0', '0', '0']}>
+          <Text variant="small-400" color="fg-200">
+            Didn't receive it?
+          </Text>
+          <Link onPress={onRetry} disabled={timeLeft > 0 || loading}>
+            {timeLeft > 0 ? `${retryDisabledLabel} in ${timeLeft}s` : retryLabel}
+          </Link>
+        </FlexView>
+      )}
     </FlexView>
   );
 }

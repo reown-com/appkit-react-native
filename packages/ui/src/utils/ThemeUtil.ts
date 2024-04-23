@@ -148,8 +148,9 @@ export const IconSize = {
 
 export const SpinnerSize = {
   sm: 12,
-  md: 14,
-  lg: 24
+  md: 16,
+  lg: 24,
+  xl: 32
 };
 
 export const Spacing: { [K in SpacingType]: number } = {

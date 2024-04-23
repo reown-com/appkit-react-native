@@ -81,6 +81,7 @@ export type ColorType =
   | 'accent-100'
   | 'error-100'
   | 'fg-100'
+  | 'fg-150'
   | 'fg-200'
   | 'fg-250'
   | 'fg-275'
@@ -89,7 +90,7 @@ export type ColorType =
   | 'inverse-100'
   | 'success-100';
 
-export type SizeType = 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
+export type SizeType = 'xl' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top';
 

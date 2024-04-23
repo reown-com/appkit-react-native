@@ -1,12 +1,13 @@
 import Svg, { Path, type SvgProps } from 'react-native-svg';
 const SvgCheckmark = (props: SvgProps) => (
-  <Svg viewBox="0 0 14 15" fill="none" {...props}>
+  <Svg viewBox="0 0 10 10" fill="none" {...props}>
     <Path
       fill={props.fill || '#fff'}
       fillRule="evenodd"
-      d="M12.04 2.65c.47.3.6.91.3 1.38l-5.78 9a1 1 0 0 1-1.61.1L1.73 9.27A1 1 0 1 1 3.27 8L5.6 10.8l5.05-7.85a1 1 0 0 1 1.38-.3Z"
+      d="M8.78372 1.95266C9.08607 2.20616 9.12561 2.6567 8.87202 2.95895L4.67713 7.95895C4.54853 8.11223 4.36153 8.20458 4.16161 8.21352C3.96169 8.22246 3.76718 8.14718 3.6254 8.006L1.17437 5.56526C0.894791 5.28685 0.893915 4.83459 1.17241 4.55511C1.45091 4.27562 1.90333 4.27475 2.1829 4.55315L4.08243 6.44471L7.77709 2.04094C8.03068 1.73869 8.48136 1.69916 8.78372 1.95266Z"
       clipRule="evenodd"
     />
   </Svg>
 );
+
 export default SvgCheckmark;

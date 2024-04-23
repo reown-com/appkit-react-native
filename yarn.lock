@@ -10436,7 +10436,7 @@ __metadata:
   resolution: "@web3modal/coinbase-ethers-react-native@workspace:packages/coinbase-ethers"
   peerDependencies:
     "@coinbase/wallet-mobile-sdk": ">=1.0.10"
-    ethers: ">5 <6"
+    ethers: ">=5"
   languageName: unknown
   linkType: soft
 
@@ -10506,7 +10506,7 @@ __metadata:
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
     "@react-native-community/netinfo": "*"
-    ethers: <=6.0.0
+    ethers: ">=6.0.0"
     react: ">=17"
     react-native: ">=0.68.5"
     react-native-get-random-values: "*"

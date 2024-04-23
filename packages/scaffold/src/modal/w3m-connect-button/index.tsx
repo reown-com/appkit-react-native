@@ -23,11 +23,11 @@ export function W3mConnectButton({
     <ConnectButton
       onPress={() => ModalController.open()}
       size={size}
-      loading={open || loading}
+      loading={loading || open}
       style={style}
       testID={testID}
     >
-      {open ? loadingLabel : label}
+      {loading || open ? loadingLabel : label}
     </ConnectButton>
   );
 }

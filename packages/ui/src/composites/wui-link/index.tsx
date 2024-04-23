@@ -21,7 +21,7 @@ export type LinkProps = NativeProps & {
   iconLeft?: IconType;
   iconRight?: IconType;
   style?: StyleProp<ViewStyle>;
-  size?: Exclude<SizeType, 'lg' | 'xs' | 'xxs'>;
+  size?: Exclude<SizeType, 'xl' | 'lg' | 'xs' | 'xxs'>;
   color?: ColorType;
 };
 

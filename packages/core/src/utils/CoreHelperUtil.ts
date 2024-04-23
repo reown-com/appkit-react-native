@@ -216,5 +216,9 @@ export const CoreHelperUtil = {
     }
 
     return isInstalled;
+  },
+
+  isValidEmail(email: string) {
+    return ConstantsUtil.EMAIL_REGEX.test(email);
   }
 };

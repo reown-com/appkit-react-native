@@ -16,7 +16,7 @@ import { LoadingSpinner } from '../../components/wui-loading-spinner';
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export type ConnectButtonProps = NativeProps & {
-  size?: Exclude<SizeType, 'lg' | 'xs' | 'xxs'>;
+  size?: Exclude<SizeType, 'xl' | 'lg' | 'xs' | 'xxs'>;
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   loading?: boolean;

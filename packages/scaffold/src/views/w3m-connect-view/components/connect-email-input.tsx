@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useState } from 'react';
-import { EmailInput, Separator, Spacing } from '@web3modal/ui-react-native';
+import { EmailInput, FlexView, Separator, Spacing } from '@web3modal/ui-react-native';
 import {
   ConnectorController,
   CoreHelperUtil,
@@ -45,7 +45,7 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator, loading }: Pr
       }
     } catch (e: any) {
       const parsedError = CoreHelperUtil.parseError(e);
-      if (parsedError?.includes('Invalid email')) {
+      if (parsedError?.includes('valid email')) {
         setError('Invalid email. Try again.');
       } else {
         SnackController.showError(parsedError);
@@ -61,13 +61,15 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator, loading }: Pr
 
   return (
     <>
-      <EmailInput
-        onSubmit={onEmailSubmit}
-        onFocus={onEmailFocus}
-        loading={inputLoading || loading}
-        errorMessage={error}
-        onChangeText={onChangeText}
-      />
+      <FlexView padding={['0', 's', '0', 's']}>
+        <EmailInput
+          onSubmit={onEmailSubmit}
+          onFocus={onEmailFocus}
+          loading={inputLoading || loading}
+          errorMessage={error}
+          onChangeText={onChangeText}
+        />
+      </FlexView>
       {showSeparator && <Separator text="or" style={styles.emailSeparator} />}
     </>
   );

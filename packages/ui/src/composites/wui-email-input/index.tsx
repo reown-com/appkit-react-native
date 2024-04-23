@@ -5,13 +5,18 @@ import { LoadingSpinner } from '../../components/wui-loading-spinner';
 import { IconLink } from '../wui-icon-link';
 import styles from './styles';
 import { View } from 'react-native';
+import { InputElement } from '../wui-input-element';
 
 export type EmailInputProps = InputTextProps & {
   errorMessage?: string;
   loading?: boolean;
   onSubmit?: (value: string) => any;
   initialValue?: string;
+  showClear?: boolean;
+  submitEnabled?: boolean;
 };
+
+export const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/;
 
 function RightIcon({
   loading,
@@ -41,23 +46,50 @@ export function EmailInput({
   disabled,
   style,
   initialValue,
+  submitEnabled = true,
   ...rest
 }: EmailInputProps) {
-  const [showChevron, setShowChevron] = useState(false);
   const [email, setEmail] = useState(initialValue ?? '');
 
-  const onChevronPress = () => {
-    onSubmit?.(email);
+  const handleSubmit = (value: string) => {
+    if (submitEnabled) {
+      onSubmit?.(value);
+    }
+  };
+
+  const handleChevronPress = () => {
+    handleSubmit(email);
   };
 
   const handleSubmitEditing = ({ nativeEvent: { text } }: { nativeEvent: { text: string } }) => {
-    onSubmit?.(text);
+    handleSubmit(text);
   };
 
   const handleChangeText = (text: string) => {
-    setShowChevron(text.length > 0);
     setEmail(text);
     onChangeText?.(text);
+  };
+
+  const rightIconTemplate = () => {
+    if (email === initialValue) {
+      return (
+        <InputElement
+          icon="close"
+          style={styles.clearButton}
+          onPress={() => {
+            handleChangeText('');
+          }}
+        />
+      );
+    }
+
+    return (
+      <RightIcon
+        loading={loading}
+        showChevron={submitEnabled && !errorMessage}
+        onPress={handleChevronPress}
+      />
+    );
   };
 
   return (
@@ -75,7 +107,7 @@ export function EmailInput({
         value={email}
         {...rest}
       >
-        <RightIcon loading={loading} showChevron={showChevron} onPress={onChevronPress} />
+        {rightIconTemplate()}
       </InputText>
       {errorMessage && (
         <Text color="error-100" variant="tiny-500" style={styles.text}>

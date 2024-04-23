@@ -9,7 +9,7 @@ import styles from './styles';
 export interface WalletImageProps {
   imageSrc?: string;
   imageHeaders?: Record<string, string>;
-  size?: Exclude<SizeType, 'xxs'>;
+  size?: Exclude<SizeType, 'xl' | 'xxs'>;
   style?: StyleProp<ViewStyle>;
   showAllWallets?: boolean;
 }

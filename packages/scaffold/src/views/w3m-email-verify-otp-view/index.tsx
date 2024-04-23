@@ -1,10 +1,9 @@
 import { useSnapshot } from 'valtio';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
-  StorageUtil,
   EventsController,
   ModalController,
   RouterController,
@@ -27,9 +26,8 @@ export function EmailVerifyOtpView() {
       setLoading(true);
       const provider = emailConnector?.provider as W3mFrameProvider;
       await provider.connectEmail({ email: data.email });
-      SnackController.showSuccess('Code sent');
-      const timer = await StorageUtil.getTimeToNextEmailLogin();
-      startTimer(timer);
+      SnackController.showSuccess('Code resent');
+      startTimer(30);
       setLoading(false);
     } catch (e) {
       const parsedError = CoreHelperUtil.parseError(e);
@@ -64,10 +62,6 @@ export function EmailVerifyOtpView() {
     }
     setLoading(false);
   };
-
-  useEffect(() => {
-    startTimer(30);
-  }, [startTimer]);
 
   return (
     <OtpCodeView

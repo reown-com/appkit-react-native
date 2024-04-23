@@ -7,9 +7,9 @@ import styles from './styles';
 
 export interface IconBoxProps {
   icon: IconType;
-  size?: Exclude<SizeType, 'xs' | 'xxs'>;
+  size?: Exclude<SizeType, 'xl' | 'xs' | 'xxs'>;
   iconColor?: ColorType;
-  iconSize?: SizeType;
+  iconSize?: Exclude<SizeType, 'xl'>;
   background?: boolean;
   backgroundColor?: ThemeKeys;
   border?: boolean;

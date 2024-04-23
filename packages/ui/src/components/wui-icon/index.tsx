@@ -114,7 +114,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
 
 export type IconProps = SvgProps & {
   name: IconType;
-  size?: SizeType;
+  size?: Exclude<SizeType, 'xl'>;
   color?: ColorType;
   style?: SvgProps['style'];
 };

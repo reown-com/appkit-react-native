@@ -7,7 +7,7 @@ export interface NetworkImageProps {
   imageSrc?: string;
   imageHeaders?: Record<string, string>;
   selected?: boolean;
-  size?: Exclude<SizeType, 'sm' | 'xs' | 'xxs'>;
+  size?: Exclude<SizeType, 'xl' | 'sm' | 'xs' | 'xxs'>;
   disabled?: boolean;
 }
 

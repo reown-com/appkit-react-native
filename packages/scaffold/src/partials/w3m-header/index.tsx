@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { RouterController, ModalController, EventsController } from '@web3modal/core-react-native';
-import { IconLink, Text, FlexView, Separator } from '@web3modal/ui-react-native';
+import { IconLink, Text, FlexView } from '@web3modal/ui-react-native';
 
 export function Header() {
   const { view, history } = useSnapshot(RouterController.state);
@@ -19,19 +19,19 @@ export function Header() {
       Connect: 'Connect wallet',
       Account: undefined,
       ConnectingWalletConnect: walletName ?? 'WalletConnect',
-      ConnectingExternal: connectorName ?? 'Connect Wallet',
+      ConnectingExternal: connectorName ?? 'Connect wallet',
       Networks: 'Select network',
       SwitchNetwork: networkName ?? 'Switch network',
       AllWallets: 'All wallets',
       WhatIsANetwork: 'What is a network?',
       WhatIsAWallet: 'What is a wallet?',
       GetWallet: 'Get a wallet',
-      EmailVerifyDevice: 'Register Device',
-      EmailVerifyOtp: 'Confirm Email',
-      UpdateEmailWallet: 'Edit Email',
-      UpdateEmailPrimaryOtp: 'Confirm Current Email',
-      UpdateEmailSecondaryOtp: 'Confirm New Email',
-      UpgradeEmailWallet: 'Upgrade your Wallet'
+      EmailVerifyDevice: ' ',
+      EmailVerifyOtp: 'Confirm email',
+      UpdateEmailWallet: 'Edit email',
+      UpdateEmailPrimaryOtp: 'Confirm current email',
+      UpdateEmailSecondaryOtp: 'Confirm new email',
+      UpgradeEmailWallet: 'Upgrade wallet'
     };
   };
 
@@ -54,13 +54,15 @@ export function Header() {
 
   if (!header) return null;
 
+  const bottomPadding = header === ' ' ? '0' : '4xs';
+
   return (
     <>
       <FlexView
         justifyContent="space-between"
         flexDirection="row"
         alignItems="center"
-        padding={['l', 'xl', 'l', 'xl']}
+        padding={['l', 'xl', bottomPadding, 'xl']}
       >
         {dynamicButtonTemplate()}
         <Text variant="paragraph-600" numberOfLines={1}>
@@ -68,7 +70,6 @@ export function Header() {
         </Text>
         <IconLink icon="close" size="md" onPress={ModalController.close} testID="button-close" />
       </FlexView>
-      <Separator />
     </>
   );
 }

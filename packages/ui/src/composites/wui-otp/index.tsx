@@ -13,9 +13,10 @@ export interface OtpProps {
   length: number;
   style?: InputNumericProps['style'];
   onChangeText?: (text: string) => void;
+  autoFocus?: boolean;
 }
 
-export function Otp({ length, style, onChangeText }: OtpProps) {
+export function Otp({ length, style, onChangeText, autoFocus }: OtpProps) {
   const [value, setValue] = useState<string[]>([]);
 
   const refArray = useMemo(
@@ -62,6 +63,7 @@ export function Otp({ length, style, onChangeText }: OtpProps) {
     <View style={styles.container}>
       {Array.from({ length }).map((_, index) => (
         <InputNumeric
+          autoFocus={autoFocus && index === 0}
           key={index}
           style={style}
           value={value[index] || ''}

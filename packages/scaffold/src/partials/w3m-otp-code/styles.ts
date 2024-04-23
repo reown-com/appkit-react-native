@@ -6,9 +6,6 @@ export default StyleSheet.create({
     marginTop: Spacing.s,
     marginBottom: Spacing.l
   },
-  emailText: {
-    fontWeight: 'bold'
-  },
   otpContainer: {
     height: 60
   },

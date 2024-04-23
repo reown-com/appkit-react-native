@@ -11,14 +11,16 @@ const baseStyle = {
 } as ViewStyle;
 
 export const outerBorderRadius = {
-  xs: BorderRadius.xs,
+  xs: BorderRadius.s,
   sm: BorderRadius.xs,
   md: BorderRadius.s
 };
 
 export default StyleSheet.create({
+  // Used for numeric input
   xsContainer: {
     ...baseStyle,
+    borderRadius: BorderRadius.xs,
     height: 50,
     width: 50
   },
@@ -28,7 +30,6 @@ export default StyleSheet.create({
   mdContainer: {
     ...baseStyle,
     height: 56,
-    paddingHorizontal: Spacing.l,
     borderRadius: BorderRadius.xs
   },
   outerBorder: {

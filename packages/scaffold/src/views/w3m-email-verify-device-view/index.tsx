@@ -40,7 +40,7 @@ export function EmailVerifyDeviceView() {
       setLoading(true);
       emailProvider?.connectEmail({ email: data.email });
       listenForDeviceApproval();
-      SnackController.showSuccess('Email sent');
+      SnackController.showSuccess('Link resent');
       startTimer(30);
       setLoading(false);
     } catch (e) {
@@ -55,23 +55,24 @@ export function EmailVerifyDeviceView() {
   }, []);
 
   return (
-    <FlexView alignItems="center" padding={['2xl', '4xl', '3xl', '4xl']}>
-      <View style={[styles.iconContainer, { backgroundColor: Theme['accent-glass-020'] }]}>
-        <Icon name="verify" size="lg" height={30} width={30} color="accent-100" />
+    <FlexView alignItems="center" padding={['0', '4xl', '3xl', '4xl']}>
+      <View style={[styles.iconContainer, { backgroundColor: Theme['accent-glass-010'] }]}>
+        <Icon name="verify" size="lg" height={28} width={28} color="accent-100" />
       </View>
-      <Text center variant="paragraph-400">
-        Approve the login link we sent to{' '}
-        <Text variant="paragraph-600" style={styles.emailText}>
-          {data?.email ?? 'your email'}
-        </Text>
+      <Text center variant="medium-600" style={styles.headingText}>
+        Register this device to continue
       </Text>
+      <Text center variant="paragraph-400">
+        Check the instructions sent to{' '}
+      </Text>
+      <Text variant="paragraph-500">{data?.email ?? 'your email'}</Text>
       <Text variant="small-400" color="fg-200" style={styles.expiryText}>
         The link expires in 20 minutes
       </Text>
       <FlexView alignItems="center" justifyContent="center" flexDirection="row">
         <Text variant="small-400">Didn't receive it?</Text>
         <Link onPress={onResendEmail} disabled={timeLeft > 0 || loading}>
-          {timeLeft > 0 ? `Resend in ${timeLeft}s` : 'Resend email'}
+          {timeLeft > 0 ? `Resend in ${timeLeft}s` : 'Resend link'}
         </Link>
       </FlexView>
     </FlexView>

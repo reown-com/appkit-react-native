@@ -10,7 +10,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export interface IconLinkProps {
   icon: IconType;
   onPress?: () => void;
-  size?: Exclude<SizeType, 'xs' | 'xxs'>;
+  size?: Exclude<SizeType, 'xl' | 'xs' | 'xxs'>;
   iconColor?: ColorType;
   disabled?: boolean;
   background?: boolean;

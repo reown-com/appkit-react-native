@@ -19,15 +19,23 @@ export function UpdateEmailWalletView() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [email, setEmail] = useState(data?.email || '');
+  const [isValidNewEmail, setIsValidNewEmail] = useState(false);
   const emailConnector = ConnectorController.getEmailConnector();
   const { keyboardShown, keyboardHeight } = useKeyboard();
   const paddingBottom = Platform.select({
-    android: keyboardShown ? keyboardHeight + Spacing['3xl'] : Spacing['3xl'],
-    default: Spacing['3xl']
+    android: keyboardShown ? keyboardHeight + Spacing.l : Spacing.l,
+    default: Spacing.l
   });
 
+  const onChangeText = (value: string) => {
+    setIsValidNewEmail(data?.email !== value && CoreHelperUtil.isValidEmail(value));
+    setEmail(value);
+    setError('');
+  };
+
   const onEmailSubmit = async (value: string) => {
-    if (!emailConnector) return;
+    if (!emailConnector || !isValidNewEmail) return;
+
     const provider = emailConnector.provider as W3mFrameProvider;
     setLoading(true);
     setError('');
@@ -53,17 +61,23 @@ export function UpdateEmailWalletView() {
   };
 
   return (
-    <FlexView padding={['l', 'l', '3xl', 'l']} style={{ paddingBottom }}>
+    <FlexView padding={['l', 's', '0', 's']} style={{ paddingBottom }}>
       <EmailInput
-        initialValue={email}
+        initialValue={data?.email}
         onSubmit={onEmailSubmit}
-        onChangeText={setEmail}
+        submitEnabled={isValidNewEmail}
+        onChangeText={onChangeText}
         loading={loading}
         errorMessage={error}
         style={styles.emailInput}
         autoFocus
       />
-      <FlexView flexDirection="row" justifyContent="center" alignItems="center">
+      <FlexView
+        flexDirection="row"
+        justifyContent="center"
+        alignItems="center"
+        margin={['0', 'xs', '0', 'xs']}
+      >
         <Button onPress={RouterController.goBack} variant="shade" style={styles.cancelButton}>
           <Text variant="paragraph-600">Cancel</Text>
         </Button>
@@ -71,7 +85,7 @@ export function UpdateEmailWalletView() {
           onPress={() => onEmailSubmit(email)}
           variant="fill"
           style={styles.saveButton}
-          disabled={loading}
+          disabled={loading || !isValidNewEmail}
         >
           <Text color="inverse-100" variant="paragraph-600">
             Save

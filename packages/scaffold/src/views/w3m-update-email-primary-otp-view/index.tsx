@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import {
   ConnectorController,
@@ -10,11 +10,9 @@ import {
   type W3mFrameProvider
 } from '@web3modal/core-react-native';
 
-import useTimeout from '../../hooks/useTimeout';
 import { OtpCodeView } from '../../partials/w3m-otp-code';
 
 export function UpdateEmailPrimaryOtpView() {
-  const { timeLeft, startTimer } = useTimeout(0);
   const { data } = useSnapshot(RouterController.state);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -42,10 +40,6 @@ export function UpdateEmailPrimaryOtpView() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    startTimer(30);
-  }, [startTimer]);
-
   return (
     <OtpCodeView
       loading={loading}
@@ -54,7 +48,6 @@ export function UpdateEmailPrimaryOtpView() {
       onSubmit={onOtpSubmit}
       onRetry={RouterController.goBack}
       codeExpiry={10}
-      timeLeft={timeLeft}
       retryDisabledLabel="Try again"
       retryLabel="Try again"
     />
