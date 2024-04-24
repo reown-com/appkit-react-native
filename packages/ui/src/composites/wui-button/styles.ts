@@ -38,9 +38,7 @@ export const getThemedTextStyle = (
   disabled?: boolean
 ): StyleProp<any> => {
   if (disabled) {
-    return variant === 'fill'
-      ? { color: theme['gray-glass-020'] }
-      : { color: theme['gray-glass-020'] };
+    return { color: theme['gray-glass-020'] };
   }
 
   return variant === 'fill'

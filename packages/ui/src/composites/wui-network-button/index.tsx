@@ -47,24 +47,52 @@ export function NetworkButton({
       onPressOut={setStartValue}
       disabled={disabled}
     >
-      {loading ? (
-        <LoadingSpinner size="md" style={styles.loader} />
-      ) : imageSrc ? (
-        <Image
-          style={[
-            styles.image,
-            { borderColor: Theme['gray-glass-005'] },
-            disabled && styles.imageDisabled
-          ]}
-          source={imageSrc}
-          headers={imageHeaders}
-        />
-      ) : (
-        <IconBox icon="networkPlaceholder" background iconColor={textColor} size="sm" />
-      )}
+      <LoaderComponent loading={loading} />
+      <ImageComponent
+        loading={loading}
+        disabled={disabled}
+        imageSrc={imageSrc}
+        imageHeaders={imageHeaders}
+        borderColor={Theme['gray-glass-005']}
+      />
       <Text style={styles.text} variant="paragraph-600" color={textColor}>
         {children}
       </Text>
     </AnimatedPressable>
+  );
+}
+
+function LoaderComponent({ loading }: { loading?: boolean }) {
+  if (!loading) return null;
+
+  return <LoadingSpinner size="md" style={styles.loader} />;
+}
+
+function ImageComponent({
+  loading,
+  disabled,
+  imageSrc,
+  imageHeaders,
+  borderColor
+}: {
+  loading?: boolean;
+  disabled?: boolean;
+  imageSrc?: string;
+  imageHeaders?: Record<string, string>;
+  borderColor: string;
+}) {
+  if (loading) return null;
+
+  const textColor = disabled ? 'fg-300' : 'fg-100';
+  if (!imageSrc) {
+    return <IconBox icon="networkPlaceholder" background iconColor={textColor} size="sm" />;
+  }
+
+  return (
+    <Image
+      style={[styles.image, { borderColor }, disabled && styles.imageDisabled]}
+      source={imageSrc}
+      headers={imageHeaders}
+    />
   );
 }
