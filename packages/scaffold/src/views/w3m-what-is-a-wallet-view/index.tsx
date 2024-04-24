@@ -1,5 +1,5 @@
-import { ScrollView } from 'react-native';
-import { Button, FlexView, Text, Visual } from '@web3modal/ui-react-native';
+import { Linking, ScrollView } from 'react-native';
+import { Button, FlexView, Link, Text, Visual } from '@web3modal/ui-react-native';
 import { EventsController, RouterController } from '@web3modal/core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
@@ -10,6 +10,10 @@ export function WhatIsAWalletView() {
   const onGetWalletPress = () => {
     RouterController.push('GetWallet');
     EventsController.sendEvent({ type: 'track', event: 'CLICK_GET_WALLET' });
+  };
+
+  const onHelpPress = () => {
+    Linking.openURL('https://secure.walletconnect.com/dashboard/faq');
   };
 
   return (
@@ -56,9 +60,9 @@ export function WhatIsAWalletView() {
         >
           Get a wallet
         </Button>
-        {/* <Link size="sm" iconLeft="helpCircle" onPress={() => undefined}>
+        <Link size="sm" iconLeft="helpCircle" onPress={onHelpPress}>
           What is an email wallet?
-        </Link> */}
+        </Link>
       </FlexView>
     </ScrollView>
   );
