@@ -1,5 +1,13 @@
 # @web3modal/coinbase-wagmi-react-native
 
+## 1.4.0-email-beta.3
+
+### Patch Changes
+
+- ui/ux improvements
+- Updated dependencies
+  - @web3modal/email-react-native@1.4.0-email-beta.3
+
 ## 1.4.0-email-beta.2
 
 ### Patch Changes

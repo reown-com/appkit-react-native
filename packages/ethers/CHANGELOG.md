@@ -1,5 +1,14 @@
 # @web3modal/ethers5-react-native
 
+## 1.4.0-email-beta.3
+
+### Patch Changes
+
+- ui/ux improvements
+- Updated dependencies
+  - @web3modal/scaffold-utils-react-native@1.4.0-email-beta.3
+  - @web3modal/scaffold-react-native@1.4.0-email-beta.3
+
 ## 1.4.0-email-beta.2
 
 ### Patch Changes
