@@ -10,10 +10,7 @@ const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 
 export interface LoadingSpinnerProps {
   size?: Exclude<SizeType, 'xs' | 'xxs'>;
-  color?: Exclude<
-    ColorType,
-    'fg-100' | 'error-100' | 'fg-300' | 'inverse-000' | 'inverse-100' | 'success-100'
-  >;
+  color?: Exclude<ColorType, 'fg-100' | 'error-100' | 'fg-300' | 'success-100'>;
   style?: StyleProp<ViewStyle>;
 }
 

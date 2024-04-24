@@ -56,9 +56,9 @@ export function WhatIsAWalletView() {
         >
           Get a wallet
         </Button>
-        <Link size="sm" iconLeft="helpCircle" onPress={undefined} style={styles.helpButton}>
-          What is an email wallet
-        </Link>
+        {/* <Link size="sm" iconLeft="helpCircle" onPress={() => undefined}>
+          What is an email wallet?
+        </Link> */}
       </FlexView>
     </ScrollView>
   );

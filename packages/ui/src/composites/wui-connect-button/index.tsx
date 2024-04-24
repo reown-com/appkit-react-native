@@ -20,6 +20,7 @@ export type ConnectButtonProps = NativeProps & {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   loading?: boolean;
+  disabled?: boolean;
 };
 
 export function ConnectButton({
@@ -28,6 +29,7 @@ export function ConnectButton({
   onPress,
   style,
   loading,
+  disabled,
   ...rest
 }: ConnectButtonProps) {
   const Theme = useTheme();
@@ -66,12 +68,12 @@ export function ConnectButton({
   const loadingTemplate = () => {
     if (!loading) return null;
 
-    return <LoadingSpinner size={size} style={styles.loader} />;
+    return <LoadingSpinner size={size} style={styles.loader} color="inverse-100" />;
   };
 
   return (
     <AnimatedPressable
-      disabled={loading}
+      disabled={loading || disabled}
       style={[styles.button, styles[`${size}Button`], { backgroundColor, borderColor }, style]}
       onPressIn={onPressIn}
       onPressOut={onPressOut}

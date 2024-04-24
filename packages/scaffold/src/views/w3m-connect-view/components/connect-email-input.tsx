@@ -21,9 +21,11 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator, loading }: Pr
   const { connectors } = useSnapshot(ConnectorController.state);
   const [inputLoading, setInputLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isValidEmail, setIsValidEmail] = useState(false);
   const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
 
-  const onChangeText = () => {
+  const onChangeText = (value: string) => {
+    setIsValidEmail(CoreHelperUtil.isValidEmail(value));
     setError('');
   };
 
@@ -68,6 +70,7 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator, loading }: Pr
           loading={inputLoading || loading}
           errorMessage={error}
           onChangeText={onChangeText}
+          submitEnabled={isValidEmail}
         />
       </FlexView>
       {showSeparator && <Separator text="or" style={styles.emailSeparator} />}

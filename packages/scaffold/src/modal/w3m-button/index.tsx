@@ -37,6 +37,7 @@ export function W3mButton({
       size={size}
       label={label}
       loadingLabel={loadingLabel}
+      disabled={disabled}
       testID="button-connect"
     />
   );
