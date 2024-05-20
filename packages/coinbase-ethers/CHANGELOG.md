@@ -1,5 +1,11 @@
 # @web3modal/coinbase-ethers-react-native
 
+## 1.4.0-email-beta.4
+
+### Patch Changes
+
+- fixes
+
 ## 1.4.0-email-beta.3
 
 ### Patch Changes

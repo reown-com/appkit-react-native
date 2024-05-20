@@ -1,5 +1,14 @@
 # @web3modal/email-react-native
 
+## 1.4.0-email-beta.4
+
+### Patch Changes
+
+- fixes
+- Updated dependencies
+  - @web3modal/core-react-native@1.4.0-email-beta.4
+  - @web3modal/ui-react-native@1.4.0-email-beta.4
+
 ## 1.4.0-email-beta.3
 
 ### Patch Changes
