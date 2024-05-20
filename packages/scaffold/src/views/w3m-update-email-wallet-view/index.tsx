@@ -44,9 +44,9 @@ export function UpdateEmailWalletView() {
       const response = await provider.updateEmail({ email: value });
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_EDIT' });
       if (response.action === 'VERIFY_SECONDARY_OTP') {
-        RouterController.push('UpdateEmailSecondaryOtp', { email: value });
+        RouterController.push('UpdateEmailSecondaryOtp', { email: data?.email, newEmail: value });
       } else {
-        RouterController.push('UpdateEmailPrimaryOtp', { email: value });
+        RouterController.push('UpdateEmailPrimaryOtp', { email: data?.email, newEmail: value });
       }
     } catch (e) {
       const parsedError = CoreHelperUtil.parseError(e);

@@ -44,12 +44,13 @@ export function UpdateEmailPrimaryOtpView() {
     <OtpCodeView
       loading={loading}
       error={error}
-      email={emailProvider?.getEmail()}
+      email={data?.email}
       onSubmit={onOtpSubmit}
       onRetry={RouterController.goBack}
       codeExpiry={10}
-      retryDisabledLabel="Try again"
-      retryLabel="Try again"
+      retryLabel="Something wrong?"
+      retryDisabledButtonLabel="Try again"
+      retryButtonLabel="Try again"
     />
   );
 }

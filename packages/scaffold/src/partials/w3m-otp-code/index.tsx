@@ -13,8 +13,9 @@ interface Props {
   email?: string;
   timeLeft?: number;
   codeExpiry?: number;
-  retryDisabledLabel?: string;
   retryLabel?: string;
+  retryDisabledButtonLabel?: string;
+  retryButtonLabel?: string;
 }
 
 export function OtpCodeView({
@@ -26,8 +27,9 @@ export function OtpCodeView({
   email,
   timeLeft = 0,
   codeExpiry = 20,
-  retryDisabledLabel = 'Resend',
-  retryLabel = 'Resend code'
+  retryLabel = "Didn't receive it?",
+  retryDisabledButtonLabel = 'Resend',
+  retryButtonLabel = 'Resend code'
 }: Props) {
   const { keyboardShown, keyboardHeight } = useKeyboard();
   const paddingBottom = Platform.select({
@@ -67,10 +69,10 @@ export function OtpCodeView({
       {!loading && (
         <FlexView alignItems="center" flexDirection="row" margin={['s', '0', '0', '0']}>
           <Text variant="small-400" color="fg-200">
-            Didn't receive it?
+            {retryLabel}
           </Text>
           <Link onPress={onRetry} disabled={timeLeft > 0 || loading}>
-            {timeLeft > 0 ? `${retryDisabledLabel} in ${timeLeft}s` : retryLabel}
+            {timeLeft > 0 ? `${retryDisabledButtonLabel} in ${timeLeft}s` : retryButtonLabel}
           </Link>
         </FlexView>
       )}
