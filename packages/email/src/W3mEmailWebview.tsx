@@ -135,7 +135,13 @@ export function EmailWebview() {
                 webviewRef.current?.injectJavaScript(W3mFrameConstants.FRAME_MESSAGES_HANDLER);
               }
               const themeMode = Appearance.getColorScheme() ?? undefined;
-              provider?.syncTheme({ themeMode });
+              provider?.syncTheme({
+                themeMode,
+                w3mThemeVariables: {
+                  '--w3m-accent': Theme['accent-100'],
+                  '--w3m-background': Theme['bg-100']
+                }
+              });
               provider?.syncDappData?.({ projectId, sdkVersion });
               provider?.onWebviewLoaded();
             }
