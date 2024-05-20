@@ -79,7 +79,7 @@ export function UpdateEmailWalletView() {
         margin={['0', 'xs', '0', 'xs']}
       >
         <Button onPress={RouterController.goBack} variant="shade" style={styles.cancelButton}>
-          <Text variant="paragraph-600" color="inverse-100">
+          <Text variant="paragraph-600" color="fg-100">
             Cancel
           </Text>
         </Button>
