@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Appearance, Platform, SafeAreaView, StyleSheet } from 'react-native';
+import { Animated, Appearance, Linking, Platform, SafeAreaView, StyleSheet } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 
 import {
@@ -126,6 +126,11 @@ export function EmailWebview() {
           containerStyle={styles.webview}
           injectedJavaScript={W3mFrameConstants.FRAME_MESSAGES_HANDLER}
           ref={webviewRef}
+          onOpenWindow={syntheticEvent => {
+            const { nativeEvent } = syntheticEvent;
+            const { targetUrl } = nativeEvent;
+            Linking.openURL(targetUrl);
+          }}
           onLoadStart={() => {
             ConnectorController.setEmailLoading(true);
           }}
