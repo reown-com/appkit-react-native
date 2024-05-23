@@ -29,33 +29,53 @@ export function Otp({ length, style, onChangeText, autoFocus }: OtpProps) {
 
     if (text.length <= 1) {
       newValue = [...value.slice(0, index), text, ...value.slice(index + 1)];
+    } else if (text.length === length) {
+      // Paste OTP
+      newValue = text.split('');
+      focusInputField('next', length - 1);
+    } else if (text.length === 2) {
+      // Replace value
+      newValue = [
+        ...value.slice(0, index),
+        (value[index] === text[0] ? text[1] : text[0]) ?? '',
+        ...value.slice(index + 1)
+      ];
     } else {
-      newValue = text.split('', length);
+      newValue = [...value.slice(0, index), text[0] || '', ...value.slice(index + 1)];
+      focusInputField('next', index);
     }
 
     setValue(newValue);
     onChangeText?.(newValue.join(''));
+  };
 
-    if (text.length === 1 && index < length - 1) {
-      refArray[index + 1]?.current?.focus();
-    } else if (text.length > 1) {
-      refArray[newValue.length]?.current?.focus();
+  const focusInputField = (dir: 'prev' | 'next', currentIndex: number, clear = false) => {
+    let newIndex;
+    if (dir === 'prev' && currentIndex > 0) {
+      newIndex = currentIndex - 1;
+    } else if (dir === 'next' && currentIndex < length - 1) {
+      newIndex = currentIndex + 1;
+    }
+
+    if (newIndex !== undefined) {
+      refArray[newIndex]?.current?.focus();
+      if (clear) {
+        refArray[newIndex]?.current?.clear();
+        _onChangeText('', newIndex);
+      }
     }
   };
 
   const onKeyPress = (e: NativeSyntheticEvent<TextInputKeyPressEventData>, index: number) => {
     const currentValue = value[index] || '';
+    const key = e.nativeEvent.key;
 
-    if (e.nativeEvent.key !== 'Backspace' && currentValue && index !== length - 1) {
-      refArray[index + 1]?.current?.focus();
-
-      return;
-    }
-
-    if (e.nativeEvent.key === 'Backspace' && index !== 0) {
+    if (key === 'Backspace') {
       if (!currentValue) {
-        refArray[index - 1]?.current?.focus();
+        focusInputField('prev', index, true);
       }
+    } else {
+      focusInputField('next', index);
     }
   };
 
@@ -70,7 +90,6 @@ export function Otp({ length, style, onChangeText, autoFocus }: OtpProps) {
           inputRef={refArray[index]}
           onChangeText={text => _onChangeText(text, index)}
           onKeyPress={(e: any) => onKeyPress(e, index)}
-          selectTextOnFocus
           textContentType="oneTimeCode"
           autoComplete={Platform.OS === 'android' ? 'sms-otp' : 'one-time-code'}
         />
