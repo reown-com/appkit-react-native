@@ -7,7 +7,8 @@ import {
   ConnectorController,
   OptionsController,
   ModalController,
-  type OptionsControllerState
+  type OptionsControllerState,
+  StorageUtil
 } from '@web3modal/core-react-native';
 import { useTheme, BorderRadius } from '@web3modal/ui-react-native';
 import type { W3mFrameProvider } from './W3mFrameProvider';
@@ -63,6 +64,7 @@ export function EmailWebview() {
 
     provider.onNotConnected(event, () => {
       ConnectorController.setEmailLoading(false);
+      StorageUtil.removeConnectedConnector();
       ModalController.setLoading(false);
     });
   };
