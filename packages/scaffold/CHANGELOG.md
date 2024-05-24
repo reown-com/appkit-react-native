@@ -1,5 +1,14 @@
 # @web3modal/scaffold-react-native
 
+## 1.4.0-email-beta.6
+
+### Patch Changes
+
+- beta.6
+- Updated dependencies
+  - @web3modal/core-react-native@1.4.0-email-beta.6
+  - @web3modal/ui-react-native@1.4.0-email-beta.6
+
 ## 1.4.0-email-beta.5
 
 ### Patch Changes

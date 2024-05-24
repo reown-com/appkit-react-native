@@ -1,5 +1,12 @@
 # @apps/native-cli
 
+## 1.0.6-email-beta.6
+
+### Patch Changes
+
+- Updated dependencies
+  - @web3modal/wagmi-react-native@1.4.0-email-beta.6
+
 ## 1.0.6-email-beta.5
 
 ### Patch Changes
