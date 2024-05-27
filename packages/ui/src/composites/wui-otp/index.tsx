@@ -25,7 +25,7 @@ export function Otp({ length, style, onChangeText, autoFocus }: OtpProps) {
   );
 
   const _onChangeText = (text: string, index: number) => {
-    let newValue = [...value];
+    let newValue;
 
     if (text.length <= 1) {
       newValue = [...value.slice(0, index), text, ...value.slice(index + 1)];
@@ -41,7 +41,7 @@ export function Otp({ length, style, onChangeText, autoFocus }: OtpProps) {
         ...value.slice(index + 1)
       ];
     } else {
-      newValue = [...value.slice(0, index), text[0] || '', ...value.slice(index + 1)];
+      newValue = [...value.slice(0, index), text[0] ?? '', ...value.slice(index + 1)];
       focusInputField('next', index);
     }
 

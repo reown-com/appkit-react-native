@@ -288,15 +288,15 @@ export interface W3mFrameProvider {
     newEmail: string;
   }>;
   syncTheme(payload: {
-    themeMode?: ThemeMode | undefined;
-    themeVariables?: Record<string, string | number> | undefined;
+    themeMode: ThemeMode | undefined;
+    themeVariables: Record<string, string | number> | undefined;
   }): Promise<unknown>;
   syncDappData(payload: {
     projectId: string;
     sdkVersion: SdkVersion;
     metadata?: Metadata;
   }): Promise<unknown>;
-  connect(payload?: { chainId?: number | undefined }): Promise<{
+  connect(payload?: { chainId: number | undefined }): Promise<{
     chainId: number;
     email: string;
     address: string;

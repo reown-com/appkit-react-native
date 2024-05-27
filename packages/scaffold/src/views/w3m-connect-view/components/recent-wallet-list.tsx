@@ -33,7 +33,7 @@ export function RecentWalletList({ itemStyle, onWalletPress, isWalletConnectEnab
         imageSrc={AssetUtil.getWalletImage(wallet)}
         imageHeaders={imageHeaders}
         name={wallet?.name ?? 'Unknown'}
-        onPress={() => onWalletPress(wallet!, isInstalled)}
+        onPress={() => onWalletPress(wallet, isInstalled)}
         tagLabel="Recent"
         tagVariant="shade"
         style={itemStyle}

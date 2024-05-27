@@ -23,7 +23,7 @@ export function InputNumeric({
   ...props
 }: InputNumericProps) {
   const _onChangeText = (text: string) => {
-    const isNumber = /^[0-9]*$/.test(text);
+    const isNumber = /^\d*$/.test(text);
     if (isNumber) {
       onChangeText?.(text);
     }

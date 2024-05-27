@@ -40,7 +40,7 @@ export function AllWalletList({ itemStyle, onWalletPress, isWalletConnectEnabled
       imageSrc={AssetUtil.getWalletImage(wallet)}
       imageHeaders={imageHeaders}
       name={wallet?.name ?? 'Unknown'}
-      onPress={() => onWalletPress(wallet!)}
+      onPress={() => onWalletPress(wallet)}
       style={itemStyle}
       installed={!!installed.find(installedWallet => installedWallet.id === wallet.id)}
     />

@@ -57,19 +57,17 @@ export function Header() {
   const bottomPadding = header === ' ' ? '0' : '4xs';
 
   return (
-    <>
-      <FlexView
-        justifyContent="space-between"
-        flexDirection="row"
-        alignItems="center"
-        padding={['l', 'xl', bottomPadding, 'xl']}
-      >
-        {dynamicButtonTemplate()}
-        <Text variant="paragraph-600" numberOfLines={1}>
-          {header}
-        </Text>
-        <IconLink icon="close" size="md" onPress={ModalController.close} testID="button-close" />
-      </FlexView>
-    </>
+    <FlexView
+      justifyContent="space-between"
+      flexDirection="row"
+      alignItems="center"
+      padding={['l', 'xl', bottomPadding, 'xl']}
+    >
+      {dynamicButtonTemplate()}
+      <Text variant="paragraph-600" numberOfLines={1}>
+        {header}
+      </Text>
+      <IconLink icon="close" size="md" onPress={ModalController.close} testID="button-close" />
+    </FlexView>
   );
 }
