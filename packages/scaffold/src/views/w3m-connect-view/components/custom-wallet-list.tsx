@@ -21,13 +21,13 @@ export function CustomWalletList({ itemStyle, onWalletPress, isWalletConnectEnab
   const { installed } = useSnapshot(ApiController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state) as ConnectionControllerState;
   const { customWallets } = useSnapshot(OptionsController.state) as OptionsControllerState;
-  const recentCount = recentWallets?.length ? (installed.length ? 1 : recentWallets?.length) : 0;
+  const RECENT_COUNT = recentWallets?.length && installed.length ? 1 : recentWallets?.length ?? 0;
 
   if (!isWalletConnectEnabled || !customWallets?.length) {
     return null;
   }
 
-  const list = filterOutRecentWallets(recentWallets, customWallets, recentCount);
+  const list = filterOutRecentWallets(recentWallets, customWallets, RECENT_COUNT);
 
   return list.map(wallet => (
     <ListWallet

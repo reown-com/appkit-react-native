@@ -22,7 +22,7 @@ export function AllWalletList({ itemStyle, onWalletPress, isWalletConnectEnabled
   const { installed, featured, recommended } = useSnapshot(ApiController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state) as ConnectionControllerState;
   const imageHeaders = ApiController._getApiHeaders();
-  const RECENT_COUNT = recentWallets?.length ? (installed.length ? 1 : recentWallets?.length) : 0;
+  const RECENT_COUNT = recentWallets?.length && installed.length ? 1 : recentWallets?.length ?? 0;
 
   const list = filterOutRecentWallets(
     recentWallets,

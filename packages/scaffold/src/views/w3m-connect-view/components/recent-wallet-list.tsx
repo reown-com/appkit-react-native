@@ -18,7 +18,7 @@ export function RecentWalletList({ itemStyle, onWalletPress, isWalletConnectEnab
   const { installed } = useSnapshot(ApiController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const imageHeaders = ApiController._getApiHeaders();
-  const RECENT_COUNT = recentWallets?.length ? (installed.length ? 1 : recentWallets?.length) : 0;
+  const RECENT_COUNT = recentWallets?.length && installed.length ? 1 : recentWallets?.length ?? 0;
 
   if (!isWalletConnectEnabled || !recentWallets?.length) {
     return null;
