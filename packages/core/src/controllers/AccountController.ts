@@ -1,7 +1,8 @@
 import { proxy } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
+
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
-import type { CaipAddress } from '../utils/TypeUtil';
+import type { CaipAddress, ConnectedWalletInfo } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -13,7 +14,10 @@ export interface AccountControllerState {
   profileName?: string;
   profileImage?: string;
   addressExplorerUrl?: string;
+  connectedWalletInfo?: ConnectedWalletInfo;
 }
+
+type StateKey = keyof AccountControllerState;
 
 // -- State --------------------------------------------- //
 const state = proxy<AccountControllerState>({
@@ -24,8 +28,8 @@ const state = proxy<AccountControllerState>({
 export const AccountController = {
   state,
 
-  subscribeConnection(callback: (value: AccountControllerState['isConnected']) => void) {
-    return subKey(state, 'isConnected', callback);
+  subscribeKey<K extends StateKey>(key: K, callback: (value: AccountControllerState[K]) => void) {
+    return subKey(state, key, callback);
   },
 
   setIsConnected(isConnected: AccountControllerState['isConnected']) {
@@ -52,6 +56,10 @@ export const AccountController = {
 
   setProfileImage(profileImage: AccountControllerState['profileImage']) {
     state.profileImage = profileImage;
+  },
+
+  setConnectedWalletInfo(connectedWalletInfo: AccountControllerState['connectedWalletInfo']) {
+    state.connectedWalletInfo = connectedWalletInfo;
   },
 
   setAddressExplorerUrl(explorerUrl: AccountControllerState['addressExplorerUrl']) {

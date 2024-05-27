@@ -1,15 +1,6 @@
-import { type Chain, type ConnectorData, Connector } from 'wagmi';
-import { SwitchChainError, createWalletClient, custom, getAddress } from 'viem';
+import { createConnector, ChainNotConfiguredError } from 'wagmi';
+import { SwitchChainError, getAddress, type Address } from 'viem';
 import { W3mFrameProvider } from '@web3modal/email-react-native';
-
-export type StorageStoreData = {
-  state: { data?: ConnectorData };
-};
-
-interface Config {
-  chains?: Chain[];
-  options: EmailProviderOptions;
-}
 
 export type Metadata = {
   name: string;
@@ -27,102 +18,93 @@ type EmailProviderOptions = {
   metadata: Metadata;
 };
 
-export class EmailConnector extends Connector<W3mFrameProvider, EmailProviderOptions> {
-  readonly id = 'w3mEmail';
-  readonly name = 'Web3Modal Email';
-  readonly ready = true;
+type Provider = W3mFrameProvider;
 
-  private provider: W3mFrameProvider = {} as W3mFrameProvider;
+emailConnector.type = 'w3mEmail' as const;
+export function emailConnector(parameters: EmailProviderOptions) {
+  let _provider: W3mFrameProvider = {} as W3mFrameProvider;
 
-  constructor(config: Config) {
-    super(config);
-    this.provider = new W3mFrameProvider(config.options.projectId, config.options.metadata);
-  }
+  return createConnector<Provider>(config => ({
+    id: 'w3mEmail',
+    name: 'Web3Modal Email',
+    type: emailConnector.type,
+    async setup() {
+      _provider = new W3mFrameProvider(parameters.projectId, parameters.metadata);
+    },
+    async connect(options = {}) {
+      const provider = await this.getProvider();
+      const { address, chainId } = await provider.connect({ chainId: options.chainId });
 
-  async connect(options: { chainId?: number }): Promise<Required<ConnectorData>> {
-    const { address, chainId } = await this.provider.connect({ chainId: options?.chainId });
+      return {
+        accounts: [address as Address],
+        account: address as Address,
+        chainId,
+        chain: {
+          id: chainId,
+          unsuported: false
+        }
+      };
+    },
+    async disconnect() {
+      (await this.getProvider())?.disconnect();
+    },
+    async switchChain({ chainId }) {
+      try {
+        const chain = config.chains?.find(c => c.id === chainId);
+        if (!chain) throw new SwitchChainError(new ChainNotConfiguredError());
 
-    return {
-      account: address as `0x${string}`,
-      chain: {
-        id: chainId,
-        unsupported: this.isChainUnsupported(1)
+        const provider = await this.getProvider();
+        await provider.switchNetwork(chainId);
+        config.emitter.emit('change', { chainId: Number(chainId) });
+
+        return chain;
+      } catch (error) {
+        if (error instanceof Error) {
+          throw new SwitchChainError(error);
+        }
+        throw error;
       }
-    };
-  }
+    },
+    async getAccounts() {
+      const provider = await this.getProvider();
 
-  async disconnect(): Promise<void> {
-    await this.provider.disconnect();
-  }
+      return (
+        await provider.request({
+          method: 'eth_accounts'
+        })
+      ).map(getAddress);
+    },
+    async getChainId() {
+      const provider = await this.getProvider();
+      const { chainId } = await provider.getChainId();
 
-  override async switchChain(chainId: number): Promise<Chain> {
-    try {
-      const chain = this.chains?.find(c => c.id === chainId);
-      if (!chain) {
-        throw new SwitchChainError(new Error('chain not found on connector.'));
+      return chainId;
+    },
+    async getProvider() {
+      return Promise.resolve(_provider);
+    },
+    async isAuthorized() {
+      try {
+        const provider = await this.getProvider();
+        const { isConnected } = await provider.isConnected();
+
+        return isConnected;
+      } catch (error) {
+        return false;
       }
-
-      await this.provider.switchNetwork(chainId);
-      const unsupported = this.isChainUnsupported(chainId);
-      this.emit('change', { chain: { id: chainId, unsupported } });
-
-      return chain;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new SwitchChainError(error);
-      }
-      throw error;
+    },
+    onAccountsChanged(accounts) {
+      if (accounts.length === 0) config.emitter.emit('disconnect');
+      else config.emitter.emit('change', { accounts: accounts.map(getAddress) });
+    },
+    onChainChanged(chain) {
+      const chainId = Number(chain);
+      config.emitter.emit('change', { chainId });
+    },
+    async onDisconnect() {
+      const provider = await this.getProvider();
+      await provider.disconnect();
+      config.emitter.emit('disconnect');
     }
-  }
-
-  async getAccount(): Promise<`0x${string}`> {
-    const { address } = await this.provider.connect();
-
-    return address as `0x${string}`;
-  }
-
-  async getChainId(): Promise<number> {
-    const { chainId } = await this.provider.getChainId();
-
-    return chainId;
-  }
-
-  async getProvider() {
-    return Promise.resolve(this.provider);
-  }
-
-  async getWalletClient() {
-    const { address, chainId } = await this.provider.connect();
-
-    return Promise.resolve(
-      createWalletClient({
-        account: address as `0x${string}`,
-        chain: { id: chainId } as Chain,
-        transport: custom(this.provider)
-      })
-    );
-  }
-
-  async isAuthorized(): Promise<boolean> {
-    const { isConnected } = await this.provider.isConnected();
-
-    return isConnected;
-  }
-
-  protected onAccountsChanged = (accounts: string[]) => {
-    if (accounts.length === 0) this.emit('disconnect');
-    else this.emit('change', { account: getAddress(accounts[0]!) });
-  };
-
-  protected onChainChanged = (chainId: number | string) => {
-    const id = Number(chainId);
-    const unsupported = this.isChainUnsupported(id);
-    this.emit('change', { chain: { id, unsupported } });
-  };
-
-  async onDisconnect() {
-    const provider = await this.getProvider();
-    await provider.disconnect();
-    this.emit('disconnect');
-  }
+  }));
 }

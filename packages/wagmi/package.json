@@ -47,8 +47,8 @@
     "react": ">=17",
     "react-native": ">=0.68.5",
     "react-native-get-random-values": "*",
-    "viem": ">=1",
-    "wagmi": ">=1"
+    "viem": ">=2",
+    "wagmi": ">=2"
   },
   "react-native": "src/index.tsx",
   "react-native-builder-bob": {

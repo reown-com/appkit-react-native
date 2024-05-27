@@ -9,6 +9,14 @@ export interface CaipNetwork {
   imageUrl?: string;
 }
 
+export type ConnectedWalletInfo =
+  | {
+      name?: string;
+      icon?: string;
+      [key: string]: unknown;
+    }
+  | undefined;
+
 export interface LinkingRecord {
   redirect: string;
   href: string;
@@ -97,7 +105,6 @@ export interface ThemeVariables {
 
 // -- BlockchainApiController Types ---------------------------------------------
 export interface BlockchainApiIdentityRequest {
-  caipChainId: CaipNetworkId;
   address: string;
 }
 

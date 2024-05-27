@@ -12,7 +12,8 @@ import type {
   ThemeControllerState,
   ThemeMode,
   ThemeVariables,
-  Connector
+  Connector,
+  ConnectedWalletInfo
 } from '@web3modal/core-react-native';
 import {
   AccountController,
@@ -89,6 +90,14 @@ export class Web3ModalScaffold {
     return ThemeController.subscribe(callback);
   }
 
+  public getWalletInfo() {
+    return AccountController.state.connectedWalletInfo;
+  }
+
+  public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
+    return AccountController.subscribeKey('connectedWalletInfo', callback);
+  }
+
   public getState() {
     return { ...PublicStateController.state };
   }
@@ -107,7 +116,7 @@ export class Web3ModalScaffold {
   public subscribeConnection(
     callback: (isConnected: AccountControllerState['isConnected']) => void
   ) {
-    return AccountController.subscribeConnection(callback);
+    return AccountController.subscribeKey('isConnected', callback);
   }
 
   public setLoading(loading: ModalControllerState['loading']) {
@@ -188,6 +197,11 @@ export class Web3ModalScaffold {
   protected setAddressExplorerUrl: (typeof AccountController)['setAddressExplorerUrl'] =
     addressExplorerUrl => {
       AccountController.setAddressExplorerUrl(addressExplorerUrl);
+    };
+
+  protected setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] =
+    connectedWalletInfo => {
+      AccountController.setConnectedWalletInfo(connectedWalletInfo);
     };
 
   // -- Private ------------------------------------------------------------------
