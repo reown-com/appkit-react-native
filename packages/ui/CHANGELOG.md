@@ -1,5 +1,11 @@
 # @web3modal/ui-react-native
 
+## 1.4.0
+
+### Patch Changes
+
+- 1.4.0
+
 ## 1.4.0-email-beta.6
 
 ### Patch Changes
