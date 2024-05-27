@@ -69,3 +69,4 @@ export { UiUtil } from './utils/UiUtil';
 export { Spacing, BorderRadius } from './utils/ThemeUtil';
 
 export { useTheme } from './hooks/useTheme';
+export { useAnimatedValue } from './hooks/useAnimatedValue';

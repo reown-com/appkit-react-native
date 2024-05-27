@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { View, type StyleProp, type ViewStyle } from 'react-native';
+import { type StyleProp, type ViewStyle, KeyboardAvoidingView, Platform } from 'react-native';
 
 import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
@@ -13,14 +13,16 @@ export function Card({ children, style }: CardProps) {
   const Theme = useTheme();
 
   return (
-    <View
+    <KeyboardAvoidingView
+      behavior="padding"
+      enabled={Platform.OS === 'ios'}
       style={[
         styles.container,
-        { backgroundColor: Theme['bg-125'], borderColor: Theme['gray-glass-005'] },
+        { backgroundColor: Theme['bg-100'], borderColor: Theme['gray-glass-005'] },
         style
       ]}
     >
       {children}
-    </View>
+    </KeyboardAvoidingView>
   );
 }

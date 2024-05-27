@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ethers-react-native",
-  "version": "1.3.0",
+  "version": "1.4.0-email-beta.6",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -39,13 +39,13 @@
   },
   "dependencies": {
     "@walletconnect/ethereum-provider": "2.11.1",
-    "@web3modal/scaffold-react-native": "1.3.0",
-    "@web3modal/scaffold-utils-react-native": "1.3.0"
+    "@web3modal/scaffold-react-native": "1.4.0-email-beta.6",
+    "@web3modal/scaffold-utils-react-native": "1.4.0-email-beta.6"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": ">=1.17.0",
     "@react-native-community/netinfo": "*",
-    "ethers": "<=6.0.0",
+    "ethers": ">=6.0.0",
     "react": ">=17",
     "react-native": ">=0.68.5",
     "react-native-get-random-values": "*"

@@ -13,15 +13,15 @@ export const getThemedButtonStyle = (
 
   if (loading) {
     return {
-      backgroundColor: theme['gray-glass-015'],
-      borderColor: theme['gray-glass-005']
+      ...buttonBaseStyle,
+      backgroundColor: theme['accent-080']
     };
   }
 
   if (pressed) {
     return {
       ...buttonBaseStyle,
-      backgroundColor: theme['accent-020']
+      backgroundColor: theme['accent-080']
     };
   }
 
@@ -36,7 +36,7 @@ export const getThemedTextStyle = (
   loading?: boolean
 ): StyleProp<any> => {
   if (loading) {
-    return { color: theme['accent-100'] };
+    return { color: theme['inverse-100'] };
   }
 
   return { color: theme['inverse-100'] };

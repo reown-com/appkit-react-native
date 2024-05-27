@@ -14,8 +14,8 @@ export const getThemedButtonStyle = (
 
   if (disabled) {
     return {
-      backgroundColor: variant === 'fill' ? theme['gray-glass-020'] : theme['gray-glass-010'],
-      borderColor: theme['gray-glass-005']
+      backgroundColor: variant === 'fill' ? theme['gray-glass-002'] : theme['gray-glass-010'],
+      borderColor: theme['gray-glass-002']
     };
   }
 
@@ -38,7 +38,7 @@ export const getThemedTextStyle = (
   disabled?: boolean
 ): StyleProp<any> => {
   if (disabled) {
-    return variant === 'fill' ? { color: theme['fg-300'] } : { color: theme['gray-glass-020'] };
+    return { color: theme['gray-glass-020'] };
   }
 
   return variant === 'fill'

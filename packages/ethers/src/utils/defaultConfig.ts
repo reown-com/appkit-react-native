@@ -1,18 +1,19 @@
-import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils-react-native';
+import type {
+  Metadata,
+  Provider,
+  ProviderType,
+  W3mFrameProvider
+} from '@web3modal/scaffold-utils-react-native';
 
 export interface ConfigOptions {
   metadata: Metadata;
-  coinbase?: Provider;
+  extraConnectors: (Provider | W3mFrameProvider)[];
 }
 
 export function defaultConfig(options: ConfigOptions) {
-  const { metadata } = options;
+  const { metadata, extraConnectors } = options;
 
-  let providers: ProviderType = { metadata };
-
-  if (options.coinbase) {
-    providers.coinbase = options.coinbase;
-  }
+  let providers: ProviderType = { metadata, extraConnectors };
 
   return providers;
 }

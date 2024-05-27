@@ -1,5 +1,8 @@
-import type { Address, Chain, Config, Connector as WagmiConnector } from '@wagmi/core';
 import {
+  type Address,
+  type Chain,
+  type Config,
+  type Connector as WagmiConnector,
   connect,
   disconnect,
   fetchBalance,
@@ -12,26 +15,29 @@ import {
   watchNetwork
 } from '@wagmi/core';
 import { mainnet } from '@wagmi/core/chains';
-import type {
-  CaipAddress,
-  CaipNetwork,
-  CaipNetworkId,
-  ConnectionControllerClient,
-  Connector,
-  LibraryOptions,
-  NetworkControllerClient,
-  PublicStateControllerState,
-  Token
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ConnectionControllerClient,
+  type Connector,
+  type LibraryOptions,
+  type NetworkControllerClient,
+  type PublicStateControllerState,
+  type Token,
+  Web3ModalScaffold
 } from '@web3modal/scaffold-react-native';
-import { Web3ModalScaffold } from '@web3modal/scaffold-react-native';
-
 import {
   ConstantsUtil,
   HelpersUtil,
   PresetsUtil,
   StorageUtil
 } from '@web3modal/scaffold-utils-react-native';
-import { getCaipDefaultChain } from './utils/helpers';
+import {
+  getCaipDefaultChain,
+  getEmailCaipNetworks,
+  getWalletConnectCaipNetworks
+} from './utils/helpers';
 
 // -- Types ---------------------------------------------------------------------
 interface WagmiConfig extends Config<any, any> {
@@ -83,24 +89,17 @@ export class Web3Modal extends Web3ModalScaffold {
         const walletChoice = await StorageUtil.getConnectedConnector();
         const walletConnectType =
           PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
+
+        const emailType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID];
+
         if (walletChoice?.includes(walletConnectType)) {
           const connector = wagmiConfig.connectors.find(
             c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
           );
-          if (!connector) {
-            throw new Error(
-              'networkControllerClient:getApprovedCaipNetworks - connector is undefined'
-            );
-          }
-          const provider = await connector.getProvider();
-          const ns = provider.signer?.session?.namespaces;
-          const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods;
-          const nsChains = ns?.[ConstantsUtil.EIP155]?.chains;
 
-          return {
-            supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD),
-            approvedCaipNetworkIds: nsChains as CaipNetworkId[]
-          };
+          return getWalletConnectCaipNetworks(connector);
+        } else if (emailType) {
+          return getEmailCaipNetworks();
         }
 
         return { approvedCaipNetworkIds: undefined, supportsAllNetworks: true };
@@ -136,7 +135,6 @@ export class Web3Modal extends Web3ModalScaffold {
         }
 
         const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
-
         await connect({ connector, chainId });
       },
 
@@ -157,6 +155,8 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains);
 
     this.syncConnectors(wagmiConfig);
+    this.syncEmailConnector(wagmiConfig);
+    this.listenEmailConnector(wagmiConfig);
 
     watchAccount(() => this.syncAccount());
     watchNetwork(() => this.syncNetwork());
@@ -286,15 +286,42 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const w3mConnectors: Connector[] = [];
     wagmiConfig.connectors.forEach(({ id, name }) => {
-      w3mConnectors.push({
-        id,
-        explorerId: PresetsUtil.ConnectorExplorerIds[id],
-        imageId: PresetsUtil.ConnectorImageIds[id],
-        imageUrl: this.options?.connectorImages?.[id],
-        name: PresetsUtil.ConnectorNamesMap[id] ?? name,
-        type: PresetsUtil.ConnectorTypesMap[id] ?? 'EXTERNAL'
-      });
+      if (![ConstantsUtil.EMAIL_CONNECTOR_ID].includes(id)) {
+        w3mConnectors.push({
+          id,
+          explorerId: PresetsUtil.ConnectorExplorerIds[id],
+          imageId: PresetsUtil.ConnectorImageIds[id],
+          imageUrl: this.options?.connectorImages?.[id],
+          name: PresetsUtil.ConnectorNamesMap[id] ?? name,
+          type: PresetsUtil.ConnectorTypesMap[id] ?? 'EXTERNAL'
+        });
+      }
     });
+
     this.setConnectors(w3mConnectors);
+  }
+
+  private async syncEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+    const emailConnector = wagmiConfig.connectors.find(
+      ({ id }) => id === ConstantsUtil.EMAIL_CONNECTOR_ID
+    );
+    if (emailConnector) {
+      const provider = await emailConnector.getProvider();
+      this.addConnector({
+        id: ConstantsUtil.EMAIL_CONNECTOR_ID,
+        type: 'EMAIL',
+        name: 'Email',
+        provider
+      });
+    }
+  }
+
+  private async listenEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+    const connector = wagmiConfig.connectors.find(c => c.id === ConstantsUtil.EMAIL_CONNECTOR_ID);
+
+    const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
+    if (connector && connectedConnector === 'EMAIL') {
+      super.setLoading(true);
+    }
   }
 }

@@ -89,9 +89,9 @@ export default StyleSheet.create({
     height: 40
   },
   link: {
-    paddingHorizontal: Spacing.xs
+    paddingHorizontal: Spacing['2xs']
   },
   icon: {
-    paddingRight: Spacing['3xs']
+    marginRight: Spacing['3xs']
   }
 });

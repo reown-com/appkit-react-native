@@ -46,6 +46,7 @@ import SwapHorizontalSvg from '../../assets/svg/SwapHorizontal';
 import SwapVerticalSvg from '../../assets/svg/SwapVertical';
 import TelegramSvg from '../../assets/svg/Telegram';
 import TwitterSvg from '../../assets/svg/Twitter';
+import VerifySvg from '../../assets/svg/Verify';
 import WalletConnectSvg from '../../assets/svg/WalletConnect';
 import WalletSvg from '../../assets/svg/Wallet';
 import WalletSmallSvg from '../../assets/svg/WalletSmall';
@@ -103,6 +104,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   twitch: TwitchSvg,
   twitter: TwitterSvg,
   twitterIcon: TwitterIconSvg,
+  verify: VerifySvg,
   wallet: WalletSvg,
   walletSmall: WalletSmallSvg,
   warningCircle: WarningCircleSvg,
@@ -112,7 +114,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
 
 export type IconProps = SvgProps & {
   name: IconType;
-  size?: SizeType;
+  size?: Exclude<SizeType, 'xl'>;
   color?: ColorType;
   style?: SvgProps['style'];
 };

@@ -18,7 +18,7 @@ import { FlexView } from '../../layout/wui-flex';
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export type ButtonProps = NativeProps & {
-  size?: Exclude<SizeType, 'lg' | 'xs' | 'xxs'>;
+  size?: Exclude<SizeType, 'xl' | 'lg' | 'xs' | 'xxs'>;
   variant?: ButtonType;
   disabled?: boolean;
   iconLeft?: IconType;

@@ -1,17 +1,20 @@
 import { useSnapshot } from 'valtio';
+import { useState } from 'react';
 import { Linking, ScrollView } from 'react-native';
 import {
   AccountController,
   ApiController,
   AssetUtil,
   ConnectionController,
+  ConnectorController,
   CoreHelperUtil,
   EventsController,
   ModalController,
   NetworkController,
   OptionsController,
   RouterController,
-  SnackController
+  SnackController,
+  type W3mFrameProvider
 } from '@web3modal/core-react-native';
 import {
   Avatar,
@@ -23,18 +26,19 @@ import {
   Spacing,
   ListItem
 } from '@web3modal/ui-react-native';
-import { useState } from 'react';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { UpgradeWalletButton } from './components/upgrade-wallet-button';
 import styles from './styles';
 
 export function AccountView() {
   const { address, profileName, profileImage, balance, balanceSymbol, addressExplorerUrl } =
     useSnapshot(AccountController.state);
-
   const [disconnecting, setDisconnecting] = useState(false);
   const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { connectedConnector } = useSnapshot(ConnectorController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
+  const isEmail = connectedConnector === 'EMAIL';
   const { padding } = useCustomDimensions();
 
   async function onDisconnect() {
@@ -76,6 +80,18 @@ export function AccountView() {
       type: 'track',
       event: 'CLICK_NETWORKS'
     });
+  };
+
+  const onUpgradePress = () => {
+    EventsController.sendEvent({ type: 'track', event: 'EMAIL_UPGRADE_FROM_MODAL' });
+    RouterController.push('UpgradeEmailWallet');
+  };
+
+  const getUserEmail = () => {
+    const provider = ConnectorController.getEmailConnector()?.provider as W3mFrameProvider;
+    if (!provider) return '';
+
+    return provider.getEmail();
   };
 
   const addressExplorerTemplate = () => {
@@ -134,6 +150,23 @@ export function AccountView() {
           )}
           {addressExplorerTemplate()}
           <FlexView margin={['s', '0', '0', '0']}>
+            {isEmail && (
+              <>
+                <UpgradeWalletButton onPress={onUpgradePress} style={styles.upgradeButton} />
+                <ListItem
+                  variant="icon"
+                  icon="mail"
+                  iconVariant="overlay"
+                  onPress={() =>
+                    RouterController.push('UpdateEmailWallet', { email: getUserEmail() })
+                  }
+                  chevron
+                  testID="button-email"
+                >
+                  <Text color="fg-100">{getUserEmail()}</Text>
+                </ListItem>
+              </>
+            )}
             <ListItem
               variant={networkImage ? 'image' : 'icon'}
               chevron
@@ -143,6 +176,7 @@ export function AccountView() {
               imageHeaders={ApiController._getApiHeaders()}
               onPress={onNetworkPress}
               testID="button-network"
+              style={styles.networkButton}
             >
               <Text numberOfLines={1} color="fg-100">
                 {caipNetwork?.name}
@@ -154,7 +188,6 @@ export function AccountView() {
               iconVariant="overlay"
               onPress={onDisconnect}
               loading={disconnecting}
-              style={styles.disconnectButton}
               testID="button-disconnect"
             >
               <Text color="fg-200">Disconnect</Text>

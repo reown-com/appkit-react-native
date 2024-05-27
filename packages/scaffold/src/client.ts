@@ -42,6 +42,7 @@ export interface LibraryOptions {
   clipboardClient?: OptionsControllerState['_clipboardClient'];
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
   _sdkVersion: OptionsControllerState['sdkVersion'];
+  metadata?: OptionsControllerState['metadata'];
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -191,7 +192,7 @@ export class Web3ModalScaffold {
 
   // -- Private ------------------------------------------------------------------
   private initControllers(options: ScaffoldOptions) {
-    this.initRecentWallets(options);
+    this.initAsyncValues(options);
     NetworkController.setClient(options.networkControllerClient);
     NetworkController.setDefaultCaipNetwork(options.defaultChain);
 
@@ -216,6 +217,9 @@ export class Web3ModalScaffold {
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables);
     }
+    if (options.metadata) {
+      OptionsController.setMetadata(options.metadata);
+    }
   }
 
   private async initRecentWallets(options: ScaffoldOptions) {
@@ -234,5 +238,17 @@ export class Web3ModalScaffold {
     });
 
     ConnectionController.setRecentWallets(filteredWallets);
+  }
+
+  private async initConnectedConnector() {
+    const connectedConnector = await StorageUtil.getConnectedConnector();
+    if (connectedConnector) {
+      ConnectorController.setConnectedConnector(connectedConnector);
+    }
+  }
+
+  private async initAsyncValues(options: ScaffoldOptions) {
+    await this.initConnectedConnector();
+    await this.initRecentWallets(options);
   }
 }

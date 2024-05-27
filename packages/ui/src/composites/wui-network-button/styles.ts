@@ -14,6 +14,9 @@ export default StyleSheet.create({
   text: {
     paddingHorizontal: Spacing['2xs']
   },
+  loader: {
+    paddingLeft: Spacing['2xs']
+  },
   image: {
     height: 24,
     width: 24,

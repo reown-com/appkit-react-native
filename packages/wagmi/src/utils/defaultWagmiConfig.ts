@@ -5,8 +5,8 @@ import { walletConnectProvider } from './provider';
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector';
 
 export interface ConfigOptions {
-  metadata?: EthereumProviderOptions['metadata'];
   projectId: string;
+  metadata: Exclude<EthereumProviderOptions['metadata'], undefined>;
   chains: Chain[];
   enableWalletConnect?: boolean;
   extraConnectors?: Connector[];

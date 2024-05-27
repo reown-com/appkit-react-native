@@ -189,6 +189,18 @@ export const CoreHelperUtil = {
     return undefined;
   },
 
+  parseError(error: any): string {
+    if (typeof error === 'string') {
+      return error;
+    } else if (typeof error?.issues?.[0]?.message === 'string') {
+      return error.issues[0].message;
+    } else if (error instanceof Error) {
+      return error.message;
+    }
+
+    return 'Unknown error';
+  },
+
   async checkInstalled(wallet: DataWallet): Promise<boolean> {
     let isInstalled = false;
     const scheme = wallet.ios_schema;
@@ -204,5 +216,9 @@ export const CoreHelperUtil = {
     }
 
     return isInstalled;
+  },
+
+  isValidEmail(email: string) {
+    return ConstantsUtil.EMAIL_REGEX.test(email);
   }
 };

@@ -1,6 +1,7 @@
 export type ThemeKeys =
   | 'accent-100'
   | 'accent-090'
+  | 'accent-080'
   | 'accent-020'
   | 'accent-glass-090'
   | 'accent-glass-080'
@@ -30,7 +31,15 @@ export type ThemeKeys =
   | 'inverse-100'
   | 'inverse-000'
   | 'success-100'
+  | 'success-glass-020'
+  | 'success-glass-015'
+  | 'success-glass-010'
+  | 'success-glass-005'
   | 'error-100'
+  | 'error-glass-020'
+  | 'error-glass-015'
+  | 'error-glass-010'
+  | 'error-glass-005'
   | 'teal-100'
   | 'magenta-100'
   | 'indigo-100'
@@ -46,6 +55,7 @@ export type ThemeKeys =
   | 'gray-glass-025'
   | 'gray-glass-030'
   | 'gray-glass-060'
+  | 'gray-glass-070'
   | 'gray-glass-080'
   | 'gray-glass-090'
   | 'icon-box-bg-error-100'
@@ -80,6 +90,7 @@ export type ColorType =
   | 'accent-100'
   | 'error-100'
   | 'fg-100'
+  | 'fg-150'
   | 'fg-200'
   | 'fg-250'
   | 'fg-275'
@@ -88,7 +99,7 @@ export type ColorType =
   | 'inverse-100'
   | 'success-100';
 
-export type SizeType = 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
+export type SizeType = 'xl' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top';
 
@@ -143,6 +154,7 @@ export type IconType =
   | 'twitch'
   | 'twitter'
   | 'twitterIcon'
+  | 'verify'
   | 'wallet'
   | 'walletSmall'
   | 'walletConnect'

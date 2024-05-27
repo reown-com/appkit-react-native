@@ -12,7 +12,10 @@ export default StyleSheet.create({
   copyButton: {
     marginLeft: Spacing['4xs']
   },
-  disconnectButton: {
-    marginTop: Spacing.xs
+  networkButton: {
+    marginVertical: Spacing.xs
+  },
+  upgradeButton: {
+    marginBottom: Spacing.s
   }
 });

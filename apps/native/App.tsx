@@ -11,6 +11,7 @@ import {
   createWeb3Modal,
   defaultWagmiConfig
 } from '@web3modal/wagmi-react-native';
+import { EmailConnector } from '@web3modal/email-wagmi-react-native';
 
 import {
   arbitrum,
@@ -28,6 +29,7 @@ import {
 } from 'wagmi/chains';
 import { AccountView } from './src/views/AccountView';
 import { ActionsView } from './src/views/ActionsView';
+import { getCustomWallets } from './src/utils/misc';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -62,17 +64,16 @@ const clipboardClient = {
   }
 };
 
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
+const emailConnector = new EmailConnector({ chains, options: { projectId, metadata } });
 
-const customWallets = [
-  {
-    id: 'rn-wallet',
-    name: 'RN Wallet',
-    image_url:
-      'https://docs.walletconnect.com/assets/images/web3walletLogo-54d3b546146931ceaf47a3500868a73a.png',
-    mobile_link: 'rn-web3wallet://'
-  }
-];
+const wagmiConfig = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata,
+  extraConnectors: [emailConnector]
+});
+
+const customWallets = getCustomWallets();
 
 createWeb3Modal({
   projectId,
@@ -80,7 +81,8 @@ createWeb3Modal({
   wagmiConfig,
   clipboardClient,
   customWallets,
-  enableAnalytics: true
+  enableAnalytics: true,
+  metadata
 });
 
 export default function Native() {

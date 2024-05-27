@@ -3,7 +3,8 @@ import { Spacing } from '@web3modal/ui-react-native';
 
 export default StyleSheet.create({
   getWalletButton: {
-    marginTop: Spacing.xl
+    marginTop: Spacing.xl,
+    marginBottom: Spacing.m
   },
   visual: {
     marginHorizontal: Spacing.s

@@ -4,11 +4,7 @@ import { ConstantsUtil } from './ConstantsUtil';
 export const PresetsUtil = {
   ConnectorExplorerIds: {
     [ConstantsUtil.COINBASE_CONNECTOR_ID]:
-      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
-    [ConstantsUtil.SAFE_CONNECTOR_ID]:
-      '225affb176778569276e484e1b92637ad061b01e13a048b35a9d280c3b58970f',
-    [ConstantsUtil.LEDGER_CONNECTOR_ID]:
-      '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927'
+      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'
   } as Record<string, string>,
 
   EIP155NetworkImageIds: {
@@ -54,16 +50,13 @@ export const PresetsUtil = {
 
   ConnectorImageIds: {
     [ConstantsUtil.COINBASE_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
-    [ConstantsUtil.SAFE_CONNECTOR_ID]: '461db637-8616-43ce-035a-d89b8a1d5800',
-    [ConstantsUtil.LEDGER_CONNECTOR_ID]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300',
     [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400'
   } as Record<string, string>,
 
   ConnectorNamesMap: {
     [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WalletConnect',
     [ConstantsUtil.COINBASE_CONNECTOR_ID]: 'Coinbase',
-    [ConstantsUtil.LEDGER_CONNECTOR_ID]: 'Ledger',
-    [ConstantsUtil.SAFE_CONNECTOR_ID]: 'Safe'
+    [ConstantsUtil.EMAIL_CONNECTOR_ID]: 'Email'
   } as Record<string, string>,
 
   ConnectorTypesMap: {

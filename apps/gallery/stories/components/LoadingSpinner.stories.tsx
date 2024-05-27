@@ -10,7 +10,7 @@ const meta: Meta<typeof LoadingSpinner> = {
   },
   argTypes: {
     size: {
-      options: ['sm', 'md', 'lg'],
+      options: ['sm', 'md', 'lg', 'xl'],
       control: { type: 'select' }
     },
     color: {

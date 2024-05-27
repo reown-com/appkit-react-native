@@ -1,0 +1,64 @@
+{
+  "name": "@web3modal/email-wagmi-react-native",
+  "version": "1.4.0-email-beta.6",
+  "main": "lib/commonjs/index.js",
+  "types": "lib/typescript/index.d.ts",
+  "module": "lib/module/index.js",
+  "source": "src/index.ts",
+  "scripts": {
+    "build": "bob build",
+    "clean": "rm -rf lib",
+    "test": "jest  --passWithNoTests",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "files": [
+    "src",
+    "lib"
+  ],
+  "keywords": [
+    "web3",
+    "crypto",
+    "ethereum",
+    "web3modal",
+    "walletconnect",
+    "react-native",
+    "email",
+    "wagmi"
+  ],
+  "repository": "https://github.com/WalletConnect/web3modal-react-native",
+  "author": "WalletConnect <support@walletconnect.com> (https://web3modal.com)",
+  "homepage": "https://github.com/WalletConnect/web3modal-react-native",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/WalletConnect/web3modal-react-native/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "dependencies": {
+    "@web3modal/email-react-native": "1.4.0-email-beta.6"
+  },
+  "peerDependencies": {
+    "wagmi": ">=1 <2"
+  },
+  "react-native": "src/index.ts",
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "tsc": "../../node_modules/.bin/tsc"
+        }
+      ]
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ]
+}

@@ -18,6 +18,7 @@ export interface W3mNetworkButtonProps {
 export function W3mNetworkButton({ disabled, style }: W3mNetworkButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { loading } = useSnapshot(ModalController.state);
 
   const onNetworkPress = () => {
     ModalController.open({ view: 'Networks' });
@@ -31,9 +32,10 @@ export function W3mNetworkButton({ disabled, style }: W3mNetworkButtonProps) {
     <NetworkButton
       imageSrc={AssetUtil.getNetworkImage(caipNetwork)}
       imageHeaders={ApiController._getApiHeaders()}
-      disabled={disabled}
+      disabled={disabled || loading}
       style={style}
       onPress={onNetworkPress}
+      loading={loading}
     >
       {caipNetwork?.name ?? (isConnected ? 'Unknown Network' : 'Select Network')}
     </NetworkButton>

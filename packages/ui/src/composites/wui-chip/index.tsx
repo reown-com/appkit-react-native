@@ -15,7 +15,7 @@ export interface ChipProps {
   imageSrc?: string;
   icon?: IconType;
   variant?: ChipType;
-  size?: Exclude<SizeType, 'lg' | 'xs' | 'xxs'>;
+  size?: Exclude<SizeType, 'xl' | 'lg' | 'xs' | 'xxs'>;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }

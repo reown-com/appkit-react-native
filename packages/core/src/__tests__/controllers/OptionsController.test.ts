@@ -15,7 +15,7 @@ describe('OptionsController', () => {
     expect(OptionsController.state).toEqual({
       projectId: '',
       sdkType: 'w3m',
-      sdkVersion: 'react-native-undefined'
+      sdkVersion: 'react-native-wagmi-undefined'
     });
   });
 

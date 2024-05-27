@@ -1,10 +1,17 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
-import { Animated, Pressable, TextInput, type TextInputProps } from 'react-native';
+import {
+  Animated,
+  Pressable,
+  TextInput,
+  type NativeSyntheticEvent,
+  type TextInputFocusEventData,
+  type TextInputProps
+} from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import { useTheme } from '../../hooks/useTheme';
 import type { IconType, SizeType } from '../../utils/TypesUtil';
-import styles from './styles';
+import styles, { outerBorderRadius } from './styles';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -18,7 +25,7 @@ export type InputTextProps = TextInputProps & {
   inputStyle?: TextInputProps['style'];
   icon?: IconType;
   disabled?: boolean;
-  size?: Exclude<SizeType, 'lg' | 'xxs'>;
+  size?: Exclude<SizeType, 'xl' | 'lg' | 'xxs'>;
 };
 
 export const InputText = forwardRef<InputRef, InputTextProps>(
@@ -31,6 +38,8 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
       size = 'sm',
       disabled,
       returnKeyType,
+      onBlur,
+      onFocus,
       ...rest
     }: InputTextProps,
     ref
@@ -38,10 +47,11 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
     const inputRef = useRef<TextInput>(null);
     const Theme = useTheme();
     const { animatedValue, valueRef, setStartValue, setEndValue } = useAnimatedValue(
+      Theme['gray-glass-002'],
       Theme['gray-glass-005'],
-      Theme['gray-glass-010'],
       100
     );
+    const outerRadius = outerBorderRadius[size];
 
     useImperativeHandle(ref, () => ({
       clear: () => {
@@ -61,6 +71,16 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
       }
     }));
 
+    const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      setStartValue();
+      onBlur?.(e);
+    };
+
+    const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      setEndValue();
+      onFocus?.(e);
+    };
+
     const innerBorder = valueRef.current.interpolate({
       inputRange: [0, 1],
       outputRange: [Theme['gray-glass-005'], Theme['accent-100']]
@@ -74,7 +94,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
     return (
       <>
         <AnimatedPressable
-          style={[styles.outerBorder, { borderColor: outerBorder }]}
+          style={[styles.outerBorder, { borderColor: outerBorder, borderRadius: outerRadius }]}
           disabled={disabled}
           onPress={() => inputRef.current?.focus()}
           testID={rest.testID}
@@ -83,14 +103,14 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
             style={[
               styles[`${size}Container`],
               { backgroundColor: animatedValue, borderColor: innerBorder },
-              disabled && { backgroundColor: Theme['gray-glass-015'] }
+              disabled && { backgroundColor: Theme['gray-glass-002'] }
             ]}
           >
             {icon && <Icon name={icon} size="md" color="fg-275" style={styles.icon} />}
             <TextInput
               ref={inputRef}
-              onFocus={setEndValue}
-              onBlur={setStartValue}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
               placeholder={placeholder}
               placeholderTextColor={Theme['fg-275']}
               returnKeyType={returnKeyType}
