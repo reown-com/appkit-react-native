@@ -154,8 +154,8 @@ export class Web3Modal extends Web3ModalScaffold {
     this.wagmiConfig = wagmiConfig;
 
     this.syncRequestedNetworks([...wagmiConfig.chains]);
-    this.syncConnectors(wagmiConfig.connectors);
-    this.listenEmailConnector(wagmiConfig.connectors);
+    this.syncConnectors([...wagmiConfig.connectors]);
+    this.listenEmailConnector([...wagmiConfig.connectors]);
 
     watchConnectors(wagmiConfig, {
       onChange: connectors => this.syncConnectors([...connectors])
@@ -208,10 +208,16 @@ export class Web3Modal extends Web3ModalScaffold {
     address,
     isConnected,
     chainId,
-    connector
-  }: Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector'>) {
+    connector,
+    isConnecting,
+    isReconnecting
+  }: Pick<
+    GetAccountReturnType,
+    'address' | 'isConnected' | 'chainId' | 'connector' | 'isConnecting' | 'isReconnecting'
+  >) {
     this.resetAccount();
     this.syncNetwork(address, chainId, isConnected);
+    this.setLoading(!!connector && (isConnecting || isReconnecting));
 
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;

@@ -15,15 +15,15 @@
     "@react-native-clipboard/clipboard": "1.13.0",
     "@react-native-community/netinfo": "9.3.10",
     "@tanstack/react-query": "5.37.1",
-    "@walletconnect/react-native-compat": "2.10.5",
+    "@walletconnect/react-native-compat": "2.13.1-rc-20e12b0a",
     "@web3modal/wagmi-react-native": "1.4.0",
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-get-random-values": "~1.9.0",
     "react-native-modal": "13.0.1",
     "react-native-svg": "13.9.0",
-    "viem": "2.11.1",
-    "wagmi": "2.9.3"
+    "viem": "2.13.1",
+    "wagmi": "2.9.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -40,7 +40,7 @@
     "@types/qrcode": "1.5.1",
     "@types/react": "18.2.34",
     "@types/react-native": "0.72.2",
-    "@walletconnect/react-native-compat": "2.10.5",
+    "@walletconnect/react-native-compat": "2.13.1-rc-20e12b0a",
     "babel-jest": "^29.7.0",
     "eslint": "^8.46.0",
     "eslint-plugin-ft-flow": "2.0.3",
@@ -59,8 +59,8 @@
     "tsconfig": "*",
     "turbo": "1.10.15",
     "typescript": "5.2.2",
-    "viem": "2.11.1",
-    "wagmi": "2.9.3"
+    "viem": "2.13.1",
+    "wagmi": "2.9.7"
   },
   "packageManager": "yarn@4.0.2"
 }

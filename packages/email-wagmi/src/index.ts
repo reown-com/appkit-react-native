@@ -20,11 +20,15 @@ type EmailProviderOptions = {
 
 type Provider = W3mFrameProvider;
 
+type StorageItemMap = {
+  '@w3m/connected_connector'?: string;
+};
+
 emailConnector.type = 'w3mEmail' as const;
 export function emailConnector(parameters: EmailProviderOptions) {
   let _provider: W3mFrameProvider = {} as W3mFrameProvider;
 
-  return createConnector<Provider>(config => ({
+  return createConnector<Provider, {}, StorageItemMap>(config => ({
     id: 'w3mEmail',
     name: 'Web3Modal Email',
     type: emailConnector.type,
@@ -85,7 +89,11 @@ export function emailConnector(parameters: EmailProviderOptions) {
     },
     async isAuthorized() {
       try {
+        const connectedConnector = await config.storage?.getItem('@w3m/connected_connector');
+        if (connectedConnector !== 'EMAIL') return false;
+
         const provider = await this.getProvider();
+        await provider.webviewLoadPromise;
         const { isConnected } = await provider.isConnected();
 
         return isConnected;
