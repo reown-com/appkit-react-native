@@ -1,6 +1,6 @@
 {
   "name": "@apps/native-cli",
-  "version": "1.0.6",
+  "version": "1.0.7-alpha.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -16,7 +16,7 @@
     "@react-native-community/netinfo": "9.3.10",
     "@tanstack/react-query": "5.37.1",
     "@walletconnect/react-native-compat": "2.13.1-rc-20e12b0a",
-    "@web3modal/wagmi-react-native": "1.4.0",
+    "@web3modal/wagmi-react-native": "2.0.0-alpha.0",
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-get-random-values": "~1.9.0",

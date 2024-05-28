@@ -57,3 +57,6 @@ android.iml
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# vscode
+.vscode/launch.json
