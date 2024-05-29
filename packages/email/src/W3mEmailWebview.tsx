@@ -12,7 +12,7 @@ import {
 } from '@web3modal/core-react-native';
 import { useTheme, BorderRadius } from '@web3modal/ui-react-native';
 import type { W3mFrameProvider } from './W3mFrameProvider';
-import { W3mFrameConstants } from './W3mFrameConstants';
+import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
@@ -50,7 +50,9 @@ export function EmailWebview() {
     provider.onMessage(event);
 
     provider.onRpcRequest(event, () => {
-      setIsVisible(true);
+      if (!W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(event.payload.method)) {
+        setIsVisible(true);
+      }
     });
 
     provider.onRpcResponse(event, () => {

@@ -25,11 +25,12 @@ type StorageItemMap = {
 };
 
 emailConnector.type = 'w3mEmail' as const;
+emailConnector.id = 'w3mEmail' as const;
 export function emailConnector(parameters: EmailProviderOptions) {
   let _provider: W3mFrameProvider = {} as W3mFrameProvider;
 
   return createConnector<Provider, {}, StorageItemMap>(config => ({
-    id: 'w3mEmail',
+    id: emailConnector.id,
     name: 'Web3Modal Email',
     type: emailConnector.type,
     async setup() {
@@ -37,6 +38,7 @@ export function emailConnector(parameters: EmailProviderOptions) {
     },
     async connect(options = {}) {
       const provider = await this.getProvider();
+      await provider.webviewLoadPromise;
       const { address, chainId } = await provider.connect({ chainId: options.chainId });
 
       return {
@@ -50,7 +52,9 @@ export function emailConnector(parameters: EmailProviderOptions) {
       };
     },
     async disconnect() {
-      (await this.getProvider())?.disconnect();
+      const provider = await this.getProvider();
+      await provider.webviewLoadPromise;
+      await provider.disconnect();
     },
     async switchChain({ chainId }) {
       try {
@@ -58,6 +62,7 @@ export function emailConnector(parameters: EmailProviderOptions) {
         if (!chain) throw new SwitchChainError(new ChainNotConfiguredError());
 
         const provider = await this.getProvider();
+        await provider.webviewLoadPromise;
         await provider.switchNetwork(chainId);
         config.emitter.emit('change', { chainId: Number(chainId) });
 
@@ -71,6 +76,7 @@ export function emailConnector(parameters: EmailProviderOptions) {
     },
     async getAccounts() {
       const provider = await this.getProvider();
+      await provider.webviewLoadPromise;
 
       return (
         await provider.request({
@@ -80,6 +86,7 @@ export function emailConnector(parameters: EmailProviderOptions) {
     },
     async getChainId() {
       const provider = await this.getProvider();
+      await provider.webviewLoadPromise;
       const { chainId } = await provider.getChainId();
 
       return chainId;
@@ -91,9 +98,9 @@ export function emailConnector(parameters: EmailProviderOptions) {
       try {
         const provider = await this.getProvider();
         await provider.webviewLoadPromise;
+        const connectedConnector = await config.storage?.getItem('recentConnectorId');
 
-        const connectedConnector = await config.storage?.getItem('@w3m/connected_connector');
-        if (connectedConnector !== 'EMAIL') {
+        if (connectedConnector !== emailConnector.id) {
           // isConnected still needs to be called to disable email input loader
           provider.isConnected();
 
@@ -117,6 +124,7 @@ export function emailConnector(parameters: EmailProviderOptions) {
     },
     async onDisconnect() {
       const provider = await this.getProvider();
+      await provider.webviewLoadPromise;
       await provider.disconnect();
       config.emitter.emit('disconnect');
     }
