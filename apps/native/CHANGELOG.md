@@ -1,5 +1,13 @@
 # @apps/native
 
+## 1.0.7-alpha.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @web3modal/email-wagmi-react-native@2.0.0-alpha.1
+  - @web3modal/wagmi-react-native@2.0.0-alpha.1
+
 ## 1.0.7-alpha.0
 
 ### Patch Changes
