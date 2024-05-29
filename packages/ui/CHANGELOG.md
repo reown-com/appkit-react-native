@@ -1,5 +1,11 @@
 # @web3modal/ui-react-native
 
+## 1.4.1
+
+### Patch Changes
+
+- email wallet fixes
+
 ## 1.4.0
 
 ### Patch Changes
