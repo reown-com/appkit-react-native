@@ -64,8 +64,8 @@ export function EmailWebview() {
 
     provider.onNotConnected(event, () => {
       ConnectorController.setEmailLoading(false);
-      StorageUtil.removeConnectedConnector();
       ModalController.setLoading(false);
+      StorageUtil.removeConnectedConnector();
     });
   };
 

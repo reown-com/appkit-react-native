@@ -89,14 +89,20 @@ export function emailConnector(parameters: EmailProviderOptions) {
     },
     async isAuthorized() {
       try {
-        const connectedConnector = await config.storage?.getItem('@w3m/connected_connector');
-        if (connectedConnector !== 'EMAIL') return false;
-
         const provider = await this.getProvider();
         await provider.webviewLoadPromise;
-        const { isConnected } = await provider.isConnected();
 
-        return isConnected;
+        const connectedConnector = await config.storage?.getItem('@w3m/connected_connector');
+        if (connectedConnector !== 'EMAIL') {
+          // isConnected still needs to be called to disable email input loader
+          provider.isConnected();
+
+          return false;
+        } else {
+          const { isConnected } = await provider.isConnected();
+
+          return isConnected;
+        }
       } catch (error) {
         return false;
       }
