@@ -40,7 +40,10 @@ export class EmailConnector extends Connector<W3mFrameProvider, EmailProviderOpt
   }
 
   async connect(options: { chainId?: number }): Promise<Required<ConnectorData>> {
-    const { address, chainId } = await this.provider.connect({ chainId: options?.chainId });
+    const provider = await this.getProvider();
+    await provider.webviewLoadPromise;
+
+    const { address, chainId } = await provider.connect({ chainId: options?.chainId });
 
     return {
       account: address as `0x${string}`,
@@ -52,7 +55,10 @@ export class EmailConnector extends Connector<W3mFrameProvider, EmailProviderOpt
   }
 
   async disconnect(): Promise<void> {
-    await this.provider.disconnect();
+    const provider = await this.getProvider();
+    await provider.webviewLoadPromise;
+
+    await provider.disconnect();
   }
 
   override async switchChain(chainId: number): Promise<Chain> {
@@ -62,7 +68,10 @@ export class EmailConnector extends Connector<W3mFrameProvider, EmailProviderOpt
         throw new SwitchChainError(new Error('chain not found on connector.'));
       }
 
-      await this.provider.switchNetwork(chainId);
+      const provider = await this.getProvider();
+      await provider.webviewLoadPromise;
+      await provider.switchNetwork(chainId);
+
       const unsupported = this.isChainUnsupported(chainId);
       this.emit('change', { chain: { id: chainId, unsupported } });
 
@@ -76,13 +85,17 @@ export class EmailConnector extends Connector<W3mFrameProvider, EmailProviderOpt
   }
 
   async getAccount(): Promise<`0x${string}`> {
-    const { address } = await this.provider.connect();
+    const provider = await this.getProvider();
+    await provider.webviewLoadPromise;
+    const { address } = await provider.connect();
 
     return address as `0x${string}`;
   }
 
   async getChainId(): Promise<number> {
-    const { chainId } = await this.provider.getChainId();
+    const provider = await this.getProvider();
+    await provider.webviewLoadPromise;
+    const { chainId } = await provider.getChainId();
 
     return chainId;
   }
@@ -92,7 +105,9 @@ export class EmailConnector extends Connector<W3mFrameProvider, EmailProviderOpt
   }
 
   async getWalletClient() {
-    const { address, chainId } = await this.provider.connect();
+    const provider = await this.getProvider();
+    await provider.webviewLoadPromise;
+    const { address, chainId } = await provider.connect();
 
     return Promise.resolve(
       createWalletClient({
@@ -104,7 +119,9 @@ export class EmailConnector extends Connector<W3mFrameProvider, EmailProviderOpt
   }
 
   async isAuthorized(): Promise<boolean> {
-    const { isConnected } = await this.provider.isConnected();
+    const provider = await this.getProvider();
+    await provider.webviewLoadPromise;
+    const { isConnected } = await provider.isConnected();
 
     return isConnected;
   }
@@ -122,6 +139,7 @@ export class EmailConnector extends Connector<W3mFrameProvider, EmailProviderOpt
 
   async onDisconnect() {
     const provider = await this.getProvider();
+    await provider.webviewLoadPromise;
     await provider.disconnect();
     this.emit('disconnect');
   }
