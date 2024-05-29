@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { W3mAccountButton, type W3mAccountButtonProps } from '../w3m-account-button';
 import { W3mConnectButton, type W3mConnectButtonProps } from '../w3m-connect-button';
-import { AccountController } from '@web3modal/core-react-native';
+import { AccountController, ModalController } from '@web3modal/core-react-native';
 
 export interface W3mButtonProps {
   balance?: W3mAccountButtonProps['balance'];
@@ -23,8 +23,9 @@ export function W3mButton({
   connectStyle
 }: W3mButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
+  const { loading } = useSnapshot(ModalController.state);
 
-  return isConnected ? (
+  return !loading && isConnected ? (
     <W3mAccountButton
       style={accountStyle}
       balance={balance}
