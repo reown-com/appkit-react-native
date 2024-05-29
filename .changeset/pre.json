@@ -19,6 +19,7 @@
     "@web3modal/wagmi-react-native": "1.4.0"
   },
   "changesets": [
+    "real-timers-wash",
     "sixty-actors-impress",
     "witty-owls-sin"
   ]

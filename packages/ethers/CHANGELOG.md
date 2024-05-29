@@ -1,5 +1,14 @@
 # @web3modal/ethers5-react-native
 
+## 2.0.0-alpha.2
+
+### Patch Changes
+
+- alpha.2
+- Updated dependencies
+  - @web3modal/scaffold-utils-react-native@2.0.0-alpha.2
+  - @web3modal/scaffold-react-native@2.0.0-alpha.2
+
 ## 2.0.0-alpha.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@apps/gallery",
-  "version": "1.0.7-alpha.1",
+  "version": "1.0.7-alpha.2",
   "main": "index.js",
   "private": true,
   "devDependencies": {
@@ -33,6 +33,6 @@
   },
   "dependencies": {
     "@storybook/theming": "^7.4.6",
-    "@web3modal/ui-react-native": "2.0.0-alpha.1"
+    "@web3modal/ui-react-native": "2.0.0-alpha.2"
   }
 }

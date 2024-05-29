@@ -58,7 +58,7 @@ __metadata:
     "@storybook/react-webpack5": "npm:^7.4.6"
     "@storybook/testing-library": "npm:^0.2.2"
     "@storybook/theming": "npm:^7.4.6"
-    "@web3modal/ui-react-native": "npm:2.0.0-alpha.1"
+    "@web3modal/ui-react-native": "npm:2.0.0-alpha.2"
     babel-plugin-react-native-web: "npm:^0.19.7"
     babel-plugin-react-require: "npm:^4.0.1"
     metro-react-native-babel-preset: "npm:^0.77.0"
@@ -89,7 +89,7 @@ __metadata:
     "@types/react": "npm:^18.0.24"
     "@types/react-test-renderer": "npm:^18.0.0"
     "@walletconnect/react-native-compat": "npm:2.13.1"
-    "@web3modal/wagmi-react-native": "npm:2.0.0-alpha.1"
+    "@web3modal/wagmi-react-native": "npm:2.0.0-alpha.2"
     babel-jest: "npm:^29.2.1"
     babel-plugin-module-resolver: "npm:^5.0.0"
     eslint: "npm:^8.19.0"
@@ -122,8 +122,8 @@ __metadata:
     "@types/react": "npm:~18.2.45"
     "@types/react-native": "npm:0.72.2"
     "@walletconnect/react-native-compat": "npm:2.13.1"
-    "@web3modal/email-wagmi-react-native": "npm:2.0.0-alpha.1"
-    "@web3modal/wagmi-react-native": "npm:2.0.0-alpha.1"
+    "@web3modal/email-wagmi-react-native": "npm:2.0.0-alpha.2"
+    "@web3modal/wagmi-react-native": "npm:2.0.0-alpha.2"
     babel-plugin-module-resolver: "npm:^5.0.0"
     expo: "npm:^50.0.14"
     expo-application: "npm:~5.8.3"
@@ -10311,7 +10311,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/core-react-native@npm:2.0.0-alpha.1, @web3modal/core-react-native@workspace:packages/core":
+"@web3modal/core-react-native@npm:2.0.0-alpha.2, @web3modal/core-react-native@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@web3modal/core-react-native@workspace:packages/core"
   dependencies:
@@ -10328,18 +10328,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@web3modal/email-ethers-react-native@workspace:packages/email-ethers"
   dependencies:
-    "@web3modal/email-react-native": "npm:2.0.0-alpha.1"
+    "@web3modal/email-react-native": "npm:2.0.0-alpha.2"
   peerDependencies:
     ethers: ">=5"
   languageName: unknown
   linkType: soft
 
-"@web3modal/email-react-native@npm:2.0.0-alpha.1, @web3modal/email-react-native@workspace:packages/email":
+"@web3modal/email-react-native@npm:2.0.0-alpha.2, @web3modal/email-react-native@workspace:packages/email":
   version: 0.0.0-use.local
   resolution: "@web3modal/email-react-native@workspace:packages/email"
   dependencies:
-    "@web3modal/core-react-native": "npm:2.0.0-alpha.1"
-    "@web3modal/ui-react-native": "npm:2.0.0-alpha.1"
+    "@web3modal/core-react-native": "npm:2.0.0-alpha.2"
+    "@web3modal/ui-react-native": "npm:2.0.0-alpha.2"
     zod: "npm:3.22.4"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
@@ -10347,11 +10347,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/email-wagmi-react-native@npm:2.0.0-alpha.1, @web3modal/email-wagmi-react-native@workspace:packages/email-wagmi":
+"@web3modal/email-wagmi-react-native@npm:2.0.0-alpha.2, @web3modal/email-wagmi-react-native@workspace:packages/email-wagmi":
   version: 0.0.0-use.local
   resolution: "@web3modal/email-wagmi-react-native@workspace:packages/email-wagmi"
   dependencies:
-    "@web3modal/email-react-native": "npm:2.0.0-alpha.1"
+    "@web3modal/email-react-native": "npm:2.0.0-alpha.2"
   peerDependencies:
     wagmi: ">=2"
   languageName: unknown
@@ -10362,8 +10362,8 @@ __metadata:
   resolution: "@web3modal/ethers-react-native@workspace:packages/ethers"
   dependencies:
     "@walletconnect/ethereum-provider": "npm:2.13.0"
-    "@web3modal/scaffold-react-native": "npm:2.0.0-alpha.1"
-    "@web3modal/scaffold-utils-react-native": "npm:2.0.0-alpha.1"
+    "@web3modal/scaffold-react-native": "npm:2.0.0-alpha.2"
+    "@web3modal/scaffold-utils-react-native": "npm:2.0.0-alpha.2"
     ethers: "npm:6.10.0"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
@@ -10381,8 +10381,8 @@ __metadata:
   dependencies:
     "@ethersproject/shims": "npm:5.7.0"
     "@walletconnect/ethereum-provider": "npm:2.13.0"
-    "@web3modal/scaffold-react-native": "npm:2.0.0-alpha.1"
-    "@web3modal/scaffold-utils-react-native": "npm:2.0.0-alpha.1"
+    "@web3modal/scaffold-react-native": "npm:2.0.0-alpha.2"
+    "@web3modal/scaffold-utils-react-native": "npm:2.0.0-alpha.2"
     ethers: "npm:5.7.2"
   peerDependencies:
     "@ethersproject/shims": ">=5.0.0"
@@ -10395,12 +10395,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/scaffold-react-native@npm:2.0.0-alpha.1, @web3modal/scaffold-react-native@workspace:packages/scaffold":
+"@web3modal/scaffold-react-native@npm:2.0.0-alpha.2, @web3modal/scaffold-react-native@workspace:packages/scaffold":
   version: 0.0.0-use.local
   resolution: "@web3modal/scaffold-react-native@workspace:packages/scaffold"
   dependencies:
-    "@web3modal/core-react-native": "npm:2.0.0-alpha.1"
-    "@web3modal/ui-react-native": "npm:2.0.0-alpha.1"
+    "@web3modal/core-react-native": "npm:2.0.0-alpha.2"
+    "@web3modal/ui-react-native": "npm:2.0.0-alpha.2"
   peerDependencies:
     react: ">=17"
     react-native: ">=0.68.5"
@@ -10408,15 +10408,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/scaffold-utils-react-native@npm:2.0.0-alpha.1, @web3modal/scaffold-utils-react-native@workspace:packages/scaffold-utils":
+"@web3modal/scaffold-utils-react-native@npm:2.0.0-alpha.2, @web3modal/scaffold-utils-react-native@workspace:packages/scaffold-utils":
   version: 0.0.0-use.local
   resolution: "@web3modal/scaffold-utils-react-native@workspace:packages/scaffold-utils"
   dependencies:
-    "@web3modal/scaffold-react-native": "npm:2.0.0-alpha.1"
+    "@web3modal/scaffold-react-native": "npm:2.0.0-alpha.2"
   languageName: unknown
   linkType: soft
 
-"@web3modal/ui-react-native@npm:2.0.0-alpha.1, @web3modal/ui-react-native@workspace:packages/ui":
+"@web3modal/ui-react-native@npm:2.0.0-alpha.2, @web3modal/ui-react-native@workspace:packages/ui":
   version: 0.0.0-use.local
   resolution: "@web3modal/ui-react-native@workspace:packages/ui"
   dependencies:
@@ -10428,12 +10428,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/wagmi-react-native@npm:2.0.0-alpha.1, @web3modal/wagmi-react-native@workspace:packages/wagmi":
+"@web3modal/wagmi-react-native@npm:2.0.0-alpha.2, @web3modal/wagmi-react-native@workspace:packages/wagmi":
   version: 0.0.0-use.local
   resolution: "@web3modal/wagmi-react-native@workspace:packages/wagmi"
   dependencies:
-    "@web3modal/scaffold-react-native": "npm:2.0.0-alpha.1"
-    "@web3modal/scaffold-utils-react-native": "npm:2.0.0-alpha.1"
+    "@web3modal/scaffold-react-native": "npm:2.0.0-alpha.2"
+    "@web3modal/scaffold-utils-react-native": "npm:2.0.0-alpha.2"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
     "@react-native-community/netinfo": "*"
