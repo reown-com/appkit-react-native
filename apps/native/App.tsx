@@ -15,42 +15,16 @@ import {
 
 import { emailConnector } from '@web3modal/email-wagmi-react-native';
 
-import {
-  arbitrum,
-  mainnet,
-  polygon,
-  avalanche,
-  bsc,
-  optimism,
-  gnosis,
-  zkSync,
-  zora,
-  base,
-  celo,
-  aurora,
-  sepolia
-} from '@wagmi/core/chains';
+import { siweConfig } from './src/utils/SiweUtils';
+
+import { mainnet } from '@wagmi/core/chains';
 import { AccountView } from './src/views/AccountView';
 import { ActionsView } from './src/views/ActionsView';
 import { getCustomWallets } from './src/utils/misc';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
-const chains: CreateConfigParameters['chains'] = [
-  mainnet,
-  polygon,
-  arbitrum,
-  avalanche,
-  bsc,
-  optimism,
-  gnosis,
-  zkSync,
-  zora,
-  base,
-  celo,
-  aurora,
-  sepolia
-];
+const chains: CreateConfigParameters['chains'] = [mainnet];
 
 const metadata = {
   name: 'Web3Modal RN',
@@ -84,6 +58,7 @@ const customWallets = getCustomWallets();
 createWeb3Modal({
   projectId,
   wagmiConfig,
+  siweConfig,
   clipboardClient,
   customWallets,
   enableAnalytics: true,

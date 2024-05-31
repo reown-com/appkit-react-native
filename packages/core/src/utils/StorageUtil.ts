@@ -5,6 +5,7 @@ import type { ConnectorType, WcWallet } from './TypeUtil';
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE';
 const W3M_RECENT = '@w3m/recent';
+const W3M_CONNECTED_WALLET_IMAGE_URL = '@w3m/connected_wallet_image_url';
 const W3M_CONNECTED_CONNECTOR = '@w3m/connected_connector';
 
 // -- Utility -----------------------------------------------------------------
@@ -98,6 +99,32 @@ export const StorageUtil = {
       await AsyncStorage.removeItem(W3M_CONNECTED_CONNECTOR);
     } catch {
       console.info('Unable to remove Connected Connector');
+    }
+  },
+
+  async setConnectedWalletImageUrl(url: string) {
+    try {
+      await AsyncStorage.setItem(W3M_CONNECTED_WALLET_IMAGE_URL, url);
+    } catch {
+      console.info('Unable to set Connected Wallet Image URL');
+    }
+  },
+
+  async getConnectedWalletImageUrl() {
+    try {
+      return await AsyncStorage.getItem(W3M_CONNECTED_WALLET_IMAGE_URL);
+    } catch {
+      console.info('Unable to get Connected Wallet Image URL');
+    }
+
+    return undefined;
+  },
+
+  async removeConnectedWalletImageUrl() {
+    try {
+      await AsyncStorage.removeItem(W3M_CONNECTED_WALLET_IMAGE_URL);
+    } catch {
+      console.info('Unable to remove Connected Wallet Image URL');
     }
   }
 };

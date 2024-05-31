@@ -52,5 +52,6 @@ export { ConstantsUtil } from './utils/ConstantsUtil';
 export { CoreHelperUtil } from './utils/CoreHelperUtil';
 export { StorageUtil } from './utils/StorageUtil';
 export { EventUtil } from './utils/EventUtil';
+export { RouterUtil } from './utils/RouterUtil';
 
 export type * from './utils/TypeUtil';

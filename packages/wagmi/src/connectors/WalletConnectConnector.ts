@@ -67,7 +67,7 @@ export type WalletConnectParameters = {
    * Metadata for your app.
    * @link https://docs.walletconnect.com/web3modal/react-native/about#implementation
    */
-  metadata?: EthereumProviderOptions['metadata'];
+  metadata: EthereumProviderOptions['metadata'];
   /**
    * Option to override default relay url.
    */

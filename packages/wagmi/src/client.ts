@@ -3,6 +3,7 @@ import {
   type GetAccountReturnType,
   connect,
   disconnect,
+  signMessage,
   switchChain,
   watchAccount,
   watchConnectors,
@@ -11,7 +12,7 @@ import {
   getBalance
 } from '@wagmi/core';
 import { mainnet, type Chain } from '@wagmi/core/chains';
-import { EthereumProvider } from '@walletconnect/ethereum-provider';
+import { EthereumProvider, OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import {
   type CaipAddress,
   type CaipNetwork,
@@ -30,18 +31,21 @@ import {
   PresetsUtil,
   StorageUtil
 } from '@web3modal/scaffold-utils-react-native';
+import { NetworkUtil } from '@web3modal/common-react-native';
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers';
 import { defaultWagmiConfig } from './utils/defaultWagmiConfig';
+import { type Web3ModalSIWEClient } from '@web3modal/siwe-react-native';
 
 // -- Types ---------------------------------------------------------------------
 type WagmiConfig = ReturnType<typeof defaultWagmiConfig>;
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   wagmiConfig: WagmiConfig;
+  siweConfig?: Web3ModalSIWEClient;
   defaultChain?: Chain;
   chainImages?: Record<number, string>;
   connectorImages?: Record<string, string>;
@@ -64,7 +68,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private wagmiConfig: WagmiConfig;
 
   public constructor(options: Web3ModalClientOptions) {
-    const { wagmiConfig, defaultChain, tokens, _sdkVersion, ...w3mOptions } = options;
+    const { wagmiConfig, siweConfig, defaultChain, tokens, _sdkVersion, ...w3mOptions } = options;
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined');
@@ -76,7 +80,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = HelpersUtil.caipNetworkIdToNumber(caipNetwork?.id);
+        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id);
         if (chainId) {
           await switchChain(wagmiConfig, { chainId });
         }
@@ -122,7 +126,71 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(data);
         });
 
-        const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+
+        // SIWE
+        const siweParams = await siweConfig?.getMessageParams?.();
+        // Make sure client uses ethereum provider version that supports `authenticate`
+        if (
+          siweConfig?.options?.enabled &&
+          typeof provider?.authenticate === 'function' &&
+          siweParams &&
+          Object.keys(siweParams || {}).length > 0
+        ) {
+          const { SIWEController, getDidChainId, getDidAddress } = await import(
+            '@web3modal/siwe-react-native'
+          );
+          // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
+          await connector.setRequestedChainsIds(siweParams.chains);
+
+          const result = await provider.authenticate({
+            nonce: await siweConfig.getNonce(),
+            methods: [...OPTIONAL_METHODS],
+            ...siweParams
+          });
+
+          // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
+          const signedCacao = result?.auths?.[0];
+          if (signedCacao) {
+            const { p, s } = signedCacao;
+            const cacaoChainId = getDidChainId(p.iss) || '';
+            const address = getDidAddress(p.iss);
+            if (address && cacaoChainId) {
+              SIWEController.setSession({
+                address,
+                chainId: parseInt(cacaoChainId, 10)
+              });
+            }
+            try {
+              // Kicks off verifyMessage and populates external states
+              const message = provider.signer.client.formatAuthMessage({
+                request: p,
+                iss: p.iss
+              });
+
+              await SIWEController.verifyMessage({
+                message,
+                signature: s.s,
+                cacao: signedCacao
+              });
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('Error verifying message', error);
+              // eslint-disable-next-line no-console
+              await provider.disconnect().catch(console.error);
+              // eslint-disable-next-line no-console
+              await SIWEController.signOut().catch(console.error);
+              throw error;
+            }
+            /*
+             * Unassign the connector from the wagmiConfig and allow connect() to reassign it in the next step
+             * this avoids case where wagmi throws because the connector is already connected
+             * what we need connect() to do is to only setup internal event listeners
+             */
+            this.wagmiConfig.state.current = '';
+          }
+        }
+
         await connect(this.wagmiConfig, { connector, chainId });
       },
 
@@ -132,18 +200,26 @@ export class Web3Modal extends Web3ModalScaffold {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined');
         }
 
-        const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
         await connect(this.wagmiConfig, { connector, chainId });
       },
 
+      signMessage: async message => signMessage(this.wagmiConfig, { message }),
+
       disconnect: async () => {
         await disconnect(this.wagmiConfig);
+
+        if (siweConfig?.options?.signOutOnDisconnect) {
+          const { SIWEController } = await import('@web3modal/siwe-react-native');
+          await SIWEController.signOut();
+        }
       }
     };
 
     super({
       networkControllerClient,
       connectionControllerClient,
+      siweControllerClient: siweConfig,
       defaultChain: getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `react-native-wagmi-${ConstantsUtil.VERSION}`,
@@ -176,7 +252,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     return {
       ...state,
-      selectedNetworkId: HelpersUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+      selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
     };
   }
 
@@ -185,7 +261,7 @@ export class Web3Modal extends Web3ModalScaffold {
     return super.subscribeState(state =>
       callback({
         ...state,
-        selectedNetworkId: HelpersUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+        selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
       })
     );
   }

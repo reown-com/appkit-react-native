@@ -11,7 +11,7 @@ const meta: Meta<typeof WalletImage> = {
       control: { type: 'text' }
     },
     size: {
-      options: ['sm', 'md', 'lg'],
+      options: ['sm', 'md', 'lg', 'xl'],
       control: { type: 'select' }
     }
   },

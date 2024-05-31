@@ -16,8 +16,8 @@ import {
   RouterController,
   type CaipNetwork,
   AccountController,
-  ModalController,
-  EventsController
+  EventsController,
+  RouterUtil
 } from '@web3modal/core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
@@ -26,7 +26,6 @@ export function NetworksView() {
   const { isConnected } = useSnapshot(AccountController.state);
   const { caipNetwork, requestedCaipNetworks, approvedCaipNetworkIds, supportsAllNetworks } =
     useSnapshot(NetworkController.state);
-  const { history } = useSnapshot(RouterController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const { maxWidth: width, padding } = useCustomDimensions();
   const numColumns = 4;
@@ -60,11 +59,8 @@ export function NetworksView() {
       if (isConnected && caipNetwork?.id !== network.id) {
         if (approvedCaipNetworkIds?.includes(network.id)) {
           await NetworkController.switchActiveNetwork(network);
-          if (history.length > 1) {
-            RouterController.goBack();
-          } else {
-            ModalController.close();
-          }
+          RouterUtil.navigateAfterNetworkSwitch();
+
           EventsController.sendEvent({
             type: 'track',
             event: 'SWITCH_NETWORK',

@@ -17,6 +17,7 @@ export interface ConnectExternalOptions {
 export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>;
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>;
+  signMessage: (message: string) => Promise<string>;
   disconnect: () => Promise<void>;
 }
 
@@ -32,6 +33,7 @@ export interface ConnectionControllerState {
   wcError?: boolean;
   pressedWallet?: WcWallet;
   recentWallets?: WcWallet[];
+  connectedWalletImageUrl?: string;
 }
 
 type StateKey = keyof ConnectionControllerState;
@@ -79,6 +81,10 @@ export const ConnectionController = {
     StorageUtil.setConnectedConnector(options.type);
   },
 
+  async signMessage(message: string) {
+    return this._getClient().signMessage(message);
+  },
+
   resetWcConnection() {
     state.wcUri = undefined;
     state.wcPairingExpiry = undefined;
@@ -112,6 +118,10 @@ export const ConnectionController = {
 
   setRecentWallets(wallets: ConnectionControllerState['recentWallets']) {
     state.recentWallets = wallets;
+  },
+
+  async setConnectedWalletImageUrl(url: ConnectionControllerState['connectedWalletImageUrl']) {
+    state.connectedWalletImageUrl = url;
   },
 
   async disconnect() {

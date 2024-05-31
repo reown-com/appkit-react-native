@@ -12,7 +12,9 @@ import {
   type Platform,
   OptionsController,
   ApiController,
-  EventsController
+  EventsController,
+  AssetUtil,
+  ConnectorController
 } from '@web3modal/core-react-native';
 
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
@@ -37,9 +39,8 @@ export function ConnectingView() {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.connectWalletConnect();
         await ConnectionController.state.wcPromise;
-        storeWalletConnectDeeplink();
+        storeConnectedWallet();
         AccountController.setIsConnected(true);
-        ModalController.close();
 
         if (!ConnectionController.state.wcLinking) {
           EventsController.sendEvent({
@@ -50,6 +51,17 @@ export function ConnectingView() {
               name: 'WalletConnect'
             }
           });
+        }
+
+        if (OptionsController.state.isSiweEnabled) {
+          const { SIWEController } = await import('@web3modal/siwe-react-native');
+          if (SIWEController.state.status === 'success') {
+            ModalController.close();
+          } else {
+            RouterController.push('ConnectingSiwe');
+          }
+        } else {
+          ModalController.close();
         }
       }
     } catch (error) {
@@ -68,7 +80,7 @@ export function ConnectingView() {
     }
   };
 
-  const storeWalletConnectDeeplink = async () => {
+  const storeConnectedWallet = async () => {
     const { wcLinking, pressedWallet } = ConnectionController.state;
     if (wcLinking) {
       StorageUtil.setWalletConnectDeepLink(wcLinking);
@@ -77,6 +89,17 @@ export function ConnectingView() {
       const recentWallets = await StorageUtil.setWeb3ModalRecent(pressedWallet);
       if (recentWallets) {
         ConnectionController.setRecentWallets(recentWallets);
+      }
+      const url = AssetUtil.getWalletImage(pressedWallet);
+      if (url) {
+        StorageUtil.setConnectedWalletImageUrl(url);
+      }
+    } else {
+      const connectors = ConnectorController.state.connectors;
+      const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
+      const url = AssetUtil.getConnectorImage(connector);
+      if (url) {
+        StorageUtil.setConnectedWalletImageUrl(url);
       }
     }
   };

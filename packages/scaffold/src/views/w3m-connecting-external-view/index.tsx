@@ -151,7 +151,7 @@ export function ConnectingExternalView() {
       >
         <LoadingThumbnail paused={connectionError || installedError}>
           <WalletImage
-            size="lg"
+            size="xl"
             imageSrc={AssetUtil.getConnectorImage(connector)}
             imageHeaders={ApiController._getApiHeaders()}
           />

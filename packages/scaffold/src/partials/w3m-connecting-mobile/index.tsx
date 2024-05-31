@@ -170,7 +170,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
       >
         <LoadingThumbnail paused={linkingError || wcError}>
           <WalletImage
-            size="lg"
+            size="xl"
             imageSrc={AssetUtil.getWalletImage(data?.wallet)}
             imageHeaders={ApiController._getApiHeaders()}
           />

@@ -15,6 +15,7 @@ import type {
   Connector,
   ConnectedWalletInfo
 } from '@web3modal/core-react-native';
+import type { SIWEControllerClient } from '@web3modal/siwe-react-native';
 import {
   AccountController,
   BlockchainApiController,
@@ -49,6 +50,7 @@ export interface LibraryOptions {
 export interface ScaffoldOptions extends LibraryOptions {
   networkControllerClient: NetworkControllerClient;
   connectionControllerClient: ConnectionControllerClient;
+  siweControllerClient?: SIWEControllerClient;
 }
 
 export interface OpenOptions {
@@ -205,7 +207,7 @@ export class Web3ModalScaffold {
     };
 
   // -- Private ------------------------------------------------------------------
-  private initControllers(options: ScaffoldOptions) {
+  private async initControllers(options: ScaffoldOptions) {
     this.initAsyncValues(options);
     NetworkController.setClient(options.networkControllerClient);
     NetworkController.setDefaultCaipNetwork(options.defaultChain);
@@ -234,10 +236,17 @@ export class Web3ModalScaffold {
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata);
     }
+
+    if (options.siweControllerClient) {
+      const { SIWEController } = await import('@web3modal/siwe-react-native');
+
+      SIWEController.setSIWEClient(options.siweControllerClient);
+    }
   }
 
   private async initRecentWallets(options: ScaffoldOptions) {
     const wallets = await StorageUtil.getRecentWallets();
+    const connectedWalletImage = await StorageUtil.getConnectedWalletImageUrl();
 
     const filteredWallets = wallets.filter(wallet => {
       const { includeWalletIds, excludeWalletIds } = options;
@@ -252,6 +261,10 @@ export class Web3ModalScaffold {
     });
 
     ConnectionController.setRecentWallets(filteredWallets);
+
+    if (connectedWalletImage) {
+      ConnectionController.setConnectedWalletImageUrl(connectedWalletImage);
+    }
   }
 
   private async initConnectedConnector() {
