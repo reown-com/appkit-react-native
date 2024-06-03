@@ -59,7 +59,7 @@ export function NetworksView() {
       if (isConnected && caipNetwork?.id !== network.id) {
         if (approvedCaipNetworkIds?.includes(network.id)) {
           await NetworkController.switchActiveNetwork(network);
-          RouterUtil.navigateAfterNetworkSwitch();
+          RouterUtil.navigateAfterNetworkSwitch(['ConnectingSiwe']);
 
           EventsController.sendEvent({
             type: 'track',
