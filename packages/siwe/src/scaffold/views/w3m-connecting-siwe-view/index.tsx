@@ -29,9 +29,8 @@ export function ConnectingSiweView() {
       type: 'track'
     });
     try {
-      SIWEController.setStatus('loading');
       const session = await SIWEController.signIn();
-      SIWEController.setStatus('success');
+
       EventsController.sendEvent({
         event: 'SIWE_AUTH_SUCCESS',
         type: 'track'

@@ -98,10 +98,17 @@ export const SIWEController = {
   },
 
   async signIn() {
-    const client = this._getClient();
-    const session = await client.signIn();
+    try {
+      this.setStatus('loading');
+      const client = this._getClient();
+      const session = await client.signIn();
+      this.setStatus('success');
 
-    return session;
+      return session;
+    } catch (error) {
+      this.setStatus('error');
+      throw error;
+    }
   },
 
   async signOut() {
