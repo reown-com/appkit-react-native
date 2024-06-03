@@ -1,7 +1,6 @@
-// import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
 import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs } from '@web3modal/siwe-react-native';
 import { createSIWEConfig, formatMessage } from '@web3modal/siwe-react-native';
-// import { WagmiConstantsUtil } from '../utils/WagmiConstants'
+import { chains } from './WagmiUtils';
 
 export const siweConfig = createSIWEConfig({
   signOutOnAccountChange: false,
@@ -11,7 +10,7 @@ export const siweConfig = createSIWEConfig({
   getMessageParams: async () => ({
     domain: 'web3modal',
     uri: 'com.walletconnect.web3modal.rnsample',
-    chains: [1],
+    chains: chains.map(chain => chain.id),
     statement: 'Please sign with your account',
     iat: new Date().toISOString()
   }),
@@ -41,6 +40,7 @@ export const siweConfig = createSIWEConfig({
       address: '0x704457b418E9Fb723e1Bc0cB98106a6B8Cf87689',
       chainId: 1
     });
+    // return Promise.resolve(undefined);
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   verifyMessage: async ({ message, signature, cacao }: SIWEVerifyMessageArgs) => {
