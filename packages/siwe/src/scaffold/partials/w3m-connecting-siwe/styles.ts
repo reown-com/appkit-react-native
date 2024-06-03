@@ -7,7 +7,6 @@ export default StyleSheet.create({
     borderRadius: 100,
     zIndex: 2
   },
-  circleRight: {},
   iconBorder: {
     width: 74,
     height: 74,
@@ -19,6 +18,6 @@ export default StyleSheet.create({
     zIndex: 2
   },
   walletBorder: {
-    borderRadius: 20
+    borderRadius: 24
   }
 });

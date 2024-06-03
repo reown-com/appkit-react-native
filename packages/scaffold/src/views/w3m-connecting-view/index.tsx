@@ -93,6 +93,7 @@ export function ConnectingView() {
       const url = AssetUtil.getWalletImage(pressedWallet);
       if (url) {
         StorageUtil.setConnectedWalletImageUrl(url);
+        ConnectionController.setConnectedWalletImageUrl(url);
       }
     } else {
       const connectors = ConnectorController.state.connectors;
@@ -100,6 +101,7 @@ export function ConnectingView() {
       const url = AssetUtil.getConnectorImage(connector);
       if (url) {
         StorageUtil.setConnectedWalletImageUrl(url);
+        ConnectionController.setConnectedWalletImageUrl(url);
       }
     }
   };

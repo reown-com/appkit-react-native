@@ -93,6 +93,7 @@ export const ConnectionController = {
     state.pressedWallet = undefined;
     ConnectorController.setConnectedConnector(undefined);
     StorageUtil.removeWalletConnectDeepLink();
+    StorageUtil.removeConnectedWalletImageUrl();
     StorageUtil.removeConnectedConnector();
   },
 

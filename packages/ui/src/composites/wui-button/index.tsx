@@ -81,7 +81,7 @@ export function Button({
 
   return (
     <AnimatedPressable
-      disabled={disabled}
+      disabled={disabled || loading}
       style={[styles.button, styles[`${size}Button`], { backgroundColor, borderColor }, style]}
       onPressIn={onPressIn}
       onPressOut={onPressOut}

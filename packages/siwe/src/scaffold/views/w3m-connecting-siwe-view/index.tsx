@@ -18,6 +18,7 @@ import styles from './styles';
 export function ConnectingSiweView() {
   const { metadata } = useSnapshot(OptionsController.state);
   const [isSigning, setIsSigning] = useState(false);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
 
   const dappName = metadata?.name || 'Dapp';
 
@@ -54,8 +55,10 @@ export function ConnectingSiweView() {
   const onCancel = async () => {
     const { isConnected } = AccountController.state;
     if (isConnected) {
+      setIsDisconnecting(true);
       await ConnectionController.disconnect();
       ModalController.close();
+      setIsDisconnecting(false);
     } else {
       RouterController.push('Connect');
     }
@@ -75,13 +78,13 @@ export function ConnectingSiweView() {
         Sign this message to prove you own this wallet and proceed. Cancelling will disconnect you
       </Text>
       <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
-        <Button variant="shade" onPress={onCancel} style={styles.button}>
+        <Button variant="shade" onPress={onCancel} style={styles.button} loading={isDisconnecting}>
           Cancel
         </Button>
         <Button
           variant="fill"
-          disabled={isSigning}
           loading={isSigning}
+          disabled={isDisconnecting}
           onPress={onSign}
           style={styles.button}
         >
