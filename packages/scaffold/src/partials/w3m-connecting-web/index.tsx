@@ -21,6 +21,7 @@ import {
 } from '@web3modal/ui-react-native';
 
 import styles from './styles';
+import { UiUtil } from '../../utils/UiUtil';
 
 interface ConnectingWebProps {
   onCopyUri: (uri?: string) => void;
@@ -37,10 +38,13 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
       if (name && webapp_link && wcUri) {
         ConnectionController.setWcError(false);
         const { redirect, href } = CoreHelperUtil.formatUniversalUrl(webapp_link, wcUri);
-        ConnectionController.setWcLinking({ name, href });
+        const wcLinking = { name, href };
+        ConnectionController.setWcLinking(wcLinking);
         ConnectionController.setPressedWallet(data?.wallet);
         await Linking.openURL(redirect);
         await ConnectionController.state.wcPromise;
+
+        UiUtil.storeConnectedWallet(wcLinking, data?.wallet);
 
         EventsController.sendEvent({
           type: 'track',

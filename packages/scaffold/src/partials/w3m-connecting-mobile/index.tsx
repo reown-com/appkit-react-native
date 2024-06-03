@@ -22,6 +22,7 @@ import {
 } from '@web3modal/ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { UiUtil } from '../../utils/UiUtil';
 import styles from './styles';
 
 interface Props {
@@ -62,10 +63,13 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         setLinkingError(false);
         ConnectionController.setWcError(false);
         const { redirect, href } = CoreHelperUtil.formatNativeUrl(mobile_link, wcUri);
-        ConnectionController.setWcLinking({ name, href });
+        const wcLinking = { name, href };
+        ConnectionController.setWcLinking(wcLinking);
         ConnectionController.setPressedWallet(data?.wallet);
         await Linking.openURL(redirect);
         await ConnectionController.state.wcPromise;
+
+        UiUtil.storeConnectedWallet(wcLinking, data?.wallet);
 
         EventsController.sendEvent({
           type: 'track',

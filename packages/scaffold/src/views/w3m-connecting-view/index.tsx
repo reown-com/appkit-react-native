@@ -8,13 +8,10 @@ import {
   ModalController,
   RouterController,
   SnackController,
-  StorageUtil,
   type Platform,
   OptionsController,
   ApiController,
-  EventsController,
-  AssetUtil,
-  ConnectorController
+  EventsController
 } from '@web3modal/core-react-native';
 
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
@@ -39,19 +36,7 @@ export function ConnectingView() {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.connectWalletConnect();
         await ConnectionController.state.wcPromise;
-        storeConnectedWallet();
         AccountController.setIsConnected(true);
-
-        if (!ConnectionController.state.wcLinking) {
-          EventsController.sendEvent({
-            type: 'track',
-            event: 'CONNECT_SUCCESS',
-            properties: {
-              method: 'qrcode',
-              name: 'WalletConnect'
-            }
-          });
-        }
 
         if (OptionsController.state.isSiweEnabled) {
           const { SIWEController } = await import('@web3modal/siwe-react-native');
@@ -80,32 +65,6 @@ export function ConnectingView() {
     }
   };
 
-  const storeConnectedWallet = async () => {
-    const { wcLinking, pressedWallet } = ConnectionController.state;
-    if (wcLinking) {
-      StorageUtil.setWalletConnectDeepLink(wcLinking);
-    }
-    if (pressedWallet) {
-      const recentWallets = await StorageUtil.setWeb3ModalRecent(pressedWallet);
-      if (recentWallets) {
-        ConnectionController.setRecentWallets(recentWallets);
-      }
-      const url = AssetUtil.getWalletImage(pressedWallet);
-      if (url) {
-        StorageUtil.setConnectedWalletImageUrl(url);
-        ConnectionController.setConnectedWalletImageUrl(url);
-      }
-    } else {
-      const connectors = ConnectorController.state.connectors;
-      const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
-      const url = AssetUtil.getConnectorImage(connector);
-      if (url) {
-        StorageUtil.setConnectedWalletImageUrl(url);
-        ConnectionController.setConnectedWalletImageUrl(url);
-      }
-    }
-  };
-
   const onCopyUri = (uri?: string) => {
     if (OptionsController.isClipboardAvailable() && uri) {
       OptionsController.copyToClipboard(uri);
@@ -129,6 +88,10 @@ export function ConnectingView() {
   };
 
   const platformTemplate = () => {
+    if (isQr) {
+      return <ConnectingQrCode />;
+    }
+
     switch (platform) {
       case 'mobile':
         return (
@@ -165,8 +128,6 @@ export function ConnectingView() {
     return () => clearInterval(_interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  if (!data?.wallet) return <ConnectingQrCode />;
 
   return (
     <>
