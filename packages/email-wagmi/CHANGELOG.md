@@ -1,12 +1,31 @@
 # @web3modal/coinbase-wagmi-react-native
 
-## 1.4.1
+## 2.0.0-alpha.2
 
 ### Patch Changes
 
-- email wallet fixes
+- alpha.2
 - Updated dependencies
-  - @web3modal/email-react-native@1.4.1
+  - @web3modal/email-react-native@2.0.0-alpha.2
+
+## 2.0.0-alpha.1
+
+### Patch Changes
+
+- fixes
+- Updated dependencies
+  - @web3modal/email-react-native@2.0.0-alpha.1
+
+## 2.0.0-alpha.0
+
+### Major Changes
+
+- 2.0.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @web3modal/email-react-native@2.0.0-alpha.0
 
 ## 1.4.0
 

@@ -1,10 +1,22 @@
 # @web3modal/core-react-native
 
-## 1.4.1
+## 2.0.0-alpha.2
 
 ### Patch Changes
 
-- email wallet fixes
+- alpha.2
+
+## 2.0.0-alpha.1
+
+### Patch Changes
+
+- fixes
+
+## 2.0.0-alpha.0
+
+### Major Changes
+
+- 2.0.0
 
 ## 1.4.0
 
