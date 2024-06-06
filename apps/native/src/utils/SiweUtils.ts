@@ -1,3 +1,4 @@
+import { generateRandomBytes32 } from '@walletconnect/utils';
 import {
   createSIWEConfig,
   formatMessage,
@@ -31,7 +32,7 @@ export const siweConfig = createSIWEConfig({
     // The getNonce method functions as a safeguard
     // against spoofing, akin to a CSRF token.
 
-    const nonce = Math.floor(Math.random() * 1000000).toString();
+    const nonce = generateRandomBytes32();
 
     return nonce;
   },
