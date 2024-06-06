@@ -57,7 +57,7 @@ export const siweConfig = createSIWEConfig({
     // The users session must be destroyed when calling `signOut`.
 
     try {
-      return Promise.resolve(true);
+      return await Promise.resolve(true);
     } catch (error) {
       return false;
     }
