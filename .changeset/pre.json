@@ -16,9 +16,12 @@
     "@web3modal/scaffold-react-native": "1.4.0",
     "@web3modal/scaffold-utils-react-native": "1.4.0",
     "@web3modal/ui-react-native": "1.4.0",
-    "@web3modal/wagmi-react-native": "1.4.0"
+    "@web3modal/wagmi-react-native": "1.4.0",
+    "@web3modal/common-react-native": "2.0.0-alpha.2",
+    "@web3modal/siwe-react-native": "2.0.0-alpha.2"
   },
   "changesets": [
+    "cuddly-masks-run",
     "real-timers-wash",
     "sixty-actors-impress",
     "witty-owls-sin"

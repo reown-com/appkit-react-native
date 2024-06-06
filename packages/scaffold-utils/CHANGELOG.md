@@ -1,5 +1,13 @@
 # @web3modal/scaffold-utils-react-native
 
+## 2.0.0-alpha.3
+
+### Patch Changes
+
+- siwe + one-click auth
+- Updated dependencies
+  - @web3modal/scaffold-react-native@2.0.0-alpha.3
+
 ## 2.0.0-alpha.2
 
 ### Patch Changes

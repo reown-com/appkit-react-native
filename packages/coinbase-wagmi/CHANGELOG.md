@@ -1,5 +1,11 @@
 # @web3modal/coinbase-wagmi-react-native
 
+## 2.0.0-alpha.3
+
+### Patch Changes
+
+- siwe + one-click auth
+
 ## 2.0.0-alpha.2
 
 ### Patch Changes

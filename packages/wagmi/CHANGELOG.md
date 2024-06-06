@@ -1,5 +1,16 @@
 # @web3modal/wagmi-react-native
 
+## 2.0.0-alpha.3
+
+### Patch Changes
+
+- siwe + one-click auth
+- Updated dependencies
+  - @web3modal/scaffold-utils-react-native@2.0.0-alpha.3
+  - @web3modal/scaffold-react-native@2.0.0-alpha.3
+  - @web3modal/common-react-native@2.0.0-alpha.3
+  - @web3modal/siwe-react-native@2.0.0-alpha.3
+
 ## 2.0.0-alpha.2
 
 ### Patch Changes
