@@ -1,7 +1,5 @@
-import type { CaipNetworkId } from '@web3modal/core-react-native';
-
 export const NetworkUtil = {
-  caipNetworkIdToNumber(caipnetworkId?: CaipNetworkId) {
+  caipNetworkIdToNumber(caipnetworkId?: `${string}:${string}`) {
     return caipnetworkId ? Number(caipnetworkId.split(':')[1]) : undefined;
   }
 };

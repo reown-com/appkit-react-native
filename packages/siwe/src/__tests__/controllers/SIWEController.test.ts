@@ -1,4 +1,4 @@
-import { SIWEController } from '../../controller/SIWEController';
+import { SIWEController } from '../../index';
 
 // -- Mocks -------------------------------------------------------------
 const session = { address: '0x', chainId: 1 };
