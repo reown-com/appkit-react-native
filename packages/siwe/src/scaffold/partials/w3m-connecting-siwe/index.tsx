@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { Animated, useAnimatedValue, type StyleProp, type ViewStyle } from 'react-native';
-import { ConnectionController, OptionsController } from '@web3modal/core-react-native';
+import { AssetUtil, ConnectionController, OptionsController } from '@web3modal/core-react-native';
 import { FlexView, Icon, Image, WalletImage, useTheme } from '@web3modal/ui-react-native';
 import styles from './styles';
 import { useEffect } from 'react';
@@ -12,10 +12,11 @@ interface Props {
 export function ConnectingSiwe({ style }: Props) {
   const Theme = useTheme();
   const { metadata } = useSnapshot(OptionsController.state);
-  const { connectedWalletImageUrl } = useSnapshot(ConnectionController.state);
+  const { connectedWalletImageUrl, pressedWallet } = useSnapshot(ConnectionController.state);
   const dappIcon = metadata?.icons[0] || '';
   const dappPosition = useAnimatedValue(10);
   const walletPosition = useAnimatedValue(-10);
+  const walletIcon = AssetUtil.getWalletImage(pressedWallet) || connectedWalletImageUrl;
 
   const animateDapp = () => {
     Animated.loop(
@@ -72,7 +73,7 @@ export function ConnectingSiwe({ style }: Props) {
         {dappIcon ? (
           <Image
             source={dappIcon}
-            style={[styles.circleLeft, { backgroundColor: Theme['bg-200'] }]}
+            style={[styles.dappIcon, { backgroundColor: Theme['bg-200'] }]}
           />
         ) : (
           <Icon name="mobile" size="lg" color="fg-200" />
@@ -88,8 +89,8 @@ export function ConnectingSiwe({ style }: Props) {
           }
         ]}
       >
-        {connectedWalletImageUrl ? (
-          <WalletImage imageSrc={connectedWalletImageUrl} size="lg" border={false} />
+        {walletIcon ? (
+          <WalletImage imageSrc={walletIcon} size="lg" border={false} />
         ) : (
           <Icon name="wallet" size="lg" color="fg-200" />
         )}

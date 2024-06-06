@@ -17,10 +17,10 @@ import {
 } from '@wagmi/core/chains';
 
 export const chains: CreateConfigParameters['chains'] = [
-  arbitrum,
   mainnet,
   polygon,
   avalanche,
+  arbitrum,
   bsc,
   optimism,
   gnosis,

@@ -91,6 +91,7 @@ export const ConnectionController = {
     state.wcPromise = undefined;
     state.wcLinking = undefined;
     state.pressedWallet = undefined;
+    state.connectedWalletImageUrl = undefined;
     ConnectorController.setConnectedConnector(undefined);
     StorageUtil.removeWalletConnectDeepLink();
     StorageUtil.removeConnectedWalletImageUrl();

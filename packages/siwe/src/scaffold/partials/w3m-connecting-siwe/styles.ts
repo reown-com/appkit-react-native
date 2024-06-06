@@ -1,11 +1,10 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  circleLeft: {
+  dappIcon: {
     height: 64,
     width: 64,
-    borderRadius: 100,
-    zIndex: 2
+    borderRadius: 100
   },
   iconBorder: {
     width: 74,
@@ -18,6 +17,8 @@ export default StyleSheet.create({
     zIndex: 2
   },
   walletBorder: {
-    borderRadius: 24
+    borderRadius: 22,
+    width: 72,
+    height: 72
   }
 });

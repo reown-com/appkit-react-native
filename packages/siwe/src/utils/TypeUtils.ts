@@ -61,11 +61,11 @@ export interface SIWEVerifyMessageArgs {
 
 export interface SIWEClientMethods {
   getNonce: (address?: string) => Promise<string>;
-  getMessageParams?: () => Promise<SIWEMessageArgs>;
   createMessage: (args: SIWECreateMessageArgs) => string;
   verifyMessage: (args: SIWEVerifyMessageArgs) => Promise<boolean>;
   getSession: () => Promise<SIWESession | null>;
   signOut: () => Promise<boolean>;
+  getMessageParams?: () => Promise<SIWEMessageArgs>;
   onSignIn?: (session?: SIWESession) => void;
   onSignOut?: () => void;
 }
