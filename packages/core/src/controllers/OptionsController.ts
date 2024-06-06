@@ -18,6 +18,7 @@ export interface OptionsControllerState {
   sdkType: string;
   sdkVersion: SdkVersion;
   metadata?: Metadata;
+  isSiweEnabled?: boolean;
 }
 
 // -- State --------------------------------------------- //
@@ -69,6 +70,10 @@ export const OptionsController = {
 
   setMetadata(metadata: OptionsControllerState['metadata']) {
     state.metadata = metadata;
+  },
+
+  setIsSiweEnabled(isSiweEnabled: OptionsControllerState['isSiweEnabled']) {
+    state.isSiweEnabled = isSiweEnabled;
   },
 
   isClipboardAvailable() {

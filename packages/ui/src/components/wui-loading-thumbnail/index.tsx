@@ -21,7 +21,7 @@ export function LoadingThumbnail({
   const Theme = useTheme();
   const spinValue = useRef(new Animated.Value(0));
   const strokeWidth = 4;
-  const rectangleSize = WalletImageSize.lg + Spacing.l;
+  const rectangleSize = WalletImageSize.xl + Spacing.l;
   const outerContainerSize = rectangleSize + strokeWidth;
 
   useEffect(() => {

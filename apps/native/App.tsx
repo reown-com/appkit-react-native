@@ -2,7 +2,7 @@ import { StyleSheet, View, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
 import '@walletconnect/react-native-compat';
-import { CreateConfigParameters, WagmiProvider } from 'wagmi';
+import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import {
@@ -15,42 +15,14 @@ import {
 
 import { emailConnector } from '@web3modal/email-wagmi-react-native';
 
-import {
-  arbitrum,
-  mainnet,
-  polygon,
-  avalanche,
-  bsc,
-  optimism,
-  gnosis,
-  zkSync,
-  zora,
-  base,
-  celo,
-  aurora,
-  sepolia
-} from '@wagmi/core/chains';
+import { siweConfig } from './src/utils/SiweUtils';
+
 import { AccountView } from './src/views/AccountView';
 import { ActionsView } from './src/views/ActionsView';
 import { getCustomWallets } from './src/utils/misc';
+import { chains } from './src/utils/WagmiUtils';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
-
-const chains: CreateConfigParameters['chains'] = [
-  mainnet,
-  polygon,
-  arbitrum,
-  avalanche,
-  bsc,
-  optimism,
-  gnosis,
-  zkSync,
-  zora,
-  base,
-  celo,
-  aurora,
-  sepolia
-];
 
 const metadata = {
   name: 'Web3Modal RN',
@@ -84,6 +56,7 @@ const customWallets = getCustomWallets();
 createWeb3Modal({
   projectId,
   wagmiConfig,
+  siweConfig,
   clipboardClient,
   customWallets,
   enableAnalytics: true,

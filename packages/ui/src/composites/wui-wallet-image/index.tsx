@@ -1,4 +1,4 @@
-import { type StyleProp, View, type ViewStyle } from 'react-native';
+import { type StyleProp, View, type ViewStyle, Animated } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import { Image } from '../../components/wui-image';
 import { useTheme } from '../../hooks/useTheme';
@@ -9,16 +9,18 @@ import styles from './styles';
 export interface WalletImageProps {
   imageSrc?: string;
   imageHeaders?: Record<string, string>;
-  size?: Exclude<SizeType, 'xl' | 'xxs'>;
+  size?: Exclude<SizeType, 'xxs'>;
   style?: StyleProp<ViewStyle>;
   showAllWallets?: boolean;
+  border?: boolean;
 }
 
 const IconSize = {
   xs: 10,
   sm: 24,
   md: 32,
-  lg: 40
+  lg: 36,
+  xl: 40
 };
 
 export function WalletImage({
@@ -26,7 +28,8 @@ export function WalletImage({
   imageHeaders,
   size = 'md',
   style,
-  showAllWallets
+  showAllWallets,
+  border = true
 }: WalletImageProps) {
   const Theme = useTheme();
 
@@ -61,20 +64,22 @@ export function WalletImage({
   };
 
   return (
-    <View style={style}>
+    <Animated.View style={style}>
       {templateVisual()}
-      <View
-        style={[
-          styles.border,
-          styles[`${size}Image`],
-          { borderColor: Theme['gray-glass-010'] },
-          !imageSrc && { backgroundColor: Theme['gray-glass-002'] },
-          showAllWallets && {
-            backgroundColor: `${Theme['accent-100']}1E`,
-            borderColor: Theme['accent-glass-010']
-          }
-        ]}
-      />
-    </View>
+      {border && (
+        <View
+          style={[
+            styles.border,
+            styles[`${size}Image`],
+            { borderColor: Theme['gray-glass-010'] },
+            !imageSrc && { backgroundColor: Theme['gray-glass-002'] },
+            showAllWallets && {
+              backgroundColor: `${Theme['accent-100']}1E`,
+              borderColor: Theme['accent-glass-010']
+            }
+          ]}
+        />
+      )}
+    </Animated.View>
   );
 }

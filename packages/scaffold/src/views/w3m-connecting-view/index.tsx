@@ -8,7 +8,6 @@ import {
   ModalController,
   RouterController,
   SnackController,
-  StorageUtil,
   type Platform,
   OptionsController,
   ApiController,
@@ -37,19 +36,17 @@ export function ConnectingView() {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.connectWalletConnect();
         await ConnectionController.state.wcPromise;
-        storeWalletConnectDeeplink();
         AccountController.setIsConnected(true);
-        ModalController.close();
 
-        if (!ConnectionController.state.wcLinking) {
-          EventsController.sendEvent({
-            type: 'track',
-            event: 'CONNECT_SUCCESS',
-            properties: {
-              method: 'qrcode',
-              name: 'WalletConnect'
-            }
-          });
+        if (OptionsController.state.isSiweEnabled) {
+          const { SIWEController } = await import('@web3modal/siwe-react-native');
+          if (SIWEController.state.status === 'success') {
+            ModalController.close();
+          } else {
+            RouterController.push('ConnectingSiwe');
+          }
+        } else {
+          ModalController.close();
         }
       }
     } catch (error) {
@@ -65,19 +62,6 @@ export function ConnectingView() {
           message: (error as Error)?.message ?? 'Unknown'
         }
       });
-    }
-  };
-
-  const storeWalletConnectDeeplink = async () => {
-    const { wcLinking, pressedWallet } = ConnectionController.state;
-    if (wcLinking) {
-      StorageUtil.setWalletConnectDeepLink(wcLinking);
-    }
-    if (pressedWallet) {
-      const recentWallets = await StorageUtil.setWeb3ModalRecent(pressedWallet);
-      if (recentWallets) {
-        ConnectionController.setRecentWallets(recentWallets);
-      }
     }
   };
 
@@ -104,6 +88,10 @@ export function ConnectingView() {
   };
 
   const platformTemplate = () => {
+    if (isQr) {
+      return <ConnectingQrCode />;
+    }
+
     switch (platform) {
       case 'mobile':
         return (
@@ -140,8 +128,6 @@ export function ConnectingView() {
     return () => clearInterval(_interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  if (!data?.wallet) return <ConnectingQrCode />;
 
   return (
     <>

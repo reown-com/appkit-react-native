@@ -1,11 +1,7 @@
-import type { CaipNetworkId, Tokens } from '@web3modal/scaffold-react-native';
+import type { Tokens } from '@web3modal/scaffold-react-native';
 import { ConstantsUtil } from './ConstantsUtil';
 
 export const HelpersUtil = {
-  caipNetworkIdToNumber(caipnetworkId?: CaipNetworkId) {
-    return caipnetworkId ? Number(caipnetworkId.split(':')[1]) : undefined;
-  },
-
   getCaipTokens(tokens?: Tokens) {
     if (!tokens) {
       return undefined;

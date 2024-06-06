@@ -3,9 +3,11 @@
   "workspaces": [
     "packages/core",
     "packages/ui",
+    "packages/common",
     "packages/email",
     "packages/scaffold-utils",
     "packages/scaffold",
+    "packages/siwe",
     "packages/wagmi",
     "packages/coinbase-wagmi",
     "packages/email-wagmi",
