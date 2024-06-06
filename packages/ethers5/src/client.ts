@@ -617,20 +617,31 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncProfile(address: Address) {
     const chainId = EthersStoreUtil.state.chainId;
 
-    if (chainId === 1) {
-      const ensProvider = new ethers.providers.InfuraProvider('mainnet');
-      const name = await ensProvider.lookupAddress(address);
-      const avatar = await ensProvider.getAvatar(address);
+    try {
+      const response = await this.fetchIdentity({ address });
 
-      if (name) {
-        this.setProfileName(name);
+      if (!response) {
+        throw new Error('Couldnt fetch idendity');
       }
-      if (avatar) {
-        this.setProfileImage(avatar);
+
+      this.setProfileName(response.name);
+      this.setProfileImage(response.avatar);
+    } catch (error) {
+      if (chainId === 1) {
+        const ensProvider = new ethers.providers.InfuraProvider('mainnet');
+        const name = await ensProvider.lookupAddress(address);
+        const avatar = await ensProvider.getAvatar(address);
+
+        if (name) {
+          this.setProfileName(name);
+        }
+        if (avatar) {
+          this.setProfileImage(avatar);
+        }
+      } else {
+        this.setProfileName(undefined);
+        this.setProfileImage(undefined);
       }
-    } else {
-      this.setProfileName(undefined);
-      this.setProfileImage(undefined);
     }
   }
 
