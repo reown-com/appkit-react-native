@@ -61,6 +61,9 @@ export const siweConfig = createSIWEConfig({
     // has not been tampered with, and has been appropriately
     // signed by the wallet address.
 
+    // Call your sign-in backend function here and save the session
+    // api.signIn({ message, signature, cacao });
+
     // Just a mock. You should save a token or whatever your backend needs
     await AsyncStorage.setItem(LOGGED_IN_KEY, 'true');
 
