@@ -70,10 +70,6 @@ export const siweConfig = createSIWEConfig({
     // The users session must be destroyed when calling `signOut`.
     await AsyncStorage.removeItem(LOGGED_IN_KEY);
 
-    try {
-      return Promise.resolve(true);
-    } catch (error) {
-      return false;
-    }
+    return true;
   }
 });
