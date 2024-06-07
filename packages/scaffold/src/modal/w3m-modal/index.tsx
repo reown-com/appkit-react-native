@@ -65,7 +65,7 @@ export function Web3Modal() {
     async (prevAddr?: CaipAddress, newAddr?: CaipAddress) => {
       setCurrentAddress(newAddr);
 
-      if (!prevAddr || !newAddr) {
+      if (!newAddr) {
         return;
       }
 

@@ -6,8 +6,7 @@ import {
   ConnectorController,
   EventsController,
   OptionsController,
-  SnackController,
-  StorageUtil
+  SnackController
 } from '@web3modal/core-react-native';
 import { FlexView, Link, QrCode, Text, Spacing } from '@web3modal/ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
@@ -41,10 +40,7 @@ export function ConnectingQrCode() {
     const connectors = ConnectorController.state.connectors;
     const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
     const url = AssetUtil.getConnectorImage(connector);
-    if (url) {
-      StorageUtil.setConnectedWalletImageUrl(url);
-      ConnectionController.setConnectedWalletImageUrl(url);
-    }
+    ConnectionController.setConnectedWalletImageUrl(url);
   };
 
   useEffect(() => {

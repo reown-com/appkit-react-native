@@ -124,6 +124,12 @@ export const ConnectionController = {
 
   async setConnectedWalletImageUrl(url: ConnectionControllerState['connectedWalletImageUrl']) {
     state.connectedWalletImageUrl = url;
+
+    if (url) {
+      await StorageUtil.setConnectedWalletImageUrl(url);
+    } else {
+      StorageUtil.removeConnectedWalletImageUrl();
+    }
   },
 
   async disconnect() {
