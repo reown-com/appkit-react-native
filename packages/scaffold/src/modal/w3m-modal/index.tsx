@@ -134,6 +134,7 @@ export function Web3Modal() {
       {hasEmail && EmailView && <EmailView />}
       <Modal
         style={styles.modal}
+        coverScreen={false}
         isVisible={open}
         useNativeDriver
         statusBarTranslucent
