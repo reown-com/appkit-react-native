@@ -25,7 +25,7 @@ import styles from './styles';
 
 export function Web3Modal() {
   const { open, loading } = useSnapshot(ModalController.state);
-  const { history } = useSnapshot(RouterController.state);
+  const { history, view } = useSnapshot(RouterController.state);
   const { connectors } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
   const { isSiweEnabled } = OptionsController.state;
@@ -36,6 +36,7 @@ export function Web3Modal() {
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
   const hasEmail = connectors.some(c => c.type === 'EMAIL');
   const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
+  const modalCoverScreen = view !== 'ConnectingSiwe';
   const EmailView = emailProvider?.EmailView;
 
   const onBackButtonPress = () => {
@@ -140,7 +141,7 @@ export function Web3Modal() {
       {hasEmail && EmailView && <EmailView />}
       <Modal
         style={styles.modal}
-        coverScreen={false}
+        coverScreen={modalCoverScreen}
         isVisible={open}
         useNativeDriver
         statusBarTranslucent
