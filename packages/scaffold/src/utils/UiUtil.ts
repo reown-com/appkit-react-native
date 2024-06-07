@@ -25,10 +25,7 @@ export const UiUtil = {
         ConnectionController.setRecentWallets(recentWallets);
       }
       const url = AssetUtil.getWalletImage(pressedWallet);
-      if (url) {
-        StorageUtil.setConnectedWalletImageUrl(url);
-        ConnectionController.setConnectedWalletImageUrl(url);
-      }
+      ConnectionController.setConnectedWalletImageUrl(url);
     }
   }
 };

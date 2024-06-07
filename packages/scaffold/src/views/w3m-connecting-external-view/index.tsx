@@ -39,10 +39,7 @@ export function ConnectingExternalView() {
       }
       if (connector) {
         const url = AssetUtil.getConnectorImage(connector);
-        if (url) {
-          StorageUtil.setConnectedWalletImageUrl(url);
-          ConnectionController.setConnectedWalletImageUrl(url);
-        }
+        ConnectionController.setConnectedWalletImageUrl(url);
       }
     },
     [connector]

@@ -61,11 +61,17 @@ export function Web3Modal() {
     }
   };
 
+  const onSiweSignOut = useCallback(async () => {
+    const { SIWEController } = await import('@web3modal/siwe-react-native');
+    await SIWEController.signOut();
+    onSiweNavigation();
+  }, []);
+
   const onNewAddress = useCallback(
     async (prevAddr?: CaipAddress, newAddr?: CaipAddress) => {
       setCurrentAddress(newAddr);
 
-      if (!prevAddr || !newAddr) {
+      if (!newAddr) {
         return;
       }
 
@@ -75,35 +81,35 @@ export function Web3Modal() {
         const previousNetworkId = CoreHelperUtil.getNetworkId(prevAddr);
         const newNetworkId = CoreHelperUtil.getNetworkId(newAddr);
         const { SIWEController } = await import('@web3modal/siwe-react-native');
+        const { signOutOnAccountChange, signOutOnNetworkChange } =
+          SIWEController.state._client?.options ?? {};
         const session = await SIWEController.getSession();
 
-        // If the address has changed and signOnAccountChange is enabled, sign out
-        if (session && previousAddress && newAddress && previousAddress !== newAddress) {
-          if (SIWEController.state._client?.options.signOutOnAccountChange) {
-            await SIWEController.signOut();
-            onSiweNavigation();
-          }
-
-          return;
-        }
-
-        // If the network has changed and signOnNetworkChange is enabled, sign out
-        if (session && previousNetworkId && newNetworkId && previousNetworkId !== newNetworkId) {
-          if (SIWEController.state._client?.options.signOutOnNetworkChange) {
-            await SIWEController.signOut();
-            onSiweNavigation();
-          }
-
-          return;
-        }
-
-        // If it's connected but there's no session, show sign view
-        if (!session) {
+        if (
+          session &&
+          previousAddress &&
+          newAddress &&
+          previousAddress !== newAddress &&
+          signOutOnAccountChange
+        ) {
+          // If the address has changed and signOnAccountChange is enabled, sign out
+          onSiweSignOut();
+        } else if (
+          session &&
+          previousNetworkId &&
+          newNetworkId &&
+          previousNetworkId !== newNetworkId &&
+          signOutOnNetworkChange
+        ) {
+          // If the network has changed and signOnNetworkChange is enabled, sign out
+          onSiweSignOut();
+        } else if (!session) {
+          // If it's connected but there's no session, show sign view
           onSiweNavigation();
         }
       }
     },
-    [isSiweEnabled]
+    [isSiweEnabled, onSiweSignOut]
   );
 
   const onSiweNavigation = () => {
@@ -134,6 +140,7 @@ export function Web3Modal() {
       {hasEmail && EmailView && <EmailView />}
       <Modal
         style={styles.modal}
+        coverScreen={false}
         isVisible={open}
         useNativeDriver
         statusBarTranslucent
