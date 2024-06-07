@@ -1,5 +1,16 @@
 # @web3modal/wagmi-react-native
 
+## 2.0.0-alpha.4
+
+### Patch Changes
+
+- aa7fa5d: fix: email + siwe
+- Updated dependencies [aa7fa5d]
+  - @web3modal/scaffold-utils-react-native@2.0.0-alpha.4
+  - @web3modal/scaffold-react-native@2.0.0-alpha.4
+  - @web3modal/common-react-native@2.0.0-alpha.4
+  - @web3modal/siwe-react-native@2.0.0-alpha.4
+
 ## 2.0.0-alpha.3
 
 ### Patch Changes
