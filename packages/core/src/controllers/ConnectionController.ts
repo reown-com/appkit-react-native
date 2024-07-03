@@ -15,7 +15,10 @@ export interface ConnectExternalOptions {
 }
 
 export interface ConnectionControllerClient {
-  connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>;
+  connectWalletConnect: (
+    onUri: (uri: string) => void,
+    walletUniversalLink?: string
+  ) => Promise<void>;
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>;
   signMessage: (message: string) => Promise<string>;
   disconnect: () => Promise<void>;
@@ -66,13 +69,13 @@ export const ConnectionController = {
     state._client = ref(client);
   },
 
-  connectWalletConnect() {
+  connectWalletConnect(walletUniversalLink?: string) {
     state.wcPromise = this._getClient().connectWalletConnect(uri => {
       state.wcUri = uri;
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry();
       ConnectorController.setConnectedConnector('WALLET_CONNECT');
       StorageUtil.setConnectedConnector('WALLET_CONNECT');
-    });
+    }, walletUniversalLink);
   },
 
   async connectExternal(options: ConnectExternalOptions) {

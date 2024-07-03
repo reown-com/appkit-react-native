@@ -73,7 +73,18 @@ export const CoreHelperUtil = {
     return url.startsWith('http://') || url.startsWith('https://');
   },
 
+  isLinkModeURL(url: string) {
+    return CoreHelperUtil.isHttpUrl(url) && url.includes('wc_ev');
+  },
+
   formatNativeUrl(appUrl: string, wcUri: string): LinkingRecord {
+    if (CoreHelperUtil.isLinkModeURL(wcUri)) {
+      return {
+        redirect: wcUri,
+        href: wcUri
+      };
+    }
+
     if (CoreHelperUtil.isHttpUrl(appUrl)) {
       return this.formatUniversalUrl(appUrl, wcUri);
     }
@@ -94,6 +105,13 @@ export const CoreHelperUtil = {
   },
 
   formatUniversalUrl(appUrl: string, wcUri: string): LinkingRecord {
+    if (CoreHelperUtil.isLinkModeURL(wcUri)) {
+      return {
+        redirect: wcUri,
+        href: wcUri
+      };
+    }
+
     if (!CoreHelperUtil.isHttpUrl(appUrl)) {
       return this.formatNativeUrl(appUrl, wcUri);
     }
@@ -110,7 +128,7 @@ export const CoreHelperUtil = {
   },
 
   openLink(url: string) {
-    Linking.openURL(url);
+    return Linking.openURL(url);
   },
 
   formatBalance(balance: string | undefined, symbol: string | undefined, decimals = 3) {

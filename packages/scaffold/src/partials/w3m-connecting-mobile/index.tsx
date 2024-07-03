@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
-import { Linking, Platform, ScrollView } from 'react-native';
+import { Platform, ScrollView } from 'react-native';
 import {
   RouterController,
   ApiController,
@@ -52,7 +52,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
 
   const onStorePress = () => {
     if (storeUrl) {
-      Linking.openURL(storeUrl);
+      CoreHelperUtil.openLink(storeUrl);
     }
   };
 
@@ -66,7 +66,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         const wcLinking = { name, href };
         ConnectionController.setWcLinking(wcLinking);
         ConnectionController.setPressedWallet(data?.wallet);
-        await Linking.openURL(redirect);
+        await CoreHelperUtil.openLink(redirect);
         await ConnectionController.state.wcPromise;
 
         UiUtil.storeConnectedWallet(wcLinking, data?.wallet);

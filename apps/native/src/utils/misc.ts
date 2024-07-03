@@ -7,14 +7,16 @@ export const getCustomWallets = () => {
       name: 'Wallet(RN)',
       image_url:
         'https://docs.walletconnect.com/assets/images/web3walletLogo-54d3b546146931ceaf47a3500868a73a.png',
-      mobile_link: 'rn-web3wallet://'
+      mobile_link: 'rn-web3wallet://',
+      link_mode: 'https://dev.lab.web3modal.com/walletkit_rn'
     },
     {
       id: 'flutter-wallet',
       name: 'Wallet(Flutter)',
       image_url:
         'https://docs.walletconnect.com/assets/images/web3walletLogo-54d3b546146931ceaf47a3500868a73a.png',
-      mobile_link: 'wcflutterwallet://'
+      mobile_link: 'wcflutterwallet://',
+      link_mode: undefined
     }
   ];
 
@@ -24,7 +26,9 @@ export const getCustomWallets = () => {
       name: 'Wallet(Android)',
       image_url:
         'https://docs.walletconnect.com/assets/images/web3walletLogo-54d3b546146931ceaf47a3500868a73a.png',
-      mobile_link: 'kotlin-web3wallet://'
+      mobile_link: 'kotlin-web3wallet://',
+      link_mode:
+        'https://web3modal-laboratory-git-chore-kotlin-assetlinks-walletconnect1.vercel.app/wallet'
     });
   } else if (Platform.OS === 'ios') {
     wallets.push({
@@ -32,7 +36,8 @@ export const getCustomWallets = () => {
       name: 'Wallet(iOS)',
       image_url:
         'https://docs.walletconnect.com/assets/images/web3walletLogo-54d3b546146931ceaf47a3500868a73a.png',
-      mobile_link: 'walletapp://'
+      mobile_link: 'walletapp://',
+      link_mode: 'https://lab.web3modal.com/wallet'
     });
   }
 

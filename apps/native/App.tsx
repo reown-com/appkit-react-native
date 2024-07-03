@@ -30,7 +30,9 @@ const metadata = {
   url: 'https://walletconnect.com/',
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
   redirect: {
-    native: 'redirect://'
+    native: 'redirect://',
+    universal: 'https://lab.web3modal.com/appkit_rn',
+    linkMode: true
   }
 };
 
@@ -45,8 +47,7 @@ const emailConn = emailConnector({ projectId, metadata });
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
-  metadata,
-  extraConnectors: [emailConn]
+  metadata
 });
 
 const queryClient = new QueryClient();
