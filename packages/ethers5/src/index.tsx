@@ -12,7 +12,7 @@ import {
   type Provider
 } from '@web3modal/scaffold-utils-react-native';
 export { defaultConfig } from './utils/defaultConfig';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { Web3ModalOptions } from './client';
 import { Web3Modal } from './client';
 
@@ -102,6 +102,20 @@ export function useWeb3ModalAccount() {
     isConnected,
     chainId
   };
+}
+
+export function useWalletInfo() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWalletInfo" hook');
+  }
+
+  const walletInfo = useSyncExternalStore(
+    modal.subscribeWalletInfo,
+    modal.getWalletInfo,
+    modal.getWalletInfo
+  );
+
+  return { walletInfo };
 }
 
 export function useWeb3ModalError() {

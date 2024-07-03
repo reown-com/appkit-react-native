@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useSnapshot } from 'valtio';
 import {
   ConstantsUtil,
@@ -105,6 +105,20 @@ export function useWeb3ModalAccount() {
     isConnected,
     chainId
   };
+}
+
+export function useWalletInfo() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWalletInfo" hook');
+  }
+
+  const walletInfo = useSyncExternalStore(
+    modal.subscribeWalletInfo,
+    modal.getWalletInfo,
+    modal.getWalletInfo
+  );
+
+  return { walletInfo };
 }
 
 export function useWeb3ModalError() {
