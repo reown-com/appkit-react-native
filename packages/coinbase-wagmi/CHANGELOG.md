@@ -1,5 +1,11 @@
 # @web3modal/coinbase-wagmi-react-native
 
+## 1.4.2
+
+### Patch Changes
+
+- 1.4.2
+
 ## 1.4.1
 
 ### Patch Changes
