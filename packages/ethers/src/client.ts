@@ -152,6 +152,12 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(uri);
         });
 
+        // When connecting through walletconnect, we need to set the clientId in the store
+        const clientId = await WalletConnectProvider.signer?.client?.core?.crypto?.getClientId();
+        if (clientId) {
+          this.setClientId(clientId);
+        }
+
         // SIWE
         const params = await siweConfig?.getMessageParams?.();
         if (siweConfig?.options?.enabled && params && Object.keys(params).length > 0) {
@@ -206,6 +212,9 @@ export class Web3Modal extends Web3ModalScaffold {
 
       //  @ts-expect-error TODO expected types in arguments are incomplete
       connectExternal: async ({ id }: { id: string; provider: Provider }) => {
+        // If connecting with something else than walletconnect, we need to clear the clientId in the store
+        this.setClientId(null);
+
         if (id === ConstantsUtil.COINBASE_CONNECTOR_ID) {
           const coinbaseProvider = config.extraConnectors?.find(connector => connector.id === id);
           if (!coinbaseProvider) {
@@ -246,6 +255,7 @@ export class Web3Modal extends Web3ModalScaffold {
         }
         StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
         EthersStoreUtil.reset();
+        this.setClientId(null);
       },
 
       signMessage: async (message: string) => {
@@ -356,6 +366,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const { provider } = EthersStoreUtil.state;
     StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
     EthersStoreUtil.reset();
+    this.setClientId(null);
 
     await (provider as unknown as EthereumProvider).disconnect();
   }
@@ -370,16 +381,18 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async initWalletConnectProvider() {
+    const rpcMap = this.chains
+      ? this.chains.reduce<Record<number, string>>((map, chain) => {
+          map[chain.chainId] = chain.rpcUrl;
+
+          return map;
+        }, {})
+      : ({} as Record<number, string>);
+
     const walletConnectProviderOptions: EthereumProviderOptions = {
       projectId: this.projectId,
       showQrModal: false,
-      rpcMap: this.chains
-        ? this.chains.reduce<Record<number, string>>((map, chain) => {
-            map[chain.chainId] = chain.rpcUrl;
-
-            return map;
-          }, {})
-        : ({} as Record<number, string>),
+      rpcMap,
       optionalChains: [...this.chains.map(chain => chain.chainId)] as [number],
       metadata: this.metadata
     };
@@ -708,7 +721,14 @@ export class Web3Modal extends Web3ModalScaffold {
 
             EthersStoreUtil.setChainId(chainId);
           } catch (switchError: any) {
-            throw new Error('Chain is not supported');
+            const message = switchError?.message as string;
+            if (/(?<temp1>user rejected)/u.test(message?.toLowerCase())) {
+              throw new Error('Chain is not supported');
+            }
+            await EthersHelpersUtil.addEthereumChain(
+              WalletConnectProvider as unknown as Provider,
+              chain
+            );
           }
         }
       } else if (providerType === coinbaseType && chain) {

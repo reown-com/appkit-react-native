@@ -1,34 +1,13 @@
+import { CoreHelperUtil } from '@web3modal/core-react-native';
 import { W3mFrameStorage } from './W3mFrameStorage';
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants';
 import type { W3mFrameTypes } from './W3mFrameTypes';
-
-const RESTRICTED_TIMEZONES = [
-  'ASIA/SHANGHAI',
-  'ASIA/URUMQI',
-  'ASIA/CHONGQING',
-  'ASIA/HARBIN',
-  'ASIA/KASHGAR',
-  'ASIA/MACAU',
-  'ASIA/HONG_KONG',
-  'ASIA/MACAO',
-  'ASIA/BEIJING',
-  'ASIA/HARBIN'
-];
 
 const EMAIL_MINIMUM_TIMEOUT = 30 * 1000;
 
 export const W3mFrameHelpers = {
   getBlockchainApiUrl() {
-    try {
-      const { timeZone } = new Intl.DateTimeFormat().resolvedOptions();
-      const capTimeZone = timeZone.toUpperCase();
-
-      return RESTRICTED_TIMEZONES.includes(capTimeZone)
-        ? 'https://rpc.walletconnect.org'
-        : 'https://rpc.walletconnect.com';
-    } catch {
-      return false;
-    }
+    return CoreHelperUtil.getBlockchainApiUrl();
   },
 
   async checkIfAllowedToTriggerEmail() {
