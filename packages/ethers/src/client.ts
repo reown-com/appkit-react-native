@@ -623,7 +623,14 @@ export class Web3Modal extends Web3ModalScaffold {
 
             EthersStoreUtil.setChainId(chainId);
           } catch (switchError: any) {
-            throw new Error('Chain is not supported');
+            const message = switchError?.message as string;
+            if (/(?<temp1>user rejected)/u.test(message?.toLowerCase())) {
+              throw new Error('Chain is not supported');
+            }
+            await EthersHelpersUtil.addEthereumChain(
+              WalletConnectProvider as unknown as Provider,
+              chain
+            );
           }
         }
       } else if (providerType === coinbaseType && chain) {
