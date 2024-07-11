@@ -1,3 +1,6 @@
+import { proxy } from 'valtio';
+
+import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { FetchUtil } from '../utils/FetchUtil';
 import type {
   BlockchainApiIdentityRequest,
@@ -6,17 +9,36 @@ import type {
 import { OptionsController } from './OptionsController';
 
 // -- Helpers ------------------------------------------- //
-const api = new FetchUtil({ baseUrl: 'https://rpc.walletconnect.com' });
+const baseUrl = CoreHelperUtil.getBlockchainApiUrl();
+
+// -- Types --------------------------------------------- //
+export interface BlockchainApiControllerState {
+  clientId: string | null;
+  api: FetchUtil;
+}
+
+// -- State --------------------------------------------- //
+const state = proxy<BlockchainApiControllerState>({
+  clientId: null,
+  api: new FetchUtil({ baseUrl })
+});
 
 // -- Controller ---------------------------------------- //
 export const BlockchainApiController = {
+  state,
+
   fetchIdentity({ caipChainId, address }: BlockchainApiIdentityRequest) {
-    return api.get<BlockchainApiIdentityResponse>({
+    return state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
         chainId: caipChainId,
         projectId: OptionsController.state.projectId
       }
     });
+  },
+
+  setClientId(clientId: string | null) {
+    state.clientId = clientId;
+    state.api = new FetchUtil({ baseUrl, clientId });
   }
 };

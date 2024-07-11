@@ -124,6 +124,12 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         });
 
+        const provider = await connector.getProvider();
+        const clientId = await provider.signer?.client?.core?.crypto?.getClientId();
+        if (clientId) {
+          this.setClientId(clientId);
+        }
+
         const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
         await connect({ connector, chainId });
       },
@@ -134,11 +140,17 @@ export class Web3Modal extends Web3ModalScaffold {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined');
         }
 
+        // If connecting with something else than walletconnect, we need to clear the clientId in the store
+        this.setClientId(null);
+
         const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
         await connect({ connector, chainId });
       },
 
-      disconnect
+      disconnect: async () => {
+        this.setClientId(null);
+        await disconnect();
+      }
     };
 
     super({

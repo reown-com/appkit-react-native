@@ -1,5 +1,14 @@
 # @web3modal/ethers5-react-native
 
+## 1.4.2
+
+### Patch Changes
+
+- 1.4.2
+- Updated dependencies
+  - @web3modal/scaffold-react-native@1.4.2
+  - @web3modal/scaffold-utils-react-native@1.4.2
+
 ## 1.4.1
 
 ### Patch Changes

@@ -190,6 +190,10 @@ export class Web3ModalScaffold {
       AccountController.setAddressExplorerUrl(addressExplorerUrl);
     };
 
+  protected setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
+    BlockchainApiController.setClientId(clientId);
+  };
+
   // -- Private ------------------------------------------------------------------
   private initControllers(options: ScaffoldOptions) {
     this.initAsyncValues(options);
