@@ -126,6 +126,12 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(data);
         });
 
+        // When connecting through walletconnect, we need to set the clientId in the store
+        const clientId = await provider.signer?.client?.core?.crypto?.getClientId();
+        if (clientId) {
+          this.setClientId(clientId);
+        }
+
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
 
         // SIWE
@@ -202,6 +208,9 @@ export class Web3Modal extends Web3ModalScaffold {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined');
         }
 
+        // If connecting with something else than walletconnect, we need to clear the clientId in the store
+        this.setClientId(null);
+
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
         await connect(this.wagmiConfig, { connector, chainId });
       },
@@ -210,6 +219,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
       disconnect: async () => {
         await disconnect(this.wagmiConfig);
+        this.setClientId(null);
 
         if (siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@web3modal/siwe-react-native');

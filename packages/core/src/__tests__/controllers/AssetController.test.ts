@@ -1,4 +1,6 @@
-import { AssetController } from '../../index';
+import { AssetController, CoreHelperUtil } from '../../index';
+
+const API_URL = CoreHelperUtil.getApiUrl();
 
 // -- Tests --------------------------------------------------------------------
 describe('AssetController', () => {
@@ -21,8 +23,7 @@ describe('AssetController', () => {
 
   it('should save network images correctly', () => {
     const MOCK_NETWORK_ID = 'ba0ba0cd-17c6-4806-ad93-f9d174f17900';
-    const MOCK_NETWORK_IMAGE =
-      'https://api.web3modal.com/public/getAssetImage/ba0ba0cd-17c6-4806-ad93-f9d174f17900';
+    const MOCK_NETWORK_IMAGE = `${API_URL}/public/getAssetImage/ba0ba0cd-17c6-4806-ad93-f9d174f17900`;
 
     AssetController.setNetworkImage(MOCK_NETWORK_ID, MOCK_NETWORK_IMAGE);
     expect(AssetController.state.networkImages[MOCK_NETWORK_ID]).toEqual(MOCK_NETWORK_IMAGE);
@@ -30,8 +31,7 @@ describe('AssetController', () => {
 
   it('should save wallet images correctly', () => {
     const MOCK_WALLET_ID = '7c5ff577-a68d-49c5-02cd-3d83637b0b00';
-    const MOCK_WALLET_IMAGE =
-      'https://api.web3modal.com/getWalletImage/7c5ff577-a68d-49c5-02cd-3d83637b0b00';
+    const MOCK_WALLET_IMAGE = `${API_URL}/getWalletImage/7c5ff577-a68d-49c5-02cd-3d83637b0b00`;
 
     AssetController.setWalletImage(MOCK_WALLET_ID, MOCK_WALLET_IMAGE);
     expect(AssetController.state.walletImages[MOCK_WALLET_ID]).toEqual(MOCK_WALLET_IMAGE);
@@ -39,8 +39,7 @@ describe('AssetController', () => {
 
   it('should save connector images correctly', () => {
     const MOCK_CONNECTOR_ID = '7c5ff577-a68d-49c5-02cd-3d83637b0b00';
-    const MOCK_CONNECTOR_IMAGE =
-      'https://api.web3modal.com/getWalletImage/7c5ff577-a68d-49c5-02cd-3d83637b0b00';
+    const MOCK_CONNECTOR_IMAGE = `${API_URL}/getWalletImage/7c5ff577-a68d-49c5-02cd-3d83637b0b00`;
 
     AssetController.setConnectorImage(MOCK_CONNECTOR_ID, MOCK_CONNECTOR_IMAGE);
     expect(AssetController.state.connectorImages[MOCK_CONNECTOR_ID]).toEqual(MOCK_CONNECTOR_IMAGE);

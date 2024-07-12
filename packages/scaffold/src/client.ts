@@ -206,6 +206,10 @@ export class Web3ModalScaffold {
       AccountController.setConnectedWalletInfo(connectedWalletInfo);
     };
 
+  protected setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
+    BlockchainApiController.setClientId(clientId);
+  };
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     this.initAsyncValues(options);
