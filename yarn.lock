@@ -10453,7 +10453,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@web3modal/core-react-native@workspace:packages/core"
   dependencies:
-    "@web3modal/common-react-native": "npm:2.0.0-alpha.4"
     valtio: "npm:1.10.5"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
