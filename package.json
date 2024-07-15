@@ -26,7 +26,10 @@
     "test": "turbo run test --parallel",
     "clean": "turbo clean && rm -rf node_modules && watchman watch-del-all",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
-    "pre-publish": "turbo clean lint prettier --parallel; yarn install; turbo run build; turbo run test;"
+    "changeset:prepublish": "turbo clean lint prettier --parallel; yarn install; yarn version:update; turbo run build; turbo run test;",
+    "changeset:publish": "yarn run changeset:prepublish; yarn run changeset publish",
+    "changeset:version": "changeset version; yarn run version:update",
+    "version:update": "./scripts/bump-version.sh"
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.0",
