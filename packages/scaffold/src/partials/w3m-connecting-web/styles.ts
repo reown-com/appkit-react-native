@@ -8,14 +8,6 @@ export default StyleSheet.create({
   copyButton: {
     marginTop: Spacing.m
   },
-  mainText: {
-    marginTop: Spacing.s,
-    marginBottom: Spacing.xs
-  },
-  descriptionText: {
-    marginBottom: Spacing.xs,
-    marginHorizontal: Spacing['3xl']
-  },
   errorIcon: {
     position: 'absolute',
     bottom: 5,
