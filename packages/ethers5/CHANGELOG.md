@@ -1,5 +1,15 @@
 # @web3modal/ethers5-react-native
 
+## 1.4.3
+
+### Patch Changes
+
+- [#182](https://github.com/WalletConnect/web3modal-react-native/pull/182) [`e14f193`](https://github.com/WalletConnect/web3modal-react-native/commit/e14f193418517e392927947c0e1d14457c9dd2f2) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: added a default error in connecting view
+
+- Updated dependencies [[`e14f193`](https://github.com/WalletConnect/web3modal-react-native/commit/e14f193418517e392927947c0e1d14457c9dd2f2)]:
+  - @web3modal/scaffold-react-native@1.4.3
+  - @web3modal/scaffold-utils-react-native@1.4.3
+
 ## 1.4.2
 
 ### Patch Changes
