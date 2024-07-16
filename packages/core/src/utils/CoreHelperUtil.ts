@@ -105,8 +105,12 @@ export const CoreHelperUtil = {
     };
   },
 
-  openLink(url: string) {
-    Linking.openURL(url);
+  async openLink(url: string) {
+    try {
+      await Linking.openURL(url);
+    } catch (error) {
+      throw new Error(ConstantsUtil.LINKING_ERROR);
+    }
   },
 
   formatBalance(balance: string | undefined, symbol: string | undefined, decimals = 3) {

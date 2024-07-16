@@ -10,5 +10,7 @@ export const ConstantsUtil = {
 
   BLOCKCHAIN_API_RPC_URL: 'https://rpc.walletconnect.org',
 
-  PULSE_API_URL: 'https://pulse.walletconnect.org'
+  PULSE_API_URL: 'https://pulse.walletconnect.org',
+
+  LINKING_ERROR: 'LINKING_ERROR'
 };
