@@ -33,51 +33,10 @@
 
 ### Patch Changes
 
-- aa7fa5d: fix: email + siwe
-- Updated dependencies [aa7fa5d]
-  - @web3modal/core-react-native@2.0.0-alpha.4
-  - @web3modal/siwe-react-native@2.0.0-alpha.4
-  - @web3modal/ui-react-native@2.0.0-alpha.4
-
-## 2.0.0-alpha.3
-
-### Patch Changes
-
-- siwe + one-click auth
+- email wallet fixes
 - Updated dependencies
-  - @web3modal/core-react-native@2.0.0-alpha.3
-  - @web3modal/siwe-react-native@2.0.0-alpha.3
-  - @web3modal/ui-react-native@2.0.0-alpha.3
-
-## 2.0.0-alpha.2
-
-### Patch Changes
-
-- alpha.2
-- Updated dependencies
-  - @web3modal/core-react-native@2.0.0-alpha.2
-  - @web3modal/ui-react-native@2.0.0-alpha.2
-
-## 2.0.0-alpha.1
-
-### Patch Changes
-
-- fixes
-- Updated dependencies
-  - @web3modal/core-react-native@2.0.0-alpha.1
-  - @web3modal/ui-react-native@2.0.0-alpha.1
-
-## 2.0.0-alpha.0
-
-### Major Changes
-
-- 2.0.0
-
-### Patch Changes
-
-- Updated dependencies
-  - @web3modal/core-react-native@2.0.0-alpha.0
-  - @web3modal/ui-react-native@2.0.0-alpha.0
+  - @web3modal/core-react-native@1.4.1
+  - @web3modal/ui-react-native@1.4.1
 
 ## 1.4.0
 
