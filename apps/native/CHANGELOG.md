@@ -13,32 +13,8 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @web3modal/email-wagmi-react-native@2.0.0-alpha.3
-  - @web3modal/wagmi-react-native@2.0.0-alpha.3
-
-## 1.0.7-alpha.2
-
-### Patch Changes
-
-- Updated dependencies
-  - @web3modal/email-wagmi-react-native@2.0.0-alpha.2
-  - @web3modal/wagmi-react-native@2.0.0-alpha.2
-
-## 1.0.7-alpha.1
-
-### Patch Changes
-
-- Updated dependencies
-  - @web3modal/email-wagmi-react-native@2.0.0-alpha.1
-  - @web3modal/wagmi-react-native@2.0.0-alpha.1
-
-## 1.0.7-alpha.0
-
-### Patch Changes
-
-- Updated dependencies
-  - @web3modal/email-wagmi-react-native@2.0.0-alpha.0
-  - @web3modal/wagmi-react-native@2.0.0-alpha.0
+  - @web3modal/email-wagmi-react-native@1.4.1
+  - @web3modal/wagmi-react-native@1.4.1
 
 ## 1.0.6
 
