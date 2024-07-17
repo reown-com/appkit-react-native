@@ -1,34 +1,28 @@
 # @web3modal/core-react-native
 
-## 2.0.0-alpha.4
+## 1.4.4
 
 ### Patch Changes
 
-- aa7fa5d: fix: email + siwe
+- [#184](https://github.com/WalletConnect/web3modal-react-native/pull/184) [`d67cac8`](https://github.com/WalletConnect/web3modal-react-native/commit/d67cac8c81e3079536b12db2d3712a6cbdae50f9) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: added workaround to solve promise.allSettled issues
 
-## 2.0.0-alpha.3
-
-### Patch Changes
-
-- siwe + one-click auth
-
-## 2.0.0-alpha.2
+## 1.4.3
 
 ### Patch Changes
 
-- alpha.2
+- [#182](https://github.com/WalletConnect/web3modal-react-native/pull/182) [`e14f193`](https://github.com/WalletConnect/web3modal-react-native/commit/e14f193418517e392927947c0e1d14457c9dd2f2) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: added a default error in connecting view
 
-## 2.0.0-alpha.1
+## 1.4.2
 
 ### Patch Changes
 
-- fixes
+- 1.4.2
 
-## 2.0.0-alpha.0
+## 1.4.1
 
-### Major Changes
+### Patch Changes
 
-- 2.0.0
+- email wallet fixes
 
 ## 1.4.0
 

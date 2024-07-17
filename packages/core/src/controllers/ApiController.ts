@@ -97,14 +97,18 @@ export const ApiController = {
   async fetchConnectorImages() {
     const { connectors } = ConnectorController.state;
     const ids = connectors.map(({ imageId }) => imageId).filter(Boolean);
-    await Promise.allSettled((ids as string[]).map(id => ApiController._fetchConnectorImage(id)));
+    await CoreHelperUtil.allSettled(
+      (ids as string[]).map(id => ApiController._fetchConnectorImage(id))
+    );
   },
 
   async fetchNetworkImages() {
     const { requestedCaipNetworks } = NetworkController.state;
     const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean);
     if (ids) {
-      await Promise.allSettled((ids as string[]).map(id => ApiController._fetchNetworkImage(id)));
+      await CoreHelperUtil.allSettled(
+        (ids as string[]).map(id => ApiController._fetchNetworkImage(id))
+      );
     }
   },
 
@@ -150,7 +154,7 @@ export const ApiController = {
 
       if (walletResponse?.data) {
         const walletImages = walletResponse.data.map(d => d.image_id).filter(Boolean);
-        await Promise.allSettled(
+        await CoreHelperUtil.allSettled(
           (walletImages as string[]).map(id => ApiController._fetchWalletImage(id))
         );
         state.installed = walletResponse.data;
@@ -181,7 +185,9 @@ export const ApiController = {
 
       data.sort((a, b) => featuredWalletIds.indexOf(a.id) - featuredWalletIds.indexOf(b.id));
       const images = data.map(d => d.image_id).filter(Boolean);
-      await Promise.allSettled((images as string[]).map(id => ApiController._fetchWalletImage(id)));
+      await CoreHelperUtil.allSettled(
+        (images as string[]).map(id => ApiController._fetchWalletImage(id))
+      );
       state.featured = data;
     }
   },
@@ -214,7 +220,7 @@ export const ApiController = {
     const recent = await StorageUtil.getRecentWallets();
     const recommendedImages = data.map(d => d.image_id).filter(Boolean);
     const recentImages = recent.map(r => r.image_id).filter(Boolean);
-    await Promise.allSettled(
+    await CoreHelperUtil.allSettled(
       ([...recommendedImages, ...recentImages] as string[]).map(id =>
         ApiController._fetchWalletImage(id)
       )
@@ -247,7 +253,7 @@ export const ApiController = {
     const { data, count } = response;
 
     const images = data.map(w => w.image_id).filter(Boolean);
-    await Promise.allSettled([
+    await CoreHelperUtil.allSettled([
       ...(images as string[]).map(id => ApiController._fetchWalletImage(id)),
       CoreHelperUtil.wait(300)
     ]);
@@ -276,7 +282,7 @@ export const ApiController = {
     const { data } = response;
 
     const images = data.map(w => w.image_id).filter(Boolean);
-    await Promise.allSettled([
+    await CoreHelperUtil.allSettled([
       ...(images as string[]).map(id => ApiController._fetchWalletImage(id)),
       CoreHelperUtil.wait(300)
     ]);
@@ -296,7 +302,10 @@ export const ApiController = {
     if (OptionsController.state.enableAnalytics === undefined) {
       promises.push(ApiController.fetchAnalyticsConfig());
     }
-    state.prefetchPromise = Promise.race([Promise.allSettled(promises), CoreHelperUtil.wait(3000)]);
+    state.prefetchPromise = Promise.race([
+      CoreHelperUtil.allSettled(promises),
+      CoreHelperUtil.wait(3000)
+    ]);
   },
 
   async fetchAnalyticsConfig() {

@@ -1,47 +1,38 @@
 # @web3modal/coinbase-wagmi-react-native
 
-## 2.0.0-alpha.4
+## 1.4.4
 
 ### Patch Changes
 
-- aa7fa5d: fix: email + siwe
-- Updated dependencies [aa7fa5d]
-  - @web3modal/email-react-native@2.0.0-alpha.4
+- [#184](https://github.com/WalletConnect/web3modal-react-native/pull/184) [`d67cac8`](https://github.com/WalletConnect/web3modal-react-native/commit/d67cac8c81e3079536b12db2d3712a6cbdae50f9) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: added workaround to solve promise.allSettled issues
 
-## 2.0.0-alpha.3
+- Updated dependencies [[`d67cac8`](https://github.com/WalletConnect/web3modal-react-native/commit/d67cac8c81e3079536b12db2d3712a6cbdae50f9)]:
+  - @web3modal/email-react-native@1.4.4
+
+## 1.4.3
 
 ### Patch Changes
 
-- siwe + one-click auth
+- [#182](https://github.com/WalletConnect/web3modal-react-native/pull/182) [`e14f193`](https://github.com/WalletConnect/web3modal-react-native/commit/e14f193418517e392927947c0e1d14457c9dd2f2) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: added a default error in connecting view
+
+- Updated dependencies [[`e14f193`](https://github.com/WalletConnect/web3modal-react-native/commit/e14f193418517e392927947c0e1d14457c9dd2f2)]:
+  - @web3modal/email-react-native@1.4.3
+
+## 1.4.2
+
+### Patch Changes
+
+- 1.4.2
 - Updated dependencies
-  - @web3modal/email-react-native@2.0.0-alpha.3
+  - @web3modal/email-react-native@1.4.2
 
-## 2.0.0-alpha.2
-
-### Patch Changes
-
-- alpha.2
-- Updated dependencies
-  - @web3modal/email-react-native@2.0.0-alpha.2
-
-## 2.0.0-alpha.1
+## 1.4.1
 
 ### Patch Changes
 
-- fixes
+- email wallet fixes
 - Updated dependencies
-  - @web3modal/email-react-native@2.0.0-alpha.1
-
-## 2.0.0-alpha.0
-
-### Major Changes
-
-- 2.0.0
-
-### Patch Changes
-
-- Updated dependencies
-  - @web3modal/email-react-native@2.0.0-alpha.0
+  - @web3modal/email-react-native@1.4.1
 
 ## 1.4.0
 

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Get version from package.json
-version=$(awk -F: '/"version":/ {print $2}' package.json | tr -d ' ",')
+# Get version from packages/scaffold-utils/package.json
+version=$(awk -F: '/"version":/ {print $2}' packages/scaffold-utils/package.json | tr -d ' ",')
 # File where VERSION is defined
-file="src/utils/ConstantsUtil.ts"
+file="packages/scaffold-utils/src/utils/ConstantsUtil.ts"
 
 # Use sed to replace VERSION
 if [[ "$OSTYPE" == "darwin"* ]]; then

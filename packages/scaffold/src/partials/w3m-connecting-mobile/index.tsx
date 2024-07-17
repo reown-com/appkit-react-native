@@ -8,21 +8,22 @@ import {
   ConnectionController,
   CoreHelperUtil,
   OptionsController,
-  EventsController
+  EventsController,
+  ConstantsUtil
 } from '@web3modal/core-react-native';
 import {
   Button,
   FlexView,
   LoadingThumbnail,
-  Text,
   WalletImage,
   Link,
-  IconBox,
-  ActionEntry
+  IconBox
 } from '@web3modal/ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { UiUtil } from '../../utils/UiUtil';
+import { ConnectingBody } from './components/Body';
+import { StoreLink } from './components/StoreLink';
 import styles from './styles';
 
 interface Props {
@@ -35,10 +36,11 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const { data } = useSnapshot(RouterController.state);
   const { maxWidth: width } = useCustomDimensions();
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
-  const [linkingError, setLinkingError] = useState(false);
+  const [errorType, setErrorType] = useState<'linking' | 'default' | undefined>();
   const [isRetrying, setIsRetrying] = useState(false);
   const [ready, setReady] = useState(false);
-  const showCopy = OptionsController.isClipboardAvailable() && !linkingError;
+  const showCopy = OptionsController.isClipboardAvailable() && errorType !== 'linking';
+  const showRetry = errorType !== 'linking';
 
   const storeUrl = Platform.select({
     ios: data?.wallet?.app_store,
@@ -60,7 +62,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
     try {
       const { name, mobile_link } = data?.wallet ?? {};
       if (name && mobile_link && wcUri) {
-        setLinkingError(false);
+        setErrorType(undefined);
         ConnectionController.setWcError(false);
         const { redirect, href } = CoreHelperUtil.formatNativeUrl(mobile_link, wcUri);
         const wcLinking = { name, href };
@@ -80,74 +82,14 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
           }
         });
       }
-    } catch (error) {
-      setLinkingError(true);
+    } catch (error: any) {
+      if (error.message.includes(ConstantsUtil.LINKING_ERROR)) {
+        setErrorType('linking');
+      } else {
+        setErrorType('default');
+      }
     }
   }, [data?.wallet, wcUri]);
-
-  const textTemplate = () => {
-    const walletName = data?.wallet?.name ?? 'Wallet';
-    if (linkingError) {
-      return (
-        <FlexView
-          padding={['3xs', '2xl', '0', '2xl']}
-          alignItems="center"
-          style={styles.textContainer}
-        >
-          <Text variant="paragraph-500">App not installed</Text>
-        </FlexView>
-      );
-    } else if (wcError) {
-      return (
-        <FlexView
-          padding={['3xs', '2xl', '0', '2xl']}
-          alignItems="center"
-          style={styles.textContainer}
-        >
-          <Text variant="paragraph-500" color="error-100">
-            Connection declined
-          </Text>
-          <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
-            Connection can be declined if a previous request is still active
-          </Text>
-        </FlexView>
-      );
-    }
-
-    return (
-      <FlexView
-        padding={['3xs', '2xl', '0', '2xl']}
-        alignItems="center"
-        style={styles.textContainer}
-      >
-        <Text variant="paragraph-500">{`Continue in ${walletName}`}</Text>
-        <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
-          Accept connection request in the wallet
-        </Text>
-      </FlexView>
-    );
-  };
-
-  const storeTemplate = () => {
-    if (!storeUrl || isInstalled) return null;
-
-    return (
-      <ActionEntry style={styles.storeButton}>
-        <Text numberOfLines={1} variant="paragraph-500" color="fg-200">
-          {`Don't have ${data?.wallet?.name}?`}
-        </Text>
-        <Button
-          variant="accent"
-          iconRight="chevronRightSmall"
-          onPress={onStorePress}
-          size="sm"
-          hitSlop={20}
-        >
-          Get
-        </Button>
-      </ActionEntry>
-    );
-  };
 
   useEffect(() => {
     // First connection
@@ -172,7 +114,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         padding={['2xl', 'l', '0', 'l']}
         style={{ width }}
       >
-        <LoadingThumbnail paused={linkingError || wcError}>
+        <LoadingThumbnail paused={!!errorType || wcError}>
           <WalletImage
             size="xl"
             imageSrc={AssetUtil.getWalletImage(data?.wallet)}
@@ -190,8 +132,8 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
             />
           )}
         </LoadingThumbnail>
-        {textTemplate()}
-        {!linkingError && (
+        <ConnectingBody errorType={errorType} wcError={wcError} walletName={data?.wallet?.name} />
+        {showRetry && (
           <Button
             variant="accent"
             iconLeft="refresh"
@@ -213,7 +155,11 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
           Copy link
         </Link>
       )}
-      {storeTemplate()}
+      <StoreLink
+        visible={!isInstalled && !!storeUrl}
+        walletName={data?.wallet?.name}
+        onPress={onStorePress}
+      />
     </ScrollView>
   );
 }
