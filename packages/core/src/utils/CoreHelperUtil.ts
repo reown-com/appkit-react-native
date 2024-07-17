@@ -207,5 +207,15 @@ export const CoreHelperUtil = {
 
   isValidEmail(email: string) {
     return ConstantsUtil.EMAIL_REGEX.test(email);
+  },
+
+  allSettled(promises: Promise<unknown>[]) {
+    return Promise.all(
+      promises.map(promise =>
+        promise
+          .then(value => ({ status: 'fulfilled', value }))
+          .catch(reason => ({ status: 'rejected', reason }))
+      )
+    );
   }
 };
