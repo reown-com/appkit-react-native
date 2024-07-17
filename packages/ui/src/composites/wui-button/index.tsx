@@ -8,8 +8,9 @@ import {
 } from 'react-native';
 import { Text } from '../../components/wui-text';
 import { Icon } from '../../components/wui-icon';
+import { LoadingSpinner } from '../../components/wui-loading-spinner';
 import { useTheme } from '../../hooks/useTheme';
-import type { ButtonType, ColorType, IconType, SizeType } from '../../utils/TypesUtil';
+import type { ButtonType, IconType, SizeType } from '../../utils/TypesUtil';
 
 import styles, { getThemedButtonStyle, getThemedTextStyle } from './styles';
 import type { SvgProps } from 'react-native-svg';
@@ -26,6 +27,7 @@ export type ButtonProps = NativeProps & {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   iconStyle?: SvgProps['style'];
+  loading?: boolean;
 };
 
 export function Button({
@@ -38,15 +40,15 @@ export function Button({
   iconLeft,
   iconRight,
   iconStyle,
+  loading,
   ...rest
 }: ButtonProps) {
   const Theme = useTheme();
   const themedTextStyle = getThemedTextStyle(Theme, variant, disabled);
   const colorAnimation = useRef(new Animated.Value(0));
   const iconSize = size === 'md' ? 'sm' : 'xs';
-  const iconColor = (
-    variant === 'fill' ? 'inverse-100' : variant === 'accent' ? 'accent-100' : 'fg-150'
-  ) as ColorType;
+  const iconColor =
+    variant === 'fill' ? 'inverse-100' : variant === 'accent' ? 'accent-100' : 'fg-100';
 
   const themedNormalStyle = getThemedButtonStyle(Theme, variant, disabled, false);
   const themedPressedStyle = getThemedButtonStyle(Theme, variant, disabled, true);
@@ -79,7 +81,7 @@ export function Button({
 
   return (
     <AnimatedPressable
-      disabled={disabled}
+      disabled={disabled || loading}
       style={[styles.button, styles[`${size}Button`], { backgroundColor, borderColor }, style]}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
@@ -95,12 +97,16 @@ export function Button({
             style={[styles.iconLeft, iconStyle]}
           />
         )}
-        <Text
-          variant={size === 'md' ? 'paragraph-600' : 'small-600'}
-          style={[styles.text, themedTextStyle]}
-        >
-          {children}
-        </Text>
+        {loading ? (
+          <LoadingSpinner color={iconColor} />
+        ) : (
+          <Text
+            variant={size === 'md' ? 'paragraph-600' : 'small-600'}
+            style={[styles.text, themedTextStyle]}
+          >
+            {children}
+          </Text>
+        )}
         {iconRight && (
           <Icon
             color={iconColor}

@@ -20,6 +20,7 @@ export function Header() {
       Account: undefined,
       ConnectingWalletConnect: walletName ?? 'WalletConnect',
       ConnectingExternal: connectorName ?? 'Connect wallet',
+      ConnectingSiwe: 'Sign In',
       Networks: 'Select network',
       SwitchNetwork: networkName ?? 'Switch network',
       AllWallets: 'All wallets',
@@ -38,7 +39,8 @@ export function Header() {
   const header = headings()[view];
 
   const dynamicButtonTemplate = () => {
-    const showBack = history.length > 1;
+    const hideBackViews = ['ConnectingSiwe'];
+    const showBack = history.length > 1 && !hideBackViews.includes(view);
 
     return showBack ? (
       <IconLink

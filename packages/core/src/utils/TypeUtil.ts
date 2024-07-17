@@ -9,6 +9,14 @@ export interface CaipNetwork {
   imageUrl?: string;
 }
 
+export type ConnectedWalletInfo =
+  | {
+      name?: string;
+      icon?: string;
+      [key: string]: unknown;
+    }
+  | undefined;
+
 export interface LinkingRecord {
   redirect: string;
   href: string;
@@ -97,7 +105,6 @@ export interface ThemeVariables {
 
 // -- BlockchainApiController Types ---------------------------------------------
 export interface BlockchainApiIdentityRequest {
-  caipChainId: CaipNetworkId;
   address: string;
 }
 
@@ -252,6 +259,22 @@ export type Event =
   | {
       type: 'track';
       event: 'EMAIL_UPGRADE_FROM_MODAL';
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_SIGN_SIWE_MESSAGE';
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_CANCEL_SIWE';
+    }
+  | {
+      type: 'track';
+      event: 'SIWE_AUTH_SUCCESS';
+    }
+  | {
+      type: 'track';
+      event: 'SIWE_AUTH_ERROR';
     };
 
 // -- Email Types ------------------------------------------------

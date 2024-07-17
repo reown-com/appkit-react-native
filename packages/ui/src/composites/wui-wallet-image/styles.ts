@@ -24,6 +24,11 @@ export default StyleSheet.create({
   lgImage: {
     height: WalletImageSize.lg,
     width: WalletImageSize.lg,
+    borderRadius: BorderRadius.s
+  },
+  xlImage: {
+    height: WalletImageSize.xl,
+    width: WalletImageSize.xl,
     borderRadius: BorderRadius.m
   },
   border: {

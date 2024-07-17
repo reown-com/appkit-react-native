@@ -1,6 +1,8 @@
 /* eslint-disable no-bitwise */
 
 import { Linking, Platform } from 'react-native';
+import { ConstantsUtil as CommonConstants } from '@web3modal/common-react-native';
+
 import { ConstantsUtil } from './ConstantsUtil';
 import type { CaipAddress, DataWallet, LinkingRecord } from './TypeUtil';
 
@@ -41,8 +43,12 @@ export const CoreHelperUtil = {
     return Date.now() + ConstantsUtil.FOUR_MINUTES_MS;
   },
 
-  getPlainAddress(caipAddress: CaipAddress) {
-    return caipAddress.split(':')[2];
+  getNetworkId(caipAddress: CaipAddress | undefined) {
+    return caipAddress?.split(':')[1];
+  },
+
+  getPlainAddress(caipAddress: CaipAddress | undefined) {
+    return caipAddress?.split(':')[2];
   },
 
   async wait(milliseconds: number) {
@@ -130,15 +136,15 @@ export const CoreHelperUtil = {
   },
 
   getApiUrl() {
-    return ConstantsUtil.W3M_API_URL;
+    return CommonConstants.W3M_API_URL;
   },
 
   getBlockchainApiUrl() {
-    return ConstantsUtil.BLOCKCHAIN_API_RPC_URL;
+    return CommonConstants.BLOCKCHAIN_API_RPC_URL;
   },
 
   getAnalyticsUrl() {
-    return ConstantsUtil.PULSE_API_URL;
+    return CommonConstants.PULSE_API_URL;
   },
 
   getUUID() {

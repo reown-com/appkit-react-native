@@ -27,11 +27,10 @@ const state = proxy<BlockchainApiControllerState>({
 export const BlockchainApiController = {
   state,
 
-  fetchIdentity({ caipChainId, address }: BlockchainApiIdentityRequest) {
+  fetchIdentity({ address }: BlockchainApiIdentityRequest) {
     return state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
-        chainId: caipChainId,
         projectId: OptionsController.state.projectId
       }
     });

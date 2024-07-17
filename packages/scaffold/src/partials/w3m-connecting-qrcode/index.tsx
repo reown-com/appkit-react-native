@@ -1,6 +1,10 @@
+import { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import {
+  AssetUtil,
   ConnectionController,
+  ConnectorController,
+  EventsController,
   OptionsController,
   SnackController
 } from '@web3modal/core-react-native';
@@ -20,6 +24,30 @@ export function ConnectingQrCode() {
       SnackController.showSuccess('Link copied');
     }
   };
+
+  const onConnect = async () => {
+    await ConnectionController.state.wcPromise;
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CONNECT_SUCCESS',
+      properties: {
+        method: 'qrcode',
+        name: 'WalletConnect'
+      }
+    });
+
+    const connectors = ConnectorController.state.connectors;
+    const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
+    const url = AssetUtil.getConnectorImage(connector);
+    ConnectionController.setConnectedWalletImageUrl(url);
+  };
+
+  useEffect(() => {
+    if (wcUri) {
+      onConnect();
+    }
+  }, [wcUri]);
 
   return (
     <FlexView

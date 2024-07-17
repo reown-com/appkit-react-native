@@ -8,7 +8,7 @@ export {
 } from '@web3modal/scaffold-react-native';
 import { ConstantsUtil } from '@web3modal/scaffold-utils-react-native';
 export { defaultWagmiConfig } from './utils/defaultWagmiConfig';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { Web3ModalOptions } from './client';
 import { Web3Modal } from './client';
 
@@ -66,6 +66,20 @@ export function useWeb3ModalState() {
   }, []);
 
   return state;
+}
+
+export function useWalletInfo() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWalletInfo" hook');
+  }
+
+  const walletInfo = useSyncExternalStore(
+    modal.subscribeWalletInfo,
+    modal.getWalletInfo,
+    modal.getWalletInfo
+  );
+
+  return { walletInfo };
 }
 
 export function useWeb3ModalEvents() {

@@ -24,7 +24,7 @@ export const walletImageSrc =
   'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=90369b5c91c6f7fffe308df2b30f3ace';
 
 export const networkImageSrc =
-  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=90369b5c91c6f7fffe308df2b30f3ace';
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/ba0ba0cd-17c6-4806-ad93-f9d174f17900?projectId=90369b5c91c6f7fffe308df2b30f3ace';
 
 export const avatarImageSrc =
   'https://i.seadn.io/gcs/files/007a5af0d93d561f87c8d026ddd5179e.png?auto=format&dpr=1&w=1000';

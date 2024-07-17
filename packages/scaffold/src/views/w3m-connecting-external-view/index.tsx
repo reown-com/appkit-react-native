@@ -8,7 +8,8 @@ import {
   ConnectionController,
   ModalController,
   EventsController,
-  StorageUtil
+  StorageUtil,
+  type WcWallet
 } from '@web3modal/core-react-native';
 import { Button, FlexView, LoadingThumbnail, Text, WalletImage } from '@web3modal/ui-react-native';
 
@@ -28,14 +29,21 @@ export function ConnectingExternalView() {
     setIsRetrying(true);
   };
 
-  const storeDeeplink = useCallback(async () => {
-    if (data?.wallet) {
-      const recentWallets = await StorageUtil.setWeb3ModalRecent(data.wallet);
-      if (recentWallets) {
-        ConnectionController.setRecentWallets(recentWallets);
+  const storeConnectedWallet = useCallback(
+    async (wallet?: WcWallet) => {
+      if (wallet) {
+        const recentWallets = await StorageUtil.setWeb3ModalRecent(wallet);
+        if (recentWallets) {
+          ConnectionController.setRecentWallets(recentWallets);
+        }
       }
-    }
-  }, [data?.wallet]);
+      if (connector) {
+        const url = AssetUtil.getConnectorImage(connector);
+        ConnectionController.setConnectedWalletImageUrl(url);
+      }
+    },
+    [connector]
+  );
 
   const onConnect = useCallback(async () => {
     try {
@@ -43,7 +51,7 @@ export function ConnectingExternalView() {
         setConnectionError(false);
         setInstalledError(false);
         await ConnectionController.connectExternal(connector);
-        storeDeeplink();
+        storeConnectedWallet(data?.wallet);
         ModalController.close();
         EventsController.sendEvent({
           type: 'track',
@@ -65,7 +73,7 @@ export function ConnectingExternalView() {
         properties: { message: (error as Error)?.message ?? 'Unknown' }
       });
     }
-  }, [connector, storeDeeplink, data?.wallet]);
+  }, [connector, storeConnectedWallet, data?.wallet]);
 
   const textTemplate = () => {
     const connectorName = data?.connector?.name ?? 'Wallet';
@@ -151,7 +159,7 @@ export function ConnectingExternalView() {
       >
         <LoadingThumbnail paused={connectionError || installedError}>
           <WalletImage
-            size="lg"
+            size="xl"
             imageSrc={AssetUtil.getConnectorImage(connector)}
             imageHeaders={ApiController._getApiHeaders()}
           />

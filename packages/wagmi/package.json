@@ -38,17 +38,20 @@
     "access": "public"
   },
   "dependencies": {
+    "@web3modal/common-react-native": "1.4.4",
     "@web3modal/scaffold-react-native": "1.4.4",
-    "@web3modal/scaffold-utils-react-native": "1.4.4"
+    "@web3modal/scaffold-utils-react-native": "1.4.4",
+    "@web3modal/siwe-react-native": "1.4.4"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": ">=1.17.0",
     "@react-native-community/netinfo": "*",
+    "@walletconnect/react-native-compat": ">=2.13.1",
     "react": ">=17",
     "react-native": ">=0.68.5",
     "react-native-get-random-values": "*",
-    "viem": ">=1",
-    "wagmi": ">=1"
+    "viem": ">=2",
+    "wagmi": ">=2"
   },
   "react-native": "src/index.tsx",
   "react-native-builder-bob": {

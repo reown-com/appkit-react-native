@@ -14,8 +14,8 @@ import {
 import {
   ConstantsUtil,
   PresetsUtil,
-  HelpersUtil,
   StorageUtil,
+  HelpersUtil,
   EthersConstantsUtil,
   EthersHelpersUtil,
   EthersStoreUtil,
@@ -28,14 +28,17 @@ import {
   type CombinedProviderType,
   type W3mFrameProvider
 } from '@web3modal/scaffold-utils-react-native';
-import EthereumProvider from '@walletconnect/ethereum-provider';
+import { NetworkUtil } from '@web3modal/common-react-native';
+import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 
 import { getEmailCaipNetworks, getWalletConnectCaipNetworks } from './utils/helpers';
+import type { Web3ModalSIWEClient } from '@web3modal/siwe-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   config: ProviderType;
+  siweConfig?: Web3ModalSIWEClient;
   chains: Chain[];
   defaultChain?: Chain;
   chainImages?: Record<number, string>;
@@ -66,15 +69,23 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private chains: Chain[];
 
-  private metadata?: Metadata;
+  private metadata: Metadata;
 
   private options: Web3ModalClientOptions | undefined = undefined;
 
   private emailProvider?: W3mFrameProvider;
 
   public constructor(options: Web3ModalClientOptions) {
-    const { config, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
-      options;
+    const {
+      config,
+      siweConfig,
+      chains,
+      defaultChain,
+      tokens,
+      chainImages,
+      _sdkVersion,
+      ...w3mOptions
+    } = options;
 
     if (!config) {
       throw new Error('web3modal:constructor - config is undefined');
@@ -86,7 +97,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = HelpersUtil.caipNetworkIdToNumber(caipNetwork?.id);
+        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id);
         if (chainId) {
           try {
             await this.switchNetwork(chainId);
@@ -139,7 +150,56 @@ export class Web3Modal extends Web3ModalScaffold {
           this.setClientId(clientId);
         }
 
-        await WalletConnectProvider.connect();
+        // SIWE
+        const params = await siweConfig?.getMessageParams?.();
+        if (siweConfig?.options?.enabled && params && Object.keys(params).length > 0) {
+          const { SIWEController, getDidChainId, getDidAddress } = await import(
+            '@web3modal/siwe-react-native'
+          );
+          const result = await WalletConnectProvider.authenticate({
+            nonce: await siweConfig.getNonce(),
+            methods: OPTIONAL_METHODS,
+            ...params
+          });
+          // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
+          const signedCacao = result?.auths?.[0];
+          if (signedCacao) {
+            const { p, s } = signedCacao;
+            const chainId = getDidChainId(p.iss);
+            const address = getDidAddress(p.iss);
+            if (address && chainId) {
+              SIWEController.setSession({
+                address,
+                chainId: parseInt(chainId, 10)
+              });
+            }
+
+            try {
+              // Kicks off verifyMessage and populates external states
+              const message = WalletConnectProvider.signer.client.formatAuthMessage({
+                request: p,
+                iss: p.iss
+              });
+
+              await SIWEController.verifyMessage({
+                message,
+                signature: s.s,
+                cacao: signedCacao
+              });
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('Error verifying message', error);
+              // eslint-disable-next-line no-console
+              await WalletConnectProvider.disconnect().catch(console.error);
+              // eslint-disable-next-line no-console
+              await SIWEController.signOut().catch(console.error);
+              throw error;
+            }
+          }
+        } else {
+          await WalletConnectProvider.connect();
+        }
+
         await this.setWalletConnectProvider();
       },
 
@@ -172,6 +232,11 @@ export class Web3Modal extends Web3ModalScaffold {
           PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
         const emailType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID];
 
+        if (siweConfig?.options?.signOutOnDisconnect) {
+          const { SIWEController } = await import('@web3modal/siwe-react-native');
+          await SIWEController.signOut();
+        }
+
         if (providerType === walletConnectType) {
           const WalletConnectProvider = provider;
           await (WalletConnectProvider as unknown as EthereumProvider).disconnect();
@@ -190,10 +255,12 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined');
         }
-
+        const hexMessage = utils.isHexString(message)
+          ? message
+          : utils.hexlify(utils.toUtf8Bytes(message));
         const signature = await provider.request({
           method: 'personal_sign',
-          params: [message, this.getAddress()]
+          params: [hexMessage, this.getAddress()]
         });
 
         return signature as `0x${string}`;
@@ -203,6 +270,7 @@ export class Web3Modal extends Web3ModalScaffold {
     super({
       networkControllerClient,
       connectionControllerClient,
+      siweControllerClient: siweConfig,
       defaultChain: EthersHelpersUtil.getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `react-native-ethers5-${ConstantsUtil.VERSION}`,
@@ -239,7 +307,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     return {
       ...state,
-      selectedNetworkId: HelpersUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+      selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
     };
   }
 
@@ -248,7 +316,7 @@ export class Web3Modal extends Web3ModalScaffold {
     return super.subscribeState(state =>
       callback({
         ...state,
-        selectedNetworkId: HelpersUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+        selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
       })
     );
   }
@@ -560,20 +628,31 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncProfile(address: Address) {
     const chainId = EthersStoreUtil.state.chainId;
 
-    if (chainId === 1) {
-      const ensProvider = new ethers.providers.InfuraProvider('mainnet');
-      const name = await ensProvider.lookupAddress(address);
-      const avatar = await ensProvider.getAvatar(address);
+    try {
+      const response = await this.fetchIdentity({ address });
 
-      if (name) {
-        this.setProfileName(name);
+      if (!response) {
+        throw new Error('Couldnt fetch idendity');
       }
-      if (avatar) {
-        this.setProfileImage(avatar);
+
+      this.setProfileName(response.name);
+      this.setProfileImage(response.avatar);
+    } catch (error) {
+      if (chainId === 1) {
+        const ensProvider = new ethers.providers.InfuraProvider('mainnet');
+        const name = await ensProvider.lookupAddress(address);
+        const avatar = await ensProvider.getAvatar(address);
+
+        if (name) {
+          this.setProfileName(name);
+        }
+        if (avatar) {
+          this.setProfileImage(avatar);
+        }
+      } else {
+        this.setProfileName(undefined);
+        this.setProfileImage(undefined);
       }
-    } else {
-      this.setProfileName(undefined);
-      this.setProfileImage(undefined);
     }
   }
 
