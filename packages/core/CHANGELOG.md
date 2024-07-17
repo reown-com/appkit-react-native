@@ -1,5 +1,11 @@
 # @web3modal/core-react-native
 
+## 1.4.4
+
+### Patch Changes
+
+- [#184](https://github.com/WalletConnect/web3modal-react-native/pull/184) [`d67cac8`](https://github.com/WalletConnect/web3modal-react-native/commit/d67cac8c81e3079536b12db2d3712a6cbdae50f9) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: added workaround to solve promise.allSettled issues
+
 ## 1.4.3
 
 ### Patch Changes
