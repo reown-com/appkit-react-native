@@ -1,13 +1,13 @@
 # @apps/gallery
 
-## 1.0.7-alpha.4
+## 1.0.8
 
 ### Patch Changes
 
-- Updated dependencies [aa7fa5d]
-  - @web3modal/ui-react-native@2.0.0-alpha.4
+- Updated dependencies
+  - @web3modal/ui-react-native@1.4.2
 
-## 1.0.7-alpha.3
+## 1.0.7
 
 ### Patch Changes
 

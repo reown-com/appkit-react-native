@@ -5,5 +5,7 @@ export const ConstantsUtil = {
 
   ONE_SEC_MS: 1000,
 
-  EMAIL_REGEX: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/
+  EMAIL_REGEX: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/,
+
+  LINKING_ERROR: 'LINKING_ERROR'
 };

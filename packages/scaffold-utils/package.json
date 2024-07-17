@@ -6,7 +6,7 @@
   "module": "lib/module/index.js",
   "source": "src/index.ts",
   "scripts": {
-    "build": "./scripts/bump-version.sh && bob build",
+    "build": "bob build",
     "clean": "rm -rf lib",
     "test": "jest  --passWithNoTests",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"

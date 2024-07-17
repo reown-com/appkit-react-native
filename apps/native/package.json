@@ -1,6 +1,6 @@
 {
   "name": "@apps/native",
-  "version": "1.0.7-alpha.4",
+  "version": "1.0.8",
   "main": "index.js",
   "private": true,
   "scripts": {

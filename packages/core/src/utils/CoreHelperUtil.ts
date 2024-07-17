@@ -111,8 +111,12 @@ export const CoreHelperUtil = {
     };
   },
 
-  openLink(url: string) {
-    Linking.openURL(url);
+  async openLink(url: string) {
+    try {
+      await Linking.openURL(url);
+    } catch (error) {
+      throw new Error(ConstantsUtil.LINKING_ERROR);
+    }
   },
 
   formatBalance(balance: string | undefined, symbol: string | undefined, decimals = 3) {
@@ -209,5 +213,15 @@ export const CoreHelperUtil = {
 
   isValidEmail(email: string) {
     return ConstantsUtil.EMAIL_REGEX.test(email);
+  },
+
+  allSettled(promises: Promise<unknown>[]) {
+    return Promise.all(
+      promises.map(promise =>
+        promise
+          .then(value => ({ status: 'fulfilled', value }))
+          .catch(reason => ({ status: 'rejected', reason }))
+      )
+    );
   }
 };

@@ -14,12 +14,12 @@ import {
   Button,
   FlexView,
   LoadingThumbnail,
-  Text,
   WalletImage,
   Link,
   IconBox
 } from '@web3modal/ui-react-native';
 
+import { ConnectingBody } from './components/Body';
 import styles from './styles';
 import { UiUtil } from '../../utils/UiUtil';
 
@@ -58,31 +58,6 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
     } catch {}
   }, [data?.wallet, wcUri]);
 
-  const textTemplate = () => {
-    const walletName = data?.wallet?.name ?? 'Wallet';
-    if (wcError) {
-      return (
-        <>
-          <Text variant="paragraph-500" color="error-100" style={styles.mainText}>
-            Connection declined
-          </Text>
-          <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
-            Connection can be declined if a previous request is still active
-          </Text>
-        </>
-      );
-    }
-
-    return (
-      <>
-        <Text variant="paragraph-500" style={styles.mainText}>{`Continue in ${walletName}`}</Text>
-        <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
-          Open and continue in a browser tab
-        </Text>
-      </>
-    );
-  };
-
   return (
     <ScrollView bounces={false} fadingEdgeLength={20}>
       <FlexView alignItems="center" padding={['2xl', 'm', '3xl', 'm']}>
@@ -104,7 +79,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
             />
           )}
         </LoadingThumbnail>
-        {textTemplate()}
+        <ConnectingBody wcError={wcError} walletName={data?.wallet?.name} />
         <Button
           variant="accent"
           iconRight="externalLink"
