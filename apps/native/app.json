@@ -19,9 +19,8 @@
       "policy": "appVersion"
     },
     "owner": "nacho.walletconnect",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
+    "plugins": ["./expo-plugins/installed-wallets.js"],
     "ios": {
       "buildNumber": "1",
       "bundleIdentifier": "com.walletconnect.web3modal.rnsdk",
