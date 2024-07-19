@@ -1,5 +1,3 @@
-[![CI](https://github.com/WalletConnect/web3modal-react-native/actions/workflows/ci.yml/badge.svg)](https://github.com/WalletConnect/web3modal-react-native/actions/workflows/ci.yml)
-
 #### 📚 [Documentation](https://docs.walletconnect.com/web3modal/react-native/about)
 
 #### 🔎 [Examples](https://github.com/WalletConnect/react-native-examples/tree/main/dapps/W3MWagmi)
