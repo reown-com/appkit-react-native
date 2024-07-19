@@ -5,5 +5,5 @@
   "baseBranch": "main",
   "commit": false,
   "updateInternalDependencies": "patch",
-  "ignore": ["@apps/gallery", "@apps/native", "@apps/native-cli"]
+  "ignore": ["@apps/gallery", "@apps/native"]
 }
