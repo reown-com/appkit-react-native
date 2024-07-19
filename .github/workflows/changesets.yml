@@ -42,8 +42,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-        VERSION=$(node -pe "require('./package.json').version")
-        gh release create "v$VERSION" --target main
+          VERSION=$(node -pe "require('./package.json').version")
+          gh release create "v$VERSION" --target main
 
       - name: Publish NPM pre-release
         if: steps.changesets.outputs.published != 'true'
