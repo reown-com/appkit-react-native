@@ -22,6 +22,7 @@
     "crypto",
     "ethereum",
     "web3modal",
+    "appkit",
     "walletconnect",
     "react-native"
   ],
