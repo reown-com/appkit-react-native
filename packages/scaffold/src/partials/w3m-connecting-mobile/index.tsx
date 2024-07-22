@@ -21,6 +21,7 @@ import {
 } from '@web3modal/ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { UiUtil } from '../../utils/UiUtil';
 import { ConnectingBody } from './components/Body';
 import { StoreLink } from './components/StoreLink';
 import styles from './styles';
@@ -64,10 +65,13 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         setErrorType(undefined);
         ConnectionController.setWcError(false);
         const { redirect, href } = CoreHelperUtil.formatNativeUrl(mobile_link, wcUri);
-        ConnectionController.setWcLinking({ name, href });
+        const wcLinking = { name, href };
+        ConnectionController.setWcLinking(wcLinking);
         ConnectionController.setPressedWallet(data?.wallet);
         await CoreHelperUtil.openLink(redirect);
         await ConnectionController.state.wcPromise;
+
+        UiUtil.storeConnectedWallet(wcLinking, data?.wallet);
 
         EventsController.sendEvent({
           type: 'track',
@@ -112,7 +116,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
       >
         <LoadingThumbnail paused={!!errorType || wcError}>
           <WalletImage
-            size="lg"
+            size="xl"
             imageSrc={AssetUtil.getWalletImage(data?.wallet)}
             imageHeaders={ApiController._getApiHeaders()}
           />

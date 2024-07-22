@@ -22,6 +22,7 @@
     "crypto",
     "ethereum",
     "web3modal",
+    "appkit",
     "walletconnect",
     "react-native"
   ],
@@ -38,6 +39,7 @@
   },
   "dependencies": {
     "@web3modal/core-react-native": "1.4.4",
+    "@web3modal/siwe-react-native": "1.4.4",
     "@web3modal/ui-react-native": "1.4.4"
   },
   "peerDependencies": {

@@ -45,7 +45,7 @@ export const getThemedTextStyle = (
     ? { color: theme['inverse-100'] }
     : variant === 'accent'
     ? { color: theme['accent-100'] }
-    : { color: theme['fg-150'] };
+    : { color: theme['fg-100'] };
 };
 
 export default StyleSheet.create({
@@ -53,15 +53,16 @@ export default StyleSheet.create({
     paddingVertical: Spacing['3xs'],
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: BorderRadius.s,
+    borderRadius: BorderRadius.xs,
     borderWidth: 1
   },
   smButton: {
-    height: 32,
-    paddingHorizontal: Spacing['2xs']
+    height: 36,
+    paddingHorizontal: Spacing['2xs'],
+    borderRadius: BorderRadius.xxs
   },
   mdButton: {
-    height: 40,
+    height: 48,
     paddingHorizontal: Spacing.xs
   },
   text: {

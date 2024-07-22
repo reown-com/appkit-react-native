@@ -2,7 +2,8 @@ import { StyleSheet, View, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
 import '@walletconnect/react-native-compat';
-import { WagmiConfig } from 'wagmi';
+import { WagmiProvider } from 'wagmi';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import {
   Web3Modal,
@@ -11,46 +12,21 @@ import {
   createWeb3Modal,
   defaultWagmiConfig
 } from '@web3modal/wagmi-react-native';
-import { EmailConnector } from '@web3modal/email-wagmi-react-native';
 
-import {
-  arbitrum,
-  mainnet,
-  polygon,
-  avalanche,
-  bsc,
-  optimism,
-  gnosis,
-  zkSync,
-  zora,
-  base,
-  celo,
-  aurora
-} from 'wagmi/chains';
+import { emailConnector } from '@web3modal/email-wagmi-react-native';
+
+import { siweConfig } from './src/utils/SiweUtils';
+
 import { AccountView } from './src/views/AccountView';
 import { ActionsView } from './src/views/ActionsView';
 import { getCustomWallets } from './src/utils/misc';
+import { chains } from './src/utils/WagmiUtils';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
-const chains = [
-  mainnet,
-  polygon,
-  arbitrum,
-  avalanche,
-  bsc,
-  optimism,
-  gnosis,
-  zkSync,
-  zora,
-  base,
-  celo,
-  aurora
-];
-
 const metadata = {
-  name: 'Web3Modal v3',
-  description: 'Web3Modal v3 by WalletConnect',
+  name: 'AppKit RN',
+  description: 'AppKit RN by WalletConnect',
   url: 'https://walletconnect.com/',
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
   redirect: {
@@ -64,21 +40,23 @@ const clipboardClient = {
   }
 };
 
-const emailConnector = new EmailConnector({ chains, options: { projectId, metadata } });
+const emailConn = emailConnector({ projectId, metadata });
 
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
   metadata,
-  extraConnectors: [emailConnector]
+  extraConnectors: [emailConn]
 });
+
+const queryClient = new QueryClient();
 
 const customWallets = getCustomWallets();
 
 createWeb3Modal({
   projectId,
-  chains,
   wagmiConfig,
+  siweConfig,
   clipboardClient,
   customWallets,
   enableAnalytics: true,
@@ -89,22 +67,24 @@ export default function Native() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <View style={[styles.container, isDarkMode && styles.dark]}>
-        <StatusBar style="auto" />
-        <W3mButton
-          connectStyle={styles.button}
-          accountStyle={styles.button}
-          label="Connect"
-          loadingLabel="Connecting..."
-          balance="show"
-        />
-        <W3mNetworkButton />
-        <AccountView />
-        <ActionsView />
-        <Web3Modal />
-      </View>
-    </WagmiConfig>
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <View style={[styles.container, isDarkMode && styles.dark]}>
+          <StatusBar style="auto" />
+          <W3mButton
+            connectStyle={styles.button}
+            accountStyle={styles.button}
+            label="Connect"
+            loadingLabel="Connecting..."
+            balance="show"
+          />
+          <W3mNetworkButton />
+          <AccountView />
+          <ActionsView />
+          <Web3Modal />
+        </View>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }
 

@@ -22,8 +22,8 @@ describe('AssetController', () => {
   });
 
   it('should save network images correctly', () => {
-    const MOCK_NETWORK_ID = '692ed6ba-e569-459a-556a-776476829e00';
-    const MOCK_NETWORK_IMAGE = `${API_URL}/public/getAssetImage/692ed6ba-e569-459a-556a-776476829e00`;
+    const MOCK_NETWORK_ID = 'ba0ba0cd-17c6-4806-ad93-f9d174f17900';
+    const MOCK_NETWORK_IMAGE = `${API_URL}/public/getAssetImage/ba0ba0cd-17c6-4806-ad93-f9d174f17900`;
 
     AssetController.setNetworkImage(MOCK_NETWORK_ID, MOCK_NETWORK_IMAGE);
     expect(AssetController.state.networkImages[MOCK_NETWORK_ID]).toEqual(MOCK_NETWORK_IMAGE);

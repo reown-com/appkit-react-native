@@ -26,17 +26,26 @@ jobs:
 
       - name: Create Release Pull Request
         uses: changesets/action@v1
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
         with:
           title: 'chore: version packages'
           commit: 'chore: version packages'
-          createGithubReleases: ${{ github.ref == 'refs/heads/main' }}
           publish: yarn run changeset:publish
           version: yarn run changeset:version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish prerelease
+      - name: Create Github Release
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(node -pe "require('./package.json').version")
+          gh release create "v$VERSION" --generate-notes --target main
+
+      - name: Publish NPM pre-release
         if: steps.changesets.outputs.published != 'true'
         continue-on-error: true
         env:

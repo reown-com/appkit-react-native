@@ -12,8 +12,10 @@ import type {
   ThemeControllerState,
   ThemeMode,
   ThemeVariables,
-  Connector
+  Connector,
+  ConnectedWalletInfo
 } from '@web3modal/core-react-native';
+import type { SIWEControllerClient } from '@web3modal/siwe-react-native';
 import {
   AccountController,
   BlockchainApiController,
@@ -48,6 +50,7 @@ export interface LibraryOptions {
 export interface ScaffoldOptions extends LibraryOptions {
   networkControllerClient: NetworkControllerClient;
   connectionControllerClient: ConnectionControllerClient;
+  siweControllerClient?: SIWEControllerClient;
 }
 
 export interface OpenOptions {
@@ -89,6 +92,14 @@ export class Web3ModalScaffold {
     return ThemeController.subscribe(callback);
   }
 
+  public getWalletInfo() {
+    return AccountController.state.connectedWalletInfo;
+  }
+
+  public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
+    return AccountController.subscribeKey('connectedWalletInfo', callback);
+  }
+
   public getState() {
     return { ...PublicStateController.state };
   }
@@ -107,7 +118,7 @@ export class Web3ModalScaffold {
   public subscribeConnection(
     callback: (isConnected: AccountControllerState['isConnected']) => void
   ) {
-    return AccountController.subscribeConnection(callback);
+    return AccountController.subscribeKey('isConnected', callback);
   }
 
   public setLoading(loading: ModalControllerState['loading']) {
@@ -190,12 +201,17 @@ export class Web3ModalScaffold {
       AccountController.setAddressExplorerUrl(addressExplorerUrl);
     };
 
+  protected setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] =
+    connectedWalletInfo => {
+      AccountController.setConnectedWalletInfo(connectedWalletInfo);
+    };
+
   protected setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
     BlockchainApiController.setClientId(clientId);
   };
 
   // -- Private ------------------------------------------------------------------
-  private initControllers(options: ScaffoldOptions) {
+  private async initControllers(options: ScaffoldOptions) {
     this.initAsyncValues(options);
     NetworkController.setClient(options.networkControllerClient);
     NetworkController.setDefaultCaipNetwork(options.defaultChain);
@@ -224,10 +240,17 @@ export class Web3ModalScaffold {
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata);
     }
+
+    if (options.siweControllerClient) {
+      const { SIWEController } = await import('@web3modal/siwe-react-native');
+
+      SIWEController.setSIWEClient(options.siweControllerClient);
+    }
   }
 
   private async initRecentWallets(options: ScaffoldOptions) {
     const wallets = await StorageUtil.getRecentWallets();
+    const connectedWalletImage = await StorageUtil.getConnectedWalletImageUrl();
 
     const filteredWallets = wallets.filter(wallet => {
       const { includeWalletIds, excludeWalletIds } = options;
@@ -242,6 +265,10 @@ export class Web3ModalScaffold {
     });
 
     ConnectionController.setRecentWallets(filteredWallets);
+
+    if (connectedWalletImage) {
+      ConnectionController.setConnectedWalletImageUrl(connectedWalletImage);
+    }
   }
 
   private async initConnectedConnector() {

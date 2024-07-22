@@ -1,34 +1,35 @@
 import { Button, Text } from '@web3modal/ui-react-native';
 import { View } from 'react-native';
-import { useSignMessage, useAccount, useSendTransaction } from 'wagmi';
-import { parseEther } from 'viem';
+import { useSignMessage, useAccount, useSendTransaction, useEstimateGas } from 'wagmi';
+import { Hex, parseEther } from 'viem';
 
 export function ActionsView() {
   const { isConnected } = useAccount();
-  const { data, isError, isLoading, isSuccess, signMessage } = useSignMessage({
-    message: 'Hello Web3Modal!'
-  });
+  const { data, isError, isPending, isSuccess, signMessage } = useSignMessage();
+  const TX = {
+    to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045' as Hex, // vitalik.eth
+    value: parseEther('0.001'),
+    data: '0x' as Hex
+  };
+  const { data: gas, isError: isGasError } = useEstimateGas(TX);
 
   const {
     data: sendData,
-    isLoading: isSending,
+    isPending: isSending,
     isSuccess: isSendSuccess,
     sendTransaction
-  } = useSendTransaction({
-    to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', //vitalik.etch
-    value: parseEther('0.01'),
-    data: '0x'
-  });
+  } = useSendTransaction();
 
   return isConnected ? (
     <View>
       <Text variant="large-600">Wagmi Actions</Text>
-      <Button disabled={isLoading} onPress={() => signMessage()}>
+      <Button disabled={isPending} onPress={() => signMessage({ message: 'Hello Web3Modal!' })}>
         Sign
       </Button>
       {isSuccess && <Text>Signature: {data}</Text>}
+      {isGasError && <Text>Error estimating gas</Text>}
       {isError && <Text>Error signing message</Text>}
-      <Button disabled={isSending} onPress={() => sendTransaction()}>
+      <Button disabled={isSending} onPress={() => sendTransaction({ ...TX, gas })}>
         Send
       </Button>
       {isSending && <Text>Check Wallet</Text>}

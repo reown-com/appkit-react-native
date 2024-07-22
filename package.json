@@ -1,11 +1,15 @@
 {
+  "name": "web3modal-react-native",
+  "version": "1.4.4",
   "private": true,
   "workspaces": [
     "packages/core",
     "packages/ui",
+    "packages/common",
     "packages/email",
     "packages/scaffold-utils",
     "packages/scaffold",
+    "packages/siwe",
     "packages/wagmi",
     "packages/coinbase-wagmi",
     "packages/email-wagmi",
@@ -26,7 +30,7 @@
     "test": "turbo run test --parallel",
     "clean": "turbo clean && rm -rf node_modules && watchman watch-del-all",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
-    "changeset:prepublish": "turbo clean lint prettier --parallel; yarn install; yarn version:update; turbo run build; turbo run test;",
+    "changeset:prepublish": "turbo clean lint prettier --parallel; yarn version:update; yarn install; turbo run build; turbo run test;",
     "changeset:publish": "yarn run changeset:prepublish; yarn run changeset publish",
     "changeset:version": "changeset version; yarn run version:update",
     "version:update": "./scripts/bump-version.sh"
@@ -43,7 +47,7 @@
     "@types/qrcode": "1.5.1",
     "@types/react": "18.2.34",
     "@types/react-native": "0.72.2",
-    "@walletconnect/react-native-compat": "2.10.5",
+    "@walletconnect/react-native-compat": "2.13.1",
     "babel-jest": "^29.7.0",
     "eslint": "^8.46.0",
     "eslint-plugin-ft-flow": "2.0.3",
@@ -62,8 +66,8 @@
     "tsconfig": "*",
     "turbo": "1.10.15",
     "typescript": "5.2.2",
-    "viem": "1.19.3",
-    "wagmi": "1.4.7"
+    "viem": "2.13.1",
+    "wagmi": "2.9.7"
   },
   "packageManager": "yarn@4.0.2"
 }

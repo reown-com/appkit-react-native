@@ -20,6 +20,7 @@
     "crypto",
     "ethereum",
     "web3modal",
+    "appkit",
     "walletconnect",
     "react-native",
     "coinbase",
@@ -38,7 +39,7 @@
   },
   "peerDependencies": {
     "@coinbase/wallet-mobile-sdk": ">=1.0.10",
-    "wagmi": ">=1 <2"
+    "wagmi": ">=2"
   },
   "react-native": "src/index.ts",
   "react-native-builder-bob": {

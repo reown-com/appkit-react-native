@@ -1,33 +1,41 @@
-import { configureChains, createConfig, type Chain, Connector } from 'wagmi';
-import { publicProvider } from 'wagmi/providers/public';
+import {
+  createConfig,
+  createStorage,
+  type CreateConnectorFn,
+  type CreateConfigParameters
+} from 'wagmi';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
-import { walletConnectProvider } from './provider';
-import { WalletConnectConnector } from '../connectors/WalletConnectConnector';
+import { StorageUtil } from '@web3modal/scaffold-utils-react-native';
 
-export interface ConfigOptions {
+import { walletConnect } from '../connectors/WalletConnectConnector';
+import { getTransport } from './helpers';
+
+export type ConfigOptions = Partial<CreateConfigParameters> & {
   projectId: string;
   metadata: Exclude<EthereumProviderOptions['metadata'], undefined>;
-  chains: Chain[];
+  chains: CreateConfigParameters['chains'];
   enableWalletConnect?: boolean;
-  extraConnectors?: Connector[];
-}
+  extraConnectors?: CreateConnectorFn[];
+};
 
 export function defaultWagmiConfig({
   projectId,
   chains,
   metadata,
   enableWalletConnect = true,
-  extraConnectors
+  extraConnectors,
+  ...wagmiConfig
 }: ConfigOptions) {
-  const { publicClient } = configureChains(chains, [
-    walletConnectProvider({ projectId }),
-    publicProvider()
+  const connectors: CreateConnectorFn[] = [];
+  const transportsArr = chains.map(chain => [
+    chain.id,
+    getTransport({ chainId: chain.id, projectId })
   ]);
-
-  const connectors: Connector[] = [];
+  const transports = Object.fromEntries(transportsArr);
+  const storage = createStorage({ storage: StorageUtil });
 
   if (enableWalletConnect) {
-    connectors.push(new WalletConnectConnector({ chains, options: { projectId, metadata } }));
+    connectors.push(walletConnect({ projectId, metadata }));
   }
 
   if (extraConnectors) {
@@ -35,8 +43,11 @@ export function defaultWagmiConfig({
   }
 
   return createConfig({
-    autoConnect: true,
+    chains,
     connectors,
-    publicClient
+    transports,
+    storage,
+    multiInjectedProviderDiscovery: false,
+    ...wagmiConfig
   });
 }

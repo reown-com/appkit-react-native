@@ -1,5 +1,5 @@
 name: 🐛 Bug Report
-description: Report a reproducible bug or regression in Web3Modal for React Native.
+description: Report a reproducible bug or regression in AppKit for React Native.
 title: '[bug]: '
 labels: ['bug', 'needs review']
 body:
@@ -17,8 +17,8 @@ body:
   - type: input
     id: version
     attributes:
-      label: Web3Modal SDK version
-      description: What is the latest version of Web3Modal SDK that this issue reproduces on?
+      label: AppKit SDK version
+      description: What is the latest version of AppKit SDK that this issue reproduces on?
       placeholder: ex. @web3modal/wagmi-react-native 1.0.0
     validations:
       required: true
@@ -34,7 +34,7 @@ body:
     attributes:
       label: Expo Version (if applies)
       description: Which SDK version of Expo are you using?
-      placeholder: Expo 48.0.9
+      placeholder: Expo 51.0.0
   - type: textarea
     id: reproduction
     attributes:
