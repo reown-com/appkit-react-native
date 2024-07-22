@@ -26,8 +26,6 @@ jobs:
 
       - name: Create Release Pull Request
         uses: changesets/action@v1
-        env:
-          YARN_ENABLE_IMMUTABLE_INSTALLS: false
         with:
           title: 'chore: version packages'
           commit: 'chore: version packages'
