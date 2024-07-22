@@ -25,8 +25,8 @@ import { chains } from './src/utils/WagmiUtils';
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
 const metadata = {
-  name: 'Web3Modal RN',
-  description: 'Web3Modal RN by WalletConnect',
+  name: 'AppKit RN',
+  description: 'AppKit RN by WalletConnect',
   url: 'https://walletconnect.com/',
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
   redirect: {
