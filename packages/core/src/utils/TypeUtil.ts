@@ -127,6 +127,11 @@ export type Metadata = {
   description: string;
   url: string;
   icons: string[];
+  redirect?: {
+    native?: string;
+    universal?: string;
+    linkMode?: boolean;
+  };
 };
 
 export type CustomWallet = Pick<
