@@ -7,7 +7,7 @@ import type {
 
 export interface ConfigOptions {
   metadata: Metadata;
-  extraConnectors: (Provider | W3mFrameProvider)[];
+  extraConnectors?: (Provider | W3mFrameProvider)[];
 }
 
 export function defaultConfig(options: ConfigOptions) {
