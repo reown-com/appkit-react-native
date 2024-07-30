@@ -10483,7 +10483,7 @@ __metadata:
   resolution: "@web3modal/core-react-native@workspace:packages/core"
   dependencies:
     "@web3modal/common-react-native": "npm:2.0.0"
-    valtio: "npm:1.10.5"
+    valtio: "npm:1.11.2"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
     "@walletconnect/react-native-compat": ">=2.13.1"
@@ -10597,7 +10597,7 @@ __metadata:
     "@web3modal/common-react-native": "npm:2.0.0"
     "@web3modal/core-react-native": "npm:2.0.0"
     "@web3modal/ui-react-native": "npm:2.0.0"
-    valtio: "npm:1.10.5"
+    valtio: "npm:1.11.2"
   languageName: unknown
   linkType: soft
 
@@ -25748,21 +25748,6 @@ __metadata:
   dependencies:
     builtins: "npm:^1.0.3"
   checksum: 064f21f59aefae6cc286dd4a50b15d14adb0227e0facab4316197dfb8d06801669e997af5081966c15f7828a5e6ff1957bd20886aeb6b9d0fa430e4cb5db9c4a
-  languageName: node
-  linkType: hard
-
-"valtio@npm:1.10.5":
-  version: 1.10.5
-  resolution: "valtio@npm:1.10.5"
-  dependencies:
-    proxy-compare: "npm:2.5.1"
-    use-sync-external-store: "npm:1.2.0"
-  peerDependencies:
-    react: ">=16.8"
-  peerDependenciesMeta:
-    react:
-      optional: true
-  checksum: f0ab44b408931bc611cf213414d4b513f9c0af5bc3540a15362f154471bfca2d103957df33d42672d5a1a90e1a7fc97d2371a800328936e0e886ef60e883fb05
   languageName: node
   linkType: hard
 
