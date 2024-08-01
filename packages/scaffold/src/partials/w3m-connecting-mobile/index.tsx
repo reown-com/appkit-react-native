@@ -22,7 +22,7 @@ import {
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { UiUtil } from '../../utils/UiUtil';
-import { ConnectingBody } from './components/Body';
+import { ConnectingBody, type MessageError } from './components/Body';
 import { StoreLink } from './components/StoreLink';
 import styles from './styles';
 
@@ -36,9 +36,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const { data } = useSnapshot(RouterController.state);
   const { maxWidth: width } = useCustomDimensions();
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
-  const [errorType, setErrorType] = useState<'linking' | 'default' | undefined>();
-  const [isRetrying, setIsRetrying] = useState(false);
-  const [ready, setReady] = useState(false);
+  const [errorType, setErrorType] = useState<MessageError>();
   const showCopy = OptionsController.isClipboardAvailable() && errorType !== 'linking';
   const showRetry = errorType !== 'linking';
 
@@ -48,8 +46,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   });
 
   const onRetryPress = () => {
-    onRetry();
-    setIsRetrying(true);
+    onRetry?.();
   };
 
   const onStorePress = () => {
@@ -70,9 +67,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         ConnectionController.setPressedWallet(data?.wallet);
         await CoreHelperUtil.openLink(redirect);
         await ConnectionController.state.wcPromise;
-
         UiUtil.storeConnectedWallet(wcLinking, data?.wallet);
-
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
@@ -92,19 +87,10 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   }, [data?.wallet, wcUri]);
 
   useEffect(() => {
-    // First connection
-    if (!ready && wcUri) {
-      setReady(true);
+    if (wcUri) {
       onConnect();
     }
-  }, [ready, wcUri, onConnect]);
-
-  useEffect(() => {
-    if (isRetrying) {
-      setIsRetrying(false);
-      onConnect();
-    }
-  }, [wcUri, isRetrying, onConnect]);
+  }, [wcUri, onConnect]);
 
   return (
     <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.container}>
@@ -135,6 +121,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         <ConnectingBody errorType={errorType} wcError={wcError} walletName={data?.wallet?.name} />
         {showRetry && (
           <Button
+            size="sm"
             variant="accent"
             iconLeft="refresh"
             style={styles.retryButton}

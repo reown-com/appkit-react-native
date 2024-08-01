@@ -81,6 +81,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
         </LoadingThumbnail>
         <ConnectingBody wcError={wcError} walletName={data?.wallet?.name} />
         <Button
+          size="sm"
           variant="accent"
           iconRight="externalLink"
           style={styles.openButton}

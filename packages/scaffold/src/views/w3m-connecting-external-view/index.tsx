@@ -123,6 +123,7 @@ export function ConnectingExternalView() {
 
     return (
       <Button
+        size="sm"
         variant="accent"
         iconLeft="refresh"
         style={styles.retryButton}

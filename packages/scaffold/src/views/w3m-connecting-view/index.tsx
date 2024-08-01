@@ -30,6 +30,15 @@ export function ConnectingView() {
   const [platform, setPlatform] = useState<Platform>();
   const [platforms, setPlatforms] = useState<Platform[]>([]);
 
+  const onRetry = () => {
+    if (CoreHelperUtil.isAllowedRetry(lastRetry)) {
+      setLastRetry(Date.now());
+      initializeConnection(true);
+    } else {
+      SnackController.showError('Please wait a second before retrying');
+    }
+  };
+
   const initializeConnection = async (retry = false) => {
     try {
       const { wcPairingExpiry } = ConnectionController.state;
@@ -51,10 +60,6 @@ export function ConnectingView() {
       }
     } catch (error) {
       ConnectionController.setWcError(true);
-      if (CoreHelperUtil.isAllowedRetry(lastRetry)) {
-        setLastRetry(Date.now());
-        initializeConnection(true);
-      }
       EventsController.sendEvent({
         type: 'track',
         event: 'CONNECT_ERROR',
@@ -95,11 +100,7 @@ export function ConnectingView() {
     switch (platform) {
       case 'mobile':
         return (
-          <ConnectingMobile
-            onRetry={() => initializeConnection(true)}
-            onCopyUri={onCopyUri}
-            isInstalled={isInstalled}
-          />
+          <ConnectingMobile onRetry={onRetry} onCopyUri={onCopyUri} isInstalled={isInstalled} />
         );
       case 'web':
         return <ConnectingWeb onCopyUri={onCopyUri} />;
@@ -126,7 +127,6 @@ export function ConnectingView() {
     const _interval = setInterval(initializeConnection, ConstantsUtil.TEN_SEC_MS);
 
     return () => clearInterval(_interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

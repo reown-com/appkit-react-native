@@ -7,43 +7,45 @@ export interface ConnectingBodyProps {
   walletName?: string;
 }
 
+export type MessageError = 'linking' | 'default' | undefined;
+
+const getErrorMessage = (errorType: MessageError, wcError: boolean | undefined) => {
+  if (wcError) {
+    return {
+      title: 'Connection declined',
+      description: 'Connection can be declined if a previous request is still active'
+    };
+  }
+
+  switch (errorType) {
+    case 'linking':
+      return { title: 'App not installed' };
+    case 'default':
+      return {
+        title: 'Connection error',
+        description: 'There was an unexpected connection error.'
+      };
+    default:
+      return undefined;
+  }
+};
+
 export function ConnectingBody({ errorType, wcError, walletName = 'Wallet' }: ConnectingBodyProps) {
-  if (errorType === 'linking') {
+  const error = getErrorMessage(errorType, wcError);
+
+  if (error) {
     return (
       <FlexView
         padding={['3xs', '2xl', '0', '2xl']}
         alignItems="center"
         style={styles.textContainer}
       >
-        <Text variant="paragraph-500">App not installed</Text>
-      </FlexView>
-    );
-  } else if (errorType === 'default') {
-    return (
-      <FlexView
-        padding={['3xs', '2xl', '0', '2xl']}
-        alignItems="center"
-        style={styles.textContainer}
-      >
-        <Text variant="paragraph-500">Connection error</Text>
-        <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
-          There was an unexpected connection error.
-        </Text>
-      </FlexView>
-    );
-  } else if (wcError) {
-    return (
-      <FlexView
-        padding={['3xs', '2xl', '0', '2xl']}
-        alignItems="center"
-        style={styles.textContainer}
-      >
-        <Text variant="paragraph-500" color="error-100">
-          Connection declined
-        </Text>
-        <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
-          Connection can be declined if a previous request is still active
-        </Text>
+        <Text variant="paragraph-500">{error.title}</Text>
+        {error.description && (
+          <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
+            {error.description}
+          </Text>
+        )}
       </FlexView>
     );
   }
