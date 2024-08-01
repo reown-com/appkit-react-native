@@ -10,7 +10,7 @@ export function ConnectingBody({ wcError, walletName = 'Wallet' }: ConnectingBod
   if (wcError) {
     return (
       <>
-        <Text variant="paragraph-500" color="error-100" style={styles.mainText}>
+        <Text variant="paragraph-500" style={styles.mainText}>
           Connection declined
         </Text>
         <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>

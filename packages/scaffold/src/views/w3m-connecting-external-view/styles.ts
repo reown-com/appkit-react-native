@@ -10,12 +10,5 @@ export default StyleSheet.create({
   },
   retryIcon: {
     transform: [{ rotateY: '180deg' }]
-  },
-  textContainer: {
-    marginVertical: Spacing.xs
-  },
-  descriptionText: {
-    marginTop: Spacing.xs,
-    marginHorizontal: Spacing['3xl']
   }
 });

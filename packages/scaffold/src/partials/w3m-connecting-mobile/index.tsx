@@ -46,6 +46,8 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   });
 
   const onRetryPress = () => {
+    setErrorType(undefined);
+    ConnectionController.setWcError(false);
     onRetry?.();
   };
 
@@ -59,8 +61,6 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
     try {
       const { name, mobile_link } = data?.wallet ?? {};
       if (name && mobile_link && wcUri) {
-        setErrorType(undefined);
-        ConnectionController.setWcError(false);
         const { redirect, href } = CoreHelperUtil.formatNativeUrl(mobile_link, wcUri);
         const wcLinking = { name, href };
         ConnectionController.setWcLinking(wcLinking);
