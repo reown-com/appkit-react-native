@@ -60,6 +60,11 @@ export function ConnectingView() {
       }
     } catch (error) {
       ConnectionController.setWcError(true);
+      SnackController.showError('Declined');
+      if (isQr && CoreHelperUtil.isAllowedRetry(lastRetry)) {
+        setLastRetry(Date.now());
+        initializeConnection(true);
+      }
       EventsController.sendEvent({
         type: 'track',
         event: 'CONNECT_ERROR',
