@@ -74,7 +74,8 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
           event: 'CONNECT_SUCCESS',
           properties: {
             method: 'mobile',
-            name: data?.wallet?.name ?? 'Unknown'
+            name: data?.wallet?.name ?? 'Unknown',
+            explorer_id: data?.wallet?.id
           }
         });
       }

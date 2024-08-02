@@ -56,7 +56,8 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
           event: 'CONNECT_SUCCESS',
           properties: {
             method: 'web',
-            name: data?.wallet?.name ?? 'Unknown'
+            name: data?.wallet?.name ?? 'Unknown',
+            explorer_id: data?.wallet?.id
           }
         });
       }

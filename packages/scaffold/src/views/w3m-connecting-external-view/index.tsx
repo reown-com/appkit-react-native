@@ -60,7 +60,11 @@ export function ConnectingExternalView() {
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
-          properties: { name: data.wallet?.name ?? 'Unknown', method: 'mobile' }
+          properties: {
+            name: data.wallet?.name ?? 'Unknown',
+            method: 'mobile',
+            explorer_id: data.wallet?.id
+          }
         });
       }
     } catch (error) {
