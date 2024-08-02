@@ -5,23 +5,14 @@
     "appVersionSource": "remote"
   },
   "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    },
     "preview": {
       "distribution": "internal",
       "autoIncrement": true,
       "android": {
         "buildType": "apk",
         "gradleCommand": ":app:assembleRelease"
-      }
-    },
-    "production": {
-      "autoIncrement": true
+      },
+      "channel": "preview"
     }
-  },
-  "submit": {
-    "production": {}
   }
 }

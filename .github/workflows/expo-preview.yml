@@ -1,8 +1,9 @@
 name: expo-preview
 on:
+  workflow_call:
   pull_request:
     branches:
-      - main
+      - develop
 
 jobs:
   preview:
@@ -20,7 +21,7 @@ jobs:
           fi
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup
         uses: ./.github/actions/setup
