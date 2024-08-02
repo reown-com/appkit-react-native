@@ -19,9 +19,9 @@ import {
   IconBox
 } from '@web3modal/ui-react-native';
 
-import { ConnectingBody } from './components/Body';
-import styles from './styles';
 import { UiUtil } from '../../utils/UiUtil';
+import { ConnectingBody, getMessage } from '../w3m-connecting-body';
+import styles from './styles';
 
 interface ConnectingWebProps {
   onCopyUri: (uri?: string) => void;
@@ -31,6 +31,11 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
   const { data } = useSnapshot(RouterController.state);
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
   const showCopy = OptionsController.isClipboardAvailable();
+  const bodyMessage = getMessage({
+    walletName: data?.wallet?.name,
+    declined: wcError,
+    isWeb: true
+  });
 
   const onConnect = useCallback(async () => {
     try {
@@ -79,8 +84,9 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
             />
           )}
         </LoadingThumbnail>
-        <ConnectingBody wcError={wcError} walletName={data?.wallet?.name} />
+        <ConnectingBody title={bodyMessage.title} description={bodyMessage.description} />
         <Button
+          size="sm"
           variant="accent"
           iconRight="externalLink"
           style={styles.openButton}

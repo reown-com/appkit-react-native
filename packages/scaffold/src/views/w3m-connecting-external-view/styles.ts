@@ -11,11 +11,10 @@ export default StyleSheet.create({
   retryIcon: {
     transform: [{ rotateY: '180deg' }]
   },
-  textContainer: {
-    marginVertical: Spacing.xs
-  },
-  descriptionText: {
-    marginTop: Spacing.xs,
-    marginHorizontal: Spacing['3xl']
+  errorIcon: {
+    position: 'absolute',
+    bottom: 5,
+    right: 5,
+    zIndex: 2
   }
 });

@@ -11,22 +11,28 @@ import {
   StorageUtil,
   type WcWallet
 } from '@web3modal/core-react-native';
-import { Button, FlexView, LoadingThumbnail, Text, WalletImage } from '@web3modal/ui-react-native';
+import {
+  Button,
+  FlexView,
+  IconBox,
+  LoadingThumbnail,
+  WalletImage
+} from '@web3modal/ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w3m-connecting-body';
 import styles from './styles';
 
 export function ConnectingExternalView() {
   const { data } = useSnapshot(RouterController.state);
   const connector = data?.connector;
   const { maxWidth: width } = useCustomDimensions();
-  const [connectionError, setConnectionError] = useState(false);
-  const [installedError, setInstalledError] = useState(false);
-  const [isRetrying, setIsRetrying] = useState(false);
-  const [ready, setReady] = useState(false);
+  const [errorType, setErrorType] = useState<BodyErrorType>();
+  const bodyMessage = getMessage({ walletName: data?.wallet?.name, errorType });
 
   const onRetryPress = () => {
-    setIsRetrying(true);
+    setErrorType(undefined);
+    onConnect();
   };
 
   const storeConnectedWallet = useCallback(
@@ -48,8 +54,6 @@ export function ConnectingExternalView() {
   const onConnect = useCallback(async () => {
     try {
       if (connector) {
-        setConnectionError(false);
-        setInstalledError(false);
         await ConnectionController.connectExternal(connector);
         storeConnectedWallet(data?.wallet);
         ModalController.close();
@@ -61,11 +65,11 @@ export function ConnectingExternalView() {
       }
     } catch (error) {
       if (/(Wallet not found)/i.test((error as Error).message)) {
-        setInstalledError(true);
-        setConnectionError(false);
+        setErrorType('not_installed');
+      } else if (/(rejected)/i.test((error as Error).message)) {
+        setErrorType('declined');
       } else {
-        setConnectionError(true);
-        setInstalledError(false);
+        setErrorType('default');
       }
       EventsController.sendEvent({
         type: 'track',
@@ -75,79 +79,9 @@ export function ConnectingExternalView() {
     }
   }, [connector, storeConnectedWallet, data?.wallet]);
 
-  const textTemplate = () => {
-    const connectorName = data?.connector?.name ?? 'Wallet';
-    if (connectionError) {
-      return (
-        <FlexView
-          padding={['3xs', '2xl', '0', '2xl']}
-          alignItems="center"
-          style={styles.textContainer}
-        >
-          <Text variant="paragraph-500" color="error-100">
-            Connection error
-          </Text>
-          <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
-            Connection can be declined if a previous request is still active
-          </Text>
-        </FlexView>
-      );
-    } else if (installedError) {
-      return (
-        <FlexView
-          padding={['3xs', '2xl', '0', '2xl']}
-          alignItems="center"
-          style={styles.textContainer}
-        >
-          <Text variant="paragraph-500">App not installed</Text>
-        </FlexView>
-      );
-    }
-
-    return (
-      <FlexView
-        padding={['3xs', '2xl', '0', '2xl']}
-        alignItems="center"
-        style={styles.textContainer}
-      >
-        <Text variant="paragraph-500">{`Continue in ${connectorName}`}</Text>
-        <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
-          Accept connection request in the wallet
-        </Text>
-      </FlexView>
-    );
-  };
-
-  const retryTemplate = () => {
-    if (installedError) return null;
-
-    return (
-      <Button
-        variant="accent"
-        iconLeft="refresh"
-        style={styles.retryButton}
-        iconStyle={styles.retryIcon}
-        onPress={onRetryPress}
-      >
-        Try again
-      </Button>
-    );
-  };
-
   useEffect(() => {
-    // First connection
-    if (!ready) {
-      setReady(true);
-      onConnect();
-    }
-  }, [ready, onConnect]);
-
-  useEffect(() => {
-    if (isRetrying) {
-      setIsRetrying(false);
-      onConnect();
-    }
-  }, [isRetrying, onConnect]);
+    onConnect();
+  }, [onConnect]);
 
   return (
     <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.container}>
@@ -157,15 +91,37 @@ export function ConnectingExternalView() {
         padding={['2xl', 'l', '0', 'l']}
         style={{ width }}
       >
-        <LoadingThumbnail paused={connectionError || installedError}>
+        <LoadingThumbnail paused={!!errorType}>
           <WalletImage
             size="xl"
             imageSrc={AssetUtil.getConnectorImage(connector)}
             imageHeaders={ApiController._getApiHeaders()}
           />
+          {errorType && (
+            <IconBox
+              icon={'close'}
+              border
+              background
+              backgroundColor="icon-box-bg-error-100"
+              size="sm"
+              iconColor="error-100"
+              style={styles.errorIcon}
+            />
+          )}
         </LoadingThumbnail>
-        {textTemplate()}
-        {retryTemplate()}
+        <ConnectingBody title={bodyMessage.title} description={bodyMessage.description} />
+        {errorType !== 'not_installed' && (
+          <Button
+            size="sm"
+            variant="accent"
+            iconLeft="refresh"
+            style={styles.retryButton}
+            iconStyle={styles.retryIcon}
+            onPress={onRetryPress}
+          >
+            Try again
+          </Button>
+        )}
       </FlexView>
     </ScrollView>
   );
