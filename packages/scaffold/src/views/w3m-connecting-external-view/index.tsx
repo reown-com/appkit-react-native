@@ -11,21 +11,27 @@ import {
   StorageUtil,
   type WcWallet
 } from '@web3modal/core-react-native';
-import { Button, FlexView, LoadingThumbnail, WalletImage } from '@web3modal/ui-react-native';
+import {
+  Button,
+  FlexView,
+  IconBox,
+  LoadingThumbnail,
+  WalletImage
+} from '@web3modal/ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import { ConnectingBody } from './components/Body';
+import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w3m-connecting-body';
 import styles from './styles';
 
 export function ConnectingExternalView() {
   const { data } = useSnapshot(RouterController.state);
   const connector = data?.connector;
   const { maxWidth: width } = useCustomDimensions();
-  const [connectionError, setConnectionError] = useState(false);
-  const [installedError, setInstalledError] = useState(false);
+  const [errorType, setErrorType] = useState<BodyErrorType>();
+  const bodyMessage = getMessage({ walletName: data?.wallet?.name, errorType });
 
   const onRetryPress = () => {
-    setConnectionError(false);
+    setErrorType(undefined);
     onConnect();
   };
 
@@ -59,9 +65,11 @@ export function ConnectingExternalView() {
       }
     } catch (error) {
       if (/(Wallet not found)/i.test((error as Error).message)) {
-        setInstalledError(true);
+        setErrorType('not_installed');
+      } else if (/(rejected)/i.test((error as Error).message)) {
+        setErrorType('declined');
       } else {
-        setConnectionError(true);
+        setErrorType('default');
       }
       EventsController.sendEvent({
         type: 'track',
@@ -83,19 +91,26 @@ export function ConnectingExternalView() {
         padding={['2xl', 'l', '0', 'l']}
         style={{ width }}
       >
-        <LoadingThumbnail paused={connectionError || installedError}>
+        <LoadingThumbnail paused={!!errorType}>
           <WalletImage
             size="xl"
             imageSrc={AssetUtil.getConnectorImage(connector)}
             imageHeaders={ApiController._getApiHeaders()}
           />
+          {errorType && (
+            <IconBox
+              icon={'close'}
+              border
+              background
+              backgroundColor="icon-box-bg-error-100"
+              size="sm"
+              iconColor="error-100"
+              style={styles.errorIcon}
+            />
+          )}
         </LoadingThumbnail>
-        <ConnectingBody
-          connectionError={connectionError}
-          installedError={installedError}
-          walletName={data?.connector?.name}
-        />
-        {!installedError && (
+        <ConnectingBody title={bodyMessage.title} description={bodyMessage.description} />
+        {errorType !== 'not_installed' && (
           <Button
             size="sm"
             variant="accent"

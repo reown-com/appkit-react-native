@@ -22,8 +22,8 @@ import {
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { UiUtil } from '../../utils/UiUtil';
-import { ConnectingBody, type MessageError } from './components/Body';
 import { StoreLink } from './components/StoreLink';
+import { ConnectingBody, getMessage, type BodyErrorType } from '../w3m-connecting-body';
 import styles from './styles';
 
 interface Props {
@@ -36,9 +36,10 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const { data } = useSnapshot(RouterController.state);
   const { maxWidth: width } = useCustomDimensions();
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
-  const [errorType, setErrorType] = useState<MessageError>();
-  const showCopy = OptionsController.isClipboardAvailable() && errorType !== 'linking';
-  const showRetry = errorType !== 'linking';
+  const [errorType, setErrorType] = useState<BodyErrorType>();
+  const showCopy = OptionsController.isClipboardAvailable() && errorType !== 'not_installed';
+  const showRetry = errorType !== 'not_installed';
+  const bodyMessage = getMessage({ walletName: data?.wallet?.name, errorType, declined: wcError });
 
   const storeUrl = Platform.select({
     ios: data?.wallet?.app_store,
@@ -79,7 +80,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
       }
     } catch (error: any) {
       if (error.message.includes(ConstantsUtil.LINKING_ERROR)) {
-        setErrorType('linking');
+        setErrorType('not_installed');
       } else {
         setErrorType('default');
       }
@@ -118,7 +119,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
             />
           )}
         </LoadingThumbnail>
-        <ConnectingBody errorType={errorType} wcError={wcError} walletName={data?.wallet?.name} />
+        <ConnectingBody title={bodyMessage.title} description={bodyMessage.description} />
         {showRetry && (
           <Button
             size="sm"

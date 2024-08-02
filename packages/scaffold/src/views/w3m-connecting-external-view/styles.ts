@@ -10,5 +10,11 @@ export default StyleSheet.create({
   },
   retryIcon: {
     transform: [{ rotateY: '180deg' }]
+  },
+  errorIcon: {
+    position: 'absolute',
+    bottom: 5,
+    right: 5,
+    zIndex: 2
   }
 });

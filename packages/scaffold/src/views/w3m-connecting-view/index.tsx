@@ -43,6 +43,7 @@ export function ConnectingView() {
     try {
       const { wcPairingExpiry } = ConnectionController.state;
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
+        ConnectionController.setWcError(false);
         ConnectionController.connectWalletConnect();
         await ConnectionController.state.wcPromise;
         AccountController.setIsConnected(true);
@@ -129,9 +130,12 @@ export function ConnectingView() {
 
   useEffect(() => {
     initializeConnection();
+
+    // Check if the pairing expired every 10 seconds. If expired, it will create a new uri.
     const _interval = setInterval(initializeConnection, ConstantsUtil.TEN_SEC_MS);
 
     return () => clearInterval(_interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
