@@ -13,6 +13,11 @@
         "gradleCommand": ":app:assembleRelease"
       },
       "channel": "preview"
+    },
+    "production": {
+      "autoIncrement": true,
+      "distribution": "internal",
+      "channel": "staging"
     }
   }
 }
