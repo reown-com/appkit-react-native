@@ -56,7 +56,7 @@ export function Web3Modal() {
     if (isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe-react-native');
 
-      if (SIWEController.state.status !== 'success') {
+      if (SIWEController.state.status !== 'success' && isConnected) {
         await ConnectionController.disconnect();
       }
     }
