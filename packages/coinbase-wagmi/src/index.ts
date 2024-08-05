@@ -6,15 +6,12 @@ import {
   ProviderRpcError,
   SwitchChainError
 } from 'viem';
-import type { Evaluate } from '@wagmi/core/internal';
 import { WalletMobileSDKEVMProvider, configure } from '@coinbase/wallet-mobile-sdk';
 import type { WalletMobileSDKProviderOptions } from '@coinbase/wallet-mobile-sdk/build/WalletMobileSDKEVMProvider';
 
-type CoinbaseConnectorParameters = Evaluate<
-  WalletMobileSDKProviderOptions & {
-    redirect: string;
-  }
->;
+type CoinbaseConnectorParameters = WalletMobileSDKProviderOptions & {
+  redirect: string;
+};
 
 type Provider = WalletMobileSDKEVMProvider;
 
