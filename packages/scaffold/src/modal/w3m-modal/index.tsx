@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useWindowDimensions, StatusBar } from 'react-native';
 import Modal from 'react-native-modal';
 import { Card } from '@web3modal/ui-react-native';
@@ -29,7 +29,6 @@ export function Web3Modal() {
   const { connectors } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
   const { isSiweEnabled } = OptionsController.state;
-  const [currentAddress, setCurrentAddress] = useState(caipAddress);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
   const portraitHeight = height - 120;
@@ -62,55 +61,39 @@ export function Web3Modal() {
     }
   };
 
-  const onSiweSignOut = useCallback(async () => {
-    const { SIWEController } = await import('@web3modal/siwe-react-native');
-    await SIWEController.signOut();
-    onSiweNavigation();
-  }, []);
-
   const onNewAddress = useCallback(
-    async (prevAddr?: CaipAddress, newAddr?: CaipAddress) => {
-      setCurrentAddress(newAddr);
-
-      if (!newAddr) {
+    async (address?: CaipAddress) => {
+      if (!isConnected || loading) {
         return;
       }
 
       if (isSiweEnabled) {
-        const previousAddress = CoreHelperUtil.getPlainAddress(prevAddr);
-        const newAddress = CoreHelperUtil.getPlainAddress(newAddr);
-        const previousNetworkId = CoreHelperUtil.getNetworkId(prevAddr);
-        const newNetworkId = CoreHelperUtil.getNetworkId(newAddr);
+        const newAddress = CoreHelperUtil.getPlainAddress(address);
+        const newNetworkId = CoreHelperUtil.getNetworkId(address);
         const { SIWEController } = await import('@web3modal/siwe-react-native');
         const { signOutOnAccountChange, signOutOnNetworkChange } =
           SIWEController.state._client?.options ?? {};
         const session = await SIWEController.getSession();
 
-        if (
-          session &&
-          previousAddress &&
-          newAddress &&
-          previousAddress !== newAddress &&
-          signOutOnAccountChange
-        ) {
+        if (session && newAddress && signOutOnAccountChange) {
           // If the address has changed and signOnAccountChange is enabled, sign out
-          onSiweSignOut();
+          await SIWEController.signOut();
+          onSiweNavigation();
         } else if (
-          session &&
-          previousNetworkId &&
           newNetworkId &&
-          previousNetworkId !== newNetworkId &&
+          session?.chainId.toString() !== newNetworkId &&
           signOutOnNetworkChange
         ) {
           // If the network has changed and signOnNetworkChange is enabled, sign out
-          onSiweSignOut();
+          await SIWEController.signOut();
+          onSiweNavigation();
         } else if (!session) {
           // If it's connected but there's no session, show sign view
           onSiweNavigation();
         }
       }
     },
-    [isSiweEnabled, onSiweSignOut]
+    [isSiweEnabled, isConnected, loading]
   );
 
   const onSiweNavigation = () => {
@@ -129,12 +112,8 @@ export function Web3Modal() {
   }, []);
 
   useEffect(() => {
-    if (!isConnected || loading) {
-      return;
-    }
-
-    onNewAddress(currentAddress, caipAddress);
-  }, [isConnected, loading, currentAddress, caipAddress, onNewAddress]);
+    onNewAddress(caipAddress);
+  }, [caipAddress, onNewAddress]);
 
   return (
     <>
