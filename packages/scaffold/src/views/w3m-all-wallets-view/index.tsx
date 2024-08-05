@@ -37,7 +37,7 @@ export function AllWalletsView() {
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
-      properties: { name: wallet.name ?? 'Unknown', platform: 'mobile' }
+      properties: { name: wallet.name ?? 'Unknown', platform: 'mobile', explorer_id: wallet.id }
     });
   };
 

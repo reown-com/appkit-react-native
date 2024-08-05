@@ -44,7 +44,11 @@ export function ConnectView() {
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
-      properties: { name: wallet.name ?? connector?.name ?? 'Unknown', platform }
+      properties: {
+        name: wallet.name ?? connector?.name ?? 'Unknown',
+        platform,
+        explorer_id: wallet.id
+      }
     });
   };
 
