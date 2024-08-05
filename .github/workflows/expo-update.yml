@@ -1,8 +1,10 @@
 name: expo-update
 on:
+  workflow_call:
+  workflow_dispatch:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   update:
@@ -17,7 +19,7 @@ jobs:
           fi
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup
         uses: ./.github/actions/setup

@@ -20,5 +20,8 @@ export default StyleSheet.create({
     borderRadius: 22,
     width: 72,
     height: 72
+  },
+  walletAvatar: {
+    borderRadius: 100
   }
 });

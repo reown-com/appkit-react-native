@@ -1,6 +1,6 @@
 import { createConnector, ChainNotConfiguredError } from 'wagmi';
 import { SwitchChainError, getAddress, type Address } from 'viem';
-import type { Evaluate } from '@wagmi/core/internal';
+
 import { W3mFrameProvider } from '@web3modal/email-react-native';
 
 export type Metadata = {
@@ -10,14 +10,14 @@ export type Metadata = {
   icons: string[];
 };
 
-type EmailProviderOptions = Evaluate<{
+type EmailProviderOptions = {
   /**
    * WalletConnect Cloud Project ID.
    * @link https://cloud.walletconnect.com/sign-in.
    */
   projectId: string;
   metadata: Metadata;
-}>;
+};
 
 type Provider = W3mFrameProvider;
 

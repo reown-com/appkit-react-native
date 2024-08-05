@@ -95,6 +95,7 @@ export type ColorType =
   | 'fg-250'
   | 'fg-275'
   | 'fg-300'
+  | 'gray-glass-020'
   | 'inverse-000'
   | 'inverse-100'
   | 'success-100';

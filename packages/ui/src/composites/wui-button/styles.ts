@@ -48,6 +48,14 @@ export const getThemedTextStyle = (
     : { color: theme['fg-100'] };
 };
 
+export const getIconColor = (variant: ButtonType, disabled?: boolean) => {
+  if (disabled) {
+    return 'gray-glass-020';
+  }
+
+  return variant === 'fill' ? 'inverse-100' : variant === 'accent' ? 'accent-100' : 'fg-100';
+};
+
 export default StyleSheet.create({
   button: {
     paddingVertical: Spacing['3xs'],
@@ -57,13 +65,14 @@ export default StyleSheet.create({
     borderWidth: 1
   },
   smButton: {
-    height: 36,
-    paddingHorizontal: Spacing['2xs'],
-    borderRadius: BorderRadius.xxs
+    height: 32,
+    paddingHorizontal: Spacing.xs,
+    borderRadius: BorderRadius['3xl']
   },
   mdButton: {
     height: 48,
-    paddingHorizontal: Spacing.xs
+    paddingHorizontal: Spacing.xs,
+    borderRadius: BorderRadius.s
   },
   text: {
     marginHorizontal: Spacing['3xs']
