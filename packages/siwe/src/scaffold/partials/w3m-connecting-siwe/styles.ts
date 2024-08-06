@@ -1,10 +1,11 @@
+import { BorderRadius } from '@web3modal/ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   dappIcon: {
     height: 64,
     width: 64,
-    borderRadius: 100
+    borderRadius: BorderRadius.full
   },
   iconBorder: {
     width: 74,
@@ -13,7 +14,7 @@ export default StyleSheet.create({
     justifyContent: 'center'
   },
   dappBorder: {
-    borderRadius: 100,
+    borderRadius: BorderRadius.full,
     zIndex: 2
   },
   walletBorder: {
@@ -22,6 +23,6 @@ export default StyleSheet.create({
     height: 72
   },
   walletAvatar: {
-    borderRadius: 100
+    borderRadius: BorderRadius.full
   }
 });

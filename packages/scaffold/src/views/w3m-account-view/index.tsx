@@ -1,11 +1,21 @@
 import { useSnapshot } from 'valtio';
-import { FlexView, Icon, IconLink, NetworkButton, useTheme } from '@web3modal/ui-react-native';
 import {
+  FlexView,
+  Icon,
+  IconLink,
+  NetworkButton,
+  AccountPill,
+  useTheme
+} from '@web3modal/ui-react-native';
+import {
+  AccountController,
   ApiController,
   AssetUtil,
   ModalController,
   NetworkController,
-  RouterController
+  OptionsController,
+  RouterController,
+  SnackController
 } from '@web3modal/core-react-native';
 import { AccountWalletFeatures } from '../../partials/w3m-account-wallet-features';
 import styles from './styles';
@@ -13,6 +23,18 @@ import styles from './styles';
 export function AccountView() {
   const Theme = useTheme();
   const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { address, profileName, profileImage } = useSnapshot(AccountController.state);
+
+  const onCopyAddress = (value: string) => {
+    if (value) {
+      OptionsController.copyToClipboard(value);
+      SnackController.showSuccess('Address copied');
+    }
+  };
+
+  const onProfilePress = () => {
+    RouterController.push('AccountSettings');
+  };
 
   const onNetworkPress = () => {
     RouterController.push('Networks');
@@ -31,6 +53,14 @@ export function AccountView() {
       </NetworkButton>
       <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
       <FlexView padding={['3xl', 's', '3xl', 's']} style={[{ backgroundColor: Theme['bg-100'] }]}>
+        <AccountPill
+          address={address}
+          profileName={profileName}
+          profileImage={profileImage}
+          onCopy={onCopyAddress}
+          onPress={onProfilePress}
+          style={styles.accountPill}
+        />
         <AccountWalletFeatures />
       </FlexView>
     </>

@@ -17,5 +17,14 @@ export default StyleSheet.create({
   action: {
     flex: 1,
     height: 52
+  },
+  actionLeft: {
+    marginRight: 8
+  },
+  actionRight: {
+    marginLeft: 8
+  },
+  tabContainer: {
+    minHeight: 300
   }
 });

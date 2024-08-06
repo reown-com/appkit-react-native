@@ -36,10 +36,12 @@ export function AccountSettingsView() {
   const [disconnecting, setDisconnecting] = useState(false);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { connectedConnector } = useSnapshot(ConnectorController.state);
+  const { history } = useSnapshot(RouterController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
   const isEmail = connectedConnector === 'EMAIL';
   const { padding } = useCustomDimensions();
+  const showBack = history.length > 1;
 
   async function onDisconnect() {
     try {
@@ -113,6 +115,9 @@ export function AccountSettingsView() {
 
   return (
     <>
+      {showBack && (
+        <IconLink icon="chevronLeft" style={styles.backIcon} onPress={RouterController.goBack} />
+      )}
       <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
       <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
         <FlexView alignItems="center" padding={['3xl', 's', '3xl', 's']}>

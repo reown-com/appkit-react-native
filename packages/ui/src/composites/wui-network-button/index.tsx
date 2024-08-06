@@ -3,10 +3,10 @@ import { Image } from '../../components/wui-image';
 import { Text } from '../../components/wui-text';
 import { useTheme } from '../../hooks/useTheme';
 import { IconBox } from '../wui-icon-box';
+import { LoadingSpinner } from '../../components/wui-loading-spinner';
+import useAnimatedValue from '../../hooks/useAnimatedValue';
 
 import styles from './styles';
-import useAnimatedValue from '../../hooks/useAnimatedValue';
-import { LoadingSpinner } from '../../components/wui-loading-spinner';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 

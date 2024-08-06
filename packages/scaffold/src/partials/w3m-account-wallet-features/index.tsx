@@ -33,7 +33,7 @@ export function AccountWalletFeatures() {
           background
           backgroundColor="accent-glass-010"
           pressedColor="accent-glass-020"
-          style={[styles.action, { marginRight: 8 }]}
+          style={[styles.action, styles.actionLeft]}
         />
         <IconLink
           icon="paperplane"
@@ -42,15 +42,15 @@ export function AccountWalletFeatures() {
           background
           backgroundColor="accent-glass-010"
           pressedColor="accent-glass-020"
-          style={[styles.action, { marginLeft: 8 }]}
+          style={[styles.action, styles.actionRight]}
         />
       </FlexView>
       <Tabs tabs={['Tokens', 'NFTs', 'Activity']} onTabChange={onTabChange} />
       <FlexView
         alignItems="center"
         justifyContent="center"
-        padding={'4xl'}
-        style={{ minHeight: 300 }}
+        padding="4xl"
+        style={styles.tabContainer}
       >
         {activeTab === 0 && <AccountTokens />}
         {activeTab === 1 && <AccountNfts />}

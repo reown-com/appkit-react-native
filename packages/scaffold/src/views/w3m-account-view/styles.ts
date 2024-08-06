@@ -15,5 +15,9 @@ export default StyleSheet.create({
     zIndex: 1,
     top: Spacing.l,
     right: Spacing.xl
+  },
+  accountPill: {
+    alignSelf: 'center',
+    marginBottom: Spacing.s
   }
 });
