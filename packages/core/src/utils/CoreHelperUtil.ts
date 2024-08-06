@@ -1,7 +1,7 @@
 /* eslint-disable no-bitwise */
 
 import { Linking, Platform } from 'react-native';
-import { ConstantsUtil as CommonConstants } from '@web3modal/common-react-native';
+import { ConstantsUtil as CommonConstants, type Balance } from '@web3modal/common-react-native';
 
 import { ConstantsUtil } from './ConstantsUtil';
 import type { CaipAddress, DataWallet, LinkingRecord } from './TypeUtil';
@@ -223,5 +223,21 @@ export const CoreHelperUtil = {
           .catch(reason => ({ status: 'rejected', reason }))
       )
     );
+  },
+
+  calculateAndFormatBalance(array?: Balance[]) {
+    if (!array || !array.length) {
+      return { dollars: '0', pennies: '00' };
+    }
+
+    let sum = 0;
+    for (const item of array) {
+      sum += item.value ?? 0;
+    }
+
+    const roundedNumber = sum.toFixed(2);
+    const [dollars, pennies] = roundedNumber.split('.');
+
+    return { dollars, pennies };
   }
 };

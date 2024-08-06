@@ -55,14 +55,14 @@ export function AccountPill({
         {profileName
           ? UiUtil.getTruncateString({
               string: profileName,
-              charsStart: 20,
+              charsStart: 18,
               charsEnd: 0,
               truncate: 'end'
             })
           : UiUtil.getTruncateString({
               string: address ?? '',
-              charsStart: 3,
-              charsEnd: 3,
+              charsStart: 4,
+              charsEnd: 4,
               truncate: 'middle'
             })}
       </Text>

@@ -4,7 +4,8 @@ import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 export default StyleSheet.create({
   container: {
     height: 44,
-    width: 160,
+    minWidth: 160,
+    maxWidth: 260,
     paddingLeft: Spacing.xs,
     flexDirection: 'row',
     alignItems: 'center',

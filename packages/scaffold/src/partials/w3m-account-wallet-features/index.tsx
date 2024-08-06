@@ -1,10 +1,13 @@
-import { View } from 'react-native';
-import { FlexView, IconLink, Tabs, Text } from '@web3modal/ui-react-native';
-import styles from './styles';
 import { useState } from 'react';
+import { useSnapshot } from 'valtio';
+import { View } from 'react-native';
+import { Balance, FlexView, IconLink, Tabs } from '@web3modal/ui-react-native';
+import { AccountController, CoreHelperUtil } from '@web3modal/core-react-native';
+import type { Balance as BalanceType } from '@web3modal/common-react-native';
 import { AccountNfts } from '../w3m-account-nfts';
 import { AccountActivity } from '../w3m-account-activity';
 import { AccountTokens } from '../w3m-account-tokens';
+import styles from './styles';
 
 export interface AccountWalletFeaturesProps {
   value: string;
@@ -12,6 +15,8 @@ export interface AccountWalletFeaturesProps {
 
 export function AccountWalletFeatures() {
   const [activeTab, setActiveTab] = useState(0);
+  const { tokenBalance } = useSnapshot(AccountController.state);
+  const balance = CoreHelperUtil.calculateAndFormatBalance(tokenBalance as BalanceType[]);
 
   const onTabChange = (index: number) => {
     setActiveTab(index);
@@ -19,12 +24,7 @@ export function AccountWalletFeatures() {
 
   return (
     <View style={styles.container}>
-      <Text color="fg-100" style={styles.balanceText}>
-        $4798
-        <Text color="fg-200" style={styles.balanceText}>
-          .75
-        </Text>
-      </Text>
+      <Balance integer={balance.dollars} decimal={balance.pennies} />
       <FlexView style={styles.actionsContainer} flexDirection="row" justifyContent="space-around">
         <IconLink
           icon="arrowBottomCircle"

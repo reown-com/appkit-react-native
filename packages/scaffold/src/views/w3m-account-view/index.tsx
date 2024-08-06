@@ -1,4 +1,5 @@
 import { useSnapshot } from 'valtio';
+import { useEffect } from 'react';
 import {
   FlexView,
   Icon,
@@ -39,6 +40,10 @@ export function AccountView() {
   const onNetworkPress = () => {
     RouterController.push('Networks');
   };
+
+  useEffect(() => {
+    AccountController.fetchTokenBalance();
+  }, []);
 
   return (
     <>

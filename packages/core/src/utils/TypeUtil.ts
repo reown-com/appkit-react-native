@@ -1,3 +1,5 @@
+import type { Balance } from '@web3modal/common-react-native';
+
 export type CaipAddress = `${string}:${string}:${string}`;
 
 export type CaipNetworkId = `${string}:${string}`;
@@ -111,6 +113,10 @@ export interface BlockchainApiIdentityRequest {
 export interface BlockchainApiIdentityResponse {
   avatar: string;
   name: string;
+}
+
+export interface BlockchainApiBalanceResponse {
+  balances: Balance[];
 }
 
 // -- OptionsController Types ---------------------------------------------------
