@@ -62,6 +62,13 @@ export function AccountSettingsView() {
     }
   }
 
+  const getUserEmail = () => {
+    const provider = ConnectorController.getEmailConnector()?.provider as W3mFrameProvider;
+    if (!provider) return '';
+
+    return provider.getEmail();
+  };
+
   const onExplorerPress = () => {
     if (addressExplorerUrl) {
       Linking.openURL(addressExplorerUrl);
@@ -89,11 +96,8 @@ export function AccountSettingsView() {
     RouterController.push('UpgradeEmailWallet');
   };
 
-  const getUserEmail = () => {
-    const provider = ConnectorController.getEmailConnector()?.provider as W3mFrameProvider;
-    if (!provider) return '';
-
-    return provider.getEmail();
+  const onEmailPress = () => {
+    RouterController.push('UpdateEmailWallet', { email: getUserEmail() });
   };
 
   const addressExplorerTemplate = () => {
@@ -158,25 +162,15 @@ export function AccountSettingsView() {
             {isEmail && (
               <>
                 <UpgradeWalletButton onPress={onUpgradePress} style={styles.upgradeButton} />
-                <ListItem
-                  variant="icon"
-                  icon="mail"
-                  iconVariant="overlay"
-                  onPress={() =>
-                    RouterController.push('UpdateEmailWallet', { email: getUserEmail() })
-                  }
-                  chevron
-                  testID="button-email"
-                >
+                <ListItem icon="mail" onPress={onEmailPress} chevron testID="button-email">
                   <Text color="fg-100">{getUserEmail()}</Text>
                 </ListItem>
               </>
             )}
             <ListItem
-              variant={networkImage ? 'image' : 'icon'}
               chevron
               icon="networkPlaceholder"
-              iconVariant="overlay"
+              iconBackgroundColor="gray-glass-010"
               imageSrc={networkImage}
               imageHeaders={ApiController._getApiHeaders()}
               onPress={onNetworkPress}
@@ -188,11 +182,10 @@ export function AccountSettingsView() {
               </Text>
             </ListItem>
             <ListItem
-              variant="icon"
               icon="disconnect"
-              iconVariant="overlay"
               onPress={onDisconnect}
               loading={disconnecting}
+              iconBackgroundColor="gray-glass-010"
               testID="button-disconnect"
             >
               <Text color="fg-200">Disconnect</Text>

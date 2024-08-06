@@ -97,9 +97,17 @@ export type ColorType =
   | 'fg-275'
   | 'fg-300'
   | 'gray-glass-020'
+  | 'gray-glass-010'
+  | 'gray-glass-005'
   | 'inverse-000'
   | 'inverse-100'
-  | 'success-100';
+  | 'success-100'
+  | 'teal-100'
+  | 'magenta-100'
+  | 'indigo-100'
+  | 'orange-100'
+  | 'purple-100'
+  | 'yellow-100';
 
 export type SizeType = 'xl' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
 

@@ -9,7 +9,7 @@ interface Props {
 
 export function AccountPlaceholder({ icon, title, description }: Props) {
   return (
-    <FlexView alignItems="center" justifyContent="center">
+    <FlexView alignItems="center" justifyContent="center" style={styles.container}>
       <IconBox icon={icon} size="lg" iconColor="fg-175" background />
       <Text variant="paragraph-500" style={styles.title}>
         {title}
@@ -22,6 +22,9 @@ export function AccountPlaceholder({ icon, title, description }: Props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
   title: {
     marginTop: Spacing.xl,
     marginBottom: Spacing.xs
