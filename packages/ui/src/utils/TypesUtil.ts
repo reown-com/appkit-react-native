@@ -91,6 +91,7 @@ export type ColorType =
   | 'error-100'
   | 'fg-100'
   | 'fg-150'
+  | 'fg-175'
   | 'fg-200'
   | 'fg-250'
   | 'fg-275'
@@ -112,6 +113,7 @@ export type IconType =
   | 'allWallets'
   | 'apple'
   | 'arrowBottom'
+  | 'arrowBottomCircle'
   | 'arrowLeft'
   | 'arrowRight'
   | 'arrowTop'
@@ -146,6 +148,7 @@ export type IconType =
   | 'networkPlaceholder'
   | 'nftPlaceholder'
   | 'off'
+  | 'paperplane'
   | 'qrCode'
   | 'refresh'
   | 'search'
@@ -193,7 +196,7 @@ export type CardSelectType = 'wallet' | 'network';
 
 export type TabOptionType = {
   icon: IconType;
-  label: string;
+  label?: string;
 };
 
 export type SpacingType =

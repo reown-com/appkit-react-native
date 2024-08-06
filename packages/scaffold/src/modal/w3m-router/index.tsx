@@ -8,7 +8,7 @@ import { AllWalletsView } from '../../views/w3m-all-wallets-view';
 import { ConnectingView } from '../../views/w3m-connecting-view';
 import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
 import { GetWalletView } from '../../views/w3m-get-wallet-view';
-import { AccountView } from '../../views/w3m-account-view';
+import { AccountSettingsView } from '../../views/w3m-account-settings-view';
 import { NetworksView } from '../../views/w3m-networks-view';
 import { WhatIsNetworkView } from '../../views/w3m-what-is-a-network-view';
 import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
@@ -20,6 +20,7 @@ import { UpdateEmailWalletView } from '../../views/w3m-update-email-wallet-view'
 import { UpdateEmailPrimaryOtpView } from '../../views/w3m-update-email-primary-otp-view';
 import { UpdateEmailSecondaryOtpView } from '../../views/w3m-update-email-secondary-otp-view';
 import { UpgradeEmailWalletView } from '../../views/w3m-upgrade-email-wallet-view';
+import { AccountView } from '../../views/w3m-account-view';
 
 export function Web3Router() {
   const { view } = useSnapshot(RouterController.state);
@@ -50,6 +51,8 @@ export function Web3Router() {
         return NetworkSwitchView;
       case 'Account':
         return AccountView;
+      case 'AccountSettings':
+        return AccountSettingsView;
       case 'EmailVerifyDevice':
         return EmailVerifyDeviceView;
       case 'EmailVerifyOtp':

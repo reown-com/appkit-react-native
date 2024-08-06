@@ -18,6 +18,7 @@ export function Header() {
     return {
       Connect: 'Connect wallet',
       Account: undefined,
+      AccountSettings: undefined,
       ConnectingWalletConnect: walletName ?? 'WalletConnect',
       ConnectingExternal: connectorName ?? 'Connect wallet',
       ConnectingSiwe: 'Sign In',

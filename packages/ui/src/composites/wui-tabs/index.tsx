@@ -1,5 +1,12 @@
 import { useRef, useState } from 'react';
-import { Animated, Pressable, View } from 'react-native';
+import {
+  Animated,
+  Pressable,
+  View,
+  type LayoutChangeEvent,
+  type StyleProp,
+  type ViewStyle
+} from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import { Text } from '../../components/wui-text';
 import { useTheme } from '../../hooks/useTheme';
@@ -8,13 +15,16 @@ import styles from './styles';
 
 export interface TabsProps {
   onTabChange: (index: number) => void;
-  tabs: TabOptionType[];
+  tabs: TabOptionType[] | string[];
+  style?: StyleProp<ViewStyle>;
 }
 
-export function Tabs({ tabs, onTabChange }: TabsProps) {
+export function Tabs({ tabs, onTabChange, style }: TabsProps) {
   const Theme = useTheme();
   const [activeTab, setActiveTab] = useState(0);
   const animatedPosition = useRef(new Animated.Value(0));
+  const [viewWidth, setViewWidth] = useState(1);
+  const tabWidth = Math.trunc(viewWidth / tabs.length) - 2;
 
   const onTabPress = (index: number) => {
     setActiveTab(index);
@@ -28,27 +38,41 @@ export function Tabs({ tabs, onTabChange }: TabsProps) {
 
   const markPosition = animatedPosition.current.interpolate({
     inputRange: [0, tabs.length - 1],
-    outputRange: [0, 100 * (tabs.length - 1)]
+    outputRange: [0, tabWidth * (tabs.length - 1)]
   });
 
+  const onLayout = (event: LayoutChangeEvent) => {
+    const { width } = event.nativeEvent.layout;
+    setViewWidth(width);
+  };
+
   return (
-    <View style={[styles.container, { backgroundColor: Theme['gray-glass-002'] }]}>
+    <View
+      style={[styles.container, { backgroundColor: Theme['gray-glass-002'] }, style]}
+      onLayout={onLayout}
+    >
       <Animated.View
         style={[
           styles.activeMark,
           {
             backgroundColor: Theme['gray-glass-005'],
             borderColor: Theme['gray-glass-005'],
-            left: markPosition
+            left: markPosition,
+            width: tabWidth
           }
         ]}
       />
       {tabs.map((option, index) => {
         const isActive = index === activeTab;
+        const isString = typeof option === 'string';
 
         return (
-          <Pressable onPress={() => onTabPress(index)} key={option.label} style={styles.tabItem}>
-            {option.icon && (
+          <Pressable
+            onPress={() => onTabPress(index)}
+            key={isString ? option : option.label}
+            style={[styles.tabItem, { width: tabWidth }]}
+          >
+            {!isString && option.icon && (
               <Icon
                 name={option.icon}
                 size="xs"
@@ -57,7 +81,7 @@ export function Tabs({ tabs, onTabChange }: TabsProps) {
               />
             )}
             <Text variant="small-600" color={isActive ? 'fg-100' : 'fg-200'}>
-              {option.label}
+              {isString ? option : option.label}
             </Text>
           </Pressable>
         );

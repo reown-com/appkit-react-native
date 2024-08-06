@@ -5,7 +5,7 @@ export * from './modal/w3m-network-button';
 export * from './modal/w3m-modal';
 export * from './modal/w3m-router';
 
-export * from './views/w3m-account-view';
+export * from './views/w3m-account-settings-view';
 export * from './views/w3m-all-wallets-view';
 export * from './views/w3m-connect-view';
 export * from './views/w3m-connecting-view';

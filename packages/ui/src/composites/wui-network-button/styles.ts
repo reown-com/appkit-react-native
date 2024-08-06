@@ -11,7 +11,7 @@ export default StyleSheet.create({
     borderRadius: 100,
     paddingHorizontal: Spacing['2xs']
   },
-  text: {
+  children: {
     paddingHorizontal: Spacing['2xs']
   },
   loader: {
