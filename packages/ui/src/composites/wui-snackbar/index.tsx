@@ -17,6 +17,7 @@ export function Snackbar({ message, iconColor, icon, style }: SnackbarProps) {
 
   return (
     <Animated.View
+      pointerEvents="none"
       style={[
         styles.container,
         { backgroundColor: Theme['bg-175'], borderColor: Theme['gray-glass-005'] },

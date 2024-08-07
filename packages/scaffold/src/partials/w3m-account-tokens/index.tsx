@@ -1,5 +1,3 @@
-import { useSnapshot } from 'valtio';
-import { AccountController } from '@web3modal/core-react-native';
 import { FlexView, ListItem, Text } from '@web3modal/ui-react-native';
 
 export function AccountTokens() {
