@@ -34,7 +34,7 @@ export function AccountView() {
   };
 
   const onProfilePress = () => {
-    RouterController.push('AccountSettings');
+    RouterController.push('AccountDefault');
   };
 
   const onNetworkPress = () => {

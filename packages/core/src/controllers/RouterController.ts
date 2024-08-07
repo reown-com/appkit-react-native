@@ -5,7 +5,7 @@ import type { WcWallet, CaipNetwork, Connector } from '../utils/TypeUtil';
 export interface RouterControllerState {
   view:
     | 'Account'
-    | 'AccountSettings'
+    | 'AccountDefault'
     | 'Connect'
     | 'ConnectingWalletConnect'
     | 'ConnectingExternal'

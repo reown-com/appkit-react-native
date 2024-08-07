@@ -8,7 +8,7 @@ import { AllWalletsView } from '../../views/w3m-all-wallets-view';
 import { ConnectingView } from '../../views/w3m-connecting-view';
 import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
 import { GetWalletView } from '../../views/w3m-get-wallet-view';
-import { AccountSettingsView } from '../../views/w3m-account-settings-view';
+import { AccountDefaultView } from '../../views/w3m-account-default-view';
 import { NetworksView } from '../../views/w3m-networks-view';
 import { WhatIsNetworkView } from '../../views/w3m-what-is-a-network-view';
 import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
@@ -51,8 +51,8 @@ export function Web3Router() {
         return NetworkSwitchView;
       case 'Account':
         return AccountView;
-      case 'AccountSettings':
-        return AccountSettingsView;
+      case 'AccountDefault':
+        return AccountDefaultView;
       case 'EmailVerifyDevice':
         return EmailVerifyDeviceView;
       case 'EmailVerifyOtp':

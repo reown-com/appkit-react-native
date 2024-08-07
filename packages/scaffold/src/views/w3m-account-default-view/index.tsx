@@ -30,7 +30,7 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { UpgradeWalletButton } from './components/upgrade-wallet-button';
 import styles from './styles';
 
-export function AccountSettingsView() {
+export function AccountDefaultView() {
   const { address, profileName, profileImage, balance, balanceSymbol, addressExplorerUrl } =
     useSnapshot(AccountController.state);
   const [disconnecting, setDisconnecting] = useState(false);
@@ -40,8 +40,10 @@ export function AccountSettingsView() {
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
   const isEmail = connectedConnector === 'EMAIL';
-  const { padding } = useCustomDimensions();
+  const showBalance = balance && !isEmail;
+  const showExplorer = addressExplorerUrl && !isEmail;
   const showBack = history.length > 1;
+  const { padding } = useCustomDimensions();
 
   async function onDisconnect() {
     try {
@@ -100,23 +102,6 @@ export function AccountSettingsView() {
     RouterController.push('UpdateEmailWallet', { email: getUserEmail() });
   };
 
-  const addressExplorerTemplate = () => {
-    if (!addressExplorerUrl) return null;
-
-    return (
-      <Button
-        size="sm"
-        variant="shade"
-        iconLeft="compass"
-        iconRight="externalLink"
-        onPress={onExplorerPress}
-        style={{ marginVertical: Spacing.s }}
-      >
-        Block Explorer
-      </Button>
-    );
-  };
-
   return (
     <>
       {showBack && (
@@ -146,18 +131,29 @@ export function AccountSettingsView() {
               <IconLink
                 icon="copy"
                 size="md"
-                iconColor="fg-250"
+                iconColor="fg-275"
                 onPress={onCopyAddress}
                 style={styles.copyButton}
               />
             )}
           </FlexView>
-          {balance && (
+          {showBalance && (
             <Text variant="paragraph-400" color="fg-200">
               {CoreHelperUtil.formatBalance(balance, balanceSymbol)}
             </Text>
           )}
-          {addressExplorerTemplate()}
+          {showExplorer && (
+            <Button
+              size="sm"
+              variant="shade"
+              iconLeft="compass"
+              iconRight="externalLink"
+              onPress={onExplorerPress}
+              style={{ marginVertical: Spacing.s }}
+            >
+              Block Explorer
+            </Button>
+          )}
           <FlexView margin={['s', '0', '0', '0']}>
             {isEmail && (
               <>

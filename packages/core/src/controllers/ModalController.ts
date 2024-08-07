@@ -36,7 +36,7 @@ export const ModalController = {
       RouterController.reset(options.view);
     } else if (AccountController.state.isConnected) {
       const isWallet = ConnectorController.state.connectedConnector === 'EMAIL';
-      RouterController.reset(isWallet ? 'Account' : 'AccountSettings');
+      RouterController.reset(isWallet ? 'Account' : 'AccountDefault');
     } else {
       RouterController.reset('Connect');
     }

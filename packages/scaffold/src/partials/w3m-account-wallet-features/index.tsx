@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { View } from 'react-native';
 import { Balance, FlexView, IconLink, Tabs } from '@web3modal/ui-react-native';
-import { AccountController, CoreHelperUtil } from '@web3modal/core-react-native';
+import { AccountController, CoreHelperUtil, SnackController } from '@web3modal/core-react-native';
 import type { Balance as BalanceType } from '@web3modal/common-react-native';
 import { AccountNfts } from '../w3m-account-nfts';
 import { AccountActivity } from '../w3m-account-activity';
@@ -22,6 +22,11 @@ export function AccountWalletFeatures() {
     setActiveTab(index);
   };
 
+  // TODO: Implement this features
+  const onMissingPress = () => {
+    SnackController.showError('Feature not implemented');
+  };
+
   return (
     <View style={styles.container}>
       <Balance integer={balance.dollars} decimal={balance.pennies} />
@@ -34,6 +39,7 @@ export function AccountWalletFeatures() {
           backgroundColor="accent-glass-010"
           pressedColor="accent-glass-020"
           style={[styles.action, styles.actionLeft]}
+          onPress={onMissingPress}
         />
         <IconLink
           icon="paperplane"
@@ -43,6 +49,7 @@ export function AccountWalletFeatures() {
           backgroundColor="accent-glass-010"
           pressedColor="accent-glass-020"
           style={[styles.action, styles.actionRight]}
+          onPress={onMissingPress}
         />
       </FlexView>
       <Tabs tabs={['Tokens', 'NFTs', 'Activity']} onTabChange={onTabChange} />
