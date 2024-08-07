@@ -66,7 +66,8 @@ export const ApiController = {
       'x-project-id': projectId,
       'x-sdk-type': sdkType,
       'x-sdk-version': sdkVersion,
-      'User-Agent': `${Platform.OS}-${Platform.Version}`
+      'User-Agent': `${Platform.OS}-${Platform.Version}`,
+      'Origin': CoreHelperUtil.getBundleId()
     };
   },
 
