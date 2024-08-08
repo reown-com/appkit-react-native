@@ -26,6 +26,10 @@ export {
   type CardSelectProps
 } from './composites/wui-card-select';
 export { Chip, type ChipProps } from './composites/wui-chip';
+export {
+  CompatibleNetwork,
+  type CompatibleNetworkProps
+} from './composites/wui-compatible-network';
 export { ConnectButton, type ConnectButtonProps } from './composites/wui-connect-button';
 export { EmailInput, type EmailInputProps } from './composites/wui-email-input';
 export { IconBox, type IconBoxProps } from './composites/wui-icon-box';

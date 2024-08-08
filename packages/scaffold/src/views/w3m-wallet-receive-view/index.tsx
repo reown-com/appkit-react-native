@@ -1,8 +1,17 @@
 import { useSnapshot } from 'valtio';
 import { StyleSheet } from 'react-native';
-import { Chip, FlexView, QrCode, Spacing, Text, UiUtil } from '@web3modal/ui-react-native';
+import {
+  Chip,
+  CompatibleNetwork,
+  FlexView,
+  QrCode,
+  Spacing,
+  Text,
+  UiUtil
+} from '@web3modal/ui-react-native';
 import {
   AccountController,
+  ApiController,
   AssetUtil,
   NetworkController,
   OptionsController,
@@ -14,6 +23,11 @@ export function WalletReceiveView() {
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const canCopy = OptionsController.isClipboardAvailable();
+  const slicedNetworks =
+    NetworkController.getApprovedCaipNetworks()
+      .filter(network => network?.imageId)
+      ?.slice(0, 5) || [];
+  const imagesArray = slicedNetworks.map(AssetUtil.getNetworkImage).filter(Boolean) as string[];
 
   const label = UiUtil.getTruncateString({
     string: profileName ?? address ?? '',
@@ -44,6 +58,12 @@ export function WalletReceiveView() {
       <Text variant="paragraph-500" color="fg-100">
         {canCopy ? 'Copy your address or scan this QR code' : 'Scan this QR code'}
       </Text>
+      <CompatibleNetwork
+        text="Only receive from networks"
+        onPress={() => {}}
+        networkImages={imagesArray}
+        imageHeaders={ApiController._getApiHeaders()}
+      />
     </FlexView>
   );
 }
