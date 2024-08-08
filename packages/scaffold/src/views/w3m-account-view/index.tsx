@@ -27,7 +27,7 @@ export function AccountView() {
   const { address, profileName, profileImage } = useSnapshot(AccountController.state);
 
   const onCopyAddress = (value: string) => {
-    if (value) {
+    if (OptionsController.isClipboardAvailable() && value) {
       OptionsController.copyToClipboard(value);
       SnackController.showSuccess('Address copied');
     }

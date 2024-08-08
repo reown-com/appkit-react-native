@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { View } from 'react-native';
 import { Balance, FlexView, IconLink, Tabs } from '@web3modal/ui-react-native';
-import { AccountController, CoreHelperUtil, SnackController } from '@web3modal/core-react-native';
+import {
+  AccountController,
+  CoreHelperUtil,
+  RouterController,
+  SnackController
+} from '@web3modal/core-react-native';
 import type { Balance as BalanceType } from '@web3modal/common-react-native';
 import { AccountNfts } from '../w3m-account-nfts';
 import { AccountActivity } from '../w3m-account-activity';
@@ -27,6 +32,10 @@ export function AccountWalletFeatures() {
     SnackController.showError('Feature not implemented');
   };
 
+  const onReceivePress = () => {
+    RouterController.push('WalletReceive');
+  };
+
   return (
     <View style={styles.container}>
       <Balance integer={balance.dollars} decimal={balance.pennies} />
@@ -39,7 +48,7 @@ export function AccountWalletFeatures() {
           backgroundColor="accent-glass-010"
           pressedColor="accent-glass-020"
           style={[styles.action, styles.actionLeft]}
-          onPress={onMissingPress}
+          onPress={onReceivePress}
         />
         <IconLink
           icon="paperplane"

@@ -55,7 +55,7 @@ export function AccountPill({
         {profileName
           ? UiUtil.getTruncateString({
               string: profileName,
-              charsStart: 18,
+              charsStart: 17,
               charsEnd: 0,
               truncate: 'end'
             })

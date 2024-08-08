@@ -33,7 +33,8 @@ export function Header() {
       UpdateEmailWallet: 'Edit email',
       UpdateEmailPrimaryOtp: 'Confirm current email',
       UpdateEmailSecondaryOtp: 'Confirm new email',
-      UpgradeEmailWallet: 'Upgrade wallet'
+      UpgradeEmailWallet: 'Upgrade wallet',
+      WalletReceive: 'Receive'
     };
   };
 

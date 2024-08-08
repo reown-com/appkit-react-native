@@ -21,7 +21,8 @@ export interface RouterControllerState {
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
     | 'UpgradeEmailWallet'
-    | 'ConnectingSiwe';
+    | 'ConnectingSiwe'
+    | 'WalletReceive';
   history: RouterControllerState['view'][];
   data?: {
     connector?: Connector;

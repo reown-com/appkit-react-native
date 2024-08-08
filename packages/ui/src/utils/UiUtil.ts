@@ -66,6 +66,24 @@ export const UiUtil = {
     )}`;
   },
 
+  getTruncateAddress(address: string, profileName?: string) {
+    if (profileName) {
+      return this.getTruncateString({
+        string: profileName,
+        charsStart: 20,
+        charsEnd: 0,
+        truncate: 'end'
+      });
+    }
+
+    return this.getTruncateString({
+      string: address ?? '',
+      charsStart: 4,
+      charsEnd: 4,
+      truncate: 'middle'
+    });
+  },
+
   getWalletName(name: string, short = true) {
     return short ? name.split(' ')[0] : name;
   }
