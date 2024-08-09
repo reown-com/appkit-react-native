@@ -21,9 +21,11 @@ export function QrCode({ size, uri, imageSrc, testID, arenaClear, style }: QrCod
   const Theme = LightTheme;
   const containerPadding = Spacing.l;
   const qrSize = size - containerPadding * 2;
+  const logoSize = arenaClear ? 0 : qrSize / 4;
+
   const dots = useMemo(
-    () => (uri ? QRCodeUtil.generate(uri, qrSize, arenaClear ? 0 : qrSize / 4) : []),
-    [uri, qrSize, arenaClear]
+    () => (uri ? QRCodeUtil.generate(uri, qrSize, logoSize) : []),
+    [uri, qrSize, logoSize]
   );
 
   const logoTemplate = () => {

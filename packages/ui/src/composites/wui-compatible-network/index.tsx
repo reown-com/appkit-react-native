@@ -39,7 +39,7 @@ export function CompatibleNetwork({
         {networkImages?.map((image, index) => (
           <NetworkImage
             size="xs"
-            key={index}
+            key={image}
             imageSrc={image}
             imageHeaders={imageHeaders}
             borderColor={Theme['bg-200']}
