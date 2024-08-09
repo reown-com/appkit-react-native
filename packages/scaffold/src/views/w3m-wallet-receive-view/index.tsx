@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import {
   Chip,
   CompatibleNetwork,
@@ -17,11 +17,13 @@ import {
   OptionsController,
   SnackController
 } from '@web3modal/core-react-native';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function WalletReceiveView() {
   const { address, profileName } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const { padding } = useCustomDimensions();
   const canCopy = OptionsController.isClipboardAvailable();
   const slicedNetworks =
     NetworkController.getApprovedCaipNetworks()
@@ -46,26 +48,28 @@ export function WalletReceiveView() {
   if (!address) return;
 
   return (
-    <FlexView padding={['xl', 'xl', '2xl', 'xl']} alignItems="center">
-      <Chip
-        label={label}
-        icon={canCopy ? 'copy' : undefined}
-        imageSrc={networkImage}
-        variant="transparent"
-        onPress={onCopyAddress}
-      />
-      <QrCode uri={address} size={232} arenaClear style={styles.qrContainer} />
-      <Text variant="paragraph-500" color="fg-100">
-        {canCopy ? 'Copy your address or scan this QR code' : 'Scan this QR code'}
-      </Text>
-      <CompatibleNetwork
-        text="Only receive from networks"
-        onPress={() => {}}
-        networkImages={imagesArray}
-        imageHeaders={ApiController._getApiHeaders()}
-        style={styles.networksButton}
-      />
-    </FlexView>
+    <ScrollView bounces={false} style={{ paddingHorizontal: padding }}>
+      <FlexView padding={['xl', 'xl', '2xl', 'xl']} alignItems="center">
+        <Chip
+          label={label}
+          icon={canCopy ? 'copy' : undefined}
+          imageSrc={networkImage}
+          variant="transparent"
+          onPress={onCopyAddress}
+        />
+        <QrCode uri={address} size={232} arenaClear style={styles.qrContainer} />
+        <Text variant="paragraph-500" color="fg-100">
+          {canCopy ? 'Copy your address or scan this QR code' : 'Scan this QR code'}
+        </Text>
+        <CompatibleNetwork
+          text="Only receive from networks"
+          onPress={() => {}}
+          networkImages={imagesArray}
+          imageHeaders={ApiController._getApiHeaders()}
+          style={styles.networksButton}
+        />
+      </FlexView>
+    </ScrollView>
   );
 }
 
