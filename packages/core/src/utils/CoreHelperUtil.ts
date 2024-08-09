@@ -226,7 +226,7 @@ export const CoreHelperUtil = {
   },
 
   calculateAndFormatBalance(array?: Balance[]) {
-    if (!array || !array.length) {
+    if (!array?.length) {
       return { dollars: '0', pennies: '00' };
     }
 
