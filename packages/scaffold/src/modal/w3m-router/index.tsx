@@ -22,6 +22,7 @@ import { UpdateEmailSecondaryOtpView } from '../../views/w3m-update-email-second
 import { UpgradeEmailWalletView } from '../../views/w3m-upgrade-email-wallet-view';
 import { AccountView } from '../../views/w3m-account-view';
 import { WalletReceiveView } from '../../views/w3m-wallet-receive-view';
+import { WalletCompatibleNetworks } from '../../views/w3m-wallet-compatible-networks-view';
 
 export function Web3Router() {
   const { view } = useSnapshot(RouterController.state);
@@ -70,6 +71,8 @@ export function Web3Router() {
         return ConnectingSiweView;
       case 'WalletReceive':
         return WalletReceiveView;
+      case 'WalletCompatibleNetworks':
+        return WalletCompatibleNetworks;
       default:
         return ConnectView;
     }

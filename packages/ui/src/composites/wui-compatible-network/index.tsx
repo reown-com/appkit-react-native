@@ -38,7 +38,7 @@ export function CompatibleNetwork({
       <FlexView flexDirection="row" justifyContent="center" alignItems="center">
         {networkImages?.map((image, index) => (
           <NetworkImage
-            size="sm"
+            size="xs"
             key={index}
             imageSrc={image}
             imageHeaders={imageHeaders}

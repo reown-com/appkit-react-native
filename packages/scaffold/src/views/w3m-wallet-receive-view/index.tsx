@@ -15,6 +15,7 @@ import {
   AssetUtil,
   NetworkController,
   OptionsController,
+  RouterController,
   SnackController
 } from '@web3modal/core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
@@ -37,6 +38,10 @@ export function WalletReceiveView() {
     charsEnd: profileName ? 0 : 4,
     truncate: profileName ? 'end' : 'middle'
   });
+
+  const onNetworkPress = () => {
+    RouterController.push('WalletCompatibleNetworks');
+  };
 
   const onCopyAddress = () => {
     if (canCopy && address) {
@@ -63,7 +68,7 @@ export function WalletReceiveView() {
         </Text>
         <CompatibleNetwork
           text="Only receive from networks"
-          onPress={() => {}}
+          onPress={onNetworkPress}
           networkImages={imagesArray}
           imageHeaders={ApiController._getApiHeaders()}
           style={styles.networksButton}

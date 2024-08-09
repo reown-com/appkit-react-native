@@ -13,6 +13,7 @@ export { AccountPill, type AccountPillProps } from './composites/wui-account-pil
 export { ActionEntry, type ActionEntryProps } from './composites/wui-action-entry';
 export { Avatar, type AvatarProps } from './composites/wui-avatar';
 export { Balance, type BalanceProps } from './composites/wui-balance';
+export { Banner, type BannerProps } from './composites/wui-banner';
 export { Button, type ButtonProps } from './composites/wui-button';
 export {
   CardSelectLoader,

@@ -34,7 +34,8 @@ export function Header() {
       UpdateEmailPrimaryOtp: 'Confirm current email',
       UpdateEmailSecondaryOtp: 'Confirm new email',
       UpgradeEmailWallet: 'Upgrade wallet',
-      WalletReceive: 'Receive'
+      WalletReceive: 'Receive',
+      WalletCompatibleNetworks: 'Compatible networks'
     };
   };
 
