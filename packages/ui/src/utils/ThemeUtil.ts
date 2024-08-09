@@ -155,7 +155,8 @@ export const BorderRadius = {
   's': 20,
   'm': 28,
   'l': 36,
-  '3xl': 80
+  '3xl': 80,
+  'full': 100
 };
 
 export const IconSize = {

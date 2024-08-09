@@ -3,6 +3,7 @@ import { proxy } from 'valtio';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { FetchUtil } from '../utils/FetchUtil';
 import type {
+  BlockchainApiBalanceResponse,
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse
 } from '../utils/TypeUtil';
@@ -32,6 +33,24 @@ export const BlockchainApiController = {
       path: `/v1/identity/${address}`,
       params: {
         projectId: OptionsController.state.projectId
+      }
+    });
+  },
+
+  async getBalance(address: string, chainId?: string, forceUpdate?: string) {
+    const { sdkType, sdkVersion } = OptionsController.state;
+
+    return state.api.get<BlockchainApiBalanceResponse>({
+      path: `/v1/account/${address}/balance`,
+      headers: {
+        'x-sdk-type': sdkType,
+        'x-sdk-version': sdkVersion
+      },
+      params: {
+        currency: 'usd',
+        projectId: OptionsController.state.projectId,
+        chainId,
+        forceUpdate
       }
     });
   },

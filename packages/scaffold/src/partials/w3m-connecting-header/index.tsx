@@ -1,22 +1,31 @@
 import type { Platform } from '@web3modal/core-react-native';
-import { FlexView, Tabs } from '@web3modal/ui-react-native';
+import { FlexView, Tabs, type IconType } from '@web3modal/ui-react-native';
+import { StyleSheet } from 'react-native';
 
 export interface ConnectingHeaderProps {
   platforms: Platform[];
   onSelectPlatform: (platform: Platform) => void;
 }
 
+interface Tab {
+  label: string;
+  icon: IconType;
+  platform: Platform;
+}
+
 export function ConnectingHeader({ platforms, onSelectPlatform }: ConnectingHeaderProps) {
   const generateTabs = () => {
-    const tabs = platforms.map(platform => {
-      if (platform === 'mobile') {
-        return { label: 'Mobile', icon: 'mobile', platform: 'mobile' } as const;
-      } else if (platform === 'web') {
-        return { label: 'Web', icon: 'browser', platform: 'web' } as const;
-      } else {
-        return { label: 'QR Code', icon: 'qrCode', platform: 'qrcode' } as const;
-      }
-    });
+    const tabs = platforms
+      .map(platform => {
+        if (platform === 'mobile') {
+          return { label: 'Mobile', icon: 'mobile', platform: 'mobile' } as const;
+        } else if (platform === 'web') {
+          return { label: 'Web', icon: 'browser', platform: 'web' } as const;
+        } else {
+          return undefined;
+        }
+      })
+      .filter(Boolean) as Tab[];
 
     return tabs;
   };
@@ -32,7 +41,13 @@ export function ConnectingHeader({ platforms, onSelectPlatform }: ConnectingHead
 
   return (
     <FlexView alignItems="center" padding={['xs', '0', '0', '0']}>
-      <Tabs tabs={tabs} onTabChange={onTabChange} />
+      <Tabs tabs={tabs} onTabChange={onTabChange} style={styles.tab} />
     </FlexView>
   );
 }
+
+const styles = StyleSheet.create({
+  tab: {
+    maxWidth: '50%'
+  }
+});

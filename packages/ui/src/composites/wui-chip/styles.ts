@@ -68,7 +68,7 @@ export default StyleSheet.create({
     borderWidth: 1
   },
   image: {
-    borderRadius: 100,
+    borderRadius: BorderRadius.full,
     borderWidth: 1
   },
   smImage: {

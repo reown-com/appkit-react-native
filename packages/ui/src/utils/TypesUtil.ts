@@ -91,14 +91,23 @@ export type ColorType =
   | 'error-100'
   | 'fg-100'
   | 'fg-150'
+  | 'fg-175'
   | 'fg-200'
   | 'fg-250'
   | 'fg-275'
   | 'fg-300'
   | 'gray-glass-020'
+  | 'gray-glass-010'
+  | 'gray-glass-005'
   | 'inverse-000'
   | 'inverse-100'
-  | 'success-100';
+  | 'success-100'
+  | 'teal-100'
+  | 'magenta-100'
+  | 'indigo-100'
+  | 'orange-100'
+  | 'purple-100'
+  | 'yellow-100';
 
 export type SizeType = 'xl' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
 
@@ -112,6 +121,7 @@ export type IconType =
   | 'allWallets'
   | 'apple'
   | 'arrowBottom'
+  | 'arrowBottomCircle'
   | 'arrowLeft'
   | 'arrowRight'
   | 'arrowTop'
@@ -146,6 +156,7 @@ export type IconType =
   | 'networkPlaceholder'
   | 'nftPlaceholder'
   | 'off'
+  | 'paperplane'
   | 'qrCode'
   | 'refresh'
   | 'search'
@@ -193,7 +204,7 @@ export type CardSelectType = 'wallet' | 'network';
 
 export type TabOptionType = {
   icon: IconType;
-  label: string;
+  label?: string;
 };
 
 export type SpacingType =

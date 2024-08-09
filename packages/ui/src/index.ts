@@ -9,8 +9,10 @@ export { Visual, type VisualProps } from './components/wui-visual';
 export { Shimmer, type ShimmerProps } from './components/wui-shimmer';
 
 export { AccountButton, type AccountButtonProps } from './composites/wui-account-button';
+export { AccountPill, type AccountPillProps } from './composites/wui-account-pill';
 export { ActionEntry, type ActionEntryProps } from './composites/wui-action-entry';
 export { Avatar, type AvatarProps } from './composites/wui-avatar';
+export { Balance, type BalanceProps } from './composites/wui-balance';
 export { Button, type ButtonProps } from './composites/wui-button';
 export {
   CardSelectLoader,

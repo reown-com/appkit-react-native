@@ -2,12 +2,12 @@ import { Spacing } from '@web3modal/ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  networkIcon: {
-    alignSelf: 'flex-start',
+  backIcon: {
+    alignSelf: 'flex-end',
     position: 'absolute',
     zIndex: 1,
     top: Spacing.l,
-    left: Spacing.l
+    left: Spacing.xl
   },
   closeIcon: {
     alignSelf: 'flex-end',
@@ -16,8 +16,13 @@ export default StyleSheet.create({
     top: Spacing.l,
     right: Spacing.xl
   },
-  accountPill: {
-    alignSelf: 'center',
+  copyButton: {
+    marginLeft: Spacing['4xs']
+  },
+  networkButton: {
+    marginVertical: Spacing.xs
+  },
+  upgradeButton: {
     marginBottom: Spacing.s
   }
 });

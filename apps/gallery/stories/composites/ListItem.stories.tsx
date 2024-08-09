@@ -10,16 +10,8 @@ const meta: Meta<typeof ListItem> = {
     imageSrc: {
       control: { type: 'text' }
     },
-    variant: {
-      options: ['image', 'icon'],
-      control: { type: 'select' }
-    },
     icon: {
       options: iconOptions,
-      control: { type: 'select' }
-    },
-    iconVariant: {
-      options: ['blue', 'overlay'],
       control: { type: 'select' }
     },
     disabled: {
@@ -33,10 +25,8 @@ const meta: Meta<typeof ListItem> = {
     }
   },
   args: {
-    variant: 'image',
     imageSrc: networkImageSrc,
     icon: 'swapHorizontal',
-    iconVariant: 'blue',
     disabled: false,
     chevron: true,
     loading: false
@@ -50,10 +40,8 @@ export const Default: Story = {
   render: (args: any) => (
     <GalleryContainer width={300}>
       <ListItem
-        variant={args.variant}
         imageSrc={args.imageSrc}
         icon={args.icon}
-        iconVariant={args.iconVariant}
         disabled={args.disabled}
         chevron={args.chevron}
         loading={args.loading}
