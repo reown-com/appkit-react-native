@@ -63,6 +63,7 @@ export function WalletReceiveView() {
         onPress={() => {}}
         networkImages={imagesArray}
         imageHeaders={ApiController._getApiHeaders()}
+        style={styles.networksButton}
       />
     </FlexView>
   );
@@ -71,5 +72,8 @@ export function WalletReceiveView() {
 const styles = StyleSheet.create({
   qrContainer: {
     marginVertical: Spacing.xl
+  },
+  networksButton: {
+    marginTop: Spacing.l
   }
 });

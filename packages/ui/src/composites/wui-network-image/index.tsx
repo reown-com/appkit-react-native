@@ -11,6 +11,8 @@ export interface NetworkImageProps {
   size?: Exclude<SizeType, 'xl' | 'xs' | 'xxs'>;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
+  borderColor?: string;
+  borderWidth?: number;
 }
 
 const sizeToPath = {
@@ -31,7 +33,9 @@ export function NetworkImage({
   disabled,
   selected,
   size = 'md',
-  style
+  style,
+  borderColor,
+  borderWidth = 1
 }: NetworkImageProps) {
   const Theme = useTheme();
   const svgStroke = selected ? Theme['accent-100'] : Theme['gray-glass-010'];
@@ -41,8 +45,8 @@ export function NetworkImage({
     <Svg
       width={sizeToHeight[size]}
       height={sizeToHeight[size]}
-      stroke={svgStroke}
-      strokeWidth={1}
+      stroke={borderColor ?? svgStroke}
+      strokeWidth={borderWidth}
       style={style}
     >
       <Defs>
