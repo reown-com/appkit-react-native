@@ -68,5 +68,23 @@ export const UiUtil = {
 
   getWalletName(name: string, short = true) {
     return short ? name.split(' ')[0] : name;
+  },
+
+  formatNumberToLocalString(value: string | number | undefined, decimals = 2) {
+    if (value === undefined) {
+      return '0.00';
+    }
+
+    if (typeof value === 'number') {
+      return value.toLocaleString('en-US', {
+        maximumFractionDigits: decimals,
+        minimumFractionDigits: decimals
+      });
+    }
+
+    return parseFloat(value).toLocaleString('en-US', {
+      maximumFractionDigits: decimals,
+      minimumFractionDigits: decimals
+    });
   }
 };
