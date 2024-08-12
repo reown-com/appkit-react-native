@@ -9,8 +9,8 @@ import styles from './styles';
 export interface ListTokenProps {
   imageSrc: string;
   name: string;
-  value: number;
-  amount: number;
+  value?: number;
+  amount?: string;
   currency: string;
 }
 
@@ -50,7 +50,7 @@ export function ListToken({ imageSrc, name, value, amount, currency }: ListToken
         </FlexView>
       </FlexView>
       <Text color="fg-100" variant="paragraph-500">
-        ${value.toFixed(2)}
+        ${value?.toFixed(2) || '0.00'}
       </Text>
     </FlexView>
   );
