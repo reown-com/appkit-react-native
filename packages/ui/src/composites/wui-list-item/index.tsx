@@ -24,6 +24,7 @@ export interface ListItemProps {
   onPress?: () => void;
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
+  contentStyle?: StyleProp<ViewStyle>;
   testID?: string;
 }
 
@@ -40,6 +41,7 @@ export function ListItem({
   disabled,
   onPress,
   style,
+  contentStyle,
   testID
 }: ListItemProps) {
   const Theme = useTheme();
@@ -100,7 +102,7 @@ export function ListItem({
       testID={testID}
     >
       {visualTemplate()}
-      <View style={styles.content}>{children}</View>
+      <View style={[styles.content, contentStyle]}>{children}</View>
       {rightTemplate()}
     </AnimatedPressable>
   );

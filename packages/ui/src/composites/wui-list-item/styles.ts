@@ -13,7 +13,8 @@ export default StyleSheet.create({
   content: {
     flexDirection: 'row',
     flexGrow: 1,
-    paddingHorizontal: Spacing.s
+    paddingHorizontal: Spacing.s,
+    alignItems: 'center'
   },
   imageContainer: {
     width: 36,

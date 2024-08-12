@@ -20,14 +20,17 @@ import {
 } from '@web3modal/core-react-native';
 import { AccountWalletFeatures } from '../../partials/w3m-account-wallet-features';
 import styles from './styles';
+import { ScrollView } from 'react-native';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function AccountView() {
   const Theme = useTheme();
+  const { padding } = useCustomDimensions();
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { address, profileName, profileImage } = useSnapshot(AccountController.state);
 
   const onCopyAddress = (value: string) => {
-    if (value) {
+    if (OptionsController.isClipboardAvailable() && value) {
       OptionsController.copyToClipboard(value);
       SnackController.showSuccess('Address copied');
     }
@@ -46,7 +49,7 @@ export function AccountView() {
   }, []);
 
   return (
-    <>
+    <ScrollView bounces={false} contentContainerStyle={{ paddingHorizontal: padding }}>
       <NetworkButton
         imageSrc={AssetUtil.getNetworkImage(caipNetwork)}
         imageHeaders={ApiController._getApiHeaders()}
@@ -57,6 +60,7 @@ export function AccountView() {
         <Icon name="chevronBottom" size="sm" color="fg-200" />
       </NetworkButton>
       <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
+
       <FlexView padding={['3xl', 's', '3xl', 's']} style={[{ backgroundColor: Theme['bg-100'] }]}>
         <AccountPill
           address={address}
@@ -68,6 +72,6 @@ export function AccountView() {
         />
         <AccountWalletFeatures />
       </FlexView>
-    </>
+    </ScrollView>
   );
 }

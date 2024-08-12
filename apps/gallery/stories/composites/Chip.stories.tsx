@@ -5,7 +5,6 @@ import { Chip } from '@web3modal/ui-react-native';
 import {
   chipOptions,
   externalLabel,
-  externalLink,
   iconOptions,
   walletImagesOptions
 } from '../../utils/PresetUtils';
@@ -24,9 +23,6 @@ const meta: Meta<typeof Chip> = {
     disabled: {
       control: { type: 'boolean' }
     },
-    link: {
-      control: { type: 'text' }
-    },
     label: {
       control: { type: 'text' }
     },
@@ -43,7 +39,6 @@ const meta: Meta<typeof Chip> = {
     size: 'md',
     disabled: false,
     icon: 'disconnect',
-    link: externalLink,
     label: externalLabel,
     imageSrc: walletImagesOptions[3]
   }
@@ -58,7 +53,7 @@ export const Default: Story = {
       variant={args.variant}
       size={args.size}
       disabled={args.disabled}
-      link={args.link}
+      onPress={() => {}}
       label={args.label}
       imageSrc={args.imageSrc}
       icon={args.icon}

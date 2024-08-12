@@ -13,6 +13,7 @@ export { AccountPill, type AccountPillProps } from './composites/wui-account-pil
 export { ActionEntry, type ActionEntryProps } from './composites/wui-action-entry';
 export { Avatar, type AvatarProps } from './composites/wui-avatar';
 export { Balance, type BalanceProps } from './composites/wui-balance';
+export { Banner, type BannerProps } from './composites/wui-banner';
 export { Button, type ButtonProps } from './composites/wui-button';
 export {
   CardSelectLoader,
@@ -26,6 +27,10 @@ export {
   type CardSelectProps
 } from './composites/wui-card-select';
 export { Chip, type ChipProps } from './composites/wui-chip';
+export {
+  CompatibleNetwork,
+  type CompatibleNetworkProps
+} from './composites/wui-compatible-network';
 export { ConnectButton, type ConnectButtonProps } from './composites/wui-connect-button';
 export { EmailInput, type EmailInputProps } from './composites/wui-email-input';
 export { IconBox, type IconBoxProps } from './composites/wui-icon-box';

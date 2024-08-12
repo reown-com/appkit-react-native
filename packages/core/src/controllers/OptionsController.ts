@@ -83,7 +83,7 @@ export const OptionsController = {
   copyToClipboard(value: string) {
     const client = state._clipboardClient;
     if (client) {
-      client.setString(value);
+      client?.setString(value);
     }
   }
 };
