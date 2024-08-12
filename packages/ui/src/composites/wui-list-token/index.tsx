@@ -50,7 +50,7 @@ export function ListToken({ imageSrc, name, value, amount, currency }: ListToken
         </FlexView>
       </FlexView>
       <Text color="fg-100" variant="paragraph-500">
-        ${value?.toFixed(2) || '0.00'}
+        ${value?.toFixed(2) ?? '0.00'}
       </Text>
     </FlexView>
   );
