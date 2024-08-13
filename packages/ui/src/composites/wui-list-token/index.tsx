@@ -8,13 +8,14 @@ import styles from './styles';
 
 export interface ListTokenProps {
   imageSrc: string;
+  networkSrc?: string;
   name: string;
   value?: number;
   amount?: string;
   currency: string;
 }
 
-export function ListToken({ imageSrc, name, value, amount, currency }: ListTokenProps) {
+export function ListToken({ imageSrc, networkSrc, name, value, amount, currency }: ListTokenProps) {
   const Theme = useTheme();
 
   return (
@@ -39,7 +40,20 @@ export function ListToken({ imageSrc, name, value, amount, currency }: ListToken
             <Icon name="coinPlaceholder" size="lg" color="fg-200" />
           </FlexView>
         )}
-
+        <FlexView
+          alignItems="center"
+          justifyContent="center"
+          style={[
+            styles.networkImageContainer,
+            { borderColor: Theme['bg-100'], backgroundColor: Theme['bg-200'] }
+          ]}
+        >
+          {networkSrc ? (
+            <Image source={networkSrc} style={styles.networkImage} />
+          ) : (
+            <Icon name="networkPlaceholder" size="xxs" color="fg-200" />
+          )}
+        </FlexView>
         <FlexView padding={['0', 's', '0', 's']}>
           <Text color="fg-100" variant="paragraph-500">
             {name}

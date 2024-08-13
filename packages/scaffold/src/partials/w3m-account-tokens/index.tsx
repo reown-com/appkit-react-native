@@ -1,10 +1,18 @@
-import { useSnapshot } from 'valtio';
-import { AccountController, RouterController } from '@web3modal/core-react-native';
-import { FlexView, ListItem, Text, ListToken } from '@web3modal/ui-react-native';
 import { ScrollView } from 'react-native';
+import { useSnapshot } from 'valtio';
+import {
+  AccountController,
+  AssetUtil,
+  NetworkController,
+  RouterController
+} from '@web3modal/core-react-native';
+import { FlexView, ListItem, Text, ListToken } from '@web3modal/ui-react-native';
 
 export function AccountTokens() {
   const { tokenBalance } = useSnapshot(AccountController.state);
+  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+
   const onReceivePress = () => {
     RouterController.push('WalletReceive');
   };
@@ -31,6 +39,7 @@ export function AccountTokens() {
           key={token.name}
           name={token.name}
           imageSrc={token.iconUrl}
+          networkSrc={networkImage}
           value={token.value}
           amount={token.quantity.numeric}
           currency={token.symbol}
