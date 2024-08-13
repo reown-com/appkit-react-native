@@ -12,10 +12,7 @@ export function WalletCompatibleNetworks() {
   return (
     <ScrollView bounces={false} style={{ paddingHorizontal: padding }} fadingEdgeLength={20}>
       <FlexView padding={['xl', 's', '2xl', 's']}>
-        <Banner
-          icon="warningCircle"
-          text="Only send funds from these networks to be able receive them"
-        />
+        <Banner icon="warningCircle" text="You can only receive assets on these networks." />
         {approvedNetworks.map(network => (
           <FlexView
             key={network.id}

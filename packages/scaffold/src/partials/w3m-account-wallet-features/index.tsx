@@ -62,7 +62,7 @@ export function AccountWalletFeatures() {
         />
       </FlexView>
       <Tabs tabs={['Tokens', 'NFTs', 'Activity']} onTabChange={onTabChange} />
-      <FlexView alignItems="center" padding={['m', '0', 'xl', '0']} style={styles.tabContainer}>
+      <FlexView padding={['m', '0', '0', '0']} style={[styles.tabContainer]}>
         {activeTab === 0 && <AccountTokens />}
         {activeTab === 1 && <AccountNfts />}
         {activeTab === 2 && <AccountActivity />}
