@@ -1,3 +1,5 @@
+import type { RequestCache } from './TypeUtil';
+
 // -- Types ----------------------------------------------------------------------
 interface Options {
   baseUrl: string;
@@ -8,6 +10,8 @@ interface RequestArguments {
   path: string;
   headers?: HeadersInit_;
   params?: Record<string, string | undefined>;
+  cache?: RequestCache;
+  signal?: AbortSignal;
 }
 
 interface PostArguments extends RequestArguments {

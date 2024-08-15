@@ -1,4 +1,4 @@
-import type { Balance } from '@web3modal/common-react-native';
+import type { Balance, Transaction } from '@web3modal/common-react-native';
 
 export type CaipAddress = `${string}:${string}:${string}`;
 
@@ -99,6 +99,16 @@ export interface ApiGetAnalyticsConfigResponse {
   isAnalyticsEnabled: boolean;
 }
 
+export type RequestCache =
+  | 'default'
+  | 'force-cache'
+  | 'no-cache'
+  | 'no-store'
+  | 'only-if-cached'
+  | 'reload';
+
+// -- ThemeController Types ---------------------------------------------------
+
 export type ThemeMode = 'dark' | 'light';
 
 export interface ThemeVariables {
@@ -117,6 +127,20 @@ export interface BlockchainApiIdentityResponse {
 
 export interface BlockchainApiBalanceResponse {
   balances: Balance[];
+}
+
+export interface BlockchainApiTransactionsRequest {
+  account: string;
+  projectId: string;
+  cursor?: string;
+  onramp?: 'coinbase';
+  signal?: AbortSignal;
+  cache?: RequestCache;
+}
+
+export interface BlockchainApiTransactionsResponse {
+  data: Transaction[];
+  next: string | null;
 }
 
 // -- OptionsController Types ---------------------------------------------------
@@ -283,6 +307,33 @@ export type Event =
   | {
       type: 'track';
       event: 'SIWE_AUTH_ERROR';
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_TRANSACTIONS';
+      properties: {
+        isSmartAccount: boolean;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'ERROR_FETCH_TRANSACTIONS';
+      properties: {
+        address: string;
+        projectId: string;
+        cursor: string | undefined;
+        isSmartAccount: boolean;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'LOAD_MORE_TRANSACTIONS';
+      properties: {
+        address: string | undefined;
+        projectId: string;
+        cursor: string | undefined;
+        isSmartAccount: boolean;
+      };
     };
 
 // -- Email Types ------------------------------------------------

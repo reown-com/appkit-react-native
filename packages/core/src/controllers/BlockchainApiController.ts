@@ -5,7 +5,9 @@ import { FetchUtil } from '../utils/FetchUtil';
 import type {
   BlockchainApiBalanceResponse,
   BlockchainApiIdentityRequest,
-  BlockchainApiIdentityResponse
+  BlockchainApiIdentityResponse,
+  BlockchainApiTransactionsRequest,
+  BlockchainApiTransactionsResponse
 } from '../utils/TypeUtil';
 import { OptionsController } from './OptionsController';
 
@@ -34,6 +36,26 @@ export const BlockchainApiController = {
       params: {
         projectId: OptionsController.state.projectId
       }
+    });
+  },
+
+  fetchTransactions({
+    account,
+    projectId,
+    cursor,
+    onramp,
+    signal,
+    cache
+  }: BlockchainApiTransactionsRequest) {
+    return state.api.get<BlockchainApiTransactionsResponse>({
+      path: `/v1/account/${account}/history`,
+      params: {
+        projectId,
+        cursor,
+        onramp
+      },
+      signal,
+      cache
     });
   },
 

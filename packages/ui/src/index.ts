@@ -41,6 +41,7 @@ export { InputText, type InputTextProps } from './composites/wui-input-text';
 export { Link, type LinkProps } from './composites/wui-link';
 export { ListItem, type ListItemProps } from './composites/wui-list-item';
 export { ListToken, type ListTokenProps } from './composites/wui-list-token';
+export { ListTransaction, type ListTransactionProps } from './composites/wui-list-transaction';
 export { ListWallet, type ListWalletProps } from './composites/wui-list-wallet';
 export { Logo, type LogoProps } from './composites/wui-logo';
 export { LogoSelect, type LogoSelectProps } from './composites/wui-logo-select';
@@ -74,6 +75,7 @@ export type {
   VisualType
 } from './utils/TypesUtil';
 export { UiUtil } from './utils/UiUtil';
+export { TransactionUtil } from './utils/TransactionUtil';
 export { Spacing, BorderRadius } from './utils/ThemeUtil';
 
 export { useTheme } from './hooks/useTheme';
