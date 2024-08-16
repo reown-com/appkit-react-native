@@ -61,6 +61,7 @@ export function NetworkSwitchView() {
 
     return (
       <Button
+        size="sm"
         variant="accent"
         iconLeft="refresh"
         style={styles.retryButton}

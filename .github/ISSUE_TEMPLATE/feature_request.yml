@@ -1,7 +1,7 @@
 name: 🙋 Feature Request
-description: 'Want us to add something to Web3Modal for React Native?'
+description: 'Want us to add something to AppKit for React Native?'
 title: '[feature] '
-labels: ['feature-request', 'needs review']
+labels: ['enhancement', 'needs review']
 body:
   - type: textarea
     attributes:

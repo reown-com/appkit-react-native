@@ -1,7 +1,7 @@
 name: 📃 Documentation
 description: 'Report issue or suggest an improvement to docs.'
 title: '[docs] '
-labels: ['docs', 'needs review']
+labels: ['documentation', 'needs review']
 body:
   - type: textarea
     attributes:

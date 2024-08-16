@@ -61,12 +61,18 @@ export const ApiController = {
 
   _getApiHeaders() {
     const { projectId, sdkType, sdkVersion } = OptionsController.state;
+    const reactNativeVersion = [
+      Platform.constants.reactNativeVersion.major,
+      Platform.constants.reactNativeVersion.minor,
+      Platform.constants.reactNativeVersion.patch
+    ].join('.');
 
     return {
       'x-project-id': projectId,
       'x-sdk-type': sdkType,
       'x-sdk-version': sdkVersion,
-      'User-Agent': `${Platform.OS}-${Platform.Version}`
+      'User-Agent': `${Platform.OS}-${Platform.Version}@rn-${reactNativeVersion}`,
+      'Origin': CoreHelperUtil.getBundleId()
     };
   },
 

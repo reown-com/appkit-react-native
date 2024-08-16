@@ -12,7 +12,7 @@ import { LoadingSpinner } from '../../components/wui-loading-spinner';
 import { useTheme } from '../../hooks/useTheme';
 import type { ButtonType, IconType, SizeType } from '../../utils/TypesUtil';
 
-import styles, { getThemedButtonStyle, getThemedTextStyle } from './styles';
+import styles, { getThemedButtonStyle, getThemedTextStyle, getIconColor } from './styles';
 import type { SvgProps } from 'react-native-svg';
 import { FlexView } from '../../layout/wui-flex';
 
@@ -47,9 +47,7 @@ export function Button({
   const themedTextStyle = getThemedTextStyle(Theme, variant, disabled);
   const colorAnimation = useRef(new Animated.Value(0));
   const iconSize = size === 'md' ? 'sm' : 'xs';
-  const iconColor =
-    variant === 'fill' ? 'inverse-100' : variant === 'accent' ? 'accent-100' : 'fg-100';
-
+  const iconColor = getIconColor(variant, disabled);
   const themedNormalStyle = getThemedButtonStyle(Theme, variant, disabled, false);
   const themedPressedStyle = getThemedButtonStyle(Theme, variant, disabled, true);
 

@@ -11,6 +11,7 @@ import { chains } from './WagmiUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LOGGED_IN_KEY = '@w3mwagmi/logged_in';
+const SESSION_KEY = '@w3mwagmi/session';
 
 export const siweConfig = createSIWEConfig({
   signOutOnAccountChange: false,
@@ -47,10 +48,9 @@ export const siweConfig = createSIWEConfig({
 
     const logged = await AsyncStorage.getItem(LOGGED_IN_KEY);
     if (logged === 'true') {
-      return {
-        address: '0x',
-        chainId: 1
-      };
+      const session = await AsyncStorage.getItem(SESSION_KEY);
+
+      return session ? JSON.parse(session) : null;
     }
 
     return null;
@@ -66,6 +66,12 @@ export const siweConfig = createSIWEConfig({
 
     // Just a mock. You should save a token or whatever your backend needs
     await AsyncStorage.setItem(LOGGED_IN_KEY, 'true');
+
+    // MOCKED LOGIC - DON'T COPY THIS
+    const address = message.split('your Ethereum account:\n')[1].split('\n')[0];
+    const chainId = message.split('Chain ID: ')[1].split('\n')[0];
+
+    await AsyncStorage.setItem(SESSION_KEY, JSON.stringify({ address, chainId }));
 
     return true;
   },

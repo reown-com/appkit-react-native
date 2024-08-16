@@ -194,6 +194,7 @@ export type Event =
       properties: {
         name: string;
         platform?: Platform;
+        explorer_id?: string;
       };
     }
   | {
@@ -202,6 +203,7 @@ export type Event =
       properties: {
         name: string;
         method: Platform;
+        explorer_id?: string;
       };
     }
   | {

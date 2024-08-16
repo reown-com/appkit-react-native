@@ -1,15 +1,26 @@
 #!/bin/bash
 
-# Get version from packages/scaffold-utils/package.json
-version=$(awk -F: '/"version":/ {print $2}' packages/scaffold-utils/package.json | tr -d ' ",')
-# File where VERSION is defined
-file="packages/scaffold-utils/src/utils/ConstantsUtil.ts"
+# Get version from core
+version=$(awk -F: '/"version":/ {print $2}' packages/core/package.json | tr -d ' ",')
 
-# Use sed to replace VERSION
+
+utils="packages/scaffold-utils/src/utils/ConstantsUtil.ts"
+rootjson="package.json"
+
+# Replace version in ConstantsUtil.ts
 if [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS
-    sed -i '' "s/VERSION: '.*',/VERSION: '$version',/" $file
+    sed -i '' "s/VERSION: '.*',/VERSION: '$version',/" $utils
 else
     # Linux
-    sed -i "s/VERSION: '.*',/VERSION: '$version',/" $file
+    sed -i "s/VERSION: '.*',/VERSION: '$version',/" $utils
+fi
+
+# Replace version in root package.json
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    sed -i '' "s/\"version\": \".*\"/\"version\": \"$version\"/" $rootjson
+else
+    # Linux
+    sed -i "s/\"version\": \".*\"/\"version\": \"$version\"/" $rootjson
 fi

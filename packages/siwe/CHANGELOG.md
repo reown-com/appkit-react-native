@@ -1,4 +1,4 @@
-# @web3modal/core-react-native
+# @web3modal/siwe-react-native
 
 ## 2.0.1
 
@@ -20,6 +20,8 @@
 
 - Updated dependencies [[`a370a96`](https://github.com/WalletConnect/web3modal-react-native/commit/a370a96224bab659e3723fc4598f53438bf6645e), [`7868d0f`](https://github.com/WalletConnect/web3modal-react-native/commit/7868d0fa73c304ca11c2be2a4d76ac7b38166386), [`934426b`](https://github.com/WalletConnect/web3modal-react-native/commit/934426b9946c378f4cfaaffe2630eaabb92b25d1), [`354ebdb`](https://github.com/WalletConnect/web3modal-react-native/commit/354ebdb1df12cacba8f5bfe0db9475ef49faffce), [`ee8dcd2`](https://github.com/WalletConnect/web3modal-react-native/commit/ee8dcd296e299638169d81f79df540eca5954983), [`65ff7f5`](https://github.com/WalletConnect/web3modal-react-native/commit/65ff7f587f7a34abd38ab6a975138bedffe9e1fe), [`0724f6d`](https://github.com/WalletConnect/web3modal-react-native/commit/0724f6d22580a81817f12fbd6a4b872dc54ca0ae)]:
   - @web3modal/common-react-native@2.0.1
+  - @web3modal/core-react-native@2.0.1
+  - @web3modal/ui-react-native@2.0.1
 
 ## 2.0.0
 
@@ -31,135 +33,5 @@
 
 - Updated dependencies [[`f1c2bfa`](https://github.com/WalletConnect/web3modal-react-native/commit/f1c2bfaa6aa23eacd08eb91de4db0287b46a39eb)]:
   - @web3modal/common-react-native@2.0.0
-
-## 1.4.4
-
-### Patch Changes
-
-- [#184](https://github.com/WalletConnect/web3modal-react-native/pull/184) [`d67cac8`](https://github.com/WalletConnect/web3modal-react-native/commit/d67cac8c81e3079536b12db2d3712a6cbdae50f9) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: added workaround to solve promise.allSettled issues
-
-## 1.4.3
-
-### Patch Changes
-
-- [#182](https://github.com/WalletConnect/web3modal-react-native/pull/182) [`e14f193`](https://github.com/WalletConnect/web3modal-react-native/commit/e14f193418517e392927947c0e1d14457c9dd2f2) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: added a default error in connecting view
-
-## 1.4.2
-
-### Patch Changes
-
-- 1.4.2
-
-## 1.4.1
-
-### Patch Changes
-
-- email wallet fixes
-
-## 1.4.0
-
-### Patch Changes
-
-- 1.4.0
-
-## 1.4.0-email-beta.6
-
-### Patch Changes
-
-- beta.6
-
-## 1.4.0-email-beta.5
-
-### Patch Changes
-
-- beta.5
-
-## 1.4.0-email-beta.4
-
-### Patch Changes
-
-- fixes
-
-## 1.4.0-email-beta.3
-
-### Patch Changes
-
-- ui/ux improvements
-
-## 1.4.0-email-beta.2
-
-### Patch Changes
-
-- email beta 2
-
-## 1.4.0-email-beta.1
-
-### Minor Changes
-
-- ad2f408: email-alpha.0
-
-### Patch Changes
-
-- added update-email and graduation flows
-
-## 1.4.0-email-alpha.0
-
-### Minor Changes
-
-- 1.4.0-email-alpha.0
-
-## 1.3.0
-
-### Minor Changes
-
-- 1.3.0
-
-### Patch Changes
-
-- 1971a40: duplicated events fix
-- 1ce1614: events fix
-
-## 1.3.0-alpha.1
-
-### Patch Changes
-
-- [`1971a40`](https://github.com/WalletConnect/web3modal-react-native/commit/1971a409df8a6a66ff6c4bc93d0a458bdc943789) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - duplicated events fix
-
-- events fix
-
-## 1.3.0-alpha.0
-
-### Minor Changes
-
-- analytics alpha
-
-## 1.2.0
-
-### Minor Changes
-
-- 1.2.0
-
-## 1.1.1
-
-### Patch Changes
-
-- 1.1.1
-
-## 1.1.0
-
-### Minor Changes
-
-- 2b52099: 1.1.0
-
-### Patch Changes
-
-- 2b52099: 1.0.2-canary.5
-- 1.1.0
-- 2b52099: 1.0.2-canary.7
-- 2b52099: 1.0.2-canary.6
-
-## 1.1.0-canary.0
-
-### Minor Changes
-
-- 1.1.0
+  - @web3modal/core-react-native@2.0.0
+  - @web3modal/ui-react-native@2.0.0
