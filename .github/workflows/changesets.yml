@@ -21,8 +21,11 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name:
-        uses: ./.github/actions/setup
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'yarn'
 
       - name: Create Release Pull Request or Publish to NPM
         id: changesets
