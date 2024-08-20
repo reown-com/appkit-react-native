@@ -1,24 +1,41 @@
 import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import { ScrollView, View } from 'react-native';
-import { ListTransaction, LoadingSpinner, Text, TransactionUtil } from '@web3modal/ui-react-native';
+import {
+  FlexView,
+  Link,
+  ListTransaction,
+  LoadingSpinner,
+  Text,
+  TransactionUtil
+} from '@web3modal/ui-react-native';
 import { type Transaction, type TransactionImage } from '@web3modal/common-react-native';
-import { AssetUtil, NetworkController, TransactionsController } from '@web3modal/core-react-native';
+import {
+  AccountController,
+  AssetUtil,
+  NetworkController,
+  TransactionsController
+} from '@web3modal/core-react-native';
 import { AccountPlaceholder } from '../w3m-account-placeholder';
 import { getTransactionListItemProps } from './utils';
 import styles from './styles';
 
 export function AccountActivity() {
-  const { loading, transactions } = useSnapshot(TransactionsController.state);
+  const { loading, transactions, next } = useSnapshot(TransactionsController.state);
+  const { address } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+
+  const handleFetchMore = () => {
+    TransactionsController.fetchTransactions(address);
+  };
 
   const transactionsByYear = useMemo(() => {
     return TransactionsController.getTransactionsByYearAndMonth(transactions as Transaction[]);
   }, [transactions]);
 
-  if (loading) {
-    return <LoadingSpinner />;
+  if (loading && !transactions.length) {
+    return <LoadingSpinner style={styles.loader} />;
   }
 
   if (!Object.keys(transactionsByYear).length) {
@@ -32,7 +49,11 @@ export function AccountActivity() {
   }
 
   return (
-    <ScrollView bounces={false} style={styles.container}>
+    <ScrollView
+      bounces={false}
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       {Object.keys(transactionsByYear)
         .reverse()
         .map(year => (
@@ -87,6 +108,14 @@ export function AccountActivity() {
               ))}
           </View>
         ))}
+      <FlexView style={styles.footer} alignItems="center" justifyContent="center">
+        {next && !loading && (
+          <Link size="md" style={styles.loadMoreButton} onPress={handleFetchMore}>
+            Load more
+          </Link>
+        )}
+        {loading && <LoadingSpinner color="accent-100" />}
+      </FlexView>
     </ScrollView>
   );
 }
