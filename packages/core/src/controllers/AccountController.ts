@@ -75,5 +75,6 @@ export const AccountController = {
     state.profileName = undefined;
     state.profileImage = undefined;
     state.addressExplorerUrl = undefined;
+    state.connectedWalletInfo = undefined;
   }
 };
