@@ -75,7 +75,11 @@ export const CoreHelperUtil = {
     return url.startsWith('http://') || url.startsWith('https://');
   },
 
-  isLinkModeURL(url: string) {
+  isLinkModeURL(url?: string) {
+    if (!url) {
+      return false;
+    }
+
     return CoreHelperUtil.isHttpUrl(url) && url.includes('wc_ev');
   },
 

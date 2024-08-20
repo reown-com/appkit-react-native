@@ -37,7 +37,11 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const { maxWidth: width } = useCustomDimensions();
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
   const [errorType, setErrorType] = useState<BodyErrorType>();
-  const showCopy = OptionsController.isClipboardAvailable() && errorType !== 'not_installed';
+  const showCopy =
+    OptionsController.isClipboardAvailable() &&
+    errorType !== 'not_installed' &&
+    !CoreHelperUtil.isLinkModeURL(wcUri);
+
   const showRetry = errorType !== 'not_installed';
   const bodyMessage = getMessage({ walletName: data?.wallet?.name, errorType, declined: wcError });
 
@@ -128,6 +132,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
             iconLeft="refresh"
             style={styles.retryButton}
             iconStyle={styles.retryIcon}
+            disabled={!wcUri}
             onPress={onRetryPress}
           >
             Try again
