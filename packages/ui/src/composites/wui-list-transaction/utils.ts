@@ -1,3 +1,4 @@
+import type { TransactionStatus } from '@web3modal/common-react-native';
 import type { IconType, TransactionType } from '../../utils/TypesUtil';
 
 export const getIcon = (type: TransactionType): IconType => {
@@ -19,6 +20,20 @@ export const getIcon = (type: TransactionType): IconType => {
       return 'arrowRight';
     default:
       return 'arrowBottom';
+  }
+};
+
+//Utils
+export const getIconColor = (status?: TransactionStatus) => {
+  switch (status) {
+    case 'confirmed':
+      return 'success-100';
+    case 'failed':
+      return 'error-100';
+    case 'pending':
+      return 'fg-200';
+    default:
+      return 'fg-200';
   }
 };
 

@@ -5,7 +5,7 @@ import { Text } from '../../components/wui-text';
 import { FlexView } from '../../layout/wui-flex';
 import { IconBox } from '../wui-icon-box';
 import { TransactionVisual } from '../wui-transaction-visual';
-import { getIcon, getTypeLabel } from './utils';
+import { getIcon, getTypeLabel, getIconColor } from './utils';
 import styles from './styles';
 import type { StyleProp, ViewStyle } from 'react-native';
 
@@ -13,7 +13,6 @@ export interface ListTransactionProps {
   date: string;
   status?: TransactionStatus;
   type?: TransactionType;
-  nature?: 'nft' | 'token' | 'fiat';
   descriptions?: string[];
   images?: TransactionImage[];
   networkSrc?: string;
@@ -28,7 +27,8 @@ export function ListTransaction({
   images,
   networkSrc,
   style,
-  isAllNFT
+  isAllNFT,
+  status
 }: ListTransactionProps) {
   const joinSymbol = type === 'trade' ? ' → ' : ' - ';
 
@@ -42,7 +42,7 @@ export function ListTransaction({
               <IconBox
                 icon={getIcon(type)}
                 size="sm"
-                iconColor="success-100"
+                iconColor={getIconColor(status)}
                 background
                 border
                 borderColor="bg-100"
