@@ -144,7 +144,7 @@ export const TransactionUtil = {
     if (transfer?.nft_info) {
       description = transfer?.nft_info?.name || '-';
     } else if (transfer?.fungible_info) {
-      description = this.getFungibleTransferDescription(transfer) || '-';
+      description = this.getFungibleTransferDescription(transfer) ?? '-';
     }
 
     return description;
