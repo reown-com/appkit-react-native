@@ -13,7 +13,9 @@ import { type Transaction, type TransactionImage } from '@web3modal/common-react
 import {
   AccountController,
   AssetUtil,
+  EventsController,
   NetworkController,
+  OptionsController,
   TransactionsController
 } from '@web3modal/core-react-native';
 import { AccountPlaceholder } from '../w3m-account-placeholder';
@@ -24,10 +26,21 @@ export function AccountActivity() {
   const { loading, transactions, next } = useSnapshot(TransactionsController.state);
   const { address } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { projectId } = useSnapshot(OptionsController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
 
-  const handleFetchMore = () => {
+  const handleLoadMore = () => {
     TransactionsController.fetchTransactions(address);
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'LOAD_MORE_TRANSACTIONS',
+      properties: {
+        address: address,
+        projectId,
+        cursor: next,
+        isSmartAccount: false
+      }
+    });
   };
 
   const transactionsByYear = useMemo(() => {
@@ -110,7 +123,7 @@ export function AccountActivity() {
         ))}
       <FlexView style={styles.footer} alignItems="center" justifyContent="center">
         {next && !loading && (
-          <Link size="md" style={styles.loadMoreButton} onPress={handleFetchMore}>
+          <Link size="md" style={styles.loadMoreButton} onPress={handleLoadMore}>
             Load more
           </Link>
         )}
