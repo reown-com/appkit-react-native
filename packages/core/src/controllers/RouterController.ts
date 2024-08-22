@@ -6,24 +6,25 @@ export interface RouterControllerState {
   view:
     | 'Account'
     | 'AccountDefault'
-    | 'Connect'
-    | 'ConnectingWalletConnect'
-    | 'ConnectingExternal'
-    | 'Networks'
-    | 'SwitchNetwork'
     | 'AllWallets'
-    | 'WhatIsAWallet'
-    | 'WhatIsANetwork'
-    | 'GetWallet'
+    | 'Connect'
+    | 'ConnectingExternal'
+    | 'ConnectingSiwe'
+    | 'ConnectingWalletConnect'
     | 'EmailVerifyDevice'
     | 'EmailVerifyOtp'
-    | 'UpdateEmailWallet'
+    | 'GetWallet'
+    | 'Networks'
+    | 'SwitchNetwork'
+    | 'Transactions'
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
+    | 'UpdateEmailWallet'
     | 'UpgradeEmailWallet'
-    | 'ConnectingSiwe'
     | 'WalletReceive'
-    | 'WalletCompatibleNetworks';
+    | 'WalletCompatibleNetworks'
+    | 'WhatIsANetwork'
+    | 'WhatIsAWallet';
   history: RouterControllerState['view'][];
   data?: {
     connector?: Connector;

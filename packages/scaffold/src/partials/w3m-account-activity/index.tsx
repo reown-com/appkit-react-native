@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, type StyleProp, type ViewStyle } from 'react-native';
 import {
   FlexView,
   Link,
@@ -22,7 +22,11 @@ import { AccountPlaceholder } from '../w3m-account-placeholder';
 import { getTransactionListItemProps } from './utils';
 import styles from './styles';
 
-export function AccountActivity() {
+interface Props {
+  style?: StyleProp<ViewStyle>;
+}
+
+export function AccountActivity({ style }: Props) {
   const { loading, transactions, next } = useSnapshot(TransactionsController.state);
   const { address } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
@@ -53,19 +57,21 @@ export function AccountActivity() {
 
   if (!Object.keys(transactionsByYear).length) {
     return (
-      <AccountPlaceholder
-        icon="swapHorizontal"
-        title="No activity yet"
-        description="Your next transactions will appear here"
-      />
+      <FlexView style={style}>
+        <AccountPlaceholder
+          icon="swapHorizontal"
+          title="No activity yet"
+          description="Your next transactions will appear here"
+        />
+      </FlexView>
     );
   }
 
   return (
     <ScrollView
       bounces={false}
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
+      style={[styles.container, style]}
+      contentContainerStyle={[styles.contentContainer]}
     >
       {Object.keys(transactionsByYear)
         .reverse()
@@ -121,14 +127,16 @@ export function AccountActivity() {
               ))}
           </View>
         ))}
-      <FlexView style={styles.footer} alignItems="center" justifyContent="center">
-        {next && !loading && (
-          <Link size="md" style={styles.loadMoreButton} onPress={handleLoadMore}>
-            Load more
-          </Link>
-        )}
-        {loading && <LoadingSpinner color="accent-100" />}
-      </FlexView>
+      {(next || loading) && (
+        <FlexView style={styles.footer} alignItems="center" justifyContent="center">
+          {next && !loading && (
+            <Link size="md" style={styles.loadMoreButton} onPress={handleLoadMore}>
+              Load more
+            </Link>
+          )}
+          {loading && <LoadingSpinner color="accent-100" />}
+        </FlexView>
+      )}
     </ScrollView>
   );
 }
