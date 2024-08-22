@@ -9,7 +9,6 @@ export function TransactionsView() {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: Spacing.l,
-    marginVertical: Spacing.s,
-    marginBottom: Spacing.l
+    marginTop: Spacing.s
   }
 });
