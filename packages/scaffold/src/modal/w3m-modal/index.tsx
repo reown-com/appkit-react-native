@@ -13,6 +13,7 @@ import {
   ModalController,
   OptionsController,
   RouterController,
+  TransactionsController,
   type CaipAddress,
   type W3mFrameProvider
 } from '@web3modal/core-react-native';
@@ -67,8 +68,11 @@ export function Web3Modal() {
         return;
       }
 
+      const newAddress = CoreHelperUtil.getPlainAddress(address);
+      TransactionsController.resetTransactions();
+      TransactionsController.fetchTransactions(newAddress);
+
       if (isSiweEnabled) {
-        const newAddress = CoreHelperUtil.getPlainAddress(address);
         const newNetworkId = CoreHelperUtil.getNetworkId(address);
         const { SIWEController } = await import('@web3modal/siwe-react-native');
         const { signOutOnAccountChange, signOutOnNetworkChange } =

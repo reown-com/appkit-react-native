@@ -5,6 +5,7 @@ import { Balance, FlexView, IconLink, Tabs } from '@web3modal/ui-react-native';
 import {
   AccountController,
   CoreHelperUtil,
+  EventsController,
   RouterController,
   SnackController
 } from '@web3modal/core-react-native';
@@ -25,6 +26,19 @@ export function AccountWalletFeatures() {
 
   const onTabChange = (index: number) => {
     setActiveTab(index);
+    if (index === 2) {
+      onTransactionsPress();
+    }
+  };
+
+  const onTransactionsPress = () => {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CLICK_TRANSACTIONS',
+      properties: {
+        isSmartAccount: false
+      }
+    });
   };
 
   // TODO: Implement this features

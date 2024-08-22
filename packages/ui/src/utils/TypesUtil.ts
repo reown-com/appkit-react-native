@@ -249,3 +249,22 @@ export type TruncateOptions = {
   charsEnd: number;
   truncate: TruncateType;
 };
+
+export type TransactionType =
+  | 'approve'
+  | 'bought'
+  | 'borrow'
+  | 'burn'
+  | 'cancel'
+  | 'claim'
+  | 'deploy'
+  | 'deposit'
+  | 'execute'
+  | 'mint'
+  | 'receive'
+  | 'repay'
+  | 'send'
+  | 'stake'
+  | 'trade'
+  | 'unstake'
+  | 'withdraw';
