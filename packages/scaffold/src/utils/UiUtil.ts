@@ -20,7 +20,7 @@ export const UiUtil = {
     StorageUtil.setWalletConnectDeepLink(wcLinking);
 
     if (pressedWallet) {
-      const recentWallets = await StorageUtil.setWeb3ModalRecent(pressedWallet);
+      const recentWallets = await StorageUtil.addRecentWallet(pressedWallet);
       if (recentWallets) {
         ConnectionController.setRecentWallets(recentWallets);
       }

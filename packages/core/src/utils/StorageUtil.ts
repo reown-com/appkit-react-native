@@ -39,7 +39,7 @@ export const StorageUtil = {
     }
   },
 
-  async setWeb3ModalRecent(wallet: WcWallet) {
+  async addRecentWallet(wallet: WcWallet) {
     try {
       const recentWallets = await StorageUtil.getRecentWallets();
       const recentIndex = recentWallets.findIndex(w => w.id === wallet.id);
@@ -48,7 +48,7 @@ export const StorageUtil = {
         recentWallets.splice(recentIndex, 1);
       }
 
-      recentWallets.unshift(wallet);
+      recentWallets.unshift({ ...wallet, name: 'pero asi d old' });
       if (recentWallets.length > 2) {
         recentWallets.pop();
       }
@@ -56,9 +56,17 @@ export const StorageUtil = {
 
       return recentWallets;
     } catch {
-      console.info('Unable to set Web3Modal recent');
+      console.info('Unable to set recent wallet');
 
       return undefined;
+    }
+  },
+
+  async setRecentWallets(wallets: WcWallet[]) {
+    try {
+      await AsyncStorage.setItem(W3M_RECENT, JSON.stringify(wallets));
+    } catch {
+      console.info('Unable to set recent wallets');
     }
   },
 
@@ -68,7 +76,7 @@ export const StorageUtil = {
 
       return recent ? JSON.parse(recent) : [];
     } catch {
-      console.info('Unable to get Web3Modal recent');
+      console.info('Unable to get recent wallets');
     }
 
     return [];
