@@ -121,7 +121,6 @@ export function Web3Modal() {
 
   return (
     <>
-      {hasEmail && EmailView && <EmailView />}
       <Modal
         style={styles.modal}
         coverScreen={modalCoverScreen}
@@ -140,6 +139,7 @@ export function Web3Modal() {
           <Snackbar />
         </Card>
       </Modal>
+      {hasEmail && EmailView && <EmailView />}
     </>
   );
 }

@@ -109,5 +109,6 @@ export const AccountController = {
     state.profileImage = undefined;
     state.addressExplorerUrl = undefined;
     state.tokenBalance = [];
+    state.connectedWalletInfo = undefined;
   }
 };
