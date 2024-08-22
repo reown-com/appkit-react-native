@@ -84,6 +84,10 @@ export function AccountDefaultView() {
     }
   };
 
+  const onActivityPress = () => {
+    RouterController.push('Transactions');
+  };
+
   const onNetworkPress = () => {
     RouterController.push('Networks');
 
@@ -158,7 +162,13 @@ export function AccountDefaultView() {
             {isEmail && (
               <>
                 <UpgradeWalletButton onPress={onUpgradePress} style={styles.upgradeButton} />
-                <ListItem icon="mail" onPress={onEmailPress} chevron testID="button-email">
+                <ListItem
+                  icon="mail"
+                  onPress={onEmailPress}
+                  chevron
+                  testID="button-email"
+                  style={styles.actionButton}
+                >
                   <Text color="fg-100">{getUserEmail()}</Text>
                 </ListItem>
               </>
@@ -171,12 +181,25 @@ export function AccountDefaultView() {
               imageHeaders={ApiController._getApiHeaders()}
               onPress={onNetworkPress}
               testID="button-network"
-              style={styles.networkButton}
+              style={styles.actionButton}
             >
               <Text numberOfLines={1} color="fg-100">
                 {caipNetwork?.name}
               </Text>
             </ListItem>
+            {!isEmail && (
+              <ListItem
+                chevron
+                icon="swapHorizontal"
+                iconColor="accent-100"
+                iconBackgroundColor="accent-glass-015"
+                onPress={onActivityPress}
+                testID="button-activity"
+                style={styles.actionButton}
+              >
+                <Text color="fg-100">Activity</Text>
+              </ListItem>
+            )}
             <ListItem
               icon="disconnect"
               onPress={onDisconnect}

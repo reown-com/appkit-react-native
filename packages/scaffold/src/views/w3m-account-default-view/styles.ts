@@ -19,8 +19,8 @@ export default StyleSheet.create({
   copyButton: {
     marginLeft: Spacing['4xs']
   },
-  networkButton: {
-    marginVertical: Spacing.xs
+  actionButton: {
+    marginBottom: Spacing.xs
   },
   upgradeButton: {
     marginBottom: Spacing.s

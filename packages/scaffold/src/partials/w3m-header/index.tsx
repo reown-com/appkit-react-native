@@ -16,26 +16,27 @@ export function Header() {
     const networkName = RouterController.state.data?.network?.name;
 
     return {
-      Connect: 'Connect wallet',
       Account: undefined,
       AccountDefault: undefined,
-      ConnectingWalletConnect: walletName ?? 'WalletConnect',
+      AllWallets: 'All wallets',
+      Connect: 'Connect wallet',
       ConnectingExternal: connectorName ?? 'Connect wallet',
       ConnectingSiwe: 'Sign In',
-      Networks: 'Select network',
-      SwitchNetwork: networkName ?? 'Switch network',
-      AllWallets: 'All wallets',
-      WhatIsANetwork: 'What is a network?',
-      WhatIsAWallet: 'What is a wallet?',
-      GetWallet: 'Get a wallet',
+      ConnectingWalletConnect: walletName ?? 'WalletConnect',
       EmailVerifyDevice: ' ',
       EmailVerifyOtp: 'Confirm email',
-      UpdateEmailWallet: 'Edit email',
+      GetWallet: 'Get a wallet',
+      Networks: 'Select network',
+      SwitchNetwork: networkName ?? 'Switch network',
+      Transactions: 'Activity',
       UpdateEmailPrimaryOtp: 'Confirm current email',
       UpdateEmailSecondaryOtp: 'Confirm new email',
+      UpdateEmailWallet: 'Edit email',
       UpgradeEmailWallet: 'Upgrade wallet',
+      WalletCompatibleNetworks: 'Compatible networks',
       WalletReceive: 'Receive',
-      WalletCompatibleNetworks: 'Compatible networks'
+      WhatIsANetwork: 'What is a network?',
+      WhatIsAWallet: 'What is a wallet?'
     };
   };
 
