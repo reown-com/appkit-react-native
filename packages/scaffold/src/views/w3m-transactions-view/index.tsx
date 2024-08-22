@@ -8,7 +8,6 @@ export function TransactionsView() {
 
 const styles = StyleSheet.create({
   container: {
-    minHeight: 200,
     paddingHorizontal: Spacing.l,
     marginVertical: Spacing.s,
     marginBottom: Spacing.l

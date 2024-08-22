@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
-    padding: Spacing.xs
+    paddingHorizontal: Spacing.xs
   },
   contentContainer: {
     paddingBottom: Spacing.m
@@ -17,8 +17,8 @@ export default StyleSheet.create({
   footer: {
     height: 40
   },
-  loader: {
-    flex: 1
+  placeholder: {
+    minHeight: 200
   },
   loadMoreButton: {
     alignSelf: 'center',

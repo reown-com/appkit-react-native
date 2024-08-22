@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
-    alignItems: 'center',
     height: 400
   },
   balanceText: {
@@ -25,8 +24,15 @@ export default StyleSheet.create({
   actionRight: {
     marginLeft: 8
   },
+  tab: {
+    width: '100%',
+    paddingHorizontal: Spacing.s
+  },
   tabContainer: {
     flex: 1,
     width: '100%'
+  },
+  tabContent: {
+    paddingHorizontal: Spacing.m
   }
 });

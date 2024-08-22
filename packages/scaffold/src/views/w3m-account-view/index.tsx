@@ -1,5 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect } from 'react';
+import { ScrollView } from 'react-native';
 import {
   FlexView,
   Icon,
@@ -19,9 +20,8 @@ import {
   SnackController
 } from '@web3modal/core-react-native';
 import { AccountWalletFeatures } from '../../partials/w3m-account-wallet-features';
-import styles from './styles';
-import { ScrollView } from 'react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import styles from './styles';
 
 export function AccountView() {
   const Theme = useTheme();
@@ -49,7 +49,15 @@ export function AccountView() {
   }, []);
 
   return (
-    <ScrollView bounces={false} contentContainerStyle={{ paddingHorizontal: padding }}>
+    <ScrollView
+      bounces={false}
+      contentContainerStyle={[
+        styles.contentContainer,
+        {
+          paddingHorizontal: padding
+        }
+      ]}
+    >
       <NetworkButton
         imageSrc={AssetUtil.getNetworkImage(caipNetwork)}
         imageHeaders={ApiController._getApiHeaders()}
@@ -60,8 +68,7 @@ export function AccountView() {
         <Icon name="chevronBottom" size="sm" color="fg-200" />
       </NetworkButton>
       <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
-
-      <FlexView padding={['3xl', 's', '3xl', 's']} style={[{ backgroundColor: Theme['bg-100'] }]}>
+      <FlexView padding={['3xl', '0', '0', '0']} style={[{ backgroundColor: Theme['bg-100'] }]}>
         <AccountPill
           address={address}
           profileName={profileName}

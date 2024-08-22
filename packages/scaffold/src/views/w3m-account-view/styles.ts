@@ -1,7 +1,10 @@
 import { Spacing } from '@web3modal/ui-react-native';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+  contentContainer: {
+    paddingBottom: Platform.select({ ios: Spacing.s })
+  },
   networkIcon: {
     alignSelf: 'flex-start',
     position: 'absolute',
@@ -18,6 +21,7 @@ export default StyleSheet.create({
   },
   accountPill: {
     alignSelf: 'center',
-    marginBottom: Spacing.s
+    marginBottom: Spacing.s,
+    marginHorizontal: Spacing.s
   }
 });

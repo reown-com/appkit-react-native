@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { View } from 'react-native';
 import { Balance, FlexView, IconLink, Tabs } from '@web3modal/ui-react-native';
 import {
   AccountController,
@@ -51,9 +50,14 @@ export function AccountWalletFeatures() {
   };
 
   return (
-    <View style={styles.container}>
+    <FlexView style={styles.container} alignItems="center">
       <Balance integer={balance.dollars} decimal={balance.pennies} />
-      <FlexView style={styles.actionsContainer} flexDirection="row" justifyContent="space-around">
+      <FlexView
+        style={styles.actionsContainer}
+        flexDirection="row"
+        justifyContent="space-around"
+        padding={['0', 's', '0', 's']}
+      >
         <IconLink
           icon="arrowBottomCircle"
           size="lg"
@@ -75,12 +79,14 @@ export function AccountWalletFeatures() {
           onPress={onMissingPress}
         />
       </FlexView>
-      <Tabs tabs={['Tokens', 'NFTs', 'Activity']} onTabChange={onTabChange} />
-      <FlexView padding={['m', '0', '0', '0']} style={[styles.tabContainer]}>
-        {activeTab === 0 && <AccountTokens />}
-        {activeTab === 1 && <AccountNfts />}
-        {activeTab === 2 && <AccountActivity />}
+      <FlexView style={styles.tab}>
+        <Tabs tabs={['Tokens', 'NFTs', 'Activity']} onTabChange={onTabChange} />
       </FlexView>
-    </View>
+      <FlexView padding={['m', '0', '0', '0']} style={styles.tabContainer}>
+        {activeTab === 0 && <AccountTokens style={styles.tabContent} />}
+        {activeTab === 1 && <AccountNfts />}
+        {activeTab === 2 && <AccountActivity style={styles.tabContent} />}
+      </FlexView>
+    </FlexView>
   );
 }

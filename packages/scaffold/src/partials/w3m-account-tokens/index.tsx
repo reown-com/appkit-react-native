@@ -1,4 +1,4 @@
-import { ScrollView } from 'react-native';
+import { ScrollView, type StyleProp, type ViewStyle } from 'react-native';
 import { useSnapshot } from 'valtio';
 import {
   AccountController,
@@ -8,7 +8,11 @@ import {
 } from '@web3modal/core-react-native';
 import { FlexView, ListItem, Text, ListToken } from '@web3modal/ui-react-native';
 
-export function AccountTokens() {
+interface Props {
+  style?: StyleProp<ViewStyle>;
+}
+
+export function AccountTokens({ style }: Props) {
   const { tokenBalance } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
@@ -33,7 +37,7 @@ export function AccountTokens() {
   }
 
   return (
-    <ScrollView bounces={false}>
+    <ScrollView bounces={false} fadingEdgeLength={20} style={style}>
       {tokenBalance.map(token => (
         <ListToken
           key={token.name}

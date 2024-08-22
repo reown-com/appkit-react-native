@@ -52,12 +52,16 @@ export function AccountActivity({ style }: Props) {
   }, [transactions]);
 
   if (loading && !transactions.length) {
-    return <LoadingSpinner style={styles.loader} />;
+    return (
+      <FlexView style={[styles.placeholder, style]} alignItems="center" justifyContent="center">
+        <LoadingSpinner />
+      </FlexView>
+    );
   }
 
   if (!Object.keys(transactionsByYear).length) {
     return (
-      <FlexView style={style}>
+      <FlexView style={[styles.placeholder, style]} alignItems="center" justifyContent="center">
         <AccountPlaceholder
           icon="swapHorizontal"
           title="No activity yet"
@@ -71,6 +75,7 @@ export function AccountActivity({ style }: Props) {
     <ScrollView
       bounces={false}
       style={[styles.container, style]}
+      fadingEdgeLength={20}
       contentContainerStyle={[styles.contentContainer]}
     >
       {Object.keys(transactionsByYear)
