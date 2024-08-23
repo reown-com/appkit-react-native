@@ -47,7 +47,8 @@ const emailConn = emailConnector({ projectId, metadata });
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
-  metadata
+  metadata,
+  extraConnectors: [emailConn]
 });
 
 const queryClient = new QueryClient();
