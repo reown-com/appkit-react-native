@@ -48,7 +48,7 @@ export const StorageUtil = {
         recentWallets.splice(recentIndex, 1);
       }
 
-      recentWallets.unshift({ ...wallet, name: 'pero asi d old' });
+      recentWallets.unshift(wallet);
       if (recentWallets.length > 2) {
         recentWallets.pop();
       }
