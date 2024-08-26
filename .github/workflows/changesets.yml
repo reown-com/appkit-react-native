@@ -56,3 +56,18 @@ jobs:
           yarn run changeset version --no-git-tag --snapshot canary
           yarn run changeset:prepublish
           yarn run changeset publish --no-git-tag --snapshot canary --tag canary
+
+      - name: Get NPM Version
+        if: steps.changesets.outputs.published != 'true'
+        id: get_version
+        run: |
+          VERSION=$(node -pe "require('./package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Comment Version on Pull Request
+        if: steps.changesets.outputs.published != 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=$(gh pr list --state open --author ${{ github.actor }} --json number --jq '.[0].number')
+          gh pr comment $PR_NUMBER --body "Published pre-release version: ${{ env.VERSION }}"
