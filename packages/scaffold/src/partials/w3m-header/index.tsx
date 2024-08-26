@@ -35,6 +35,9 @@ export function Header() {
       UpgradeEmailWallet: 'Upgrade wallet',
       WalletCompatibleNetworks: 'Compatible networks',
       WalletReceive: 'Receive',
+      WalletSend: 'Send',
+      WalletSendPreview: 'Review send',
+      WalletSendSelectToken: 'Select token',
       WhatIsANetwork: 'What is a network?',
       WhatIsAWallet: 'What is a wallet?'
     };

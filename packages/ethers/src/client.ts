@@ -1,10 +1,15 @@
 import {
+  BrowserProvider,
+  Contract,
   InfuraProvider,
   JsonRpcProvider,
+  JsonRpcSigner,
   formatEther,
+  formatUnits,
   getAddress,
   hexlify,
   isHexString,
+  parseUnits,
   toUtf8Bytes
 } from 'ethers';
 import {
@@ -16,8 +21,10 @@ import {
   type LibraryOptions,
   type NetworkControllerClient,
   type PublicStateControllerState,
+  type SendTransactionArgs,
   type Token,
-  Web3ModalScaffold
+  Web3ModalScaffold,
+  type WriteContractArgs
 } from '@web3modal/scaffold-react-native';
 import { NetworkUtil } from '@web3modal/common-react-native';
 import {
@@ -275,6 +282,67 @@ export class Web3Modal extends Web3ModalScaffold {
         });
 
         return signature as `0x${string}`;
+      },
+
+      parseUnits: (value: string, decimals: number) => parseUnits(value, decimals),
+
+      formatUnits: (value: bigint, decimals: number) => formatUnits(value, decimals),
+
+      sendTransaction: async (data: SendTransactionArgs) => {
+        const { chainId, provider, address } = EthersStoreUtil.state;
+
+        if (!provider) {
+          throw new Error('ethersClient:sendTransaction - provider is undefined');
+        }
+
+        if (!address) {
+          throw new Error('ethersClient:sendTransaction - address is undefined');
+        }
+
+        const txParams = {
+          to: data.to,
+          value: data.value,
+          gasLimit: data.gas,
+          gasPrice: data.gasPrice,
+          data: data.data,
+          type: 0
+        };
+
+        const browserProvider = new BrowserProvider(provider, chainId);
+        const signer = new JsonRpcSigner(browserProvider, address);
+        const txResponse = await signer.sendTransaction(txParams);
+        const txReceipt = await txResponse.wait();
+
+        return (txReceipt?.hash as `0x${string}`) || null;
+      },
+
+      writeContract: async (data: WriteContractArgs) => {
+        const { chainId, provider, address } = EthersStoreUtil.state;
+
+        if (!provider) {
+          throw new Error('ethersClient:writeContract - provider is undefined');
+        }
+
+        if (!address) {
+          throw new Error('ethersClient:writeContract - address is undefined');
+        }
+
+        const browserProvider = new BrowserProvider(provider, chainId);
+        const signer = new JsonRpcSigner(browserProvider, address);
+        const contract = new Contract(data.tokenAddress, data.abi, signer);
+
+        if (!contract || !data.method) {
+          throw new Error('Contract method is undefined');
+        }
+
+        const method = contract[data.method];
+        if (method) {
+          const tx = await method(data.receiverAddress, data.tokenAmount);
+
+          return tx;
+        }
+
+        throw new Error('Contract method is undefined');
       }
     };
 

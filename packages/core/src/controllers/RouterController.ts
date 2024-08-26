@@ -21,8 +21,11 @@ export interface RouterControllerState {
     | 'UpdateEmailSecondaryOtp'
     | 'UpdateEmailWallet'
     | 'UpgradeEmailWallet'
-    | 'WalletReceive'
     | 'WalletCompatibleNetworks'
+    | 'WalletReceive'
+    | 'WalletSend'
+    | 'WalletSendPreview'
+    | 'WalletSendSelectToken'
     | 'WhatIsANetwork'
     | 'WhatIsAWallet';
   history: RouterControllerState['view'][];

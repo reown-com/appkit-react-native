@@ -1,15 +1,20 @@
-import { formatUnits, type Hex } from 'viem';
+import { formatUnits, type Hex, parseUnits } from 'viem';
 import {
   type GetAccountReturnType,
   connect,
   disconnect,
   signMessage,
+  getAccount,
   switchChain,
   watchAccount,
   watchConnectors,
   getEnsName,
   getEnsAvatar as wagmiGetEnsAvatar,
-  getBalance
+  getBalance,
+  prepareTransactionRequest,
+  sendTransaction as wagmiSendTransaction,
+  waitForTransactionReceipt,
+  writeContract as wagmiWriteContract
 } from '@wagmi/core';
 import { mainnet, type Chain } from '@wagmi/core/chains';
 import { EthereumProvider, OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
@@ -22,8 +27,10 @@ import {
   type LibraryOptions,
   type NetworkControllerClient,
   type PublicStateControllerState,
+  type SendTransactionArgs,
   type Token,
-  Web3ModalScaffold
+  Web3ModalScaffold,
+  type WriteContractArgs
 } from '@web3modal/scaffold-react-native';
 import {
   ConstantsUtil,
@@ -32,13 +39,14 @@ import {
   StorageUtil
 } from '@web3modal/scaffold-utils-react-native';
 import { NetworkUtil } from '@web3modal/common-react-native';
+import { type Web3ModalSIWEClient } from '@web3modal/siwe-react-native';
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
-  getWalletConnectCaipNetworks
+  getWalletConnectCaipNetworks,
+  requireCaipAddress
 } from './utils/helpers';
 import { defaultWagmiConfig } from './utils/defaultWagmiConfig';
-import { type Web3ModalSIWEClient } from '@web3modal/siwe-react-native';
 
 // -- Types ---------------------------------------------------------------------
 type WagmiConfig = ReturnType<typeof defaultWagmiConfig>;
@@ -227,7 +235,50 @@ export class Web3Modal extends Web3ModalScaffold {
           const { SIWEController } = await import('@web3modal/siwe-react-native');
           await SIWEController.signOut();
         }
-      }
+      },
+
+      sendTransaction: async (data: SendTransactionArgs) => {
+        const { chainId } = getAccount(this.wagmiConfig);
+
+        const txParams = {
+          account: data.address,
+          to: data.to,
+          value: data.value,
+          gas: data.gas,
+          gasPrice: data.gasPrice,
+          data: data.data,
+          chainId,
+          type: 'legacy' as const
+        };
+
+        await prepareTransactionRequest(this.wagmiConfig, txParams);
+        const tx = await wagmiSendTransaction(this.wagmiConfig, txParams);
+
+        await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 });
+
+        return tx;
+      },
+
+      writeContract: async (data: WriteContractArgs) => {
+        const caipAddress = this.getCaipAddress() || '';
+        const account = requireCaipAddress(caipAddress);
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+
+        const tx = await wagmiWriteContract(wagmiConfig, {
+          chainId,
+          address: data.tokenAddress,
+          account,
+          abi: data.abi,
+          functionName: data.method,
+          args: [data.receiverAddress, data.tokenAmount]
+        });
+
+        return tx;
+      },
+
+      parseUnits,
+
+      formatUnits
     };
 
     super({

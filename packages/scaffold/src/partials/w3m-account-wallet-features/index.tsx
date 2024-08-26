@@ -5,8 +5,8 @@ import {
   AccountController,
   CoreHelperUtil,
   EventsController,
-  RouterController,
-  SnackController
+  NetworkController,
+  RouterController
 } from '@web3modal/core-react-native';
 import type { Balance as BalanceType } from '@web3modal/common-react-native';
 import { AccountNfts } from '../w3m-account-nfts';
@@ -21,6 +21,7 @@ export interface AccountWalletFeaturesProps {
 export function AccountWalletFeatures() {
   const [activeTab, setActiveTab] = useState(0);
   const { tokenBalance } = useSnapshot(AccountController.state);
+  const { caipNetwork } = useSnapshot(NetworkController.state);
   const balance = CoreHelperUtil.calculateAndFormatBalance(tokenBalance as BalanceType[]);
 
   const onTabChange = (index: number) => {
@@ -40,9 +41,16 @@ export function AccountWalletFeatures() {
     });
   };
 
-  // TODO: Implement this features
-  const onMissingPress = () => {
-    SnackController.showError('Feature not implemented');
+  const onSendPress = () => {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'OPEN_SEND',
+      properties: {
+        network: caipNetwork?.id || '',
+        isSmartAccount: false
+      }
+    });
+    RouterController.push('WalletSend');
   };
 
   const onReceivePress = () => {
@@ -76,7 +84,7 @@ export function AccountWalletFeatures() {
           backgroundColor="accent-glass-010"
           pressedColor="accent-glass-020"
           style={[styles.action, styles.actionRight]}
-          onPress={onMissingPress}
+          onPress={onSendPress}
         />
       </FlexView>
       <FlexView style={styles.tab}>

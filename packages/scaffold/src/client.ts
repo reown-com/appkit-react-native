@@ -142,6 +142,8 @@ export class Web3ModalScaffold {
     AccountController.setCaipAddress(caipAddress);
   };
 
+  protected getCaipAddress = () => AccountController.state.caipAddress;
+
   protected setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol) => {
     AccountController.setBalance(balance, balanceSymbol);
   };
