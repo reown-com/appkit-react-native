@@ -32,7 +32,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
     "changeset:prepublish": "turbo clean lint prettier --parallel; yarn version:update; yarn install; turbo run build; turbo run test;",
     "changeset:publish": "yarn run changeset:prepublish; yarn run changeset publish",
-    "changeset:version": "changeset version; yarn run version:update",
+    "changeset:version": "changeset version; yarn run version:update; yarn install --refresh-lockfile",
     "version:update": "./scripts/bump-version.sh"
   },
   "devDependencies": {
