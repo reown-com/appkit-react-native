@@ -17,6 +17,7 @@ import {
   NetworkController,
   OptionsController,
   RouterController,
+  SendController,
   SnackController
 } from '@web3modal/core-react-native';
 import { AccountWalletFeatures } from '../../partials/w3m-account-wallet-features';
@@ -46,6 +47,7 @@ export function AccountView() {
 
   useEffect(() => {
     AccountController.fetchTokenBalance();
+    SendController.resetSend();
   }, []);
 
   return (
