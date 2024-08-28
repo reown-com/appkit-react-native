@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/scaffold-react-native",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -38,9 +38,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@web3modal/core-react-native": "2.0.1",
-    "@web3modal/siwe-react-native": "2.0.1",
-    "@web3modal/ui-react-native": "2.0.1"
+    "@web3modal/core-react-native": "2.0.2",
+    "@web3modal/siwe-react-native": "2.0.2",
+    "@web3modal/ui-react-native": "2.0.2"
   },
   "peerDependencies": {
     "react": ">=17",
