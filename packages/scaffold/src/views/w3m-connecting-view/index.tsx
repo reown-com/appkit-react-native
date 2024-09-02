@@ -33,6 +33,7 @@ export function ConnectingView() {
   const onRetry = () => {
     if (CoreHelperUtil.isAllowedRetry(lastRetry)) {
       setLastRetry(Date.now());
+      ConnectionController.clearUri();
       initializeConnection(true);
     } else {
       SnackController.showError('Please wait a second before retrying');
