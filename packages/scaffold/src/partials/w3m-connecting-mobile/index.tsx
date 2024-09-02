@@ -132,7 +132,6 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
             iconLeft="refresh"
             style={styles.retryButton}
             iconStyle={styles.retryIcon}
-            disabled={!wcUri}
             onPress={onRetryPress}
           >
             Try again
