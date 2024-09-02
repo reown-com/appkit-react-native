@@ -85,19 +85,6 @@ export const ConnectionController = {
     return this._getClient().signMessage(message);
   },
 
-  resetWcConnection() {
-    state.wcUri = undefined;
-    state.wcPairingExpiry = undefined;
-    state.wcPromise = undefined;
-    state.wcLinking = undefined;
-    state.pressedWallet = undefined;
-    state.connectedWalletImageUrl = undefined;
-    ConnectorController.setConnectedConnector(undefined);
-    StorageUtil.removeWalletConnectDeepLink();
-    StorageUtil.removeConnectedWalletImageUrl();
-    StorageUtil.removeConnectedConnector();
-  },
-
   setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {
     state.wcLinking = wcLinking;
   },
@@ -130,6 +117,23 @@ export const ConnectionController = {
     } else {
       StorageUtil.removeConnectedWalletImageUrl();
     }
+  },
+
+  clearUri() {
+    state.wcUri = undefined;
+    state.wcPairingExpiry = undefined;
+    state.wcPromise = undefined;
+    state.wcLinking = undefined;
+  },
+
+  resetWcConnection() {
+    this.clearUri();
+    state.pressedWallet = undefined;
+    state.connectedWalletImageUrl = undefined;
+    ConnectorController.setConnectedConnector(undefined);
+    StorageUtil.removeWalletConnectDeepLink();
+    StorageUtil.removeConnectedWalletImageUrl();
+    StorageUtil.removeConnectedConnector();
   },
 
   async disconnect() {
