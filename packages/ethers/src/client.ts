@@ -706,19 +706,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
         if (WalletConnectProvider) {
           try {
-            const ns = WalletConnectProvider.signer?.session?.namespaces;
-            const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods;
-            const nsChains = this.getChainsIds(ns?.[ConstantsUtil.EIP155]?.chains);
-
-            const isChainApproved = nsChains.includes(chainId);
-
-            if (!isChainApproved && nsMethods?.includes('wallet_addEthereumChain')) {
-              await EthersHelpersUtil.addEthereumChain(
-                WalletConnectProvider as unknown as Provider,
-                chain
-              );
-            }
-
             await WalletConnectProvider.request({
               method: 'wallet_switchEthereumChain',
               params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
@@ -753,6 +740,8 @@ export class Web3Modal extends Web3ModalScaffold {
                 EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await EthersHelpersUtil.addEthereumChain(CoinbaseProvider, chain);
+            } else {
+              throw new Error('Error switching network');
             }
           }
         }

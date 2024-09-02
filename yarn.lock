@@ -58,7 +58,7 @@ __metadata:
     "@storybook/react-webpack5": "npm:^7.4.6"
     "@storybook/testing-library": "npm:^0.2.2"
     "@storybook/theming": "npm:^7.4.6"
-    "@web3modal/ui-react-native": "npm:2.0.1"
+    "@web3modal/ui-react-native": "npm:2.0.2"
     babel-plugin-react-native-web: "npm:^0.19.7"
     babel-plugin-react-require: "npm:^4.0.1"
     metro-react-native-babel-preset: "npm:^0.77.0"
@@ -85,8 +85,8 @@ __metadata:
     "@types/react": "npm:~18.2.79"
     "@types/react-native": "npm:0.72.2"
     "@walletconnect/react-native-compat": "npm:2.13.1"
-    "@web3modal/email-wagmi-react-native": "npm:2.0.1"
-    "@web3modal/wagmi-react-native": "npm:2.0.1"
+    "@web3modal/email-wagmi-react-native": "npm:2.0.2"
+    "@web3modal/wagmi-react-native": "npm:2.0.2"
     babel-plugin-module-resolver: "npm:^5.0.0"
     expo: "npm:~51.0.24"
     expo-application: "npm:~5.9.1"
@@ -10113,31 +10113,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/core@npm:2.13.1":
-  version: 2.13.1
-  resolution: "@walletconnect/core@npm:2.13.1"
-  dependencies:
-    "@walletconnect/heartbeat": "npm:1.2.2"
-    "@walletconnect/jsonrpc-provider": "npm:1.0.14"
-    "@walletconnect/jsonrpc-types": "npm:1.0.4"
-    "@walletconnect/jsonrpc-utils": "npm:1.0.8"
-    "@walletconnect/jsonrpc-ws-connection": "npm:1.0.14"
-    "@walletconnect/keyvaluestorage": "npm:1.1.1"
-    "@walletconnect/logger": "npm:2.1.2"
-    "@walletconnect/relay-api": "npm:1.0.10"
-    "@walletconnect/relay-auth": "npm:1.0.4"
-    "@walletconnect/safe-json": "npm:1.0.2"
-    "@walletconnect/time": "npm:1.0.2"
-    "@walletconnect/types": "npm:2.13.1"
-    "@walletconnect/utils": "npm:2.13.1"
-    events: "npm:3.3.0"
-    isomorphic-unfetch: "npm:3.1.0"
-    lodash.isequal: "npm:4.5.0"
-    uint8arrays: "npm:3.1.0"
-  checksum: 0295d3b7aede7244f3ea97c04055407421c6b7bb24535ec88af425456f8d9844eb79643478b6bf40b85d1277a3ddf2743edfd2ee058c3194c2c2dd391d6d75c3
-  languageName: node
-  linkType: hard
-
 "@walletconnect/core@npm:2.14.0":
   version: 2.14.0
   resolution: "@walletconnect/core@npm:2.14.0"
@@ -10160,6 +10135,30 @@ __metadata:
     lodash.isequal: "npm:4.5.0"
     uint8arrays: "npm:3.1.0"
   checksum: 4b9ccec319f893d65acaa9c1641408783f1fddd2fe054540cf1cdd8a3a5adc1151cfbd338a67f342f10649ae48a621d8d6788111122899560b60a1e664fc16a8
+  languageName: node
+  linkType: hard
+
+"@walletconnect/core@npm:2.15.1":
+  version: 2.15.1
+  resolution: "@walletconnect/core@npm:2.15.1"
+  dependencies:
+    "@walletconnect/heartbeat": "npm:1.2.2"
+    "@walletconnect/jsonrpc-provider": "npm:1.0.14"
+    "@walletconnect/jsonrpc-types": "npm:1.0.4"
+    "@walletconnect/jsonrpc-utils": "npm:1.0.8"
+    "@walletconnect/jsonrpc-ws-connection": "npm:1.0.14"
+    "@walletconnect/keyvaluestorage": "npm:1.1.1"
+    "@walletconnect/logger": "npm:2.1.2"
+    "@walletconnect/relay-api": "npm:1.0.11"
+    "@walletconnect/relay-auth": "npm:1.0.4"
+    "@walletconnect/safe-json": "npm:1.0.2"
+    "@walletconnect/time": "npm:1.0.2"
+    "@walletconnect/types": "npm:2.15.1"
+    "@walletconnect/utils": "npm:2.15.1"
+    events: "npm:3.3.0"
+    lodash.isequal: "npm:4.5.0"
+    uint8arrays: "npm:3.1.0"
+  checksum: 3c831303bffcc360bb7d2f6e71b9928e73039e34e582e8da3f03dbc67e7876cf3ff89491ec9bad7ae31c3c3706ea6e44d2cd1be501349e882739a5184e917797
   languageName: node
   linkType: hard
 
@@ -10190,24 +10189,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/ethereum-provider@npm:2.13.1":
-  version: 2.13.1
-  resolution: "@walletconnect/ethereum-provider@npm:2.13.1"
-  dependencies:
-    "@walletconnect/jsonrpc-http-connection": "npm:1.0.8"
-    "@walletconnect/jsonrpc-provider": "npm:1.0.14"
-    "@walletconnect/jsonrpc-types": "npm:1.0.4"
-    "@walletconnect/jsonrpc-utils": "npm:1.0.8"
-    "@walletconnect/modal": "npm:2.6.2"
-    "@walletconnect/sign-client": "npm:2.13.1"
-    "@walletconnect/types": "npm:2.13.1"
-    "@walletconnect/universal-provider": "npm:2.13.1"
-    "@walletconnect/utils": "npm:2.13.1"
-    events: "npm:3.3.0"
-  checksum: 6d6fe593641a87a659be59ce7430b7e0b0860f21ffcf57428239ffe7a77168b7b861ec7ef7eab7b45a004c11782fc26e6400d3e3b1892607019cb825a119ca97
-  languageName: node
-  linkType: hard
-
 "@walletconnect/ethereum-provider@npm:2.14.0":
   version: 2.14.0
   resolution: "@walletconnect/ethereum-provider@npm:2.14.0"
@@ -10223,6 +10204,24 @@ __metadata:
     "@walletconnect/utils": "npm:2.14.0"
     events: "npm:3.3.0"
   checksum: 43fbd93be02e752904513ec4f88ae0c1d986ddc1d13344f8af8d48eec11450c583b65b9024f36c3c4432a92bfd2dd4f946ef092846b21334f850b56d05ab8cf2
+  languageName: node
+  linkType: hard
+
+"@walletconnect/ethereum-provider@npm:2.15.1":
+  version: 2.15.1
+  resolution: "@walletconnect/ethereum-provider@npm:2.15.1"
+  dependencies:
+    "@walletconnect/jsonrpc-http-connection": "npm:1.0.8"
+    "@walletconnect/jsonrpc-provider": "npm:1.0.14"
+    "@walletconnect/jsonrpc-types": "npm:1.0.4"
+    "@walletconnect/jsonrpc-utils": "npm:1.0.8"
+    "@walletconnect/modal": "npm:2.6.2"
+    "@walletconnect/sign-client": "npm:2.15.1"
+    "@walletconnect/types": "npm:2.15.1"
+    "@walletconnect/universal-provider": "npm:2.15.1"
+    "@walletconnect/utils": "npm:2.15.1"
+    events: "npm:3.3.0"
+  checksum: a12c03387d2d2b019cbf84747090a1dd95eac7edae8aadb92f08a1737d30f47a29cbd4cb1142ae924e646e6a9a166720c6310d8be79bc4a661ae1a15e8dc2fc0
   languageName: node
   linkType: hard
 
@@ -10417,6 +10416,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@walletconnect/relay-api@npm:1.0.11":
+  version: 1.0.11
+  resolution: "@walletconnect/relay-api@npm:1.0.11"
+  dependencies:
+    "@walletconnect/jsonrpc-types": "npm:^1.0.2"
+  checksum: 2595d7e68d3a93e7735e0b6204811762898b0ce1466e811d78be5bcec7ac1cde5381637615a99104099165bf63695da5ef9381d6ded29924a57a71b10712a91d
+  languageName: node
+  linkType: hard
+
 "@walletconnect/relay-auth@npm:1.0.4":
   version: 1.0.4
   resolution: "@walletconnect/relay-auth@npm:1.0.4"
@@ -10457,23 +10465,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/sign-client@npm:2.13.1":
-  version: 2.13.1
-  resolution: "@walletconnect/sign-client@npm:2.13.1"
-  dependencies:
-    "@walletconnect/core": "npm:2.13.1"
-    "@walletconnect/events": "npm:1.0.1"
-    "@walletconnect/heartbeat": "npm:1.2.2"
-    "@walletconnect/jsonrpc-utils": "npm:1.0.8"
-    "@walletconnect/logger": "npm:2.1.2"
-    "@walletconnect/time": "npm:1.0.2"
-    "@walletconnect/types": "npm:2.13.1"
-    "@walletconnect/utils": "npm:2.13.1"
-    events: "npm:3.3.0"
-  checksum: 2b251d781c26c86b4a18cbccd00dd5182d4ef7094e41e089fae2d89306e463c3922786f9f49b849f190712540c20659cf5d00aa790c395dab8bc7810f009f7c1
-  languageName: node
-  linkType: hard
-
 "@walletconnect/sign-client@npm:2.14.0":
   version: 2.14.0
   resolution: "@walletconnect/sign-client@npm:2.14.0"
@@ -10488,6 +10479,23 @@ __metadata:
     "@walletconnect/utils": "npm:2.14.0"
     events: "npm:3.3.0"
   checksum: 77ca995c46ed76fa7086df5b841c3e06a36b33b7f8323606c36567ee7ca4123bc3c64bf3f530f02a4bbc15261c080eea6f048c96ed35a1d7b8f1c7e5c92f82fc
+  languageName: node
+  linkType: hard
+
+"@walletconnect/sign-client@npm:2.15.1":
+  version: 2.15.1
+  resolution: "@walletconnect/sign-client@npm:2.15.1"
+  dependencies:
+    "@walletconnect/core": "npm:2.15.1"
+    "@walletconnect/events": "npm:1.0.1"
+    "@walletconnect/heartbeat": "npm:1.2.2"
+    "@walletconnect/jsonrpc-utils": "npm:1.0.8"
+    "@walletconnect/logger": "npm:2.1.2"
+    "@walletconnect/time": "npm:1.0.2"
+    "@walletconnect/types": "npm:2.15.1"
+    "@walletconnect/utils": "npm:2.15.1"
+    events: "npm:3.3.0"
+  checksum: 4ff66239c2994cb501cd1830b2cbc2ecf854799cfc4d100cc6af3523f8524daead7c08daa7dba944def79640515ccabe2250f700e0be1a07dfee5c3668aa2dee
   languageName: node
   linkType: hard
 
@@ -10542,6 +10550,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@walletconnect/types@npm:2.15.1":
+  version: 2.15.1
+  resolution: "@walletconnect/types@npm:2.15.1"
+  dependencies:
+    "@walletconnect/events": "npm:1.0.1"
+    "@walletconnect/heartbeat": "npm:1.2.2"
+    "@walletconnect/jsonrpc-types": "npm:1.0.4"
+    "@walletconnect/keyvaluestorage": "npm:1.1.1"
+    "@walletconnect/logger": "npm:2.1.2"
+    events: "npm:3.3.0"
+  checksum: 0666874a4acd9326f2554542936a88f6df50ca958440254ab605dca81d57cdaf839b05cac983ad194f4ed44734d07d564f4277156556cadac07302e8dd86aa4d
+  languageName: node
+  linkType: hard
+
 "@walletconnect/universal-provider@npm:2.13.0":
   version: 2.13.0
   resolution: "@walletconnect/universal-provider@npm:2.13.0"
@@ -10559,23 +10581,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/universal-provider@npm:2.13.1":
-  version: 2.13.1
-  resolution: "@walletconnect/universal-provider@npm:2.13.1"
-  dependencies:
-    "@walletconnect/jsonrpc-http-connection": "npm:1.0.8"
-    "@walletconnect/jsonrpc-provider": "npm:1.0.14"
-    "@walletconnect/jsonrpc-types": "npm:1.0.4"
-    "@walletconnect/jsonrpc-utils": "npm:1.0.8"
-    "@walletconnect/logger": "npm:2.1.2"
-    "@walletconnect/sign-client": "npm:2.13.1"
-    "@walletconnect/types": "npm:2.13.1"
-    "@walletconnect/utils": "npm:2.13.1"
-    events: "npm:3.3.0"
-  checksum: 432955839df2e803196fbc8d04b183051966977215455eed3bfba21958c7adb8f67989ef328b7ba7b9c99ab6ceea2cb75d338f446b8f5e363192087d479891e9
-  languageName: node
-  linkType: hard
-
 "@walletconnect/universal-provider@npm:2.14.0":
   version: 2.14.0
   resolution: "@walletconnect/universal-provider@npm:2.14.0"
@@ -10590,6 +10595,23 @@ __metadata:
     "@walletconnect/utils": "npm:2.14.0"
     events: "npm:3.3.0"
   checksum: 22d7925272eac1efc4337e406b0d195fb90efed112c937e45cf03bbe950de080c2052ddd4ce869e67ccabd604a54d5cfc9cc2bf8f9777cef0387a62c1a109adb
+  languageName: node
+  linkType: hard
+
+"@walletconnect/universal-provider@npm:2.15.1":
+  version: 2.15.1
+  resolution: "@walletconnect/universal-provider@npm:2.15.1"
+  dependencies:
+    "@walletconnect/jsonrpc-http-connection": "npm:1.0.8"
+    "@walletconnect/jsonrpc-provider": "npm:1.0.14"
+    "@walletconnect/jsonrpc-types": "npm:1.0.4"
+    "@walletconnect/jsonrpc-utils": "npm:1.0.8"
+    "@walletconnect/logger": "npm:2.1.2"
+    "@walletconnect/sign-client": "npm:2.15.1"
+    "@walletconnect/types": "npm:2.15.1"
+    "@walletconnect/utils": "npm:2.15.1"
+    events: "npm:3.3.0"
+  checksum: 165c07e302062575c0b9684b0088edbfe7335cf08c473e9ef98ba765c00a0e19be7536573abeae26b12095a47fdc412833e22094ae72275f2d0fb40cd6bbc1a8
   languageName: node
   linkType: hard
 
@@ -10659,6 +10681,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@walletconnect/utils@npm:2.15.1":
+  version: 2.15.1
+  resolution: "@walletconnect/utils@npm:2.15.1"
+  dependencies:
+    "@stablelib/chacha20poly1305": "npm:1.0.1"
+    "@stablelib/hkdf": "npm:1.0.1"
+    "@stablelib/random": "npm:1.0.2"
+    "@stablelib/sha256": "npm:1.0.1"
+    "@stablelib/x25519": "npm:1.0.3"
+    "@walletconnect/relay-api": "npm:1.0.11"
+    "@walletconnect/safe-json": "npm:1.0.2"
+    "@walletconnect/time": "npm:1.0.2"
+    "@walletconnect/types": "npm:2.15.1"
+    "@walletconnect/window-getters": "npm:1.0.1"
+    "@walletconnect/window-metadata": "npm:1.0.1"
+    detect-browser: "npm:5.3.0"
+    query-string: "npm:7.1.3"
+    uint8arrays: "npm:3.1.0"
+  checksum: bde087f530f91502ba26c9553abd464234adb5738c7e10cfbdd275699d630a81601b5928abeeb77abe29e88238a4067a1bd1c5159f04b49178452066c82d99ae
+  languageName: node
+  linkType: hard
+
 "@walletconnect/window-getters@npm:1.0.1, @walletconnect/window-getters@npm:^1.0.1":
   version: 1.0.1
   resolution: "@walletconnect/window-getters@npm:1.0.1"
@@ -10696,17 +10740,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/common-react-native@npm:2.0.1, @web3modal/common-react-native@workspace:packages/common":
+"@web3modal/common-react-native@npm:2.0.2, @web3modal/common-react-native@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@web3modal/common-react-native@workspace:packages/common"
   languageName: unknown
   linkType: soft
 
-"@web3modal/core-react-native@npm:2.0.1, @web3modal/core-react-native@workspace:packages/core":
+"@web3modal/core-react-native@npm:2.0.2, @web3modal/core-react-native@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@web3modal/core-react-native@workspace:packages/core"
   dependencies:
-    "@web3modal/common-react-native": "npm:2.0.1"
+    "@web3modal/common-react-native": "npm:2.0.2"
     valtio: "npm:1.11.2"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
@@ -10720,18 +10764,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@web3modal/email-ethers-react-native@workspace:packages/email-ethers"
   dependencies:
-    "@web3modal/email-react-native": "npm:2.0.1"
+    "@web3modal/email-react-native": "npm:2.0.2"
   peerDependencies:
     ethers: ">=5"
   languageName: unknown
   linkType: soft
 
-"@web3modal/email-react-native@npm:2.0.1, @web3modal/email-react-native@workspace:packages/email":
+"@web3modal/email-react-native@npm:2.0.2, @web3modal/email-react-native@workspace:packages/email":
   version: 0.0.0-use.local
   resolution: "@web3modal/email-react-native@workspace:packages/email"
   dependencies:
-    "@web3modal/core-react-native": "npm:2.0.1"
-    "@web3modal/ui-react-native": "npm:2.0.1"
+    "@web3modal/core-react-native": "npm:2.0.2"
+    "@web3modal/ui-react-native": "npm:2.0.2"
     zod: "npm:3.22.4"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
@@ -10739,11 +10783,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/email-wagmi-react-native@npm:2.0.1, @web3modal/email-wagmi-react-native@workspace:packages/email-wagmi":
+"@web3modal/email-wagmi-react-native@npm:2.0.2, @web3modal/email-wagmi-react-native@workspace:packages/email-wagmi":
   version: 0.0.0-use.local
   resolution: "@web3modal/email-wagmi-react-native@workspace:packages/email-wagmi"
   dependencies:
-    "@web3modal/email-react-native": "npm:2.0.1"
+    "@web3modal/email-react-native": "npm:2.0.2"
   peerDependencies:
     wagmi: ">=2"
   languageName: unknown
@@ -10753,11 +10797,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@web3modal/ethers-react-native@workspace:packages/ethers"
   dependencies:
-    "@walletconnect/ethereum-provider": "npm:2.13.1"
-    "@web3modal/common-react-native": "npm:2.0.1"
-    "@web3modal/scaffold-react-native": "npm:2.0.1"
-    "@web3modal/scaffold-utils-react-native": "npm:2.0.1"
-    "@web3modal/siwe-react-native": "npm:2.0.1"
+    "@walletconnect/ethereum-provider": "npm:2.15.1"
+    "@web3modal/common-react-native": "npm:2.0.2"
+    "@web3modal/scaffold-react-native": "npm:2.0.2"
+    "@web3modal/scaffold-utils-react-native": "npm:2.0.2"
+    "@web3modal/siwe-react-native": "npm:2.0.2"
     ethers: "npm:6.10.0"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
@@ -10774,11 +10818,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@web3modal/ethers5-react-native@workspace:packages/ethers5"
   dependencies:
-    "@walletconnect/ethereum-provider": "npm:2.13.1"
-    "@web3modal/common-react-native": "npm:2.0.1"
-    "@web3modal/scaffold-react-native": "npm:2.0.1"
-    "@web3modal/scaffold-utils-react-native": "npm:2.0.1"
-    "@web3modal/siwe-react-native": "npm:2.0.1"
+    "@walletconnect/ethereum-provider": "npm:2.15.1"
+    "@web3modal/common-react-native": "npm:2.0.2"
+    "@web3modal/scaffold-react-native": "npm:2.0.2"
+    "@web3modal/scaffold-utils-react-native": "npm:2.0.2"
+    "@web3modal/siwe-react-native": "npm:2.0.2"
     ethers: "npm:5.7.2"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
@@ -10791,13 +10835,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/scaffold-react-native@npm:2.0.1, @web3modal/scaffold-react-native@workspace:packages/scaffold":
+"@web3modal/scaffold-react-native@npm:2.0.2, @web3modal/scaffold-react-native@workspace:packages/scaffold":
   version: 0.0.0-use.local
   resolution: "@web3modal/scaffold-react-native@workspace:packages/scaffold"
   dependencies:
-    "@web3modal/core-react-native": "npm:2.0.1"
-    "@web3modal/siwe-react-native": "npm:2.0.1"
-    "@web3modal/ui-react-native": "npm:2.0.1"
+    "@web3modal/core-react-native": "npm:2.0.2"
+    "@web3modal/siwe-react-native": "npm:2.0.2"
+    "@web3modal/ui-react-native": "npm:2.0.2"
   peerDependencies:
     react: ">=17"
     react-native: ">=0.68.5"
@@ -10805,27 +10849,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/scaffold-utils-react-native@npm:2.0.1, @web3modal/scaffold-utils-react-native@workspace:packages/scaffold-utils":
+"@web3modal/scaffold-utils-react-native@npm:2.0.2, @web3modal/scaffold-utils-react-native@workspace:packages/scaffold-utils":
   version: 0.0.0-use.local
   resolution: "@web3modal/scaffold-utils-react-native@workspace:packages/scaffold-utils"
   dependencies:
-    "@web3modal/scaffold-react-native": "npm:2.0.1"
+    "@web3modal/scaffold-react-native": "npm:2.0.2"
   languageName: unknown
   linkType: soft
 
-"@web3modal/siwe-react-native@npm:2.0.1, @web3modal/siwe-react-native@workspace:packages/siwe":
+"@web3modal/siwe-react-native@npm:2.0.2, @web3modal/siwe-react-native@workspace:packages/siwe":
   version: 0.0.0-use.local
   resolution: "@web3modal/siwe-react-native@workspace:packages/siwe"
   dependencies:
     "@walletconnect/utils": "npm:2.13.1"
-    "@web3modal/common-react-native": "npm:2.0.1"
-    "@web3modal/core-react-native": "npm:2.0.1"
-    "@web3modal/ui-react-native": "npm:2.0.1"
+    "@web3modal/common-react-native": "npm:2.0.2"
+    "@web3modal/core-react-native": "npm:2.0.2"
+    "@web3modal/ui-react-native": "npm:2.0.2"
     valtio: "npm:1.11.2"
   languageName: unknown
   linkType: soft
 
-"@web3modal/ui-react-native@npm:2.0.1, @web3modal/ui-react-native@workspace:packages/ui":
+"@web3modal/ui-react-native@npm:2.0.2, @web3modal/ui-react-native@workspace:packages/ui":
   version: 0.0.0-use.local
   resolution: "@web3modal/ui-react-native@workspace:packages/ui"
   dependencies:
@@ -10837,14 +10881,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@web3modal/wagmi-react-native@npm:2.0.1, @web3modal/wagmi-react-native@workspace:packages/wagmi":
+"@web3modal/wagmi-react-native@npm:2.0.2, @web3modal/wagmi-react-native@workspace:packages/wagmi":
   version: 0.0.0-use.local
   resolution: "@web3modal/wagmi-react-native@workspace:packages/wagmi"
   dependencies:
-    "@web3modal/common-react-native": "npm:2.0.1"
-    "@web3modal/scaffold-react-native": "npm:2.0.1"
-    "@web3modal/scaffold-utils-react-native": "npm:2.0.1"
-    "@web3modal/siwe-react-native": "npm:2.0.1"
+    "@web3modal/common-react-native": "npm:2.0.2"
+    "@web3modal/scaffold-react-native": "npm:2.0.2"
+    "@web3modal/scaffold-utils-react-native": "npm:2.0.2"
+    "@web3modal/siwe-react-native": "npm:2.0.2"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
     "@react-native-community/netinfo": "*"

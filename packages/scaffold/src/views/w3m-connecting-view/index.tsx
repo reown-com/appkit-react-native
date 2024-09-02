@@ -62,6 +62,7 @@ export function ConnectingView() {
       }
     } catch (error) {
       ConnectionController.setWcError(true);
+      ConnectionController.clearUri();
       SnackController.showError('Declined');
       if (isQr && CoreHelperUtil.isAllowedRetry(lastRetry)) {
         setLastRetry(Date.now());
@@ -131,13 +132,16 @@ export function ConnectingView() {
 
   useEffect(() => {
     initializeConnection();
+    let _interval: NodeJS.Timeout;
 
     // Check if the pairing expired every 10 seconds. If expired, it will create a new uri.
-    const _interval = setInterval(initializeConnection, ConstantsUtil.TEN_SEC_MS);
+    if (isQr) {
+      _interval = setInterval(initializeConnection, ConstantsUtil.TEN_SEC_MS);
+    }
 
     return () => clearInterval(_interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isQr]);
 
   return (
     <>

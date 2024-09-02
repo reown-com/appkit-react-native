@@ -1,5 +1,20 @@
 # @web3modal/core-react-native
 
+## 2.0.2
+
+### Patch Changes
+
+- [#208](https://github.com/WalletConnect/web3modal-react-native/pull/208) [`3a15dc2`](https://github.com/WalletConnect/web3modal-react-native/commit/3a15dc2ca63515513e634336801647b5b0f29abd) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: solved overlap of modal & sign screen in email siwe
+
+- [#209](https://github.com/WalletConnect/web3modal-react-native/pull/209) [`aa6de33`](https://github.com/WalletConnect/web3modal-react-native/commit/aa6de33c0d80ee9d71d40c16886a076e255a8202) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: add origin header in w3m api
+
+- [#214](https://github.com/WalletConnect/web3modal-react-native/pull/214) [`5681473`](https://github.com/WalletConnect/web3modal-react-native/commit/56814737fb9ebc668209ab569c7765632ce1fe23) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: clean wallet-info on disconnect
+
+- [#210](https://github.com/WalletConnect/web3modal-react-native/pull/210) [`4dc7315`](https://github.com/WalletConnect/web3modal-react-native/commit/4dc73155b71450c3617a2d1ddbde44093ac97cd8) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: add rn version to api header
+
+- Updated dependencies [[`3a15dc2`](https://github.com/WalletConnect/web3modal-react-native/commit/3a15dc2ca63515513e634336801647b5b0f29abd), [`aa6de33`](https://github.com/WalletConnect/web3modal-react-native/commit/aa6de33c0d80ee9d71d40c16886a076e255a8202), [`5681473`](https://github.com/WalletConnect/web3modal-react-native/commit/56814737fb9ebc668209ab569c7765632ce1fe23), [`4dc7315`](https://github.com/WalletConnect/web3modal-react-native/commit/4dc73155b71450c3617a2d1ddbde44093ac97cd8)]:
+  - @web3modal/common-react-native@2.0.2
+
 ## 2.0.1
 
 ### Patch Changes
