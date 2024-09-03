@@ -19,5 +19,8 @@ export default StyleSheet.create({
     position: 'absolute',
     top: -30,
     borderRadius: 20
+  },
+  addressContainer: {
+    width: '100%'
   }
 });

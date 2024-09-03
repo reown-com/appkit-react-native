@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import { TextInput, type StyleProp, type ViewStyle } from 'react-native';
-import { FlexView, Link, Text, useTheme } from '@web3modal/ui-react-native';
+import { FlexView, Link, Text, useTheme, TokenButton } from '@web3modal/ui-react-native';
 import { NumberUtil, type Balance } from '@web3modal/common-react-native';
-import styles from './styles';
-
 import { SendController } from '@web3modal/core-react-native';
+
+import styles from './styles';
 import { getMaxAmount, getSendValue } from './utils';
 
 export interface InputTokenProps {
@@ -15,12 +16,14 @@ export interface InputTokenProps {
 
 export function InputToken({ token, sendTokenAmount, gasPriceInUSD, style }: InputTokenProps) {
   const Theme = useTheme();
+  const [inputValue, setInputValue] = useState<string | undefined>(undefined);
   const sendValue = getSendValue(token, sendTokenAmount);
   const maxAmount = getMaxAmount(token);
   const maxError = token && sendTokenAmount && sendTokenAmount > Number(token.quantity.numeric);
 
   const onInputChange = (value: string) => {
     const formattedValue = value.replace(/,/g, '.');
+    setInputValue(formattedValue);
     Number(formattedValue)
       ? SendController.setTokenAmount(Number(formattedValue))
       : SendController.setTokenAmount(undefined);
@@ -28,17 +31,18 @@ export function InputToken({ token, sendTokenAmount, gasPriceInUSD, style }: Inp
 
   const onMaxPress = () => {
     if (token && gasPriceInUSD) {
-      const amountOfTokenGasRequires = NumberUtil.bigNumber(gasPriceInUSD.toFixed(5)).dividedBy(
+      const amountOfTokenGasRequired = NumberUtil.bigNumber(gasPriceInUSD.toFixed(5)).dividedBy(
         token.price
       );
 
       const isNetworkToken = token.address === undefined;
 
       const maxValue = isNetworkToken
-        ? NumberUtil.bigNumber(token.quantity.numeric).minus(amountOfTokenGasRequires)
+        ? NumberUtil.bigNumber(token.quantity.numeric).minus(amountOfTokenGasRequired)
         : NumberUtil.bigNumber(token.quantity.numeric);
 
       SendController.setTokenAmount(Number(maxValue.toFixed(20)));
+      setInputValue(maxValue.toFixed(20));
     }
   };
 
@@ -60,7 +64,7 @@ export function InputToken({ token, sendTokenAmount, gasPriceInUSD, style }: Inp
           style={[styles.input, { color: Theme['fg-100'] }]}
           autoCapitalize="none"
           autoCorrect={false}
-          value={sendTokenAmount?.toLocaleString()}
+          value={inputValue}
           onChangeText={onInputChange}
           keyboardType="decimal-pad"
           inputMode="decimal"
@@ -72,15 +76,20 @@ export function InputToken({ token, sendTokenAmount, gasPriceInUSD, style }: Inp
           numberOfLines={1}
           autoFocus={!!token}
         />
-        <Text>ETH</Text>
+        <TokenButton text={token?.symbol} imageSrc={token?.iconUrl} />
       </FlexView>
-      <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
+      <FlexView
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+        margin={['3xs', '0', '0', '0']}
+      >
         <Text variant="small-400" color="fg-200" style={styles.sendValue} numberOfLines={1}>
           {sendValue ?? ''}
         </Text>
         <FlexView flexDirection="row" alignItems="center" justifyContent="center">
           <Text variant="small-400" color={maxError ? 'error-100' : 'fg-200'} numberOfLines={1}>
-            {maxAmount ?? '1.204 tst'}
+            {maxAmount ?? ''}
           </Text>
           <Link onPress={onMaxPress}>Max</Link>
         </FlexView>

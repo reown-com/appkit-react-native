@@ -13,6 +13,7 @@ import {
 import { InputToken } from '../../partials/w3m-input-token/intex';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { useKeyboard } from '../../hooks/useKeyboard';
+import { InputAddress } from '../../partials/w3m-input-address';
 import styles from './styles';
 
 export function WalletSendView() {
@@ -36,12 +37,12 @@ export function WalletSendView() {
       return 'Insufficient balance';
     }
 
-    return 'Send';
+    return 'Preview Send';
   };
 
   useEffect(() => {
-    // TODO: remove this
-    SendController.setToken(tokenBalance[0]);
+    // TODO: check this
+    SendController.setToken(tokenBalance?.[0]);
   }, [tokenBalance]);
 
   return (
@@ -57,8 +58,8 @@ export function WalletSendView() {
           gasPriceInUSD={gasPriceInUSD}
           style={styles.tokenInput}
         />
-        <FlexView alignItems="center" justifyContent="center" style={{ width: '100%' }}>
-          <InputToken token={token} />
+        <FlexView alignItems="center" justifyContent="center" style={styles.addressContainer}>
+          <InputAddress value={receiverProfileName ? receiverProfileName : receiverAddress} />
           <IconBox
             icon="arrowBottom"
             size="lg"

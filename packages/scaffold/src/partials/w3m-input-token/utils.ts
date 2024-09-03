@@ -14,7 +14,7 @@ export function getSendValue(token?: Balance, sendTokenAmount?: number) {
 
 export function getMaxAmount(token?: Balance) {
   if (token) {
-    NumberUtil.roundNumber(Number(token.quantity.numeric), 6, 5);
+    return NumberUtil.roundNumber(Number(token.quantity.numeric), 6, 5);
   }
 
   return null;
