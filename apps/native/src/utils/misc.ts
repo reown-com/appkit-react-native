@@ -16,7 +16,7 @@ export const getCustomWallets = () => {
       image_url:
         'https://docs.walletconnect.com/assets/images/web3walletLogo-54d3b546146931ceaf47a3500868a73a.png',
       mobile_link: 'wcflutterwallet://',
-      link_mode: undefined
+      link_mode: 'https://lab.web3modal.com/flutter_walletkit'
     }
   ];
 
