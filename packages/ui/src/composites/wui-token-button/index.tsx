@@ -4,11 +4,16 @@ import { Button } from '../wui-button';
 import styles from './styles';
 
 export interface TokenButtonProps {
-  text: string;
+  text?: string;
   imageSrc?: string;
 }
 
 export function TokenButton({ text, imageSrc }: TokenButtonProps) {
+  if (!text) {
+    // TODO: add empty state
+    return null;
+  }
+
   return (
     <Button variant="shade" style={styles.container} size="sm">
       {imageSrc && <Image source={imageSrc} style={styles.image} />}
