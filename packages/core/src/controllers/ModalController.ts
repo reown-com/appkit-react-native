@@ -5,7 +5,6 @@ import { RouterController } from './RouterController';
 import { PublicStateController } from './PublicStateController';
 import { EventsController } from './EventsController';
 import { ApiController } from './ApiController';
-import { ConnectorController } from './ConnectorController';
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
@@ -35,8 +34,7 @@ export const ModalController = {
     if (options?.view) {
       RouterController.reset(options.view);
     } else if (AccountController.state.isConnected) {
-      const isWallet = ConnectorController.state.connectedConnector === 'EMAIL';
-      RouterController.reset(isWallet ? 'Account' : 'AccountDefault');
+      RouterController.reset('AccountDefault');
     } else {
       RouterController.reset('Connect');
     }
