@@ -14,7 +14,6 @@ import { filterOutRecentWallets } from '../utils';
 interface Props {
   itemStyle: StyleProp<ViewStyle>;
   onWalletPress: (wallet: WcWallet) => void;
-
   isWalletConnectEnabled: boolean;
 }
 

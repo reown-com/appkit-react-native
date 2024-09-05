@@ -38,7 +38,7 @@ export function ConnectingExternalView() {
   const storeConnectedWallet = useCallback(
     async (wallet?: WcWallet) => {
       if (wallet) {
-        const recentWallets = await StorageUtil.setWeb3ModalRecent(wallet);
+        const recentWallets = await StorageUtil.addRecentWallet(wallet);
         if (recentWallets) {
           ConnectionController.setRecentWallets(recentWallets);
         }

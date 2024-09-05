@@ -1,5 +1,39 @@
 # @web3modal/email-react-native
 
+## 2.0.3
+
+### Patch Changes
+
+- [#221](https://github.com/WalletConnect/web3modal-react-native/pull/221) [`64abfe6`](https://github.com/WalletConnect/web3modal-react-native/commit/64abfe6e78e2b1f45e6434b8f18e80110c767e4a) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: check coinbase connector
+
+- [#219](https://github.com/WalletConnect/web3modal-react-native/pull/219) [`7fdf244`](https://github.com/WalletConnect/web3modal-react-native/commit/7fdf2444c81cd61bc65ffd5a9769422577723061) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: update recent wallets info
+
+- [#222](https://github.com/WalletConnect/web3modal-react-native/pull/222) [`9654b4d`](https://github.com/WalletConnect/web3modal-react-native/commit/9654b4dcfc2db0caa96a570187d2c021b72c864f) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: removed add chain logic in switch method
+
+- [#220](https://github.com/WalletConnect/web3modal-react-native/pull/220) [`e3827c1`](https://github.com/WalletConnect/web3modal-react-native/commit/e3827c1d685023c1811385a66451b810804f641c) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: updated ethereum-provider version for Ethers packages
+
+- [#223](https://github.com/WalletConnect/web3modal-react-native/pull/223) [`76476ce`](https://github.com/WalletConnect/web3modal-react-native/commit/76476cee5112f65c8af18461b8d5f055dd1ee375) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: reset pairing if it fails
+
+- Updated dependencies [[`64abfe6`](https://github.com/WalletConnect/web3modal-react-native/commit/64abfe6e78e2b1f45e6434b8f18e80110c767e4a), [`7fdf244`](https://github.com/WalletConnect/web3modal-react-native/commit/7fdf2444c81cd61bc65ffd5a9769422577723061), [`9654b4d`](https://github.com/WalletConnect/web3modal-react-native/commit/9654b4dcfc2db0caa96a570187d2c021b72c864f), [`e3827c1`](https://github.com/WalletConnect/web3modal-react-native/commit/e3827c1d685023c1811385a66451b810804f641c), [`76476ce`](https://github.com/WalletConnect/web3modal-react-native/commit/76476cee5112f65c8af18461b8d5f055dd1ee375)]:
+  - @web3modal/core-react-native@2.0.3
+  - @web3modal/ui-react-native@2.0.3
+
+## 2.0.2
+
+### Patch Changes
+
+- [#208](https://github.com/WalletConnect/web3modal-react-native/pull/208) [`3a15dc2`](https://github.com/WalletConnect/web3modal-react-native/commit/3a15dc2ca63515513e634336801647b5b0f29abd) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: solved overlap of modal & sign screen in email siwe
+
+- [#209](https://github.com/WalletConnect/web3modal-react-native/pull/209) [`aa6de33`](https://github.com/WalletConnect/web3modal-react-native/commit/aa6de33c0d80ee9d71d40c16886a076e255a8202) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: add origin header in w3m api
+
+- [#214](https://github.com/WalletConnect/web3modal-react-native/pull/214) [`5681473`](https://github.com/WalletConnect/web3modal-react-native/commit/56814737fb9ebc668209ab569c7765632ce1fe23) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: clean wallet-info on disconnect
+
+- [#210](https://github.com/WalletConnect/web3modal-react-native/pull/210) [`4dc7315`](https://github.com/WalletConnect/web3modal-react-native/commit/4dc73155b71450c3617a2d1ddbde44093ac97cd8) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: add rn version to api header
+
+- Updated dependencies [[`3a15dc2`](https://github.com/WalletConnect/web3modal-react-native/commit/3a15dc2ca63515513e634336801647b5b0f29abd), [`aa6de33`](https://github.com/WalletConnect/web3modal-react-native/commit/aa6de33c0d80ee9d71d40c16886a076e255a8202), [`5681473`](https://github.com/WalletConnect/web3modal-react-native/commit/56814737fb9ebc668209ab569c7765632ce1fe23), [`4dc7315`](https://github.com/WalletConnect/web3modal-react-native/commit/4dc73155b71450c3617a2d1ddbde44093ac97cd8)]:
+  - @web3modal/core-react-native@2.0.2
+  - @web3modal/ui-react-native@2.0.2
+
 ## 2.0.1
 
 ### Patch Changes

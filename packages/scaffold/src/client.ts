@@ -29,6 +29,7 @@ import {
   StorageUtil,
   ThemeController
 } from '@web3modal/core-react-native';
+import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {
@@ -182,6 +183,7 @@ export class Web3ModalScaffold {
     connectors: Connector[]
   ) => {
     ConnectorController.setConnectors(connectors);
+    this.setConnectorExcludedWallets(connectors);
   };
 
   protected addConnector: (typeof ConnectorController)['addConnector'] = (connector: Connector) => {
@@ -248,6 +250,21 @@ export class Web3ModalScaffold {
 
       SIWEController.setSIWEClient(options.siweControllerClient);
     }
+  }
+
+  private async setConnectorExcludedWallets(connectors: Connector[]) {
+    const excludedWallets = OptionsController.state.excludeWalletIds || [];
+
+    // Exclude Coinbase if the connector is not implemented
+    const excludeCoinbase =
+      connectors.findIndex(connector => connector.id === ConstantsUtil.COINBASE_CONNECTOR_ID) ===
+      -1;
+
+    if (excludeCoinbase) {
+      excludedWallets.push(PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_CONNECTOR_ID]!);
+    }
+
+    OptionsController.setExcludeWalletIds(excludedWallets);
   }
 
   private async initRecentWallets(options: ScaffoldOptions) {

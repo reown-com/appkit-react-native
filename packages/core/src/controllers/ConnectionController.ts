@@ -145,11 +145,15 @@ export const ConnectionController = {
     return this._getClient().writeContract(args);
   },
 
-  resetWcConnection() {
+  clearUri() {
     state.wcUri = undefined;
     state.wcPairingExpiry = undefined;
     state.wcPromise = undefined;
     state.wcLinking = undefined;
+  },
+
+  resetWcConnection() {
+    this.clearUri();
     state.pressedWallet = undefined;
     state.connectedWalletImageUrl = undefined;
     ConnectorController.setConnectedConnector(undefined);

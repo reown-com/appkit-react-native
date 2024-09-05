@@ -15,6 +15,7 @@ import { AssetController } from './AssetController';
 import { NetworkController } from './NetworkController';
 import { OptionsController } from './OptionsController';
 import { ConnectorController } from './ConnectorController';
+import { ConnectionController } from './ConnectionController';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl();
@@ -164,6 +165,7 @@ export const ApiController = {
           (walletImages as string[]).map(id => ApiController._fetchWalletImage(id))
         );
         state.installed = walletResponse.data;
+        this.updateRecentWalletsInfo(walletResponse.data);
       }
     }
   },
@@ -188,6 +190,8 @@ export const ApiController = {
       });
       if (!response) return;
       const { data } = response;
+
+      this.updateRecentWalletsInfo(data);
 
       data.sort((a, b) => featuredWalletIds.indexOf(a.id) - featuredWalletIds.indexOf(b.id));
       const images = data.map(d => d.image_id).filter(Boolean);
@@ -223,6 +227,8 @@ export const ApiController = {
     if (!response) return;
     const { data, count } = response;
 
+    this.updateRecentWalletsInfo(data);
+
     const recent = await StorageUtil.getRecentWallets();
     const recommendedImages = data.map(d => d.image_id).filter(Boolean);
     const recentImages = recent.map(r => r.image_id).filter(Boolean);
@@ -257,6 +263,10 @@ export const ApiController = {
 
     if (!response) return;
     const { data, count } = response;
+
+    if (page === 1) {
+      this.updateRecentWalletsInfo(data);
+    }
 
     const images = data.map(w => w.image_id).filter(Boolean);
     await CoreHelperUtil.allSettled([
@@ -295,6 +305,30 @@ export const ApiController = {
     state.search = data;
   },
 
+  async updateRecentWalletsInfo(wallets: WcWallet[]) {
+    let update = false;
+    const recent = await StorageUtil.getRecentWallets();
+    if (!recent.length) {
+      return;
+    }
+
+    const updatedRecent = recent.map(r => {
+      const wallet = wallets.find(w => w.id === r.id);
+      if (wallet && JSON.stringify(wallet) !== JSON.stringify(r)) {
+        update = true;
+
+        return wallet;
+      }
+
+      return r;
+    });
+
+    if (update) {
+      await StorageUtil.setRecentWallets(updatedRecent);
+      ConnectionController.setRecentWallets(updatedRecent);
+    }
+  },
+
   async prefetch() {
     // this fetch must resolve first so we filter them in the other wallet requests
     await ApiController.fetchInstalledWallets();
@@ -308,6 +342,7 @@ export const ApiController = {
     if (OptionsController.state.enableAnalytics === undefined) {
       promises.push(ApiController.fetchAnalyticsConfig());
     }
+
     state.prefetchPromise = Promise.race([
       CoreHelperUtil.allSettled(promises),
       CoreHelperUtil.wait(3000)
