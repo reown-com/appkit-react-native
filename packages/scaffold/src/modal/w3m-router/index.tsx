@@ -24,6 +24,7 @@ import { AccountView } from '../../views/w3m-account-view';
 import { WalletReceiveView } from '../../views/w3m-wallet-receive-view';
 import { WalletCompatibleNetworks } from '../../views/w3m-wallet-compatible-networks-view';
 import { TransactionsView } from '../../views/w3m-transactions-view';
+import { WalletSendView } from '../../views/w3m-wallet-send-view';
 
 export function Web3Router() {
   const { view } = useSnapshot(RouterController.state);
@@ -68,10 +69,12 @@ export function Web3Router() {
         return UpdateEmailWalletView;
       case 'UpgradeEmailWallet':
         return UpgradeEmailWalletView;
-      case 'WalletReceive':
-        return WalletReceiveView;
       case 'WalletCompatibleNetworks':
         return WalletCompatibleNetworks;
+      case 'WalletReceive':
+        return WalletReceiveView;
+      case 'WalletSend':
+        return WalletSendView;
       case 'WhatIsANetwork':
         return WhatIsNetworkView;
       case 'WhatIsAWallet':

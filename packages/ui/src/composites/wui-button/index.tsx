@@ -97,13 +97,15 @@ export function Button({
         )}
         {loading ? (
           <LoadingSpinner color={iconColor} />
-        ) : (
+        ) : typeof children === 'string' ? (
           <Text
             variant={size === 'md' ? 'paragraph-600' : 'small-600'}
             style={[styles.text, themedTextStyle]}
           >
             {children}
           </Text>
+        ) : (
+          children
         )}
         {iconRight && (
           <Icon

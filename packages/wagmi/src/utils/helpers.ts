@@ -7,7 +7,7 @@ import { PresetsUtil, ConstantsUtil } from '@web3modal/scaffold-utils-react-nati
 import type { Connector } from '@wagmi/core';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
 import type { Web3ModalClientOptions } from '../client';
-import { http } from 'viem';
+import { http, type Hex } from 'viem';
 
 export function getCaipDefaultChain(chain?: Web3ModalClientOptions['defaultChain']) {
   if (!chain) {
@@ -55,4 +55,16 @@ export function getTransport({ chainId, projectId }: { chainId: number; projectI
   }
 
   return http(`${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chainId}&projectId=${projectId}`);
+}
+
+export function requireCaipAddress(caipAddress: string) {
+  if (!caipAddress) {
+    throw new Error('No CAIP address provided');
+  }
+  const account = caipAddress.split(':')[2] as Hex;
+  if (!account) {
+    throw new Error('Invalid CAIP address');
+  }
+
+  return account;
 }

@@ -50,6 +50,8 @@ export {
   type TransactionsControllerState
 } from './controllers/TransactionsController';
 
+export { SendController, type SendControllerState } from './controllers/SendController';
+
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './utils/AssetUtil';
 export { ConstantsUtil } from './utils/ConstantsUtil';

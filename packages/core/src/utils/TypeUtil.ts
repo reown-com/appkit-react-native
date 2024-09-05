@@ -334,7 +334,65 @@ export type Event =
         cursor: string | undefined;
         isSmartAccount: boolean;
       };
+    }
+  | {
+      type: 'track';
+      event: 'OPEN_SEND';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SEND_INITIATED';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        token: string;
+        amount: number;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SEND_SUCCESS';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        token: string;
+        amount: number;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SEND_ERROR';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        token: string;
+        amount: number;
+      };
     };
+
+// -- Send Controller Types -------------------------------------
+
+export interface SendTransactionArgs {
+  to: `0x${string}`;
+  data: `0x${string}`;
+  value: bigint;
+  gas?: bigint;
+  gasPrice: bigint;
+  address: `0x${string}`;
+}
+
+export interface WriteContractArgs {
+  receiverAddress: `0x${string}`;
+  tokenAmount: bigint;
+  tokenAddress: `0x${string}`;
+  fromAddress: `0x${string}`;
+  method: 'send' | 'transfer' | 'call';
+  abi: any;
+}
 
 // -- Email Types ------------------------------------------------
 /**
