@@ -39,7 +39,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.15.1",
+    "@walletconnect/ethereum-provider": "2.15.3",
     "@web3modal/common-react-native": "2.0.2",
     "@web3modal/scaffold-react-native": "2.0.2",
     "@web3modal/scaffold-utils-react-native": "2.0.2",
