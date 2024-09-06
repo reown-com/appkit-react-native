@@ -49,7 +49,7 @@
     "@types/jest": "29.5.7",
     "@types/qrcode": "1.5.5",
     "@types/react": "^18.2.6",
-    "@walletconnect/react-native-compat": "2.14.0",
+    "@walletconnect/react-native-compat": "2.16.0",
     "babel-jest": "^29.7.0",
     "eslint": "^8.46.0",
     "eslint-plugin-ft-flow": "2.0.3",
@@ -68,8 +68,8 @@
     "tsconfig": "*",
     "turbo": "1.10.15",
     "typescript": "5.2.2",
-    "viem": "2.18.7",
-    "wagmi": "2.12.2"
+    "viem": "2.21.2",
+    "wagmi": "2.12.8"
   },
   "packageManager": "yarn@4.0.2"
 }
