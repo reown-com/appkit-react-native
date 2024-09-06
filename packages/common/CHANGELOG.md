@@ -1,5 +1,11 @@
 # @web3modal/common-react-native
 
+## 2.0.4
+
+### Patch Changes
+
+- [#231](https://github.com/WalletConnect/web3modal-react-native/pull/231) [`697b65b`](https://github.com/WalletConnect/web3modal-react-native/commit/697b65b86879320c8ce157e5cf5912facefc3733) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: solved typescript issues
+
 ## 2.0.3
 
 ### Patch Changes

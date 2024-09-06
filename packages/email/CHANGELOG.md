@@ -1,5 +1,15 @@
 # @web3modal/email-react-native
 
+## 2.0.4
+
+### Patch Changes
+
+- [#231](https://github.com/WalletConnect/web3modal-react-native/pull/231) [`697b65b`](https://github.com/WalletConnect/web3modal-react-native/commit/697b65b86879320c8ce157e5cf5912facefc3733) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: solved typescript issues
+
+- Updated dependencies [[`697b65b`](https://github.com/WalletConnect/web3modal-react-native/commit/697b65b86879320c8ce157e5cf5912facefc3733)]:
+  - @web3modal/core-react-native@2.0.4
+  - @web3modal/ui-react-native@2.0.4
+
 ## 2.0.3
 
 ### Patch Changes
