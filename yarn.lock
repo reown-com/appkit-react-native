@@ -10841,6 +10841,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@web3modal/scaffold-react-native@workspace:packages/scaffold"
   dependencies:
+    "@web3modal/common-react-native": "npm:2.0.3"
     "@web3modal/core-react-native": "npm:2.0.3"
     "@web3modal/siwe-react-native": "npm:2.0.3"
     "@web3modal/ui-react-native": "npm:2.0.3"

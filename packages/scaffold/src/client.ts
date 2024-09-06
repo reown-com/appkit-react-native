@@ -29,7 +29,7 @@ import {
   StorageUtil,
   ThemeController
 } from '@web3modal/core-react-native';
-import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils-react-native';
+import { ConstantsUtil } from '@web3modal/common-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {
@@ -259,7 +259,7 @@ export class Web3ModalScaffold {
       -1;
 
     if (excludeCoinbase) {
-      excludedWallets.push(PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_CONNECTOR_ID]!);
+      excludedWallets.push(ConstantsUtil.COINBASE_EXPLORER_ID);
     }
 
     OptionsController.setExcludeWalletIds(excludedWallets);
