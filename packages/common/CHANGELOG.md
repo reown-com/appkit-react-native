@@ -1,5 +1,25 @@
 # @web3modal/common-react-native
 
+## 2.0.4
+
+### Patch Changes
+
+- [#231](https://github.com/WalletConnect/web3modal-react-native/pull/231) [`697b65b`](https://github.com/WalletConnect/web3modal-react-native/commit/697b65b86879320c8ce157e5cf5912facefc3733) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: solved typescript issues
+
+## 2.0.3
+
+### Patch Changes
+
+- [#221](https://github.com/WalletConnect/web3modal-react-native/pull/221) [`64abfe6`](https://github.com/WalletConnect/web3modal-react-native/commit/64abfe6e78e2b1f45e6434b8f18e80110c767e4a) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: check coinbase connector
+
+- [#219](https://github.com/WalletConnect/web3modal-react-native/pull/219) [`7fdf244`](https://github.com/WalletConnect/web3modal-react-native/commit/7fdf2444c81cd61bc65ffd5a9769422577723061) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: update recent wallets info
+
+- [#222](https://github.com/WalletConnect/web3modal-react-native/pull/222) [`9654b4d`](https://github.com/WalletConnect/web3modal-react-native/commit/9654b4dcfc2db0caa96a570187d2c021b72c864f) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: removed add chain logic in switch method
+
+- [#220](https://github.com/WalletConnect/web3modal-react-native/pull/220) [`e3827c1`](https://github.com/WalletConnect/web3modal-react-native/commit/e3827c1d685023c1811385a66451b810804f641c) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: updated ethereum-provider version for Ethers packages
+
+- [#223](https://github.com/WalletConnect/web3modal-react-native/pull/223) [`76476ce`](https://github.com/WalletConnect/web3modal-react-native/commit/76476cee5112f65c8af18461b8d5f055dd1ee375) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: reset pairing if it fails
+
 ## 2.0.2
 
 ### Patch Changes
