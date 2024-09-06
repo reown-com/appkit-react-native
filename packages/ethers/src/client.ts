@@ -824,11 +824,4 @@ export class Web3Modal extends Web3ModalScaffold {
       this.setEmailProvider();
     }
   }
-
-  private getChainsIds(chains?: string[]) {
-    if (!chains) return [];
-    const chainIds = chains?.map(chain => parseInt(chain.split(':')[1] || ''));
-
-    return chainIds ?? [];
-  }
 }
