@@ -1,19 +1,19 @@
 import { useSnapshot } from 'valtio';
-import { W3mAccountButton, type W3mAccountButtonProps } from '../w3m-account-button';
-import { W3mConnectButton, type W3mConnectButtonProps } from '../w3m-connect-button';
+import { AppKitAccountButton, type AppKitAccountButtonProps } from '../w3m-account-button';
+import { AppKitConnectButton, type AppKitConnectButtonProps } from '../w3m-connect-button';
 import { AccountController, ModalController } from '@reown/core-react-native';
 
-export interface W3mButtonProps {
-  balance?: W3mAccountButtonProps['balance'];
-  disabled?: W3mAccountButtonProps['disabled'];
-  size?: W3mConnectButtonProps['size'];
-  label?: W3mConnectButtonProps['label'];
-  loadingLabel?: W3mConnectButtonProps['loadingLabel'];
-  accountStyle?: W3mAccountButtonProps['style'];
-  connectStyle?: W3mConnectButtonProps['style'];
+export interface AppKitButtonProps {
+  balance?: AppKitAccountButtonProps['balance'];
+  disabled?: AppKitAccountButtonProps['disabled'];
+  size?: AppKitConnectButtonProps['size'];
+  label?: AppKitConnectButtonProps['label'];
+  loadingLabel?: AppKitConnectButtonProps['loadingLabel'];
+  accountStyle?: AppKitAccountButtonProps['style'];
+  connectStyle?: AppKitConnectButtonProps['style'];
 }
 
-export function W3mButton({
+export function AppKitButton({
   balance,
   disabled,
   size,
@@ -21,19 +21,19 @@ export function W3mButton({
   loadingLabel = 'Connecting',
   accountStyle,
   connectStyle
-}: W3mButtonProps) {
+}: AppKitButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
   const { loading } = useSnapshot(ModalController.state);
 
   return !loading && isConnected ? (
-    <W3mAccountButton
+    <AppKitAccountButton
       style={accountStyle}
       balance={balance}
       disabled={disabled}
       testID="button-account"
     />
   ) : (
-    <W3mConnectButton
+    <AppKitConnectButton
       style={connectStyle}
       size={size}
       label={label}

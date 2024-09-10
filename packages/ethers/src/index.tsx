@@ -3,11 +3,11 @@ import { useSnapshot } from 'valtio';
 import { ConstantsUtil, EthersStoreUtil, type Provider } from '@reown/scaffold-utils-react-native';
 
 export {
-  W3mAccountButton,
-  W3mButton,
-  W3mConnectButton,
-  W3mNetworkButton,
-  Web3Modal
+  AppKitAccountButton,
+  AppKitButton,
+  AppKitConnectButton,
+  AppKitNetworkButton,
+  AppKit
 } from '@reown/scaffold-react-native';
 
 export { defaultConfig } from './utils/defaultConfig';

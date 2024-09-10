@@ -7,7 +7,7 @@ interface EmailProviderProps {
 
 export class EmailProvider extends W3mFrameProvider {
   readonly id = 'w3mEmail';
-  readonly name = 'Web3Modal Email';
+  readonly name = 'AppKit Email';
 
   constructor(props: EmailProviderProps) {
     super(props.projectId, props.metadata);

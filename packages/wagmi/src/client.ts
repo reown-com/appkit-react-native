@@ -68,14 +68,15 @@ export class AppKit extends AppKitScaffold {
   private wagmiConfig: WagmiConfig;
 
   public constructor(options: AppKitClientOptions) {
-    const { wagmiConfig, siweConfig, defaultChain, tokens, _sdkVersion, ...w3mOptions } = options;
+    const { wagmiConfig, siweConfig, defaultChain, tokens, _sdkVersion, ...appKitOptions } =
+      options;
 
     if (!wagmiConfig) {
-      throw new Error('web3modal:constructor - wagmiConfig is undefined');
+      throw new Error('appkit:constructor - wagmiConfig is undefined');
     }
 
-    if (!w3mOptions.projectId) {
-      throw new Error('web3modal:constructor - projectId is undefined');
+    if (!appKitOptions.projectId) {
+      throw new Error('appkit:constructor - projectId is undefined');
     }
 
     const networkControllerClient: NetworkControllerClient = {
@@ -237,7 +238,7 @@ export class AppKit extends AppKitScaffold {
       defaultChain: getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `react-native-wagmi-${ConstantsUtil.VERSION}`,
-      ...w3mOptions
+      ...appKitOptions
     });
 
     this.options = options;
@@ -430,10 +431,10 @@ export class AppKit extends AppKitScaffold {
 
     const excludedConnectors = [ConstantsUtil.EMAIL_CONNECTOR_ID];
 
-    const w3mConnectors: Connector[] = [];
+    const _connectors: Connector[] = [];
     filteredConnectors.forEach(({ id, name, icon }) => {
       if (!excludedConnectors.includes(id)) {
-        w3mConnectors.push({
+        _connectors.push({
           id,
           explorerId: PresetsUtil.ConnectorExplorerIds[id],
           imageId: PresetsUtil.ConnectorImageIds[id] ?? icon,
@@ -444,7 +445,7 @@ export class AppKit extends AppKitScaffold {
       }
     });
 
-    this.setConnectors(w3mConnectors);
+    this.setConnectors(_connectors);
     this.syncEmailConnector(filteredConnectors);
   }
 

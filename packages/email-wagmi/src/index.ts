@@ -32,7 +32,7 @@ export function emailConnector(parameters: EmailProviderOptions) {
 
   return createConnector<Provider, {}, StorageItemMap>(config => ({
     id: emailConnector.id,
-    name: 'Web3Modal Email',
+    name: 'AppKit Email',
     type: emailConnector.type,
     async setup() {
       _provider = new W3mFrameProvider(parameters.projectId, parameters.metadata);

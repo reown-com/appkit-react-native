@@ -68,8 +68,8 @@
     "tsconfig": "*",
     "turbo": "2.1.1",
     "typescript": "5.2.2",
-    "viem": "2.18.7",
-    "wagmi": "2.12.2"
+    "viem": "2.21.4",
+    "wagmi": "2.12.9"
   },
   "packageManager": "yarn@4.0.2"
 }

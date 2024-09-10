@@ -21,7 +21,7 @@ import { UpdateEmailPrimaryOtpView } from '../../views/w3m-update-email-primary-
 import { UpdateEmailSecondaryOtpView } from '../../views/w3m-update-email-secondary-otp-view';
 import { UpgradeEmailWalletView } from '../../views/w3m-upgrade-email-wallet-view';
 
-export function Web3Router() {
+export function AppKitRouter() {
   const { view } = useSnapshot(RouterController.state);
 
   useLayoutEffect(() => {

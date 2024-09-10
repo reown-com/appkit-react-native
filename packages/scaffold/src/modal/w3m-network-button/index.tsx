@@ -10,12 +10,12 @@ import {
 } from '@reown/core-react-native';
 import { NetworkButton } from '@reown/ui-react-native';
 
-export interface W3mNetworkButtonProps {
+export interface AppKitNetworkButtonProps {
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
-export function W3mNetworkButton({ disabled, style }: W3mNetworkButtonProps) {
+export function AppKitNetworkButton({ disabled, style }: AppKitNetworkButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { loading } = useSnapshot(ModalController.state);

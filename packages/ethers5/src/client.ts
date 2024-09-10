@@ -84,15 +84,15 @@ export class AppKit extends AppKitScaffold {
       tokens,
       chainImages,
       _sdkVersion,
-      ...w3mOptions
+      ...appKitOptions
     } = options;
 
     if (!config) {
-      throw new Error('web3modal:constructor - config is undefined');
+      throw new Error('appkit:constructor - config is undefined');
     }
 
-    if (!w3mOptions.projectId) {
-      throw new Error('web3modal:constructor - projectId is undefined');
+    if (!appKitOptions.projectId) {
+      throw new Error('appkit:constructor - projectId is undefined');
     }
 
     const networkControllerClient: NetworkControllerClient = {
@@ -278,14 +278,14 @@ export class AppKit extends AppKitScaffold {
       defaultChain: EthersHelpersUtil.getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `react-native-ethers5-${ConstantsUtil.VERSION}`,
-      ...w3mOptions
+      ...appKitOptions
     });
 
     this.options = options;
 
     this.metadata = config.metadata;
 
-    this.projectId = w3mOptions.projectId;
+    this.projectId = appKitOptions.projectId;
     this.chains = chains;
 
     this.createProvider();
@@ -750,10 +750,10 @@ export class AppKit extends AppKitScaffold {
   }
 
   private syncConnectors(config: ProviderType) {
-    const w3mConnectors: Connector[] = [];
+    const _connectors: Connector[] = [];
     const EXCLUDED_CONNECTORS = [ConstantsUtil.EMAIL_CONNECTOR_ID];
 
-    w3mConnectors.push({
+    _connectors.push({
       id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
       explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
       imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
@@ -765,7 +765,7 @@ export class AppKit extends AppKitScaffold {
     config.extraConnectors?.forEach(connector => {
       if (!EXCLUDED_CONNECTORS.includes(connector.id)) {
         if (connector.id === ConstantsUtil.COINBASE_CONNECTOR_ID) {
-          w3mConnectors.push({
+          _connectors.push({
             id: ConstantsUtil.COINBASE_CONNECTOR_ID,
             explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
             imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
@@ -775,7 +775,7 @@ export class AppKit extends AppKitScaffold {
           });
           this.checkActiveCoinbaseProvider(connector as Provider);
         } else {
-          w3mConnectors.push({
+          _connectors.push({
             id: connector.id,
             name: connector.name,
             type: 'EXTERNAL'
@@ -784,7 +784,7 @@ export class AppKit extends AppKitScaffold {
       }
     });
 
-    this.setConnectors(w3mConnectors);
+    this.setConnectors(_connectors);
   }
 
   private async syncEmailConnector(config: ProviderType) {

@@ -1,10 +1,10 @@
 import '@walletconnect/react-native-compat';
 export {
-  W3mAccountButton,
-  W3mButton,
-  W3mConnectButton,
-  W3mNetworkButton,
-  Web3Modal
+  AppKitAccountButton,
+  AppKitButton,
+  AppKitConnectButton,
+  AppKitNetworkButton,
+  AppKit
 } from '@reown/scaffold-react-native';
 import { ConstantsUtil } from '@reown/scaffold-utils-react-native';
 export { defaultWagmiConfig } from './utils/defaultWagmiConfig';
