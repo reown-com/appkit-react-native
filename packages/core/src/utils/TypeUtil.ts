@@ -65,6 +65,7 @@ export interface WcWallet {
   mobile_link?: string | null;
   desktop_link?: string | null;
   webapp_link?: string | null;
+  link_mode?: string | null;
   app_store?: string | null;
   play_store?: string | null;
 }
@@ -126,6 +127,11 @@ export type Metadata = {
   description: string;
   url: string;
   icons: string[];
+  redirect?: {
+    native?: string;
+    universal?: string;
+    linkMode?: boolean;
+  };
 };
 
 export type CustomWallet = Pick<
@@ -137,6 +143,7 @@ export type CustomWallet = Pick<
   | 'mobile_link'
   | 'desktop_link'
   | 'webapp_link'
+  | 'link_mode'
   | 'app_store'
   | 'play_store'
 >;

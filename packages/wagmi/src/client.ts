@@ -109,7 +109,7 @@ export class AppKit extends AppKitScaffold {
     };
 
     const connectionControllerClient: ConnectionControllerClient = {
-      connectWalletConnect: async onUri => {
+      connectWalletConnect: async (onUri, walletUniversalLink) => {
         const connector = wagmiConfig.connectors.find(
           c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
         );
@@ -149,12 +149,14 @@ export class AppKit extends AppKitScaffold {
           );
           // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
           await connector.setRequestedChainsIds(siweParams.chains);
-
-          const result = await provider.authenticate({
-            nonce: await siweConfig.getNonce(),
-            methods: [...OPTIONAL_METHODS],
-            ...siweParams
-          });
+          const result = await provider.authenticate(
+            {
+              nonce: await siweConfig.getNonce(),
+              methods: [...OPTIONAL_METHODS],
+              ...siweParams
+            },
+            walletUniversalLink
+          );
 
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
           const signedCacao = result?.auths?.[0];

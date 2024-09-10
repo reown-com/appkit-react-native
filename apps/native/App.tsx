@@ -30,7 +30,9 @@ const metadata = {
   url: 'https://walletconnect.com/',
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
   redirect: {
-    native: 'redirect://'
+    native: 'redirect://',
+    universal: 'https://lab.web3modal.com/rn_appkit',
+    linkMode: true
   }
 };
 

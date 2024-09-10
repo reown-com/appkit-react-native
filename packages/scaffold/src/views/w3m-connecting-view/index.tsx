@@ -43,9 +43,10 @@ export function ConnectingView() {
   const initializeConnection = async (retry = false) => {
     try {
       const { wcPairingExpiry } = ConnectionController.state;
+      const { data: routeData } = RouterController.state;
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.setWcError(false);
-        ConnectionController.connectWalletConnect();
+        ConnectionController.connectWalletConnect(routeData?.wallet?.link_mode ?? undefined);
         await ConnectionController.state.wcPromise;
         AccountController.setIsConnected(true);
 

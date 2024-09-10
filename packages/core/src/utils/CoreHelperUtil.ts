@@ -75,7 +75,22 @@ export const CoreHelperUtil = {
     return url.startsWith('http://') || url.startsWith('https://');
   },
 
+  isLinkModeURL(url?: string) {
+    if (!url) {
+      return false;
+    }
+
+    return CoreHelperUtil.isHttpUrl(url) && url.includes('wc_ev');
+  },
+
   formatNativeUrl(appUrl: string, wcUri: string): LinkingRecord {
+    if (CoreHelperUtil.isLinkModeURL(wcUri)) {
+      return {
+        redirect: wcUri,
+        href: wcUri
+      };
+    }
+
     if (CoreHelperUtil.isHttpUrl(appUrl)) {
       return this.formatUniversalUrl(appUrl, wcUri);
     }
@@ -96,6 +111,13 @@ export const CoreHelperUtil = {
   },
 
   formatUniversalUrl(appUrl: string, wcUri: string): LinkingRecord {
+    if (CoreHelperUtil.isLinkModeURL(wcUri)) {
+      return {
+        redirect: wcUri,
+        href: wcUri
+      };
+    }
+
     if (!CoreHelperUtil.isHttpUrl(appUrl)) {
       return this.formatNativeUrl(appUrl, wcUri);
     }
