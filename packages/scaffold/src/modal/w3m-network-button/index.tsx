@@ -7,8 +7,8 @@ import {
   EventsController,
   ModalController,
   NetworkController
-} from '@web3modal/core-react-native';
-import { NetworkButton } from '@web3modal/ui-react-native';
+} from '@reown/core-react-native';
+import { NetworkButton } from '@reown/ui-react-native';
 
 export interface W3mNetworkButtonProps {
   disabled?: boolean;

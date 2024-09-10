@@ -1,4 +1,4 @@
-import { W3mFrameProvider, type W3mFrameTypes } from '@web3modal/email-react-native';
+import { W3mFrameProvider, type W3mFrameTypes } from '@reown/email-react-native';
 
 interface EmailProviderProps {
   projectId: string;

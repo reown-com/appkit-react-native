@@ -1,5 +1,5 @@
-import type { W3mFrameProvider } from '@web3modal/core-react-native';
-export type { W3mFrameProvider } from '@web3modal/core-react-native';
+import type { W3mFrameProvider } from '@reown/core-react-native';
+export type { W3mFrameProvider } from '@reown/core-react-native';
 
 export interface IEthersConfig {
   providers: ProviderType;

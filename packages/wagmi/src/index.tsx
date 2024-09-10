@@ -5,8 +5,8 @@ export {
   W3mConnectButton,
   W3mNetworkButton,
   Web3Modal
-} from '@web3modal/scaffold-react-native';
-import { ConstantsUtil } from '@web3modal/scaffold-utils-react-native';
+} from '@reown/scaffold-react-native';
+import { ConstantsUtil } from '@reown/scaffold-utils-react-native';
 export { defaultWagmiConfig } from './utils/defaultWagmiConfig';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { Web3ModalOptions } from './client';

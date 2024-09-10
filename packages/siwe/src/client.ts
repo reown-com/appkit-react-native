@@ -3,8 +3,8 @@ import {
   NetworkController,
   ConnectionController,
   RouterUtil
-} from '@web3modal/core-react-native';
-import { NetworkUtil } from '@web3modal/common-react-native';
+} from '@reown/core-react-native';
+import { NetworkUtil } from '@reown/common-react-native';
 
 import type {
   SIWECreateMessageArgs,

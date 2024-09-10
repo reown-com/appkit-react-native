@@ -6,8 +6,8 @@ import {
   EventsController,
   RouterController,
   type WcWallet
-} from '@web3modal/core-react-native';
-import { FlexView, Spacing } from '@web3modal/ui-react-native';
+} from '@reown/core-react-native';
+import { FlexView, Spacing } from '@reown/ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectEmailInput } from './components/connect-email-input';
 import { useKeyboard } from '../../hooks/useKeyboard';

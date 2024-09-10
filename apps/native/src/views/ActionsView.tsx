@@ -1,4 +1,4 @@
-import { Button, Text } from '@web3modal/ui-react-native';
+import { Button, Text } from '@reown/ui-react-native';
 import { View } from 'react-native';
 import { useSignMessage, useAccount, useSendTransaction, useEstimateGas } from 'wagmi';
 import { Hex, parseEther } from 'viem';
@@ -23,7 +23,7 @@ export function ActionsView() {
   return isConnected ? (
     <View>
       <Text variant="large-600">Wagmi Actions</Text>
-      <Button disabled={isPending} onPress={() => signMessage({ message: 'Hello Web3Modal!' })}>
+      <Button disabled={isPending} onPress={() => signMessage({ message: 'Hello AppKit!' })}>
         Sign
       </Button>
       {isSuccess && <Text>Signature: {data}</Text>}

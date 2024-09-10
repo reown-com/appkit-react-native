@@ -3,7 +3,7 @@ import {
   ConnectionController,
   StorageUtil,
   type WcWallet
-} from '@web3modal/core-react-native';
+} from '@reown/core-react-native';
 import { LayoutAnimation } from 'react-native';
 
 export const UiUtil = {

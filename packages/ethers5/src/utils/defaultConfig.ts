@@ -3,7 +3,7 @@ import type {
   Provider,
   ProviderType,
   W3mFrameProvider
-} from '@web3modal/scaffold-utils-react-native';
+} from '@reown/scaffold-utils-react-native';
 
 export interface ConfigOptions {
   metadata: Metadata;

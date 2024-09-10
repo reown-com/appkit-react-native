@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FlexView, Spacing, Text } from '@web3modal/ui-react-native';
+import { FlexView, Spacing, Text } from '@reown/ui-react-native';
 
 export * from './utils';
 

@@ -8,7 +8,7 @@ import {
   SnackController,
   EventsController,
   type W3mFrameProvider
-} from '@web3modal/core-react-native';
+} from '@reown/core-react-native';
 
 import { OtpCodeView } from '../../partials/w3m-otp-code';
 

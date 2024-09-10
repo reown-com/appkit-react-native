@@ -2,7 +2,7 @@ import { useSnapshot } from 'valtio';
 import { useCallback, useEffect } from 'react';
 import { useWindowDimensions, StatusBar } from 'react-native';
 import Modal from 'react-native-modal';
-import { Card } from '@web3modal/ui-react-native';
+import { Card } from '@reown/ui-react-native';
 import {
   AccountController,
   ApiController,
@@ -15,7 +15,7 @@ import {
   RouterController,
   type CaipAddress,
   type W3mFrameProvider
-} from '@web3modal/core-react-native';
+} from '@reown/core-react-native';
 
 import { Web3Router } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
@@ -53,7 +53,7 @@ export function Web3Modal() {
 
   const handleClose = async () => {
     if (isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe-react-native');
+      const { SIWEController } = await import('@reown/siwe-react-native');
 
       if (SIWEController.state.status !== 'success' && isConnected) {
         await ConnectionController.disconnect();
@@ -70,7 +70,7 @@ export function Web3Modal() {
       if (isSiweEnabled) {
         const newAddress = CoreHelperUtil.getPlainAddress(address);
         const newNetworkId = CoreHelperUtil.getNetworkId(address);
-        const { SIWEController } = await import('@web3modal/siwe-react-native');
+        const { SIWEController } = await import('@reown/siwe-react-native');
         const { signOutOnAccountChange, signOutOnNetworkChange } =
           SIWEController.state._client?.options ?? {};
         const session = await SIWEController.getSession();

@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { InputElement } from '@web3modal/ui-react-native';
+import { InputElement } from '@reown/ui-react-native';
 import { iconOptions } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof InputElement> = {

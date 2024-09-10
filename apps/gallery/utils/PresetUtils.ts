@@ -11,7 +11,7 @@ import type {
   TagType,
   CardSelectType,
   SizeType
-} from '@web3modal/ui-react-native';
+} from '@reown/ui-react-native';
 
 export const walletImagesOptions = [
   'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=90369b5c91c6f7fffe308df2b30f3ace',

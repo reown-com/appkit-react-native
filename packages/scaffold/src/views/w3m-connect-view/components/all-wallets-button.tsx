@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
-import { ApiController } from '@web3modal/core-react-native';
-import { ListWallet } from '@web3modal/ui-react-native';
+import { ApiController } from '@reown/core-react-native';
+import { ListWallet } from '@reown/ui-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 
 interface Props {

@@ -1,4 +1,4 @@
-import type { WcWallet } from '@web3modal/core-react-native';
+import type { WcWallet } from '@reown/core-react-native';
 
 export const filterOutRecentWallets = (
   recentWallets?: WcWallet[],

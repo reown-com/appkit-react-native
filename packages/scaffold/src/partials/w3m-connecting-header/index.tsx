@@ -1,5 +1,5 @@
-import type { Platform } from '@web3modal/core-react-native';
-import { FlexView, Tabs } from '@web3modal/ui-react-native';
+import type { Platform } from '@reown/core-react-native';
+import { FlexView, Tabs } from '@reown/ui-react-native';
 
 export interface ConnectingHeaderProps {
   platforms: Platform[];

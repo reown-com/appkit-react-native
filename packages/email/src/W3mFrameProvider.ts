@@ -1,6 +1,6 @@
 import type { RefObject } from 'react';
 import type WebView from 'react-native-webview';
-import { CoreHelperUtil } from '@web3modal/core-react-native';
+import { CoreHelperUtil } from '@reown/core-react-native';
 import type { W3mFrameTypes } from './W3mFrameTypes';
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants';
 import { W3mFrameStorage } from './W3mFrameStorage';

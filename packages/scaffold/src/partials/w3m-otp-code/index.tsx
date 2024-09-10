@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import { FlexView, Link, LoadingSpinner, Otp, Spacing, Text } from '@web3modal/ui-react-native';
+import { FlexView, Link, LoadingSpinner, Otp, Spacing, Text } from '@reown/ui-react-native';
 
 import { useKeyboard } from '../../hooks/useKeyboard';
 import styles from './styles';

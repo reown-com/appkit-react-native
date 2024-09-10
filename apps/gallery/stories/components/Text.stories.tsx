@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Text } from '@web3modal/ui-react-native';
+import { Text } from '@reown/ui-react-native';
 import { colorOptions, textOptions } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof Text> = {

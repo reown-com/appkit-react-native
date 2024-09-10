@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { FlatList, View } from 'react-native';
-import { ApiController, AssetUtil, type WcWallet } from '@web3modal/core-react-native';
+import { ApiController, AssetUtil, type WcWallet } from '@reown/core-react-native';
 import {
   CardSelect,
   CardSelectLoader,
   CardSelectHeight,
   FlexView,
   Spacing
-} from '@web3modal/ui-react-native';
+} from '@reown/ui-react-native';
 import styles from './styles';
 import { UiUtil } from '../../utils/UiUtil';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';

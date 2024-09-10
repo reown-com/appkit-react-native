@@ -11,9 +11,9 @@ import {
   W3mNetworkButton,
   createWeb3Modal,
   defaultWagmiConfig
-} from '@web3modal/wagmi-react-native';
+} from '@reown/wagmi-react-native';
 
-import { emailConnector } from '@web3modal/email-wagmi-react-native';
+import { emailConnector } from '@reown/email-wagmi-react-native';
 
 import { siweConfig } from './src/utils/SiweUtils';
 

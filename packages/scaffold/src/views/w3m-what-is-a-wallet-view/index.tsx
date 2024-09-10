@@ -1,6 +1,6 @@
 import { Linking, ScrollView } from 'react-native';
-import { Button, FlexView, Link, Text, Visual } from '@web3modal/ui-react-native';
-import { EventsController, RouterController } from '@web3modal/core-react-native';
+import { Button, FlexView, Link, Text, Visual } from '@reown/ui-react-native';
+import { EventsController, RouterController } from '@reown/core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 

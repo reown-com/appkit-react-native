@@ -15,7 +15,7 @@ import {
   RouterController,
   SnackController,
   type W3mFrameProvider
-} from '@web3modal/core-react-native';
+} from '@reown/core-react-native';
 import {
   Avatar,
   Button,
@@ -25,7 +25,7 @@ import {
   UiUtil,
   Spacing,
   ListItem
-} from '@web3modal/ui-react-native';
+} from '@reown/ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { UpgradeWalletButton } from './components/upgrade-wallet-button';
 import styles from './styles';

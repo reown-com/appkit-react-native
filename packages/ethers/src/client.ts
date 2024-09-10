@@ -18,8 +18,8 @@ import {
   type PublicStateControllerState,
   type Token,
   Web3ModalScaffold
-} from '@web3modal/scaffold-react-native';
-import { NetworkUtil } from '@web3modal/common-react-native';
+} from '@reown/scaffold-react-native';
+import { NetworkUtil } from '@reown/common-react-native';
 import {
   ConstantsUtil,
   PresetsUtil,
@@ -36,12 +36,12 @@ import {
   type EthersStoreUtilState,
   type CombinedProviderType,
   type W3mFrameProvider
-} from '@web3modal/scaffold-utils-react-native';
+} from '@reown/scaffold-utils-react-native';
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 
 import { getEmailCaipNetworks, getWalletConnectCaipNetworks } from './utils/helpers';
-import type { Web3ModalSIWEClient } from '@web3modal/siwe-react-native';
+import type { Web3ModalSIWEClient } from '@reown/siwe-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -162,7 +162,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const params = await siweConfig?.getMessageParams?.();
         if (siweConfig?.options?.enabled && params && Object.keys(params).length > 0) {
           const { SIWEController, getDidChainId, getDidAddress } = await import(
-            '@web3modal/siwe-react-native'
+            '@reown/siwe-react-native'
           );
           const result = await WalletConnectProvider.authenticate({
             nonce: await siweConfig.getNonce(),
@@ -246,7 +246,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const emailType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID];
 
         if (siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@web3modal/siwe-react-native');
+          const { SIWEController } = await import('@reown/siwe-react-native');
           await SIWEController.signOut();
         }
 

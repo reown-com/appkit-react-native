@@ -1,7 +1,7 @@
 import { useLayoutEffect, useMemo } from 'react';
 import { useSnapshot } from 'valtio';
-import { RouterController } from '@web3modal/core-react-native';
-import { ConnectingSiweView } from '@web3modal/siwe-react-native';
+import { RouterController } from '@reown/core-react-native';
+import { ConnectingSiweView } from '@reown/siwe-react-native';
 
 import { ConnectView } from '../../views/w3m-connect-view';
 import { AllWalletsView } from '../../views/w3m-all-wallets-view';

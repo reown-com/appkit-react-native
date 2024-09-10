@@ -9,8 +9,8 @@ import {
   ModalController,
   type OptionsControllerState,
   StorageUtil
-} from '@web3modal/core-react-native';
-import { useTheme, BorderRadius } from '@web3modal/ui-react-native';
+} from '@reown/core-react-native';
+import { useTheme, BorderRadius } from '@reown/ui-react-native';
 import type { W3mFrameProvider } from './W3mFrameProvider';
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants';
 

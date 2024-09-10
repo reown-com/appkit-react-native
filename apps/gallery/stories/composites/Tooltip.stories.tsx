@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Tooltip } from '@web3modal/ui-react-native';
+import { Tooltip } from '@reown/ui-react-native';
 import { tooltipOptions } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof Tooltip> = {

@@ -5,12 +5,8 @@ export {
   W3mConnectButton,
   W3mNetworkButton,
   Web3Modal
-} from '@web3modal/scaffold-react-native';
-import {
-  ConstantsUtil,
-  EthersStoreUtil,
-  type Provider
-} from '@web3modal/scaffold-utils-react-native';
+} from '@reown/scaffold-react-native';
+import { ConstantsUtil, EthersStoreUtil, type Provider } from '@reown/scaffold-utils-react-native';
 export { defaultConfig } from './utils/defaultConfig';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { Web3ModalOptions } from './client';

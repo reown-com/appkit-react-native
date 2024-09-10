@@ -1,10 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useSnapshot } from 'valtio';
-import {
-  ConstantsUtil,
-  EthersStoreUtil,
-  type Provider
-} from '@web3modal/scaffold-utils-react-native';
+import { ConstantsUtil, EthersStoreUtil, type Provider } from '@reown/scaffold-utils-react-native';
 
 export {
   W3mAccountButton,
@@ -12,7 +8,7 @@ export {
   W3mConnectButton,
   W3mNetworkButton,
   Web3Modal
-} from '@web3modal/scaffold-react-native';
+} from '@reown/scaffold-react-native';
 
 export { defaultConfig } from './utils/defaultConfig';
 

@@ -5,10 +5,10 @@ import {
   NetworkController,
   ModalController,
   AssetUtil
-} from '@web3modal/core-react-native';
+} from '@reown/core-react-native';
 
-import { AccountButton } from '@web3modal/ui-react-native';
-import { ApiController } from '@web3modal/core-react-native';
+import { AccountButton } from '@reown/ui-react-native';
+import { ApiController } from '@reown/core-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 
 export interface W3mAccountButtonProps {
