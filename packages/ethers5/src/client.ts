@@ -9,7 +9,7 @@ import {
   type NetworkControllerClient,
   type PublicStateControllerState,
   type Token,
-  Web3ModalScaffold
+  AppKitScaffold
 } from '@reown/scaffold-react-native';
 import {
   ConstantsUtil,
@@ -33,12 +33,12 @@ import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-prov
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 
 import { getEmailCaipNetworks, getWalletConnectCaipNetworks } from './utils/helpers';
-import type { Web3ModalSIWEClient } from '@reown/siwe-react-native';
+import type { AppKitSIWEClient } from '@reown/siwe-react-native';
 
 // -- Types ---------------------------------------------------------------------
-export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
+export interface AppKitClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   config: ProviderType;
-  siweConfig?: Web3ModalSIWEClient;
+  siweConfig?: AppKitSIWEClient;
   chains: Chain[];
   defaultChain?: Chain;
   chainImages?: Record<number, string>;
@@ -46,10 +46,10 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   tokens?: Record<number, Token>;
 }
 
-export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>;
+export type AppKitOptions = Omit<AppKitClientOptions, '_sdkVersion'>;
 
 // @ts-expect-error: Overriden state type is correct
-interface Web3ModalState extends PublicStateControllerState {
+interface AppKitState extends PublicStateControllerState {
   selectedNetworkId: number | undefined;
 }
 
@@ -58,7 +58,7 @@ interface ExternalProvider extends EthereumProvider {
 }
 
 // -- Client --------------------------------------------------------------------
-export class Web3Modal extends Web3ModalScaffold {
+export class AppKit extends AppKitScaffold {
   private hasSyncedConnectedAccount = false;
 
   private walletConnectProvider?: EthereumProvider;
@@ -71,11 +71,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private metadata: Metadata;
 
-  private options: Web3ModalClientOptions | undefined = undefined;
+  private options: AppKitClientOptions | undefined = undefined;
 
   private emailProvider?: W3mFrameProvider;
 
-  public constructor(options: Web3ModalClientOptions) {
+  public constructor(options: AppKitClientOptions) {
     const {
       config,
       siweConfig,
@@ -316,7 +316,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   // @ts-expect-error: Overriden state type is correct
-  public override subscribeState(callback: (state: Web3ModalState) => void) {
+  public override subscribeState(callback: (state: AppKitState) => void) {
     return super.subscribeState(state =>
       callback({
         ...state,
@@ -411,8 +411,8 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private syncRequestedNetworks(
-    chains: Web3ModalClientOptions['chains'],
-    chainImages?: Web3ModalClientOptions['chainImages']
+    chains: AppKitClientOptions['chains'],
+    chainImages?: AppKitClientOptions['chainImages']
   ) {
     const requestedCaipNetworks = chains?.map(
       chain =>
@@ -595,7 +595,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
+  private async syncNetwork(chainImages?: AppKitClientOptions['chainImages']) {
     const address = EthersStoreUtil.state.address;
     const chainId = EthersStoreUtil.state.chainId;
     const isConnected = EthersStoreUtil.state.isConnected;

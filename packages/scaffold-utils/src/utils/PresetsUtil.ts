@@ -65,7 +65,7 @@ export const PresetsUtil = {
     [ConstantsUtil.EMAIL_CONNECTOR_ID]: 'EMAIL'
   } as Record<string, ConnectorType>,
 
-  WalletConnectRpcChainIds: [
+  RpcChainIds: [
     // Ethereum
     1,
     // Ethereum Goerli

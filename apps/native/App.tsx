@@ -9,7 +9,7 @@ import {
   Web3Modal,
   W3mButton,
   W3mNetworkButton,
-  createWeb3Modal,
+  createAppKit,
   defaultWagmiConfig
 } from '@reown/wagmi-react-native';
 
@@ -53,7 +53,7 @@ const queryClient = new QueryClient();
 
 const customWallets = getCustomWallets();
 
-createWeb3Modal({
+createAppKit({
   projectId,
   wagmiConfig,
   siweConfig,

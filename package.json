@@ -30,7 +30,7 @@
     "test": "turbo run test --parallel",
     "clean": "turbo clean && rm -rf node_modules && watchman watch-del-all",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
-    "changeset:prepublish": "turbo clean lint prettier --parallel; yarn version:update; yarn install; turbo run build; turbo run test;",
+    "changeset:prepublish": "yarn run clean lint prettier; yarn version:update; yarn install; yarn run build; yarn run test;",
     "changeset:publish": "yarn run changeset:prepublish; yarn run changeset publish",
     "changeset:version": "changeset version; yarn run version:update; yarn install --refresh-lockfile",
     "version:update": "./scripts/bump-version.sh"
@@ -66,7 +66,7 @@
     "ts-jest": "29.1.1",
     "ts-node": "10.9.1",
     "tsconfig": "*",
-    "turbo": "1.10.15",
+    "turbo": "2.1.1",
     "typescript": "5.2.2",
     "viem": "2.18.7",
     "wagmi": "2.12.2"

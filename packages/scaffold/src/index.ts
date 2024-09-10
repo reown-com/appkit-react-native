@@ -17,7 +17,7 @@ export * from './partials/w3m-connecting-qrcode';
 
 export * from './partials/w3m-header';
 
-export { Web3ModalScaffold } from './client';
+export { AppKitScaffold } from './client';
 export type { LibraryOptions, ScaffoldOptions } from './client';
 
 export type * from '@reown/core-react-native';

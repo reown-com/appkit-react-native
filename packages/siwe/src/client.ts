@@ -19,7 +19,7 @@ import type { SIWEControllerClient } from './controller/SIWEController';
 import { ConstantsUtil } from './utils/ConstantsUtil';
 
 // -- Client -------------------------------------------------------------------- //
-export class Web3ModalSIWEClient {
+export class AppKitSIWEClient {
   public options: SIWEControllerClient['options'];
 
   public methods: SIWEClientMethods;
