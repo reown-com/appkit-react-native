@@ -2,7 +2,7 @@ import { useSnapshot } from 'valtio';
 import { ModalController } from '@reown/core-react-native';
 import { ConnectButton, type ConnectButtonProps } from '@reown/ui-react-native';
 
-export interface W3mConnectButtonProps {
+export interface AppKitConnectButtonProps {
   label: string;
   loadingLabel: string;
   size?: ConnectButtonProps['size'];
@@ -11,14 +11,14 @@ export interface W3mConnectButtonProps {
   testID?: string;
 }
 
-export function W3mConnectButton({
+export function AppKitConnectButton({
   label,
   loadingLabel,
   size = 'md',
   style,
   disabled,
   testID
-}: W3mConnectButtonProps) {
+}: AppKitConnectButtonProps) {
   const { open, loading } = useSnapshot(ModalController.state);
 
   return (

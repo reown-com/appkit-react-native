@@ -11,14 +11,19 @@ import { AccountButton } from '@reown/ui-react-native';
 import { ApiController } from '@reown/core-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 
-export interface W3mAccountButtonProps {
+export interface AppKitAccountButtonProps {
   balance?: 'show' | 'hide';
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
   testID?: string;
 }
 
-export function W3mAccountButton({ balance, disabled, style, testID }: W3mAccountButtonProps) {
+export function AppKitAccountButton({
+  balance,
+  disabled,
+  style,
+  testID
+}: AppKitAccountButtonProps) {
   const {
     address,
     balance: balanceVal,

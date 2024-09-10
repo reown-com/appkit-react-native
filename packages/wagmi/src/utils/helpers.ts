@@ -2,10 +2,10 @@ import { CoreHelperUtil, type CaipNetwork, type CaipNetworkId } from '@reown/sca
 import { PresetsUtil, ConstantsUtil } from '@reown/scaffold-utils-react-native';
 import type { Connector } from '@wagmi/core';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
-import type { Web3ModalClientOptions } from '../client';
+import type { AppKitClientOptions } from '../client';
 import { http } from 'viem';
 
-export function getCaipDefaultChain(chain?: Web3ModalClientOptions['defaultChain']) {
+export function getCaipDefaultChain(chain?: AppKitClientOptions['defaultChain']) {
   if (!chain) {
     return undefined;
   }
@@ -37,7 +37,7 @@ export async function getWalletConnectCaipNetworks(connector?: Connector) {
 export function getEmailCaipNetworks() {
   return {
     supportsAllNetworks: false,
-    approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
+    approvedCaipNetworkIds: PresetsUtil.RpcChainIds.map(
       id => `${ConstantsUtil.EIP155}:${id}`
     ) as CaipNetworkId[]
   };
@@ -46,7 +46,7 @@ export function getEmailCaipNetworks() {
 export function getTransport({ chainId, projectId }: { chainId: number; projectId: string }) {
   const RPC_URL = CoreHelperUtil.getBlockchainApiUrl();
 
-  if (!PresetsUtil.WalletConnectRpcChainIds.includes(chainId)) {
+  if (!PresetsUtil.RpcChainIds.includes(chainId)) {
     return http();
   }
 

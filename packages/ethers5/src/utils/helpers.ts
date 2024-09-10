@@ -20,7 +20,7 @@ export async function getWalletConnectCaipNetworks(provider?: EthereumProvider) 
 export function getEmailCaipNetworks() {
   return {
     supportsAllNetworks: false,
-    approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
+    approvedCaipNetworkIds: PresetsUtil.RpcChainIds.map(
       id => `${ConstantsUtil.EIP155}:${id}`
     ) as CaipNetworkId[]
   };

@@ -23,7 +23,7 @@ import {
   type NetworkControllerClient,
   type PublicStateControllerState,
   type Token,
-  Web3ModalScaffold
+  AppKitScaffold
 } from '@reown/scaffold-react-native';
 import {
   ConstantsUtil,
@@ -38,44 +38,45 @@ import {
   getWalletConnectCaipNetworks
 } from './utils/helpers';
 import { defaultWagmiConfig } from './utils/defaultWagmiConfig';
-import { type Web3ModalSIWEClient } from '@reown/siwe-react-native';
+import { type AppKitSIWEClient } from '@reown/siwe-react-native';
 
 // -- Types ---------------------------------------------------------------------
 type WagmiConfig = ReturnType<typeof defaultWagmiConfig>;
 
-export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
+export interface AppKitClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   wagmiConfig: WagmiConfig;
-  siweConfig?: Web3ModalSIWEClient;
+  siweConfig?: AppKitSIWEClient;
   defaultChain?: Chain;
   chainImages?: Record<number, string>;
   connectorImages?: Record<string, string>;
   tokens?: Record<number, Token>;
 }
 
-export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>;
+export type AppKitOptions = Omit<AppKitClientOptions, '_sdkVersion'>;
 
 // @ts-expect-error: Overriden state type is correct
-interface Web3ModalState extends PublicStateControllerState {
+interface AppKitState extends PublicStateControllerState {
   selectedNetworkId: number | undefined;
 }
 
 // -- Client --------------------------------------------------------------------
-export class Web3Modal extends Web3ModalScaffold {
+export class AppKit extends AppKitScaffold {
   private hasSyncedConnectedAccount = false;
 
-  private options: Web3ModalClientOptions | undefined = undefined;
+  private options: AppKitClientOptions | undefined = undefined;
 
   private wagmiConfig: WagmiConfig;
 
-  public constructor(options: Web3ModalClientOptions) {
-    const { wagmiConfig, siweConfig, defaultChain, tokens, _sdkVersion, ...w3mOptions } = options;
+  public constructor(options: AppKitClientOptions) {
+    const { wagmiConfig, siweConfig, defaultChain, tokens, _sdkVersion, ...appKitOptions } =
+      options;
 
     if (!wagmiConfig) {
-      throw new Error('web3modal:constructor - wagmiConfig is undefined');
+      throw new Error('appkit:constructor - wagmiConfig is undefined');
     }
 
-    if (!w3mOptions.projectId) {
-      throw new Error('web3modal:constructor - projectId is undefined');
+    if (!appKitOptions.projectId) {
+      throw new Error('appkit:constructor - projectId is undefined');
     }
 
     const networkControllerClient: NetworkControllerClient = {
@@ -237,7 +238,7 @@ export class Web3Modal extends Web3ModalScaffold {
       defaultChain: getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `react-native-wagmi-${ConstantsUtil.VERSION}`,
-      ...w3mOptions
+      ...appKitOptions
     });
 
     this.options = options;
@@ -271,7 +272,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   // @ts-expect-error: Overriden state type is correct
-  public override subscribeState(callback: (state: Web3ModalState) => void) {
+  public override subscribeState(callback: (state: AppKitState) => void) {
     return super.subscribeState(state =>
       callback({
         ...state,
@@ -422,7 +423,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private syncConnectors(connectors: Web3ModalClientOptions['wagmiConfig']['connectors']) {
+  private syncConnectors(connectors: AppKitClientOptions['wagmiConfig']['connectors']) {
     const uniqueIds = new Set();
     const filteredConnectors = connectors.filter(
       item => !uniqueIds.has(item.id) && uniqueIds.add(item.id)
@@ -430,10 +431,10 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const excludedConnectors = [ConstantsUtil.EMAIL_CONNECTOR_ID];
 
-    const w3mConnectors: Connector[] = [];
+    const _connectors: Connector[] = [];
     filteredConnectors.forEach(({ id, name, icon }) => {
       if (!excludedConnectors.includes(id)) {
-        w3mConnectors.push({
+        _connectors.push({
           id,
           explorerId: PresetsUtil.ConnectorExplorerIds[id],
           imageId: PresetsUtil.ConnectorImageIds[id] ?? icon,
@@ -444,13 +445,11 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     });
 
-    this.setConnectors(w3mConnectors);
+    this.setConnectors(_connectors);
     this.syncEmailConnector(filteredConnectors);
   }
 
-  private async syncEmailConnector(
-    connectors: Web3ModalClientOptions['wagmiConfig']['connectors']
-  ) {
+  private async syncEmailConnector(connectors: AppKitClientOptions['wagmiConfig']['connectors']) {
     const emailConnector = connectors.find(({ id }) => id === ConstantsUtil.EMAIL_CONNECTOR_ID);
     if (emailConnector) {
       const provider = await emailConnector.getProvider();
@@ -463,9 +462,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async listenEmailConnector(
-    connectors: Web3ModalClientOptions['wagmiConfig']['connectors']
-  ) {
+  private async listenEmailConnector(connectors: AppKitClientOptions['wagmiConfig']['connectors']) {
     const connector = connectors.find(c => c.id === ConstantsUtil.EMAIL_CONNECTOR_ID);
 
     const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');

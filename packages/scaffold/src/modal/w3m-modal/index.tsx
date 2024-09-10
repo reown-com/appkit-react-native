@@ -17,13 +17,13 @@ import {
   type W3mFrameProvider
 } from '@reown/core-react-native';
 
-import { Web3Router } from '../w3m-router';
+import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
 import { Snackbar } from '../../partials/w3m-snackbar';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
-export function Web3Modal() {
+export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
   const { history, view } = useSnapshot(RouterController.state);
   const { connectors } = useSnapshot(ConnectorController.state);
@@ -131,7 +131,7 @@ export function Web3Modal() {
       >
         <Card style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}>
           <Header />
-          <Web3Router />
+          <AppKitRouter />
           <Snackbar />
         </Card>
       </Modal>

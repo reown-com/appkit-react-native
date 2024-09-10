@@ -59,7 +59,7 @@ export interface OpenOptions {
 }
 
 // -- Client --------------------------------------------------------------------
-export class Web3ModalScaffold {
+export class AppKitScaffold {
   public constructor(options: ScaffoldOptions) {
     this.initControllers(options);
   }

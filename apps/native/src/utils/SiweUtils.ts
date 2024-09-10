@@ -23,7 +23,7 @@ export const siweConfig = createSIWEConfig({
     // More info in https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-222.method
 
     return {
-      domain: 'com.walletconnect.web3modal.rnsample', //your bundle id or app id
+      domain: 'your.bundle.id', //your bundle id or app id
       uri: 'redirect://', // your redirect uri
       chains: chains.map(chain => chain.id),
       statement: 'Please sign with your account',
