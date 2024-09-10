@@ -7,8 +7,8 @@ import {
   EventsController,
   RouterController,
   SnackController,
-  type W3mFrameProvider
-} from '@web3modal/core-react-native';
+  type AppKitFrameProvider
+} from '@reown/core-react-native';
 
 import { OtpCodeView } from '../../partials/w3m-otp-code';
 
@@ -17,7 +17,7 @@ export function UpdateEmailPrimaryOtpView() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const emailProvider = ConnectorController.getEmailConnector()?.provider as
-    | W3mFrameProvider
+    | AppKitFrameProvider
     | undefined;
 
   const onOtpSubmit = async (value: string) => {

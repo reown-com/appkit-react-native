@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { W3mFrameConstants } from './W3mFrameConstants';
+import { AppKitFrameConstants } from './AppKitFrameConstants';
 
 // -- Helpers ----------------------------------------------------------------
 const zError = z.object({ message: z.string() });
 
-function zType<K extends keyof typeof W3mFrameConstants>(key: K) {
-  return z.literal(W3mFrameConstants[key]);
+function zType<K extends keyof typeof AppKitFrameConstants>(key: K) {
+  return z.literal(AppKitFrameConstants[key]);
 }
 
 // -- Responses --------------------------------------------------------------
@@ -258,7 +258,7 @@ export const FrameSession = z.object({
   token: z.string()
 });
 
-export const W3mFrameSchema = {
+export const AppKitFrameSchema = {
   // -- App Events -----------------------------------------------------------
 
   appEvent: z

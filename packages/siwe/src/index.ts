@@ -6,12 +6,12 @@ import type {
   SIWEVerifyMessageArgs,
   SIWEClientMethods
 } from './utils/TypeUtils';
-import { Web3ModalSIWEClient } from '../src/client';
+import { AppKitSIWEClient } from '../src/client';
 export { getAddressFromMessage, getChainIdFromMessage, verifySignature } from './helpers/index';
 export { SIWEController, type SIWEControllerClient } from './controller/SIWEController';
 
 export type {
-  Web3ModalSIWEClient,
+  AppKitSIWEClient,
   SIWEConfig,
   SIWESession,
   SIWECreateMessageArgs,
@@ -20,7 +20,7 @@ export type {
 };
 
 export function createSIWEConfig(siweConfig: SIWEConfig) {
-  return new Web3ModalSIWEClient(siweConfig);
+  return new AppKitSIWEClient(siweConfig);
 }
 
 export * from './scaffold/partials/w3m-connecting-siwe/index';

@@ -1,15 +1,15 @@
 import { useSnapshot } from 'valtio';
 import { View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { FlexView, Icon, Link, Text, useTheme } from '@web3modal/ui-react-native';
+import { FlexView, Icon, Link, Text, useTheme } from '@reown/ui-react-native';
 import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
   RouterController,
   SnackController,
-  type W3mFrameProvider
-} from '@web3modal/core-react-native';
+  type AppKitFrameProvider
+} from '@reown/core-react-native';
 import useTimeout from '../../hooks/useTimeout';
 import styles from './styles';
 
@@ -19,7 +19,7 @@ export function EmailVerifyDeviceView() {
   const { data } = useSnapshot(RouterController.state);
   const { timeLeft, startTimer } = useTimeout(0);
   const [loading, setLoading] = useState(false);
-  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
+  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as AppKitFrameProvider;
 
   const listenForDeviceApproval = async () => {
     if (emailProvider && data?.email) {

@@ -1,7 +1,7 @@
 /* eslint-disable no-bitwise */
 
 import { Linking, Platform } from 'react-native';
-import { ConstantsUtil as CommonConstants } from '@web3modal/common-react-native';
+import { ConstantsUtil as CommonConstants } from '@reown/common-react-native';
 
 import { ConstantsUtil } from './ConstantsUtil';
 import type { CaipAddress, DataWallet, LinkingRecord } from './TypeUtil';
@@ -158,7 +158,7 @@ export const CoreHelperUtil = {
   },
 
   getApiUrl() {
-    return CommonConstants.W3M_API_URL;
+    return CommonConstants.API_URL;
   },
 
   getBlockchainApiUrl() {

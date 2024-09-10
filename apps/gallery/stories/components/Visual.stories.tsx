@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Visual } from '@web3modal/ui-react-native';
+import { Visual } from '@reown/ui-react-native';
 import { visualOptions } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof Visual> = {

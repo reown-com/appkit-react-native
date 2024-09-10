@@ -1,17 +1,19 @@
-import { CoreHelperUtil } from '@web3modal/core-react-native';
-import { W3mFrameStorage } from './W3mFrameStorage';
-import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants';
-import type { W3mFrameTypes } from './W3mFrameTypes';
+import { CoreHelperUtil } from '@reown/core-react-native';
+import { AppKitFrameStorage } from './AppKitFrameStorage';
+import { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameConstants';
+import type { AppKitFrameTypes } from './AppKitFrameTypes';
 
 const EMAIL_MINIMUM_TIMEOUT = 30 * 1000;
 
-export const W3mFrameHelpers = {
+export const AppKitFrameHelpers = {
   getBlockchainApiUrl() {
     return CoreHelperUtil.getBlockchainApiUrl();
   },
 
   async checkIfAllowedToTriggerEmail() {
-    const lastEmailLoginTime = await W3mFrameStorage.get(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME);
+    const lastEmailLoginTime = await AppKitFrameStorage.get(
+      AppKitFrameConstants.LAST_EMAIL_LOGIN_TIME
+    );
     if (lastEmailLoginTime) {
       const difference = Date.now() - Number(lastEmailLoginTime);
       if (difference < EMAIL_MINIMUM_TIMEOUT) {
@@ -25,18 +27,18 @@ export const W3mFrameHelpers = {
     const method = this.getRequestMethod(request);
 
     return (
-      W3mFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(method) ||
-      W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
+      AppKitFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(method) ||
+      AppKitFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
     );
   },
 
   getRequestMethod(request: unknown) {
-    return (request as { payload: W3mFrameTypes.RPCRequest })?.payload?.method;
+    return (request as { payload: AppKitFrameTypes.RPCRequest })?.payload?.method;
   },
 
   checkIfRequestIsAllowed(request: unknown) {
     const method = this.getRequestMethod(request);
 
-    return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method);
+    return AppKitFrameRpcConstants.SAFE_RPC_METHODS.includes(method);
   }
 };

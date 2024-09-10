@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { Text } from '@web3modal/ui-react-native';
+import { Text } from '@reown/ui-react-native';
 import { useAccount, useBalance } from 'wagmi';
 
 export function AccountView() {

@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { CardSelect } from '@web3modal/ui-react-native';
+import { CardSelect } from '@reown/ui-react-native';
 import { cardSelectOptions, walletImageSrc } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof CardSelect> = {

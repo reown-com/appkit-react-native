@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { ConnectButton } from '@web3modal/ui-react-native';
+import { ConnectButton } from '@reown/ui-react-native';
 
 const meta: Meta<typeof ConnectButton> = {
   component: ConnectButton,

@@ -1,7 +1,7 @@
 import { createConnector, ChainNotConfiguredError } from 'wagmi';
 import { SwitchChainError, getAddress, type Address } from 'viem';
 
-import { W3mFrameProvider } from '@web3modal/email-react-native';
+import { AppKitFrameProvider } from '@reown/email-react-native';
 
 export type Metadata = {
   name: string;
@@ -19,7 +19,7 @@ type EmailProviderOptions = {
   metadata: Metadata;
 };
 
-type Provider = W3mFrameProvider;
+type Provider = AppKitFrameProvider;
 
 type StorageItemMap = {
   '@w3m/connected_connector'?: string;
@@ -28,14 +28,14 @@ type StorageItemMap = {
 emailConnector.type = 'w3mEmail' as const;
 emailConnector.id = 'w3mEmail' as const;
 export function emailConnector(parameters: EmailProviderOptions) {
-  let _provider: W3mFrameProvider = {} as W3mFrameProvider;
+  let _provider: AppKitFrameProvider = {} as AppKitFrameProvider;
 
   return createConnector<Provider, {}, StorageItemMap>(config => ({
     id: emailConnector.id,
-    name: 'Web3Modal Email',
+    name: 'AppKit Email',
     type: emailConnector.type,
     async setup() {
-      _provider = new W3mFrameProvider(parameters.projectId, parameters.metadata);
+      _provider = new AppKitFrameProvider(parameters.projectId, parameters.metadata);
     },
     async connect(options = {}) {
       const provider = await this.getProvider();

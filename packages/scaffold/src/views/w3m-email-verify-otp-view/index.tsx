@@ -8,8 +8,8 @@ import {
   ModalController,
   RouterController,
   SnackController,
-  type W3mFrameProvider
-} from '@web3modal/core-react-native';
+  type AppKitFrameProvider
+} from '@reown/core-react-native';
 import useTimeout from '../../hooks/useTimeout';
 import { OtpCodeView } from '../../partials/w3m-otp-code';
 
@@ -24,7 +24,7 @@ export function EmailVerifyOtpView() {
     try {
       if (!data?.email || !emailConnector) return;
       setLoading(true);
-      const provider = emailConnector?.provider as W3mFrameProvider;
+      const provider = emailConnector?.provider as AppKitFrameProvider;
       await provider.connectEmail({ email: data.email });
       SnackController.showSuccess('Code resent');
       startTimer(30);
@@ -41,7 +41,7 @@ export function EmailVerifyOtpView() {
     setLoading(true);
     setError('');
     try {
-      const provider = emailConnector?.provider as W3mFrameProvider;
+      const provider = emailConnector?.provider as AppKitFrameProvider;
       await provider.connectOtp({ otp });
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' });
       await ConnectionController.connectExternal(emailConnector);

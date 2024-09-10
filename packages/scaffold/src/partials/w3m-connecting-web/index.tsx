@@ -9,7 +9,7 @@ import {
   CoreHelperUtil,
   OptionsController,
   EventsController
-} from '@web3modal/core-react-native';
+} from '@reown/core-react-native';
 import {
   Button,
   FlexView,
@@ -17,7 +17,7 @@ import {
   WalletImage,
   Link,
   IconBox
-} from '@web3modal/ui-react-native';
+} from '@reown/ui-react-native';
 
 import { UiUtil } from '../../utils/UiUtil';
 import { ConnectingBody, getMessage } from '../w3m-connecting-body';

@@ -6,14 +6,14 @@ import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import {
-  Web3Modal,
-  W3mButton,
-  W3mNetworkButton,
-  createWeb3Modal,
+  AppKit,
+  AppKitButton,
+  AppKitNetworkButton,
+  createAppKit,
   defaultWagmiConfig
-} from '@web3modal/wagmi-react-native';
+} from '@reown/wagmi-react-native';
 
-import { emailConnector } from '@web3modal/email-wagmi-react-native';
+import { emailConnector } from '@reown/email-wagmi-react-native';
 
 import { siweConfig } from './src/utils/SiweUtils';
 
@@ -55,7 +55,7 @@ const queryClient = new QueryClient();
 
 const customWallets = getCustomWallets();
 
-createWeb3Modal({
+createAppKit({
   projectId,
   wagmiConfig,
   siweConfig,
@@ -73,17 +73,17 @@ export default function Native() {
       <QueryClientProvider client={queryClient}>
         <View style={[styles.container, isDarkMode && styles.dark]}>
           <StatusBar style="auto" />
-          <W3mButton
+          <AppKitButton
             connectStyle={styles.button}
             accountStyle={styles.button}
             label="Connect"
             loadingLabel="Connecting..."
             balance="show"
           />
-          <W3mNetworkButton />
+          <AppKitNetworkButton />
           <AccountView />
           <ActionsView />
-          <Web3Modal />
+          <AppKit />
         </View>
       </QueryClientProvider>
     </WagmiProvider>

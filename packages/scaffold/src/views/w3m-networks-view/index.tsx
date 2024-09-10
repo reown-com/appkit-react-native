@@ -8,7 +8,7 @@ import {
   Separator,
   Spacing,
   Text
-} from '@web3modal/ui-react-native';
+} from '@reown/ui-react-native';
 import {
   ApiController,
   AssetUtil,
@@ -18,7 +18,7 @@ import {
   AccountController,
   EventsController,
   RouterUtil
-} from '@web3modal/core-react-native';
+} from '@reown/core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 

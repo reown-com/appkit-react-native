@@ -1,4 +1,4 @@
-export const W3mFrameConstants = {
+export const AppKitFrameConstants = {
   SECURE_SITE_SDK: 'https://secure-mobile.walletconnect.com/mobile-sdk',
   SECURE_SITE_ORIGIN: 'https://secure.walletconnect.com',
   SECURE_SITE_DASHBOARD: `https://secure.walletconnect.com/dashboard`,
@@ -70,7 +70,7 @@ export const W3mFrameConstants = {
   FRAME_SYNC_DAPP_DATA_ERROR: '@w3m-frame/SYNC_DAPP_DATA_ERROR'
 } as const;
 
-export const W3mFrameRpcConstants = {
+export const AppKitFrameRpcConstants = {
   SAFE_RPC_METHODS: [
     'eth_accounts',
     'eth_blockNumber',

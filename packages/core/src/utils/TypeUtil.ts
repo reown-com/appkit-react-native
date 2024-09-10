@@ -288,10 +288,10 @@ export type Event =
 
 // -- Email Types ------------------------------------------------
 /**
- * Matches type defined for packages/email/src/W3mFrameProvider.ts
+ * Matches type defined for packages/email/src/AppKitFrameProvider.ts
  * It's duplicated in order to decouple scaffold from email package
  */
-export interface W3mFrameProvider {
+export interface AppKitFrameProvider {
   readonly id: string;
   readonly name: string;
   getSecureSiteURL(): string;

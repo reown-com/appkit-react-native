@@ -1,4 +1,4 @@
-import type { ConnectorType } from '@web3modal/scaffold-react-native';
+import type { ConnectorType } from '@reown/scaffold-react-native';
 import { ConstantsUtil } from './ConstantsUtil';
 
 export const PresetsUtil = {
@@ -65,7 +65,7 @@ export const PresetsUtil = {
     [ConstantsUtil.EMAIL_CONNECTOR_ID]: 'EMAIL'
   } as Record<string, ConnectorType>,
 
-  WalletConnectRpcChainIds: [
+  RpcChainIds: [
     // Ethereum
     1,
     // Ethereum Goerli

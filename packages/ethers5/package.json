@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/ethers5-react-native",
-  "version": "2.0.4",
+  "name": "@reown/ethers5-react-native",
+  "version": "1.0.0",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -21,7 +21,6 @@
     "web3",
     "crypto",
     "ethereum",
-    "web3modal",
     "appkit",
     "walletconnect",
     "react-native",
@@ -39,11 +38,11 @@
     "access": "public"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.16.0",
-    "@web3modal/common-react-native": "2.0.4",
-    "@web3modal/scaffold-react-native": "2.0.4",
-    "@web3modal/scaffold-utils-react-native": "2.0.4",
-    "@web3modal/siwe-react-native": "2.0.4"
+    "@reown/common-react-native": "1.0.0",
+    "@reown/scaffold-react-native": "1.0.0",
+    "@reown/scaffold-utils-react-native": "1.0.0",
+    "@reown/siwe-react-native": "1.0.0",
+    "@walletconnect/ethereum-provider": "2.16.1"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": ">=1.17.0",
