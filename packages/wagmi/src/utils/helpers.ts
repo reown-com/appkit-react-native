@@ -1,9 +1,5 @@
-import {
-  CoreHelperUtil,
-  type CaipNetwork,
-  type CaipNetworkId
-} from '@web3modal/scaffold-react-native';
-import { PresetsUtil, ConstantsUtil } from '@web3modal/scaffold-utils-react-native';
+import { CoreHelperUtil, type CaipNetwork, type CaipNetworkId } from '@reown/scaffold-react-native';
+import { PresetsUtil, ConstantsUtil } from '@reown/scaffold-utils-react-native';
 import type { Connector } from '@wagmi/core';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
 import type { Web3ModalClientOptions } from '../client';

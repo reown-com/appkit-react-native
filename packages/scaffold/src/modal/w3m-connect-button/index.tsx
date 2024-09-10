@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
-import { ModalController } from '@web3modal/core-react-native';
-import { ConnectButton, type ConnectButtonProps } from '@web3modal/ui-react-native';
+import { ModalController } from '@reown/core-react-native';
+import { ConnectButton, type ConnectButtonProps } from '@reown/ui-react-native';
 
 export interface W3mConnectButtonProps {
   label: string;

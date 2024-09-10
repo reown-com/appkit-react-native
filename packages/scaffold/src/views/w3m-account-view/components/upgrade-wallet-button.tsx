@@ -8,7 +8,7 @@ import {
   Text,
   useTheme,
   useAnimatedValue
-} from '@web3modal/ui-react-native';
+} from '@reown/ui-react-native';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 

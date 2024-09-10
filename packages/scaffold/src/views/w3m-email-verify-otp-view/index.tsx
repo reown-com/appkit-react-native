@@ -9,7 +9,7 @@ import {
   RouterController,
   SnackController,
   type W3mFrameProvider
-} from '@web3modal/core-react-native';
+} from '@reown/core-react-native';
 import useTimeout from '../../hooks/useTimeout';
 import { OtpCodeView } from '../../partials/w3m-otp-code';
 

@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useState } from 'react';
-import { EmailInput, FlexView, Separator, Spacing } from '@web3modal/ui-react-native';
+import { EmailInput, FlexView, Separator, Spacing } from '@reown/ui-react-native';
 import {
   ConnectorController,
   CoreHelperUtil,
@@ -8,7 +8,7 @@ import {
   RouterController,
   SnackController,
   type W3mFrameProvider
-} from '@web3modal/core-react-native';
+} from '@reown/core-react-native';
 import { StyleSheet } from 'react-native';
 
 interface Props {

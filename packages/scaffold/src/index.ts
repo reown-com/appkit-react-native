@@ -20,5 +20,5 @@ export * from './partials/w3m-header';
 export { Web3ModalScaffold } from './client';
 export type { LibraryOptions, ScaffoldOptions } from './client';
 
-export type * from '@web3modal/core-react-native';
-export { CoreHelperUtil } from '@web3modal/core-react-native';
+export type * from '@reown/core-react-native';
+export { CoreHelperUtil } from '@reown/core-react-native';

@@ -24,21 +24,21 @@ import {
   type PublicStateControllerState,
   type Token,
   Web3ModalScaffold
-} from '@web3modal/scaffold-react-native';
+} from '@reown/scaffold-react-native';
 import {
   ConstantsUtil,
   HelpersUtil,
   PresetsUtil,
   StorageUtil
-} from '@web3modal/scaffold-utils-react-native';
-import { NetworkUtil } from '@web3modal/common-react-native';
+} from '@reown/scaffold-utils-react-native';
+import { NetworkUtil } from '@reown/common-react-native';
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers';
 import { defaultWagmiConfig } from './utils/defaultWagmiConfig';
-import { type Web3ModalSIWEClient } from '@web3modal/siwe-react-native';
+import { type Web3ModalSIWEClient } from '@reown/siwe-react-native';
 
 // -- Types ---------------------------------------------------------------------
 type WagmiConfig = ReturnType<typeof defaultWagmiConfig>;
@@ -144,7 +144,7 @@ export class Web3Modal extends Web3ModalScaffold {
           Object.keys(siweParams || {}).length > 0
         ) {
           const { SIWEController, getDidChainId, getDidAddress } = await import(
-            '@web3modal/siwe-react-native'
+            '@reown/siwe-react-native'
           );
           // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
           await connector.setRequestedChainsIds(siweParams.chains);
@@ -224,7 +224,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setClientId(null);
 
         if (siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@web3modal/siwe-react-native');
+          const { SIWEController } = await import('@reown/siwe-react-native');
           await SIWEController.signOut();
         }
       }

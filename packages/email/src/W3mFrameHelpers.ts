@@ -1,4 +1,4 @@
-import { CoreHelperUtil } from '@web3modal/core-react-native';
+import { CoreHelperUtil } from '@reown/core-react-native';
 import { W3mFrameStorage } from './W3mFrameStorage';
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants';
 import type { W3mFrameTypes } from './W3mFrameTypes';

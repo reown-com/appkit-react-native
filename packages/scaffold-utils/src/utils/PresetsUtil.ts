@@ -1,4 +1,4 @@
-import type { ConnectorType } from '@web3modal/scaffold-react-native';
+import type { ConnectorType } from '@reown/scaffold-react-native';
 import { ConstantsUtil } from './ConstantsUtil';
 
 export const PresetsUtil = {

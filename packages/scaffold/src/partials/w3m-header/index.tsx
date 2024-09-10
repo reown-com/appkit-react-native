@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
-import { RouterController, ModalController, EventsController } from '@web3modal/core-react-native';
-import { IconLink, Text, FlexView } from '@web3modal/ui-react-native';
+import { RouterController, ModalController, EventsController } from '@reown/core-react-native';
+import { IconLink, Text, FlexView } from '@reown/ui-react-native';
 
 export function Header() {
   const { view, history } = useSnapshot(RouterController.state);

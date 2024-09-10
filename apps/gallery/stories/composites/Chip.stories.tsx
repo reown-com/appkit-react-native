@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Chip } from '@web3modal/ui-react-native';
+import { Chip } from '@reown/ui-react-native';
 import {
   chipOptions,
   externalLabel,

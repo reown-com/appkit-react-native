@@ -2,7 +2,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { SearchBar } from '@web3modal/ui-react-native';
+import { SearchBar } from '@reown/ui-react-native';
 import { GalleryContainer } from '../../components/GalleryContainer';
 
 const meta: Meta<typeof SearchBar> = {

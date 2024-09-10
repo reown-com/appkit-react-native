@@ -1,6 +1,6 @@
 import { proxy, ref, subscribe as sub } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
-import { OptionsController } from '@web3modal/core-react-native';
+import { OptionsController } from '@reown/core-react-native';
 import type {
   SIWEClientMethods,
   SIWESession,

@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { W3mAccountButton, type W3mAccountButtonProps } from '../w3m-account-button';
 import { W3mConnectButton, type W3mConnectButtonProps } from '../w3m-connect-button';
-import { AccountController, ModalController } from '@web3modal/core-react-native';
+import { AccountController, ModalController } from '@reown/core-react-native';
 
 export interface W3mButtonProps {
   balance?: W3mAccountButtonProps['balance'];

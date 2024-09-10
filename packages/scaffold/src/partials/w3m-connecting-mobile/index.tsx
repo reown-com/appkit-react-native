@@ -10,7 +10,7 @@ import {
   OptionsController,
   EventsController,
   ConstantsUtil
-} from '@web3modal/core-react-native';
+} from '@reown/core-react-native';
 import {
   Button,
   FlexView,
@@ -18,7 +18,7 @@ import {
   WalletImage,
   Link,
   IconBox
-} from '@web3modal/ui-react-native';
+} from '@reown/ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { UiUtil } from '../../utils/UiUtil';
