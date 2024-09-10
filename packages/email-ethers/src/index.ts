@@ -1,11 +1,11 @@
-import { W3mFrameProvider, type W3mFrameTypes } from '@reown/email-react-native';
+import { AppKitFrameProvider, type AppKitFrameTypes } from '@reown/email-react-native';
 
 interface EmailProviderProps {
   projectId: string;
-  metadata: W3mFrameTypes.Metadata;
+  metadata: AppKitFrameTypes.Metadata;
 }
 
-export class EmailProvider extends W3mFrameProvider {
+export class EmailProvider extends AppKitFrameProvider {
   readonly id = 'w3mEmail';
   readonly name = 'AppKit Email';
 

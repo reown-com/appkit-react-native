@@ -14,7 +14,7 @@ import {
   OptionsController,
   RouterController,
   SnackController,
-  type W3mFrameProvider
+  type AppKitFrameProvider
 } from '@reown/core-react-native';
 import {
   Avatar,
@@ -88,7 +88,7 @@ export function AccountView() {
   };
 
   const getUserEmail = () => {
-    const provider = ConnectorController.getEmailConnector()?.provider as W3mFrameProvider;
+    const provider = ConnectorController.getEmailConnector()?.provider as AppKitFrameProvider;
     if (!provider) return '';
 
     return provider.getEmail();

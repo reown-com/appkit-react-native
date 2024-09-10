@@ -7,7 +7,7 @@ import {
   RouterController,
   SnackController,
   EventsController,
-  type W3mFrameProvider
+  type AppKitFrameProvider
 } from '@reown/core-react-native';
 import { Button, EmailInput, FlexView, Spacing, Text } from '@reown/ui-react-native';
 import { useKeyboard } from '../../hooks/useKeyboard';
@@ -36,7 +36,7 @@ export function UpdateEmailWalletView() {
   const onEmailSubmit = async (value: string) => {
     if (!emailConnector) return;
 
-    const provider = emailConnector.provider as W3mFrameProvider;
+    const provider = emailConnector.provider as AppKitFrameProvider;
     setLoading(true);
     setError('');
 

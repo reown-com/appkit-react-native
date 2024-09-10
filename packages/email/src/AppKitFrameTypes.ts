@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import {
-  W3mFrameSchema,
+  AppKitFrameSchema,
   AppConnectEmailRequest,
   AppConnectOtpRequest,
   AppSwitchNetworkRequest,
@@ -56,12 +56,12 @@ import {
   FrameSwitchNetworkResponse,
   AppSyncDappDataRequest,
   FrameUpdateEmailResponse
-} from './W3mFrameSchema';
+} from './AppKitFrameSchema';
 
-export namespace W3mFrameTypes {
-  export type AppEvent = z.infer<typeof W3mFrameSchema.appEvent>;
+export namespace AppKitFrameTypes {
+  export type AppEvent = z.infer<typeof AppKitFrameSchema.appEvent>;
 
-  export type FrameEvent = z.infer<typeof W3mFrameSchema.frameEvent>;
+  export type FrameEvent = z.infer<typeof AppKitFrameSchema.frameEvent>;
 
   export interface Requests {
     AppConnectEmailRequest: z.infer<typeof AppConnectEmailRequest>;

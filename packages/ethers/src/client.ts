@@ -35,7 +35,7 @@ import {
   type Provider,
   type EthersStoreUtilState,
   type CombinedProviderType,
-  type W3mFrameProvider
+  type AppKitFrameProvider
 } from '@reown/scaffold-utils-react-native';
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
@@ -81,7 +81,7 @@ export class AppKit extends AppKitScaffold {
 
   private options: AppKitClientOptions | undefined = undefined;
 
-  private emailProvider?: W3mFrameProvider;
+  private emailProvider?: AppKitFrameProvider;
 
   public constructor(options: AppKitClientOptions) {
     const {
@@ -805,7 +805,7 @@ export class AppKit extends AppKitScaffold {
       return;
     }
 
-    this.emailProvider = emailConnector as W3mFrameProvider;
+    this.emailProvider = emailConnector as AppKitFrameProvider;
 
     this.addConnector({
       id: ConstantsUtil.EMAIL_CONNECTOR_ID,
