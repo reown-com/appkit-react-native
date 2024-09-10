@@ -7,7 +7,7 @@ import {
   RouterController,
   SnackController,
   EventsController,
-  type W3mFrameProvider
+  type AppKitFrameProvider
 } from '@reown/core-react-native';
 
 import { OtpCodeView } from '../../partials/w3m-otp-code';
@@ -23,7 +23,7 @@ export function UpdateEmailSecondaryOtpView() {
     setLoading(true);
     setError('');
     try {
-      const provider = emailConnector?.provider as W3mFrameProvider;
+      const provider = emailConnector?.provider as AppKitFrameProvider;
       await provider.updateEmailSecondaryOtp({ otp: value });
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' });
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_EDIT_COMPLETE' });

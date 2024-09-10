@@ -14,7 +14,7 @@ import {
   OptionsController,
   RouterController,
   type CaipAddress,
-  type W3mFrameProvider
+  type AppKitFrameProvider
 } from '@reown/core-react-native';
 
 import { AppKitRouter } from '../w3m-router';
@@ -34,7 +34,7 @@ export function AppKit() {
   const portraitHeight = height - 120;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
   const hasEmail = connectors.some(c => c.type === 'EMAIL');
-  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
+  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as AppKitFrameProvider;
   const modalCoverScreen = view !== 'ConnectingSiwe';
   const EmailView = emailProvider?.EmailView;
 

@@ -2,12 +2,12 @@ import type {
   Metadata,
   Provider,
   ProviderType,
-  W3mFrameProvider
+  AppKitFrameProvider
 } from '@reown/scaffold-utils-react-native';
 
 export interface ConfigOptions {
   metadata: Metadata;
-  extraConnectors?: (Provider | W3mFrameProvider)[];
+  extraConnectors?: (Provider | AppKitFrameProvider)[];
 }
 
 export function defaultConfig(options: ConfigOptions) {

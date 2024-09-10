@@ -1,11 +1,11 @@
 import { useSnapshot } from 'valtio';
 import { StyleSheet } from 'react-native';
 import { Chip, FlexView, Spacing, Text } from '@reown/ui-react-native';
-import { ConnectorController, type W3mFrameProvider } from '@reown/core-react-native';
+import { ConnectorController, type AppKitFrameProvider } from '@reown/core-react-native';
 
 export function UpgradeEmailWalletView() {
   const { connectors } = useSnapshot(ConnectorController.state);
-  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
+  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as AppKitFrameProvider;
 
   return (
     <FlexView padding={['l', 'l', '3xl', 'l']} alignItems="center">
