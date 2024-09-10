@@ -7460,8 +7460,8 @@ __metadata:
     react: ">=17"
     react-native: ">=0.68.5"
     react-native-get-random-values: "*"
-    viem: ">=2"
-    wagmi: ">=2"
+    viem: ">=2.21.4"
+    wagmi: ">=2.12.10"
   languageName: unknown
   linkType: soft
 
