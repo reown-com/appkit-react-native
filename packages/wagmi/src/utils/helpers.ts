@@ -38,7 +38,7 @@ export async function getWalletConnectCaipNetworks(connector?: Connector) {
   };
 }
 
-export function getEmailCaipNetworks() {
+export function getAuthCaipNetworks() {
   return {
     supportsAllNetworks: false,
     approvedCaipNetworkIds: PresetsUtil.RpcChainIds.map(

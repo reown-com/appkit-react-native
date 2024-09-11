@@ -1,5 +1,5 @@
 {
-  "name": "@reown/appkit-email-ethers-react-native",
+  "name": "@reown/appkit-auth-wagmi-react-native",
   "version": "1.0.0",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
@@ -22,8 +22,7 @@
     "appkit",
     "walletconnect",
     "react-native",
-    "email",
-    "ethers"
+    "wagmi"
   ],
   "repository": "https://github.com/WalletConnect/web3modal-react-native",
   "author": "WalletConnect <support@walletconnect.com> (https://web3modal.com)",
@@ -37,10 +36,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@reown/appkit-email-react-native": "1.0.0"
+    "@reown/appkit-wallet-react-native": "1.0.0"
   },
   "peerDependencies": {
-    "ethers": ">=5"
+    "wagmi": ">=2"
   },
   "react-native": "src/index.ts",
   "react-native-builder-bob": {

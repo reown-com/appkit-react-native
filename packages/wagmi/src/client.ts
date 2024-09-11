@@ -32,13 +32,13 @@ import {
   StorageUtil
 } from '@reown/appkit-scaffold-utils-react-native';
 import { NetworkUtil } from '@reown/appkit-common-react-native';
+import { type AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
 import {
   getCaipDefaultChain,
-  getEmailCaipNetworks,
+  getAuthCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers';
 import { defaultWagmiConfig } from './utils/defaultWagmiConfig';
-import { type AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
 
 // -- Types ---------------------------------------------------------------------
 type WagmiConfig = ReturnType<typeof defaultWagmiConfig>;
@@ -92,7 +92,7 @@ export class AppKit extends AppKitScaffold {
         const walletConnectType =
           PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
 
-        const emailType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID];
+        const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID];
 
         if (walletChoice?.includes(walletConnectType)) {
           const connector = wagmiConfig.connectors.find(
@@ -100,8 +100,8 @@ export class AppKit extends AppKitScaffold {
           );
 
           return getWalletConnectCaipNetworks(connector);
-        } else if (emailType) {
-          return getEmailCaipNetworks();
+        } else if (authType) {
+          return getAuthCaipNetworks();
         }
 
         return { approvedCaipNetworkIds: undefined, supportsAllNetworks: true };
@@ -248,7 +248,7 @@ export class AppKit extends AppKitScaffold {
 
     this.syncRequestedNetworks([...wagmiConfig.chains]);
     this.syncConnectors([...wagmiConfig.connectors]);
-    this.listenEmailConnector([...wagmiConfig.connectors]);
+    this.listenAuthConnector([...wagmiConfig.connectors]);
 
     watchConnectors(wagmiConfig, {
       onChange: connectors => this.syncConnectors([...connectors])
@@ -431,7 +431,7 @@ export class AppKit extends AppKitScaffold {
       item => !uniqueIds.has(item.id) && uniqueIds.add(item.id)
     );
 
-    const excludedConnectors = [ConstantsUtil.EMAIL_CONNECTOR_ID];
+    const excludedConnectors = [ConstantsUtil.AUTH_CONNECTOR_ID];
 
     const _connectors: Connector[] = [];
     filteredConnectors.forEach(({ id, name, icon }) => {
@@ -448,27 +448,27 @@ export class AppKit extends AppKitScaffold {
     });
 
     this.setConnectors(_connectors);
-    this.syncEmailConnector(filteredConnectors);
+    this.syncAuthConnector(filteredConnectors);
   }
 
-  private async syncEmailConnector(connectors: AppKitClientOptions['wagmiConfig']['connectors']) {
-    const emailConnector = connectors.find(({ id }) => id === ConstantsUtil.EMAIL_CONNECTOR_ID);
-    if (emailConnector) {
-      const provider = await emailConnector.getProvider();
+  private async syncAuthConnector(connectors: AppKitClientOptions['wagmiConfig']['connectors']) {
+    const authConnector = connectors.find(({ id }) => id === ConstantsUtil.AUTH_CONNECTOR_ID);
+    if (authConnector) {
+      const provider = await authConnector.getProvider();
       this.addConnector({
-        id: ConstantsUtil.EMAIL_CONNECTOR_ID,
-        type: 'EMAIL',
-        name: 'Email',
+        id: ConstantsUtil.AUTH_CONNECTOR_ID,
+        type: 'AUTH',
+        name: 'Auth',
         provider
       });
     }
   }
 
-  private async listenEmailConnector(connectors: AppKitClientOptions['wagmiConfig']['connectors']) {
-    const connector = connectors.find(c => c.id === ConstantsUtil.EMAIL_CONNECTOR_ID);
+  private async listenAuthConnector(connectors: AppKitClientOptions['wagmiConfig']['connectors']) {
+    const connector = connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID);
 
     const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
-    if (connector && connectedConnector === 'EMAIL') {
+    if (connector && connectedConnector === 'AUTH') {
       super.setLoading(true);
     }
   }

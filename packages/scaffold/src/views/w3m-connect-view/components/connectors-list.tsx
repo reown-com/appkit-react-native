@@ -16,7 +16,7 @@ interface Props {
 
 export function ConnectorList({ itemStyle, isWalletConnectEnabled }: Props) {
   const { connectors } = useSnapshot(ConnectorController.state);
-  const excludeConnectors: ConnectorType[] = ['WALLET_CONNECT', 'EMAIL'];
+  const excludeConnectors: ConnectorType[] = ['WALLET_CONNECT', 'AUTH'];
   const imageHeaders = ApiController._getApiHeaders();
 
   if (isWalletConnectEnabled) {

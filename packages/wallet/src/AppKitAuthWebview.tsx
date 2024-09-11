@@ -16,7 +16,7 @@ import { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameCons
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
-export function EmailWebview() {
+export function AuthWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
   const { connectors } = useSnapshot(ConnectorController.state);
@@ -26,8 +26,8 @@ export function EmailWebview() {
   const animatedHeight = useRef(new Animated.Value(0));
   const backdropOpacity = useRef(new Animated.Value(0));
   const webviewOpacity = useRef(new Animated.Value(0));
-  const emailConnector = connectors.find(c => c.type === 'EMAIL');
-  const provider = emailConnector?.provider as AppKitFrameProvider;
+  const authConnector = connectors.find(c => c.type === 'AUTH');
+  const provider = authConnector?.provider as AppKitFrameProvider;
 
   const parseMessage = (event: WebViewMessageEvent) => {
     if (!event.nativeEvent.data) return;
@@ -60,12 +60,12 @@ export function EmailWebview() {
     });
 
     provider.onIsConnected(event, () => {
-      ConnectorController.setEmailLoading(false);
+      ConnectorController.setAuthLoading(false);
       ModalController.setLoading(false);
     });
 
     provider.onNotConnected(event, () => {
-      ConnectorController.setEmailLoading(false);
+      ConnectorController.setAuthLoading(false);
       ModalController.setLoading(false);
       StorageUtil.removeConnectedConnector();
     });
@@ -136,7 +136,7 @@ export function EmailWebview() {
             Linking.openURL(targetUrl);
           }}
           onLoadStart={() => {
-            ConnectorController.setEmailLoading(true);
+            ConnectorController.setAuthLoading(true);
           }}
           onLoadEnd={({ nativeEvent }) => {
             if (!nativeEvent.loading) {

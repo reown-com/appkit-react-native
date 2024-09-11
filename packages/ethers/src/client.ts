@@ -40,7 +40,7 @@ import {
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 
-import { getEmailCaipNetworks, getWalletConnectCaipNetworks } from './utils/helpers';
+import { getAuthCaipNetworks, getWalletConnectCaipNetworks } from './utils/helpers';
 import type { AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
 
 // -- Types ---------------------------------------------------------------------
@@ -81,7 +81,7 @@ export class AppKit extends AppKitScaffold {
 
   private options: AppKitClientOptions | undefined = undefined;
 
-  private emailProvider?: AppKitFrameProvider;
+  private authProvider?: AppKitFrameProvider;
 
   public constructor(options: AppKitClientOptions) {
     const {
@@ -121,14 +121,14 @@ export class AppKit extends AppKitScaffold {
           const walletConnectType =
             PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
 
-          const emailType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID];
+          const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID];
           if (walletChoice?.includes(walletConnectType)) {
             const provider = await this.getWalletConnectProvider();
             const result = getWalletConnectCaipNetworks(provider);
 
             resolve(result);
-          } else if (walletChoice?.includes(emailType)) {
-            const result = getEmailCaipNetworks();
+          } else if (walletChoice?.includes(authType)) {
+            const result = getAuthCaipNetworks();
             resolve(result);
           } else {
             const result = {
@@ -232,8 +232,8 @@ export class AppKit extends AppKitScaffold {
           } catch (error) {
             EthersStoreUtil.setError(error);
           }
-        } else if (id === ConstantsUtil.EMAIL_CONNECTOR_ID) {
-          await this.setEmailProvider();
+        } else if (id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+          await this.setAuthProvider();
         }
       },
 
@@ -243,7 +243,7 @@ export class AppKit extends AppKitScaffold {
         const walletConnectType =
           PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
 
-        const emailType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID];
+        const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID];
 
         if (siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@reown/appkit-siwe-react-native');
@@ -253,8 +253,8 @@ export class AppKit extends AppKitScaffold {
         if (providerType === walletConnectType) {
           const WalletConnectProvider = provider;
           await (WalletConnectProvider as unknown as EthereumProvider).disconnect();
-        } else if (providerType === emailType) {
-          await this.emailProvider?.disconnect();
+        } else if (providerType === authType) {
+          await this.authProvider?.disconnect();
         } else if (provider) {
           provider.emit('disconnect');
         }
@@ -307,7 +307,7 @@ export class AppKit extends AppKitScaffold {
 
     this.syncRequestedNetworks(chains, chainImages);
     this.syncConnectors(config);
-    this.syncEmailConnector(config);
+    this.syncAuthConnector(config);
   }
 
   // -- Public ------------------------------------------------------------------
@@ -494,18 +494,18 @@ export class AppKit extends AppKitScaffold {
     }
   }
 
-  private async setEmailProvider() {
-    StorageUtil.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.EMAIL_CONNECTOR_ID);
+  private async setAuthProvider() {
+    StorageUtil.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.AUTH_CONNECTOR_ID);
 
-    if (this.emailProvider) {
-      const { address, chainId } = await this.emailProvider.connect();
+    if (this.authProvider) {
+      const { address, chainId } = await this.authProvider.connect();
       super.setLoading(false);
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId);
         EthersStoreUtil.setProviderType(
-          PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID]
+          PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID]
         );
-        EthersStoreUtil.setProvider(this.emailProvider as CombinedProviderType);
+        EthersStoreUtil.setProvider(this.authProvider as CombinedProviderType);
         EthersStoreUtil.setIsConnected(true);
         EthersStoreUtil.setAddress(address as Address);
       }
@@ -699,7 +699,7 @@ export class AppKit extends AppKitScaffold {
 
       const coinbaseType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.COINBASE_CONNECTOR_ID];
 
-      const emailType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID];
+      const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID];
 
       if (providerType === walletConnectType && chain) {
         const WalletConnectProvider = provider as unknown as EthereumProvider;
@@ -745,10 +745,10 @@ export class AppKit extends AppKitScaffold {
             }
           }
         }
-      } else if (providerType === emailType) {
-        if (this.emailProvider && chain?.chainId) {
+      } else if (providerType === authType) {
+        if (this.authProvider && chain?.chainId) {
           try {
-            await this.emailProvider?.switchNetwork(chain?.chainId);
+            await this.authProvider?.switchNetwork(chain?.chainId);
             EthersStoreUtil.setChainId(chain.chainId);
           } catch {
             throw new Error('Switching chain failed');
@@ -760,7 +760,7 @@ export class AppKit extends AppKitScaffold {
 
   private syncConnectors(config: ProviderType) {
     const _connectors: Connector[] = [];
-    const EXCLUDED_CONNECTORS = [ConstantsUtil.EMAIL_CONNECTOR_ID];
+    const EXCLUDED_CONNECTORS = [ConstantsUtil.AUTH_CONNECTOR_ID];
 
     _connectors.push({
       id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
@@ -796,32 +796,32 @@ export class AppKit extends AppKitScaffold {
     this.setConnectors(_connectors);
   }
 
-  private async syncEmailConnector(config: ProviderType) {
-    const emailConnector = config.extraConnectors?.find(
-      connector => connector.id === ConstantsUtil.EMAIL_CONNECTOR_ID
+  private async syncAuthConnector(config: ProviderType) {
+    const authConnector = config.extraConnectors?.find(
+      connector => connector.id === ConstantsUtil.AUTH_CONNECTOR_ID
     );
 
-    if (!emailConnector) {
+    if (!authConnector) {
       return;
     }
 
-    this.emailProvider = emailConnector as AppKitFrameProvider;
+    this.authProvider = authConnector as AppKitFrameProvider;
 
     this.addConnector({
-      id: ConstantsUtil.EMAIL_CONNECTOR_ID,
-      name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.EMAIL_CONNECTOR_ID],
-      type: PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID]!,
-      provider: emailConnector
+      id: ConstantsUtil.AUTH_CONNECTOR_ID,
+      name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.AUTH_CONNECTOR_ID],
+      type: PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID]!,
+      provider: authConnector
     });
 
     const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
-    if (connectedConnector === 'EMAIL') {
+    if (connectedConnector === 'AUTH') {
       this.setLoading(true);
     }
 
-    const { isConnected } = await this.emailProvider.isConnected();
+    const { isConnected } = await this.authProvider.isConnected();
     if (isConnected) {
-      this.setEmailProvider();
+      this.setAuthProvider();
     }
   }
 }

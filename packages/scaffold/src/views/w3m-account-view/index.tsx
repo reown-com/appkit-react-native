@@ -38,7 +38,7 @@ export function AccountView() {
   const { connectedConnector } = useSnapshot(ConnectorController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
-  const isEmail = connectedConnector === 'EMAIL';
+  const isAuth = connectedConnector === 'AUTH';
   const { padding } = useCustomDimensions();
 
   async function onDisconnect() {
@@ -88,7 +88,7 @@ export function AccountView() {
   };
 
   const getUserEmail = () => {
-    const provider = ConnectorController.getEmailConnector()?.provider as AppKitFrameProvider;
+    const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
     if (!provider) return '';
 
     return provider.getEmail();
@@ -150,7 +150,7 @@ export function AccountView() {
           )}
           {addressExplorerTemplate()}
           <FlexView margin={['s', '0', '0', '0']}>
-            {isEmail && (
+            {isAuth && (
               <>
                 <UpgradeWalletButton onPress={onUpgradePress} style={styles.upgradeButton} />
                 <ListItem

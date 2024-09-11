@@ -1,7 +1,7 @@
 import { createConnector, ChainNotConfiguredError } from 'wagmi';
 import { SwitchChainError, getAddress, type Address } from 'viem';
 
-import { AppKitFrameProvider } from '@reown/appkit-email-react-native';
+import { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 export type Metadata = {
   name: string;
@@ -10,7 +10,7 @@ export type Metadata = {
   icons: string[];
 };
 
-type EmailProviderOptions = {
+type AuthConnectorOptions = {
   /**
    * WalletConnect Cloud Project ID.
    * @link https://cloud.walletconnect.com/sign-in.
@@ -25,15 +25,15 @@ type StorageItemMap = {
   '@w3m/connected_connector'?: string;
 };
 
-emailConnector.type = 'w3mEmail' as const;
-emailConnector.id = 'w3mEmail' as const;
-export function emailConnector(parameters: EmailProviderOptions) {
+AuthConnector.type = 'appKitAuth' as const;
+AuthConnector.id = 'appKitAuth' as const;
+export function AuthConnector(parameters: AuthConnectorOptions) {
   let _provider: AppKitFrameProvider = {} as AppKitFrameProvider;
 
   return createConnector<Provider, {}, StorageItemMap>(config => ({
-    id: emailConnector.id,
-    name: 'AppKit Email',
-    type: emailConnector.type,
+    id: AuthConnector.id,
+    name: 'AppKit Auth',
+    type: AuthConnector.type,
     async setup() {
       _provider = new AppKitFrameProvider(parameters.projectId, parameters.metadata);
     },
@@ -101,7 +101,7 @@ export function emailConnector(parameters: EmailProviderOptions) {
         await provider.webviewLoadPromise;
         const connectedConnector = await config.storage?.getItem('recentConnectorId');
 
-        if (connectedConnector !== emailConnector.id) {
+        if (connectedConnector !== AuthConnector.id) {
           // isConnected still needs to be called to disable email input loader
           provider.isConnected();
 
