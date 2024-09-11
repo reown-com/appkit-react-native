@@ -32,7 +32,7 @@
     "build:gallery": "storybook build -o out"
   },
   "dependencies": {
-    "@reown/ui-react-native": "1.0.0",
+    "@reown/appkit-ui-react-native": "1.0.0",
     "@storybook/theming": "^7.4.6"
   }
 }

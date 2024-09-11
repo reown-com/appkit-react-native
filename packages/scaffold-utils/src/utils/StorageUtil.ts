@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StorageUtil as CoreStorageUtil } from '@reown/core-react-native';
+import { StorageUtil as CoreStorageUtil } from '@reown/appkit-core-react-native';
 
 export const StorageUtil = {
   async getItem<T>(key: string): Promise<T> {

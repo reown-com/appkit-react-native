@@ -1,6 +1,10 @@
 import { useSnapshot } from 'valtio';
-import { RouterController, ModalController, EventsController } from '@reown/core-react-native';
-import { IconLink, Text, FlexView } from '@reown/ui-react-native';
+import {
+  RouterController,
+  ModalController,
+  EventsController
+} from '@reown/appkit-core-react-native';
+import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
 
 export function Header() {
   const { view, history } = useSnapshot(RouterController.state);

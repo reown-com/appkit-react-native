@@ -7,8 +7,8 @@ import {
   EventsController,
   OptionsController,
   SnackController
-} from '@reown/core-react-native';
-import { FlexView, Link, QrCode, Text, Spacing } from '@reown/ui-react-native';
+} from '@reown/appkit-core-react-native';
+import { FlexView, Link, QrCode, Text, Spacing } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 

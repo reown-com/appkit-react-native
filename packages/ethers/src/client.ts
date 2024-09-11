@@ -18,8 +18,8 @@ import {
   type PublicStateControllerState,
   type Token,
   AppKitScaffold
-} from '@reown/scaffold-react-native';
-import { NetworkUtil } from '@reown/common-react-native';
+} from '@reown/appkit-scaffold-react-native';
+import { NetworkUtil } from '@reown/appkit-common-react-native';
 import {
   ConstantsUtil,
   PresetsUtil,
@@ -36,12 +36,12 @@ import {
   type EthersStoreUtilState,
   type CombinedProviderType,
   type AppKitFrameProvider
-} from '@reown/scaffold-utils-react-native';
+} from '@reown/appkit-scaffold-utils-react-native';
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 
 import { getEmailCaipNetworks, getWalletConnectCaipNetworks } from './utils/helpers';
-import type { AppKitSIWEClient } from '@reown/siwe-react-native';
+import type { AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface AppKitClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -162,7 +162,7 @@ export class AppKit extends AppKitScaffold {
         const params = await siweConfig?.getMessageParams?.();
         if (siweConfig?.options?.enabled && params && Object.keys(params).length > 0) {
           const { SIWEController, getDidChainId, getDidAddress } = await import(
-            '@reown/siwe-react-native'
+            '@reown/appkit-siwe-react-native'
           );
           const result = await WalletConnectProvider.authenticate({
             nonce: await siweConfig.getNonce(),
@@ -246,7 +246,7 @@ export class AppKit extends AppKitScaffold {
         const emailType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EMAIL_CONNECTOR_ID];
 
         if (siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@reown/siwe-react-native');
+          const { SIWEController } = await import('@reown/appkit-siwe-react-native');
           await SIWEController.signOut();
         }
 

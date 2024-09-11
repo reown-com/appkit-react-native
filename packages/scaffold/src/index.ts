@@ -8,5 +8,5 @@ export { AppKitRouter } from './modal/w3m-router';
 export { AppKitScaffold } from './client';
 export type { LibraryOptions, ScaffoldOptions } from './client';
 
-export type * from '@reown/core-react-native';
-export { CoreHelperUtil } from '@reown/core-react-native';
+export type * from '@reown/appkit-core-react-native';
+export { CoreHelperUtil } from '@reown/appkit-core-react-native';

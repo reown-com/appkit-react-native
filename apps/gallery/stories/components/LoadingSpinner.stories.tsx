@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { LoadingSpinner } from '@reown/ui-react-native';
+import { LoadingSpinner } from '@reown/appkit-ui-react-native';
 
 const meta: Meta<typeof LoadingSpinner> = {
   component: LoadingSpinner,

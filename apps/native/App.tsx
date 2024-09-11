@@ -11,9 +11,9 @@ import {
   AppKitNetworkButton,
   createAppKit,
   defaultWagmiConfig
-} from '@reown/wagmi-react-native';
+} from '@reown/appkit-wagmi-react-native';
 
-import { emailConnector } from '@reown/email-wagmi-react-native';
+import { emailConnector } from '@reown/appkit-email-wagmi-react-native';
 
 import { siweConfig } from './src/utils/SiweUtils';
 

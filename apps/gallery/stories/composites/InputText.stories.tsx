@@ -2,7 +2,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { InputText } from '@reown/ui-react-native';
+import { InputText } from '@reown/appkit-ui-react-native';
 import { GalleryContainer } from '../../components/GalleryContainer';
 import { iconOptions, inputSizeOptions } from '../../utils/PresetUtils';
 

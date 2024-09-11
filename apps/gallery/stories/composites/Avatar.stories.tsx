@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Avatar } from '@reown/ui-react-native';
+import { Avatar } from '@reown/appkit-ui-react-native';
 import { avatarImageSrc } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof Avatar> = {

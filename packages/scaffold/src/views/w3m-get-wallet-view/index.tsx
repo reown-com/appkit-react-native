@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { Linking, Platform, ScrollView } from 'react-native';
-import { FlexView, ListWallet } from '@reown/ui-react-native';
-import { ApiController, AssetUtil, type WcWallet } from '@reown/core-react-native';
+import { FlexView, ListWallet } from '@reown/appkit-ui-react-native';
+import { ApiController, AssetUtil, type WcWallet } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 

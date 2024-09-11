@@ -9,8 +9,8 @@ import {
   ModalController,
   type OptionsControllerState,
   StorageUtil
-} from '@reown/core-react-native';
-import { useTheme, BorderRadius } from '@reown/ui-react-native';
+} from '@reown/appkit-core-react-native';
+import { useTheme, BorderRadius } from '@reown/appkit-ui-react-native';
 import type { AppKitFrameProvider } from './AppKitFrameProvider';
 import { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameConstants';
 

@@ -24,21 +24,21 @@ import {
   type PublicStateControllerState,
   type Token,
   AppKitScaffold
-} from '@reown/scaffold-react-native';
+} from '@reown/appkit-scaffold-react-native';
 import {
   ConstantsUtil,
   HelpersUtil,
   PresetsUtil,
   StorageUtil
-} from '@reown/scaffold-utils-react-native';
-import { NetworkUtil } from '@reown/common-react-native';
+} from '@reown/appkit-scaffold-utils-react-native';
+import { NetworkUtil } from '@reown/appkit-common-react-native';
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers';
 import { defaultWagmiConfig } from './utils/defaultWagmiConfig';
-import { type AppKitSIWEClient } from '@reown/siwe-react-native';
+import { type AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
 
 // -- Types ---------------------------------------------------------------------
 type WagmiConfig = ReturnType<typeof defaultWagmiConfig>;
@@ -145,7 +145,7 @@ export class AppKit extends AppKitScaffold {
           Object.keys(siweParams || {}).length > 0
         ) {
           const { SIWEController, getDidChainId, getDidAddress } = await import(
-            '@reown/siwe-react-native'
+            '@reown/appkit-siwe-react-native'
           );
           // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
           await connector.setRequestedChainsIds(siweParams.chains);
@@ -227,7 +227,7 @@ export class AppKit extends AppKitScaffold {
         this.setClientId(null);
 
         if (siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@reown/siwe-react-native');
+          const { SIWEController } = await import('@reown/appkit-siwe-react-native');
           await SIWEController.signOut();
         }
       }

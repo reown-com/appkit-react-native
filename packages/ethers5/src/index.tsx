@@ -5,8 +5,12 @@ export {
   AppKitConnectButton,
   AppKitNetworkButton,
   AppKit
-} from '@reown/scaffold-react-native';
-import { ConstantsUtil, EthersStoreUtil, type Provider } from '@reown/scaffold-utils-react-native';
+} from '@reown/appkit-scaffold-react-native';
+import {
+  ConstantsUtil,
+  EthersStoreUtil,
+  type Provider
+} from '@reown/appkit-scaffold-utils-react-native';
 export { defaultConfig } from './utils/defaultConfig';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AppKitOptions } from './client';

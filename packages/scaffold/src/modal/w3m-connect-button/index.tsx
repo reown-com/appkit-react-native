@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
-import { ModalController } from '@reown/core-react-native';
-import { ConnectButton, type ConnectButtonProps } from '@reown/ui-react-native';
+import { ModalController } from '@reown/appkit-core-react-native';
+import { ConnectButton, type ConnectButtonProps } from '@reown/appkit-ui-react-native';
 
 export interface AppKitConnectButtonProps {
   label: string;

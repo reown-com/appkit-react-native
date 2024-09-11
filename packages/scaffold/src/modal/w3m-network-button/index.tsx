@@ -7,8 +7,8 @@ import {
   EventsController,
   ModalController,
   NetworkController
-} from '@reown/core-react-native';
-import { NetworkButton } from '@reown/ui-react-native';
+} from '@reown/appkit-core-react-native';
+import { NetworkButton } from '@reown/appkit-ui-react-native';
 
 export interface AppKitNetworkButtonProps {
   disabled?: boolean;

@@ -1,4 +1,4 @@
-import { Button, Text } from '@reown/ui-react-native';
+import { Button, Text } from '@reown/appkit-ui-react-native';
 import { View } from 'react-native';
 import { useSignMessage, useAccount, useSendTransaction, useEstimateGas } from 'wagmi';
 import { Hex, parseEther } from 'viem';

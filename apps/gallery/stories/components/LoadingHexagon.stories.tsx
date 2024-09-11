@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { LoadingHexagon } from '@reown/ui-react-native';
+import { LoadingHexagon } from '@reown/appkit-ui-react-native';
 
 const meta: Meta<typeof LoadingHexagon> = {
   component: LoadingHexagon

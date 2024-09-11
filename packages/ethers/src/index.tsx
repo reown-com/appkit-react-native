@@ -1,6 +1,10 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useSnapshot } from 'valtio';
-import { ConstantsUtil, EthersStoreUtil, type Provider } from '@reown/scaffold-utils-react-native';
+import {
+  ConstantsUtil,
+  EthersStoreUtil,
+  type Provider
+} from '@reown/appkit-scaffold-utils-react-native';
 
 export {
   AppKitAccountButton,
@@ -8,7 +12,7 @@ export {
   AppKitConnectButton,
   AppKitNetworkButton,
   AppKit
-} from '@reown/scaffold-react-native';
+} from '@reown/appkit-scaffold-react-native';
 
 export { defaultConfig } from './utils/defaultConfig';
 

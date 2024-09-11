@@ -1,5 +1,5 @@
 {
-  "name": "@reown/email-wagmi-react-native",
+  "name": "@reown/appkit-email-wagmi-react-native",
   "version": "1.0.0",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
@@ -37,7 +37,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@reown/email-react-native": "1.0.0"
+    "@reown/appkit-email-react-native": "1.0.0"
   },
   "peerDependencies": {
     "wagmi": ">=2"
