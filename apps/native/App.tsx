@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   AppKit,
   AppKitButton,
-  AppKitNetworkButton,
+  NetworkButton,
   createAppKit,
   defaultWagmiConfig
 } from '@reown/appkit-wagmi-react-native';
@@ -80,7 +80,7 @@ export default function Native() {
             loadingLabel="Connecting..."
             balance="show"
           />
-          <AppKitNetworkButton />
+          <NetworkButton />
           <AccountView />
           <ActionsView />
           <AppKit />

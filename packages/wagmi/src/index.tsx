@@ -1,9 +1,9 @@
 import '@walletconnect/react-native-compat';
 export {
-  AppKitAccountButton,
+  AccountButton,
   AppKitButton,
-  AppKitConnectButton,
-  AppKitNetworkButton,
+  ConnectButton,
+  NetworkButton,
   AppKit
 } from '@reown/appkit-scaffold-react-native';
 import { ConstantsUtil } from '@reown/appkit-scaffold-utils-react-native';

@@ -1,9 +1,9 @@
 import { useSnapshot } from 'valtio';
 export {
-  AppKitAccountButton,
+  AccountButton,
   AppKitButton,
-  AppKitConnectButton,
-  AppKitNetworkButton,
+  ConnectButton,
+  NetworkButton,
   AppKit
 } from '@reown/appkit-scaffold-react-native';
 import {
