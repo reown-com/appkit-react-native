@@ -30,7 +30,7 @@
     "test": "turbo run test --parallel",
     "clean": "turbo clean && rm -rf node_modules && watchman watch-del-all",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
-    "changeset:prepublish": "yarn run clean lint prettier; yarn version:update; yarn install; yarn run build; yarn run test;",
+    "changeset:prepublish": "yarn run clean; yarn install; yarn version:update; yarn run lint && yarn run prettier; yarn run build; yarn run test;",
     "changeset:publish": "yarn run changeset:prepublish; yarn run changeset publish",
     "changeset:version": "changeset version; yarn run version:update; yarn install --refresh-lockfile",
     "version:update": "./scripts/bump-version.sh"
