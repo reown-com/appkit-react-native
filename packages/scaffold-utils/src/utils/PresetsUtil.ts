@@ -56,13 +56,13 @@ export const PresetsUtil = {
   ConnectorNamesMap: {
     [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WalletConnect',
     [ConstantsUtil.COINBASE_CONNECTOR_ID]: 'Coinbase',
-    [ConstantsUtil.EMAIL_CONNECTOR_ID]: 'Email'
+    [ConstantsUtil.AUTH_CONNECTOR_ID]: 'Auth'
   } as Record<string, string>,
 
   ConnectorTypesMap: {
     [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT',
     [ConstantsUtil.COINBASE_CONNECTOR_ID]: 'COINBASE',
-    [ConstantsUtil.EMAIL_CONNECTOR_ID]: 'EMAIL'
+    [ConstantsUtil.AUTH_CONNECTOR_ID]: 'AUTH'
   } as Record<string, ConnectorType>,
 
   RpcChainIds: [

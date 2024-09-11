@@ -79,7 +79,7 @@ __metadata:
     "@babel/core": "npm:^7.24.0"
     "@react-native-async-storage/async-storage": "npm:1.23.1"
     "@react-native-community/netinfo": "npm:11.3.1"
-    "@reown/appkit-email-wagmi-react-native": "npm:1.0.0"
+    "@reown/appkit-auth-wagmi-react-native": "npm:1.0.0"
     "@reown/appkit-wagmi-react-native": "npm:1.0.0"
     "@tanstack/query-async-storage-persister": "npm:^5.40.0"
     "@tanstack/react-query": "npm:5.37.1"
@@ -7285,6 +7285,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@reown/appkit-auth-ethers-react-native@workspace:packages/auth-ethers":
+  version: 0.0.0-use.local
+  resolution: "@reown/appkit-auth-ethers-react-native@workspace:packages/auth-ethers"
+  dependencies:
+    "@reown/appkit-wallet-react-native": "npm:1.0.0"
+  peerDependencies:
+    ethers: ">=5"
+  languageName: unknown
+  linkType: soft
+
+"@reown/appkit-auth-wagmi-react-native@npm:1.0.0, @reown/appkit-auth-wagmi-react-native@workspace:packages/auth-wagmi":
+  version: 0.0.0-use.local
+  resolution: "@reown/appkit-auth-wagmi-react-native@workspace:packages/auth-wagmi"
+  dependencies:
+    "@reown/appkit-wallet-react-native": "npm:1.0.0"
+  peerDependencies:
+    wagmi: ">=2"
+  languageName: unknown
+  linkType: soft
+
 "@reown/appkit-coinbase-ethers-react-native@workspace:packages/coinbase-ethers":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-coinbase-ethers-react-native@workspace:packages/coinbase-ethers"
@@ -7320,39 +7340,6 @@ __metadata:
     "@walletconnect/react-native-compat": ">=2.13.1"
     react: ">=17"
     react-native: ">=0.68.5"
-  languageName: unknown
-  linkType: soft
-
-"@reown/appkit-email-ethers-react-native@workspace:packages/email-ethers":
-  version: 0.0.0-use.local
-  resolution: "@reown/appkit-email-ethers-react-native@workspace:packages/email-ethers"
-  dependencies:
-    "@reown/appkit-email-react-native": "npm:1.0.0"
-  peerDependencies:
-    ethers: ">=5"
-  languageName: unknown
-  linkType: soft
-
-"@reown/appkit-email-react-native@npm:1.0.0, @reown/appkit-email-react-native@workspace:packages/email":
-  version: 0.0.0-use.local
-  resolution: "@reown/appkit-email-react-native@workspace:packages/email"
-  dependencies:
-    "@reown/appkit-core-react-native": "npm:1.0.0"
-    "@reown/appkit-ui-react-native": "npm:1.0.0"
-    zod: "npm:3.22.4"
-  peerDependencies:
-    "@react-native-async-storage/async-storage": ">=1.17.0"
-    react-native-webview: ">=11"
-  languageName: unknown
-  linkType: soft
-
-"@reown/appkit-email-wagmi-react-native@npm:1.0.0, @reown/appkit-email-wagmi-react-native@workspace:packages/email-wagmi":
-  version: 0.0.0-use.local
-  resolution: "@reown/appkit-email-wagmi-react-native@workspace:packages/email-wagmi"
-  dependencies:
-    "@reown/appkit-email-react-native": "npm:1.0.0"
-  peerDependencies:
-    wagmi: ">=2"
   languageName: unknown
   linkType: soft
 
@@ -7462,6 +7449,19 @@ __metadata:
     react-native-get-random-values: "*"
     viem: ">=2.21.4"
     wagmi: ">=2.12.10"
+  languageName: unknown
+  linkType: soft
+
+"@reown/appkit-wallet-react-native@npm:1.0.0, @reown/appkit-wallet-react-native@workspace:packages/wallet":
+  version: 0.0.0-use.local
+  resolution: "@reown/appkit-wallet-react-native@workspace:packages/wallet"
+  dependencies:
+    "@reown/appkit-core-react-native": "npm:1.0.0"
+    "@reown/appkit-ui-react-native": "npm:1.0.0"
+    zod: "npm:3.22.4"
+  peerDependencies:
+    "@react-native-async-storage/async-storage": ">=1.17.0"
+    react-native-webview: ">=11"
   languageName: unknown
   linkType: soft
 

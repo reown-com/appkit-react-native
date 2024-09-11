@@ -3,5 +3,5 @@ export { AppKitFrameProvider } from './AppKitFrameProvider';
 export { AppKitFrameSchema } from './AppKitFrameSchema';
 export { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameConstants';
 export { AppKitFrameStorage } from './AppKitFrameStorage';
-export { EmailWebview } from './AppKitEmailWebview';
+export { AuthWebview } from './AppKitAuthWebview';
 export type { AppKitFrameTypes } from './AppKitFrameTypes';

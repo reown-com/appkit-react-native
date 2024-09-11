@@ -26,7 +26,7 @@ export type ProjectId = string;
 
 export type Platform = 'mobile' | 'web' | 'qrcode' | 'email' | 'unsupported';
 
-export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'EMAIL' | 'EXTERNAL';
+export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
 
 export type Connector = {
   id: string;
@@ -338,5 +338,5 @@ export interface AppKitFrameProvider {
   }>;
   disconnect(): Promise<unknown>;
   request(req: any): Promise<any>;
-  EmailView: () => JSX.Element | null;
+  AuthView: () => JSX.Element | null;
 }

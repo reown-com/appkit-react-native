@@ -22,7 +22,7 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator, loading }: Pr
   const [inputLoading, setInputLoading] = useState(false);
   const [error, setError] = useState('');
   const [isValidEmail, setIsValidEmail] = useState(false);
-  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as AppKitFrameProvider;
+  const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
 
   const onChangeText = (value: string) => {
     setIsValidEmail(CoreHelperUtil.isValidEmail(value));
@@ -38,7 +38,7 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator, loading }: Pr
       if (email.length === 0) return;
 
       setInputLoading(true);
-      const response = await emailProvider.connectEmail({ email });
+      const response = await authProvider.connectEmail({ email });
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_SUBMITTED' });
       if (response.action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email });

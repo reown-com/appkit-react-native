@@ -33,10 +33,9 @@ export function AppKit() {
   const { isLandscape } = useCustomDimensions();
   const portraitHeight = height - 120;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
-  const hasEmail = connectors.some(c => c.type === 'EMAIL');
-  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as AppKitFrameProvider;
+  const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
   const modalCoverScreen = view !== 'ConnectingSiwe';
-  const EmailView = emailProvider?.EmailView;
+  const AuthView = authProvider?.AuthView;
 
   const onBackButtonPress = () => {
     if (history.length > 1) {
@@ -135,7 +134,7 @@ export function AppKit() {
           <Snackbar />
         </Card>
       </Modal>
-      {hasEmail && EmailView && <EmailView />}
+      {!!authProvider && AuthView && <AuthView />}
     </>
   );
 }

@@ -13,7 +13,7 @@ import {
   defaultWagmiConfig
 } from '@reown/appkit-wagmi-react-native';
 
-import { emailConnector } from '@reown/appkit-email-wagmi-react-native';
+import { AuthConnector } from '@reown/appkit-auth-wagmi-react-native';
 
 import { siweConfig } from './src/utils/SiweUtils';
 
@@ -42,13 +42,13 @@ const clipboardClient = {
   }
 };
 
-const emailConn = emailConnector({ projectId, metadata });
+const authConnector = AuthConnector({ projectId, metadata });
 
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
   metadata,
-  extraConnectors: [emailConn]
+  extraConnectors: [authConnector]
 });
 
 const queryClient = new QueryClient();

@@ -20,7 +20,7 @@ export function UpdateEmailWalletView() {
   const [error, setError] = useState('');
   const [email, setEmail] = useState(data?.email || '');
   const [isValidNewEmail, setIsValidNewEmail] = useState(false);
-  const emailConnector = ConnectorController.getEmailConnector();
+  const authConnector = ConnectorController.getAuthConnector();
   const { keyboardShown, keyboardHeight } = useKeyboard();
   const paddingBottom = Platform.select({
     android: keyboardShown ? keyboardHeight + Spacing.l : Spacing.l,
@@ -34,9 +34,9 @@ export function UpdateEmailWalletView() {
   };
 
   const onEmailSubmit = async (value: string) => {
-    if (!emailConnector) return;
+    if (!authConnector) return;
 
-    const provider = emailConnector.provider as AppKitFrameProvider;
+    const provider = authConnector.provider as AppKitFrameProvider;
     setLoading(true);
     setError('');
 

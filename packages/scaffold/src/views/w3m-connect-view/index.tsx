@@ -19,12 +19,12 @@ import { RecentWalletList } from './components/recent-wallet-list';
 import styles from './styles';
 
 export function ConnectView() {
-  const { connectors, emailLoading } = useSnapshot(ConnectorController.state);
+  const { connectors, authLoading } = useSnapshot(ConnectorController.state);
   const { padding } = useCustomDimensions();
   const { keyboardShown, keyboardHeight } = useKeyboard();
 
   const isWalletConnectEnabled = connectors.some(c => c.type === 'WALLET_CONNECT');
-  const isEmailEnabled = connectors.some(c => c.type === 'EMAIL');
+  const isAuthEnabled = connectors.some(c => c.type === 'AUTH');
   const isCoinbaseEnabled = connectors.some(c => c.type === 'COINBASE');
 
   const paddingBottom = Platform.select({
@@ -61,9 +61,9 @@ export function ConnectView() {
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
       <FlexView padding={['xs', '0', '0', '0']} style={{ paddingBottom }}>
         <ConnectEmailInput
-          isEmailEnabled={isEmailEnabled}
+          isEmailEnabled={isAuthEnabled}
           showSeparator={isWalletConnectEnabled || isCoinbaseEnabled}
-          loading={emailLoading}
+          loading={authLoading}
         />
         <FlexView padding={['0', 's', '0', 's']}>
           <RecentWalletList

@@ -16,16 +16,16 @@ export function UpdateEmailPrimaryOtpView() {
   const { data } = useSnapshot(RouterController.state);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const emailProvider = ConnectorController.getEmailConnector()?.provider as
+  const authProvider = ConnectorController.getAuthConnector()?.provider as
     | AppKitFrameProvider
     | undefined;
 
   const onOtpSubmit = async (value: string) => {
-    if (!emailProvider || loading) return;
+    if (!authProvider || loading) return;
     setLoading(true);
     setError('');
     try {
-      await emailProvider.updateEmailPrimaryOtp({ otp: value });
+      await authProvider.updateEmailPrimaryOtp({ otp: value });
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' });
       RouterController.replace('UpdateEmailSecondaryOtp', data);
     } catch (e) {

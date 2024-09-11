@@ -6,7 +6,7 @@ import { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameCons
 import { AppKitFrameStorage } from './AppKitFrameStorage';
 import { AppKitFrameHelpers } from './AppKitFrameHelpers';
 import { AppKitFrameSchema } from './AppKitFrameSchema';
-import { EmailWebview } from './AppKitEmailWebview';
+import { AuthWebview } from './AppKitAuthWebview';
 
 // -- Types -----------------------------------------------------------
 type Resolver<T> = { resolve: (value: T) => void; reject: (reason?: unknown) => void } | undefined;
@@ -46,7 +46,7 @@ export class AppKitFrameProvider {
       }
     | undefined;
 
-  public EmailView = EmailWebview;
+  public AuthView = AuthWebview;
 
   private connectEmailResolver: ConnectEmailResolver = undefined;
 
