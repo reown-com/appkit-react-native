@@ -8,7 +8,7 @@ import {
   Text,
   useTheme,
   useAnimatedValue
-} from '@reown/ui-react-native';
+} from '@reown/appkit-ui-react-native';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 

@@ -6,7 +6,7 @@ import {
   formatMessage,
   type SIWEVerifyMessageArgs,
   type SIWECreateMessageArgs
-} from '@reown/siwe-react-native';
+} from '@reown/appkit-siwe-react-native';
 import { chains } from './WagmiUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

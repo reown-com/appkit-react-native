@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { ListWallet } from '@reown/ui-react-native';
+import { ListWallet } from '@reown/appkit-ui-react-native';
 import {
   iconOptions,
   tagOptions,

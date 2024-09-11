@@ -5,10 +5,10 @@ import {
   NetworkController,
   ModalController,
   AssetUtil
-} from '@reown/core-react-native';
+} from '@reown/appkit-core-react-native';
 
-import { AccountButton } from '@reown/ui-react-native';
-import { ApiController } from '@reown/core-react-native';
+import { AccountButton } from '@reown/appkit-ui-react-native';
+import { ApiController } from '@reown/appkit-core-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 
 export interface AppKitAccountButtonProps {

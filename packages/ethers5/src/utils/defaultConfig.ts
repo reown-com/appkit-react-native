@@ -3,7 +3,7 @@ import type {
   Provider,
   ProviderType,
   AppKitFrameProvider
-} from '@reown/scaffold-utils-react-native';
+} from '@reown/appkit-scaffold-utils-react-native';
 
 export interface ConfigOptions {
   metadata: Metadata;

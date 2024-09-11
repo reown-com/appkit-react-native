@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { Button, FlexView, Text } from '@reown/ui-react-native';
+import { Button, FlexView, Text } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
   ConnectionController,
@@ -8,7 +8,7 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@reown/core-react-native';
+} from '@reown/appkit-core-react-native';
 
 import { ConnectingSiwe } from '../../partials/w3m-connecting-siwe';
 import { useState } from 'react';

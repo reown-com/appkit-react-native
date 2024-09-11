@@ -1,4 +1,4 @@
-import type { Tokens } from '@reown/scaffold-react-native';
+import type { Tokens } from '@reown/appkit-scaffold-react-native';
 import { ConstantsUtil } from './ConstantsUtil';
 
 export const HelpersUtil = {

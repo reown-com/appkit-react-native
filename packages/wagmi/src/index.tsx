@@ -5,8 +5,8 @@ export {
   AppKitConnectButton,
   AppKitNetworkButton,
   AppKit
-} from '@reown/scaffold-react-native';
-import { ConstantsUtil } from '@reown/scaffold-utils-react-native';
+} from '@reown/appkit-scaffold-react-native';
+import { ConstantsUtil } from '@reown/appkit-scaffold-utils-react-native';
 export { defaultWagmiConfig } from './utils/defaultWagmiConfig';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AppKitOptions } from './client';

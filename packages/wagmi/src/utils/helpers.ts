@@ -1,5 +1,9 @@
-import { CoreHelperUtil, type CaipNetwork, type CaipNetworkId } from '@reown/scaffold-react-native';
-import { PresetsUtil, ConstantsUtil } from '@reown/scaffold-utils-react-native';
+import {
+  CoreHelperUtil,
+  type CaipNetwork,
+  type CaipNetworkId
+} from '@reown/appkit-scaffold-react-native';
+import { PresetsUtil, ConstantsUtil } from '@reown/appkit-scaffold-utils-react-native';
 import type { Connector } from '@wagmi/core';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
 import type { AppKitClientOptions } from '../client';

@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Logo } from '@reown/ui-react-native';
+import { Logo } from '@reown/appkit-ui-react-native';
 import { logoOptions } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof Logo> = {

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Tag } from '@reown/ui-react-native';
+import { Tag } from '@reown/appkit-ui-react-native';
 import { tagOptions } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof Tag> = {

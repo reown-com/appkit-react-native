@@ -1,5 +1,5 @@
-import type { Platform } from '@reown/core-react-native';
-import { FlexView, Tabs } from '@reown/ui-react-native';
+import type { Platform } from '@reown/appkit-core-react-native';
+import { FlexView, Tabs } from '@reown/appkit-ui-react-native';
 
 export interface ConnectingHeaderProps {
   platforms: Platform[];

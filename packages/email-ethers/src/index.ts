@@ -1,4 +1,4 @@
-import { AppKitFrameProvider, type AppKitFrameTypes } from '@reown/email-react-native';
+import { AppKitFrameProvider, type AppKitFrameTypes } from '@reown/appkit-email-react-native';
 
 interface EmailProviderProps {
   projectId: string;

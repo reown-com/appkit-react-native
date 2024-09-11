@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { QrCode } from '@reown/ui-react-native';
+import { QrCode } from '@reown/appkit-ui-react-native';
 import { walletImageSrc, wcUri } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof QrCode> = {

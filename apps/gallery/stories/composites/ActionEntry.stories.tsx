@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { ActionEntry, Text } from '@reown/ui-react-native';
+import { ActionEntry, Text } from '@reown/appkit-ui-react-native';
 import { GalleryContainer } from '../../components/GalleryContainer';
 
 const meta: Meta<typeof ActionEntry> = {

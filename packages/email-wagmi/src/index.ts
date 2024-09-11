@@ -1,7 +1,7 @@
 import { createConnector, ChainNotConfiguredError } from 'wagmi';
 import { SwitchChainError, getAddress, type Address } from 'viem';
 
-import { AppKitFrameProvider } from '@reown/email-react-native';
+import { AppKitFrameProvider } from '@reown/appkit-email-react-native';
 
 export type Metadata = {
   name: string;

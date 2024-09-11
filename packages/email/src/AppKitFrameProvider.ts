@@ -1,6 +1,6 @@
 import type { RefObject } from 'react';
 import type WebView from 'react-native-webview';
-import { CoreHelperUtil } from '@reown/core-react-native';
+import { CoreHelperUtil } from '@reown/appkit-core-react-native';
 import type { AppKitFrameTypes } from './AppKitFrameTypes';
 import { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameConstants';
 import { AppKitFrameStorage } from './AppKitFrameStorage';

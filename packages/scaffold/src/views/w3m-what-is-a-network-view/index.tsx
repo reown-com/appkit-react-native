@@ -1,5 +1,5 @@
 import { Linking, ScrollView } from 'react-native';
-import { Button, FlexView, Text, Visual } from '@reown/ui-react-native';
+import { Button, FlexView, Text, Visual } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 

@@ -1,4 +1,4 @@
-import { CoreHelperUtil } from '@reown/core-react-native';
+import { CoreHelperUtil } from '@reown/appkit-core-react-native';
 import { AppKitFrameStorage } from './AppKitFrameStorage';
 import { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameConstants';
 import type { AppKitFrameTypes } from './AppKitFrameTypes';

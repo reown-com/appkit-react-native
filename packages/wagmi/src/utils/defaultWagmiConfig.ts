@@ -5,7 +5,7 @@ import {
   type CreateConfigParameters
 } from 'wagmi';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
-import { StorageUtil } from '@reown/scaffold-utils-react-native';
+import { StorageUtil } from '@reown/appkit-scaffold-utils-react-native';
 
 import { walletConnect } from '../connectors/WalletConnectConnector';
 import { getTransport } from './helpers';

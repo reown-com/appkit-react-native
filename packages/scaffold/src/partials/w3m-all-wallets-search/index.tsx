@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
-import { ApiController, AssetUtil, type WcWallet } from '@reown/core-react-native';
+import { ApiController, AssetUtil, type WcWallet } from '@reown/appkit-core-react-native';
 import {
   CardSelect,
   CardSelectHeight,
@@ -10,7 +10,7 @@ import {
   IconBox,
   Spacing,
   Text
-} from '@reown/ui-react-native';
+} from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 

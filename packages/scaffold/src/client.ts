@@ -14,8 +14,8 @@ import type {
   ThemeVariables,
   Connector,
   ConnectedWalletInfo
-} from '@reown/core-react-native';
-import type { SIWEControllerClient } from '@reown/siwe-react-native';
+} from '@reown/appkit-core-react-native';
+import type { SIWEControllerClient } from '@reown/appkit-siwe-react-native';
 import {
   AccountController,
   BlockchainApiController,
@@ -28,8 +28,8 @@ import {
   PublicStateController,
   StorageUtil,
   ThemeController
-} from '@reown/core-react-native';
-import { ConstantsUtil } from '@reown/common-react-native';
+} from '@reown/appkit-core-react-native';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {
@@ -244,7 +244,7 @@ export class AppKitScaffold {
     }
 
     if (options.siweControllerClient) {
-      const { SIWEController } = await import('@reown/siwe-react-native');
+      const { SIWEController } = await import('@reown/appkit-siwe-react-native');
 
       SIWEController.setSIWEClient(options.siweControllerClient);
     }

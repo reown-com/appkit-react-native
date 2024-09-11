@@ -2,7 +2,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { InputNumeric } from '@reown/ui-react-native';
+import { InputNumeric } from '@reown/appkit-ui-react-native';
 
 const meta: Meta<typeof InputNumeric> = {
   component: InputNumeric,

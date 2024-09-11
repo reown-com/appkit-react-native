@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { FlexView, Icon, Link, Text, useTheme } from '@reown/ui-react-native';
+import { FlexView, Icon, Link, Text, useTheme } from '@reown/appkit-ui-react-native';
 import {
   ConnectorController,
   CoreHelperUtil,
@@ -9,7 +9,7 @@ import {
   RouterController,
   SnackController,
   type AppKitFrameProvider
-} from '@reown/core-react-native';
+} from '@reown/appkit-core-react-native';
 import useTimeout from '../../hooks/useTimeout';
 import styles from './styles';
 
