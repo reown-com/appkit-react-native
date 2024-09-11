@@ -1,16 +1,16 @@
 import { useSnapshot } from 'valtio';
-import { AppKitAccountButton, type AppKitAccountButtonProps } from '../w3m-account-button';
-import { AppKitConnectButton, type AppKitConnectButtonProps } from '../w3m-connect-button';
+import { AccountButton, type AccountButtonProps } from '../w3m-account-button';
+import { ConnectButton, type ConnectButtonProps } from '../w3m-connect-button';
 import { AccountController, ModalController } from '@reown/appkit-core-react-native';
 
 export interface AppKitButtonProps {
-  balance?: AppKitAccountButtonProps['balance'];
-  disabled?: AppKitAccountButtonProps['disabled'];
-  size?: AppKitConnectButtonProps['size'];
-  label?: AppKitConnectButtonProps['label'];
-  loadingLabel?: AppKitConnectButtonProps['loadingLabel'];
-  accountStyle?: AppKitAccountButtonProps['style'];
-  connectStyle?: AppKitConnectButtonProps['style'];
+  balance?: AccountButtonProps['balance'];
+  disabled?: AccountButtonProps['disabled'];
+  size?: ConnectButtonProps['size'];
+  label?: ConnectButtonProps['label'];
+  loadingLabel?: ConnectButtonProps['loadingLabel'];
+  accountStyle?: AccountButtonProps['style'];
+  connectStyle?: ConnectButtonProps['style'];
 }
 
 export function AppKitButton({
@@ -26,14 +26,14 @@ export function AppKitButton({
   const { loading } = useSnapshot(ModalController.state);
 
   return !loading && isConnected ? (
-    <AppKitAccountButton
+    <AccountButton
       style={accountStyle}
       balance={balance}
       disabled={disabled}
       testID="button-account"
     />
   ) : (
-    <AppKitConnectButton
+    <ConnectButton
       style={connectStyle}
       size={size}
       label={label}

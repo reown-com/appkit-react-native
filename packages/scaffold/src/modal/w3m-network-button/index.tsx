@@ -8,14 +8,14 @@ import {
   ModalController,
   NetworkController
 } from '@reown/appkit-core-react-native';
-import { NetworkButton } from '@reown/appkit-ui-react-native';
+import { NetworkButton as NetworkButtonUI } from '@reown/appkit-ui-react-native';
 
-export interface AppKitNetworkButtonProps {
+export interface NetworkButtonProps {
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
-export function AppKitNetworkButton({ disabled, style }: AppKitNetworkButtonProps) {
+export function NetworkButton({ disabled, style }: NetworkButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { loading } = useSnapshot(ModalController.state);
@@ -29,7 +29,7 @@ export function AppKitNetworkButton({ disabled, style }: AppKitNetworkButtonProp
   };
 
   return (
-    <NetworkButton
+    <NetworkButtonUI
       imageSrc={AssetUtil.getNetworkImage(caipNetwork)}
       imageHeaders={ApiController._getApiHeaders()}
       disabled={disabled || loading}
@@ -38,6 +38,6 @@ export function AppKitNetworkButton({ disabled, style }: AppKitNetworkButtonProp
       loading={loading}
     >
       {caipNetwork?.name ?? (isConnected ? 'Unknown Network' : 'Select Network')}
-    </NetworkButton>
+    </NetworkButtonUI>
   );
 }

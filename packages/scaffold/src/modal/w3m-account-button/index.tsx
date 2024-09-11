@@ -7,23 +7,18 @@ import {
   AssetUtil
 } from '@reown/appkit-core-react-native';
 
-import { AccountButton } from '@reown/appkit-ui-react-native';
+import { AccountButton as AccountButtonUI } from '@reown/appkit-ui-react-native';
 import { ApiController } from '@reown/appkit-core-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 
-export interface AppKitAccountButtonProps {
+export interface AccountButtonProps {
   balance?: 'show' | 'hide';
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
   testID?: string;
 }
 
-export function AppKitAccountButton({
-  balance,
-  disabled,
-  style,
-  testID
-}: AppKitAccountButtonProps) {
+export function AccountButton({ balance, disabled, style, testID }: AccountButtonProps) {
   const {
     address,
     balance: balanceVal,
@@ -37,7 +32,7 @@ export function AppKitAccountButton({
   const showBalance = balance === 'show';
 
   return (
-    <AccountButton
+    <AccountButtonUI
       onPress={ModalController.open}
       address={profileName ?? address}
       isProfileName={Boolean(profileName)}

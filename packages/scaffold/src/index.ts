@@ -1,7 +1,16 @@
-export { AppKitAccountButton, type AppKitAccountButtonProps } from './modal/w3m-account-button';
+export {
+  AccountButton as AccountButton,
+  type AccountButtonProps
+} from './modal/w3m-account-button';
 export { AppKitButton, type AppKitButtonProps } from './modal/w3m-button';
-export { AppKitConnectButton, type AppKitConnectButtonProps } from './modal/w3m-connect-button';
-export { AppKitNetworkButton, type AppKitNetworkButtonProps } from './modal/w3m-network-button';
+export {
+  ConnectButton as ConnectButton,
+  type ConnectButtonProps as ConnectButtonProps
+} from './modal/w3m-connect-button';
+export {
+  NetworkButton as NetworkButton,
+  type NetworkButtonProps as NetworkButtonProps
+} from './modal/w3m-network-button';
 export { AppKit } from './modal/w3m-modal';
 export { AppKitRouter } from './modal/w3m-router';
 
