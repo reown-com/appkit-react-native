@@ -103,8 +103,8 @@ __metadata:
     react-native-webview: "npm:13.8.6"
     typescript: "npm:~5.3.3"
     uuid: "npm:3.4.0"
-    viem: "npm:2.21.4"
-    wagmi: "npm:2.12.10"
+    viem: "npm:2.21.6"
+    wagmi: "npm:2.12.11"
   languageName: unknown
   linkType: soft
 
@@ -11088,8 +11088,8 @@ __metadata:
     tsconfig: "npm:*"
     turbo: "npm:2.1.1"
     typescript: "npm:5.2.2"
-    viem: "npm:2.21.4"
-    wagmi: "npm:2.12.10"
+    viem: "npm:2.21.6"
+    wagmi: "npm:2.12.11"
   languageName: unknown
   linkType: soft
 
@@ -24816,9 +24816,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:2.21.4":
-  version: 2.21.4
-  resolution: "viem@npm:2.21.4"
+"viem@npm:2.21.6":
+  version: 2.21.6
+  resolution: "viem@npm:2.21.6"
   dependencies:
     "@adraffy/ens-normalize": "npm:1.10.0"
     "@noble/curves": "npm:1.4.0"
@@ -24834,7 +24834,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 17e56aad1fb0d6a168bfa17677348a26025e8350056dd009c68cfeb7e6f06ba1dbd4d8a6382a8b8457bab80610f41da7c415a54b7e0d6e26665a6ce279b242a6
+  checksum: 6d039e0855567fb3793aee929ecb527e04ee000504aa73967bf4bd51d90c4a2dbc88f826790a06af7011432fde97ae7a22f9e24459dde462dc0d38c5157d2dc2
   languageName: node
   linkType: hard
 
@@ -24867,9 +24867,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wagmi@npm:2.12.10":
-  version: 2.12.10
-  resolution: "wagmi@npm:2.12.10"
+"wagmi@npm:2.12.11":
+  version: 2.12.11
+  resolution: "wagmi@npm:2.12.11"
   dependencies:
     "@wagmi/connectors": "npm:5.1.10"
     "@wagmi/core": "npm:2.13.5"
@@ -24882,7 +24882,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 03f819dc307bf2065ade2da818c5380a72ad4544dd456e54fac812c5437a8e7d53fdfdb72857cbc5f73d5178e1fb6da37f8e7646b53c78c03e1de25c0b960634
+  checksum: bdf424fc1521b41bc19c933d1221133f377ed2f853d85d1da33d43cd737180bf3734ba8482ea475055a480d7a4fc32626ec29097aad07249b114662827c64ca8
   languageName: node
   linkType: hard
 
