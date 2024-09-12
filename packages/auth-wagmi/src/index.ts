@@ -25,15 +25,15 @@ type StorageItemMap = {
   '@w3m/connected_connector'?: string;
 };
 
-AuthConnector.type = 'appKitAuth' as const;
-AuthConnector.id = 'appKitAuth' as const;
-export function AuthConnector(parameters: AuthConnectorOptions) {
+authConnector.type = 'appKitAuth' as const;
+authConnector.id = 'appKitAuth' as const;
+export function authConnector(parameters: AuthConnectorOptions) {
   let _provider: AppKitFrameProvider = {} as AppKitFrameProvider;
 
   return createConnector<Provider, {}, StorageItemMap>(config => ({
-    id: AuthConnector.id,
+    id: authConnector.id,
     name: 'AppKit Auth',
-    type: AuthConnector.type,
+    type: authConnector.type,
     async setup() {
       _provider = new AppKitFrameProvider(parameters.projectId, parameters.metadata);
     },
@@ -101,7 +101,7 @@ export function AuthConnector(parameters: AuthConnectorOptions) {
         await provider.webviewLoadPromise;
         const connectedConnector = await config.storage?.getItem('recentConnectorId');
 
-        if (connectedConnector !== AuthConnector.id) {
+        if (connectedConnector !== authConnector.id) {
           // isConnected still needs to be called to disable email input loader
           provider.isConnected();
 
