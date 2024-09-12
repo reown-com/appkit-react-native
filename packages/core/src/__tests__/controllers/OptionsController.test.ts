@@ -14,7 +14,7 @@ describe('OptionsController', () => {
   it('should have valid default state', () => {
     expect(OptionsController.state).toEqual({
       projectId: '',
-      sdkType: 'w3m',
+      sdkType: 'appkit',
       sdkVersion: 'react-native-wagmi-undefined'
     });
   });
