@@ -11,33 +11,28 @@ function getAbsolutePath(value) {
 /** @type { import('@storybook/react-webpack5').StorybookConfig } */
 const config = {
   stories: ['../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+
   addons: [
     getAbsolutePath('@storybook/addon-links'),
     getAbsolutePath('@storybook/addon-essentials'),
     getAbsolutePath('@storybook/addon-onboarding'),
     getAbsolutePath('@storybook/addon-interactions'),
-    getAbsolutePath('@storybook/addon-react-native-web')
+    getAbsolutePath('@storybook/addon-react-native-web'),
+    getAbsolutePath("@storybook/addon-webpack5-compiler-babel"),
+    '@chromatic-com/storybook'
   ],
+
   framework: {
     name: getAbsolutePath('@storybook/react-webpack5'),
     options: {}
   },
+
   docs: {
-    autodocs: true,
     defaultName: 'Docs'
   },
-  babel: async options => ({
-    ...options,
-    presets: [
-      ...options.presets,
-      [
-        '@babel/preset-react',
-        {
-          runtime: 'automatic'
-        },
-        'preset-react-jsx-transform'
-      ]
-    ]
-  })
+
+  typescript: {
+    reactDocgen: 'react-docgen-typescript'
+  }
 };
 export default config;

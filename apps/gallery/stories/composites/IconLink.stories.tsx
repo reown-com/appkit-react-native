@@ -1,8 +1,7 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { IconLink } from '@reown/appkit-ui-react-native';
-import { colorOptions, iconOptions } from '../../utils/PresetUtils';
+import { themeColorOptions, colorOptions, iconOptions } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof IconLink> = {
   component: IconLink,
