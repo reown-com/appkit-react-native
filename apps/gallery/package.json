@@ -5,15 +5,20 @@
   "private": true,
   "devDependencies": {
     "@babel/core": "*",
-    "@storybook/addon-essentials": "^7.4.6",
-    "@storybook/addon-interactions": "^7.4.6",
-    "@storybook/addon-links": "^7.4.6",
-    "@storybook/addon-onboarding": "^1.0.8",
-    "@storybook/addon-react-native-web": "^0.0.21",
-    "@storybook/blocks": "^7.4.6",
-    "@storybook/react": "^7.4.6",
-    "@storybook/react-webpack5": "^7.4.6",
-    "@storybook/testing-library": "^0.2.2",
+    "@babel/preset-env": "^7.22.10",
+    "@babel/preset-react": "^7.22.5",
+    "@babel/preset-typescript": "7.24.7",
+    "@chromatic-com/storybook": "^1",
+    "@storybook/addon-essentials": "^8.3.0",
+    "@storybook/addon-interactions": "^8.3.0",
+    "@storybook/addon-links": "^8.3.0",
+    "@storybook/addon-onboarding": "^8.3.0",
+    "@storybook/addon-react-native-web": "^0.0.24",
+    "@storybook/addon-webpack5-compiler-babel": "^3.0.3",
+    "@storybook/blocks": "^8.3.0",
+    "@storybook/react": "^8.3.0",
+    "@storybook/react-webpack5": "^8.3.0",
+    "@storybook/test": "^8.3.0",
     "babel-loader": "9.1.3",
     "babel-plugin-react-native-web": "^0.19.7",
     "babel-plugin-react-require": "^4.0.1",
@@ -24,7 +29,7 @@
     "react-native": "*",
     "react-native-svg": "*",
     "react-native-web": "^0.19.7",
-    "storybook": "^7.4.6"
+    "storybook": "^8.3.0"
   },
   "scripts": {
     "dev:gallery": "storybook dev -p 6006",
@@ -32,6 +37,6 @@
   },
   "dependencies": {
     "@reown/appkit-ui-react-native": "1.0.0",
-    "@storybook/theming": "^7.4.6"
+    "@storybook/theming": "^8.3.0"
   }
 }

@@ -6,7 +6,6 @@ import { themes } from '@storybook/theming';
 /** @type { import('@storybook/react').Preview } */
 const preview = {
   parameters: {
-    actions: { argTypesRegex: '^on[A-Z].*' },
     layout: 'centered',
     controls: {
       matchers: {
@@ -30,7 +29,9 @@ const preview = {
     docs: {
       theme: themes.dark
     }
-  }
+  },
+
+  tags: ['autodocs']
 };
 
 export default preview;

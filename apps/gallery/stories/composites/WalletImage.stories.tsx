@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { WalletImage } from '@reown/appkit-ui-react-native';

@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { InputText } from '@reown/appkit-ui-react-native';

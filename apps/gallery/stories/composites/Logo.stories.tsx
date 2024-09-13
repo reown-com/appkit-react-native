@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Logo } from '@reown/appkit-ui-react-native';
