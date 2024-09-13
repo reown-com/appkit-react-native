@@ -1,7 +1,7 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@2.3.1/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "WalletConnect/web3modal-react-native" }],
-  "access": "public",
+  "changelog": ["@changesets/changelog-github", { "repo": "WalletConnect/shadow-appkit-rn" }],
+  "access": "restricted",
   "baseBranch": "main",
   "commit": false,
   "updateInternalDependencies": "patch",
