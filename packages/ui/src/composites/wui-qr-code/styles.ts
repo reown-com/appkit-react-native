@@ -11,5 +11,8 @@ export default StyleSheet.create({
   },
   icon: {
     position: 'absolute'
+  },
+  label: {
+    marginTop: Spacing.s
   }
 });
