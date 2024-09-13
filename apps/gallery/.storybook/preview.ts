@@ -1,3 +1,6 @@
+import React from 'react';
+global.React = React;
+
 import { themes } from '@storybook/theming';
 
 /** @type { import('@storybook/react').Preview } */

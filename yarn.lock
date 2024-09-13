@@ -46,8 +46,6 @@ __metadata:
   resolution: "@apps/gallery@workspace:apps/gallery"
   dependencies:
     "@babel/core": "npm:*"
-    "@babel/preset-env": "npm:^7.22.10"
-    "@babel/preset-react": "npm:^7.22.5"
     "@reown/appkit-ui-react-native": "npm:1.0.0"
     "@storybook/addon-essentials": "npm:^7.4.6"
     "@storybook/addon-interactions": "npm:^7.4.6"
@@ -59,6 +57,7 @@ __metadata:
     "@storybook/react-webpack5": "npm:^7.4.6"
     "@storybook/testing-library": "npm:^0.2.2"
     "@storybook/theming": "npm:^7.4.6"
+    babel-loader: "npm:9.1.3"
     babel-plugin-react-native-web: "npm:^0.19.7"
     babel-plugin-react-require: "npm:^4.0.1"
     metro-react-native-babel-preset: "npm:^0.77.0"
@@ -2732,7 +2731,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:^7.22.10, @babel/preset-env@npm:^7.22.9":
+"@babel/preset-env@npm:^7.22.9":
   version: 7.22.10
   resolution: "@babel/preset-env@npm:7.22.10"
   dependencies:
@@ -11329,7 +11328,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-loader@npm:^9.0.0":
+"babel-loader@npm:9.1.3, babel-loader@npm:^9.0.0":
   version: 9.1.3
   resolution: "babel-loader@npm:9.1.3"
   dependencies:

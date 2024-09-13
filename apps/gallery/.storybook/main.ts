@@ -25,19 +25,6 @@ const config = {
   docs: {
     autodocs: true,
     defaultName: 'Docs'
-  },
-  babel: async options => ({
-    ...options,
-    presets: [
-      ...options.presets,
-      [
-        '@babel/preset-react',
-        {
-          runtime: 'automatic'
-        },
-        'preset-react-jsx-transform'
-      ]
-    ]
-  })
+  }
 };
 export default config;

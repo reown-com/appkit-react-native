@@ -10,8 +10,8 @@ import {
 import { chains } from './WagmiUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const LOGGED_IN_KEY = '@w3mwagmi/logged_in';
-const SESSION_KEY = '@w3mwagmi/session';
+const LOGGED_IN_KEY = '@appkit/logged_in';
+const SESSION_KEY = '@appkit/session';
 
 export const siweConfig = createSIWEConfig({
   signOutOnAccountChange: false,
