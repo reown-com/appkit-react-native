@@ -6,7 +6,7 @@ import {
   externalLabel,
   externalLink,
   iconOptions,
-  walletImagesOptions
+  walletImageSrc
 } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof Chip> = {
@@ -44,7 +44,7 @@ const meta: Meta<typeof Chip> = {
     icon: 'disconnect',
     link: externalLink,
     label: externalLabel,
-    imageSrc: walletImagesOptions[3]
+    imageSrc: walletImageSrc
   }
 };
 
