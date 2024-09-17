@@ -65,7 +65,7 @@ export type WalletConnectParameters = {
   isNewChainsStale?: boolean;
   /**
    * Metadata for your app.
-   * @link https://docs.walletconnect.com/web3modal/react-native/about#implementation
+   * @link https://docs.walletconnect.com/appkit/react-native/core/installation#implementation
    */
   metadata: EthereumProviderOptions['metadata'];
 } & Omit<

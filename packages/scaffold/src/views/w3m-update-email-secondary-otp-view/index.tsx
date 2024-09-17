@@ -7,8 +7,8 @@ import {
   RouterController,
   SnackController,
   EventsController,
-  type W3mFrameProvider
-} from '@web3modal/core-react-native';
+  type AppKitFrameProvider
+} from '@reown/appkit-core-react-native';
 
 import { OtpCodeView } from '../../partials/w3m-otp-code';
 
@@ -16,14 +16,14 @@ export function UpdateEmailSecondaryOtpView() {
   const { data } = useSnapshot(RouterController.state);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const emailConnector = ConnectorController.getEmailConnector();
+  const authConnector = ConnectorController.getAuthConnector();
 
   const onOtpSubmit = async (value: string) => {
-    if (!emailConnector) return;
+    if (!authConnector) return;
     setLoading(true);
     setError('');
     try {
-      const provider = emailConnector?.provider as W3mFrameProvider;
+      const provider = authConnector?.provider as AppKitFrameProvider;
       await provider.updateEmailSecondaryOtp({ otp: value });
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' });
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_EDIT_COMPLETE' });

@@ -1,14 +1,14 @@
 import { useSnapshot } from 'valtio';
 import { useState } from 'react';
-import { EmailInput, FlexView, Separator, Spacing } from '@web3modal/ui-react-native';
+import { EmailInput, FlexView, Separator, Spacing } from '@reown/appkit-ui-react-native';
 import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
   RouterController,
   SnackController,
-  type W3mFrameProvider
-} from '@web3modal/core-react-native';
+  type AppKitFrameProvider
+} from '@reown/appkit-core-react-native';
 import { StyleSheet } from 'react-native';
 
 interface Props {
@@ -22,7 +22,7 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator, loading }: Pr
   const [inputLoading, setInputLoading] = useState(false);
   const [error, setError] = useState('');
   const [isValidEmail, setIsValidEmail] = useState(false);
-  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
+  const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
 
   const onChangeText = (value: string) => {
     setIsValidEmail(CoreHelperUtil.isValidEmail(value));
@@ -38,7 +38,7 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator, loading }: Pr
       if (email.length === 0) return;
 
       setInputLoading(true);
-      const response = await emailProvider.connectEmail({ email });
+      const response = await authProvider.connectEmail({ email });
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_SUBMITTED' });
       if (response.action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email });

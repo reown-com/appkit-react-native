@@ -2,12 +2,12 @@ import type {
   Metadata,
   Provider,
   ProviderType,
-  W3mFrameProvider
-} from '@web3modal/scaffold-utils-react-native';
+  AppKitFrameProvider
+} from '@reown/appkit-scaffold-utils-react-native';
 
 export interface ConfigOptions {
   metadata: Metadata;
-  extraConnectors?: (Provider | W3mFrameProvider)[];
+  extraConnectors?: (Provider | AppKitFrameProvider)[];
 }
 
 export function defaultConfig(options: ConfigOptions) {

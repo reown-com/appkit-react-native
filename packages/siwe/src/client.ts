@@ -3,8 +3,8 @@ import {
   NetworkController,
   ConnectionController,
   RouterUtil
-} from '@web3modal/core-react-native';
-import { NetworkUtil } from '@web3modal/common-react-native';
+} from '@reown/appkit-core-react-native';
+import { NetworkUtil } from '@reown/appkit-common-react-native';
 
 import type {
   SIWECreateMessageArgs,
@@ -19,7 +19,7 @@ import type { SIWEControllerClient } from './controller/SIWEController';
 import { ConstantsUtil } from './utils/ConstantsUtil';
 
 // -- Client -------------------------------------------------------------------- //
-export class Web3ModalSIWEClient {
+export class AppKitSIWEClient {
   public options: SIWEControllerClient['options'];
 
   public methods: SIWEClientMethods;

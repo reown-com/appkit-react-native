@@ -1,8 +1,8 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useMemo } from 'react';
 import { Animated } from 'react-native';
-import { SnackController } from '@web3modal/core-react-native';
-import { Snackbar as SnackbarComponent } from '@web3modal/ui-react-native';
+import { SnackController } from '@reown/appkit-core-react-native';
+import { Snackbar as SnackbarComponent } from '@reown/appkit-ui-react-native';
 
 import styles from './styles';
 

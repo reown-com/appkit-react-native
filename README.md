@@ -1,8 +1,8 @@
-#### 📚 [Documentation](https://docs.walletconnect.com/appkit/react-native/core/installation)
+#### 📚 [Documentation](https://docs.reown.com/appkit/react-native/core/installation)
 
 #### 🔎 [Examples](https://github.com/WalletConnect/react-native-examples/tree/main/dapps/W3MWagmi)
 
-#### 🔗 [Website](https://web3modal.com)
+#### 🔗 [Website](https://reown.com/appkit)
 
 # AppKit SDK for React Native
 

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "native",
-    "slug": "web3modal-sdk",
+    "slug": "appkit-expo-sample",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { LoadingThumbnail } from '@web3modal/ui-react-native';
+import { LoadingThumbnail } from '@reown/appkit-ui-react-native';
 
 const meta: Meta<typeof LoadingThumbnail> = {
   component: LoadingThumbnail,

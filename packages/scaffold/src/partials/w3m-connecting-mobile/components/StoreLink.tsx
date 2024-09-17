@@ -1,4 +1,4 @@
-import { ActionEntry, Button, Spacing, Text } from '@web3modal/ui-react-native';
+import { ActionEntry, Button, Spacing, Text } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export interface StoreLinkProps {

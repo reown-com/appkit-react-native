@@ -5,20 +5,20 @@ import {
   NetworkController,
   ModalController,
   AssetUtil
-} from '@web3modal/core-react-native';
+} from '@reown/appkit-core-react-native';
 
-import { AccountButton } from '@web3modal/ui-react-native';
-import { ApiController } from '@web3modal/core-react-native';
+import { AccountButton as AccountButtonUI } from '@reown/appkit-ui-react-native';
+import { ApiController } from '@reown/appkit-core-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 
-export interface W3mAccountButtonProps {
+export interface AccountButtonProps {
   balance?: 'show' | 'hide';
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
   testID?: string;
 }
 
-export function W3mAccountButton({ balance, disabled, style, testID }: W3mAccountButtonProps) {
+export function AccountButton({ balance, disabled, style, testID }: AccountButtonProps) {
   const {
     address,
     balance: balanceVal,
@@ -32,7 +32,7 @@ export function W3mAccountButton({ balance, disabled, style, testID }: W3mAccoun
   const showBalance = balance === 'show';
 
   return (
-    <AccountButton
+    <AccountButtonUI
       onPress={ModalController.open}
       address={profileName ?? address}
       isProfileName={Boolean(profileName)}

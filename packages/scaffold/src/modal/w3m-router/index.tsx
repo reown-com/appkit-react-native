@@ -1,7 +1,7 @@
 import { useLayoutEffect, useMemo } from 'react';
 import { useSnapshot } from 'valtio';
-import { RouterController } from '@web3modal/core-react-native';
-import { ConnectingSiweView } from '@web3modal/siwe-react-native';
+import { RouterController } from '@reown/appkit-core-react-native';
+import { ConnectingSiweView } from '@reown/appkit-siwe-react-native';
 
 import { ConnectView } from '../../views/w3m-connect-view';
 import { AllWalletsView } from '../../views/w3m-all-wallets-view';
@@ -21,7 +21,7 @@ import { UpdateEmailPrimaryOtpView } from '../../views/w3m-update-email-primary-
 import { UpdateEmailSecondaryOtpView } from '../../views/w3m-update-email-secondary-otp-view';
 import { UpgradeEmailWalletView } from '../../views/w3m-upgrade-email-wallet-view';
 
-export function Web3Router() {
+export function AppKitRouter() {
   const { view } = useSnapshot(RouterController.state);
 
   useLayoutEffect(() => {

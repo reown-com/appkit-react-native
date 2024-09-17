@@ -6,12 +6,12 @@ import {
   formatMessage,
   type SIWEVerifyMessageArgs,
   type SIWECreateMessageArgs
-} from '@web3modal/siwe-react-native';
+} from '@reown/appkit-siwe-react-native';
 import { chains } from './WagmiUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const LOGGED_IN_KEY = '@w3mwagmi/logged_in';
-const SESSION_KEY = '@w3mwagmi/session';
+const LOGGED_IN_KEY = '@appkit/logged_in';
+const SESSION_KEY = '@appkit/session';
 
 export const siweConfig = createSIWEConfig({
   signOutOnAccountChange: false,
@@ -23,7 +23,7 @@ export const siweConfig = createSIWEConfig({
     // More info in https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-222.method
 
     return {
-      domain: 'com.walletconnect.web3modal.rnsample', //your bundle id or app id
+      domain: 'your.bundle.id', //your bundle id or app id
       uri: 'redirect://', // your redirect uri
       chains: chains.map(chain => chain.id),
       statement: 'Please sign with your account',

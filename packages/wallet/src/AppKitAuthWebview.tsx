@@ -9,14 +9,14 @@ import {
   ModalController,
   type OptionsControllerState,
   StorageUtil
-} from '@web3modal/core-react-native';
-import { useTheme, BorderRadius } from '@web3modal/ui-react-native';
-import type { W3mFrameProvider } from './W3mFrameProvider';
-import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants';
+} from '@reown/appkit-core-react-native';
+import { useTheme, BorderRadius } from '@reown/appkit-ui-react-native';
+import type { AppKitFrameProvider } from './AppKitFrameProvider';
+import { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameConstants';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
-export function EmailWebview() {
+export function AuthWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
   const { connectors } = useSnapshot(ConnectorController.state);
@@ -26,8 +26,8 @@ export function EmailWebview() {
   const animatedHeight = useRef(new Animated.Value(0));
   const backdropOpacity = useRef(new Animated.Value(0));
   const webviewOpacity = useRef(new Animated.Value(0));
-  const emailConnector = connectors.find(c => c.type === 'EMAIL');
-  const provider = emailConnector?.provider as W3mFrameProvider;
+  const authConnector = connectors.find(c => c.type === 'AUTH');
+  const provider = authConnector?.provider as AppKitFrameProvider;
 
   const parseMessage = (event: WebViewMessageEvent) => {
     if (!event.nativeEvent.data) return;
@@ -50,7 +50,7 @@ export function EmailWebview() {
     provider.onMessage(event);
 
     provider.onRpcRequest(event, () => {
-      if (!W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(event.payload.method)) {
+      if (!AppKitFrameRpcConstants.SAFE_RPC_METHODS.includes(event.payload.method)) {
         setIsVisible(true);
       }
     });
@@ -60,12 +60,12 @@ export function EmailWebview() {
     });
 
     provider.onIsConnected(event, () => {
-      ConnectorController.setEmailLoading(false);
+      ConnectorController.setAuthLoading(false);
       ModalController.setLoading(false);
     });
 
     provider.onNotConnected(event, () => {
-      ConnectorController.setEmailLoading(false);
+      ConnectorController.setAuthLoading(false);
       ModalController.setLoading(false);
       StorageUtil.removeConnectedConnector();
     });
@@ -128,7 +128,7 @@ export function EmailWebview() {
           scalesPageToFit
           onMessage={handleMessage}
           containerStyle={styles.webview}
-          injectedJavaScript={W3mFrameConstants.FRAME_MESSAGES_HANDLER}
+          injectedJavaScript={AppKitFrameConstants.FRAME_MESSAGES_HANDLER}
           ref={webviewRef}
           onOpenWindow={syntheticEvent => {
             const { nativeEvent } = syntheticEvent;
@@ -136,12 +136,12 @@ export function EmailWebview() {
             Linking.openURL(targetUrl);
           }}
           onLoadStart={() => {
-            ConnectorController.setEmailLoading(true);
+            ConnectorController.setAuthLoading(true);
           }}
           onLoadEnd={({ nativeEvent }) => {
             if (!nativeEvent.loading) {
               if (Platform.OS === 'android') {
-                webviewRef.current?.injectJavaScript(W3mFrameConstants.FRAME_MESSAGES_HANDLER);
+                webviewRef.current?.injectJavaScript(AppKitFrameConstants.FRAME_MESSAGES_HANDLER);
               }
               const themeMode = Appearance.getColorScheme() ?? undefined;
               provider?.syncTheme({

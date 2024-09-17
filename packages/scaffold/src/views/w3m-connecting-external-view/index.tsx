@@ -10,14 +10,14 @@ import {
   EventsController,
   StorageUtil,
   type WcWallet
-} from '@web3modal/core-react-native';
+} from '@reown/appkit-core-react-native';
 import {
   Button,
   FlexView,
   IconBox,
   LoadingThumbnail,
   WalletImage
-} from '@web3modal/ui-react-native';
+} from '@reown/appkit-ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w3m-connecting-body';

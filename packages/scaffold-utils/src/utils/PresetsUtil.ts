@@ -1,4 +1,4 @@
-import type { ConnectorType } from '@web3modal/scaffold-react-native';
+import type { ConnectorType } from '@reown/appkit-scaffold-react-native';
 import { ConstantsUtil } from './ConstantsUtil';
 
 export const PresetsUtil = {
@@ -56,16 +56,16 @@ export const PresetsUtil = {
   ConnectorNamesMap: {
     [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WalletConnect',
     [ConstantsUtil.COINBASE_CONNECTOR_ID]: 'Coinbase',
-    [ConstantsUtil.EMAIL_CONNECTOR_ID]: 'Email'
+    [ConstantsUtil.AUTH_CONNECTOR_ID]: 'Auth'
   } as Record<string, string>,
 
   ConnectorTypesMap: {
     [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT',
     [ConstantsUtil.COINBASE_CONNECTOR_ID]: 'COINBASE',
-    [ConstantsUtil.EMAIL_CONNECTOR_ID]: 'EMAIL'
+    [ConstantsUtil.AUTH_CONNECTOR_ID]: 'AUTH'
   } as Record<string, ConnectorType>,
 
-  WalletConnectRpcChainIds: [
+  RpcChainIds: [
     // Ethereum
     1,
     // Ethereum Goerli

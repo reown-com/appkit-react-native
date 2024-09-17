@@ -8,8 +8,8 @@ import {
   ModalController,
   RouterController,
   SnackController,
-  type W3mFrameProvider
-} from '@web3modal/core-react-native';
+  type AppKitFrameProvider
+} from '@reown/appkit-core-react-native';
 import useTimeout from '../../hooks/useTimeout';
 import { OtpCodeView } from '../../partials/w3m-otp-code';
 
@@ -18,13 +18,13 @@ export function EmailVerifyOtpView() {
   const { data } = useSnapshot(RouterController.state);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const emailConnector = ConnectorController.getEmailConnector();
+  const authConnector = ConnectorController.getAuthConnector();
 
   const onOtpResend = async () => {
     try {
-      if (!data?.email || !emailConnector) return;
+      if (!data?.email || !authConnector) return;
       setLoading(true);
-      const provider = emailConnector?.provider as W3mFrameProvider;
+      const provider = authConnector?.provider as AppKitFrameProvider;
       await provider.connectEmail({ email: data.email });
       SnackController.showSuccess('Code resent');
       startTimer(30);
@@ -37,19 +37,19 @@ export function EmailVerifyOtpView() {
   };
 
   const onOtpSubmit = async (otp: string) => {
-    if (!emailConnector) return;
+    if (!authConnector) return;
     setLoading(true);
     setError('');
     try {
-      const provider = emailConnector?.provider as W3mFrameProvider;
+      const provider = authConnector?.provider as AppKitFrameProvider;
       await provider.connectOtp({ otp });
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' });
-      await ConnectionController.connectExternal(emailConnector);
+      await ConnectionController.connectExternal(authConnector);
       ModalController.close();
       EventsController.sendEvent({
         type: 'track',
         event: 'CONNECT_SUCCESS',
-        properties: { method: 'email', name: emailConnector.name || 'Unknown' }
+        properties: { method: 'email', name: authConnector.name || 'Unknown' }
       });
     } catch (e) {
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_FAIL' });

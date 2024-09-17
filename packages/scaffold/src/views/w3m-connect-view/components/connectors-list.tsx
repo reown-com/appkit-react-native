@@ -5,8 +5,8 @@ import {
   RouterController,
   type ConnectorType,
   ApiController
-} from '@web3modal/core-react-native';
-import { ListWallet } from '@web3modal/ui-react-native';
+} from '@reown/appkit-core-react-native';
+import { ListWallet } from '@reown/appkit-ui-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
 
 export function ConnectorList({ itemStyle, isWalletConnectEnabled }: Props) {
   const { connectors } = useSnapshot(ConnectorController.state);
-  const excludeConnectors: ConnectorType[] = ['WALLET_CONNECT', 'EMAIL'];
+  const excludeConnectors: ConnectorType[] = ['WALLET_CONNECT', 'AUTH'];
   const imageHeaders = ApiController._getApiHeaders();
 
   if (isWalletConnectEnabled) {

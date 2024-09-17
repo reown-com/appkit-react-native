@@ -6,7 +6,7 @@ import type { Connector, ConnectorType } from '../utils/TypeUtil';
 export interface ConnectorControllerState {
   connectors: Connector[];
   connectedConnector?: ConnectorType;
-  emailLoading?: boolean;
+  authLoading?: boolean;
 }
 
 type StateKey = keyof ConnectorControllerState;
@@ -36,15 +36,15 @@ export const ConnectorController = {
     return state.connectors;
   },
 
-  getEmailConnector() {
-    return state.connectors.find(c => c.type === 'EMAIL');
+  getAuthConnector() {
+    return state.connectors.find(c => c.type === 'AUTH');
   },
 
   setConnectedConnector(connectorType: ConnectorControllerState['connectedConnector']) {
     state.connectedConnector = connectorType;
   },
 
-  setEmailLoading(loading: ConnectorControllerState['emailLoading']) {
-    state.emailLoading = loading;
+  setAuthLoading(loading: ConnectorControllerState['authLoading']) {
+    state.authLoading = loading;
   }
 };

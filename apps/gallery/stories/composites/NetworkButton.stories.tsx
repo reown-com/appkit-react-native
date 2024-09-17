@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { NetworkButton } from '@web3modal/ui-react-native';
+import { NetworkButton } from '@reown/appkit-ui-react-native';
 import { networkImageSrc } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof NetworkButton> = {

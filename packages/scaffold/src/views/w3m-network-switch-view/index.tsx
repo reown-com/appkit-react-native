@@ -7,7 +7,7 @@ import {
   EventsController,
   NetworkController,
   RouterController
-} from '@web3modal/core-react-native';
+} from '@reown/appkit-core-react-native';
 import {
   Button,
   FlexView,
@@ -15,7 +15,7 @@ import {
   LoadingHexagon,
   NetworkImage,
   Text
-} from '@web3modal/ui-react-native';
+} from '@reown/appkit-ui-react-native';
 import styles from './styles';
 
 export function NetworkSwitchView() {

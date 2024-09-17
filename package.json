@@ -1,19 +1,19 @@
 {
-  "name": "web3modal-react-native",
-  "version": "2.0.4",
+  "name": "appkit-react-native",
+  "version": "1.0.0",
   "private": true,
   "workspaces": [
     "packages/core",
     "packages/ui",
     "packages/common",
-    "packages/email",
+    "packages/wallet",
     "packages/scaffold-utils",
     "packages/scaffold",
     "packages/siwe",
     "packages/wagmi",
     "packages/coinbase-wagmi",
-    "packages/email-wagmi",
-    "packages/email-ethers",
+    "packages/auth-wagmi",
+    "packages/auth-ethers",
     "packages/coinbase-ethers",
     "packages/ethers5",
     "packages/ethers",
@@ -30,7 +30,7 @@
     "test": "turbo run test --parallel",
     "clean": "turbo clean && rm -rf node_modules && watchman watch-del-all",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
-    "changeset:prepublish": "turbo clean lint prettier --parallel; yarn version:update; yarn install; turbo run build; turbo run test;",
+    "changeset:prepublish": "yarn run clean; yarn install; yarn version:update; yarn run lint && yarn run prettier; yarn run build; yarn run test;",
     "changeset:publish": "yarn run changeset:prepublish; yarn run changeset publish",
     "changeset:version": "changeset version; yarn run version:update; yarn install --refresh-lockfile",
     "version:update": "./scripts/bump-version.sh"
@@ -49,7 +49,7 @@
     "@types/jest": "29.5.7",
     "@types/qrcode": "1.5.5",
     "@types/react": "^18.2.6",
-    "@walletconnect/react-native-compat": "2.14.0",
+    "@walletconnect/react-native-compat": "2.16.1",
     "babel-jest": "^29.7.0",
     "eslint": "^8.46.0",
     "eslint-plugin-ft-flow": "2.0.3",
@@ -66,10 +66,10 @@
     "ts-jest": "29.1.1",
     "ts-node": "10.9.1",
     "tsconfig": "*",
-    "turbo": "1.10.15",
+    "turbo": "2.1.1",
     "typescript": "5.2.2",
-    "viem": "2.18.7",
-    "wagmi": "2.12.2"
+    "viem": "2.21.6",
+    "wagmi": "2.12.11"
   },
   "packageManager": "yarn@4.0.2"
 }
