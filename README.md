@@ -2,7 +2,7 @@
 
 #### 🔎 [Examples](https://github.com/WalletConnect/react-native-examples/tree/main/dapps/W3MWagmi)
 
-#### 🔗 [Website](https://reown.com)
+#### 🔗 [Website](https://reown.com/appkit)
 
 # AppKit SDK for React Native
 
