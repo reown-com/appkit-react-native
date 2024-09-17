@@ -1,8 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { InputNumeric } from '@web3modal/ui-react-native';
+import { InputNumeric } from '@reown/appkit-ui-react-native';
 
 const meta: Meta<typeof InputNumeric> = {
   component: InputNumeric,

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { ListItem, Text } from '@web3modal/ui-react-native';
+import { ListItem, Text } from '@reown/appkit-ui-react-native';
 import { networkImageSrc, iconOptions } from '../../utils/PresetUtils';
 import { GalleryContainer } from '../../components/GalleryContainer';
 

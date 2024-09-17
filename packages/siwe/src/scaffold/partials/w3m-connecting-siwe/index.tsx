@@ -5,8 +5,15 @@ import {
   AssetUtil,
   ConnectionController,
   OptionsController
-} from '@web3modal/core-react-native';
-import { FlexView, Icon, Image, WalletImage, useTheme, Avatar } from '@web3modal/ui-react-native';
+} from '@reown/appkit-core-react-native';
+import {
+  FlexView,
+  Icon,
+  Image,
+  WalletImage,
+  useTheme,
+  Avatar
+} from '@reown/appkit-ui-react-native';
 import styles from './styles';
 import { useEffect } from 'react';
 

@@ -14,8 +14,8 @@ import {
   OptionsController,
   RouterController,
   SnackController,
-  type W3mFrameProvider
-} from '@web3modal/core-react-native';
+  type AppKitFrameProvider
+} from '@reown/appkit-core-react-native';
 import {
   Avatar,
   Button,
@@ -25,7 +25,7 @@ import {
   UiUtil,
   Spacing,
   ListItem
-} from '@web3modal/ui-react-native';
+} from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { UpgradeWalletButton } from './components/upgrade-wallet-button';
 import styles from './styles';
@@ -38,7 +38,7 @@ export function AccountView() {
   const { connectedConnector } = useSnapshot(ConnectorController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
-  const isEmail = connectedConnector === 'EMAIL';
+  const isAuth = connectedConnector === 'AUTH';
   const { padding } = useCustomDimensions();
 
   async function onDisconnect() {
@@ -88,7 +88,7 @@ export function AccountView() {
   };
 
   const getUserEmail = () => {
-    const provider = ConnectorController.getEmailConnector()?.provider as W3mFrameProvider;
+    const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
     if (!provider) return '';
 
     return provider.getEmail();
@@ -150,7 +150,7 @@ export function AccountView() {
           )}
           {addressExplorerTemplate()}
           <FlexView margin={['s', '0', '0', '0']}>
-            {isEmail && (
+            {isAuth && (
               <>
                 <UpgradeWalletButton onPress={onUpgradePress} style={styles.upgradeButton} />
                 <ListItem

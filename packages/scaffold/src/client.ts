@@ -14,8 +14,8 @@ import type {
   ThemeVariables,
   Connector,
   ConnectedWalletInfo
-} from '@web3modal/core-react-native';
-import type { SIWEControllerClient } from '@web3modal/siwe-react-native';
+} from '@reown/appkit-core-react-native';
+import type { SIWEControllerClient } from '@reown/appkit-siwe-react-native';
 import {
   AccountController,
   BlockchainApiController,
@@ -28,8 +28,8 @@ import {
   PublicStateController,
   StorageUtil,
   ThemeController
-} from '@web3modal/core-react-native';
-import { ConstantsUtil } from '@web3modal/common-react-native';
+} from '@reown/appkit-core-react-native';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {
@@ -59,7 +59,7 @@ export interface OpenOptions {
 }
 
 // -- Client --------------------------------------------------------------------
-export class Web3ModalScaffold {
+export class AppKitScaffold {
   public constructor(options: ScaffoldOptions) {
     this.initControllers(options);
   }
@@ -244,7 +244,7 @@ export class Web3ModalScaffold {
     }
 
     if (options.siweControllerClient) {
-      const { SIWEController } = await import('@web3modal/siwe-react-native');
+      const { SIWEController } = await import('@reown/appkit-siwe-react-native');
 
       SIWEController.setSIWEClient(options.siweControllerClient);
     }

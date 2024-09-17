@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Button } from '@web3modal/ui-react-native';
+import { Button } from '@reown/appkit-ui-react-native';
 import { buttonOptions, iconOptions } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof Button> = {

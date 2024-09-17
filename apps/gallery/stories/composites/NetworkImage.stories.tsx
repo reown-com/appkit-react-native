@@ -1,7 +1,6 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { NetworkImage } from '@web3modal/ui-react-native';
+import { NetworkImage } from '@reown/appkit-ui-react-native';
 import { networkImageSrc } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof NetworkImage> = {

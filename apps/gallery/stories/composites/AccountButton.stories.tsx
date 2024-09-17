@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { AccountButton } from '@web3modal/ui-react-native';
+import { AccountButton } from '@reown/appkit-ui-react-native';
 import { avatarImageSrc, networkImageSrc } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof AccountButton> = {

@@ -6,8 +6,8 @@ import {
   EventsController,
   RouterController,
   type WcWallet
-} from '@web3modal/core-react-native';
-import { FlexView, IconLink, SearchBar, Spacing, useTheme } from '@web3modal/ui-react-native';
+} from '@reown/appkit-core-react-native';
+import { FlexView, IconLink, SearchBar, Spacing, useTheme } from '@reown/appkit-ui-react-native';
 
 import styles from './styles';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';

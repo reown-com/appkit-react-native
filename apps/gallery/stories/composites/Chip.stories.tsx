@@ -1,13 +1,12 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Chip } from '@web3modal/ui-react-native';
+import { Chip } from '@reown/appkit-ui-react-native';
 import {
   chipOptions,
   externalLabel,
   externalLink,
   iconOptions,
-  walletImagesOptions
+  walletImageSrc
 } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof Chip> = {
@@ -45,7 +44,7 @@ const meta: Meta<typeof Chip> = {
     icon: 'disconnect',
     link: externalLink,
     label: externalLabel,
-    imageSrc: walletImagesOptions[3]
+    imageSrc: walletImageSrc
   }
 };
 

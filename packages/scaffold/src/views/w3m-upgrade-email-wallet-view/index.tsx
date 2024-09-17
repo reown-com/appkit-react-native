@@ -1,11 +1,11 @@
 import { useSnapshot } from 'valtio';
 import { StyleSheet } from 'react-native';
-import { Chip, FlexView, Spacing, Text } from '@web3modal/ui-react-native';
-import { ConnectorController, type W3mFrameProvider } from '@web3modal/core-react-native';
+import { Chip, FlexView, Spacing, Text } from '@reown/appkit-ui-react-native';
+import { ConnectorController, type AppKitFrameProvider } from '@reown/appkit-core-react-native';
 
 export function UpgradeEmailWalletView() {
   const { connectors } = useSnapshot(ConnectorController.state);
-  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
+  const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
 
   return (
     <FlexView padding={['l', 'l', '3xl', 'l']} alignItems="center">
@@ -13,8 +13,8 @@ export function UpgradeEmailWalletView() {
       <Chip
         label="secure.walletconnect.com"
         icon="externalLink"
-        imageSrc={emailProvider.getSecureSiteIconURL()}
-        link={emailProvider.getSecureSiteDashboardURL()}
+        imageSrc={authProvider.getSecureSiteIconURL()}
+        link={authProvider.getSecureSiteDashboardURL()}
         style={styles.chip}
       />
       <Text variant="small-400" color="fg-200">

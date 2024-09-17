@@ -1,7 +1,6 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { WalletImage } from '@web3modal/ui-react-native';
+import { WalletImage } from '@reown/appkit-ui-react-native';
 import { walletImageSrc } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof WalletImage> = {

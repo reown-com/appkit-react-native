@@ -1,5 +1,5 @@
-import type { CaipNetworkId } from '@web3modal/scaffold-react-native';
-import { PresetsUtil, ConstantsUtil } from '@web3modal/scaffold-utils-react-native';
+import type { CaipNetworkId } from '@reown/appkit-scaffold-react-native';
+import { PresetsUtil, ConstantsUtil } from '@reown/appkit-scaffold-utils-react-native';
 import EthereumProvider from '@walletconnect/ethereum-provider';
 
 export async function getWalletConnectCaipNetworks(provider?: EthereumProvider) {
@@ -17,10 +17,10 @@ export async function getWalletConnectCaipNetworks(provider?: EthereumProvider) 
   };
 }
 
-export function getEmailCaipNetworks() {
+export function getAuthCaipNetworks() {
   return {
     supportsAllNetworks: false,
-    approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
+    approvedCaipNetworkIds: PresetsUtil.RpcChainIds.map(
       id => `${ConstantsUtil.EIP155}:${id}`
     ) as CaipNetworkId[]
   };

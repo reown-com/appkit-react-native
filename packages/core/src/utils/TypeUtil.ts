@@ -26,7 +26,7 @@ export type ProjectId = string;
 
 export type Platform = 'mobile' | 'web' | 'qrcode' | 'email' | 'unsupported';
 
-export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'EMAIL' | 'EXTERNAL';
+export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
 
 export type Connector = {
   id: string;
@@ -65,6 +65,7 @@ export interface WcWallet {
   mobile_link?: string | null;
   desktop_link?: string | null;
   webapp_link?: string | null;
+  link_mode?: string | null;
   app_store?: string | null;
   play_store?: string | null;
 }
@@ -126,6 +127,11 @@ export type Metadata = {
   description: string;
   url: string;
   icons: string[];
+  redirect?: {
+    native?: string;
+    universal?: string;
+    linkMode?: boolean;
+  };
 };
 
 export type CustomWallet = Pick<
@@ -137,6 +143,7 @@ export type CustomWallet = Pick<
   | 'mobile_link'
   | 'desktop_link'
   | 'webapp_link'
+  | 'link_mode'
   | 'app_store'
   | 'play_store'
 >;
@@ -281,10 +288,10 @@ export type Event =
 
 // -- Email Types ------------------------------------------------
 /**
- * Matches type defined for packages/email/src/W3mFrameProvider.ts
+ * Matches type defined for packages/email/src/AppKitFrameProvider.ts
  * It's duplicated in order to decouple scaffold from email package
  */
-export interface W3mFrameProvider {
+export interface AppKitFrameProvider {
   readonly id: string;
   readonly name: string;
   getSecureSiteURL(): string;
@@ -331,5 +338,5 @@ export interface W3mFrameProvider {
   }>;
   disconnect(): Promise<unknown>;
   request(req: any): Promise<any>;
-  EmailView: () => JSX.Element | null;
+  AuthView: () => JSX.Element | null;
 }

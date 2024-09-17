@@ -1,8 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { EmailInput } from '@web3modal/ui-react-native';
+import { EmailInput } from '@reown/appkit-ui-react-native';
 import { GalleryContainer } from '../../components/GalleryContainer';
 
 const meta: Meta<typeof EmailInput> = {

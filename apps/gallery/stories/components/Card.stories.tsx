@@ -1,8 +1,7 @@
-import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Card } from '@web3modal/ui-react-native';
+import { Card } from '@reown/appkit-ui-react-native';
 
 const meta: Meta<typeof Card> = {
   component: Card

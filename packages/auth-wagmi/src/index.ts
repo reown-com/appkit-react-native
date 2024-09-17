@@ -1,7 +1,7 @@
 import { createConnector, ChainNotConfiguredError } from 'wagmi';
 import { SwitchChainError, getAddress, type Address } from 'viem';
 
-import { W3mFrameProvider } from '@web3modal/email-react-native';
+import { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 export type Metadata = {
   name: string;
@@ -10,7 +10,7 @@ export type Metadata = {
   icons: string[];
 };
 
-type EmailProviderOptions = {
+type AuthConnectorOptions = {
   /**
    * WalletConnect Cloud Project ID.
    * @link https://cloud.walletconnect.com/sign-in.
@@ -19,23 +19,23 @@ type EmailProviderOptions = {
   metadata: Metadata;
 };
 
-type Provider = W3mFrameProvider;
+type Provider = AppKitFrameProvider;
 
 type StorageItemMap = {
   '@w3m/connected_connector'?: string;
 };
 
-emailConnector.type = 'w3mEmail' as const;
-emailConnector.id = 'w3mEmail' as const;
-export function emailConnector(parameters: EmailProviderOptions) {
-  let _provider: W3mFrameProvider = {} as W3mFrameProvider;
+authConnector.type = 'appKitAuth' as const;
+authConnector.id = 'appKitAuth' as const;
+export function authConnector(parameters: AuthConnectorOptions) {
+  let _provider: AppKitFrameProvider = {} as AppKitFrameProvider;
 
   return createConnector<Provider, {}, StorageItemMap>(config => ({
-    id: emailConnector.id,
-    name: 'Web3Modal Email',
-    type: emailConnector.type,
+    id: authConnector.id,
+    name: 'AppKit Auth',
+    type: authConnector.type,
     async setup() {
-      _provider = new W3mFrameProvider(parameters.projectId, parameters.metadata);
+      _provider = new AppKitFrameProvider(parameters.projectId, parameters.metadata);
     },
     async connect(options = {}) {
       const provider = await this.getProvider();
@@ -101,7 +101,7 @@ export function emailConnector(parameters: EmailProviderOptions) {
         await provider.webviewLoadPromise;
         const connectedConnector = await config.storage?.getItem('recentConnectorId');
 
-        if (connectedConnector !== emailConnector.id) {
+        if (connectedConnector !== authConnector.id) {
           // isConnected still needs to be called to disable email input loader
           provider.isConnected();
 
