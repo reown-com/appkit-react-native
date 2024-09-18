@@ -23,9 +23,7 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
   const [loading, setLoading] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const { maxWidth, padding } = useCustomDimensions();
-  const { installed, featured, recommended, wallets, page, count } = useSnapshot(
-    ApiController.state
-  );
+  const { installed, featured, recommended, wallets } = useSnapshot(ApiController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const preloadedWallets = installed.length + featured.length + recommended.length;
   const loadingItems = columns - ((100 + preloadedWallets) % columns);
@@ -59,7 +57,7 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
   };
 
   const walletTemplate = ({ item, index }: { item: WcWallet; index: number }) => {
-    const isInstalled = installed.find(wallet => wallet?.id === item?.id);
+    const isInstalled = ApiController.state.installed.find(wallet => wallet?.id === item?.id);
     if (!item?.id) {
       return (
         <View key={index} style={[styles.itemContainer, { width: itemWidth }]}>
@@ -89,18 +87,17 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
   };
 
   const fetchNextPage = async () => {
-    if (walletList.length < count && !pageLoading) {
+    if (walletList.length < ApiController.state.count && !pageLoading) {
       setPageLoading(true);
-      await ApiController.fetchWallets({ page: page + 1 });
+      await ApiController.fetchWallets({ page: ApiController.state.page + 1 });
       setPageLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!wallets.length) {
+    if (!ApiController.state.wallets.length) {
       initialFetch();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {

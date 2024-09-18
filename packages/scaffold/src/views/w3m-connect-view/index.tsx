@@ -19,7 +19,8 @@ import { RecentWalletList } from './components/recent-wallet-list';
 import styles from './styles';
 
 export function ConnectView() {
-  const { connectors, authLoading } = useSnapshot(ConnectorController.state);
+  const connectors = ConnectorController.state.connectors;
+  const { authLoading } = useSnapshot(ConnectorController.state);
   const { padding } = useCustomDimensions();
   const { keyboardShown, keyboardHeight } = useKeyboard();
 

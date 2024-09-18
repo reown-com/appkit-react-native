@@ -31,8 +31,9 @@ import { UpgradeWalletButton } from './components/upgrade-wallet-button';
 import styles from './styles';
 
 export function AccountView() {
-  const { address, profileName, profileImage, balance, balanceSymbol, addressExplorerUrl } =
-    useSnapshot(AccountController.state);
+  const { address, profileName, profileImage, balance, balanceSymbol } = useSnapshot(
+    AccountController.state
+  );
   const [disconnecting, setDisconnecting] = useState(false);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { connectedConnector } = useSnapshot(ConnectorController.state);
@@ -61,14 +62,16 @@ export function AccountView() {
   }
 
   const onExplorerPress = () => {
-    if (addressExplorerUrl) {
-      Linking.openURL(addressExplorerUrl);
+    if (AccountController.state.addressExplorerUrl) {
+      Linking.openURL(AccountController.state.addressExplorerUrl);
     }
   };
 
   const onCopyAddress = () => {
-    if (address) {
-      OptionsController.copyToClipboard(profileName ?? address);
+    if (AccountController.state.address) {
+      OptionsController.copyToClipboard(
+        AccountController.state.profileName ?? AccountController.state.address
+      );
       SnackController.showSuccess('Address copied');
     }
   };
@@ -95,7 +98,7 @@ export function AccountView() {
   };
 
   const addressExplorerTemplate = () => {
-    if (!addressExplorerUrl) return null;
+    if (!AccountController.state.addressExplorerUrl) return null;
 
     return (
       <Button

@@ -1,4 +1,3 @@
-import { useSnapshot } from 'valtio';
 import { useState } from 'react';
 
 import {
@@ -13,7 +12,7 @@ import {
 import { OtpCodeView } from '../../partials/w3m-otp-code';
 
 export function UpdateEmailPrimaryOtpView() {
-  const { data } = useSnapshot(RouterController.state);
+  const { data } = RouterController.state;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const authProvider = ConnectorController.getAuthConnector()?.provider as

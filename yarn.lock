@@ -10296,6 +10296,7 @@ __metadata:
     eslint: "npm:^8.46.0"
     eslint-plugin-ft-flow: "npm:2.0.3"
     eslint-plugin-prettier: "npm:5.0.1"
+    eslint-plugin-valtio: "npm:^0.6.4"
     jest: "npm:29.7.0"
     prettier: "npm:3.0.1"
     react: "npm:18.2.0"
@@ -13357,6 +13358,13 @@ __metadata:
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
   checksum: 594b634cc5a86ff0eb5fe41b421dbd42ed69196150eef407d82a40541af8e3bebc600d63648584549588bfae4121004e6d1ff8434939902a81594b374460def2
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-valtio@npm:^0.6.4":
+  version: 0.6.4
+  resolution: "eslint-plugin-valtio@npm:0.6.4"
+  checksum: e8147833bf0d0eecaf7e36add2ee5bfe4a3ce8c2a5793f06f1c7072814589b37b73cd44e3d725ce6c0e47f70f7b4965d66f6097c74c0b1298336ad1aca1259f4
   languageName: node
   linkType: hard
 
