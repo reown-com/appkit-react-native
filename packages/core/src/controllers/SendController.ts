@@ -1,7 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils';
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla';
-import { type Balance } from '@web3modal/common-react-native';
-import { erc20ABI } from '@web3modal/common-react-native';
+import { type Balance } from '@reown/appkit-common-react-native';
+import { erc20ABI } from '@reown/appkit-common-react-native';
 // import { RouterController } from './RouterController';
 import { AccountController } from './AccountController';
 import { ConnectionController } from './ConnectionController';

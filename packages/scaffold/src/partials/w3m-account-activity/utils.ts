@@ -1,6 +1,6 @@
-import { DateUtil, type Transaction } from '@web3modal/common-react-native';
-import { TransactionUtil } from '@web3modal/ui-react-native';
-import type { TransactionType } from '@web3modal/ui-react-native/lib/typescript/utils/TypesUtil';
+import { DateUtil, type Transaction } from '@reown/appkit-common-react-native';
+import { TransactionUtil } from '@reown/appkit-ui-react-native';
+import type { TransactionType } from '@reown/appkit-ui-react-native/lib/typescript/utils/TypesUtil';
 
 export function getTransactionListItemProps(transaction: Transaction) {
   const date = DateUtil.formatDate(transaction?.metadata?.minedAt);

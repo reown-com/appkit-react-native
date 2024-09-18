@@ -1,4 +1,4 @@
-import { Spacing } from '@web3modal/ui-react-native';
+import { Spacing } from '@reown/appkit-ui-react-native';
 import { Platform, StyleSheet } from 'react-native';
 
 export default StyleSheet.create({

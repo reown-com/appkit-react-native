@@ -1,4 +1,4 @@
-import type { Transaction } from '@web3modal/common-react-native';
+import type { Transaction } from '@reown/appkit-common-react-native';
 import { proxy, subscribe as sub } from 'valtio/vanilla';
 import { OptionsController } from './OptionsController';
 import { EventsController } from './EventsController';

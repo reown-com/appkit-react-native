@@ -1,7 +1,7 @@
 {
   "root": true,
-  "extends": ["@react-native", "prettier"],
-  "ignorePatterns": ["node_modules/", "build/", "lib/", "dist/", ".turbo", ".expo"],
+  "extends": ["@react-native", "prettier", "plugin:valtio/recommended"],
+  "ignorePatterns": ["node_modules/", "build/", "lib/", "dist/", ".turbo", ".expo", "out/"],
   "rules": {
     "react/react-in-jsx-scope": 0,
     "no-duplicate-imports": "off",

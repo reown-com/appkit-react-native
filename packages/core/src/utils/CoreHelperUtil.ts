@@ -1,7 +1,7 @@
 /* eslint-disable no-bitwise */
 
 import { Linking, Platform } from 'react-native';
-import { ConstantsUtil as CommonConstants, type Balance } from '@web3modal/common-react-native';
+import { ConstantsUtil as CommonConstants, type Balance } from '@reown/appkit-common-react-native';
 
 import { ConstantsUtil } from './ConstantsUtil';
 import type { CaipAddress, DataWallet, LinkingRecord } from './TypeUtil';
@@ -75,7 +75,22 @@ export const CoreHelperUtil = {
     return url.startsWith('http://') || url.startsWith('https://');
   },
 
+  isLinkModeURL(url?: string) {
+    if (!url) {
+      return false;
+    }
+
+    return CoreHelperUtil.isHttpUrl(url) && url.includes('wc_ev');
+  },
+
   formatNativeUrl(appUrl: string, wcUri: string): LinkingRecord {
+    if (CoreHelperUtil.isLinkModeURL(wcUri)) {
+      return {
+        redirect: wcUri,
+        href: wcUri
+      };
+    }
+
     if (CoreHelperUtil.isHttpUrl(appUrl)) {
       return this.formatUniversalUrl(appUrl, wcUri);
     }
@@ -96,6 +111,13 @@ export const CoreHelperUtil = {
   },
 
   formatUniversalUrl(appUrl: string, wcUri: string): LinkingRecord {
+    if (CoreHelperUtil.isLinkModeURL(wcUri)) {
+      return {
+        redirect: wcUri,
+        href: wcUri
+      };
+    }
+
     if (!CoreHelperUtil.isHttpUrl(appUrl)) {
       return this.formatNativeUrl(appUrl, wcUri);
     }
@@ -136,7 +158,7 @@ export const CoreHelperUtil = {
   },
 
   getApiUrl() {
-    return CommonConstants.W3M_API_URL;
+    return CommonConstants.API_URL;
   },
 
   getBlockchainApiUrl() {

@@ -24,7 +24,7 @@ export interface OptionsControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
   projectId: '',
-  sdkType: 'w3m',
+  sdkType: 'appkit',
   sdkVersion: 'react-native-wagmi-undefined'
 });
 

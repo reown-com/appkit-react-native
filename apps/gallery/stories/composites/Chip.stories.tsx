@@ -1,13 +1,7 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Chip } from '@web3modal/ui-react-native';
-import {
-  chipOptions,
-  externalLabel,
-  iconOptions,
-  walletImagesOptions
-} from '../../utils/PresetUtils';
+import { Chip } from '@reown/appkit-ui-react-native';
+import { chipOptions, externalLabel, iconOptions, walletImageSrc } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof Chip> = {
   component: Chip,
@@ -40,7 +34,7 @@ const meta: Meta<typeof Chip> = {
     disabled: false,
     icon: 'disconnect',
     label: externalLabel,
-    imageSrc: walletImagesOptions[3]
+    imageSrc: walletImageSrc
   }
 };
 

@@ -1,6 +1,6 @@
 import { ScrollView } from 'react-native';
-import { FlexView, Text, Banner, NetworkImage } from '@web3modal/ui-react-native';
-import { ApiController, AssetUtil, NetworkController } from '@web3modal/core-react-native';
+import { FlexView, Text, Banner, NetworkImage } from '@reown/appkit-ui-react-native';
+import { ApiController, AssetUtil, NetworkController } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 

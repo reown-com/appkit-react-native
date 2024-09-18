@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { useSnapshot } from 'valtio';
 import {
   ConnectionController,
   ConnectorController,
   EventsController,
   RouterController,
   type WcWallet
-} from '@web3modal/core-react-native';
-import { FlexView, IconLink, SearchBar, Spacing, useTheme } from '@web3modal/ui-react-native';
+} from '@reown/appkit-core-react-native';
+import { FlexView, IconLink, SearchBar, Spacing, useTheme } from '@reown/appkit-ui-react-native';
 
 import styles from './styles';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
@@ -17,7 +16,6 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function AllWalletsView() {
   const Theme = useTheme();
-  const { connectors } = useSnapshot(ConnectorController.state);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { maxWidth } = useCustomDimensions();
   const numColumns = 4;
@@ -27,7 +25,7 @@ export function AllWalletsView() {
   const onInputChange = useDebounceCallback({ callback: setSearchQuery });
 
   const onWalletPress = (wallet: WcWallet) => {
-    const connector = connectors.find(c => c.explorerId === wallet.id);
+    const connector = ConnectorController.state.connectors.find(c => c.explorerId === wallet.id);
     if (connector) {
       RouterController.push('ConnectingExternal', { connector, wallet });
     } else {

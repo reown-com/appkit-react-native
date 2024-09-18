@@ -1,9 +1,9 @@
-import { DateUtil } from '@web3modal/common-react-native';
+import { DateUtil } from '@reown/appkit-common-react-native';
 import type {
   TransactionTransfer,
   Transaction,
   TransactionImage
-} from '@web3modal/common-react-native';
+} from '@reown/appkit-common-react-native';
 import type { TransactionType } from './TypesUtil';
 import { UiUtil } from './UiUtil';
 

@@ -1,30 +1,30 @@
 import { useSnapshot } from 'valtio';
 import { View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { FlexView, Icon, Link, Text, useTheme } from '@web3modal/ui-react-native';
+import { FlexView, Icon, Link, Text, useTheme } from '@reown/appkit-ui-react-native';
 import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
   RouterController,
   SnackController,
-  type W3mFrameProvider
-} from '@web3modal/core-react-native';
+  type AppKitFrameProvider
+} from '@reown/appkit-core-react-native';
 import useTimeout from '../../hooks/useTimeout';
 import styles from './styles';
 
 export function EmailVerifyDeviceView() {
   const Theme = useTheme();
   const { connectors } = useSnapshot(ConnectorController.state);
-  const { data } = useSnapshot(RouterController.state);
+  const { data } = RouterController.state;
   const { timeLeft, startTimer } = useTimeout(0);
   const [loading, setLoading] = useState(false);
-  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
+  const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
 
   const listenForDeviceApproval = async () => {
-    if (emailProvider && data?.email) {
+    if (authProvider && data?.email) {
       try {
-        await emailProvider.connectDevice();
+        await authProvider.connectDevice();
         EventsController.sendEvent({ type: 'track', event: 'DEVICE_REGISTERED_FOR_EMAIL' });
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_SENT' });
         RouterController.replace('EmailVerifyOtp', { email: data.email });
@@ -36,9 +36,9 @@ export function EmailVerifyDeviceView() {
 
   const onResendEmail = async () => {
     try {
-      if (!data?.email || !emailProvider) return;
+      if (!data?.email || !authProvider) return;
       setLoading(true);
-      emailProvider?.connectEmail({ email: data.email });
+      authProvider?.connectEmail({ email: data.email });
       listenForDeviceApproval();
       SnackController.showSuccess('Link resent');
       startTimer(30);

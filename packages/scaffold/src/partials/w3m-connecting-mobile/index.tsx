@@ -10,7 +10,7 @@ import {
   OptionsController,
   EventsController,
   ConstantsUtil
-} from '@web3modal/core-react-native';
+} from '@reown/appkit-core-react-native';
 import {
   Button,
   FlexView,
@@ -18,7 +18,7 @@ import {
   WalletImage,
   Link,
   IconBox
-} from '@web3modal/ui-react-native';
+} from '@reown/appkit-ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { UiUtil } from '../../utils/UiUtil';
@@ -33,11 +33,15 @@ interface Props {
 }
 
 export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
-  const { data } = useSnapshot(RouterController.state);
+  const { data } = RouterController.state;
   const { maxWidth: width } = useCustomDimensions();
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
   const [errorType, setErrorType] = useState<BodyErrorType>();
-  const showCopy = OptionsController.isClipboardAvailable() && errorType !== 'not_installed';
+  const showCopy =
+    OptionsController.isClipboardAvailable() &&
+    errorType !== 'not_installed' &&
+    !CoreHelperUtil.isLinkModeURL(wcUri);
+
   const showRetry = errorType !== 'not_installed';
   const bodyMessage = getMessage({ walletName: data?.wallet?.name, errorType, declined: wcError });
 
@@ -86,7 +90,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         setErrorType('default');
       }
     }
-  }, [data?.wallet, wcUri]);
+  }, [wcUri, data]);
 
   useEffect(() => {
     if (wcUri) {
@@ -105,7 +109,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         <LoadingThumbnail paused={!!errorType || wcError}>
           <WalletImage
             size="xl"
-            imageSrc={AssetUtil.getWalletImage(data?.wallet)}
+            imageSrc={AssetUtil.getWalletImage(RouterController.state.data?.wallet)}
             imageHeaders={ApiController._getApiHeaders()}
           />
           {wcError && (

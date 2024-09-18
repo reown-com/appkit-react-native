@@ -6,7 +6,7 @@ import type { Address, Provider } from './EthersTypesUtil';
 
 export interface EthersStoreUtilState {
   provider?: Provider;
-  providerType?: 'WALLET_CONNECT' | 'COINBASE' | 'EMAIL' | 'EXTERNAL';
+  providerType?: 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
   address?: Address;
   chainId?: number;
   error?: unknown;

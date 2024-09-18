@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { Balance, FlexView, IconLink, Tabs } from '@web3modal/ui-react-native';
+import { Balance, FlexView, IconLink, Tabs } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
   RouterController
-} from '@web3modal/core-react-native';
-import type { Balance as BalanceType } from '@web3modal/common-react-native';
+} from '@reown/appkit-core-react-native';
+import type { Balance as BalanceType } from '@reown/appkit-common-react-native';
 import { AccountNfts } from '../w3m-account-nfts';
 import { AccountActivity } from '../w3m-account-activity';
 import { AccountTokens } from '../w3m-account-tokens';
@@ -21,7 +21,6 @@ export interface AccountWalletFeaturesProps {
 export function AccountWalletFeatures() {
   const [activeTab, setActiveTab] = useState(0);
   const { tokenBalance } = useSnapshot(AccountController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
   const balance = CoreHelperUtil.calculateAndFormatBalance(tokenBalance as BalanceType[]);
 
   const onTabChange = (index: number) => {
@@ -46,7 +45,7 @@ export function AccountWalletFeatures() {
       type: 'track',
       event: 'OPEN_SEND',
       properties: {
-        network: caipNetwork?.id || '',
+        network: NetworkController.state.caipNetwork?.id || '',
         isSmartAccount: false
       }
     });

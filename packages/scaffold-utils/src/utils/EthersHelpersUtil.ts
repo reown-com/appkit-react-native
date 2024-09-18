@@ -1,4 +1,4 @@
-import type { CaipNetwork } from '@web3modal/scaffold-react-native';
+import type { CaipNetwork } from '@reown/appkit-scaffold-react-native';
 import { ConstantsUtil } from './ConstantsUtil';
 import { PresetsUtil } from './PresetsUtil';
 import type { Chain, Provider } from './EthersTypesUtil';

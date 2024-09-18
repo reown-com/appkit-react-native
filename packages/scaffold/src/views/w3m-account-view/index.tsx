@@ -2,13 +2,13 @@ import { useSnapshot } from 'valtio';
 import { useEffect } from 'react';
 import { ScrollView } from 'react-native';
 import {
+  AccountPill,
   FlexView,
   Icon,
   IconLink,
   NetworkButton,
-  AccountPill,
   useTheme
-} from '@web3modal/ui-react-native';
+} from '@reown/appkit-ui-react-native';
 import {
   AccountController,
   ApiController,
@@ -19,10 +19,11 @@ import {
   RouterController,
   SendController,
   SnackController
-} from '@web3modal/core-react-native';
-import { AccountWalletFeatures } from '../../partials/w3m-account-wallet-features';
+} from '@reown/appkit-core-react-native';
+
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
+import { AccountWalletFeatures } from '../../partials/w3m-account-wallet-features';
 
 export function AccountView() {
   const Theme = useTheme();

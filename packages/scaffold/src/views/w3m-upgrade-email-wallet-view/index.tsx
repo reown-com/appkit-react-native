@@ -1,14 +1,14 @@
 import { useSnapshot } from 'valtio';
 import { Linking, StyleSheet } from 'react-native';
-import { Chip, FlexView, Spacing, Text } from '@web3modal/ui-react-native';
-import { ConnectorController, type W3mFrameProvider } from '@web3modal/core-react-native';
+import { Chip, FlexView, Spacing, Text } from '@reown/appkit-ui-react-native';
+import { ConnectorController, type AppKitFrameProvider } from '@reown/appkit-core-react-native';
 
 export function UpgradeEmailWalletView() {
   const { connectors } = useSnapshot(ConnectorController.state);
-  const emailProvider = connectors.find(c => c.type === 'EMAIL')?.provider as W3mFrameProvider;
+  const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
 
   const onLinkPress = () => {
-    const link = emailProvider.getSecureSiteDashboardURL();
+    const link = authProvider.getSecureSiteDashboardURL();
     Linking.canOpenURL(link).then(supported => {
       if (supported) Linking.openURL(link);
     });
@@ -20,9 +20,9 @@ export function UpgradeEmailWalletView() {
       <Chip
         label="secure.walletconnect.com"
         icon="externalLink"
-        imageSrc={emailProvider.getSecureSiteIconURL()}
-        onPress={onLinkPress}
+        imageSrc={authProvider.getSecureSiteIconURL()}
         style={styles.chip}
+        onPress={onLinkPress}
       />
       <Text variant="small-400" color="fg-200">
         You will have to reconnect for security reasons

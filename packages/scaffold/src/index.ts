@@ -1,24 +1,21 @@
-export * from './modal/w3m-account-button';
-export * from './modal/w3m-button';
-export * from './modal/w3m-connect-button';
-export * from './modal/w3m-network-button';
-export * from './modal/w3m-modal';
-export * from './modal/w3m-router';
+export {
+  AccountButton as AccountButton,
+  type AccountButtonProps
+} from './modal/w3m-account-button';
+export { AppKitButton, type AppKitButtonProps } from './modal/w3m-button';
+export {
+  ConnectButton as ConnectButton,
+  type ConnectButtonProps as ConnectButtonProps
+} from './modal/w3m-connect-button';
+export {
+  NetworkButton as NetworkButton,
+  type NetworkButtonProps as NetworkButtonProps
+} from './modal/w3m-network-button';
+export { AppKit } from './modal/w3m-modal';
+export { AppKitRouter } from './modal/w3m-router';
 
-export * from './views/w3m-account-default-view';
-export * from './views/w3m-all-wallets-view';
-export * from './views/w3m-connect-view';
-export * from './views/w3m-connecting-view';
-export * from './views/w3m-get-wallet-view';
-export * from './views/w3m-what-is-a-wallet-view';
-
-export * from './partials/w3m-connecting-mobile';
-export * from './partials/w3m-connecting-qrcode';
-
-export * from './partials/w3m-header';
-
-export { Web3ModalScaffold } from './client';
+export { AppKitScaffold } from './client';
 export type { LibraryOptions, ScaffoldOptions } from './client';
 
-export type * from '@web3modal/core-react-native';
-export { CoreHelperUtil } from '@web3modal/core-react-native';
+export type * from '@reown/appkit-core-react-native';
+export { CoreHelperUtil } from '@reown/appkit-core-react-native';

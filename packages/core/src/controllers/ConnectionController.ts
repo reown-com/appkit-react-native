@@ -10,7 +10,6 @@ import type {
 } from '../utils/TypeUtil';
 import { RouterController } from './RouterController';
 import { ConnectorController } from './ConnectorController';
-import { TransactionsController } from './TransactionsController';
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -21,7 +20,10 @@ export interface ConnectExternalOptions {
 }
 
 export interface ConnectionControllerClient {
-  connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>;
+  connectWalletConnect: (
+    onUri: (uri: string) => void,
+    walletUniversalLink?: string
+  ) => Promise<void>;
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>;
   signMessage: (message: string) => Promise<string>;
   sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>;
@@ -76,13 +78,13 @@ export const ConnectionController = {
     state._client = ref(client);
   },
 
-  connectWalletConnect() {
+  connectWalletConnect(walletUniversalLink?: string) {
     state.wcPromise = this._getClient().connectWalletConnect(uri => {
       state.wcUri = uri;
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry();
       ConnectorController.setConnectedConnector('WALLET_CONNECT');
       StorageUtil.setConnectedConnector('WALLET_CONNECT');
-    });
+    }, walletUniversalLink);
   },
 
   async connectExternal(options: ConnectExternalOptions) {
@@ -157,7 +159,6 @@ export const ConnectionController = {
     state.pressedWallet = undefined;
     state.connectedWalletImageUrl = undefined;
     ConnectorController.setConnectedConnector(undefined);
-    TransactionsController.resetTransactions();
     StorageUtil.removeWalletConnectDeepLink();
     StorageUtil.removeConnectedWalletImageUrl();
     StorageUtil.removeConnectedConnector();
@@ -166,6 +167,7 @@ export const ConnectionController = {
   async disconnect() {
     await this._getClient().disconnect();
     this.resetWcConnection();
+    // remove transactions
     RouterController.reset('Connect');
   }
 };

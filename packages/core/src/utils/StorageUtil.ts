@@ -4,9 +4,9 @@ import type { ConnectorType, WcWallet } from './TypeUtil';
 
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE';
-const W3M_RECENT = '@w3m/recent';
-const W3M_CONNECTED_WALLET_IMAGE_URL = '@w3m/connected_wallet_image_url';
-const W3M_CONNECTED_CONNECTOR = '@w3m/connected_connector';
+const RECENT_WALLET = '@w3m/recent';
+const CONNECTED_WALLET_IMAGE_URL = '@w3m/connected_wallet_image_url';
+const CONNECTED_CONNECTOR = '@w3m/connected_connector';
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -52,7 +52,7 @@ export const StorageUtil = {
       if (recentWallets.length > 2) {
         recentWallets.pop();
       }
-      AsyncStorage.setItem(W3M_RECENT, JSON.stringify(recentWallets));
+      AsyncStorage.setItem(RECENT_WALLET, JSON.stringify(recentWallets));
 
       return recentWallets;
     } catch {
@@ -64,7 +64,7 @@ export const StorageUtil = {
 
   async setRecentWallets(wallets: WcWallet[]) {
     try {
-      await AsyncStorage.setItem(W3M_RECENT, JSON.stringify(wallets));
+      await AsyncStorage.setItem(RECENT_WALLET, JSON.stringify(wallets));
     } catch {
       console.info('Unable to set recent wallets');
     }
@@ -72,7 +72,7 @@ export const StorageUtil = {
 
   async getRecentWallets(): Promise<WcWallet[]> {
     try {
-      const recent = await AsyncStorage.getItem(W3M_RECENT);
+      const recent = await AsyncStorage.getItem(RECENT_WALLET);
 
       return recent ? JSON.parse(recent) : [];
     } catch {
@@ -84,7 +84,7 @@ export const StorageUtil = {
 
   async setConnectedConnector(connectorType: ConnectorType) {
     try {
-      await AsyncStorage.setItem(W3M_CONNECTED_CONNECTOR, JSON.stringify(connectorType));
+      await AsyncStorage.setItem(CONNECTED_CONNECTOR, JSON.stringify(connectorType));
     } catch {
       console.info('Unable to set Connected Connector');
     }
@@ -92,7 +92,7 @@ export const StorageUtil = {
 
   async getConnectedConnector() {
     try {
-      const connector = (await AsyncStorage.getItem(W3M_CONNECTED_CONNECTOR)) as ConnectorType;
+      const connector = (await AsyncStorage.getItem(CONNECTED_CONNECTOR)) as ConnectorType;
 
       return connector ? JSON.parse(connector) : undefined;
     } catch {
@@ -104,7 +104,7 @@ export const StorageUtil = {
 
   async removeConnectedConnector() {
     try {
-      await AsyncStorage.removeItem(W3M_CONNECTED_CONNECTOR);
+      await AsyncStorage.removeItem(CONNECTED_CONNECTOR);
     } catch {
       console.info('Unable to remove Connected Connector');
     }
@@ -112,7 +112,7 @@ export const StorageUtil = {
 
   async setConnectedWalletImageUrl(url: string) {
     try {
-      await AsyncStorage.setItem(W3M_CONNECTED_WALLET_IMAGE_URL, url);
+      await AsyncStorage.setItem(CONNECTED_WALLET_IMAGE_URL, url);
     } catch {
       console.info('Unable to set Connected Wallet Image URL');
     }
@@ -120,7 +120,7 @@ export const StorageUtil = {
 
   async getConnectedWalletImageUrl() {
     try {
-      return await AsyncStorage.getItem(W3M_CONNECTED_WALLET_IMAGE_URL);
+      return await AsyncStorage.getItem(CONNECTED_WALLET_IMAGE_URL);
     } catch {
       console.info('Unable to get Connected Wallet Image URL');
     }
@@ -130,7 +130,7 @@ export const StorageUtil = {
 
   async removeConnectedWalletImageUrl() {
     try {
-      await AsyncStorage.removeItem(W3M_CONNECTED_WALLET_IMAGE_URL);
+      await AsyncStorage.removeItem(CONNECTED_WALLET_IMAGE_URL);
     } catch {
       console.info('Unable to remove Connected Wallet Image URL');
     }

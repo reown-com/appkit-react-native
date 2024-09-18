@@ -6,14 +6,14 @@ import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import {
-  Web3Modal,
-  W3mButton,
-  W3mNetworkButton,
-  createWeb3Modal,
+  AppKit,
+  AppKitButton,
+  NetworkButton,
+  createAppKit,
   defaultWagmiConfig
-} from '@web3modal/wagmi-react-native';
+} from '@reown/appkit-wagmi-react-native';
 
-import { emailConnector } from '@web3modal/email-wagmi-react-native';
+import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
 
 import { siweConfig } from './src/utils/SiweUtils';
 
@@ -26,11 +26,13 @@ const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
 const metadata = {
   name: 'AppKit RN',
-  description: 'AppKit RN by WalletConnect',
-  url: 'https://walletconnect.com/',
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
+  description: 'AppKit RN by Reown',
+  url: 'https://reown.com/appkit',
+  icons: ['https://avatars.githubusercontent.com/u/179229932'],
   redirect: {
-    native: 'redirect://'
+    native: 'redirect://',
+    universal: 'https://appkit-lab.reown.com/rn_appkit',
+    linkMode: true
   }
 };
 
@@ -40,20 +42,20 @@ const clipboardClient = {
   }
 };
 
-const emailConn = emailConnector({ projectId, metadata });
+const auth = authConnector({ projectId, metadata });
 
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
   metadata,
-  extraConnectors: [emailConn]
+  extraConnectors: [auth]
 });
 
 const queryClient = new QueryClient();
 
 const customWallets = getCustomWallets();
 
-createWeb3Modal({
+createAppKit({
   projectId,
   wagmiConfig,
   siweConfig,
@@ -71,17 +73,17 @@ export default function Native() {
       <QueryClientProvider client={queryClient}>
         <View style={[styles.container, isDarkMode && styles.dark]}>
           <StatusBar style="auto" />
-          <W3mButton
+          <AppKitButton
             connectStyle={styles.button}
             accountStyle={styles.button}
             label="Connect"
             loadingLabel="Connecting..."
             balance="show"
           />
-          <W3mNetworkButton />
+          <NetworkButton />
           <AccountView />
           <ActionsView />
-          <Web3Modal />
+          <AppKit />
         </View>
       </QueryClientProvider>
     </WagmiProvider>

@@ -8,8 +8,8 @@ import {
   LoadingSpinner,
   Text,
   TransactionUtil
-} from '@web3modal/ui-react-native';
-import { type Transaction, type TransactionImage } from '@web3modal/common-react-native';
+} from '@reown/appkit-ui-react-native';
+import { type Transaction, type TransactionImage } from '@reown/appkit-common-react-native';
 import {
   AccountController,
   AssetUtil,
@@ -17,7 +17,7 @@ import {
   NetworkController,
   OptionsController,
   TransactionsController
-} from '@web3modal/core-react-native';
+} from '@reown/appkit-core-react-native';
 import { AccountPlaceholder } from '../w3m-account-placeholder';
 import { getTransactionListItemProps } from './utils';
 import styles from './styles';
@@ -28,20 +28,18 @@ interface Props {
 
 export function AccountActivity({ style }: Props) {
   const { loading, transactions, next } = useSnapshot(TransactionsController.state);
-  const { address } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
-  const { projectId } = useSnapshot(OptionsController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
 
   const handleLoadMore = () => {
-    TransactionsController.fetchTransactions(address);
+    TransactionsController.fetchTransactions(AccountController.state.address);
     EventsController.sendEvent({
       type: 'track',
       event: 'LOAD_MORE_TRANSACTIONS',
       properties: {
-        address: address,
-        projectId,
-        cursor: next,
+        address: AccountController.state.address,
+        projectId: OptionsController.state.projectId,
+        cursor: TransactionsController.state.next,
         isSmartAccount: false
       }
     });

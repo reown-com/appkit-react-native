@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSnapshot } from 'valtio';
 import { Platform } from 'react-native';
 import {
   ConnectorController,
@@ -7,20 +6,20 @@ import {
   RouterController,
   SnackController,
   EventsController,
-  type W3mFrameProvider
-} from '@web3modal/core-react-native';
-import { Button, EmailInput, FlexView, Spacing, Text } from '@web3modal/ui-react-native';
+  type AppKitFrameProvider
+} from '@reown/appkit-core-react-native';
+import { Button, EmailInput, FlexView, Spacing, Text } from '@reown/appkit-ui-react-native';
 import { useKeyboard } from '../../hooks/useKeyboard';
 
 import styles from './styles';
 
 export function UpdateEmailWalletView() {
-  const { data } = useSnapshot(RouterController.state);
+  const { data } = RouterController.state;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [email, setEmail] = useState(data?.email || '');
   const [isValidNewEmail, setIsValidNewEmail] = useState(false);
-  const emailConnector = ConnectorController.getEmailConnector();
+  const authConnector = ConnectorController.getAuthConnector();
   const { keyboardShown, keyboardHeight } = useKeyboard();
   const paddingBottom = Platform.select({
     android: keyboardShown ? keyboardHeight + Spacing.l : Spacing.l,
@@ -34,9 +33,9 @@ export function UpdateEmailWalletView() {
   };
 
   const onEmailSubmit = async (value: string) => {
-    if (!emailConnector) return;
+    if (!authConnector) return;
 
-    const provider = emailConnector.provider as W3mFrameProvider;
+    const provider = authConnector.provider as AppKitFrameProvider;
     setLoading(true);
     setError('');
 

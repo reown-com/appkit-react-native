@@ -12,7 +12,7 @@ import {
   OptionsController,
   ApiController,
   EventsController
-} from '@web3modal/core-react-native';
+} from '@reown/appkit-core-react-native';
 
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
 import { ConnectingMobile } from '../../partials/w3m-connecting-mobile';
@@ -22,7 +22,7 @@ import { UiUtil } from '../../utils/UiUtil';
 
 export function ConnectingView() {
   const { installed } = useSnapshot(ApiController.state);
-  const { data } = useSnapshot(RouterController.state);
+  const { data } = RouterController.state;
   const [lastRetry, setLastRetry] = useState(Date.now());
   const isQr = !data?.wallet;
   const isInstalled = !!installed?.find(wallet => wallet.id === data?.wallet?.id);
@@ -43,14 +43,15 @@ export function ConnectingView() {
   const initializeConnection = async (retry = false) => {
     try {
       const { wcPairingExpiry } = ConnectionController.state;
+      const { data: routeData } = RouterController.state;
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.setWcError(false);
-        ConnectionController.connectWalletConnect();
+        ConnectionController.connectWalletConnect(routeData?.wallet?.link_mode ?? undefined);
         await ConnectionController.state.wcPromise;
         AccountController.setIsConnected(true);
 
         if (OptionsController.state.isSiweEnabled) {
-          const { SIWEController } = await import('@web3modal/siwe-react-native');
+          const { SIWEController } = await import('@reown/appkit-siwe-react-native');
           if (SIWEController.state.status === 'success') {
             ModalController.close();
           } else {

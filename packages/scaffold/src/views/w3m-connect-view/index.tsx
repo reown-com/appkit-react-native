@@ -6,8 +6,8 @@ import {
   EventsController,
   RouterController,
   type WcWallet
-} from '@web3modal/core-react-native';
-import { FlexView, Spacing } from '@web3modal/ui-react-native';
+} from '@reown/appkit-core-react-native';
+import { FlexView, Spacing } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectEmailInput } from './components/connect-email-input';
 import { useKeyboard } from '../../hooks/useKeyboard';
@@ -19,12 +19,13 @@ import { RecentWalletList } from './components/recent-wallet-list';
 import styles from './styles';
 
 export function ConnectView() {
-  const { connectors, emailLoading } = useSnapshot(ConnectorController.state);
+  const connectors = ConnectorController.state.connectors;
+  const { authLoading } = useSnapshot(ConnectorController.state);
   const { padding } = useCustomDimensions();
   const { keyboardShown, keyboardHeight } = useKeyboard();
 
   const isWalletConnectEnabled = connectors.some(c => c.type === 'WALLET_CONNECT');
-  const isEmailEnabled = connectors.some(c => c.type === 'EMAIL');
+  const isAuthEnabled = connectors.some(c => c.type === 'AUTH');
   const isCoinbaseEnabled = connectors.some(c => c.type === 'COINBASE');
 
   const paddingBottom = Platform.select({
@@ -61,9 +62,9 @@ export function ConnectView() {
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
       <FlexView padding={['xs', '0', '0', '0']} style={{ paddingBottom }}>
         <ConnectEmailInput
-          isEmailEnabled={isEmailEnabled}
+          isEmailEnabled={isAuthEnabled}
           showSeparator={isWalletConnectEnabled || isCoinbaseEnabled}
-          loading={emailLoading}
+          loading={authLoading}
         />
         <FlexView padding={['0', 's', '0', 's']}>
           <RecentWalletList

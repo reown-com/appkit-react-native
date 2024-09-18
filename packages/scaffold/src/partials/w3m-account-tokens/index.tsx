@@ -5,8 +5,8 @@ import {
   AssetUtil,
   NetworkController,
   RouterController
-} from '@web3modal/core-react-native';
-import { FlexView, ListItem, Text, ListToken } from '@web3modal/ui-react-native';
+} from '@reown/appkit-core-react-native';
+import { FlexView, ListItem, Text, ListToken } from '@reown/appkit-ui-react-native';
 
 interface Props {
   style?: StyleProp<ViewStyle>;

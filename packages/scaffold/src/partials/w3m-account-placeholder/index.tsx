@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { IconBox, Text, FlexView, Spacing, type IconType } from '@web3modal/ui-react-native';
+import { IconBox, Text, FlexView, Spacing, type IconType } from '@reown/appkit-ui-react-native';
 
 interface Props {
   icon: IconType;

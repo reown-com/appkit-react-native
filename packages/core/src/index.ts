@@ -53,6 +53,7 @@ export {
 export { SendController, type SendControllerState } from './controllers/SendController';
 
 // -- Utils -------------------------------------------------------------------
+export { ApiUtil } from './utils/ApiUtil';
 export { AssetUtil } from './utils/AssetUtil';
 export { ConstantsUtil } from './utils/ConstantsUtil';
 export { CoreHelperUtil } from './utils/CoreHelperUtil';

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Platform, ScrollView } from 'react-native';
 import { useSnapshot } from 'valtio';
-import { AccountController, SendController } from '@web3modal/core-react-native';
+import { AccountController, SendController } from '@reown/appkit-core-react-native';
 import {
   Button,
   FlexView,
@@ -9,7 +9,7 @@ import {
   LoadingSpinner,
   Spacing,
   Text
-} from '@web3modal/ui-react-native';
+} from '@reown/appkit-ui-react-native';
 import { InputToken } from '../../partials/w3m-input-token/intex';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { useKeyboard } from '../../hooks/useKeyboard';
@@ -29,11 +29,15 @@ export function WalletSendView() {
   });
 
   const onSendPress = () => {
-    if (loading) return;
+    if (SendController.state.loading) return;
   };
 
   const getActionText = () => {
-    if (token && sendTokenAmount && sendTokenAmount > Number(token.quantity.numeric)) {
+    if (
+      SendController.state.token &&
+      SendController.state.sendTokenAmount &&
+      SendController.state.sendTokenAmount > Number(SendController.state.token.quantity.numeric)
+    ) {
       return 'Insufficient balance';
     }
 

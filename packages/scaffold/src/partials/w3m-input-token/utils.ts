@@ -1,5 +1,5 @@
-import { type Balance, NumberUtil } from '@web3modal/common-react-native';
-import { UiUtil } from '@web3modal/ui-react-native';
+import { type Balance, NumberUtil } from '@reown/appkit-common-react-native';
+import { UiUtil } from '@reown/appkit-ui-react-native';
 
 export function getSendValue(token?: Balance, sendTokenAmount?: number) {
   if (token && sendTokenAmount) {

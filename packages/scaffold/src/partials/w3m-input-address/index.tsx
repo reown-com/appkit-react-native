@@ -1,6 +1,6 @@
 import { TextInput } from 'react-native';
-import { FlexView, useTheme } from '@web3modal/ui-react-native';
-import { SendController } from '@web3modal/core-react-native';
+import { FlexView, useTheme } from '@reown/appkit-ui-react-native';
+import { SendController } from '@reown/appkit-core-react-native';
 import styles from './styles';
 
 export interface InputAddressProps {

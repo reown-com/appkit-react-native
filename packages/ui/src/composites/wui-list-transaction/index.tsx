@@ -1,4 +1,4 @@
-import { type TransactionImage, type TransactionStatus } from '@web3modal/common-react-native';
+import { type TransactionImage, type TransactionStatus } from '@reown/appkit-common-react-native';
 
 import type { TransactionType } from '../../utils/TypesUtil';
 import { Text } from '../../components/wui-text';

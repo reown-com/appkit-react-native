@@ -1,4 +1,4 @@
-import type { TransactionStatus } from '@web3modal/common-react-native';
+import type { TransactionStatus } from '@reown/appkit-common-react-native';
 import type { IconType, TransactionType } from '../../utils/TypesUtil';
 
 export const getIcon = (type: TransactionType): IconType => {

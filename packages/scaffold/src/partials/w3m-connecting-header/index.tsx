@@ -1,5 +1,5 @@
-import type { Platform } from '@web3modal/core-react-native';
-import { FlexView, Tabs, type IconType } from '@web3modal/ui-react-native';
+import type { Platform } from '@reown/appkit-core-react-native';
+import { FlexView, Tabs, type IconType } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export interface ConnectingHeaderProps {

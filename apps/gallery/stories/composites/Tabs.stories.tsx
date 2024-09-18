@@ -1,7 +1,6 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Tabs } from '@web3modal/ui-react-native';
+import { Tabs } from '@reown/appkit-ui-react-native';
 
 const meta: Meta<typeof Tabs> = {
   component: Tabs,

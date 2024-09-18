@@ -1,4 +1,4 @@
-import type { TransactionImage } from '@web3modal/common-react-native';
+import type { TransactionImage } from '@reown/appkit-common-react-native';
 
 import { FlexView } from '../../layout/wui-flex';
 import { Icon } from '../../components/wui-icon';

@@ -8,7 +8,7 @@ import {
   Spacing,
   Text,
   UiUtil
-} from '@web3modal/ui-react-native';
+} from '@reown/appkit-ui-react-native';
 import {
   AccountController,
   ApiController,
@@ -17,7 +17,7 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@web3modal/core-react-native';
+} from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function WalletReceiveView() {
@@ -44,8 +44,10 @@ export function WalletReceiveView() {
   };
 
   const onCopyAddress = () => {
-    if (canCopy && address) {
-      OptionsController.copyToClipboard(profileName ?? address);
+    if (canCopy && AccountController.state.address) {
+      OptionsController.copyToClipboard(
+        AccountController.state.profileName ?? AccountController.state.address
+      );
       SnackController.showSuccess('Address copied');
     }
   };

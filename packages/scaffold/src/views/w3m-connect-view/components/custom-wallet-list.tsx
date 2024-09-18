@@ -7,8 +7,8 @@ import {
   ApiController,
   ConnectionController,
   type ConnectionControllerState
-} from '@web3modal/core-react-native';
-import { ListWallet } from '@web3modal/ui-react-native';
+} from '@reown/appkit-core-react-native';
+import { ListWallet } from '@reown/appkit-ui-react-native';
 import { filterOutRecentWallets } from '../utils';
 
 interface Props {

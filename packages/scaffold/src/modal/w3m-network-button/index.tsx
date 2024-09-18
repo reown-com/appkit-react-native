@@ -7,15 +7,15 @@ import {
   EventsController,
   ModalController,
   NetworkController
-} from '@web3modal/core-react-native';
-import { NetworkButton } from '@web3modal/ui-react-native';
+} from '@reown/appkit-core-react-native';
+import { NetworkButton as NetworkButtonUI } from '@reown/appkit-ui-react-native';
 
-export interface W3mNetworkButtonProps {
+export interface NetworkButtonProps {
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
-export function W3mNetworkButton({ disabled, style }: W3mNetworkButtonProps) {
+export function NetworkButton({ disabled, style }: NetworkButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { loading } = useSnapshot(ModalController.state);
@@ -29,7 +29,7 @@ export function W3mNetworkButton({ disabled, style }: W3mNetworkButtonProps) {
   };
 
   return (
-    <NetworkButton
+    <NetworkButtonUI
       imageSrc={AssetUtil.getNetworkImage(caipNetwork)}
       imageHeaders={ApiController._getApiHeaders()}
       disabled={disabled || loading}
@@ -38,6 +38,6 @@ export function W3mNetworkButton({ disabled, style }: W3mNetworkButtonProps) {
       loading={loading}
     >
       {caipNetwork?.name ?? (isConnected ? 'Unknown Network' : 'Select Network')}
-    </NetworkButton>
+    </NetworkButtonUI>
   );
 }

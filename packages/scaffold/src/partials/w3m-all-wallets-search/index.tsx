@@ -1,7 +1,6 @@
-import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
-import { ApiController, AssetUtil, type WcWallet } from '@web3modal/core-react-native';
+import { ApiController, AssetUtil, type WcWallet } from '@reown/appkit-core-react-native';
 import {
   CardSelect,
   CardSelectHeight,
@@ -10,7 +9,7 @@ import {
   IconBox,
   Spacing,
   Text
-} from '@web3modal/ui-react-native';
+} from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
@@ -28,7 +27,6 @@ export function AllWalletsSearch({
   onItemPress
 }: AllWalletsSearchProps) {
   const [loading, setLoading] = useState<boolean>(false);
-  const { search, installed } = useSnapshot(ApiController.state);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const imageHeaders = ApiController._getApiHeaders();
   const { maxWidth, padding, isLandscape } = useCustomDimensions();
@@ -36,7 +34,7 @@ export function AllWalletsSearch({
   const ITEM_HEIGHT = CardSelectHeight + Spacing.xs * 2;
 
   const walletTemplate = ({ item }: { item: WcWallet }) => {
-    const isInstalled = installed.find(wallet => wallet?.id === item?.id);
+    const isInstalled = ApiController.state.installed.find(wallet => wallet?.id === item?.id);
 
     return (
       <View key={item?.id} style={[styles.itemContainer, { width: itemWidth }]}>
@@ -106,7 +104,7 @@ export function AllWalletsSearch({
     return loadingTemplate(20);
   }
 
-  if (search.length === 0) {
+  if (ApiController.state.search.length === 0) {
     return emptyTemplate();
   }
 
@@ -116,7 +114,7 @@ export function AllWalletsSearch({
       fadingEdgeLength={20}
       bounces={false}
       numColumns={columns}
-      data={search}
+      data={ApiController.state.search}
       renderItem={walletTemplate}
       style={styles.container}
       contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding + Spacing.xs }]}

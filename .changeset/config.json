@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@2.3.1/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "WalletConnect/web3modal-react-native" }],
+  "changelog": ["@changesets/changelog-github", { "repo": "reown-com/appkit-react-native" }],
   "access": "public",
   "baseBranch": "main",
   "commit": false,

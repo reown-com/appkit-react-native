@@ -1,4 +1,4 @@
-import type { Tokens } from '@web3modal/scaffold-react-native';
+import type { Tokens } from '@reown/appkit-scaffold-react-native';
 import { ConstantsUtil } from './ConstantsUtil';
 
 export const HelpersUtil = {

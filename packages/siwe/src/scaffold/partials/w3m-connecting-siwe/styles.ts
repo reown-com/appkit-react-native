@@ -1,4 +1,4 @@
-import { BorderRadius } from '@web3modal/ui-react-native';
+import { BorderRadius } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({

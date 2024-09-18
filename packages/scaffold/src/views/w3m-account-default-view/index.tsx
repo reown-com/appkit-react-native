@@ -14,8 +14,8 @@ import {
   OptionsController,
   RouterController,
   SnackController,
-  type W3mFrameProvider
-} from '@web3modal/core-react-native';
+  type AppKitFrameProvider
+} from '@reown/appkit-core-react-native';
 import {
   Avatar,
   Button,
@@ -25,7 +25,7 @@ import {
   UiUtil,
   Spacing,
   ListItem
-} from '@web3modal/ui-react-native';
+} from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { UpgradeWalletButton } from './components/upgrade-wallet-button';
 import styles from './styles';
@@ -39,9 +39,9 @@ export function AccountDefaultView() {
   const { history } = useSnapshot(RouterController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
-  const isEmail = connectedConnector === 'EMAIL';
-  const showBalance = balance && !isEmail;
-  const showExplorer = addressExplorerUrl && !isEmail;
+  const isAuth = connectedConnector === 'AUTH';
+  const showBalance = balance && !isAuth;
+  const showExplorer = addressExplorerUrl && !isAuth;
   const showBack = history.length > 1;
   const { padding } = useCustomDimensions();
 
@@ -65,21 +65,23 @@ export function AccountDefaultView() {
   }
 
   const getUserEmail = () => {
-    const provider = ConnectorController.getEmailConnector()?.provider as W3mFrameProvider;
+    const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
     if (!provider) return '';
 
     return provider.getEmail();
   };
 
   const onExplorerPress = () => {
-    if (addressExplorerUrl) {
-      Linking.openURL(addressExplorerUrl);
+    if (AccountController.state.addressExplorerUrl) {
+      Linking.openURL(AccountController.state.addressExplorerUrl);
     }
   };
 
   const onCopyAddress = () => {
-    if (address) {
-      OptionsController.copyToClipboard(profileName ?? address);
+    if (AccountController.state.address) {
+      OptionsController.copyToClipboard(
+        AccountController.state.profileName ?? AccountController.state.address
+      );
       SnackController.showSuccess('Address copied');
     }
   };
@@ -159,7 +161,7 @@ export function AccountDefaultView() {
             </Button>
           )}
           <FlexView margin={['s', '0', '0', '0']}>
-            {isEmail && (
+            {isAuth && (
               <>
                 <UpgradeWalletButton onPress={onUpgradePress} style={styles.upgradeButton} />
                 <ListItem
@@ -187,7 +189,7 @@ export function AccountDefaultView() {
                 {caipNetwork?.name}
               </Text>
             </ListItem>
-            {!isEmail && (
+            {!isAuth && (
               <ListItem
                 chevron
                 icon="swapHorizontal"

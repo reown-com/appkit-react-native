@@ -4,8 +4,8 @@ import {
   AssetUtil,
   type WcWallet,
   ConnectionController
-} from '@web3modal/core-react-native';
-import { ListWallet } from '@web3modal/ui-react-native';
+} from '@reown/appkit-core-react-native';
+import { ListWallet } from '@reown/appkit-ui-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export function RecentWalletList({ itemStyle, onWalletPress, isWalletConnectEnabled }: Props) {
-  const { installed } = useSnapshot(ApiController.state);
+  const installed = ApiController.state.installed;
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const RECENT_COUNT = recentWallets?.length && installed.length ? 1 : recentWallets?.length ?? 0;

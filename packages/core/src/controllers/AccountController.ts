@@ -1,9 +1,9 @@
 import { proxy } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
+import type { Balance } from '@reown/appkit-common-react-native';
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import type { CaipAddress, ConnectedWalletInfo } from '../utils/TypeUtil';
-import type { Balance } from '@web3modal/common-react-native';
 import { NetworkController } from './NetworkController';
 import { BlockchainApiController } from './BlockchainApiController';
 import { SnackController } from './SnackController';

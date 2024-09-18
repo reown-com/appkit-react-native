@@ -1,28 +1,31 @@
 import { useSnapshot } from 'valtio';
-import { ModalController } from '@web3modal/core-react-native';
-import { ConnectButton, type ConnectButtonProps } from '@web3modal/ui-react-native';
+import { ModalController } from '@reown/appkit-core-react-native';
+import {
+  ConnectButton as ConnectButtonUI,
+  type ConnectButtonProps as ConnectButtonUIProps
+} from '@reown/appkit-ui-react-native';
 
-export interface W3mConnectButtonProps {
+export interface ConnectButtonProps {
   label: string;
   loadingLabel: string;
-  size?: ConnectButtonProps['size'];
-  style?: ConnectButtonProps['style'];
-  disabled?: ConnectButtonProps['disabled'];
+  size?: ConnectButtonUIProps['size'];
+  style?: ConnectButtonUIProps['style'];
+  disabled?: ConnectButtonUIProps['disabled'];
   testID?: string;
 }
 
-export function W3mConnectButton({
+export function ConnectButton({
   label,
   loadingLabel,
   size = 'md',
   style,
   disabled,
   testID
-}: W3mConnectButtonProps) {
+}: ConnectButtonProps) {
   const { open, loading } = useSnapshot(ModalController.state);
 
   return (
-    <ConnectButton
+    <ConnectButtonUI
       onPress={() => ModalController.open()}
       size={size}
       loading={loading || open}
@@ -31,6 +34,6 @@ export function W3mConnectButton({
       disabled={disabled}
     >
       {loading || open ? loadingLabel : label}
-    </ConnectButton>
+    </ConnectButtonUI>
   );
 }

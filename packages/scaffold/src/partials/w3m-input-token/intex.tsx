@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { TextInput, type StyleProp, type ViewStyle } from 'react-native';
-import { FlexView, Link, Text, useTheme, TokenButton } from '@web3modal/ui-react-native';
-import { NumberUtil, type Balance } from '@web3modal/common-react-native';
-import { SendController } from '@web3modal/core-react-native';
+import { FlexView, Link, Text, useTheme, TokenButton } from '@reown/appkit-ui-react-native';
+import { NumberUtil, type Balance } from '@reown/appkit-common-react-native';
+import { SendController } from '@reown/appkit-core-react-native';
 
 import styles from './styles';
 import { getMaxAmount, getSendValue } from './utils';

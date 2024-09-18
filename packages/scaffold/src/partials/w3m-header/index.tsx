@@ -1,19 +1,21 @@
-import { useSnapshot } from 'valtio';
-import { RouterController, ModalController, EventsController } from '@web3modal/core-react-native';
-import { IconLink, Text, FlexView } from '@web3modal/ui-react-native';
+import {
+  RouterController,
+  ModalController,
+  EventsController
+} from '@reown/appkit-core-react-native';
+import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
 
 export function Header() {
-  const { view, history } = useSnapshot(RouterController.state);
-
   const onHelpPress = () => {
     RouterController.push('WhatIsAWallet');
     EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' });
   };
 
   const headings = () => {
-    const connectorName = RouterController.state.data?.connector?.name;
-    const walletName = RouterController.state.data?.wallet?.name;
-    const networkName = RouterController.state.data?.network?.name;
+    const { data } = RouterController.state;
+    const connectorName = data?.connector?.name;
+    const walletName = data?.wallet?.name;
+    const networkName = data?.network?.name;
 
     return {
       Account: undefined,
@@ -43,11 +45,13 @@ export function Header() {
     };
   };
 
-  const header = headings()[view];
+  const header = headings()[RouterController.state.view];
 
   const dynamicButtonTemplate = () => {
     const hideBackViews = ['ConnectingSiwe'];
-    const showBack = history.length > 1 && !hideBackViews.includes(view);
+    const showBack =
+      RouterController.state.history.length > 1 &&
+      !hideBackViews.includes(RouterController.state.view);
 
     return showBack ? (
       <IconLink

@@ -1,5 +1,5 @@
-import type { W3mFrameProvider } from '@web3modal/core-react-native';
-export type { W3mFrameProvider } from '@web3modal/core-react-native';
+import type { AppKitFrameProvider } from '@reown/appkit-core-react-native';
+export type { AppKitFrameProvider } from '@reown/appkit-core-react-native';
 
 export interface IEthersConfig {
   providers: ProviderType;
@@ -10,7 +10,7 @@ export type Address = `0x${string}`;
 
 export type ProviderType = {
   metadata: Metadata;
-  extraConnectors?: (Provider | W3mFrameProvider)[];
+  extraConnectors?: (Provider | AppKitFrameProvider)[];
 };
 
 export interface RequestArguments {
@@ -38,7 +38,7 @@ export type Metadata = {
   };
 };
 
-export type CombinedProviderType = Provider & W3mFrameProvider;
+export type CombinedProviderType = Provider & AppKitFrameProvider;
 
 export type Chain = {
   rpcUrl: string;

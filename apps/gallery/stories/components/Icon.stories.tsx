@@ -1,7 +1,6 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Icon } from '@web3modal/ui-react-native';
+import { Icon } from '@reown/appkit-ui-react-native';
 import { colorOptions, iconOptions } from '../../utils/PresetUtils';
 
 const meta: Meta<typeof Icon> = {
