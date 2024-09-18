@@ -12,8 +12,8 @@ export type Metadata = {
 
 type AuthConnectorOptions = {
   /**
-   * WalletConnect Cloud Project ID.
-   * @link https://cloud.walletconnect.com/sign-in.
+   * Reown Cloud Project ID.
+   * @link https://cloud.reown.com/sign-in.
    */
   projectId: string;
   metadata: Metadata;
