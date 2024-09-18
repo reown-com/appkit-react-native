@@ -22,7 +22,7 @@ import { UiUtil } from '../../utils/UiUtil';
 
 export function ConnectingView() {
   const { installed } = useSnapshot(ApiController.state);
-  const { data } = useSnapshot(RouterController.state);
+  const { data } = RouterController.state;
   const [lastRetry, setLastRetry] = useState(Date.now());
   const isQr = !data?.wallet;
   const isInstalled = !!installed?.find(wallet => wallet.id === data?.wallet?.id);

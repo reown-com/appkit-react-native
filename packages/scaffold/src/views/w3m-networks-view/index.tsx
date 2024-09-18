@@ -1,4 +1,3 @@
-import { useSnapshot } from 'valtio';
 import { ScrollView, View } from 'react-native';
 import {
   CardSelect,
@@ -23,9 +22,8 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function NetworksView() {
-  const { isConnected } = useSnapshot(AccountController.state);
   const { caipNetwork, requestedCaipNetworks, approvedCaipNetworkIds, supportsAllNetworks } =
-    useSnapshot(NetworkController.state);
+    NetworkController.state;
   const imageHeaders = ApiController._getApiHeaders();
   const { maxWidth: width, padding } = useCustomDimensions();
   const numColumns = 4;
@@ -56,7 +54,7 @@ export function NetworksView() {
     }
 
     const onNetworkPress = async (network: CaipNetwork) => {
-      if (isConnected && caipNetwork?.id !== network.id) {
+      if (AccountController.state.isConnected && caipNetwork?.id !== network.id) {
         if (approvedCaipNetworkIds?.includes(network.id)) {
           await NetworkController.switchActiveNetwork(network);
           RouterUtil.navigateAfterNetworkSwitch(['ConnectingSiwe']);
@@ -71,7 +69,7 @@ export function NetworksView() {
         } else if (supportsAllNetworks) {
           RouterController.push('SwitchNetwork', { network });
         }
-      } else if (!isConnected) {
+      } else if (!AccountController.state.isConnected) {
         NetworkController.setCaipNetwork(network);
         RouterController.push('Connect');
       }

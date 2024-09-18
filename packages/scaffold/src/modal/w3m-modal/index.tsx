@@ -25,7 +25,7 @@ import styles from './styles';
 
 export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
-  const { history, view } = useSnapshot(RouterController.state);
+  const { view: activeView } = useSnapshot(RouterController.state);
   const { connectors } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
   const { isSiweEnabled } = OptionsController.state;
@@ -34,11 +34,11 @@ export function AppKit() {
   const portraitHeight = height - 120;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
   const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
-  const modalCoverScreen = view !== 'ConnectingSiwe';
+  const modalCoverScreen = activeView !== 'ConnectingSiwe';
   const AuthView = authProvider?.AuthView;
 
   const onBackButtonPress = () => {
-    if (history.length > 1) {
+    if (RouterController.state.history.length > 1) {
       return RouterController.goBack();
     }
 
@@ -54,7 +54,7 @@ export function AppKit() {
     if (isSiweEnabled) {
       const { SIWEController } = await import('@reown/appkit-siwe-react-native');
 
-      if (SIWEController.state.status !== 'success' && isConnected) {
+      if (SIWEController.state.status !== 'success' && AccountController.state.isConnected) {
         await ConnectionController.disconnect();
       }
     }
@@ -96,13 +96,10 @@ export function AppKit() {
   );
 
   const onSiweNavigation = () => {
-    const { open: modalOpen } = ModalController.state;
-    if (modalOpen) {
+    if (ModalController.state.open) {
       RouterController.push('ConnectingSiwe');
     } else {
-      ModalController.open({
-        view: 'ConnectingSiwe'
-      });
+      ModalController.open({ view: 'ConnectingSiwe' });
     }
   };
 

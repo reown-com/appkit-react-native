@@ -1,3 +1,4 @@
+/* eslint-disable valtio/state-snapshot-rule */
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
 import {
