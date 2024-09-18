@@ -26,12 +26,12 @@ const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
 const metadata = {
   name: 'AppKit RN',
-  description: 'AppKit RN by WalletConnect',
-  url: 'https://walletconnect.com/',
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
+  description: 'AppKit RN by Reown',
+  url: 'https://reown.com/appkit',
+  icons: ['https://avatars.githubusercontent.com/u/179229932'],
   redirect: {
     native: 'redirect://',
-    universal: 'https://lab.web3modal.com/rn_appkit',
+    universal: 'https://appkit-lab.reown.com/rn_appkit',
     linkMode: true
   }
 };
