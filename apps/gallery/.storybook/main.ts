@@ -8,8 +8,7 @@ function getAbsolutePath(value) {
   return dirname(require.resolve(join(value, 'package.json')));
 }
 
-/** @type { import('@storybook/react-webpack5').StorybookConfig } */
-const config = {
+const config: import('@storybook/react-webpack5').StorybookConfig = {
   stories: ['../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
 
   addons: [
@@ -18,7 +17,7 @@ const config = {
     getAbsolutePath('@storybook/addon-onboarding'),
     getAbsolutePath('@storybook/addon-interactions'),
     getAbsolutePath('@storybook/addon-react-native-web'),
-    getAbsolutePath("@storybook/addon-webpack5-compiler-babel"),
+    getAbsolutePath('@storybook/addon-webpack5-compiler-babel'),
     '@chromatic-com/storybook'
   ],
 

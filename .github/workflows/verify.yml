@@ -13,5 +13,14 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
-      - name: Pre-Build package
-        run: yarn run changeset:prepublish
+      - name: Lint
+        run: yarn lint
+
+      - name: Prettier
+        run: yarn prettier
+
+      - name: Build
+        run: yarn build
+
+      - name: Test
+        run: yarn test
