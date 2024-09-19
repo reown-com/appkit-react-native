@@ -144,6 +144,32 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null;
 }
 
+export interface BlockchainApiTokenPriceRequest {
+  projectId: string;
+  currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth';
+  addresses: string[];
+}
+
+export interface BlockchainApiTokenPriceResponse {
+  fungibles: {
+    name: string;
+    symbol: string;
+    iconUrl: string;
+    price: number;
+  }[];
+}
+
+export interface BlockchainApiGasPriceRequest {
+  projectId: string;
+  chainId: string;
+}
+
+export interface BlockchainApiGasPriceResponse {
+  standard: string;
+  fast: string;
+  instant: string;
+}
+
 // -- OptionsController Types ---------------------------------------------------
 export interface Token {
   address: string;

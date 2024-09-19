@@ -25,6 +25,7 @@ export interface ContractWriteParams {
   sendTokenAmount: number;
   decimals: string;
 }
+
 export interface SendControllerState {
   token?: Balance;
   sendTokenAmount?: number;

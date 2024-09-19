@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Platform, ScrollView } from 'react-native';
 import { useSnapshot } from 'valtio';
-import { AccountController, SendController } from '@reown/appkit-core-react-native';
+import { AccountController, SendController, SwapController } from '@reown/appkit-core-react-native';
 import {
   Button,
   FlexView,
@@ -19,14 +19,24 @@ import styles from './styles';
 export function WalletSendView() {
   const { padding } = useCustomDimensions();
   const { keyboardShown, keyboardHeight } = useKeyboard();
-  const { token, sendTokenAmount, receiverAddress, receiverProfileName, loading, gasPriceInUSD } =
-    useSnapshot(SendController.state);
+  const { token, sendTokenAmount, receiverAddress, loading, gasPriceInUSD } = useSnapshot(
+    SendController.state
+  );
   const { tokenBalance } = useSnapshot(AccountController.state);
 
   const paddingBottom = Platform.select({
     android: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
     default: Spacing['2xl']
   });
+
+  const fetchNetworkPrice = useCallback(async () => {
+    await SwapController.getNetworkTokenPrice();
+    const gas = await SwapController.getInitialGasPrice();
+    if (gas?.gasPrice && gas?.gasPriceInUSD) {
+      SendController.setGasPrice(gas.gasPrice);
+      SendController.setGasPriceInUsd(gas.gasPriceInUSD);
+    }
+  }, []);
 
   const onSendPress = () => {
     if (SendController.state.loading) return;
@@ -47,7 +57,8 @@ export function WalletSendView() {
   useEffect(() => {
     // TODO: check this
     SendController.setToken(tokenBalance?.[0]);
-  }, [tokenBalance]);
+    fetchNetworkPrice();
+  }, [tokenBalance, fetchNetworkPrice]);
 
   return (
     <ScrollView
@@ -63,7 +74,7 @@ export function WalletSendView() {
           style={styles.tokenInput}
         />
         <FlexView alignItems="center" justifyContent="center" style={styles.addressContainer}>
-          <InputAddress value={receiverProfileName ? receiverProfileName : receiverAddress} />
+          <InputAddress value={receiverAddress} />
           <IconBox
             icon="arrowBottom"
             size="lg"

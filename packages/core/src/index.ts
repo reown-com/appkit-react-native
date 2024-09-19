@@ -43,6 +43,8 @@ export {
 
 export { BlockchainApiController } from './controllers/BlockchainApiController';
 
+export { SwapController, type SwapControllerState } from './controllers/SwapController';
+
 export { EventsController, type EventsControllerState } from './controllers/EventsController';
 
 export {

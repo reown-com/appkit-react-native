@@ -4,8 +4,12 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { FetchUtil } from '../utils/FetchUtil';
 import type {
   BlockchainApiBalanceResponse,
+  BlockchainApiGasPriceRequest,
+  BlockchainApiGasPriceResponse,
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse,
+  BlockchainApiTokenPriceRequest,
+  BlockchainApiTokenPriceResponse,
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse
 } from '../utils/TypeUtil';
@@ -56,6 +60,37 @@ export const BlockchainApiController = {
       },
       signal,
       cache
+    });
+  },
+
+  fetchTokenPrice({ projectId, addresses }: BlockchainApiTokenPriceRequest) {
+    return state.api.post<BlockchainApiTokenPriceResponse>({
+      path: '/v1/fungible/price',
+      body: {
+        projectId,
+        currency: 'usd',
+        addresses
+      },
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  },
+
+  fetchGasPrice({ projectId, chainId }: BlockchainApiGasPriceRequest) {
+    const { sdkType, sdkVersion } = OptionsController.state;
+
+    return state.api.get<BlockchainApiGasPriceResponse>({
+      path: `/v1/convert/gas-price`,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-sdk-type': sdkType,
+        'x-sdk-version': sdkVersion
+      },
+      params: {
+        projectId,
+        chainId
+      }
     });
   },
 

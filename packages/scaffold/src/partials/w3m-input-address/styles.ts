@@ -9,7 +9,6 @@ export default StyleSheet.create({
     borderWidth: 1
   },
   input: {
-    fontSize: 18,
-    flex: 1
+    fontSize: 18
   }
 });

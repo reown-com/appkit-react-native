@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { TextInput, type StyleProp, type ViewStyle } from 'react-native';
 import { FlexView, Link, Text, useTheme, TokenButton } from '@reown/appkit-ui-react-native';
 import { NumberUtil, type Balance } from '@reown/appkit-common-react-native';
@@ -16,6 +16,7 @@ export interface InputTokenProps {
 
 export function InputToken({ token, sendTokenAmount, gasPriceInUSD, style }: InputTokenProps) {
   const Theme = useTheme();
+  const valueInputRef = useRef<TextInput | null>(null);
   const [inputValue, setInputValue] = useState<string | undefined>(undefined);
   const sendValue = getSendValue(token, sendTokenAmount);
   const maxAmount = getMaxAmount(token);
@@ -43,6 +44,7 @@ export function InputToken({ token, sendTokenAmount, gasPriceInUSD, style }: Inp
 
       SendController.setTokenAmount(Number(maxValue.toFixed(20)));
       setInputValue(maxValue.toFixed(20));
+      valueInputRef.current?.blur();
     }
   };
 
@@ -58,6 +60,7 @@ export function InputToken({ token, sendTokenAmount, gasPriceInUSD, style }: Inp
     >
       <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
         <TextInput
+          ref={valueInputRef}
           placeholder="0"
           placeholderTextColor={Theme['fg-275']}
           returnKeyType="done"

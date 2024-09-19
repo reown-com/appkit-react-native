@@ -2,6 +2,7 @@ import { TextInput } from 'react-native';
 import { FlexView, useTheme } from '@reown/appkit-ui-react-native';
 import { SendController } from '@reown/appkit-core-react-native';
 import styles from './styles';
+import { useState } from 'react';
 
 export interface InputAddressProps {
   value?: string;
@@ -9,9 +10,13 @@ export interface InputAddressProps {
 
 export function InputAddress({ value }: InputAddressProps) {
   const Theme = useTheme();
+  const [inputValue, setInputValue] = useState<string | undefined>(value);
 
   const onInputChange = (address: string) => {
+    setInputValue(address);
     SendController.setReceiverAddress(address);
+
+    //TODO: Search ENS domain
   };
 
   return (
@@ -30,7 +35,7 @@ export function InputAddress({ value }: InputAddressProps) {
         style={[styles.input, { color: Theme['fg-100'] }]}
         autoCapitalize="none"
         autoCorrect={false}
-        value={value}
+        value={inputValue}
         onChangeText={onInputChange}
         keyboardType="default"
         inputMode="text"
@@ -39,7 +44,7 @@ export function InputAddress({ value }: InputAddressProps) {
         selectionColor={Theme['accent-100']}
         underlineColorAndroid="transparent"
         selectTextOnFocus={false}
-        numberOfLines={1}
+        multiline
       />
     </FlexView>
   );
