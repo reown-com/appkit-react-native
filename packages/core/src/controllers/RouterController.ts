@@ -2,6 +2,15 @@ import { proxy } from 'valtio';
 import type { WcWallet, CaipNetwork, Connector } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
+type TransactionAction = {
+  goBack: boolean;
+  view: RouterControllerState['view'] | null;
+  close?: boolean;
+  replace?: boolean;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+};
+
 export interface RouterControllerState {
   view:
     | 'Account'
@@ -36,12 +45,14 @@ export interface RouterControllerState {
     email?: string;
     newEmail?: string;
   };
+  transactionStack: TransactionAction[];
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<RouterControllerState>({
   view: 'Connect',
-  history: ['Connect']
+  history: ['Connect'],
+  transactionStack: []
 });
 
 // -- Controller ---------------------------------------- //
@@ -53,6 +64,30 @@ export const RouterController = {
       state.view = view;
       state.history.push(view);
       state.data = data;
+    }
+  },
+
+  pushTransactionStack(action: TransactionAction) {
+    state.transactionStack.push(action);
+  },
+
+  popTransactionStack(cancel?: boolean) {
+    const action = state.transactionStack.pop();
+
+    if (!action) {
+      return;
+    }
+
+    if (cancel) {
+      this.goBack();
+      action?.onCancel?.();
+    } else {
+      if (action.goBack) {
+        this.goBack();
+      } else if (action.view) {
+        this.reset(action.view);
+      }
+      action?.onSuccess?.();
     }
   },
 

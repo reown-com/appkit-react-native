@@ -24,6 +24,8 @@ import { Snackbar } from '../../partials/w3m-snackbar';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
+const viewsAboveModal = ['ConnectingSiwe', 'WalletSendPreview'];
+
 export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
   const { view: activeView } = useSnapshot(RouterController.state);
@@ -35,7 +37,7 @@ export function AppKit() {
   const portraitHeight = height - 120;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
   const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
-  const modalCoverScreen = activeView !== 'ConnectingSiwe';
+  const enableCoverScreen = !viewsAboveModal.includes(activeView);
   const AuthView = authProvider?.AuthView;
 
   const onBackButtonPress = () => {
@@ -119,7 +121,7 @@ export function AppKit() {
     <>
       <Modal
         style={styles.modal}
-        coverScreen={modalCoverScreen}
+        coverScreen={enableCoverScreen}
         isVisible={open}
         useNativeDriver
         statusBarTranslucent

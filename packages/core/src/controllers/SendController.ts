@@ -2,16 +2,15 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils';
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla';
 import { type Balance } from '@reown/appkit-common-react-native';
 import { erc20ABI } from '@reown/appkit-common-react-native';
-// import { RouterController } from './RouterController';
 import { AccountController } from './AccountController';
 import { ConnectionController } from './ConnectionController';
 import { SnackController } from './SnackController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { EventsController } from './EventsController';
 import { NetworkController } from './NetworkController';
+import { RouterController } from './RouterController';
 
 // -- Types --------------------------------------------- //
-
 export interface TxParams {
   receiverAddress: string;
   sendTokenAmount: number;
@@ -136,10 +135,10 @@ export const SendController = {
   },
 
   async sendNativeToken(params: TxParams) {
-    // RouterController.pushTransactionStack({
-    //   view: 'Account',
-    //   goBack: false
-    // });
+    RouterController.pushTransactionStack({
+      view: 'Account',
+      goBack: false
+    });
 
     const to = params.receiverAddress as `0x${string}`;
     const address = AccountController.state.address as `0x${string}`;
@@ -185,10 +184,10 @@ export const SendController = {
   },
 
   async sendERC20Token(params: ContractWriteParams) {
-    // RouterController.pushTransactionStack({
-    //   view: 'Account',
-    //   goBack: false
-    // });
+    RouterController.pushTransactionStack({
+      view: 'Account',
+      goBack: false
+    });
 
     const amount = ConnectionController.parseUnits(
       params.sendTokenAmount.toString(),

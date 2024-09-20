@@ -8,11 +8,13 @@ import {
   OptionsController,
   ModalController,
   type OptionsControllerState,
-  StorageUtil
+  StorageUtil,
+  RouterController
 } from '@reown/appkit-core-react-native';
 import { useTheme, BorderRadius } from '@reown/appkit-ui-react-native';
 import type { AppKitFrameProvider } from './AppKitFrameProvider';
-import { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameConstants';
+import { AppKitFrameConstants } from './AppKitFrameConstants';
+import { AppKitFrameHelpers } from './AppKitFrameHelpers';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
@@ -50,13 +52,20 @@ export function AuthWebview() {
     provider.onMessage(event);
 
     provider.onRpcRequest(event, () => {
-      if (!AppKitFrameRpcConstants.SAFE_RPC_METHODS.includes(event.payload.method)) {
-        setIsVisible(true);
+      if (AppKitFrameHelpers.checkIfRequestExists(event)) {
+        if (!AppKitFrameHelpers.checkIfRequestIsAllowed(event)) {
+          setIsVisible(true);
+        }
       }
     });
 
     provider.onRpcResponse(event, () => {
-      setIsVisible(false);
+      if (RouterController.state.transactionStack.length === 0) {
+        setIsVisible(false);
+      } else {
+        // TODO: send boolean in false in case of error
+        RouterController?.popTransactionStack();
+      }
     });
 
     provider.onIsConnected(event, () => {

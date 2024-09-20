@@ -40,6 +40,10 @@ export function WalletSendPreviewView() {
     truncate: 'middle'
   });
 
+  const onSend = () => {
+    SendController.sendToken();
+  };
+
   return (
     <FlexView padding={['l', 'xl', '3xl', 'xl']}>
       <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
@@ -90,7 +94,7 @@ export function WalletSendPreviewView() {
         <Button variant="shade" style={styles.cancelButton} onPress={RouterController.goBack}>
           Cancel
         </Button>
-        <Button variant="fill" style={styles.sendButton}>
+        <Button variant="fill" style={styles.sendButton} onPress={onSend}>
           Send
         </Button>
       </FlexView>
