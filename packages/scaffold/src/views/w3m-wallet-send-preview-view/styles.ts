@@ -19,6 +19,17 @@ export default StyleSheet.create({
     marginLeft: Spacing.xs
   },
   details: {
-    marginTop: Spacing['2xl']
+    marginTop: Spacing['2xl'],
+    marginBottom: Spacing.s
+  },
+  reviewIcon: {
+    marginRight: Spacing['3xs']
+  },
+  cancelButton: {
+    flex: 1
+  },
+  sendButton: {
+    marginLeft: Spacing.s,
+    flex: 3
   }
 });

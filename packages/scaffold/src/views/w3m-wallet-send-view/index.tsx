@@ -45,6 +45,7 @@ export function WalletSendView() {
 
   const onSendPress = () => {
     if (SendController.state.loading) return;
+    // TODO: add validations
     RouterController.push('WalletSendPreview');
   };
 

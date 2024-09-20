@@ -1,7 +1,11 @@
 import { useSnapshot } from 'valtio';
-import { Avatar, FlexView, Icon, Image, Text, UiUtil } from '@reown/appkit-ui-react-native';
+import { Avatar, Button, FlexView, Icon, Image, Text, UiUtil } from '@reown/appkit-ui-react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
-import { NetworkController, SendController } from '@reown/appkit-core-react-native';
+import {
+  NetworkController,
+  RouterController,
+  SendController
+} from '@reown/appkit-core-react-native';
 import { PreviewSendPill } from './components/preview-send-pill';
 import styles from './styles';
 import { PreviewSendDetails } from './components/preview-send-details';
@@ -37,7 +41,7 @@ export function WalletSendPreviewView() {
   });
 
   return (
-    <FlexView padding={['l', '2xl', '3xl', '2xl']}>
+    <FlexView padding={['l', 'xl', '3xl', 'xl']}>
       <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
         <FlexView>
           <Text variant="small-400" color="fg-150">
@@ -48,7 +52,17 @@ export function WalletSendPreviewView() {
           </Text>
         </FlexView>
         <PreviewSendPill text={getTokenAmount()}>
-          <Image source={token?.iconUrl} style={styles.tokenLogo} />
+          {token?.iconUrl ? (
+            <Image source={token?.iconUrl} style={styles.tokenLogo} />
+          ) : (
+            <Icon
+              name="coinPlaceholder"
+              height={32}
+              width={32}
+              style={styles.tokenLogo}
+              color="fg-200"
+            />
+          )}
         </PreviewSendPill>
       </FlexView>
       <Icon name="arrowBottom" height={14} width={14} color="fg-200" style={styles.arrow} />
@@ -60,7 +74,26 @@ export function WalletSendPreviewView() {
           <Avatar address={receiverAddress} size={32} borderWidth={0} style={styles.avatar} />
         </PreviewSendPill>
       </FlexView>
-      <PreviewSendDetails style={styles.details} />
+      <PreviewSendDetails
+        style={styles.details}
+        networkFee={gasPriceInUSD}
+        address={receiverAddress}
+        caipNetwork={caipNetwork}
+      />
+      <FlexView flexDirection="row" alignItems="center" justifyContent="center">
+        <Icon name="warningCircle" size="sm" color="fg-200" style={styles.reviewIcon} />
+        <Text variant="small-400" color="fg-200">
+          Review transaction carefully
+        </Text>
+      </FlexView>
+      <FlexView flexDirection="row" margin={['l', '0', '0', '0']}>
+        <Button variant="shade" style={styles.cancelButton} onPress={RouterController.goBack}>
+          Cancel
+        </Button>
+        <Button variant="fill" style={styles.sendButton}>
+          Send
+        </Button>
+      </FlexView>
     </FlexView>
   );
 }
