@@ -25,6 +25,7 @@ import { WalletReceiveView } from '../../views/w3m-wallet-receive-view';
 import { WalletCompatibleNetworks } from '../../views/w3m-wallet-compatible-networks-view';
 import { TransactionsView } from '../../views/w3m-transactions-view';
 import { WalletSendView } from '../../views/w3m-wallet-send-view';
+import { WalletSendPreviewView } from '../../views/w3m-wallet-send-preview-view';
 
 export function AppKitRouter() {
   const { view } = useSnapshot(RouterController.state);
@@ -75,6 +76,8 @@ export function AppKitRouter() {
         return WalletReceiveView;
       case 'WalletSend':
         return WalletSendView;
+      case 'WalletSendPreview':
+        return WalletSendPreviewView;
       case 'WhatIsANetwork':
         return WhatIsNetworkView;
       case 'WhatIsAWallet':

@@ -17,7 +17,7 @@ export interface InputTokenProps {
 export function InputToken({ token, sendTokenAmount, gasPriceInUSD, style }: InputTokenProps) {
   const Theme = useTheme();
   const valueInputRef = useRef<TextInput | null>(null);
-  const [inputValue, setInputValue] = useState<string | undefined>(undefined);
+  const [inputValue, setInputValue] = useState<string | undefined>(sendTokenAmount?.toString());
   const sendValue = getSendValue(token, sendTokenAmount);
   const maxAmount = getMaxAmount(token);
   const maxError = token && sendTokenAmount && sendTokenAmount > Number(token.quantity.numeric);

@@ -1,7 +1,12 @@
 import { useCallback, useEffect } from 'react';
 import { Platform, ScrollView } from 'react-native';
 import { useSnapshot } from 'valtio';
-import { AccountController, SendController, SwapController } from '@reown/appkit-core-react-native';
+import {
+  AccountController,
+  RouterController,
+  SendController,
+  SwapController
+} from '@reown/appkit-core-react-native';
 import {
   Button,
   FlexView,
@@ -40,6 +45,7 @@ export function WalletSendView() {
 
   const onSendPress = () => {
     if (SendController.state.loading) return;
+    RouterController.push('WalletSendPreview');
   };
 
   const getActionText = () => {
