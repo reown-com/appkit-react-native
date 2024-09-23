@@ -75,7 +75,7 @@ export function AuthWebview() {
     });
 
     provider.onRpcError(() => {
-      if (isWebviewVisibile) {
+      if (ModalController.state.open) {
         if (RouterController.state.transactionStack.length === 0) {
           ModalController.close();
         } else {

@@ -24,7 +24,7 @@ import styles from './styles';
 export function WalletSendView() {
   const { padding } = useCustomDimensions();
   const { keyboardShown, keyboardHeight } = useKeyboard();
-  const { token, sendTokenAmount, receiverAddress, loading, gasPriceInUSD } = useSnapshot(
+  const { token, sendTokenAmount, receiverAddress, loading, gasPrice } = useSnapshot(
     SendController.state
   );
   const { tokenBalance } = useSnapshot(AccountController.state);
@@ -58,6 +58,10 @@ export function WalletSendView() {
       return 'Insufficient balance';
     }
 
+    if (!SendController.state.receiverAddress) {
+      return 'Add address';
+    }
+
     return 'Preview Send';
   };
 
@@ -77,7 +81,7 @@ export function WalletSendView() {
         <InputToken
           token={token}
           sendTokenAmount={sendTokenAmount}
-          gasPriceInUSD={gasPriceInUSD}
+          gasPrice={gasPrice}
           style={styles.tokenInput}
         />
         <FlexView alignItems="center" justifyContent="center" style={styles.addressContainer}>

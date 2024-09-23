@@ -45,9 +45,7 @@ export function WalletReceiveView() {
 
   const onCopyAddress = () => {
     if (canCopy && AccountController.state.address) {
-      OptionsController.copyToClipboard(
-        AccountController.state.profileName ?? AccountController.state.address
-      );
+      OptionsController.copyToClipboard(AccountController.state.address);
       SnackController.showSuccess('Address copied');
     }
   };

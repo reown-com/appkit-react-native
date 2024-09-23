@@ -78,7 +78,10 @@ export function AccountDefaultView() {
   };
 
   const onCopyAddress = () => {
-    if (AccountController.state.address) {
+    if (AccountController.state.profileName) {
+      OptionsController.copyToClipboard(AccountController.state.profileName);
+      SnackController.showSuccess('Name copied');
+    } else if (AccountController.state.address) {
       OptionsController.copyToClipboard(
         AccountController.state.profileName ?? AccountController.state.address
       );

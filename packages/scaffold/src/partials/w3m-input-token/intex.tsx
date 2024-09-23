@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { TextInput, type StyleProp, type ViewStyle } from 'react-native';
 import { FlexView, Link, Text, useTheme, TokenButton } from '@reown/appkit-ui-react-native';
 import { NumberUtil, type Balance } from '@reown/appkit-common-react-native';
-import { SendController } from '@reown/appkit-core-react-native';
+import { ConstantsUtil, SendController } from '@reown/appkit-core-react-native';
 
 import styles from './styles';
 import { getMaxAmount, getSendValue } from './utils';
@@ -10,11 +10,11 @@ import { getMaxAmount, getSendValue } from './utils';
 export interface InputTokenProps {
   token?: Balance;
   sendTokenAmount?: number;
-  gasPriceInUSD?: number;
+  gasPrice?: number;
   style?: StyleProp<ViewStyle>;
 }
 
-export function InputToken({ token, sendTokenAmount, gasPriceInUSD, style }: InputTokenProps) {
+export function InputToken({ token, sendTokenAmount, gasPrice, style }: InputTokenProps) {
   const Theme = useTheme();
   const valueInputRef = useRef<TextInput | null>(null);
   const [inputValue, setInputValue] = useState<string | undefined>(sendTokenAmount?.toString());
@@ -31,15 +31,17 @@ export function InputToken({ token, sendTokenAmount, gasPriceInUSD, style }: Inp
   };
 
   const onMaxPress = () => {
-    if (token && gasPriceInUSD) {
-      const amountOfTokenGasRequired = NumberUtil.bigNumber(gasPriceInUSD.toFixed(5)).dividedBy(
-        token.price
-      );
+    if (token && gasPrice) {
+      const isNetworkToken =
+        token.address === undefined ||
+        Object.values(ConstantsUtil.NATIVE_TOKEN_ADDRESS).some(
+          nativeAddress => token?.address === nativeAddress
+        );
 
-      const isNetworkToken = token.address === undefined;
+      const numericGas = NumberUtil.bigNumber(gasPrice).shiftedBy(-token.quantity.decimals);
 
       const maxValue = isNetworkToken
-        ? NumberUtil.bigNumber(token.quantity.numeric).minus(amountOfTokenGasRequired)
+        ? NumberUtil.bigNumber(token.quantity.numeric).minus(numericGas)
         : NumberUtil.bigNumber(token.quantity.numeric);
 
       SendController.setTokenAmount(Number(maxValue.toFixed(20)));
