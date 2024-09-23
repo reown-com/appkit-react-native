@@ -157,6 +157,27 @@ export const CoreHelperUtil = {
     return formattedBalance ? `${formattedBalance} ${symbol}` : `0.000 ${symbol || ''}`;
   },
 
+  isAddress(address: string, chain = 'eip155'): boolean {
+    switch (chain) {
+      case 'eip155':
+        if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
+          return false;
+        } else if (
+          /^(?:0x)?[0-9a-f]{40}$/iu.test(address) ||
+          /^(?:0x)?[0-9A-F]{40}$/iu.test(address)
+        ) {
+          return true;
+        }
+
+        return false;
+      case 'solana':
+        return /[1-9A-HJ-NP-Za-km-z]{32,44}$/iu.test(address);
+
+      default:
+        return false;
+    }
+  },
+
   getApiUrl() {
     return CommonConstants.API_URL;
   },

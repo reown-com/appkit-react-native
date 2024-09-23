@@ -14,7 +14,7 @@ export const getThemedButtonStyle = (
 
   if (disabled) {
     return {
-      backgroundColor: variant === 'fill' ? theme['gray-glass-002'] : theme['gray-glass-010'],
+      backgroundColor: variant === 'fill' ? theme['gray-glass-005'] : theme['gray-glass-010'],
       borderColor: theme['gray-glass-002']
     };
   }

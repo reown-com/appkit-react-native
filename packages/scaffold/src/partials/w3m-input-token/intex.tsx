@@ -4,17 +4,24 @@ import { FlexView, Link, Text, useTheme, TokenButton } from '@reown/appkit-ui-re
 import { NumberUtil, type Balance } from '@reown/appkit-common-react-native';
 import { ConstantsUtil, SendController } from '@reown/appkit-core-react-native';
 
-import styles from './styles';
 import { getMaxAmount, getSendValue } from './utils';
+import styles from './styles';
 
 export interface InputTokenProps {
   token?: Balance;
   sendTokenAmount?: number;
   gasPrice?: number;
   style?: StyleProp<ViewStyle>;
+  onTokenPress?: () => void;
 }
 
-export function InputToken({ token, sendTokenAmount, gasPrice, style }: InputTokenProps) {
+export function InputToken({
+  token,
+  sendTokenAmount,
+  gasPrice,
+  style,
+  onTokenPress
+}: InputTokenProps) {
   const Theme = useTheme();
   const valueInputRef = useRef<TextInput | null>(null);
   const [inputValue, setInputValue] = useState<string | undefined>(sendTokenAmount?.toString());
@@ -81,7 +88,7 @@ export function InputToken({ token, sendTokenAmount, gasPrice, style }: InputTok
           numberOfLines={1}
           autoFocus={!!token}
         />
-        <TokenButton text={token?.symbol} imageSrc={token?.iconUrl} />
+        <TokenButton token={token} onPress={onTokenPress} />
       </FlexView>
       <FlexView
         flexDirection="row"
@@ -92,12 +99,14 @@ export function InputToken({ token, sendTokenAmount, gasPrice, style }: InputTok
         <Text variant="small-400" color="fg-200" style={styles.sendValue} numberOfLines={1}>
           {sendValue ?? ''}
         </Text>
-        <FlexView flexDirection="row" alignItems="center" justifyContent="center">
-          <Text variant="small-400" color={maxError ? 'error-100' : 'fg-200'} numberOfLines={1}>
-            {maxAmount ?? ''}
-          </Text>
-          <Link onPress={onMaxPress}>Max</Link>
-        </FlexView>
+        {token && (
+          <FlexView flexDirection="row" alignItems="center" justifyContent="center">
+            <Text variant="small-400" color={maxError ? 'error-100' : 'fg-200'} numberOfLines={1}>
+              {maxAmount ?? ''}
+            </Text>
+            <Link onPress={onMaxPress}>Max</Link>
+          </FlexView>
+        )}
       </FlexView>
     </FlexView>
   );

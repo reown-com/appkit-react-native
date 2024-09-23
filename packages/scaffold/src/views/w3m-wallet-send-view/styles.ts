@@ -1,10 +1,11 @@
-import { Spacing } from '@reown/appkit-ui-react-native';
+import { BorderRadius, Spacing } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   sendButton: {
     width: '100%',
-    marginTop: Spacing.xl
+    marginTop: Spacing.xl,
+    borderRadius: BorderRadius.xs
   },
   tokenInput: {
     marginBottom: Spacing.xs

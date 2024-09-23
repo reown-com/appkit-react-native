@@ -3,6 +3,7 @@ import { Platform, ScrollView } from 'react-native';
 import { useSnapshot } from 'valtio';
 import {
   AccountController,
+  CoreHelperUtil,
   RouterController,
   SendController,
   SwapController
@@ -44,32 +45,55 @@ export function WalletSendView() {
   }, []);
 
   const onSendPress = () => {
-    if (SendController.state.loading) return;
-    // TODO: add validations
     RouterController.push('WalletSendPreview');
   };
 
   const getActionText = () => {
+    if (!SendController.state.token) {
+      return 'Select token';
+    }
+
     if (
-      SendController.state.token &&
       SendController.state.sendTokenAmount &&
+      SendController.state.token &&
       SendController.state.sendTokenAmount > Number(SendController.state.token.quantity.numeric)
     ) {
-      return 'Insufficient balance';
+      return 'Insufficient funds';
+    }
+
+    if (!SendController.state.sendTokenAmount) {
+      return 'Add amount';
+    }
+
+    if (SendController.state.sendTokenAmount && SendController.state.token?.price) {
+      const value = SendController.state.sendTokenAmount * SendController.state.token.price;
+      if (!value) {
+        return 'Incorrect value';
+      }
+    }
+
+    if (
+      SendController.state.receiverAddress &&
+      !CoreHelperUtil.isAddress(SendController.state.receiverAddress)
+    ) {
+      return 'Invalid address';
     }
 
     if (!SendController.state.receiverAddress) {
       return 'Add address';
     }
 
-    return 'Preview Send';
+    return 'Preview send';
   };
 
   useEffect(() => {
-    // TODO: check this
-    SendController.setToken(tokenBalance?.[0]);
+    if (!token) {
+      SendController.setToken(tokenBalance?.[0]);
+    }
     fetchNetworkPrice();
-  }, [tokenBalance, fetchNetworkPrice]);
+  }, [token, tokenBalance, fetchNetworkPrice]);
+
+  const actionText = getActionText();
 
   return (
     <ScrollView
@@ -81,8 +105,9 @@ export function WalletSendView() {
         <InputToken
           token={token}
           sendTokenAmount={sendTokenAmount}
-          gasPrice={gasPrice}
+          gasPrice={Number(gasPrice)}
           style={styles.tokenInput}
+          onTokenPress={() => RouterController.push('WalletSendSelectToken')}
         />
         <FlexView alignItems="center" justifyContent="center" style={styles.addressContainer}>
           <InputAddress value={receiverAddress} />
@@ -98,7 +123,11 @@ export function WalletSendView() {
             style={styles.arrowIcon}
           />
         </FlexView>
-        <Button style={styles.sendButton} onPress={onSendPress}>
+        <Button
+          style={styles.sendButton}
+          onPress={onSendPress}
+          disabled={!actionText.includes('Preview send')}
+        >
           {loading ? (
             <LoadingSpinner color="inverse-100" size="md" />
           ) : (

@@ -453,17 +453,6 @@ export class AppKitFrameProvider {
     callback(frameEvent);
   }
 
-  private onAppEvent(
-    event: AppKitFrameTypes.AppEvent,
-    callback: (event: AppKitFrameTypes.AppEvent) => void
-  ) {
-    if (!event.type?.includes(AppKitFrameConstants.APP_EVENT_KEY)) {
-      return;
-    }
-    const appEvent = AppKitFrameSchema.appEvent.parse(event);
-    callback(appEvent);
-  }
-
   private postAppEvent(event: AppKitFrameTypes.AppEvent) {
     if (!this.webviewRef?.current) {
       throw new Error('AppKitFrameProvider: webviewRef is not set');
