@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-
-import { FlexView, ListToken, Text } from '@reown/appkit-ui-react-native';
+import { ScrollView } from 'react-native';
+import { FlexView, InputText, ListToken, Text } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
   AssetUtil,
@@ -8,14 +9,26 @@ import {
   RouterController,
   SendController
 } from '@reown/appkit-core-react-native';
-import { ScrollView } from 'react-native';
-import styles from './styles';
 import type { Balance } from '@reown/appkit-common-react-native';
 
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import styles from './styles';
+
 export function WalletSendSelectTokenView() {
+  const { padding } = useCustomDimensions();
   const { tokenBalance } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const [tokenSearch, setTokenSearch] = useState<string>('');
+  const [filteredTokens, setFilteredTokens] = useState(tokenBalance ?? []);
+
+  const onSearchChange = (value: string) => {
+    setTokenSearch(value);
+    const filtered = AccountController.state.tokenBalance?.filter(token =>
+      token.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredTokens(filtered ?? []);
+  };
 
   const onTokenPress = (token: Balance) => {
     SendController.setToken(token);
@@ -24,14 +37,26 @@ export function WalletSendSelectTokenView() {
   };
 
   return (
-    <FlexView padding={['l', 'l', '2xl', 'l']} style={styles.container}>
-      <ScrollView bounces={false} fadingEdgeLength={20}>
+    <FlexView
+      margin={['l', '0', '2xl', '0']}
+      style={[styles.container, { paddingHorizontal: padding }]}
+    >
+      <FlexView margin={['0', 'm', 'm', 'm']}>
+        <InputText
+          value={tokenSearch}
+          icon="search"
+          placeholder="Search token"
+          onChangeText={onSearchChange}
+          clearButtonMode="while-editing"
+        />
+      </FlexView>
+      <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.tokenList}>
         <Text variant="paragraph-500" color="fg-200" style={styles.title}>
           Your tokens
         </Text>
-        {tokenBalance?.map(token => (
+        {filteredTokens.map((token, index) => (
           <ListToken
-            key={token.name}
+            key={`${token.name}${index}`}
             name={token.name}
             imageSrc={token.iconUrl}
             networkSrc={networkImage}
