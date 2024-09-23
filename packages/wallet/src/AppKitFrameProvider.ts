@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 import type { RefObject } from 'react';
 import type WebView from 'react-native-webview';
 import { CoreHelperUtil } from '@reown/appkit-core-react-native';
@@ -8,25 +9,6 @@ import { AppKitFrameHelpers } from './AppKitFrameHelpers';
 import { AppKitFrameSchema } from './AppKitFrameSchema';
 import { AuthWebview } from './AppKitAuthWebview';
 
-// -- Types -----------------------------------------------------------
-type Resolver<T> = { resolve: (value: T) => void; reject: (reason?: unknown) => void } | undefined;
-type ConnectEmailResolver = Resolver<AppKitFrameTypes.Responses['FrameConnectEmailResponse']>;
-type ConnectDeviceResolver = Resolver<undefined>;
-type ConnectOtpResolver = Resolver<undefined>;
-type ConnectResolver = Resolver<AppKitFrameTypes.Responses['FrameGetUserResponse']>;
-type DisconnectResolver = Resolver<undefined>;
-type IsConnectedResolver = Resolver<AppKitFrameTypes.Responses['FrameIsConnectedResponse']>;
-type GetChainIdResolver = Resolver<AppKitFrameTypes.Responses['FrameGetChainIdResponse']>;
-type SwitchChainResolver = Resolver<AppKitFrameTypes.Responses['FrameSwitchNetworkResponse']>;
-type RpcRequestResolver = Resolver<AppKitFrameTypes.RPCResponse>;
-type UpdateEmailResolver = Resolver<AppKitFrameTypes.Responses['FrameUpdateEmailResponse']>;
-type UpdateEmailPrimaryOtpResolver = Resolver<undefined>;
-type UpdateEmailSecondaryOtpResolver = Resolver<
-  AppKitFrameTypes.Responses['FrameUpdateEmailSecondaryOtpResolver']
->;
-type SyncThemeResolver = Resolver<undefined>;
-type SyncDappDataResolver = Resolver<undefined>;
-
 // -- Provider --------------------------------------------------------
 export class AppKitFrameProvider {
   private webviewRef: RefObject<WebView> | undefined;
@@ -36,6 +18,13 @@ export class AppKitFrameProvider {
   private metadata: AppKitFrameTypes.Metadata | undefined;
 
   private email: string | undefined;
+
+  private rpcRequestHandler?: (request: AppKitFrameTypes.RPCRequest) => void;
+  private rpcSuccessHandler?: (
+    response: AppKitFrameTypes.RPCResponse,
+    request: AppKitFrameTypes.RPCRequest
+  ) => void;
+  private rpcErrorHandler?: (error: Error, request: AppKitFrameTypes.RPCRequest) => void;
 
   public webviewLoadPromise: Promise<void>;
 
@@ -48,33 +37,11 @@ export class AppKitFrameProvider {
 
   public AuthView = AuthWebview;
 
-  private connectEmailResolver: ConnectEmailResolver = undefined;
+  private openRpcRequests: Array<
+    AppKitFrameTypes.RPCRequest & { abortController: AbortController }
+  > = [];
 
-  private connectDeviceResolver: ConnectDeviceResolver = undefined;
-
-  private connectOtpResolver: ConnectOtpResolver | undefined = undefined;
-
-  private connectResolver: ConnectResolver = undefined;
-
-  private disconnectResolver: DisconnectResolver = undefined;
-
-  private isConnectedResolver: IsConnectedResolver = undefined;
-
-  private getChainIdResolver: GetChainIdResolver = undefined;
-
-  private switchChainResolver: SwitchChainResolver = undefined;
-
-  private rpcRequestResolver: RpcRequestResolver = undefined;
-
-  private updateEmailResolver: UpdateEmailResolver = undefined;
-
-  private updateEmailPrimaryOtpResolver: UpdateEmailPrimaryOtpResolver = undefined;
-
-  private updateEmailSecondaryOtpResolver: UpdateEmailSecondaryOtpResolver = undefined;
-
-  private syncThemeResolver: SyncThemeResolver = undefined;
-
-  private syncDappDataResolver: SyncDappDataResolver = undefined;
+  public events: EventEmitter = new EventEmitter();
 
   public constructor(projectId: string, metadata: AppKitFrameTypes.Metadata) {
     this.webviewLoadPromise = new Promise((resolve, reject) => {
@@ -92,72 +59,9 @@ export class AppKitFrameProvider {
     this.webviewRef = webviewRef;
   }
 
-  public onMessage(e: AppKitFrameTypes.FrameEvent) {
-    this.onFrameEvent(e, event => {
-      // console.log('💻 received', e); // eslint-disable-line no-console
-      switch (event.type) {
-        case AppKitFrameConstants.FRAME_CONNECT_EMAIL_SUCCESS:
-          return this.onConnectEmailSuccess(event);
-        case AppKitFrameConstants.FRAME_CONNECT_EMAIL_ERROR:
-          return this.onConnectEmailError(event);
-        case AppKitFrameConstants.FRAME_CONNECT_DEVICE_SUCCESS:
-          return this.onConnectDeviceSuccess();
-        case AppKitFrameConstants.FRAME_CONNECT_DEVICE_ERROR:
-          return this.onConnectDeviceError(event);
-        case AppKitFrameConstants.FRAME_CONNECT_OTP_SUCCESS:
-          return this.onConnectOtpSuccess();
-        case AppKitFrameConstants.FRAME_CONNECT_OTP_ERROR:
-          return this.onConnectOtpError(event);
-        case AppKitFrameConstants.FRAME_GET_USER_SUCCESS:
-          return this.onConnectSuccess(event);
-        case AppKitFrameConstants.FRAME_GET_USER_ERROR:
-          return this.onConnectError(event);
-        case AppKitFrameConstants.FRAME_IS_CONNECTED_SUCCESS:
-          return this.onIsConnectedSuccess(event);
-        case AppKitFrameConstants.FRAME_IS_CONNECTED_ERROR:
-          return this.onIsConnectedError(event);
-        case AppKitFrameConstants.FRAME_GET_CHAIN_ID_SUCCESS:
-          return this.onGetChainIdSuccess(event);
-        case AppKitFrameConstants.FRAME_GET_CHAIN_ID_ERROR:
-          return this.onGetChainIdError(event);
-        case AppKitFrameConstants.FRAME_SIGN_OUT_SUCCESS:
-          return this.onSignOutSuccess();
-        case AppKitFrameConstants.FRAME_SIGN_OUT_ERROR:
-          return this.onSignOutError(event);
-        case AppKitFrameConstants.FRAME_SWITCH_NETWORK_SUCCESS:
-          return this.onSwitchChainSuccess(event);
-        case AppKitFrameConstants.FRAME_SWITCH_NETWORK_ERROR:
-          return this.onSwitchChainError(event);
-        case AppKitFrameConstants.FRAME_RPC_REQUEST_SUCCESS:
-          return this.onRpcRequestSuccess(event);
-        case AppKitFrameConstants.FRAME_RPC_REQUEST_ERROR:
-          return this.onRpcRequestError(event);
-        case AppKitFrameConstants.FRAME_SESSION_UPDATE:
-          return this.onSessionUpdate(event);
-        case AppKitFrameConstants.FRAME_UPDATE_EMAIL_SUCCESS:
-          return this.onUpdateEmailSuccess(event);
-        case AppKitFrameConstants.FRAME_UPDATE_EMAIL_ERROR:
-          return this.onUpdateEmailError(event);
-        case AppKitFrameConstants.FRAME_UPDATE_EMAIL_PRIMARY_OTP_SUCCESS:
-          return this.onUpdateEmailPrimaryOtpSuccess();
-        case AppKitFrameConstants.FRAME_UPDATE_EMAIL_PRIMARY_OTP_ERROR:
-          return this.onUpdateEmailPrimaryOtpError(event);
-        case AppKitFrameConstants.FRAME_UPDATE_EMAIL_SECONDARY_OTP_SUCCESS:
-          return this.onUpdateEmailSecondaryOtpSuccess(event);
-        case AppKitFrameConstants.FRAME_UPDATE_EMAIL_SECONDARY_OTP_ERROR:
-          return this.onUpdateEmailSecondaryOtpError(event);
-        case AppKitFrameConstants.FRAME_SYNC_THEME_SUCCESS:
-          return this.onSyncThemeSuccess();
-        case AppKitFrameConstants.FRAME_SYNC_THEME_ERROR:
-          return this.onSyncThemeError(event);
-        case AppKitFrameConstants.FRAME_SYNC_DAPP_DATA_SUCCESS:
-          return this.onSyncDappDataSuccess();
-        case AppKitFrameConstants.FRAME_SYNC_DAPP_DATA_ERROR:
-          return this.onSyncDappDataError(event);
-        default:
-          return null;
-      }
-    });
+  public onMessage(event: AppKitFrameTypes.FrameEvent) {
+    // console.log('💻 received', e); // eslint-disable-line no-console
+    this.events.emit('message', event);
   }
 
   public onWebviewLoaded() {
@@ -196,124 +100,141 @@ export class AppKitFrameProvider {
   }
 
   public rejectRpcRequest() {
-    this.rpcRequestResolver?.reject();
+    try {
+      this.openRpcRequests.forEach(({ abortController, method }) => {
+        if (!AppKitFrameRpcConstants.SAFE_RPC_METHODS.includes(method)) {
+          abortController.abort();
+        }
+      });
+      this.openRpcRequests = [];
+    } catch (e) {}
   }
 
   public async connectEmail(payload: AppKitFrameTypes.Requests['AppConnectEmailRequest']) {
     await this.webviewLoadPromise;
     await AppKitFrameHelpers.checkIfAllowedToTriggerEmail();
-    this.postAppEvent({ type: AppKitFrameConstants.APP_CONNECT_EMAIL, payload });
 
-    return new Promise<AppKitFrameTypes.Responses['FrameConnectEmailResponse']>(
-      (resolve, reject) => {
-        this.connectEmailResolver = { resolve, reject };
-      }
-    );
+    const response = await this.appEvent<'ConnectEmail'>({
+      type: AppKitFrameConstants.APP_CONNECT_EMAIL,
+      payload
+    } as AppKitFrameTypes.AppEvent);
+
+    this.setNewLastEmailLoginTime();
+
+    return response;
   }
 
   public async connectDevice() {
     await this.webviewLoadPromise;
-    this.postAppEvent({ type: AppKitFrameConstants.APP_CONNECT_DEVICE });
 
-    return new Promise((resolve, reject) => {
-      this.connectDeviceResolver = { resolve, reject };
-    });
+    const response = await this.appEvent<'ConnectDevice'>({
+      type: AppKitFrameConstants.APP_CONNECT_DEVICE
+    } as AppKitFrameTypes.AppEvent);
+
+    return response;
   }
 
   public async connectOtp(payload: AppKitFrameTypes.Requests['AppConnectOtpRequest']) {
     await this.webviewLoadPromise;
-    this.postAppEvent({ type: AppKitFrameConstants.APP_CONNECT_OTP, payload });
 
-    return new Promise((resolve, reject) => {
-      this.connectOtpResolver = { resolve, reject };
-    });
+    const response = await this.appEvent<'ConnectOtp'>({
+      type: AppKitFrameConstants.APP_CONNECT_OTP,
+      payload
+    } as AppKitFrameTypes.AppEvent);
+
+    return response;
   }
 
   public async isConnected() {
     await this.webviewLoadPromise;
-    this.postAppEvent({
+
+    const response = await this.appEvent<'IsConnected'>({
       type: AppKitFrameConstants.APP_IS_CONNECTED,
       payload: undefined
-    });
+    } as AppKitFrameTypes.AppEvent);
 
-    return new Promise<AppKitFrameTypes.Responses['FrameIsConnectedResponse']>(
-      (resolve, reject) => {
-        this.isConnectedResolver = { resolve, reject };
-      }
-    );
+    if (!response.isConnected) {
+      this.deleteEmailLoginCache();
+    }
+
+    return response;
   }
 
   public async getChainId() {
     await this.webviewLoadPromise;
-    this.postAppEvent({ type: AppKitFrameConstants.APP_GET_CHAIN_ID });
 
-    return new Promise<AppKitFrameTypes.Responses['FrameGetChainIdResponse']>((resolve, reject) => {
-      this.getChainIdResolver = { resolve, reject };
-    });
+    const response = await this.appEvent<'GetChainId'>({
+      type: AppKitFrameConstants.APP_GET_CHAIN_ID
+    } as AppKitFrameTypes.AppEvent);
+
+    this.setLastUsedChainId(response.chainId);
+
+    return response;
   }
 
   public async updateEmail(payload: AppKitFrameTypes.Requests['AppUpdateEmailRequest']) {
     await this.webviewLoadPromise;
     await AppKitFrameHelpers.checkIfAllowedToTriggerEmail();
-    this.postAppEvent({ type: AppKitFrameConstants.APP_UPDATE_EMAIL, payload });
 
-    return new Promise<AppKitFrameTypes.Responses['FrameUpdateEmailResponse']>(
-      (resolve, reject) => {
-        this.updateEmailResolver = { resolve, reject };
-      }
-    );
+    const response = await this.appEvent<'UpdateEmail'>({
+      type: AppKitFrameConstants.APP_UPDATE_EMAIL,
+      payload
+    } as AppKitFrameTypes.AppEvent);
+
+    this.setNewLastEmailLoginTime();
+
+    return response;
   }
 
   public async updateEmailPrimaryOtp(
     payload: AppKitFrameTypes.Requests['AppUpdateEmailPrimaryOtpRequest']
   ) {
     await this.webviewLoadPromise;
-    this.postAppEvent({
+
+    const response = await this.appEvent<'UpdateEmailPrimaryOtp'>({
       type: AppKitFrameConstants.APP_UPDATE_EMAIL_PRIMARY_OTP,
       payload
-    });
+    } as AppKitFrameTypes.AppEvent);
 
-    return new Promise((resolve, reject) => {
-      this.updateEmailPrimaryOtpResolver = { resolve, reject };
-    });
+    return response;
   }
 
   public async updateEmailSecondaryOtp(
     payload: AppKitFrameTypes.Requests['AppUpdateEmailSecondaryOtpRequest']
   ) {
     await this.webviewLoadPromise;
-    this.postAppEvent({
+
+    const response = await this.appEvent<'UpdateEmailSecondaryOtp'>({
       type: AppKitFrameConstants.APP_UPDATE_EMAIL_SECONDARY_OTP,
       payload
-    });
+    } as AppKitFrameTypes.AppEvent);
 
-    return new Promise<AppKitFrameTypes.Responses['FrameUpdateEmailSecondaryOtpResolver']>(
-      (resolve, reject) => {
-        this.updateEmailSecondaryOtpResolver = { resolve, reject };
-      }
-    );
+    this.setEmailLoginSuccess(response.newEmail);
+
+    return response;
   }
 
   public async syncTheme(payload: AppKitFrameTypes.Requests['AppSyncThemeRequest']) {
     await this.webviewLoadPromise;
-    this.postAppEvent({ type: AppKitFrameConstants.APP_SYNC_THEME, payload });
 
-    return new Promise((resolve, reject) => {
-      this.syncThemeResolver = { resolve, reject };
-    });
+    const response = await this.appEvent<'SyncTheme'>({
+      type: AppKitFrameConstants.APP_SYNC_THEME,
+      payload
+    } as AppKitFrameTypes.AppEvent);
+
+    return response;
   }
 
   public async syncDappData(payload: AppKitFrameTypes.Requests['AppSyncDappDataRequest']) {
     await this.webviewLoadPromise;
     const metadata = payload.metadata ?? this.metadata;
-    this.postAppEvent({
+
+    const response = await this.appEvent<'SyncDappData'>({
       type: AppKitFrameConstants.APP_SYNC_DAPP_DATA,
       payload: { ...payload, metadata }
-    });
+    } as AppKitFrameTypes.AppEvent);
 
-    return new Promise((resolve, reject) => {
-      this.syncDappDataResolver = { resolve, reject };
-    });
+    return response;
   }
 
   // -- Provider Methods ------------------------------------------------
@@ -322,60 +243,74 @@ export class AppKitFrameProvider {
     const chainId = payload?.chainId ?? lastUsedChain ?? 1;
     await this.webviewLoadPromise;
 
-    this.postAppEvent({
+    const response = await this.appEvent<'GetUser'>({
       type: AppKitFrameConstants.APP_GET_USER,
-      payload: { chainId }
-    });
+      payload: { ...payload, chainId }
+    } as AppKitFrameTypes.AppEvent);
 
-    return new Promise<AppKitFrameTypes.Responses['FrameGetUserResponse']>((resolve, reject) => {
-      this.connectResolver = { resolve, reject };
-    });
+    this.setEmailLoginSuccess(response.email);
+    this.setLastUsedChainId(response.chainId);
+
+    return response;
   }
 
   public async switchNetwork(chainId: number) {
     await this.webviewLoadPromise;
-    this.postAppEvent({
+
+    const response = await this.appEvent<'SwitchNetwork'>({
       type: AppKitFrameConstants.APP_SWITCH_NETWORK,
       payload: { chainId }
-    });
+    } as AppKitFrameTypes.AppEvent);
 
-    return new Promise<AppKitFrameTypes.Responses['FrameSwitchNetworkResponse']>(
-      (resolve, reject) => {
-        this.switchChainResolver = { resolve, reject };
-      }
-    );
+    this.setLastUsedChainId(response.chainId);
+
+    return response;
   }
 
   public async disconnect() {
     await this.webviewLoadPromise;
-    this.postAppEvent({ type: AppKitFrameConstants.APP_SIGN_OUT });
 
-    return new Promise((resolve, reject) => {
-      this.disconnectResolver = { resolve, reject };
+    const response = await this.appEvent<'SignOut'>({
+      type: AppKitFrameConstants.APP_SIGN_OUT
     });
+
+    this.deleteEmailLoginCache();
+
+    return response;
   }
 
-  public async request(req: AppKitFrameTypes.RPCRequest) {
-    if (AppKitFrameRpcConstants.GET_CHAIN_ID === req.method) {
-      return await this.getLastUsedChainId();
-    }
-    await this.webviewLoadPromise;
-    this.postAppEvent({
-      type: AppKitFrameConstants.APP_RPC_REQUEST,
-      payload: req
-    });
-
-    return new Promise<AppKitFrameTypes.RPCResponse>((resolve, reject) => {
-      this.rpcRequestResolver = { resolve, reject };
-    });
-  }
-
-  public onRpcRequest(event: AppKitFrameTypes.AppEvent, callback: (request: unknown) => void) {
-    this.onAppEvent(event, appEvent => {
-      if (appEvent.type.includes(AppKitFrameConstants.RPC_METHOD_KEY)) {
-        callback(appEvent);
+  public async request(req: AppKitFrameTypes.RPCRequest): Promise<AppKitFrameTypes.RPCResponse> {
+    try {
+      if (AppKitFrameRpcConstants.GET_CHAIN_ID === req.method) {
+        return this.getLastUsedChainId();
       }
-    });
+
+      this.rpcRequestHandler?.(req);
+      const response = await this.appEvent<'Rpc'>({
+        type: AppKitFrameConstants.APP_RPC_REQUEST,
+        payload: req
+      } as AppKitFrameTypes.AppEvent);
+      this.rpcSuccessHandler?.(response, req);
+
+      return response;
+    } catch (error) {
+      this.rpcErrorHandler?.(error as Error, req);
+      throw error;
+    }
+  }
+
+  public onRpcRequest(callback: (request: AppKitFrameTypes.RPCRequest) => void) {
+    this.rpcRequestHandler = callback;
+  }
+
+  public onRpcSuccess(
+    callback: (response: AppKitFrameTypes.FrameEvent, request: AppKitFrameTypes.RPCRequest) => void
+  ) {
+    this.rpcSuccessHandler = callback;
+  }
+
+  public onRpcError(callback: (error: Error) => void) {
+    this.rpcErrorHandler = callback;
   }
 
   public onRpcResponse(event: AppKitFrameTypes.FrameEvent, callback: (request: unknown) => void) {
@@ -408,193 +343,6 @@ export class AppKitFrameProvider {
     });
   }
 
-  // -- Promise Handlers ------------------------------------------------
-  private onConnectEmailSuccess(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_EMAIL_SUCCESS' }>
-  ) {
-    this.connectEmailResolver?.resolve(event.payload);
-    this.setNewLastEmailLoginTime();
-  }
-
-  private onConnectEmailError(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_EMAIL_ERROR' }>
-  ) {
-    this.connectEmailResolver?.reject(event.payload.message);
-  }
-
-  private onConnectDeviceSuccess() {
-    this.connectDeviceResolver?.resolve(undefined);
-  }
-
-  private onConnectDeviceError(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_DEVICE_ERROR' }>
-  ) {
-    this.connectDeviceResolver?.reject(event.payload.message);
-  }
-
-  private onConnectOtpSuccess() {
-    this.connectOtpResolver?.resolve(undefined);
-  }
-
-  private onConnectOtpError(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_OTP_ERROR' }>
-  ) {
-    this.connectOtpResolver?.reject(event.payload.message);
-  }
-
-  private onConnectSuccess(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/GET_USER_SUCCESS' }>
-  ) {
-    this.setEmailLoginSuccess(event.payload.email);
-    this.setLastUsedChainId(event.payload.chainId);
-    this.connectResolver?.resolve(event.payload);
-  }
-
-  private onConnectError(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/GET_USER_ERROR' }>
-  ) {
-    this.connectResolver?.reject(event.payload.message);
-  }
-
-  private onIsConnectedSuccess(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/IS_CONNECTED_SUCCESS' }>
-  ) {
-    if (!event.payload.isConnected) {
-      this.deleteEmailLoginCache();
-    }
-    this.isConnectedResolver?.resolve(event.payload);
-  }
-
-  private onIsConnectedError(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/IS_CONNECTED_ERROR' }>
-  ) {
-    this.isConnectedResolver?.reject(event.payload.message);
-  }
-
-  private onGetChainIdSuccess(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/GET_CHAIN_ID_SUCCESS' }>
-  ) {
-    this.setLastUsedChainId(event.payload.chainId);
-    this.getChainIdResolver?.resolve(event.payload);
-  }
-
-  private onGetChainIdError(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/GET_CHAIN_ID_ERROR' }>
-  ) {
-    this.getChainIdResolver?.reject(event.payload.message);
-  }
-
-  private onSignOutSuccess() {
-    this.disconnectResolver?.resolve(undefined);
-    this.deleteEmailLoginCache();
-  }
-
-  private onSignOutError(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/SIGN_OUT_ERROR' }>
-  ) {
-    this.disconnectResolver?.reject(event.payload.message);
-  }
-
-  private onSwitchChainSuccess(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/SWITCH_NETWORK_SUCCESS' }>
-  ) {
-    this.setLastUsedChainId(event.payload.chainId);
-    this.switchChainResolver?.resolve(event.payload);
-  }
-
-  private onSwitchChainError(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/SWITCH_NETWORK_ERROR' }>
-  ) {
-    this.switchChainResolver?.reject(event.payload.message);
-  }
-
-  private onRpcRequestSuccess(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/RPC_REQUEST_SUCCESS' }>
-  ) {
-    this.rpcRequestResolver?.resolve(event.payload);
-  }
-
-  private onRpcRequestError(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/RPC_REQUEST_ERROR' }>
-  ) {
-    this.rpcRequestResolver?.reject(event.payload.message);
-  }
-
-  private onSessionUpdate(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/SESSION_UPDATE' }>
-  ) {
-    const { payload } = event;
-    if (payload) {
-      // Ilja TODO: this.setSessionToken(payload.token)
-    }
-  }
-
-  private onUpdateEmailSuccess(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/UPDATE_EMAIL_SUCCESS' }>
-  ) {
-    this.updateEmailResolver?.resolve(event.payload);
-    this.setNewLastEmailLoginTime();
-  }
-
-  private onUpdateEmailError(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/UPDATE_EMAIL_ERROR' }>
-  ) {
-    this.updateEmailResolver?.reject(event.payload.message);
-  }
-
-  private onUpdateEmailPrimaryOtpSuccess() {
-    this.updateEmailPrimaryOtpResolver?.resolve(undefined);
-  }
-
-  private onUpdateEmailPrimaryOtpError(
-    event: Extract<
-      AppKitFrameTypes.FrameEvent,
-      { type: '@w3m-frame/UPDATE_EMAIL_PRIMARY_OTP_ERROR' }
-    >
-  ) {
-    this.updateEmailPrimaryOtpResolver?.reject(event.payload.message);
-  }
-
-  private onUpdateEmailSecondaryOtpSuccess(
-    event: Extract<
-      AppKitFrameTypes.FrameEvent,
-      { type: '@w3m-frame/UPDATE_EMAIL_SECONDARY_OTP_SUCCESS' }
-    >
-  ) {
-    const { newEmail } = event.payload;
-    this.setEmailLoginSuccess(newEmail);
-    this.updateEmailSecondaryOtpResolver?.resolve({ newEmail });
-  }
-
-  private onUpdateEmailSecondaryOtpError(
-    event: Extract<
-      AppKitFrameTypes.FrameEvent,
-      { type: '@w3m-frame/UPDATE_EMAIL_SECONDARY_OTP_ERROR' }
-    >
-  ) {
-    this.updateEmailSecondaryOtpResolver?.reject(event.payload.message);
-  }
-
-  private onSyncThemeSuccess() {
-    this.syncThemeResolver?.resolve(undefined);
-  }
-
-  private onSyncThemeError(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/SYNC_THEME_ERROR' }>
-  ) {
-    this.syncThemeResolver?.reject(event.payload.message);
-  }
-
-  private onSyncDappDataSuccess() {
-    this.syncDappDataResolver?.resolve(undefined);
-  }
-
-  private onSyncDappDataError(
-    event: Extract<AppKitFrameTypes.FrameEvent, { type: '@w3m-frame/SYNC_DAPP_DATA_ERROR' }>
-  ) {
-    this.syncDappDataResolver?.reject(event.payload.message);
-  }
-
   // -- Private Methods -------------------------------------------------
   private setNewLastEmailLoginTime() {
     AppKitFrameStorage.set(AppKitFrameConstants.LAST_EMAIL_LOGIN_TIME, Date.now().toString());
@@ -625,6 +373,70 @@ export class AppKitFrameProvider {
     }
 
     return undefined;
+  }
+
+  private async registerFrameEventHandler(
+    id: string,
+    callback: (event: AppKitFrameTypes.FrameEvent) => void,
+    signal: AbortSignal
+  ) {
+    const eventEmitter = this.events;
+    function eventHandler(data: AppKitFrameTypes.FrameEvent) {
+      if (!data.type?.includes(AppKitFrameConstants.FRAME_EVENT_KEY)) {
+        return;
+      }
+      const frameEvent = AppKitFrameSchema.frameEvent.parse(data);
+      if (frameEvent.id === id) {
+        callback(frameEvent);
+        eventEmitter.removeListener('message', eventHandler);
+      }
+    }
+
+    eventEmitter.addListener('message', eventHandler);
+    signal.addEventListener('abort', () => {
+      eventEmitter.removeListener('message', eventHandler);
+    });
+  }
+
+  private async appEvent<T extends AppKitFrameTypes.ProviderRequestType>(
+    event: Omit<AppKitFrameTypes.AppEvent, 'id'>
+  ): Promise<AppKitFrameTypes.Responses[`Frame${T}Response`]> {
+    await this.webviewLoadPromise;
+    const type = event.type.replace('@w3m-app/', '');
+
+    return new Promise((resolve, reject) => {
+      const id = Math.random().toString(36).substring(7);
+
+      this.postAppEvent({ ...event, id } as AppKitFrameTypes.AppEvent);
+      const abortController = new AbortController();
+      if (type === 'RPC_REQUEST') {
+        const rpcEvent = event as Extract<
+          AppKitFrameTypes.AppEvent,
+          { type: '@w3m-app/RPC_REQUEST' }
+        >;
+        this.openRpcRequests = [...this.openRpcRequests, { ...rpcEvent.payload, abortController }];
+      }
+      abortController.signal.addEventListener('abort', () => {
+        if (type === 'RPC_REQUEST') {
+          reject(new Error('Request was aborted'));
+        }
+      });
+
+      function handler(frameEvent: AppKitFrameTypes.FrameEvent) {
+        if (frameEvent.type === `@w3m-frame/${type}_SUCCESS`) {
+          if ('payload' in frameEvent) {
+            resolve(frameEvent.payload);
+          }
+          resolve(undefined as unknown as AppKitFrameTypes.Responses[`Frame${T}Response`]);
+        } else if (frameEvent.type === `@w3m-frame/${type}_ERROR`) {
+          if ('payload' in frameEvent) {
+            reject(new Error(frameEvent.payload?.message || 'An error occurred'));
+          }
+          reject(new Error('An error occurred'));
+        }
+      }
+      this.registerFrameEventHandler(id, handler, abortController.signal);
+    });
   }
 
   private onFrameEvent(
@@ -678,4 +490,22 @@ export class AppKitFrameProvider {
 
     return email;
   }
+}
+
+export interface AppKitFrameProviderMethods {
+  // Email
+  connectEmail: AppKitFrameProvider['connectEmail'];
+  connectOtp: AppKitFrameProvider['connectOtp'];
+  updateEmail: AppKitFrameProvider['updateEmail'];
+  updateEmailPrimaryOtp: AppKitFrameProvider['updateEmailPrimaryOtp'];
+  updateEmailSecondaryOtp: AppKitFrameProvider['updateEmailSecondaryOtp'];
+  getEmail: AppKitFrameProvider['getEmail'];
+
+  // Social
+  connectDevice: AppKitFrameProvider['connectDevice'];
+
+  // Misc
+  syncTheme: AppKitFrameProvider['syncTheme'];
+  syncDappData: AppKitFrameProvider['syncDappData'];
+  switchNetwork: AppKitFrameProvider['switchNetwork'];
 }

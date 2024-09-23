@@ -48,7 +48,7 @@ import {
   FrameSession,
   AppGetUserRequest,
   AppUpdateEmailRequest,
-  FrameUpdateEmailSecondaryOtpResolver,
+  FrameUpdateEmailSecondaryOtpResponse,
   AppUpdateEmailPrimaryOtpRequest,
   AppUpdateEmailSecondaryOtpRequest,
   AppSyncThemeRequest,
@@ -80,9 +80,16 @@ export namespace AppKitFrameTypes {
     FrameGetChainIdResponse: z.infer<typeof FrameGetChainIdResponse>;
     FrameGetUserResponse: z.infer<typeof FrameGetUserResponse>;
     FrameIsConnectedResponse: z.infer<typeof FrameIsConnectedResponse>;
-    FrameUpdateEmailSecondaryOtpResolver: z.infer<typeof FrameUpdateEmailSecondaryOtpResolver>;
     FrameSwitchNetworkResponse: z.infer<typeof FrameSwitchNetworkResponse>;
     FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>;
+    FrameConnectOtpResponse: undefined;
+    FrameSyncThemeResponse: undefined;
+    FrameSyncDappDataResponse: undefined;
+    FrameUpdateEmailPrimaryOtpResponse: undefined;
+    FrameUpdateEmailSecondaryOtpResponse: z.infer<typeof FrameUpdateEmailSecondaryOtpResponse>;
+    FrameConnectDeviceResponse: undefined;
+    FrameSignOutResponse: undefined;
+    FrameRpcResponse: RPCResponse;
   }
 
   export interface Network {
@@ -139,4 +146,20 @@ export namespace AppKitFrameTypes {
   export type RPCResponse = z.infer<typeof RpcResponse>;
 
   export type FrameSessionType = z.infer<typeof FrameSession>;
+
+  export type ProviderRequestType =
+    | 'GetUser'
+    | 'ConnectDevice'
+    | 'ConnectEmail'
+    | 'ConnectOtp'
+    | 'SwitchNetwork'
+    | 'UpdateEmail'
+    | 'SyncTheme'
+    | 'SyncDappData'
+    | 'UpdateEmailPrimaryOtp'
+    | 'UpdateEmailSecondaryOtp'
+    | 'GetChainId'
+    | 'IsConnected'
+    | 'SignOut'
+    | 'Rpc';
 }

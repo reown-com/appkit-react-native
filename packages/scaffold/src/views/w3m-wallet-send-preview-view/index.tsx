@@ -12,7 +12,7 @@ import { PreviewSendDetails } from './components/preview-send-details';
 
 export function WalletSendPreviewView() {
   const { caipNetwork } = useSnapshot(NetworkController.state);
-  const { token, receiverAddress, gasPriceInUSD } = useSnapshot(SendController.state);
+  const { token, receiverAddress, gasPriceInUSD, loading } = useSnapshot(SendController.state);
 
   const getSendValue = () => {
     if (SendController.state.token && SendController.state.sendTokenAmount) {
@@ -94,7 +94,7 @@ export function WalletSendPreviewView() {
         <Button variant="shade" style={styles.cancelButton} onPress={RouterController.goBack}>
           Cancel
         </Button>
-        <Button variant="fill" style={styles.sendButton} onPress={onSend}>
+        <Button variant="fill" style={styles.sendButton} onPress={onSend} loading={loading}>
           Send
         </Button>
       </FlexView>

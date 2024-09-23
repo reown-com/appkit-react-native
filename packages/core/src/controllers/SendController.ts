@@ -93,6 +93,7 @@ export const SendController = {
 
   sendToken() {
     if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
+      state.loading = true;
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_INITIATED',
@@ -115,6 +116,7 @@ export const SendController = {
       this.state.gasPrice &&
       this.state.token?.quantity.decimals
     ) {
+      state.loading = true;
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_INITIATED',
@@ -169,6 +171,7 @@ export const SendController = {
       });
       this.resetSend();
     } catch (error) {
+      state.loading = false;
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_ERROR',
@@ -215,6 +218,7 @@ export const SendController = {
         this.resetSend();
       }
     } catch (error) {
+      state.loading = false;
       SnackController.showError('Something went wrong');
     }
   },

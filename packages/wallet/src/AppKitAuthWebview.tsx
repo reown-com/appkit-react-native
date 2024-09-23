@@ -15,6 +15,7 @@ import { useTheme, BorderRadius } from '@reown/appkit-ui-react-native';
 import type { AppKitFrameProvider } from './AppKitFrameProvider';
 import { AppKitFrameConstants } from './AppKitFrameConstants';
 import { AppKitFrameHelpers } from './AppKitFrameHelpers';
+import type { AppKitFrameTypes } from './AppKitFrameTypes';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
@@ -23,7 +24,7 @@ export function AuthWebview() {
   const Theme = useTheme();
   const { connectors } = useSnapshot(ConnectorController.state);
   const { projectId, sdkVersion } = useSnapshot(OptionsController.state) as OptionsControllerState;
-  const [isVisible, setIsVisible] = useState(false);
+  const [isWebviewVisibile, setIsWebviewOpen] = useState(false);
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   const animatedHeight = useRef(new Animated.Value(0));
   const backdropOpacity = useRef(new Animated.Value(0));
@@ -51,21 +52,37 @@ export function AuthWebview() {
 
     provider.onMessage(event);
 
-    provider.onRpcRequest(event, () => {
-      if (AppKitFrameHelpers.checkIfRequestExists(event)) {
-        if (!AppKitFrameHelpers.checkIfRequestIsAllowed(event)) {
-          setIsVisible(true);
+    provider.onRpcRequest((request: AppKitFrameTypes.RPCRequest) => {
+      if (AppKitFrameHelpers.checkIfRequestExists(request)) {
+        if (!AppKitFrameHelpers.checkIfRequestIsAllowed(request)) {
+          setIsWebviewOpen(true);
         }
       }
     });
 
-    provider.onRpcResponse(event, () => {
+    provider.onRpcSuccess((_, request) => {
+      const isSafeRequest = AppKitFrameHelpers.checkIfRequestIsSafe(request);
+      if (isSafeRequest) {
+        return;
+      }
+
       if (RouterController.state.transactionStack.length === 0) {
-        setIsVisible(false);
+        ModalController.close();
       } else {
-        // TODO: send boolean in false in case of error
         RouterController?.popTransactionStack();
       }
+      setIsWebviewOpen(false);
+    });
+
+    provider.onRpcError(() => {
+      if (isWebviewVisibile) {
+        if (RouterController.state.transactionStack.length === 0) {
+          ModalController.close();
+        } else {
+          RouterController?.popTransactionStack(true);
+        }
+      }
+      setIsWebviewOpen(false);
     });
 
     provider.onIsConnected(event, () => {
@@ -87,27 +104,27 @@ export function AuthWebview() {
 
   useEffect(() => {
     Animated.timing(animatedHeight.current, {
-      toValue: isVisible ? 1 : 0,
+      toValue: isWebviewVisibile ? 1 : 0,
       duration: 200,
       useNativeDriver: false
     }).start();
 
     Animated.timing(webviewOpacity.current, {
-      toValue: isVisible ? 1 : 0,
+      toValue: isWebviewVisibile ? 1 : 0,
       duration: 300,
       useNativeDriver: false
     }).start();
 
-    if (isVisible) {
+    if (isWebviewVisibile) {
       setIsBackdropVisible(true);
     }
 
     Animated.timing(backdropOpacity.current, {
-      toValue: isVisible ? 0.7 : 0,
+      toValue: isWebviewVisibile ? 0.7 : 0,
       duration: 300,
       useNativeDriver: false
-    }).start(() => setIsBackdropVisible(isVisible));
-  }, [animatedHeight, backdropOpacity, isVisible, setIsBackdropVisible]);
+    }).start(() => setIsBackdropVisible(isWebviewVisibile));
+  }, [animatedHeight, backdropOpacity, isWebviewVisibile, setIsBackdropVisible]);
 
   useEffect(() => {
     provider?.setWebviewRef(webviewRef);
