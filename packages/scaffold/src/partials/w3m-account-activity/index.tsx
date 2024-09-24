@@ -1,13 +1,14 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { ScrollView, View, type StyleProp, type ViewStyle } from 'react-native';
+import { ScrollView, View, type StyleProp, type ViewStyle, RefreshControl } from 'react-native';
 import {
   FlexView,
   Link,
   ListTransaction,
   LoadingSpinner,
   Text,
-  TransactionUtil
+  TransactionUtil,
+  useTheme
 } from '@reown/appkit-ui-react-native';
 import { type Transaction, type TransactionImage } from '@reown/appkit-common-react-native';
 import {
@@ -27,6 +28,8 @@ interface Props {
 }
 
 export function AccountActivity({ style }: Props) {
+  const Theme = useTheme();
+  const [refreshing, setRefreshing] = useState(false);
   const { loading, transactions, next } = useSnapshot(TransactionsController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
@@ -44,6 +47,12 @@ export function AccountActivity({ style }: Props) {
       }
     });
   };
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await TransactionsController.fetchTransactions(AccountController.state.address, true);
+    setRefreshing(false);
+  }, []);
 
   const transactionsByYear = useMemo(() => {
     return TransactionsController.getTransactionsByYearAndMonth(transactions as Transaction[]);
@@ -71,10 +80,17 @@ export function AccountActivity({ style }: Props) {
 
   return (
     <ScrollView
-      bounces={false}
       style={[styles.container, style]}
       fadingEdgeLength={20}
       contentContainerStyle={[styles.contentContainer]}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor={Theme['accent-100']}
+          colors={[Theme['accent-100']]}
+        />
+      }
     >
       {Object.keys(transactionsByYear)
         .reverse()
@@ -137,7 +153,7 @@ export function AccountActivity({ style }: Props) {
               Load more
             </Link>
           )}
-          {loading && <LoadingSpinner color="accent-100" />}
+          {loading && !refreshing && <LoadingSpinner color="accent-100" />}
         </FlexView>
       )}
     </ScrollView>

@@ -33,7 +33,7 @@ export const TransactionsController = {
     return sub(state, () => callback(state));
   },
 
-  async fetchTransactions(accountAddress?: string) {
+  async fetchTransactions(accountAddress?: string, reset?: boolean) {
     const { projectId } = OptionsController.state;
 
     if (!projectId || !accountAddress) {
@@ -41,6 +41,10 @@ export const TransactionsController = {
     }
 
     state.loading = true;
+
+    if (reset) {
+      state.next = undefined;
+    }
 
     try {
       const response = await BlockchainApiController.fetchTransactions({
@@ -50,7 +54,12 @@ export const TransactionsController = {
       });
 
       const nonSpamTransactions = this.filterSpamTransactions(response?.data ?? []);
-      const filteredTransactions = [...state.transactions, ...nonSpamTransactions];
+      let filteredTransactions = [...state.transactions, ...nonSpamTransactions];
+      filteredTransactions = [...state.transactions, ...nonSpamTransactions];
+
+      if (reset) {
+        filteredTransactions = nonSpamTransactions;
+      }
 
       state.loading = false;
 
