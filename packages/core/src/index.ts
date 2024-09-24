@@ -47,6 +47,8 @@ export { SwapController, type SwapControllerState } from './controllers/SwapCont
 
 export { EventsController, type EventsControllerState } from './controllers/EventsController';
 
+export { EnsController, type EnsControllerState } from './controllers/EnsController';
+
 export {
   TransactionsController,
   type TransactionsControllerState

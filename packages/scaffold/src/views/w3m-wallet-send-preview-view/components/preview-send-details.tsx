@@ -12,6 +12,7 @@ import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 
 export interface PreviewSendDetailsProps {
   address?: string;
+  name?: string;
   caipNetwork?: CaipNetwork;
   networkFee?: number;
   style?: StyleProp<ViewStyle>;
@@ -19,11 +20,19 @@ export interface PreviewSendDetailsProps {
 
 export function PreviewSendDetails({
   address,
+  name,
   caipNetwork,
   networkFee,
   style
 }: PreviewSendDetailsProps) {
   const Theme = useTheme();
+
+  const formattedName = UiUtil.getTruncateString({
+    string: name ?? '',
+    charsStart: 20,
+    charsEnd: 0,
+    truncate: 'end'
+  });
 
   const formattedAddress = UiUtil.getTruncateString({
     string: address ? address : '',
@@ -52,7 +61,7 @@ export function PreviewSendDetails({
       </FlexView>
       <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
         <Text variant="small-400" color="fg-150">
-          Address
+          {formattedName ?? 'Address'}
         </Text>
         <Text variant="small-400" color="fg-100">
           {formattedAddress}

@@ -1,6 +1,7 @@
 import { formatUnits, type Hex, parseUnits } from 'viem';
 import {
   type GetAccountReturnType,
+  type GetEnsAddressReturnType,
   connect,
   disconnect,
   signMessage,
@@ -10,12 +11,14 @@ import {
   watchConnectors,
   getEnsName,
   getEnsAvatar as wagmiGetEnsAvatar,
+  getEnsAddress as wagmiGetEnsAddress,
   getBalance,
   prepareTransactionRequest,
   sendTransaction as wagmiSendTransaction,
   waitForTransactionReceipt,
   writeContract as wagmiWriteContract
 } from '@wagmi/core';
+import { normalize } from 'viem/ens';
 import { mainnet, type Chain } from '@wagmi/core/chains';
 import { EthereumProvider, OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import {
@@ -38,7 +41,7 @@ import {
   PresetsUtil,
   StorageUtil
 } from '@reown/appkit-scaffold-utils-react-native';
-import { NetworkUtil } from '@reown/appkit-common-react-native';
+import { NetworkUtil, NamesUtil } from '@reown/appkit-common-react-native';
 import { type AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
 import {
   getCaipDefaultChain,
@@ -281,7 +284,45 @@ export class AppKit extends AppKitScaffold {
 
       parseUnits,
 
-      formatUnits
+      formatUnits,
+
+      getEnsAddress: async (value: string) => {
+        try {
+          if (!this.wagmiConfig) {
+            throw new Error(
+              'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
+            );
+          }
+          const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id));
+          let ensName: boolean | GetEnsAddressReturnType = false;
+          let wcName: boolean | string = false;
+          if (NamesUtil.isReownName(value)) {
+            wcName = (await this.resolveReownName(value)) || false;
+          }
+          if (chainId === 1) {
+            ensName = await wagmiGetEnsAddress(this.wagmiConfig, {
+              name: normalize(value),
+              chainId
+            });
+          }
+
+          return ensName || wcName || false;
+        } catch {
+          return false;
+        }
+      },
+      getEnsAvatar: async (value: string) => {
+        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id));
+        if (chainId !== mainnet.id) {
+          return false;
+        }
+        const avatar = await wagmiGetEnsAvatar(this.wagmiConfig, {
+          name: normalize(value),
+          chainId
+        });
+
+        return avatar || false;
+      }
     };
 
     super({

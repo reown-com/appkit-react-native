@@ -25,9 +25,8 @@ import styles from './styles';
 export function WalletSendView() {
   const { padding } = useCustomDimensions();
   const { keyboardShown, keyboardHeight } = useKeyboard();
-  const { token, sendTokenAmount, receiverAddress, loading, gasPrice } = useSnapshot(
-    SendController.state
-  );
+  const { token, sendTokenAmount, receiverAddress, receiverProfileName, loading, gasPrice } =
+    useSnapshot(SendController.state);
   const { tokenBalance } = useSnapshot(AccountController.state);
 
   const paddingBottom = Platform.select({
@@ -110,7 +109,7 @@ export function WalletSendView() {
           onTokenPress={() => RouterController.push('WalletSendSelectToken')}
         />
         <FlexView alignItems="center" justifyContent="center" style={styles.addressContainer}>
-          <InputAddress value={receiverAddress} />
+          <InputAddress value={receiverProfileName ? receiverProfileName : receiverAddress} />
           <IconBox
             icon="arrowBottom"
             size="lg"

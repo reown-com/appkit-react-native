@@ -21,6 +21,7 @@ import {
   BlockchainApiController,
   ConnectionController,
   ConnectorController,
+  EnsController,
   EventsController,
   ModalController,
   NetworkController,
@@ -134,6 +135,15 @@ export class AppKitScaffold {
   public subscribeEvents(callback: (newEvent: EventsControllerState) => void) {
     return EventsController.subscribe(callback);
   }
+
+  public resolveReownName = async (name: string) => {
+    const wcNameAddress = await EnsController.resolveName(name);
+    const networkNameAddresses = wcNameAddress?.addresses
+      ? Object.values(wcNameAddress?.addresses)
+      : [];
+
+    return networkNameAddresses[0]?.address || false;
+  };
 
   // -- Protected ----------------------------------------------------------------
   protected setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {

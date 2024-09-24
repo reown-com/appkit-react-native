@@ -8,6 +8,7 @@ import type {
   BlockchainApiGasPriceResponse,
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse,
+  BlockchainApiLookupEnsName,
   BlockchainApiTokenPriceRequest,
   BlockchainApiTokenPriceResponse,
   BlockchainApiTransactionsRequest,
@@ -108,6 +109,16 @@ export const BlockchainApiController = {
         projectId: OptionsController.state.projectId,
         chainId,
         forceUpdate
+      }
+    });
+  },
+
+  async lookupEnsName(name: string) {
+    return state.api.get<BlockchainApiLookupEnsName>({
+      path: `/v1/profile/account/${name}`,
+      params: {
+        projectId: OptionsController.state.projectId,
+        apiVersion: '2'
       }
     });
   },

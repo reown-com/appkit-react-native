@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { TextInput } from 'react-native';
 import { FlexView, useTheme } from '@reown/appkit-ui-react-native';
-import { SendController } from '@reown/appkit-core-react-native';
+import { ConnectionController, SendController } from '@reown/appkit-core-react-native';
+
+import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import styles from './styles';
-import { useState } from 'react';
 
 export interface InputAddressProps {
   value?: string;
@@ -12,11 +14,29 @@ export function InputAddress({ value }: InputAddressProps) {
   const Theme = useTheme();
   const [inputValue, setInputValue] = useState<string | undefined>(value);
 
+  const onSearch = async (search: string) => {
+    SendController.setLoading(true);
+    const address = await ConnectionController.getEnsAddress(search);
+    SendController.setLoading(false);
+
+    if (address) {
+      SendController.setReceiverProfileName(search);
+      SendController.setReceiverAddress(address);
+      const avatar = await ConnectionController.getEnsAvatar(search);
+      SendController.setReceiverProfileImageUrl(avatar || undefined);
+    } else {
+      SendController.setReceiverAddress(search);
+      SendController.setReceiverProfileName(undefined);
+      SendController.setReceiverProfileImageUrl(undefined);
+    }
+  };
+
+  const onDebounceSearch = useDebounceCallback({ callback: onSearch, delay: 800 });
+
   const onInputChange = (address: string) => {
     setInputValue(address);
     SendController.setReceiverAddress(address);
-
-    //TODO: Search ENS domain
+    onDebounceSearch(address);
   };
 
   return (
@@ -45,6 +65,7 @@ export function InputAddress({ value }: InputAddressProps) {
         underlineColorAndroid="transparent"
         selectTextOnFocus={false}
         multiline
+        returnKeyLabel="Done"
       />
     </FlexView>
   );

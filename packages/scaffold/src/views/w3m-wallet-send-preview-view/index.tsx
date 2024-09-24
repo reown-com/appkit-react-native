@@ -15,7 +15,14 @@ import { PreviewSendDetails } from './components/preview-send-details';
 export function WalletSendPreviewView() {
   const { padding } = useCustomDimensions();
   const { caipNetwork } = useSnapshot(NetworkController.state);
-  const { token, receiverAddress, gasPriceInUSD, loading } = useSnapshot(SendController.state);
+  const {
+    token,
+    receiverAddress,
+    receiverProfileName,
+    receiverProfileImageUrl,
+    gasPriceInUSD,
+    loading
+  } = useSnapshot(SendController.state);
 
   const getSendValue = () => {
     if (SendController.state.token && SendController.state.sendTokenAmount) {
@@ -36,15 +43,27 @@ export function WalletSendPreviewView() {
     return `${value} ${SendController.state.token?.symbol}`;
   };
 
-  const formattedAddress = UiUtil.getTruncateString({
-    string: receiverAddress ? receiverAddress : '',
-    charsStart: 4,
-    charsEnd: 4,
-    truncate: 'middle'
-  });
+  const formattedAddress = receiverProfileName
+    ? UiUtil.getTruncateString({
+        string: receiverProfileName,
+        charsStart: 20,
+        charsEnd: 0,
+        truncate: 'end'
+      })
+    : UiUtil.getTruncateString({
+        string: receiverAddress ? receiverAddress : '',
+        charsStart: 4,
+        charsEnd: 4,
+        truncate: 'middle'
+      });
 
   const onSend = () => {
     SendController.sendToken();
+  };
+
+  const onCancel = () => {
+    RouterController.goBack();
+    SendController.setLoading(false);
   };
 
   return (
@@ -79,13 +98,20 @@ export function WalletSendPreviewView() {
             To
           </Text>
           <PreviewSendPill text={formattedAddress}>
-            <Avatar address={receiverAddress} size={32} borderWidth={0} style={styles.avatar} />
+            <Avatar
+              address={receiverAddress}
+              imageSrc={receiverProfileImageUrl}
+              size={32}
+              borderWidth={0}
+              style={styles.avatar}
+            />
           </PreviewSendPill>
         </FlexView>
         <PreviewSendDetails
           style={styles.details}
           networkFee={gasPriceInUSD}
           address={receiverAddress}
+          name={receiverProfileName}
           caipNetwork={caipNetwork}
         />
         <FlexView flexDirection="row" alignItems="center" justifyContent="center">
@@ -95,7 +121,7 @@ export function WalletSendPreviewView() {
           </Text>
         </FlexView>
         <FlexView flexDirection="row" margin={['l', '0', '0', '0']}>
-          <Button variant="shade" style={styles.cancelButton} onPress={RouterController.goBack}>
+          <Button variant="shade" style={styles.cancelButton} onPress={onCancel}>
             Cancel
           </Button>
           <Button variant="fill" style={styles.sendButton} onPress={onSend} loading={loading}>

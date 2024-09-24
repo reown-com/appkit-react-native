@@ -31,6 +31,8 @@ export interface ConnectionControllerClient {
   formatUnits: (value: bigint, decimals: number) => string;
   writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>;
   disconnect: () => Promise<void>;
+  getEnsAddress: (value: string) => Promise<false | string>;
+  getEnsAvatar: (value: string) => Promise<false | string>;
 }
 
 export interface ConnectionControllerState {
@@ -145,6 +147,14 @@ export const ConnectionController = {
 
   async writeContract(args: WriteContractArgs) {
     return this._getClient().writeContract(args);
+  },
+
+  async getEnsAddress(value: string) {
+    return this._getClient().getEnsAddress(value);
+  },
+
+  async getEnsAvatar(value: string) {
+    return this._getClient().getEnsAvatar(value);
   },
 
   clearUri() {

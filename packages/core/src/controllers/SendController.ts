@@ -1,7 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils';
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla';
-import { type Balance } from '@reown/appkit-common-react-native';
-import { erc20ABI } from '@reown/appkit-common-react-native';
+import { ContractUtil, type Balance } from '@reown/appkit-common-react-native';
 import { AccountController } from './AccountController';
 import { ConnectionController } from './ConnectionController';
 import { SnackController } from './SnackController';
@@ -204,15 +203,16 @@ export const SendController = {
         params.receiverAddress &&
         params.tokenAddress
       ) {
+        const tokenAddress = CoreHelperUtil.getPlainAddress(
+          params.tokenAddress as `${string}:${string}:${string}`
+        ) as `0x${string}`;
         await ConnectionController.writeContract({
           fromAddress: AccountController.state.address as `0x${string}`,
-          tokenAddress: CoreHelperUtil.getPlainAddress(
-            params.tokenAddress as `${string}:${string}:${string}`
-          ) as `0x${string}`,
+          tokenAddress,
           receiverAddress: params.receiverAddress as `0x${string}`,
           tokenAmount: amount,
           method: 'transfer',
-          abi: erc20ABI
+          abi: ContractUtil.getABI(tokenAddress)
         });
         SnackController.showSuccess('Transaction started');
         this.resetSend();

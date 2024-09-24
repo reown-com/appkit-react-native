@@ -1,5 +1,9 @@
 import type { Balance, Transaction } from '@reown/appkit-common-react-native';
 
+export interface BaseError {
+  message?: string;
+}
+
 export type CaipAddress = `${string}:${string}:${string}`;
 
 export type CaipNetworkId = `${string}:${string}`;
@@ -168,6 +172,30 @@ export interface BlockchainApiGasPriceResponse {
   standard: string;
   fast: string;
   instant: string;
+}
+
+export interface BlockchainApiEnsError extends BaseError {
+  status: string;
+  reasons: { name: string; description: string }[];
+}
+
+export type ReownName = `${string}.reown.id` | `${string}.wcn.id`;
+
+export interface BlockchainApiLookupEnsName {
+  name: ReownName;
+  registered: number;
+  updated: number;
+  addresses: Record<
+    string,
+    {
+      address: string;
+      created: string;
+    }
+  >;
+  attributes: {
+    avatar?: string;
+    bio?: string;
+  }[];
 }
 
 // -- OptionsController Types ---------------------------------------------------
