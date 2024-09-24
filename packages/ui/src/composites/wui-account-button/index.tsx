@@ -15,7 +15,7 @@ export interface AccountButtonProps {
   imageHeaders?: Record<string, string>;
   avatarSrc?: string;
   address?: string;
-  isProfileName?: boolean;
+  profileName?: string;
   balance?: string;
   onPress?: () => void;
   disabled?: boolean;
@@ -28,7 +28,7 @@ export function AccountButton({
   imageHeaders,
   avatarSrc,
   address,
-  isProfileName,
+  profileName,
   balance,
   onPress,
   disabled,
@@ -73,6 +73,20 @@ export function AccountButton({
     return null;
   }
 
+  const formattedAddress = profileName
+    ? UiUtil.getTruncateString({
+        string: profileName,
+        charsStart: 18,
+        charsEnd: 0,
+        truncate: 'end'
+      })
+    : UiUtil.getTruncateString({
+        string: address || '',
+        charsStart: 4,
+        charsEnd: 6,
+        truncate: 'middle'
+      });
+
   return (
     <AnimatedPressable
       onPress={onPress}
@@ -102,12 +116,7 @@ export function AccountButton({
         />
         {address && (
           <Text variant="paragraph-500" color="fg-200" style={styles.address}>
-            {UiUtil.getTruncateString({
-              string: address,
-              charsStart: isProfileName ? 18 : 4,
-              charsEnd: isProfileName ? 0 : 6,
-              truncate: isProfileName ? 'end' : 'middle'
-            })}
+            {formattedAddress}
           </Text>
         )}
       </View>

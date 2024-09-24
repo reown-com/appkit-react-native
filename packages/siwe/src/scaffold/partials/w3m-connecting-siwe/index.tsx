@@ -106,12 +106,7 @@ export function ConnectingSiwe({ style }: Props) {
         {walletIcon ? (
           <WalletImage imageSrc={walletIcon} size="lg" border={false} />
         ) : (
-          <Avatar
-            imageSrc={profileImage}
-            address={profileName ?? address}
-            size={60}
-            borderWidth={0}
-          />
+          <Avatar imageSrc={profileImage} address={address} size={60} borderWidth={0} />
         )}
       </Animated.View>
     </FlexView>

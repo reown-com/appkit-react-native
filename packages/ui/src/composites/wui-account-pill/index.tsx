@@ -50,7 +50,7 @@ export function AccountPill({
       onPress={onPress}
       hitSlop={10}
     >
-      <Avatar imageSrc={profileImage} address={profileName ?? address} size={28} borderWidth={0} />
+      <Avatar imageSrc={profileImage} address={address} size={28} borderWidth={0} />
       <Text variant="large-500" color="fg-100" style={styles.text}>
         {profileName
           ? UiUtil.getTruncateString({
