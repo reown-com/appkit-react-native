@@ -25,7 +25,7 @@ export function ConnectingSiwe({ style }: Props) {
   const Theme = useTheme();
   const { metadata } = useSnapshot(OptionsController.state);
   const { connectedWalletImageUrl, pressedWallet } = useSnapshot(ConnectionController.state);
-  const { address, profileName, profileImage } = useSnapshot(AccountController.state);
+  const { address, profileImage } = useSnapshot(AccountController.state);
   const dappIcon = metadata?.icons[0] || '';
   const dappPosition = useAnimatedValue(10);
   const walletPosition = useAnimatedValue(-10);
