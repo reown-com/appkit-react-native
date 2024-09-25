@@ -26,7 +26,7 @@ import {
   AppKitScaffold,
   type WriteContractArgs
 } from '@reown/appkit-scaffold-react-native';
-import { NetworkUtil } from '@reown/appkit-common-react-native';
+import { NamesUtil, NetworkUtil } from '@reown/appkit-common-react-native';
 import {
   ConstantsUtil,
   PresetsUtil,
@@ -343,6 +343,40 @@ export class AppKit extends AppKitScaffold {
         }
 
         throw new Error('Contract method is undefined');
+      },
+
+      getEnsAddress: async (value: string) => {
+        try {
+          const chainId = Number(this.getCaipNetwork()?.id);
+          let ensName: string | null = null;
+          let wcName: boolean | string = false;
+
+          if (NamesUtil.isReownName(value)) {
+            wcName = (await this?.resolveReownName(value)) || false;
+          }
+
+          // If on mainnet, fetch from ENS
+          if (chainId === 1) {
+            const ensProvider = new InfuraProvider('mainnet');
+            ensName = await ensProvider.resolveName(value);
+          }
+
+          return ensName || wcName || false;
+        } catch {
+          return false;
+        }
+      },
+
+      getEnsAvatar: async (value: string) => {
+        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id));
+        if (chainId === 1) {
+          const ensProvider = new InfuraProvider('mainnet');
+          const avatar = await ensProvider.getAvatar(value);
+
+          return avatar || false;
+        }
+
+        return false;
       }
     };
 
