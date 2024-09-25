@@ -51,7 +51,7 @@ export function WalletSendPreviewView() {
         truncate: 'end'
       })
     : UiUtil.getTruncateString({
-        string: receiverAddress ? receiverAddress : '',
+        string: receiverAddress || '',
         charsStart: 4,
         charsEnd: 4,
         truncate: 'middle'

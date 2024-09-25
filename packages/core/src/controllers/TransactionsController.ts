@@ -55,7 +55,6 @@ export const TransactionsController = {
 
       const nonSpamTransactions = this.filterSpamTransactions(response?.data ?? []);
       let filteredTransactions = [...state.transactions, ...nonSpamTransactions];
-      filteredTransactions = [...state.transactions, ...nonSpamTransactions];
 
       if (reset) {
         filteredTransactions = nonSpamTransactions;

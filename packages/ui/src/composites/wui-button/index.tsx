@@ -95,18 +95,18 @@ export function Button({
             style={[styles.iconLeft, iconStyle]}
           />
         )}
-        {loading ? (
-          <LoadingSpinner color={iconColor} />
-        ) : typeof children === 'string' ? (
-          <Text
-            variant={size === 'md' ? 'paragraph-600' : 'small-600'}
-            style={[styles.text, themedTextStyle]}
-          >
-            {children}
-          </Text>
-        ) : (
-          children
-        )}
+        {loading && <LoadingSpinner color={iconColor} />}
+        {!loading &&
+          (typeof children === 'string' ? (
+            <Text
+              variant={size === 'md' ? 'paragraph-600' : 'small-600'}
+              style={[styles.text, themedTextStyle]}
+            >
+              {children}
+            </Text>
+          ) : (
+            children
+          ))}
         {iconRight && (
           <Icon
             color={iconColor}

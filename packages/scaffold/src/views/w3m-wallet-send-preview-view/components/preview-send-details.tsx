@@ -35,7 +35,7 @@ export function PreviewSendDetails({
   });
 
   const formattedAddress = UiUtil.getTruncateString({
-    string: address ? address : '',
+    string: address || '',
     charsStart: 6,
     charsEnd: 8,
     truncate: 'middle'

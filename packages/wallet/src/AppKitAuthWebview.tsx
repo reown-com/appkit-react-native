@@ -24,7 +24,7 @@ export function AuthWebview() {
   const Theme = useTheme();
   const { connectors } = useSnapshot(ConnectorController.state);
   const { projectId, sdkVersion } = useSnapshot(OptionsController.state) as OptionsControllerState;
-  const [isWebviewVisibile, setIsWebviewOpen] = useState(false);
+  const [isWebviewVisibile, setIsWebviewVisible] = useState(false);
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   const animatedHeight = useRef(new Animated.Value(0));
   const backdropOpacity = useRef(new Animated.Value(0));
@@ -55,7 +55,7 @@ export function AuthWebview() {
     provider.onRpcRequest((request: AppKitFrameTypes.RPCRequest) => {
       if (AppKitFrameHelpers.checkIfRequestExists(request)) {
         if (!AppKitFrameHelpers.checkIfRequestIsAllowed(request)) {
-          setIsWebviewOpen(true);
+          setIsWebviewVisible(true);
         }
       }
     });
@@ -71,7 +71,7 @@ export function AuthWebview() {
       } else {
         RouterController?.popTransactionStack();
       }
-      setIsWebviewOpen(false);
+      setIsWebviewVisible(false);
     });
 
     provider.onRpcError(() => {
@@ -82,7 +82,7 @@ export function AuthWebview() {
           RouterController?.popTransactionStack(true);
         }
       }
-      setIsWebviewOpen(false);
+      setIsWebviewVisible(false);
     });
 
     provider.onIsConnected(event, () => {
