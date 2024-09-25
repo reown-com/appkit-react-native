@@ -61,7 +61,7 @@ export function PreviewSendDetails({
       </FlexView>
       <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
         <Text variant="small-400" color="fg-150">
-          {formattedName ?? 'Address'}
+          {formattedName || 'Address'}
         </Text>
         <Text variant="small-400" color="fg-100">
           {formattedAddress}
