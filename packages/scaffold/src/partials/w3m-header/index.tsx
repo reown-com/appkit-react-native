@@ -18,23 +18,30 @@ export function Header() {
     const networkName = data?.network?.name;
 
     return {
-      Connect: 'Connect wallet',
       Account: undefined,
-      ConnectingWalletConnect: walletName ?? 'WalletConnect',
+      AccountDefault: undefined,
+      AllWallets: 'All wallets',
+      Connect: 'Connect wallet',
       ConnectingExternal: connectorName ?? 'Connect wallet',
       ConnectingSiwe: 'Sign In',
-      Networks: 'Select network',
-      SwitchNetwork: networkName ?? 'Switch network',
-      AllWallets: 'All wallets',
-      WhatIsANetwork: 'What is a network?',
-      WhatIsAWallet: 'What is a wallet?',
-      GetWallet: 'Get a wallet',
+      ConnectingWalletConnect: walletName ?? 'WalletConnect',
       EmailVerifyDevice: ' ',
       EmailVerifyOtp: 'Confirm email',
-      UpdateEmailWallet: 'Edit email',
+      GetWallet: 'Get a wallet',
+      Networks: 'Select network',
+      SwitchNetwork: networkName ?? 'Switch network',
+      Transactions: 'Activity',
       UpdateEmailPrimaryOtp: 'Confirm current email',
       UpdateEmailSecondaryOtp: 'Confirm new email',
-      UpgradeEmailWallet: 'Upgrade wallet'
+      UpdateEmailWallet: 'Edit email',
+      UpgradeEmailWallet: 'Upgrade wallet',
+      WalletCompatibleNetworks: 'Compatible networks',
+      WalletReceive: 'Receive',
+      WalletSend: 'Send',
+      WalletSendPreview: 'Review send',
+      WalletSendSelectToken: 'Select token',
+      WhatIsANetwork: 'What is a network?',
+      WhatIsAWallet: 'What is a wallet?'
     };
   };
 

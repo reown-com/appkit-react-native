@@ -1,4 +1,4 @@
-import { ethers, utils } from 'ethers';
+import { Contract, ethers, utils } from 'ethers';
 import {
   type CaipAddress,
   type CaipNetwork,
@@ -8,7 +8,9 @@ import {
   type LibraryOptions,
   type NetworkControllerClient,
   type PublicStateControllerState,
+  type SendTransactionArgs,
   type Token,
+  type WriteContractArgs,
   AppKitScaffold
 } from '@reown/appkit-scaffold-react-native';
 import {
@@ -28,7 +30,7 @@ import {
   type CombinedProviderType,
   type AppKitFrameProvider
 } from '@reown/appkit-scaffold-utils-react-native';
-import { NetworkUtil } from '@reown/appkit-common-react-native';
+import { NamesUtil, NetworkUtil } from '@reown/appkit-common-react-native';
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 
@@ -268,6 +270,95 @@ export class AppKit extends AppKitScaffold {
         });
 
         return signature as `0x${string}`;
+      },
+
+      parseUnits: (value: string, decimals: number) =>
+        ethers.utils.parseUnits(value, decimals).toBigInt(),
+
+      formatUnits: (value: bigint, decimals: number) => ethers.utils.formatUnits(value, decimals),
+
+      sendTransaction: async (data: SendTransactionArgs) => {
+        const provider = EthersStoreUtil.state.provider;
+        const address = EthersStoreUtil.state.address;
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:sendTransaction - provider is undefined');
+        }
+
+        if (!address) {
+          throw new Error('connectionControllerClient:sendTransaction - address is undefined');
+        }
+
+        const txParams = {
+          to: data.to,
+          value: data.value,
+          gasLimit: data.gas,
+          gasPrice: data.gasPrice,
+          data: data.data,
+          type: 0
+        };
+
+        const browserProvider = new ethers.providers.Web3Provider(provider);
+        const signer = browserProvider.getSigner();
+
+        const txResponse = await signer.sendTransaction(txParams);
+        const txReceipt = await txResponse.wait();
+
+        return (txReceipt?.blockHash as `0x${string}`) || null;
+      },
+
+      writeContract: async (data: WriteContractArgs) => {
+        const { chainId, provider, address } = EthersStoreUtil.state;
+        if (!provider) {
+          throw new Error('writeContract - provider is undefined');
+        }
+        if (!address) {
+          throw new Error('writeContract - address is undefined');
+        }
+        const browserProvider = new ethers.providers.Web3Provider(provider, chainId);
+        const signer = browserProvider.getSigner(address);
+        const contract = new Contract(data.tokenAddress, data.abi, signer);
+        if (!contract || !data.method) {
+          throw new Error('Contract method is undefined');
+        }
+        const method = contract[data.method];
+        if (method) {
+          return await method(data.receiverAddress, data.tokenAmount);
+        }
+        throw new Error('Contract method is undefined');
+      },
+
+      getEnsAddress: async (value: string) => {
+        try {
+          const { chainId } = EthersStoreUtil.state;
+          let ensName: string | null = null;
+          let wcName: boolean | string = false;
+
+          if (NamesUtil.isReownName(value)) {
+            wcName = (await this.resolveReownName(value)) || false;
+          }
+
+          if (chainId === 1) {
+            const ensProvider = new ethers.providers.InfuraProvider('mainnet');
+            ensName = await ensProvider.resolveName(value);
+          }
+
+          return ensName || wcName || false;
+        } catch {
+          return false;
+        }
+      },
+
+      getEnsAvatar: async (value: string) => {
+        const { chainId } = EthersStoreUtil.state;
+        if (chainId === 1) {
+          const ensProvider = new ethers.providers.InfuraProvider('mainnet');
+          const avatar = await ensProvider.getAvatar(value);
+
+          return avatar || false;
+        }
+
+        return false;
       }
     };
 

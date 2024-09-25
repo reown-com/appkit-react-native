@@ -7,5 +7,7 @@ export const ConstantsUtil = {
 
   EMAIL_REGEX: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/,
 
-  LINKING_ERROR: 'LINKING_ERROR'
+  LINKING_ERROR: 'LINKING_ERROR',
+
+  NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 };

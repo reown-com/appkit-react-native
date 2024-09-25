@@ -1,3 +1,9 @@
+import type { Balance, Transaction } from '@reown/appkit-common-react-native';
+
+export interface BaseError {
+  message?: string;
+}
+
 export type CaipAddress = `${string}:${string}:${string}`;
 
 export type CaipNetworkId = `${string}:${string}`;
@@ -98,6 +104,16 @@ export interface ApiGetAnalyticsConfigResponse {
   isAnalyticsEnabled: boolean;
 }
 
+export type RequestCache =
+  | 'default'
+  | 'force-cache'
+  | 'no-cache'
+  | 'no-store'
+  | 'only-if-cached'
+  | 'reload';
+
+// -- ThemeController Types ---------------------------------------------------
+
 export type ThemeMode = 'dark' | 'light';
 
 export interface ThemeVariables {
@@ -112,6 +128,74 @@ export interface BlockchainApiIdentityRequest {
 export interface BlockchainApiIdentityResponse {
   avatar: string;
   name: string;
+}
+
+export interface BlockchainApiBalanceResponse {
+  balances: Balance[];
+}
+
+export interface BlockchainApiTransactionsRequest {
+  account: string;
+  projectId: string;
+  cursor?: string;
+  onramp?: 'coinbase';
+  signal?: AbortSignal;
+  cache?: RequestCache;
+}
+
+export interface BlockchainApiTransactionsResponse {
+  data: Transaction[];
+  next: string | null;
+}
+
+export interface BlockchainApiTokenPriceRequest {
+  projectId: string;
+  currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth';
+  addresses: string[];
+}
+
+export interface BlockchainApiTokenPriceResponse {
+  fungibles: {
+    name: string;
+    symbol: string;
+    iconUrl: string;
+    price: number;
+  }[];
+}
+
+export interface BlockchainApiGasPriceRequest {
+  projectId: string;
+  chainId: string;
+}
+
+export interface BlockchainApiGasPriceResponse {
+  standard: string;
+  fast: string;
+  instant: string;
+}
+
+export interface BlockchainApiEnsError extends BaseError {
+  status: string;
+  reasons: { name: string; description: string }[];
+}
+
+export type ReownName = `${string}.reown.id` | `${string}.wcn.id`;
+
+export interface BlockchainApiLookupEnsName {
+  name: ReownName;
+  registered: number;
+  updated: number;
+  addresses: Record<
+    string,
+    {
+      address: string;
+      created: string;
+    }
+  >;
+  attributes: {
+    avatar?: string;
+    bio?: string;
+  }[];
 }
 
 // -- OptionsController Types ---------------------------------------------------
@@ -284,7 +368,92 @@ export type Event =
   | {
       type: 'track';
       event: 'SIWE_AUTH_ERROR';
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_TRANSACTIONS';
+      properties: {
+        isSmartAccount: boolean;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'ERROR_FETCH_TRANSACTIONS';
+      properties: {
+        address: string;
+        projectId: string;
+        cursor: string | undefined;
+        isSmartAccount: boolean;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'LOAD_MORE_TRANSACTIONS';
+      properties: {
+        address: string | undefined;
+        projectId: string;
+        cursor: string | undefined;
+        isSmartAccount: boolean;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'OPEN_SEND';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SEND_INITIATED';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        token: string;
+        amount: number;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SEND_SUCCESS';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        token: string;
+        amount: number;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SEND_ERROR';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        token: string;
+        amount: number;
+      };
     };
+
+// -- Send Controller Types -------------------------------------
+
+export interface SendTransactionArgs {
+  to: `0x${string}`;
+  data: `0x${string}`;
+  value: bigint;
+  gas?: bigint;
+  gasPrice: bigint;
+  address: `0x${string}`;
+}
+
+export interface WriteContractArgs {
+  receiverAddress: `0x${string}`;
+  tokenAmount: bigint;
+  tokenAddress: `0x${string}`;
+  fromAddress: `0x${string}`;
+  method: 'send' | 'transfer' | 'call';
+  abi: any;
+}
 
 // -- Email Types ------------------------------------------------
 /**

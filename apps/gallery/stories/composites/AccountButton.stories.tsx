@@ -12,8 +12,8 @@ const meta: Meta<typeof AccountButton> = {
     address: {
       control: { type: 'text' }
     },
-    isProfileName: {
-      control: { type: 'boolean' }
+    profileName: {
+      control: { type: 'text' }
     },
     networkSrc: {
       control: { type: 'text' }
@@ -26,8 +26,7 @@ const meta: Meta<typeof AccountButton> = {
     avatarSrc: avatarImageSrc,
     address: '0xDBbD65026a07cFbFa1aa92744E4D69951686077d',
     networkSrc: networkImageSrc,
-    balance: '0.527 ETH',
-    isProfileName: false
+    balance: '0.527 ETH'
   }
 };
 
@@ -41,7 +40,7 @@ export const Default: Story = {
       address={args.address}
       networkSrc={args.networkSrc}
       balance={args.balance}
-      isProfileName={args.isProfileName}
+      profileName={args.profileName}
     />
   )
 };

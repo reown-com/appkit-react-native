@@ -5,6 +5,7 @@ import type { ColorType, IconType, SizeType, ThemeKeys } from '../../utils/Types
 import AllWalletsSvg from '../../assets/svg/AllWallets';
 import AppleSvg from '../../assets/svg/Apple';
 import ArrowBottomSvg from '../../assets/svg/ArrowBottom';
+import ArrowBottomCircleSvg from '../../assets/svg/ArrowBottomCircle';
 import ArrowLeftSvg from '../../assets/svg/ArrowLeft';
 import ArrowRightSvg from '../../assets/svg/ArrowRight';
 import ArrowTopSvg from '../../assets/svg/ArrowTop';
@@ -39,6 +40,7 @@ import MobileSvg from '../../assets/svg/Mobile';
 import NetworkPlaceholderSvg from '../../assets/svg/NetworkPlaceholder';
 import NftPlaceholderSvg from '../../assets/svg/NftPlaceholder';
 import OffSvg from '../../assets/svg/Off';
+import PaperplaneSvg from '../../assets/svg/Paperplane';
 import QrCodeSvg from '../../assets/svg/QrCode';
 import RefreshSvg from '../../assets/svg/Refresh';
 import SearchSvg from '../../assets/svg/Search';
@@ -61,6 +63,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   allWallets: AllWalletsSvg,
   apple: AppleSvg,
   arrowBottom: ArrowBottomSvg,
+  arrowBottomCircle: ArrowBottomCircleSvg,
   arrowLeft: ArrowLeftSvg,
   arrowRight: ArrowRightSvg,
   arrowTop: ArrowTopSvg,
@@ -95,6 +98,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   networkPlaceholder: NetworkPlaceholderSvg,
   nftPlaceholder: NftPlaceholderSvg,
   off: OffSvg,
+  paperplane: PaperplaneSvg,
   qrCode: QrCodeSvg,
   refresh: RefreshSvg,
   search: SearchSvg,

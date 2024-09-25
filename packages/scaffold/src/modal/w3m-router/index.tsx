@@ -8,7 +8,7 @@ import { AllWalletsView } from '../../views/w3m-all-wallets-view';
 import { ConnectingView } from '../../views/w3m-connecting-view';
 import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
 import { GetWalletView } from '../../views/w3m-get-wallet-view';
-import { AccountView } from '../../views/w3m-account-view';
+import { AccountDefaultView } from '../../views/w3m-account-default-view';
 import { NetworksView } from '../../views/w3m-networks-view';
 import { WhatIsNetworkView } from '../../views/w3m-what-is-a-network-view';
 import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
@@ -20,6 +20,13 @@ import { UpdateEmailWalletView } from '../../views/w3m-update-email-wallet-view'
 import { UpdateEmailPrimaryOtpView } from '../../views/w3m-update-email-primary-otp-view';
 import { UpdateEmailSecondaryOtpView } from '../../views/w3m-update-email-secondary-otp-view';
 import { UpgradeEmailWalletView } from '../../views/w3m-upgrade-email-wallet-view';
+import { AccountView } from '../../views/w3m-account-view';
+import { WalletReceiveView } from '../../views/w3m-wallet-receive-view';
+import { WalletCompatibleNetworks } from '../../views/w3m-wallet-compatible-networks-view';
+import { TransactionsView } from '../../views/w3m-transactions-view';
+import { WalletSendView } from '../../views/w3m-wallet-send-view';
+import { WalletSendPreviewView } from '../../views/w3m-wallet-send-preview-view';
+import { WalletSendSelectTokenView } from '../../views/w3m-wallet-send-select-token-view';
 
 export function AppKitRouter() {
   const { view } = useSnapshot(RouterController.state);
@@ -30,40 +37,54 @@ export function AppKitRouter() {
 
   const ViewComponent = useMemo(() => {
     switch (view) {
-      case 'Connect':
-        return ConnectView;
+      case 'Account':
+        return AccountView;
+      case 'AccountDefault':
+        return AccountDefaultView;
       case 'AllWallets':
         return AllWalletsView;
-      case 'ConnectingWalletConnect':
-        return ConnectingView;
+      case 'Connect':
+        return ConnectView;
       case 'ConnectingExternal':
         return ConnectingExternalView;
-      case 'WhatIsAWallet':
-        return WhatIsAWalletView;
-      case 'WhatIsANetwork':
-        return WhatIsNetworkView;
+      case 'ConnectingSiwe':
+        return ConnectingSiweView;
+      case 'ConnectingWalletConnect':
+        return ConnectingView;
+      case 'EmailVerifyDevice':
+        return EmailVerifyDeviceView;
+      case 'EmailVerifyOtp':
+        return EmailVerifyOtpView;
       case 'GetWallet':
         return GetWalletView;
       case 'Networks':
         return NetworksView;
       case 'SwitchNetwork':
         return NetworkSwitchView;
-      case 'Account':
-        return AccountView;
-      case 'EmailVerifyDevice':
-        return EmailVerifyDeviceView;
-      case 'EmailVerifyOtp':
-        return EmailVerifyOtpView;
-      case 'UpdateEmailWallet':
-        return UpdateEmailWalletView;
+      case 'Transactions':
+        return TransactionsView;
       case 'UpdateEmailPrimaryOtp':
         return UpdateEmailPrimaryOtpView;
       case 'UpdateEmailSecondaryOtp':
         return UpdateEmailSecondaryOtpView;
+      case 'UpdateEmailWallet':
+        return UpdateEmailWalletView;
       case 'UpgradeEmailWallet':
         return UpgradeEmailWalletView;
-      case 'ConnectingSiwe':
-        return ConnectingSiweView;
+      case 'WalletCompatibleNetworks':
+        return WalletCompatibleNetworks;
+      case 'WalletReceive':
+        return WalletReceiveView;
+      case 'WalletSend':
+        return WalletSendView;
+      case 'WalletSendPreview':
+        return WalletSendPreviewView;
+      case 'WalletSendSelectToken':
+        return WalletSendSelectTokenView;
+      case 'WhatIsANetwork':
+        return WhatIsNetworkView;
+      case 'WhatIsAWallet':
+        return WhatIsAWalletView;
       default:
         return ConnectView;
     }

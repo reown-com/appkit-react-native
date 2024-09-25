@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Animated, Linking, Pressable, type StyleProp, type ViewStyle } from 'react-native';
+import { Animated, Pressable, type StyleProp, type ViewStyle } from 'react-native';
 import type { ChipType, ColorType, IconType, SizeType } from '../../utils/TypesUtil';
 import { useTheme } from '../../hooks/useTheme';
 import { Text } from '../../components/wui-text';
@@ -10,7 +10,6 @@ import styles, { getThemedChipStyle, getThemedTextColor } from './styles';
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface ChipProps {
-  link: string;
   label?: string;
   imageSrc?: string;
   icon?: IconType;
@@ -18,10 +17,11 @@ export interface ChipProps {
   size?: Exclude<SizeType, 'xl' | 'lg' | 'xs' | 'xxs'>;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
+  onPress?: () => void;
 }
 
 export function Chip({
-  link,
+  onPress,
   imageSrc,
   icon,
   variant = 'fill',
@@ -38,10 +38,8 @@ export function Chip({
   const themedTextColor = getThemedTextColor(variant, disabled, pressed);
   const iconSize = size === 'md' ? 'sm' : 'xs';
 
-  const onPress = () => {
-    Linking.canOpenURL(link).then(supported => {
-      if (supported) Linking.openURL(link);
-    });
+  const handlePress = () => {
+    onPress?.();
   };
 
   const onPressIn = () => {
@@ -78,7 +76,7 @@ export function Chip({
       style={[styles.container, styles[`${size}Chip`], { borderColor, backgroundColor }, style]}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
-      onPress={onPress}
+      onPress={handlePress}
     >
       {imageSrc && (
         <Image
@@ -95,7 +93,7 @@ export function Chip({
         variant={size === 'md' ? 'paragraph-600' : 'small-600'}
         style={[styles.link, { color: Theme[themedTextColor] }]}
       >
-        {label || link}
+        {label}
       </Text>
       {icon && (
         <Icon

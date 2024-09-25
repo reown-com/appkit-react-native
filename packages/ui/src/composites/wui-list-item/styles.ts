@@ -13,12 +13,13 @@ export default StyleSheet.create({
   content: {
     flexDirection: 'row',
     flexGrow: 1,
-    paddingHorizontal: Spacing.s
+    paddingHorizontal: Spacing.s,
+    alignItems: 'center'
   },
   imageContainer: {
     width: 36,
     height: 36,
-    borderRadius: 100,
+    borderRadius: BorderRadius.full,
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center'
@@ -26,7 +27,7 @@ export default StyleSheet.create({
   image: {
     width: 32,
     height: 32,
-    borderRadius: 100
+    borderRadius: BorderRadius.full
   },
   disabledImage: {
     opacity: 0.4

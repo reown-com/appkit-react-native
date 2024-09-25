@@ -63,6 +63,12 @@ export const NetworkController = {
     state.approvedCaipNetworkIds = data.approvedCaipNetworkIds;
   },
 
+  getApprovedCaipNetworks() {
+    return state.approvedCaipNetworkIds
+      ?.map(id => state.requestedCaipNetworks?.find(network => network.id === id))
+      .filter(Boolean) as CaipNetwork[];
+  },
+
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
     await this._getClient().switchCaipNetwork(network);
     state.caipNetwork = network;

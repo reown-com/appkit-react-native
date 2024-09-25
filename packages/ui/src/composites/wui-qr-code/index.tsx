@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { View } from 'react-native';
+import { View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg from 'react-native-svg';
 import { Icon } from '../../components/wui-icon';
 import { Image } from '../../components/wui-image';
@@ -15,22 +15,26 @@ export interface QrCodeProps {
   uri?: string;
   imageSrc?: string;
   testID?: string;
+  arenaClear?: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
-export function QrCode({ size, uri, imageSrc, testID }: QrCodeProps) {
+export function QrCode({ size, uri, imageSrc, testID, arenaClear, style }: QrCodeProps) {
   const Theme = LightTheme;
   const containerPadding = Spacing.l;
   const qrSize = size - containerPadding * 2;
+  const logoSize = arenaClear ? 0 : qrSize / 4;
+
   const dots = useMemo(
-    () => (uri ? QRCodeUtil.generate(uri, qrSize, qrSize / 4) : []),
-    [uri, qrSize]
+    () => (uri ? QRCodeUtil.generate(uri, qrSize, logoSize) : []),
+    [uri, qrSize, logoSize]
   );
 
-  const shimmerTemplate = () => {
-    return <Shimmer width={size} height={size} borderRadius={BorderRadius.l} />;
-  };
-
   const logoTemplate = () => {
+    if (arenaClear) {
+      return null;
+    }
+
     if (imageSrc) {
       return (
         <Image
@@ -58,7 +62,8 @@ export function QrCode({ size, uri, imageSrc, testID }: QrCodeProps) {
     <View
       style={[
         styles.container,
-        { width: size, backgroundColor: Theme['bg-100'], padding: containerPadding }
+        { width: size, backgroundColor: Theme['bg-100'], padding: containerPadding },
+        style
       ]}
       testID={testID}
     >
@@ -76,6 +81,6 @@ export function QrCode({ size, uri, imageSrc, testID }: QrCodeProps) {
       </Text>
     </View>
   ) : (
-    shimmerTemplate()
+    <Shimmer width={size} height={size} borderRadius={BorderRadius.l} />
   );
 }

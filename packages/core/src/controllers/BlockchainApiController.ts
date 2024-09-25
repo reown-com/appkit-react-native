@@ -3,8 +3,16 @@ import { proxy } from 'valtio';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { FetchUtil } from '../utils/FetchUtil';
 import type {
+  BlockchainApiBalanceResponse,
+  BlockchainApiGasPriceRequest,
+  BlockchainApiGasPriceResponse,
   BlockchainApiIdentityRequest,
-  BlockchainApiIdentityResponse
+  BlockchainApiIdentityResponse,
+  BlockchainApiLookupEnsName,
+  BlockchainApiTokenPriceRequest,
+  BlockchainApiTokenPriceResponse,
+  BlockchainApiTransactionsRequest,
+  BlockchainApiTransactionsResponse
 } from '../utils/TypeUtil';
 import { OptionsController } from './OptionsController';
 
@@ -32,6 +40,85 @@ export const BlockchainApiController = {
       path: `/v1/identity/${address}`,
       params: {
         projectId: OptionsController.state.projectId
+      }
+    });
+  },
+
+  fetchTransactions({
+    account,
+    projectId,
+    cursor,
+    onramp,
+    signal,
+    cache
+  }: BlockchainApiTransactionsRequest) {
+    return state.api.get<BlockchainApiTransactionsResponse>({
+      path: `/v1/account/${account}/history`,
+      params: {
+        projectId,
+        cursor,
+        onramp
+      },
+      signal,
+      cache
+    });
+  },
+
+  fetchTokenPrice({ projectId, addresses }: BlockchainApiTokenPriceRequest) {
+    return state.api.post<BlockchainApiTokenPriceResponse>({
+      path: '/v1/fungible/price',
+      body: {
+        projectId,
+        currency: 'usd',
+        addresses
+      },
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  },
+
+  fetchGasPrice({ projectId, chainId }: BlockchainApiGasPriceRequest) {
+    const { sdkType, sdkVersion } = OptionsController.state;
+
+    return state.api.get<BlockchainApiGasPriceResponse>({
+      path: `/v1/convert/gas-price`,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-sdk-type': sdkType,
+        'x-sdk-version': sdkVersion
+      },
+      params: {
+        projectId,
+        chainId
+      }
+    });
+  },
+
+  async getBalance(address: string, chainId?: string, forceUpdate?: string) {
+    const { sdkType, sdkVersion } = OptionsController.state;
+
+    return state.api.get<BlockchainApiBalanceResponse>({
+      path: `/v1/account/${address}/balance`,
+      headers: {
+        'x-sdk-type': sdkType,
+        'x-sdk-version': sdkVersion
+      },
+      params: {
+        currency: 'usd',
+        projectId: OptionsController.state.projectId,
+        chainId,
+        forceUpdate
+      }
+    });
+  },
+
+  async lookupEnsName(name: string) {
+    return state.api.get<BlockchainApiLookupEnsName>({
+      path: `/v1/profile/account/${name}`,
+      params: {
+        projectId: OptionsController.state.projectId,
+        apiVersion: '2'
       }
     });
   },

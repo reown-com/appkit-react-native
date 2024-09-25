@@ -21,13 +21,15 @@ import {
   BlockchainApiController,
   ConnectionController,
   ConnectorController,
+  EnsController,
   EventsController,
   ModalController,
   NetworkController,
   OptionsController,
   PublicStateController,
   StorageUtil,
-  ThemeController
+  ThemeController,
+  TransactionsController
 } from '@reown/appkit-core-react-native';
 import { ConstantsUtil } from '@reown/appkit-common-react-native';
 
@@ -134,6 +136,15 @@ export class AppKitScaffold {
     return EventsController.subscribe(callback);
   }
 
+  public resolveReownName = async (name: string) => {
+    const wcNameAddress = await EnsController.resolveName(name);
+    const networkNameAddresses = wcNameAddress?.addresses
+      ? Object.values(wcNameAddress?.addresses)
+      : [];
+
+    return networkNameAddresses[0]?.address || false;
+  };
+
   // -- Protected ----------------------------------------------------------------
   protected setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
     AccountController.setIsConnected(isConnected);
@@ -142,6 +153,8 @@ export class AppKitScaffold {
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = caipAddress => {
     AccountController.setCaipAddress(caipAddress);
   };
+
+  protected getCaipAddress = () => AccountController.state.caipAddress;
 
   protected setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol) => {
     AccountController.setBalance(balance, balanceSymbol);
@@ -193,6 +206,7 @@ export class AppKitScaffold {
 
   protected resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {
     ConnectionController.resetWcConnection();
+    TransactionsController.resetTransactions();
   };
 
   protected fetchIdentity: (typeof BlockchainApiController)['fetchIdentity'] = request =>

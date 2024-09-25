@@ -1,16 +1,24 @@
-import { formatUnits, type Hex } from 'viem';
+import { formatUnits, type Hex, parseUnits } from 'viem';
 import {
   type GetAccountReturnType,
+  type GetEnsAddressReturnType,
   connect,
   disconnect,
   signMessage,
+  getAccount,
   switchChain,
   watchAccount,
   watchConnectors,
   getEnsName,
   getEnsAvatar as wagmiGetEnsAvatar,
-  getBalance
+  getEnsAddress as wagmiGetEnsAddress,
+  getBalance,
+  prepareTransactionRequest,
+  sendTransaction as wagmiSendTransaction,
+  waitForTransactionReceipt,
+  writeContract as wagmiWriteContract
 } from '@wagmi/core';
+import { normalize } from 'viem/ens';
 import { mainnet, type Chain } from '@wagmi/core/chains';
 import { EthereumProvider, OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import {
@@ -22,8 +30,10 @@ import {
   type LibraryOptions,
   type NetworkControllerClient,
   type PublicStateControllerState,
+  type SendTransactionArgs,
   type Token,
-  AppKitScaffold
+  AppKitScaffold,
+  type WriteContractArgs
 } from '@reown/appkit-scaffold-react-native';
 import {
   ConstantsUtil,
@@ -31,12 +41,13 @@ import {
   PresetsUtil,
   StorageUtil
 } from '@reown/appkit-scaffold-utils-react-native';
-import { NetworkUtil } from '@reown/appkit-common-react-native';
+import { NetworkUtil, NamesUtil } from '@reown/appkit-common-react-native';
 import { type AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
 import {
   getCaipDefaultChain,
   getAuthCaipNetworks,
-  getWalletConnectCaipNetworks
+  getWalletConnectCaipNetworks,
+  requireCaipAddress
 } from './utils/helpers';
 import { defaultWagmiConfig } from './utils/defaultWagmiConfig';
 
@@ -230,6 +241,87 @@ export class AppKit extends AppKitScaffold {
           const { SIWEController } = await import('@reown/appkit-siwe-react-native');
           await SIWEController.signOut();
         }
+      },
+
+      sendTransaction: async (data: SendTransactionArgs) => {
+        const { chainId } = getAccount(this.wagmiConfig);
+
+        const txParams = {
+          account: data.address,
+          to: data.to,
+          value: data.value,
+          gas: data.gas,
+          gasPrice: data.gasPrice,
+          data: data.data,
+          chainId,
+          type: 'legacy' as const
+        };
+
+        await prepareTransactionRequest(this.wagmiConfig, txParams);
+        const tx = await wagmiSendTransaction(this.wagmiConfig, txParams);
+
+        await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 });
+
+        return tx;
+      },
+
+      writeContract: async (data: WriteContractArgs) => {
+        const caipAddress = this.getCaipAddress() || '';
+        const account = requireCaipAddress(caipAddress);
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+
+        const tx = await wagmiWriteContract(wagmiConfig, {
+          chainId,
+          address: data.tokenAddress,
+          account,
+          abi: data.abi,
+          functionName: data.method,
+          args: [data.receiverAddress, data.tokenAmount]
+        });
+
+        return tx;
+      },
+
+      parseUnits,
+
+      formatUnits,
+
+      getEnsAddress: async (value: string) => {
+        try {
+          if (!this.wagmiConfig) {
+            throw new Error(
+              'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
+            );
+          }
+          const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id));
+          let ensName: boolean | GetEnsAddressReturnType = false;
+          let wcName: boolean | string = false;
+          if (NamesUtil.isReownName(value)) {
+            wcName = (await this.resolveReownName(value)) || false;
+          }
+          if (chainId === 1) {
+            ensName = await wagmiGetEnsAddress(this.wagmiConfig, {
+              name: normalize(value),
+              chainId
+            });
+          }
+
+          return ensName || wcName || false;
+        } catch {
+          return false;
+        }
+      },
+      getEnsAvatar: async (value: string) => {
+        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id));
+        if (chainId !== mainnet.id) {
+          return false;
+        }
+        const avatar = await wagmiGetEnsAvatar(this.wagmiConfig, {
+          name: normalize(value),
+          chainId
+        });
+
+        return avatar || false;
       }
     };
 

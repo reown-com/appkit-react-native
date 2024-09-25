@@ -34,8 +34,8 @@ export function AccountButton({ balance, disabled, style, testID }: AccountButto
   return (
     <AccountButtonUI
       onPress={ModalController.open}
-      address={profileName ?? address}
-      isProfileName={Boolean(profileName)}
+      address={address}
+      profileName={profileName}
       networkSrc={networkImage}
       imageHeaders={ApiController._getApiHeaders()}
       avatarSrc={profileImage}
