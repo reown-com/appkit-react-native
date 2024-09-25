@@ -3,12 +3,11 @@ import { usdtABI } from '../contracts/usdt';
 import { ConstantsUtil } from './ConstantsUtil';
 
 export const ContractUtil = {
-  getABI: (tokenAddress: string) => {
-    switch (tokenAddress) {
-      case ConstantsUtil.USDT_CONTRACT_ADDRESS:
-        return usdtABI;
-      default:
-        return erc20ABI;
+  getERC20Abi: (tokenAddress: string) => {
+    if (ConstantsUtil.USDT_CONTRACT_ADDRESSES.includes(tokenAddress)) {
+      return usdtABI;
     }
+
+    return erc20ABI;
   }
 };
