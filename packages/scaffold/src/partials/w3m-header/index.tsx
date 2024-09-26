@@ -4,6 +4,7 @@ import {
   EventsController
 } from '@reown/appkit-core-react-native';
 import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
+import { StringUtil } from '@reown/appkit-common-react-native';
 
 export function Header() {
   const onHelpPress = () => {
@@ -16,6 +17,7 @@ export function Header() {
     const connectorName = data?.connector?.name;
     const walletName = data?.wallet?.name;
     const networkName = data?.network?.name;
+    const socialName = StringUtil.capitalize(data?.socialProvider);
 
     return {
       Account: undefined,
@@ -24,6 +26,7 @@ export function Header() {
       Connect: 'Connect wallet',
       ConnectingExternal: connectorName ?? 'Connect wallet',
       ConnectingSiwe: 'Sign In',
+      ConnectingSocial: socialName ?? 'Connecting Social',
       ConnectingWalletConnect: walletName ?? 'WalletConnect',
       EmailVerifyDevice: ' ',
       EmailVerifyOtp: 'Confirm email',

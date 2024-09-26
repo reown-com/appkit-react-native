@@ -21,7 +21,7 @@ export interface ListSocialProps {
 export function ListSocial({ logo, children, disabled, onPress, style, testID }: ListSocialProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
-    Theme['gray-glass-005'],
+    Theme['gray-glass-002'],
     Theme['gray-glass-010']
   );
 

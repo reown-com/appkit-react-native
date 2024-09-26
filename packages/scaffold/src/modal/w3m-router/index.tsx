@@ -1,32 +1,34 @@
 import { useLayoutEffect, useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import { RouterController } from '@reown/appkit-core-react-native';
-import { ConnectingSiweView } from '@reown/appkit-siwe-react-native';
 
-import { ConnectView } from '../../views/w3m-connect-view';
-import { AllWalletsView } from '../../views/w3m-all-wallets-view';
-import { ConnectingView } from '../../views/w3m-connecting-view';
-import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
-import { GetWalletView } from '../../views/w3m-get-wallet-view';
 import { AccountDefaultView } from '../../views/w3m-account-default-view';
-import { NetworksView } from '../../views/w3m-networks-view';
-import { WhatIsNetworkView } from '../../views/w3m-what-is-a-network-view';
-import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
-import { UiUtil } from '../../utils/UiUtil';
+import { AccountView } from '../../views/w3m-account-view';
+import { AllWalletsView } from '../../views/w3m-all-wallets-view';
+import { ConnectView } from '../../views/w3m-connect-view';
+import { ConnectingView } from '../../views/w3m-connecting-view';
 import { ConnectingExternalView } from '../../views/w3m-connecting-external-view';
+import { ConnectingSocialView } from '../../views/w3m-connecting-social-view';
+import { ConnectingSiweView } from '@reown/appkit-siwe-react-native';
 import { EmailVerifyOtpView } from '../../views/w3m-email-verify-otp-view';
 import { EmailVerifyDeviceView } from '../../views/w3m-email-verify-device-view';
+import { GetWalletView } from '../../views/w3m-get-wallet-view';
+import { NetworksView } from '../../views/w3m-networks-view';
+import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
 import { UpdateEmailWalletView } from '../../views/w3m-update-email-wallet-view';
 import { UpdateEmailPrimaryOtpView } from '../../views/w3m-update-email-primary-otp-view';
 import { UpdateEmailSecondaryOtpView } from '../../views/w3m-update-email-secondary-otp-view';
 import { UpgradeEmailWalletView } from '../../views/w3m-upgrade-email-wallet-view';
-import { AccountView } from '../../views/w3m-account-view';
-import { WalletReceiveView } from '../../views/w3m-wallet-receive-view';
-import { WalletCompatibleNetworks } from '../../views/w3m-wallet-compatible-networks-view';
 import { TransactionsView } from '../../views/w3m-transactions-view';
+import { WalletCompatibleNetworks } from '../../views/w3m-wallet-compatible-networks-view';
+import { WalletReceiveView } from '../../views/w3m-wallet-receive-view';
 import { WalletSendView } from '../../views/w3m-wallet-send-view';
 import { WalletSendPreviewView } from '../../views/w3m-wallet-send-preview-view';
 import { WalletSendSelectTokenView } from '../../views/w3m-wallet-send-select-token-view';
+import { WhatIsANetworkView } from '../../views/w3m-what-is-a-network-view';
+import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
+
+import { UiUtil } from '../../utils/UiUtil';
 
 export function AppKitRouter() {
   const { view } = useSnapshot(RouterController.state);
@@ -49,6 +51,8 @@ export function AppKitRouter() {
         return ConnectingExternalView;
       case 'ConnectingSiwe':
         return ConnectingSiweView;
+      case 'ConnectingSocial':
+        return ConnectingSocialView;
       case 'ConnectingWalletConnect':
         return ConnectingView;
       case 'EmailVerifyDevice':
@@ -82,7 +86,7 @@ export function AppKitRouter() {
       case 'WalletSendSelectToken':
         return WalletSendSelectTokenView;
       case 'WhatIsANetwork':
-        return WhatIsNetworkView;
+        return WhatIsANetworkView;
       case 'WhatIsAWallet':
         return WhatIsAWalletView;
       default:

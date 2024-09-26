@@ -11,17 +11,19 @@ export interface LogoSelectProps {
   logo: LogoType;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
+  onPress?: () => void;
 }
 
-export function LogoSelect({ logo, disabled, style }: LogoSelectProps) {
+export function LogoSelect({ logo, disabled, style, onPress }: LogoSelectProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
-    Theme['gray-glass-005'],
+    Theme['gray-glass-002'],
     Theme['gray-glass-010']
   );
 
   return (
     <AnimatedPressable
+      onPress={onPress}
       onPressIn={setEndValue}
       onPressOut={setStartValue}
       style={[styles.box, { backgroundColor: animatedValue }, style]}

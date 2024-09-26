@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { FlexView, ListSocial, LogoSelect, Spacing, Text } from '@reown/appkit-ui-react-native';
-import type { SocialProvider } from '@reown/appkit-common-react-native';
+import { type SocialProvider, StringUtil } from '@reown/appkit-common-react-native';
+import { RouterController } from '@reown/appkit-core-react-native';
 
 export interface SocialLoginListProps {
   options: readonly SocialProvider[];
@@ -16,15 +17,16 @@ export function SocialLoginList({ options, disabled }: SocialLoginListProps) {
   let bottomSocials = showBigSocial ? options.slice(1) : options;
   bottomSocials = showMoreButton ? bottomSocials.slice(0, MAX_OPTIONS - 2) : bottomSocials;
 
+  const onItemPress = (social: SocialProvider) => {
+    RouterController.push('ConnectingSocial', { socialProvider: social });
+  };
+
   return (
     <FlexView padding={['xs', 's', '0', 's']}>
       {topSocial && (
-        <ListSocial logo={topSocial} disabled={disabled}>
+        <ListSocial logo={topSocial} disabled={disabled} onPress={() => onItemPress(topSocial)}>
           <Text style={styles.topDescription} color={disabled ? 'fg-300' : 'fg-100'}>
-            Continue with{' '}
-            <Text style={styles.topSocial} color={disabled ? 'fg-300' : 'fg-100'}>
-              {topSocial}
-            </Text>
+            {`Continue with ${StringUtil.capitalize(topSocial)}`}
           </Text>
         </ListSocial>
       )}
@@ -34,6 +36,7 @@ export function SocialLoginList({ options, disabled }: SocialLoginListProps) {
             key={social}
             disabled={disabled}
             logo={social}
+            onPress={() => onItemPress(social)}
             style={[
               styles.socialItem,
               index === 0 && styles.socialItemFirst,
@@ -56,9 +59,6 @@ export function SocialLoginList({ options, disabled }: SocialLoginListProps) {
 const styles = StyleSheet.create({
   topDescription: {
     textAlign: 'center'
-  },
-  topSocial: {
-    textTransform: 'capitalize'
   },
   socialItem: {
     flex: 1,

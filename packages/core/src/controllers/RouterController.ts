@@ -1,5 +1,6 @@
 import { proxy } from 'valtio';
 import type { WcWallet, CaipNetwork, Connector } from '../utils/TypeUtil';
+import type { SocialProvider } from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -19,6 +20,7 @@ export interface RouterControllerState {
     | 'Connect'
     | 'ConnectingExternal'
     | 'ConnectingSiwe'
+    | 'ConnectingSocial'
     | 'ConnectingWalletConnect'
     | 'EmailVerifyDevice'
     | 'EmailVerifyOtp'
@@ -44,6 +46,7 @@ export interface RouterControllerState {
     network?: CaipNetwork;
     email?: string;
     newEmail?: string;
+    socialProvider?: SocialProvider;
   };
   transactionStack: TransactionAction[];
 }
