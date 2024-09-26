@@ -13,7 +13,8 @@ import type {
   ThemeMode,
   ThemeVariables,
   Connector,
-  ConnectedWalletInfo
+  ConnectedWalletInfo,
+  Features
 } from '@reown/appkit-core-react-native';
 import type { SIWEControllerClient } from '@reown/appkit-siwe-react-native';
 import {
@@ -48,6 +49,7 @@ export interface LibraryOptions {
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
   _sdkVersion: OptionsControllerState['sdkVersion'];
   metadata?: OptionsControllerState['metadata'];
+  features?: Features;
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -261,6 +263,10 @@ export class AppKitScaffold {
       const { SIWEController } = await import('@reown/appkit-siwe-react-native');
 
       SIWEController.setSIWEClient(options.siweControllerClient);
+    }
+
+    if (options.features) {
+      OptionsController.setFeatures(options.features);
     }
   }
 

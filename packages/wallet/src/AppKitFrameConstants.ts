@@ -13,6 +13,7 @@ export const AppKitFrameConstants = {
   LAST_USED_CHAIN_KEY: 'LAST_USED_CHAIN_KEY',
   LAST_EMAIL_LOGIN_TIME: 'LAST_EMAIL_LOGIN_TIME', // Also present in core/src/utils/StorageUtil.ts
   EMAIL: 'EMAIL',
+  SOCIAL_USERNAME: 'SOCIAL_USERNAME',
 
   FRAME_MESSAGES_HANDLER: `
   const iframe = document.getElementById("frame-mobile-sdk");
@@ -27,6 +28,8 @@ export const AppKitFrameConstants = {
   APP_CONNECT_EMAIL: '@w3m-app/CONNECT_EMAIL',
   APP_CONNECT_DEVICE: '@w3m-app/CONNECT_DEVICE',
   APP_CONNECT_OTP: '@w3m-app/CONNECT_OTP',
+  APP_CONNECT_SOCIAL: '@w3m-app/CONNECT_SOCIAL',
+  APP_GET_SOCIAL_REDIRECT_URI: '@w3m-app/GET_SOCIAL_REDIRECT_URI',
   APP_GET_USER: '@w3m-app/GET_USER',
   APP_SIGN_OUT: '@w3m-app/SIGN_OUT',
   APP_IS_CONNECTED: '@w3m-app/IS_CONNECTED',
@@ -118,5 +121,9 @@ export const AppKitFrameRpcConstants = {
   ],
   GET_CHAIN_ID: 'eth_chainId',
   RPC_METHOD_NOT_ALLOWED_MESSAGE: 'Requested RPC call is not allowed',
-  RPC_METHOD_NOT_ALLOWED_UI_MESSAGE: 'Action not allowed'
+  RPC_METHOD_NOT_ALLOWED_UI_MESSAGE: 'Action not allowed',
+  ACCOUNT_TYPES: {
+    EOA: 'eoa',
+    SMART_ACCOUNT: 'smartAccount'
+  } as const
 };

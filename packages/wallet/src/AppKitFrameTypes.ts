@@ -55,7 +55,11 @@ import {
   RpcEthChainId,
   FrameSwitchNetworkResponse,
   AppSyncDappDataRequest,
-  FrameUpdateEmailResponse
+  FrameUpdateEmailResponse,
+  FrameGetSocialRedirectUriResponse,
+  FrameConnectSocialResponse,
+  AppGetSocialRedirectUriRequest,
+  AppConnectSocialRequest
 } from './AppKitFrameSchema';
 
 export namespace AppKitFrameTypes {
@@ -73,6 +77,8 @@ export namespace AppKitFrameTypes {
     AppSyncDappDataRequest: z.infer<typeof AppSyncDappDataRequest>;
     AppUpdateEmailPrimaryOtpRequest: z.infer<typeof AppUpdateEmailPrimaryOtpRequest>;
     AppUpdateEmailSecondaryOtpRequest: z.infer<typeof AppUpdateEmailSecondaryOtpRequest>;
+    AppGetSocialRedirectUriRequest: z.infer<typeof AppGetSocialRedirectUriRequest>;
+    AppConnectSocialRequest: z.infer<typeof AppConnectSocialRequest>;
   }
 
   export interface Responses {
@@ -83,6 +89,8 @@ export namespace AppKitFrameTypes {
     FrameSwitchNetworkResponse: z.infer<typeof FrameSwitchNetworkResponse>;
     FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>;
     FrameConnectOtpResponse: undefined;
+    FrameGetSocialRedirectUriResponse: z.infer<typeof FrameGetSocialRedirectUriResponse>;
+    FrameConnectSocialResponse: z.infer<typeof FrameConnectSocialResponse>;
     FrameSyncThemeResponse: undefined;
     FrameSyncDappDataResponse: undefined;
     FrameUpdateEmailPrimaryOtpResponse: undefined;
@@ -151,7 +159,9 @@ export namespace AppKitFrameTypes {
     | 'GetUser'
     | 'ConnectDevice'
     | 'ConnectEmail'
+    | 'ConnectSocial'
     | 'ConnectOtp'
+    | 'GetSocialRedirectUri'
     | 'SwitchNetwork'
     | 'UpdateEmail'
     | 'SyncTheme'

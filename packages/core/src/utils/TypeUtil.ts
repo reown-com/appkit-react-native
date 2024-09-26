@@ -1,4 +1,4 @@
-import type { Balance, Transaction } from '@reown/appkit-common-react-native';
+import type { Balance, SocialProvider, Transaction } from '@reown/appkit-common-react-native';
 
 export interface BaseError {
   message?: string;
@@ -59,6 +59,24 @@ export type SdkVersion =
   | `react-native-wagmi-${string}`
   | `react-native-ethers5-${string}`
   | `react-native-ethers-${string}`;
+
+export type Features = {
+  /**
+   * @description Enable or disable the email feature. Enabled by default.
+   * @type {boolean}
+   */
+  email?: boolean;
+  /**
+   * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
+   * @type {boolean}
+   */
+  emailShowWallets?: boolean;
+  /**
+   * @description Enable or disable the socials feature. Enabled by default.
+   * @type {FeaturesSocials[]}
+   */
+  socials?: SocialProvider[] | false;
+};
 
 // -- ApiController Types -------------------------------------------------------
 export interface WcWallet {

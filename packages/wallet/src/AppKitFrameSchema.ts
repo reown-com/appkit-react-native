@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AppKitFrameConstants } from './AppKitFrameConstants';
+import { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameConstants';
 
 // -- Helpers ----------------------------------------------------------------
 const zError = z.object({ message: z.string() });
@@ -32,6 +32,10 @@ export const GetTransactionByHashResponse = z.object({
 export const AppSwitchNetworkRequest = z.object({ chainId: z.string().or(z.number()) });
 export const AppConnectEmailRequest = z.object({ email: z.string().email() });
 export const AppConnectOtpRequest = z.object({ otp: z.string() });
+export const AppConnectSocialRequest = z.object({ uri: z.string() });
+export const AppGetSocialRedirectUriRequest = z.object({
+  provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord'])
+});
 export const AppGetUserRequest = z.object({ chainId: z.optional(z.string().or(z.number())) });
 export const AppUpdateEmailRequest = z.object({ email: z.string().email() });
 export const AppUpdateEmailPrimaryOtpRequest = z.object({ otp: z.string() });
@@ -74,6 +78,25 @@ export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() });
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() });
 export const FrameSwitchNetworkResponse = z.object({ chainId: z.number() });
 export const FrameUpdateEmailSecondaryOtpResponse = z.object({ newEmail: z.string().email() });
+export const FrameGetSocialRedirectUriResponse = z.object({ uri: z.string() });
+
+export const FrameConnectSocialResponse = z.object({
+  email: z.string(),
+  address: z.string(),
+  chainId: z.string().or(z.number()),
+  accounts: z
+    .array(
+      z.object({
+        address: z.string(),
+        type: z.enum([
+          AppKitFrameRpcConstants.ACCOUNT_TYPES.EOA,
+          AppKitFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        ])
+      })
+    )
+    .optional(),
+  userName: z.string().optional()
+});
 
 export const RpcResponse = z.any();
 
@@ -277,7 +300,21 @@ export const AppKitFrameSchema = {
 
     .or(EventSchema.extend({ type: zType('APP_CONNECT_OTP'), payload: AppConnectOtpRequest }))
 
+    .or(
+      EventSchema.extend({
+        type: zType('APP_CONNECT_SOCIAL'),
+        payload: AppConnectSocialRequest
+      })
+    )
+
     .or(EventSchema.extend({ type: zType('APP_GET_USER'), payload: z.optional(AppGetUserRequest) }))
+
+    .or(
+      EventSchema.extend({
+        type: zType('APP_GET_SOCIAL_REDIRECT_URI'),
+        payload: AppGetSocialRedirectUriRequest
+      })
+    )
 
     .or(EventSchema.extend({ type: zType('APP_SIGN_OUT') }))
 

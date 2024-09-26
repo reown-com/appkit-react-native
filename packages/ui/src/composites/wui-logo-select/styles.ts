@@ -3,9 +3,9 @@ import { BorderRadius } from '../../utils/ThemeUtil';
 
 export default StyleSheet.create({
   box: {
-    height: 50,
-    width: 50,
-    borderRadius: BorderRadius.xs,
+    height: 56,
+    width: 56,
+    borderRadius: BorderRadius.s,
     alignItems: 'center',
     justifyContent: 'center'
   },

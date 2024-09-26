@@ -1,3 +1,11 @@
+import type { Features } from './TypeUtil';
+
+const defaultFeatures: Features = {
+  email: true,
+  emailShowWallets: true,
+  socials: ['x', 'discord', 'github', 'apple', 'facebook']
+};
+
 export const ConstantsUtil = {
   FOUR_MINUTES_MS: 240000,
 
@@ -9,5 +17,7 @@ export const ConstantsUtil = {
 
   LINKING_ERROR: 'LINKING_ERROR',
 
-  NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+  NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+
+  DEFAULT_FEATURES: defaultFeatures
 };

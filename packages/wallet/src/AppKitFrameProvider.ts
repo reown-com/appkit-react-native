@@ -134,6 +134,23 @@ export class AppKitFrameProvider {
     return response;
   }
 
+  public async connectSocial(uri: string) {
+    try {
+      const response = await this.appEvent<'ConnectSocial'>({
+        type: AppKitFrameConstants.APP_CONNECT_SOCIAL,
+        payload: { uri }
+      } as AppKitFrameTypes.AppEvent);
+
+      if (response.userName) {
+        this.setSocialLoginSuccess(response.userName);
+      }
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async connectOtp(payload: AppKitFrameTypes.Requests['AppConnectOtpRequest']) {
     await this.webviewLoadPromise;
 
@@ -170,6 +187,19 @@ export class AppKitFrameProvider {
     this.setLastUsedChainId(response.chainId);
 
     return response;
+  }
+
+  public async getSocialRedirectUri(
+    payload: AppKitFrameTypes.Requests['AppGetSocialRedirectUriRequest']
+  ) {
+    try {
+      return this.appEvent<'GetSocialRedirectUri'>({
+        type: AppKitFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
+        payload
+      } as AppKitFrameTypes.AppEvent);
+    } catch (error) {
+      throw error;
+    }
   }
 
   public async updateEmail(payload: AppKitFrameTypes.Requests['AppUpdateEmailRequest']) {
@@ -348,6 +378,10 @@ export class AppKitFrameProvider {
     AppKitFrameStorage.set(AppKitFrameConstants.LAST_EMAIL_LOGIN_TIME, Date.now().toString());
   }
 
+  private setSocialLoginSuccess(username: string) {
+    AppKitFrameStorage.set(AppKitFrameConstants.SOCIAL_USERNAME, username);
+  }
+
   private setEmailLoginSuccess(email: string) {
     AppKitFrameStorage.set(AppKitFrameConstants.EMAIL, email);
     AppKitFrameStorage.set(AppKitFrameConstants.EMAIL_LOGIN_USED_KEY, 'true');
@@ -359,6 +393,7 @@ export class AppKitFrameProvider {
     AppKitFrameStorage.delete(AppKitFrameConstants.EMAIL_LOGIN_USED_KEY);
     AppKitFrameStorage.delete(AppKitFrameConstants.EMAIL);
     AppKitFrameStorage.delete(AppKitFrameConstants.LAST_USED_CHAIN_KEY);
+    AppKitFrameStorage.delete(AppKitFrameConstants.SOCIAL_USERNAME);
     this.email = undefined;
   }
 
@@ -492,6 +527,8 @@ export interface AppKitFrameProviderMethods {
 
   // Social
   connectDevice: AppKitFrameProvider['connectDevice'];
+  connectSocial: AppKitFrameProvider['connectSocial'];
+  getSocialRedirectUri: AppKitFrameProvider['getSocialRedirectUri'];
 
   // Misc
   syncTheme: AppKitFrameProvider['syncTheme'];
