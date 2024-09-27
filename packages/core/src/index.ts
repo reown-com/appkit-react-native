@@ -56,6 +56,8 @@ export {
 
 export { SendController, type SendControllerState } from './controllers/SendController';
 
+export { WebviewController, type WebviewControllerState } from './controllers/WebviewController';
+
 // -- Utils -------------------------------------------------------------------
 export { ApiUtil } from './utils/ApiUtil';
 export { AssetUtil } from './utils/AssetUtil';

@@ -1,5 +1,5 @@
 export { AppKitFrameHelpers } from './AppKitFrameHelpers';
-export { AppKitFrameProvider, type AppKitFrameProviderMethods } from './AppKitFrameProvider';
+export { AppKitFrameProvider } from './AppKitFrameProvider';
 export { AppKitFrameSchema } from './AppKitFrameSchema';
 export { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameConstants';
 export { AppKitFrameStorage } from './AppKitFrameStorage';

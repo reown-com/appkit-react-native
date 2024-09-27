@@ -174,7 +174,14 @@ export function AccountDefaultView() {
                   testID="button-email"
                   style={styles.actionButton}
                 >
-                  <Text color="fg-100">{getUserEmail()}</Text>
+                  <Text color="fg-100" numberOfLines={1} ellipsizeMode="tail">
+                    {UiUtil.getTruncateString({
+                      string: getUserEmail() || '',
+                      charsStart: 30,
+                      charsEnd: 0,
+                      truncate: 'end'
+                    })}
+                  </Text>
                 </ListItem>
               </>
             )}

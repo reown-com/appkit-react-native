@@ -9,7 +9,8 @@ import {
   ModalController,
   type OptionsControllerState,
   StorageUtil,
-  RouterController
+  RouterController,
+  WebviewController
 } from '@reown/appkit-core-react-native';
 import { useTheme, BorderRadius } from '@reown/appkit-ui-react-native';
 import type { AppKitFrameProvider } from './AppKitFrameProvider';
@@ -22,14 +23,13 @@ const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 export function AuthWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
-  const { connectors } = useSnapshot(ConnectorController.state);
+  const authConnector = ConnectorController.getAuthConnector();
   const { projectId, sdkVersion } = useSnapshot(OptionsController.state) as OptionsControllerState;
-  const [isWebviewVisibile, setIsWebviewVisible] = useState(false);
+  const { frameViewVisible } = useSnapshot(WebviewController.state);
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   const animatedHeight = useRef(new Animated.Value(0));
   const backdropOpacity = useRef(new Animated.Value(0));
   const webviewOpacity = useRef(new Animated.Value(0));
-  const authConnector = connectors.find(c => c.type === 'AUTH');
   const provider = authConnector?.provider as AppKitFrameProvider;
 
   const parseMessage = (event: WebViewMessageEvent) => {
@@ -55,7 +55,7 @@ export function AuthWebview() {
     provider.onRpcRequest((request: AppKitFrameTypes.RPCRequest) => {
       if (AppKitFrameHelpers.checkIfRequestExists(request)) {
         if (!AppKitFrameHelpers.checkIfRequestIsAllowed(request)) {
-          setIsWebviewVisible(true);
+          WebviewController.setFrameViewVisible(true);
         }
       }
     });
@@ -71,7 +71,7 @@ export function AuthWebview() {
       } else {
         RouterController?.popTransactionStack();
       }
-      setIsWebviewVisible(false);
+      WebviewController.setFrameViewVisible(false);
     });
 
     provider.onRpcError(() => {
@@ -82,7 +82,7 @@ export function AuthWebview() {
           RouterController?.popTransactionStack(true);
         }
       }
-      setIsWebviewVisible(false);
+      WebviewController.setFrameViewVisible(false);
     });
 
     provider.onIsConnected(event, () => {
@@ -104,27 +104,27 @@ export function AuthWebview() {
 
   useEffect(() => {
     Animated.timing(animatedHeight.current, {
-      toValue: isWebviewVisibile ? 1 : 0,
+      toValue: frameViewVisible ? 1 : 0,
       duration: 200,
       useNativeDriver: false
     }).start();
 
     Animated.timing(webviewOpacity.current, {
-      toValue: isWebviewVisibile ? 1 : 0,
+      toValue: frameViewVisible ? 1 : 0,
       duration: 300,
       useNativeDriver: false
     }).start();
 
-    if (isWebviewVisibile) {
+    if (frameViewVisible) {
       setIsBackdropVisible(true);
     }
 
     Animated.timing(backdropOpacity.current, {
-      toValue: isWebviewVisibile ? 0.7 : 0,
+      toValue: frameViewVisible ? 0.7 : 0,
       duration: 300,
       useNativeDriver: false
-    }).start(() => setIsBackdropVisible(isWebviewVisibile));
-  }, [animatedHeight, backdropOpacity, isWebviewVisibile, setIsBackdropVisible]);
+    }).start(() => setIsBackdropVisible(frameViewVisible));
+  }, [animatedHeight, backdropOpacity, frameViewVisible, setIsBackdropVisible]);
 
   useEffect(() => {
     provider?.setWebviewRef(webviewRef);

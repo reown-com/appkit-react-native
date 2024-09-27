@@ -541,4 +541,5 @@ export interface AppKitFrameProvider {
   disconnect(): Promise<unknown>;
   request(req: any): Promise<any>;
   AuthView: () => JSX.Element | null;
+  Webview: () => JSX.Element | null;
 }

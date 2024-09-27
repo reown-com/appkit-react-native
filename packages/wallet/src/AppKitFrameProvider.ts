@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import type { RefObject } from 'react';
-import type WebView from 'react-native-webview';
+import WebView from 'react-native-webview';
 import { CoreHelperUtil } from '@reown/appkit-core-react-native';
 import type { AppKitFrameTypes } from './AppKitFrameTypes';
 import { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameConstants';
@@ -8,6 +8,7 @@ import { AppKitFrameStorage } from './AppKitFrameStorage';
 import { AppKitFrameHelpers } from './AppKitFrameHelpers';
 import { AppKitFrameSchema } from './AppKitFrameSchema';
 import { AuthWebview } from './AppKitAuthWebview';
+import { AppKitWebview } from './AppKitWebview';
 
 // -- Provider --------------------------------------------------------
 export class AppKitFrameProvider {
@@ -37,6 +38,8 @@ export class AppKitFrameProvider {
 
   public AuthView = AuthWebview;
 
+  public Webview = AppKitWebview;
+
   private openRpcRequests: Array<
     AppKitFrameTypes.RPCRequest & { abortController: AbortController }
   > = [];
@@ -60,7 +63,7 @@ export class AppKitFrameProvider {
   }
 
   public onMessage(event: AppKitFrameTypes.FrameEvent) {
-    // console.log('💻 received', e); // eslint-disable-line no-console
+    // console.log('💻 received', event); // eslint-disable-line no-console
     this.events.emit('message', event);
   }
 
@@ -514,24 +517,4 @@ export class AppKitFrameProvider {
 
     return email;
   }
-}
-
-export interface AppKitFrameProviderMethods {
-  // Email
-  connectEmail: AppKitFrameProvider['connectEmail'];
-  connectOtp: AppKitFrameProvider['connectOtp'];
-  updateEmail: AppKitFrameProvider['updateEmail'];
-  updateEmailPrimaryOtp: AppKitFrameProvider['updateEmailPrimaryOtp'];
-  updateEmailSecondaryOtp: AppKitFrameProvider['updateEmailSecondaryOtp'];
-  getEmail: AppKitFrameProvider['getEmail'];
-
-  // Social
-  connectDevice: AppKitFrameProvider['connectDevice'];
-  connectSocial: AppKitFrameProvider['connectSocial'];
-  getSocialRedirectUri: AppKitFrameProvider['getSocialRedirectUri'];
-
-  // Misc
-  syncTheme: AppKitFrameProvider['syncTheme'];
-  syncDappData: AppKitFrameProvider['syncDappData'];
-  switchNetwork: AppKitFrameProvider['switchNetwork'];
 }
