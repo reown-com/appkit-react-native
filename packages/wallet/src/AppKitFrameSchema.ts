@@ -435,6 +435,21 @@ export const AppKitFrameSchema = {
       })
     )
 
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_CONNECT_SOCIAL_SUCCESS'),
+        payload: FrameConnectSocialResponse,
+        origin: z.string()
+      })
+    )
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_CONNECT_SOCIAL_ERROR'),
+        payload: zError,
+        origin: z.string()
+      })
+    )
+
     .or(EventSchema.extend({ type: zType('FRAME_CONNECT_DEVICE_SUCCESS'), origin: z.string() }))
 
     .or(
@@ -449,6 +464,22 @@ export const AppKitFrameSchema = {
       EventSchema.extend({
         type: zType('FRAME_GET_USER_SUCCESS'),
         payload: FrameGetUserResponse,
+        origin: z.string()
+      })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_GET_SOCIAL_REDIRECT_URI_ERROR'),
+        payload: zError,
+        origin: z.string()
+      })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_GET_SOCIAL_REDIRECT_URI_SUCCESS'),
+        payload: FrameGetSocialRedirectUriResponse,
         origin: z.string()
       })
     )

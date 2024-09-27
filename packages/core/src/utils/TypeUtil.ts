@@ -475,7 +475,7 @@ export interface WriteContractArgs {
 
 // -- Email Types ------------------------------------------------
 /**
- * Matches type defined for packages/email/src/AppKitFrameProvider.ts
+ * Matches type defined for packages/wallet/src/AppKitFrameProvider.ts
  * It's duplicated in order to decouple scaffold from email package
  */
 export interface AppKitFrameProvider {
@@ -492,6 +492,21 @@ export interface AppKitFrameProvider {
     action: 'VERIFY_DEVICE' | 'VERIFY_OTP';
   }>;
   connectDevice(): Promise<unknown>;
+  connectSocial(uri: string): Promise<{
+    chainId: string | number;
+    email: string;
+    address: string;
+    accounts?:
+      | {
+          type: 'eoa' | 'smartAccount';
+          address: string;
+        }[]
+      | undefined;
+    userName?: string | undefined;
+  }>;
+  getSocialRedirectUri(payload: { provider: SocialProvider }): Promise<{
+    uri: string;
+  }>;
   connectOtp(payload: { otp: string }): Promise<unknown>;
   isConnected(): Promise<{
     isConnected: boolean;
