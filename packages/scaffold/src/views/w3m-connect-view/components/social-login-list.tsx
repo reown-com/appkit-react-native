@@ -18,7 +18,15 @@ export function SocialLoginList({ options, disabled }: SocialLoginListProps) {
   bottomSocials = showMoreButton ? bottomSocials.slice(0, MAX_OPTIONS - 2) : bottomSocials;
 
   const onItemPress = (social: SocialProvider) => {
-    RouterController.push('ConnectingSocial', { socialProvider: social });
+    if (social === 'farcaster') {
+      RouterController.push('ConnectingFarcaster', { socialProvider: social });
+    } else {
+      RouterController.push('ConnectingSocial', { socialProvider: social });
+    }
+  };
+
+  const onMorePress = () => {
+    RouterController.push('ConnectSocials');
   };
 
   return (
@@ -49,6 +57,7 @@ export function SocialLoginList({ options, disabled }: SocialLoginListProps) {
             logo="more"
             disabled={disabled}
             style={[styles.socialItem, styles.socialItemLast]}
+            onPress={onMorePress}
           />
         )}
       </FlexView>

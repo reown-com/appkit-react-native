@@ -3,7 +3,7 @@ import type { Features } from './TypeUtil';
 const defaultFeatures: Features = {
   email: true,
   emailShowWallets: true,
-  socials: ['x', 'discord', 'github', 'apple', 'facebook']
+  socials: ['x', 'discord', 'github', 'apple', 'facebook', 'farcaster']
 };
 
 export const ConstantsUtil = {

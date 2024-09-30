@@ -34,7 +34,7 @@ export const AppConnectEmailRequest = z.object({ email: z.string().email() });
 export const AppConnectOtpRequest = z.object({ otp: z.string() });
 export const AppConnectSocialRequest = z.object({ uri: z.string() });
 export const AppGetSocialRedirectUriRequest = z.object({
-  provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord'])
+  provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord', 'farcaster'])
 });
 export const AppGetUserRequest = z.object({ chainId: z.optional(z.string().or(z.number())) });
 export const AppUpdateEmailRequest = z.object({ email: z.string().email() });
@@ -96,6 +96,14 @@ export const FrameConnectSocialResponse = z.object({
     )
     .optional(),
   userName: z.string().optional()
+});
+
+export const FrameGetFarcasterUriResponse = z.object({
+  url: z.string()
+});
+
+export const FrameConnectFarcasterResponse = z.object({
+  userName: z.string()
 });
 
 export const RpcResponse = z.any();
@@ -316,6 +324,10 @@ export const AppKitFrameSchema = {
       })
     )
 
+    .or(EventSchema.extend({ type: zType('APP_GET_FARCASTER_URI') }))
+
+    .or(EventSchema.extend({ type: zType('APP_CONNECT_FARCASTER') }))
+
     .or(EventSchema.extend({ type: zType('APP_SIGN_OUT') }))
 
     .or(EventSchema.extend({ type: zType('APP_IS_CONNECTED'), payload: z.optional(FrameSession) }))
@@ -445,6 +457,38 @@ export const AppKitFrameSchema = {
     .or(
       EventSchema.extend({
         type: zType('FRAME_CONNECT_SOCIAL_ERROR'),
+        payload: zError,
+        origin: z.string()
+      })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_GET_FARCASTER_URI_SUCCESS'),
+        payload: FrameGetFarcasterUriResponse,
+        origin: z.string()
+      })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_GET_FARCASTER_URI_ERROR'),
+        payload: zError,
+        origin: z.string()
+      })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_CONNECT_FARCASTER_SUCCESS'),
+        payload: FrameConnectFarcasterResponse,
+        origin: z.string()
+      })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_CONNECT_FARCASTER_ERROR'),
         payload: zError,
         origin: z.string()
       })

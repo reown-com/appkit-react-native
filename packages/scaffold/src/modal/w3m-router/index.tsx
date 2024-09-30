@@ -29,6 +29,8 @@ import { WhatIsANetworkView } from '../../views/w3m-what-is-a-network-view';
 import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
 
 import { UiUtil } from '../../utils/UiUtil';
+import { ConnectingFarcasterView } from '../../views/w3m-connecting-farcaster-view';
+import { ConnectSocialsView } from '../../views/w3m-connect-socials-view';
 
 export function AppKitRouter() {
   const { view } = useSnapshot(RouterController.state);
@@ -47,12 +49,16 @@ export function AppKitRouter() {
         return AllWalletsView;
       case 'Connect':
         return ConnectView;
+      case 'ConnectSocials':
+        return ConnectSocialsView;
       case 'ConnectingExternal':
         return ConnectingExternalView;
       case 'ConnectingSiwe':
         return ConnectingSiweView;
       case 'ConnectingSocial':
         return ConnectingSocialView;
+      case 'ConnectingFarcaster':
+        return ConnectingFarcasterView;
       case 'ConnectingWalletConnect':
         return ConnectingView;
       case 'EmailVerifyDevice':

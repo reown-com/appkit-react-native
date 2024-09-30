@@ -59,7 +59,9 @@ import {
   FrameGetSocialRedirectUriResponse,
   FrameConnectSocialResponse,
   AppGetSocialRedirectUriRequest,
-  AppConnectSocialRequest
+  AppConnectSocialRequest,
+  FrameGetFarcasterUriResponse,
+  FrameConnectFarcasterResponse
 } from './AppKitFrameSchema';
 
 export namespace AppKitFrameTypes {
@@ -91,6 +93,8 @@ export namespace AppKitFrameTypes {
     FrameConnectOtpResponse: undefined;
     FrameGetSocialRedirectUriResponse: z.infer<typeof FrameGetSocialRedirectUriResponse>;
     FrameConnectSocialResponse: z.infer<typeof FrameConnectSocialResponse>;
+    FrameGetFarcasterUriResponse: z.infer<typeof FrameGetFarcasterUriResponse>;
+    FrameConnectFarcasterResponse: z.infer<typeof FrameConnectFarcasterResponse>;
     FrameSyncThemeResponse: undefined;
     FrameSyncDappDataResponse: undefined;
     FrameUpdateEmailPrimaryOtpResponse: undefined;
@@ -159,8 +163,10 @@ export namespace AppKitFrameTypes {
     | 'GetUser'
     | 'ConnectDevice'
     | 'ConnectEmail'
+    | 'ConnectFarcaster'
     | 'ConnectSocial'
     | 'ConnectOtp'
+    | 'GetFarcasterUri'
     | 'GetSocialRedirectUri'
     | 'SwitchNetwork'
     | 'UpdateEmail'

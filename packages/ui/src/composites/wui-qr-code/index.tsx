@@ -8,18 +8,20 @@ import { Text } from '../../components/wui-text';
 import { FlexView } from '../../layout/wui-flex';
 import { QRCodeUtil } from '../../utils/QRCodeUtil';
 import { BorderRadius, LightTheme, Spacing } from '../../utils/ThemeUtil';
+import type { IconType } from '../../utils/TypesUtil';
 import styles from './styles';
 
 export interface QrCodeProps {
   size: number;
   uri?: string;
   imageSrc?: string;
+  icon?: IconType;
   testID?: string;
   arenaClear?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
-export function QrCode({ size, uri, imageSrc, testID, arenaClear, style }: QrCodeProps) {
+export function QrCode({ size, uri, imageSrc, testID, arenaClear, icon, style }: QrCodeProps) {
   const Theme = LightTheme;
   const containerPadding = Spacing.l;
   const qrSize = size - containerPadding * 2;
@@ -49,7 +51,7 @@ export function QrCode({ size, uri, imageSrc, testID, arenaClear, style }: QrCod
 
     return (
       <Icon
-        name="walletConnect"
+        name={icon ?? 'walletConnect'}
         color="accent-100"
         height={qrSize / 3.5}
         width={qrSize / 3.5}

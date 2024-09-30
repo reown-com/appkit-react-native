@@ -30,6 +30,8 @@ import EtherscanSvg from '../../assets/svg/Etherscan';
 import ExtensionSvg from '../../assets/svg/Extension';
 import ExternalLinkSvg from '../../assets/svg/ExternalLink';
 import FacebookSvg from '../../assets/svg/Facebook';
+import FarcasterSvg from '../../assets/svg/Farcaster';
+import FarcasterSquareSvg from '../../assets/svg/FarcasterSquare';
 import FiltersSvg from '../../assets/svg/Filters';
 import GithubSvg from '../../assets/svg/Github';
 import GoogleSvg from '../../assets/svg/Google';
@@ -88,6 +90,8 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   extension: ExtensionSvg,
   externalLink: ExternalLinkSvg,
   facebook: FacebookSvg,
+  farcaster: FarcasterSvg,
+  farcasterSquare: FarcasterSquareSvg,
   filters: FiltersSvg,
   github: GithubSvg,
   google: GoogleSvg,

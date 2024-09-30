@@ -508,6 +508,8 @@ export interface AppKitFrameProvider {
     uri: string;
   }>;
   connectOtp(payload: { otp: string }): Promise<unknown>;
+  connectFarcaster: () => Promise<{ username: string }>;
+  getFarcasterUri(): Promise<{ url: string }>;
   isConnected(): Promise<{
     isConnected: boolean;
   }>;

@@ -154,6 +154,34 @@ export class AppKitFrameProvider {
     }
   }
 
+  public async getFarcasterUri() {
+    try {
+      const response = await this.appEvent<'GetFarcasterUri'>({
+        type: AppKitFrameConstants.APP_GET_FARCASTER_URI
+      } as AppKitFrameTypes.AppEvent);
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async connectFarcaster() {
+    try {
+      const response = await this.appEvent<'ConnectFarcaster'>({
+        type: AppKitFrameConstants.APP_CONNECT_FARCASTER
+      } as AppKitFrameTypes.AppEvent);
+
+      if (response.userName) {
+        this.setSocialLoginSuccess(response.userName);
+      }
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async connectOtp(payload: AppKitFrameTypes.Requests['AppConnectOtpRequest']) {
     await this.webviewLoadPromise;
 
