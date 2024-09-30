@@ -1,3 +1,4 @@
+import type { SocialProvider } from '@reown/appkit-common-react-native';
 import { proxy, subscribe as sub } from 'valtio';
 
 // -- Types --------------------------------------------- //
@@ -6,13 +7,15 @@ export interface WebviewControllerState {
   webviewVisible: boolean;
   webviewUrl?: string;
   connecting?: boolean;
+  connectingProvider?: SocialProvider;
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<WebviewControllerState>({
   frameViewVisible: false,
   webviewVisible: false,
-  connecting: false
+  connecting: false,
+  connectingProvider: undefined
 });
 
 // -- Controller ---------------------------------------- //
@@ -37,5 +40,9 @@ export const WebviewController = {
 
   setConnecting(connecting: WebviewControllerState['connecting']) {
     state.connecting = connecting;
+  },
+
+  setConnectingProvider(provider: WebviewControllerState['connectingProvider']) {
+    state.connectingProvider = provider;
   }
 };

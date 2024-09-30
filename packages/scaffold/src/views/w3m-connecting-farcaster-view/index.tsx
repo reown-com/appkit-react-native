@@ -31,6 +31,7 @@ export function ConnectingFarcasterView() {
         await Linking.openURL(url);
         await provider.connectFarcaster();
         await ConnectionController.connectExternal(authConnector);
+        ConnectionController.setConnectedSocialProvider(socialProvider);
         WebviewController.setConnecting(false);
         ModalController.close();
       }

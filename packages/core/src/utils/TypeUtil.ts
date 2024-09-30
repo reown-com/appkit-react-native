@@ -485,8 +485,8 @@ export interface AppKitFrameProvider {
   getSecureSiteDashboardURL(): string;
   getSecureSiteIconURL(): string;
   getSecureSiteHeaders(): Record<string, string>;
-  getLoginEmailUsed(): Promise<boolean>;
   getEmail(): string | undefined;
+  getUsername(): string | undefined;
   rejectRpcRequest(): void;
   connectEmail(payload: { email: string }): Promise<{
     action: 'VERIFY_DEVICE' | 'VERIFY_OTP';

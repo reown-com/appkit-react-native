@@ -20,6 +20,8 @@ export class AppKitFrameProvider {
 
   private email: string | undefined;
 
+  private username: string | undefined;
+
   private rpcRequestHandler?: (request: AppKitFrameTypes.RPCRequest) => void;
   private rpcSuccessHandler?: (
     response: AppKitFrameTypes.RPCResponse,
@@ -55,6 +57,10 @@ export class AppKitFrameProvider {
 
     this.getAsyncEmail().then(email => {
       this.email = email;
+    });
+
+    this.getAsyncUsername().then(username => {
+      this.username = username;
     });
   }
 
@@ -92,14 +98,12 @@ export class AppKitFrameProvider {
     return { 'X-Bundle-Id': CoreHelperUtil.getBundleId() };
   }
 
-  public async getLoginEmailUsed() {
-    const email = await AppKitFrameStorage.get(AppKitFrameConstants.EMAIL_LOGIN_USED_KEY);
-
-    return Boolean(email);
-  }
-
   public getEmail() {
     return this.email;
+  }
+
+  public getUsername() {
+    return this.username;
   }
 
   public rejectRpcRequest() {
@@ -202,7 +206,7 @@ export class AppKitFrameProvider {
     } as AppKitFrameTypes.AppEvent);
 
     if (!response.isConnected) {
-      this.deleteEmailLoginCache();
+      this.deleteLoginCache();
     }
 
     return response;
@@ -335,7 +339,7 @@ export class AppKitFrameProvider {
       type: AppKitFrameConstants.APP_SIGN_OUT
     });
 
-    this.deleteEmailLoginCache();
+    this.deleteLoginCache();
 
     return response;
   }
@@ -411,6 +415,7 @@ export class AppKitFrameProvider {
 
   private setSocialLoginSuccess(username: string) {
     AppKitFrameStorage.set(AppKitFrameConstants.SOCIAL_USERNAME, username);
+    this.username = username;
   }
 
   private setEmailLoginSuccess(email: string) {
@@ -420,12 +425,13 @@ export class AppKitFrameProvider {
     this.email = email;
   }
 
-  private deleteEmailLoginCache() {
+  private deleteLoginCache() {
     AppKitFrameStorage.delete(AppKitFrameConstants.EMAIL_LOGIN_USED_KEY);
     AppKitFrameStorage.delete(AppKitFrameConstants.EMAIL);
     AppKitFrameStorage.delete(AppKitFrameConstants.LAST_USED_CHAIN_KEY);
     AppKitFrameStorage.delete(AppKitFrameConstants.SOCIAL_USERNAME);
     this.email = undefined;
+    this.username = undefined;
   }
 
   private setLastUsedChainId(chainId: number) {
@@ -544,5 +550,11 @@ export class AppKitFrameProvider {
     const email = await AppKitFrameStorage.get(AppKitFrameConstants.EMAIL);
 
     return email;
+  }
+
+  private async getAsyncUsername() {
+    const username = await AppKitFrameStorage.get(AppKitFrameConstants.SOCIAL_USERNAME);
+
+    return username;
   }
 }

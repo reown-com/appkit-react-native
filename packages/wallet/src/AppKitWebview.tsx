@@ -20,7 +20,7 @@ export function AppKitWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
   const authConnector = ConnectorController.getAuthConnector();
-  const { webviewVisible, webviewUrl } = useSnapshot(WebviewController.state);
+  const { webviewVisible, webviewUrl, connectingProvider } = useSnapshot(WebviewController.state);
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   const animatedHeight = useRef(new Animated.Value(0));
   const backdropOpacity = useRef(new Animated.Value(0));
@@ -35,6 +35,7 @@ export function AppKitWebview() {
   const onClose = () => {
     WebviewController.setWebviewVisible(false);
     WebviewController.setConnecting(false);
+    WebviewController.setConnectingProvider(undefined);
     RouterController.goBack();
   };
 
@@ -105,6 +106,7 @@ export function AppKitWebview() {
                 const parsedUrl = new URL(navState.url);
                 await provider?.connectSocial(parsedUrl.search);
                 await ConnectionController.connectExternal(authConnector);
+                ConnectionController.setConnectedSocialProvider(connectingProvider);
                 WebviewController.setConnecting(false);
                 ModalController.close();
               }

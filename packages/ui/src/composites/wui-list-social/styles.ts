@@ -18,5 +18,11 @@ export default StyleSheet.create({
   },
   disabledLogo: {
     opacity: 0.4
+  },
+  border: {
+    borderRadius: BorderRadius.full,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });

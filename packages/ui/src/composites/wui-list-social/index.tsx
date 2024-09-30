@@ -16,9 +16,20 @@ export interface ListSocialProps {
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   testID?: string;
+  logoWidth?: number;
+  logoHeight?: number;
 }
 
-export function ListSocial({ logo, children, disabled, onPress, style, testID }: ListSocialProps) {
+export function ListSocial({
+  logo,
+  children,
+  disabled,
+  onPress,
+  style,
+  testID,
+  logoHeight = 40,
+  logoWidth = 40
+}: ListSocialProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
     Theme['gray-glass-002'],
@@ -34,7 +45,19 @@ export function ListSocial({ logo, children, disabled, onPress, style, testID }:
       onPressOut={setStartValue}
       testID={testID}
     >
-      <Logo logo={logo} style={disabled && styles.disabledLogo} />
+      <View
+        style={[
+          styles.border,
+          { height: logoHeight + 1, width: logoWidth + 1, borderColor: Theme['gray-glass-005'] }
+        ]}
+      >
+        <Logo
+          logo={logo}
+          style={disabled && styles.disabledLogo}
+          width={logoWidth}
+          height={logoHeight}
+        />
+      </View>
       {children}
       <View style={styles.rightPlaceholder} />
     </AnimatedPressable>

@@ -27,8 +27,9 @@ import {
   ListItem
 } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import { UpgradeWalletButton } from './components/upgrade-wallet-button';
+
 import styles from './styles';
+import { AuthButtons } from './components/auth-buttons';
 
 export function AccountDefaultView() {
   const { address, profileName, profileImage, balance, balanceSymbol, addressExplorerUrl } =
@@ -36,6 +37,7 @@ export function AccountDefaultView() {
   const [disconnecting, setDisconnecting] = useState(false);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { connectedConnector } = useSnapshot(ConnectorController.state);
+  const { connectedSocialProvider } = useSnapshot(ConnectionController.state);
   const { history } = useSnapshot(RouterController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
@@ -69,6 +71,13 @@ export function AccountDefaultView() {
     if (!provider) return '';
 
     return provider.getEmail();
+  };
+
+  const getUsername = () => {
+    const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
+    if (!provider) return '';
+
+    return provider.getUsername();
   };
 
   const onExplorerPress = () => {
@@ -108,6 +117,7 @@ export function AccountDefaultView() {
   };
 
   const onEmailPress = () => {
+    if (ConnectionController.state.connectedSocialProvider) return;
     RouterController.push('UpdateEmailWallet', { email: getUserEmail() });
   };
 
@@ -165,25 +175,18 @@ export function AccountDefaultView() {
           )}
           <FlexView margin={['s', '0', '0', '0']}>
             {isAuth && (
-              <>
-                <UpgradeWalletButton onPress={onUpgradePress} style={styles.upgradeButton} />
-                <ListItem
-                  icon="mail"
-                  onPress={onEmailPress}
-                  chevron
-                  testID="button-email"
-                  style={styles.actionButton}
-                >
-                  <Text color="fg-100" numberOfLines={1} ellipsizeMode="tail">
-                    {UiUtil.getTruncateString({
-                      string: getUserEmail() || '',
-                      charsStart: 30,
-                      charsEnd: 0,
-                      truncate: 'end'
-                    })}
-                  </Text>
-                </ListItem>
-              </>
+              <AuthButtons
+                onUpgradePress={onUpgradePress}
+                socialProvider={connectedSocialProvider}
+                onPress={onEmailPress}
+                style={styles.actionButton}
+                text={UiUtil.getTruncateString({
+                  string: getUsername() || getUserEmail() || '',
+                  charsStart: 30,
+                  charsEnd: 0,
+                  truncate: 'end'
+                })}
+              />
             )}
             <ListItem
               chevron

@@ -315,8 +315,14 @@ export class AppKitScaffold {
     }
   }
 
+  private async initSocial() {
+    const connectedSocialProvider = await StorageUtil.getConnectedSocialProvider();
+    ConnectionController.setConnectedSocialProvider(connectedSocialProvider);
+  }
+
   private async initAsyncValues(options: ScaffoldOptions) {
     await this.initConnectedConnector();
     await this.initRecentWallets(options);
+    await this.initSocial();
   }
 }

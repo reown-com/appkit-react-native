@@ -31,10 +31,13 @@ export function ConnectingSocialView() {
         WebviewController.setWebviewUrl(uri);
         WebviewController.setWebviewVisible(true);
         WebviewController.setConnecting(true);
+        WebviewController.setConnectingProvider(socialProvider);
       }
     } catch (e) {
       WebviewController.setWebviewVisible(false);
+      WebviewController.setWebviewUrl(undefined);
       WebviewController.setConnecting(false);
+      WebviewController.setConnectingProvider(undefined);
       SnackController.showError('Something went wrong');
       setError(true);
     }
