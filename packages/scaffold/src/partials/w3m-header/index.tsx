@@ -17,7 +17,7 @@ export function Header() {
     const connectorName = data?.connector?.name;
     const walletName = data?.wallet?.name;
     const networkName = data?.network?.name;
-    const socialName = StringUtil.capitalize(data?.socialProvider);
+    const socialName = undefined;
 
     return {
       Account: undefined,
