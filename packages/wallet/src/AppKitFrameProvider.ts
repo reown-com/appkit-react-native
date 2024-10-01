@@ -313,8 +313,11 @@ export class AppKitFrameProvider {
       payload: { ...payload, chainId }
     } as AppKitFrameTypes.AppEvent);
 
-    this.setEmailLoginSuccess(response.email);
-    this.setLastUsedChainId(response.chainId);
+    if (response.email) {
+      this.setEmailLoginSuccess(response.email);
+    }
+
+    this.setLastUsedChainId(Number(response.chainId));
 
     return response;
   }

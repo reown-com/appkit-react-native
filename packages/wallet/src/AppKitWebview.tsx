@@ -90,6 +90,9 @@ export function AppKitWebview() {
           onPress={onClose}
           testID="button-close"
           style={styles.closeButton}
+          iconColor="inverse-100"
+          backgroundColor="gray-glass-030"
+          pressedColor="gray-glass-080"
         />
         <WebView
           source={{
@@ -144,7 +147,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: BorderRadius.l
   },
   closeButton: {
-    alignSelf: 'flex-end',
-    margin: Spacing.m
+    top: -60,
+    right: 0,
+    zIndex: 999,
+    position: 'absolute',
+    margin: Spacing.l
   }
 });

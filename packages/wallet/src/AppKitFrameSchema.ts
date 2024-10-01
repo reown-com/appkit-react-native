@@ -70,9 +70,9 @@ export const FrameUpdateEmailResponse = z.object({
   action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])
 });
 export const FrameGetUserResponse = z.object({
-  email: z.string().email(),
+  email: z.string().email().optional().nullable(),
   address: z.string(),
-  chainId: z.number()
+  chainId: z.string().or(z.number())
 });
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() });
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() });

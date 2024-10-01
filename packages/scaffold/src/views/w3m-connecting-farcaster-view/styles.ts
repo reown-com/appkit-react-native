@@ -11,5 +11,8 @@ export default StyleSheet.create({
   continueText: {
     marginTop: Spacing.m,
     marginBottom: Spacing.xs
+  },
+  copyButton: {
+    marginTop: Spacing.m
   }
 });

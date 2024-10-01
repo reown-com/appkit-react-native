@@ -4,13 +4,20 @@ import {
   ConnectionController,
   ConnectorController,
   ModalController,
+  OptionsController,
   RouterController,
   SnackController,
   WebviewController,
   type AppKitFrameProvider
 } from '@reown/appkit-core-react-native';
-import { FlexView, LoadingThumbnail, IconBox, Logo, Text } from '@reown/appkit-ui-react-native';
-import { StringUtil } from '@reown/appkit-common-react-native';
+import {
+  FlexView,
+  LoadingThumbnail,
+  IconBox,
+  Logo,
+  Text,
+  Link
+} from '@reown/appkit-ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
@@ -20,6 +27,8 @@ export function ConnectingFarcasterView() {
   const { maxWidth: width } = useCustomDimensions();
   const authConnector = ConnectorController.getAuthConnector();
   const [error, setError] = useState(false);
+  const [_url, setUrl] = useState<string | undefined>();
+  const showCopy = OptionsController.isClipboardAvailable();
   const socialProvider = data?.socialProvider;
   const provider = authConnector?.provider as AppKitFrameProvider;
 
@@ -28,7 +37,8 @@ export function ConnectingFarcasterView() {
       if (!WebviewController.state.connecting && provider && socialProvider && authConnector) {
         setError(false);
         const { url } = await provider.getFarcasterUri();
-        await Linking.openURL(url);
+        setUrl(url);
+        Linking.openURL(url);
         await provider.connectFarcaster();
         await ConnectionController.connectExternal(authConnector);
         ConnectionController.setConnectedSocialProvider(socialProvider);
@@ -40,6 +50,13 @@ export function ConnectingFarcasterView() {
       setError(true);
     }
   }, [provider, socialProvider, authConnector]);
+
+  const onCopyUrl = () => {
+    if (_url) {
+      OptionsController.copyToClipboard(_url);
+      SnackController.showSuccess('Link copied');
+    }
+  };
 
   useEffect(() => {
     onConnect();
@@ -68,8 +85,19 @@ export function ConnectingFarcasterView() {
           )}
         </LoadingThumbnail>
         <Text style={styles.continueText} variant="paragraph-500">
-          {`Continue with ${StringUtil.capitalize(socialProvider)}`}
+          Continue in Farcaster
         </Text>
+        {showCopy && (
+          <Link
+            iconLeft="copySmall"
+            color="fg-200"
+            style={styles.copyButton}
+            onPress={onCopyUrl}
+            testID="button-copy-uri"
+          >
+            Copy link
+          </Link>
+        )}
       </>
     </FlexView>
   );
