@@ -104,7 +104,7 @@ export function AppKitWebview() {
           ref={webviewRef}
           onNavigationStateChange={async navState => {
             try {
-              if (authConnector && navState.url.includes('/sdk/oauth')) {
+              if (authConnector && webviewVisible && navState.url.includes('/sdk/oauth')) {
                 WebviewController.setWebviewVisible(false);
                 const parsedUrl = new URL(navState.url);
                 await provider?.connectSocial(parsedUrl.search);
