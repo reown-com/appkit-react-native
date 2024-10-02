@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { ScrollView } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { FlexView, InputText, ListToken, Text } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
@@ -50,7 +50,11 @@ export function WalletSendSelectTokenView() {
           clearButtonMode="while-editing"
         />
       </FlexView>
-      <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.tokenList}>
+      <BottomSheetScrollView
+        bounces={false}
+        fadingEdgeLength={20}
+        contentContainerStyle={styles.tokenList}
+      >
         <Text variant="paragraph-500" color="fg-200" style={styles.title}>
           Your tokens
         </Text>
@@ -66,7 +70,7 @@ export function WalletSendSelectTokenView() {
             onPress={() => onTokenPress(token)}
           />
         ))}
-      </ScrollView>
+      </BottomSheetScrollView>
     </FlexView>
   );
 }

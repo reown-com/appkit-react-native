@@ -1,4 +1,5 @@
 import { Linking } from 'react-native';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ConnectionController,
@@ -63,42 +64,44 @@ export function ConnectingFarcasterView() {
   }, [onConnect]);
 
   return (
-    <FlexView
-      alignItems="center"
-      alignSelf="center"
-      padding={['2xl', 'l', '3xl', 'l']}
-      style={{ width }}
-    >
-      <>
-        <LoadingThumbnail paused={!!error}>
-          <Logo logo="farcasterSquare" height={72} width={72} />
-          {error && (
-            <IconBox
-              icon={'close'}
-              border
-              background
-              backgroundColor="icon-box-bg-error-100"
-              size="sm"
-              iconColor="error-100"
-              style={styles.errorIcon}
-            />
+    <BottomSheetView>
+      <FlexView
+        alignItems="center"
+        alignSelf="center"
+        padding={['2xl', 'l', '3xl', 'l']}
+        style={{ width }}
+      >
+        <>
+          <LoadingThumbnail paused={!!error}>
+            <Logo logo="farcasterSquare" height={72} width={72} />
+            {error && (
+              <IconBox
+                icon={'close'}
+                border
+                background
+                backgroundColor="icon-box-bg-error-100"
+                size="sm"
+                iconColor="error-100"
+                style={styles.errorIcon}
+              />
+            )}
+          </LoadingThumbnail>
+          <Text style={styles.continueText} variant="paragraph-500">
+            Continue in Farcaster
+          </Text>
+          {showCopy && (
+            <Link
+              iconLeft="copySmall"
+              color="fg-200"
+              style={styles.copyButton}
+              onPress={onCopyUrl}
+              testID="button-copy-uri"
+            >
+              Copy link
+            </Link>
           )}
-        </LoadingThumbnail>
-        <Text style={styles.continueText} variant="paragraph-500">
-          Continue in Farcaster
-        </Text>
-        {showCopy && (
-          <Link
-            iconLeft="copySmall"
-            color="fg-200"
-            style={styles.copyButton}
-            onPress={onCopyUrl}
-            testID="button-copy-uri"
-          >
-            Copy link
-          </Link>
-        )}
-      </>
-    </FlexView>
+        </>
+      </FlexView>
+    </BottomSheetView>
   );
 }

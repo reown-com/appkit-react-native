@@ -22,7 +22,7 @@ export function UpdateEmailWalletView() {
   const authConnector = ConnectorController.getAuthConnector();
   const { keyboardShown, keyboardHeight } = useKeyboard();
   const paddingBottom = Platform.select({
-    android: keyboardShown ? keyboardHeight + Spacing.l : Spacing.l,
+    ios: keyboardShown ? keyboardHeight + Spacing.l : Spacing.l,
     default: Spacing.l
   });
 

@@ -1,6 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { useCallback } from 'react';
-import { Linking, ScrollView } from 'react-native';
+import { Linking } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import {
   RouterController,
   ApiController,
@@ -65,7 +66,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
   }, [data?.wallet, wcUri]);
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20}>
+    <BottomSheetScrollView bounces={false} fadingEdgeLength={20}>
       <FlexView alignItems="center" padding={['2xl', 'm', '3xl', 'm']}>
         <LoadingThumbnail paused={wcError}>
           <WalletImage
@@ -106,6 +107,6 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
           </Link>
         )}
       </FlexView>
-    </ScrollView>
+    </BottomSheetScrollView>
   );
 }

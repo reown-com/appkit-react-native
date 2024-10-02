@@ -1,4 +1,4 @@
-import { ScrollView } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Button, FlexView, Text, Visual } from '@reown/appkit-ui-react-native';
 import { EventsController, RouterController } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
@@ -13,7 +13,11 @@ export function WhatIsAWalletView() {
   };
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
+    <BottomSheetScrollView
+      bounces={false}
+      fadingEdgeLength={20}
+      style={{ paddingHorizontal: padding }}
+    >
       <FlexView alignItems="center" padding={['xs', '4xl', 'xl', '4xl']}>
         <FlexView flexDirection="row" padding={['0', '0', 's', '0']}>
           <Visual name="login" />
@@ -57,6 +61,6 @@ export function WhatIsAWalletView() {
           Get a wallet
         </Button>
       </FlexView>
-    </ScrollView>
+    </BottomSheetScrollView>
   );
 }

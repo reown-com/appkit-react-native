@@ -1,5 +1,6 @@
-import { Linking, ScrollView } from 'react-native';
+import { Linking } from 'react-native';
 import { Button, FlexView, Text, Visual } from '@reown/appkit-ui-react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
@@ -10,7 +11,11 @@ export function WhatIsANetworkView() {
   };
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
+    <BottomSheetScrollView
+      bounces={false}
+      fadingEdgeLength={20}
+      style={{ paddingHorizontal: padding }}
+    >
       <FlexView alignItems="center" padding={['l', '4xl', '3xl', '4xl']}>
         <FlexView flexDirection="row" padding={['0', '0', 'xs', '0']}>
           <Visual name="network" />
@@ -44,6 +49,6 @@ export function WhatIsANetworkView() {
           Learn more
         </Button>
       </FlexView>
-    </ScrollView>
+    </BottomSheetScrollView>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 import {
   ConnectionController,
   ConnectorController,
@@ -63,13 +64,15 @@ export function EmailVerifyOtpView() {
   };
 
   return (
-    <OtpCodeView
-      loading={loading}
-      error={error}
-      timeLeft={timeLeft}
-      email={data?.email}
-      onRetry={onOtpResend}
-      onSubmit={onOtpSubmit}
-    />
+    <BottomSheetView>
+      <OtpCodeView
+        loading={loading}
+        error={error}
+        timeLeft={timeLeft}
+        email={data?.email}
+        onRetry={onOtpResend}
+        onSubmit={onOtpSubmit}
+      />
+    </BottomSheetView>
   );
 }

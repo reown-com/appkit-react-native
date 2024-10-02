@@ -22,7 +22,8 @@ module.exports = function (api) {
             [wagmipak.name]: path.join(__dirname, '../../packages/wagmi', wagmipak.source)
           }
         }
-      ]
+      ],
+      'react-native-reanimated/plugin'
     ]
   };
 };

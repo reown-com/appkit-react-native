@@ -2,6 +2,7 @@ import { useSnapshot } from 'valtio';
 import { View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { FlexView, Icon, Link, Text, useTheme } from '@reown/appkit-ui-react-native';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 import {
   ConnectorController,
   CoreHelperUtil,
@@ -55,26 +56,28 @@ export function EmailVerifyDeviceView() {
   }, []);
 
   return (
-    <FlexView alignItems="center" padding={['0', '4xl', '3xl', '4xl']}>
-      <View style={[styles.iconContainer, { backgroundColor: Theme['accent-glass-010'] }]}>
-        <Icon name="verify" size="lg" height={28} width={28} color="accent-100" />
-      </View>
-      <Text center variant="medium-600" style={styles.headingText}>
-        Register this device to continue
-      </Text>
-      <Text center variant="paragraph-400">
-        Check the instructions sent to{' '}
-      </Text>
-      <Text variant="paragraph-500">{data?.email ?? 'your email'}</Text>
-      <Text variant="small-400" color="fg-200" style={styles.expiryText}>
-        The link expires in 20 minutes
-      </Text>
-      <FlexView alignItems="center" justifyContent="center" flexDirection="row">
-        <Text variant="small-400">Didn't receive it?</Text>
-        <Link onPress={onResendEmail} disabled={timeLeft > 0 || loading}>
-          {timeLeft > 0 ? `Resend in ${timeLeft}s` : 'Resend link'}
-        </Link>
+    <BottomSheetView>
+      <FlexView alignItems="center" padding={['0', '4xl', '3xl', '4xl']}>
+        <View style={[styles.iconContainer, { backgroundColor: Theme['accent-glass-010'] }]}>
+          <Icon name="verify" size="lg" height={28} width={28} color="accent-100" />
+        </View>
+        <Text center variant="medium-600" style={styles.headingText}>
+          Register this device to continue
+        </Text>
+        <Text center variant="paragraph-400">
+          Check the instructions sent to{' '}
+        </Text>
+        <Text variant="paragraph-500">{data?.email ?? 'your email'}</Text>
+        <Text variant="small-400" color="fg-200" style={styles.expiryText}>
+          The link expires in 20 minutes
+        </Text>
+        <FlexView alignItems="center" justifyContent="center" flexDirection="row">
+          <Text variant="small-400">Didn't receive it?</Text>
+          <Link onPress={onResendEmail} disabled={timeLeft > 0 || loading}>
+            {timeLeft > 0 ? `Resend in ${timeLeft}s` : 'Resend link'}
+          </Link>
+        </FlexView>
       </FlexView>
-    </FlexView>
+    </BottomSheetView>
   );
 }

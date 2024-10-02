@@ -1,3 +1,4 @@
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet, View, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
@@ -69,24 +70,26 @@ export default function Native() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <View style={[styles.container, isDarkMode && styles.dark]}>
-          <StatusBar style="auto" />
-          <AppKitButton
-            connectStyle={styles.button}
-            accountStyle={styles.button}
-            label="Connect"
-            loadingLabel="Connecting..."
-            balance="show"
-          />
-          <NetworkButton />
-          <AccountView />
-          <ActionsView />
-          <AppKit />
-        </View>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          <View style={[styles.container, isDarkMode && styles.dark]}>
+            <StatusBar style="auto" />
+            <AppKitButton
+              connectStyle={styles.button}
+              accountStyle={styles.button}
+              label="Connect"
+              loadingLabel="Connecting..."
+              balance="show"
+            />
+            <NetworkButton />
+            <AccountView />
+            <ActionsView />
+            <AppKit />
+          </View>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </GestureHandlerRootView>
   );
 }
 

@@ -1,6 +1,7 @@
 /* eslint-disable valtio/state-snapshot-rule */
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 import {
   ApiController,
   AssetUtil,
@@ -101,27 +102,29 @@ export function NetworkSwitchView() {
   };
 
   return (
-    <FlexView alignItems="center" padding={['2xl', 's', '4xl', 's']}>
-      <LoadingHexagon paused={error}>
-        <NetworkImage
-          imageSrc={AssetUtil.getNetworkImage(network)}
-          imageHeaders={ApiController._getApiHeaders()}
-          size="lg"
-        />
-        {error && (
-          <IconBox
-            icon="close"
-            border
-            background
-            backgroundColor="icon-box-bg-error-100"
-            size="sm"
-            iconColor="error-100"
-            style={styles.errorIcon}
+    <BottomSheetView>
+      <FlexView alignItems="center" padding={['2xl', 's', '4xl', 's']}>
+        <LoadingHexagon paused={error}>
+          <NetworkImage
+            imageSrc={AssetUtil.getNetworkImage(network)}
+            imageHeaders={ApiController._getApiHeaders()}
+            size="lg"
           />
-        )}
-      </LoadingHexagon>
-      {textTemplate()}
-      {retryTemplate()}
-    </FlexView>
+          {error && (
+            <IconBox
+              icon="close"
+              border
+              background
+              backgroundColor="icon-box-bg-error-100"
+              size="sm"
+              iconColor="error-100"
+              style={styles.errorIcon}
+            />
+          )}
+        </LoadingHexagon>
+        {textTemplate()}
+        {retryTemplate()}
+      </FlexView>
+    </BottomSheetView>
   );
 }

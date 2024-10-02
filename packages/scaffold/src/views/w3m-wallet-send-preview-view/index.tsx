@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { ScrollView } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Avatar, Button, FlexView, Icon, Image, Text, UiUtil } from '@reown/appkit-ui-react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
 import {
@@ -67,7 +67,7 @@ export function WalletSendPreviewView() {
   };
 
   return (
-    <ScrollView style={{ paddingHorizontal: padding }}>
+    <BottomSheetScrollView style={{ paddingHorizontal: padding }}>
       <FlexView padding={['l', 'xl', '3xl', 'xl']}>
         <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
           <FlexView>
@@ -129,6 +129,6 @@ export function WalletSendPreviewView() {
           </Button>
         </FlexView>
       </FlexView>
-    </ScrollView>
+    </BottomSheetScrollView>
   );
 }

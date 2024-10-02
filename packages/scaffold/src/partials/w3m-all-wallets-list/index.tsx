@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { FlatList, View } from 'react-native';
+import { View } from 'react-native';
+import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { ApiController, AssetUtil, type WcWallet } from '@reown/appkit-core-react-native';
 import {
   CardSelect,
@@ -105,7 +106,7 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
   }
 
   return (
-    <FlatList
+    <BottomSheetFlatList
       key={columns}
       fadingEdgeLength={20}
       bounces={false}
@@ -116,8 +117,8 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
       contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding + Spacing.xs }]}
       onEndReached={fetchNextPage}
       onEndReachedThreshold={2}
-      keyExtractor={(item, index) => item?.id ?? index}
-      getItemLayout={(_, index) => ({
+      keyExtractor={(item: WcWallet, index: number) => item?.id ?? index}
+      getItemLayout={(_: WcWallet, index: number) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,
         index

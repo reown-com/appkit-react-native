@@ -1,4 +1,5 @@
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import {
   CardSelect,
   CardSelectWidth,
@@ -101,11 +102,15 @@ export function NetworksView() {
 
   return (
     <>
-      <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
+      <BottomSheetScrollView
+        bounces={false}
+        fadingEdgeLength={20}
+        style={{ paddingHorizontal: padding }}
+      >
         <FlexView flexDirection="row" flexWrap="wrap" padding={['xs', 'xs', 's', 'xs']}>
           {networksTemplate()}
         </FlexView>
-      </ScrollView>
+      </BottomSheetScrollView>
       <Separator />
       <FlexView
         padding={['s', 's', '3xl', 's']}

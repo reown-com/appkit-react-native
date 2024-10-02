@@ -1,4 +1,4 @@
-import { ScrollView } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { FlexView, Text, Banner, NetworkImage } from '@reown/appkit-ui-react-native';
 import { ApiController, AssetUtil, NetworkController } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
@@ -10,7 +10,11 @@ export function WalletCompatibleNetworks() {
   const imageHeaders = ApiController._getApiHeaders();
 
   return (
-    <ScrollView bounces={false} style={{ paddingHorizontal: padding }} fadingEdgeLength={20}>
+    <BottomSheetScrollView
+      bounces={false}
+      style={{ paddingHorizontal: padding }}
+      fadingEdgeLength={20}
+    >
       <FlexView padding={['xl', 's', '2xl', 's']}>
         <Banner icon="warningCircle" text="You can only receive assets on these networks." />
         {approvedNetworks.map(network => (
@@ -32,6 +36,6 @@ export function WalletCompatibleNetworks() {
           </FlexView>
         ))}
       </FlexView>
-    </ScrollView>
+    </BottomSheetScrollView>
   );
 }

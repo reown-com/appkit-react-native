@@ -1,4 +1,5 @@
 import { useSnapshot } from 'valtio';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ConnectorController,
@@ -48,32 +49,34 @@ export function ConnectingSocialView() {
   }, [onConnect]);
 
   return (
-    <FlexView
-      alignItems="center"
-      alignSelf="center"
-      padding={['2xl', 'l', '3xl', 'l']}
-      style={{ width }}
-    >
-      <LoadingThumbnail paused={!!error}>
-        <Logo logo={socialProvider ?? 'more'} height={72} width={72} />
-        {error && (
-          <IconBox
-            icon={'close'}
-            border
-            background
-            backgroundColor="icon-box-bg-error-100"
-            size="sm"
-            iconColor="error-100"
-            style={styles.errorIcon}
-          />
-        )}
-      </LoadingThumbnail>
-      <Text style={styles.continueText} variant="paragraph-500">
-        {`Continue with ${StringUtil.capitalize(socialProvider)}`}
-      </Text>
-      <Text variant="small-400" color="fg-200">
-        {connecting ? 'Connecting...' : 'Connect in the provider window'}
-      </Text>
-    </FlexView>
+    <BottomSheetView>
+      <FlexView
+        alignItems="center"
+        alignSelf="center"
+        padding={['2xl', 'l', '3xl', 'l']}
+        style={{ width }}
+      >
+        <LoadingThumbnail paused={!!error}>
+          <Logo logo={socialProvider ?? 'more'} height={72} width={72} />
+          {error && (
+            <IconBox
+              icon={'close'}
+              border
+              background
+              backgroundColor="icon-box-bg-error-100"
+              size="sm"
+              iconColor="error-100"
+              style={styles.errorIcon}
+            />
+          )}
+        </LoadingThumbnail>
+        <Text style={styles.continueText} variant="paragraph-500">
+          {`Continue with ${StringUtil.capitalize(socialProvider)}`}
+        </Text>
+        <Text variant="small-400" color="fg-200">
+          {connecting ? 'Connecting...' : 'Connect in the provider window'}
+        </Text>
+      </FlexView>
+    </BottomSheetView>
   );
 }

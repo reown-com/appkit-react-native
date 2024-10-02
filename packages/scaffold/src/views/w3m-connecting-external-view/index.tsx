@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import {
   RouterController,
   ApiController,
@@ -87,7 +87,11 @@ export function ConnectingExternalView() {
   }, [onConnect]);
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.container}>
+    <BottomSheetScrollView
+      bounces={false}
+      fadingEdgeLength={20}
+      contentContainerStyle={styles.container}
+    >
       <FlexView
         alignItems="center"
         alignSelf="center"
@@ -126,6 +130,6 @@ export function ConnectingExternalView() {
           </Button>
         )}
       </FlexView>
-    </ScrollView>
+    </BottomSheetScrollView>
   );
 }

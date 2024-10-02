@@ -1,6 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { useState } from 'react';
-import { Linking, ScrollView } from 'react-native';
+import { Linking } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import {
   AccountController,
   ApiController,
@@ -127,7 +128,11 @@ export function AccountDefaultView() {
         <IconLink icon="chevronLeft" style={styles.backIcon} onPress={RouterController.goBack} />
       )}
       <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
-      <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
+      <BottomSheetScrollView
+        bounces={false}
+        fadingEdgeLength={20}
+        style={{ paddingHorizontal: padding }}
+      >
         <FlexView alignItems="center" padding={['3xl', 's', '3xl', 's']}>
           <Avatar imageSrc={profileImage} address={address} />
           <FlexView flexDirection="row" alignItems="center" margin={['s', '0', '0', '0']}>
@@ -226,7 +231,7 @@ export function AccountDefaultView() {
             </ListItem>
           </FlexView>
         </FlexView>
-      </ScrollView>
+      </BottomSheetScrollView>
     </>
   );
 }

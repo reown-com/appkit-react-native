@@ -1,8 +1,7 @@
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect } from 'react';
-import { useWindowDimensions, StatusBar } from 'react-native';
-import Modal from 'react-native-modal';
-import { Card } from '@reown/appkit-ui-react-native';
+import { useCallback, useEffect, useRef } from 'react';
+import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+
 import {
   AccountController,
   ApiController,
@@ -15,44 +14,32 @@ import {
   RouterController,
   TransactionsController,
   type CaipAddress,
-  type AppKitFrameProvider,
-  WebviewController
+  type AppKitFrameProvider
 } from '@reown/appkit-core-react-native';
 
 import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
 import { Snackbar } from '../../partials/w3m-snackbar';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import styles from './styles';
 
 export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
   const { connectors } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
-  const { frameViewVisible, webviewVisible } = useSnapshot(WebviewController.state);
   const { isSiweEnabled } = OptionsController.state;
-  const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
-  const portraitHeight = height - 120;
-  const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
   const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
   const AuthView = authProvider?.AuthView;
   const SocialView = authProvider?.Webview;
-
-  const onBackButtonPress = () => {
-    if (RouterController.state.history.length > 1) {
-      return RouterController.goBack();
-    }
-
-    return handleClose();
-  };
+  const bottomSheetRef = useRef<BottomSheet>(null);
 
   const prefetch = async () => {
     await ApiController.prefetch();
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' });
   };
 
-  const handleClose = async () => {
+  const handleClose = useCallback(async () => {
+    ModalController.close();
     if (isSiweEnabled) {
       const { SIWEController } = await import('@reown/appkit-siwe-react-native');
 
@@ -60,7 +47,7 @@ export function AppKit() {
         await ConnectionController.disconnect();
       }
     }
-  };
+  }, [isSiweEnabled]);
 
   const onNewAddress = useCallback(
     async (address?: CaipAddress) => {
@@ -113,29 +100,38 @@ export function AppKit() {
   }, []);
 
   useEffect(() => {
+    if (open) {
+      bottomSheetRef.current?.expand();
+    } else {
+      bottomSheetRef.current?.close();
+    }
+  }, [open]);
+
+  useEffect(() => {
     onNewAddress(caipAddress);
   }, [caipAddress, onNewAddress]);
 
+  const renderBackdrop = useCallback(
+    props => (
+      <BottomSheetBackdrop {...props} disappearsOnIndex={-1} opacity={0.7} onPress={handleClose} />
+    ),
+    [handleClose]
+  );
+
   return (
     <>
-      <Modal
-        style={styles.modal}
-        coverScreen={!frameViewVisible && !webviewVisible}
-        isVisible={open}
-        useNativeDriver
-        statusBarTranslucent
-        hideModalContentWhileAnimating
-        propagateSwipe
-        onModalHide={handleClose}
-        onBackdropPress={ModalController.close}
-        onBackButtonPress={onBackButtonPress}
+      <BottomSheet
+        index={-1}
+        ref={bottomSheetRef}
+        enableDynamicSizing
+        backdropComponent={renderBackdrop}
+        handleComponent={Header}
+        topInset={isLandscape ? 70 : 100}
       >
-        <Card style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}>
-          <Header />
-          <AppKitRouter />
-          <Snackbar />
-        </Card>
-      </Modal>
+        <AppKitRouter />
+        <Snackbar />
+      </BottomSheet>
+
       {!!authProvider && AuthView && <AuthView />}
       {!!authProvider && SocialView && <SocialView />}
     </>

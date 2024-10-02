@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
-import { Platform, ScrollView } from 'react-native';
+
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useSnapshot } from 'valtio';
 import {
   AccountController,
@@ -8,31 +9,18 @@ import {
   SendController,
   SwapController
 } from '@reown/appkit-core-react-native';
-import {
-  Button,
-  FlexView,
-  IconBox,
-  LoadingSpinner,
-  Spacing,
-  Text
-} from '@reown/appkit-ui-react-native';
+import { Button, FlexView, IconBox, LoadingSpinner, Text } from '@reown/appkit-ui-react-native';
 import { InputToken } from '../../partials/w3m-input-token/intex';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import { useKeyboard } from '../../hooks/useKeyboard';
+
 import { InputAddress } from '../../partials/w3m-input-address';
 import styles from './styles';
 
 export function WalletSendView() {
   const { padding } = useCustomDimensions();
-  const { keyboardShown, keyboardHeight } = useKeyboard();
   const { token, sendTokenAmount, receiverAddress, receiverProfileName, loading, gasPrice } =
     useSnapshot(SendController.state);
   const { tokenBalance } = useSnapshot(AccountController.state);
-
-  const paddingBottom = Platform.select({
-    android: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
-    default: Spacing['2xl']
-  });
 
   const fetchNetworkPrice = useCallback(async () => {
     await SwapController.getNetworkTokenPrice();
@@ -95,12 +83,12 @@ export function WalletSendView() {
   const actionText = getActionText();
 
   return (
-    <ScrollView
+    <BottomSheetScrollView
       style={{ paddingHorizontal: padding }}
       bounces={false}
       keyboardShouldPersistTaps="always"
     >
-      <FlexView padding="l" alignItems="center" justifyContent="center" style={{ paddingBottom }}>
+      <FlexView padding="l" alignItems="center" justifyContent="center">
         <InputToken
           token={token}
           sendTokenAmount={sendTokenAmount}
@@ -136,6 +124,6 @@ export function WalletSendView() {
           )}
         </Button>
       </FlexView>
-    </ScrollView>
+    </BottomSheetScrollView>
   );
 }

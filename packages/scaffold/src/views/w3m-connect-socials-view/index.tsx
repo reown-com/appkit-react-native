@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { ScrollView } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { StringUtil, type SocialProvider } from '@reown/appkit-common-react-native';
 import { OptionsController, RouterController } from '@reown/appkit-core-react-native';
 import { FlexView, ListSocial, Text } from '@reown/appkit-ui-react-native';
@@ -21,7 +21,7 @@ export function ConnectSocialsView() {
   };
 
   return (
-    <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
+    <BottomSheetScrollView style={{ paddingHorizontal: padding }} bounces={false}>
       <FlexView padding={['xs', 'm', '2xl', 'm']}>
         {socialProviders.map(provider => (
           <ListSocial
@@ -36,6 +36,6 @@ export function ConnectSocialsView() {
           </ListSocial>
         ))}
       </FlexView>
-    </ScrollView>
+    </BottomSheetScrollView>
   );
 }

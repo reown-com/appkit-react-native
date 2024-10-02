@@ -1,5 +1,6 @@
 import { useSnapshot } from 'valtio';
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import {
   Chip,
   CompatibleNetwork,
@@ -53,7 +54,7 @@ export function WalletReceiveView() {
   if (!address) return;
 
   return (
-    <ScrollView bounces={false} style={{ paddingHorizontal: padding }}>
+    <BottomSheetScrollView bounces={false} style={{ paddingHorizontal: padding }}>
       <FlexView padding={['xl', 'xl', '2xl', 'xl']} alignItems="center">
         <Chip
           label={label}
@@ -74,7 +75,7 @@ export function WalletReceiveView() {
           style={styles.networksButton}
         />
       </FlexView>
-    </ScrollView>
+    </BottomSheetScrollView>
   );
 }
 

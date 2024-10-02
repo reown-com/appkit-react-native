@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { Platform, ScrollView } from 'react-native';
+import { Platform } from 'react-native';
 import {
   ConnectorController,
   EventUtil,
@@ -9,6 +9,7 @@ import {
   type WcWallet
 } from '@reown/appkit-core-react-native';
 import { FlexView, Separator, Spacing } from '@reown/appkit-ui-react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectEmailInput } from './components/connect-email-input';
 import { useKeyboard } from '../../hooks/useKeyboard';
@@ -38,7 +39,7 @@ export function ConnectView() {
     (isWalletConnectEnabled || isCoinbaseEnabled);
 
   const paddingBottom = Platform.select({
-    android: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
+    ios: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
     default: Spacing['2xl']
   });
 
@@ -68,7 +69,7 @@ export function ConnectView() {
   };
 
   return (
-    <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
+    <BottomSheetScrollView style={{ paddingHorizontal: padding }} bounces={false}>
       <FlexView padding={['xs', '0', '0', '0']} style={{ paddingBottom }}>
         {isEmailEnabled && <ConnectEmailInput loading={authLoading} />}
         {isSocialEnabled && <SocialLoginList options={features?.socials} disabled={authLoading} />}
@@ -97,6 +98,6 @@ export function ConnectView() {
           />
         </FlexView>
       </FlexView>
-    </ScrollView>
+    </BottomSheetScrollView>
   );
 }

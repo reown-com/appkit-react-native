@@ -1,4 +1,5 @@
-import { Linking, Platform, ScrollView } from 'react-native';
+import { Linking, Platform } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { FlexView, ListWallet } from '@reown/appkit-ui-react-native';
 import { ApiController, AssetUtil, type WcWallet } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
@@ -30,7 +31,11 @@ export function GetWalletView() {
   };
 
   return (
-    <ScrollView bounces={false} style={{ paddingHorizontal: padding }} fadingEdgeLength={20}>
+    <BottomSheetScrollView
+      bounces={false}
+      style={{ paddingHorizontal: padding }}
+      fadingEdgeLength={20}
+    >
       <FlexView padding={['s', 's', '3xl', 's']}>
         {listTemplate()}
         <ListWallet
@@ -40,6 +45,6 @@ export function GetWalletView() {
           onPress={() => Linking.openURL('https://walletconnect.com/explorer?type=wallet')}
         />
       </FlexView>
-    </ScrollView>
+    </BottomSheetScrollView>
   );
 }

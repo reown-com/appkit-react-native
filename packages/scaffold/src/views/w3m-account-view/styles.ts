@@ -2,6 +2,10 @@ import { Spacing } from '@reown/appkit-ui-react-native';
 import { Platform, StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+  container: {
+    borderTopLeftRadius: Spacing.l,
+    borderTopRightRadius: Spacing.l
+  },
   contentContainer: {
     paddingBottom: Platform.select({ ios: Spacing.s })
   },

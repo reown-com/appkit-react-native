@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect } from 'react';
-import { ScrollView } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import {
   AccountPill,
   FlexView,
@@ -22,8 +22,8 @@ import {
 } from '@reown/appkit-core-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import styles from './styles';
 import { AccountWalletFeatures } from '../../partials/w3m-account-wallet-features';
+import styles from './styles';
 
 export function AccountView() {
   const Theme = useTheme();
@@ -52,8 +52,9 @@ export function AccountView() {
   }, []);
 
   return (
-    <ScrollView
+    <BottomSheetScrollView
       bounces={false}
+      style={styles.container}
       contentContainerStyle={[
         styles.contentContainer,
         {
@@ -82,6 +83,6 @@ export function AccountView() {
         />
         <AccountWalletFeatures />
       </FlexView>
-    </ScrollView>
+    </BottomSheetScrollView>
   );
 }

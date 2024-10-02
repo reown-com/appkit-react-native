@@ -39,6 +39,7 @@
     "@changesets/changelog-github": "0.5.0",
     "@changesets/cli": "2.27.7",
     "@coinbase/wallet-mobile-sdk": "1.0.13",
+    "@gorhom/bottom-sheet": "4.6.4",
     "@react-native-async-storage/async-storage": "1.24.0",
     "@react-native/babel-preset": "0.74.85",
     "@react-native/eslint-config": "0.74.85",

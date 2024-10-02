@@ -1,4 +1,5 @@
 import { useSnapshot } from 'valtio';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 import { Button, FlexView, Text } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
@@ -68,28 +69,35 @@ export function ConnectingSiweView() {
   };
 
   return (
-    <FlexView padding={['2xl', 's', '3xl', 's']}>
-      <ConnectingSiwe style={styles.logoContainer} />
-      <Text center variant="medium-600" color="fg-100" style={styles.title}>
-        {dappName} needs to connect to your wallet
-      </Text>
-      <Text center variant="small-400" color="fg-200" style={styles.subtitle}>
-        Sign this message to prove you own this wallet and proceed. Cancelling will disconnect you
-      </Text>
-      <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
-        <Button variant="shade" onPress={onCancel} style={styles.button} loading={isDisconnecting}>
-          Cancel
-        </Button>
-        <Button
-          variant="fill"
-          loading={isSigning}
-          disabled={isDisconnecting}
-          onPress={onSign}
-          style={styles.button}
-        >
-          Sign
-        </Button>
+    <BottomSheetView>
+      <FlexView padding={['2xl', 's', '3xl', 's']}>
+        <ConnectingSiwe style={styles.logoContainer} />
+        <Text center variant="medium-600" color="fg-100" style={styles.title}>
+          {dappName} needs to connect to your wallet
+        </Text>
+        <Text center variant="small-400" color="fg-200" style={styles.subtitle}>
+          Sign this message to prove you own this wallet and proceed. Cancelling will disconnect you
+        </Text>
+        <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
+          <Button
+            variant="shade"
+            onPress={onCancel}
+            style={styles.button}
+            loading={isDisconnecting}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="fill"
+            loading={isSigning}
+            disabled={isDisconnecting}
+            onPress={onSign}
+            style={styles.button}
+          >
+            Sign
+          </Button>
+        </FlexView>
       </FlexView>
-    </FlexView>
+    </BottomSheetView>
   );
 }

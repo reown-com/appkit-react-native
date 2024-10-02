@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react';
-import { TextInput, type StyleProp, type ViewStyle } from 'react-native';
+import { type TextInput, type StyleProp, type ViewStyle } from 'react-native';
 import { FlexView, Link, Text, useTheme, TokenButton } from '@reown/appkit-ui-react-native';
 import { NumberUtil, type Balance } from '@reown/appkit-common-react-native';
 import { ConstantsUtil, SendController } from '@reown/appkit-core-react-native';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
 import { getMaxAmount, getSendValue } from './utils';
 import styles from './styles';
@@ -68,7 +69,7 @@ export function InputToken({
       padding={['xl', 'l', 'l', 'l']}
     >
       <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
-        <TextInput
+        <BottomSheetTextInput
           ref={valueInputRef}
           placeholder="0"
           placeholderTextColor={Theme['fg-275']}

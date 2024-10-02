@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { TextInput } from 'react-native';
 import { FlexView, useTheme } from '@reown/appkit-ui-react-native';
 import { ConnectionController, SendController } from '@reown/appkit-core-react-native';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import styles from './styles';
@@ -48,7 +48,7 @@ export function InputAddress({ value }: InputAddressProps) {
       justifyContent="center"
       padding={['xl', 'l', 'l', 'l']}
     >
-      <TextInput
+      <BottomSheetTextInput
         placeholder="Type or paste address"
         placeholderTextColor={Theme['fg-275']}
         returnKeyType="done"
@@ -64,7 +64,7 @@ export function InputAddress({ value }: InputAddressProps) {
         selectionColor={Theme['accent-100']}
         underlineColorAndroid="transparent"
         selectTextOnFocus={false}
-        multiline
+        // multiline
         returnKeyLabel="Done"
       />
     </FlexView>
