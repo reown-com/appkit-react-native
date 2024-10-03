@@ -95,7 +95,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
 
   useEffect(() => {
     if (wcUri) {
-      // onConnect();
+      onConnect();
     }
   }, [wcUri, onConnect]);
 
