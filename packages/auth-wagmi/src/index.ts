@@ -2,6 +2,7 @@ import { createConnector, ChainNotConfiguredError } from 'wagmi';
 import { SwitchChainError, getAddress, type Address } from 'viem';
 
 import { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
+import { NetworkUtil } from '@reown/appkit-common-react-native';
 
 export type Metadata = {
   name: string;
@@ -30,6 +31,10 @@ authConnector.id = 'appKitAuth' as const;
 export function authConnector(parameters: AuthConnectorOptions) {
   let _provider: AppKitFrameProvider = {} as AppKitFrameProvider;
 
+  function parseChainId(chainId: string | number) {
+    return NetworkUtil.parseEvmChainId(chainId) || 1;
+  }
+
   return createConnector<Provider, {}, StorageItemMap>(config => ({
     id: authConnector.id,
     name: 'AppKit Auth',
@@ -42,12 +47,14 @@ export function authConnector(parameters: AuthConnectorOptions) {
       await provider.webviewLoadPromise;
       const { address, chainId } = await provider.connect({ chainId: options.chainId });
 
+      const parsedChainId = parseChainId(chainId);
+
       return {
         accounts: [address as Address],
         account: address as Address,
-        chainId,
+        chainId: parsedChainId,
         chain: {
-          id: chainId,
+          id: parsedChainId,
           unsuported: false
         }
       };

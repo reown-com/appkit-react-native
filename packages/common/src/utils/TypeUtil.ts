@@ -1,3 +1,11 @@
+export type CaipNetworkId = `${ChainNamespace}:${ChainId}`;
+
+export type CaipAddress = `${ChainNamespace}:${ChainId}:${string}`;
+
+export type ChainId = string | number;
+
+export type ChainNamespace = 'eip155';
+
 export interface Balance {
   name: string;
   symbol: string;
