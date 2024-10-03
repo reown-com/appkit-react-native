@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { View } from 'react-native';
-import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import { FlatList, View } from 'react-native';
 import { ApiController, AssetUtil, type WcWallet } from '@reown/appkit-core-react-native';
 import {
   CardSelect,
@@ -110,7 +109,7 @@ export function AllWalletsSearch({
   }
 
   return (
-    <BottomSheetFlatList
+    <FlatList
       key={columns}
       fadingEdgeLength={20}
       bounces={false}
@@ -121,7 +120,7 @@ export function AllWalletsSearch({
       contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding + Spacing.xs }]}
       ListEmptyComponent={emptyTemplate()}
       keyExtractor={(item: WcWallet) => item.id}
-      getItemLayout={(_: WcWallet, index: number) => ({
+      getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,
         index

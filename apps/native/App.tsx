@@ -70,7 +70,7 @@ export default function Native() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.gestureContainer}>
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <View style={[styles.container, isDarkMode && styles.dark]}>
@@ -94,6 +94,9 @@ export default function Native() {
 }
 
 const styles = StyleSheet.create({
+  gestureContainer: {
+    flex: 1
+  },
   container: {
     flex: 1,
     alignItems: 'center',

@@ -70,7 +70,7 @@ export function InputToken({
     >
       <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
         <BottomSheetTextInput
-          ref={valueInputRef}
+          ref={valueInputRef as any}
           placeholder="0"
           placeholderTextColor={Theme['fg-275']}
           returnKeyType="done"

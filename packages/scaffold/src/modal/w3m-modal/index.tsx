@@ -1,7 +1,9 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useRef } from 'react';
-import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-
+import BottomSheet, {
+  BottomSheetBackdrop,
+  type BottomSheetBackdropProps
+} from '@gorhom/bottom-sheet';
 import {
   AccountController,
   ApiController,
@@ -95,6 +97,13 @@ export function AppKit() {
     }
   };
 
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop {...props} disappearsOnIndex={-1} opacity={0.7} onPress={handleClose} />
+    ),
+    [handleClose]
+  );
+
   useEffect(() => {
     prefetch();
   }, []);
@@ -111,13 +120,6 @@ export function AppKit() {
     onNewAddress(caipAddress);
   }, [caipAddress, onNewAddress]);
 
-  const renderBackdrop = useCallback(
-    props => (
-      <BottomSheetBackdrop {...props} disappearsOnIndex={-1} opacity={0.7} onPress={handleClose} />
-    ),
-    [handleClose]
-  );
-
   return (
     <>
       <BottomSheet
@@ -125,6 +127,7 @@ export function AppKit() {
         ref={bottomSheetRef}
         enableDynamicSizing
         backdropComponent={renderBackdrop}
+        keyboardBlurBehavior="restore"
         handleComponent={Header}
         topInset={isLandscape ? 70 : 100}
       >

@@ -69,7 +69,6 @@ export class AppKitFrameProvider {
   }
 
   public onMessage(event: AppKitFrameTypes.FrameEvent) {
-    // console.log('💻 received', event); // eslint-disable-line no-console
     this.events.emit('message', event);
   }
 
@@ -524,6 +523,7 @@ export class AppKitFrameProvider {
     ) {
       return;
     }
+    // console.log('💻 received', event); // eslint-disable-line no-console
     const frameEvent = AppKitFrameSchema.frameEvent.parse(event);
     callback(frameEvent);
   }

@@ -7234,6 +7234,7 @@ __metadata:
     "@reown/appkit-ui-react-native": "npm:1.0.0"
     valtio: "npm:1.11.2"
   peerDependencies:
+    "@gorhom/bottom-sheet": ">=4"
     "@walletconnect/utils": ">=2.16.1"
   languageName: unknown
   linkType: soft
