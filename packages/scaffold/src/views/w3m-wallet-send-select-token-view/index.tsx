@@ -37,11 +37,12 @@ export function WalletSendSelectTokenView() {
   };
 
   return (
-    <FlexView
-      margin={['l', '0', '2xl', '0']}
-      style={[styles.container, { paddingHorizontal: padding }]}
+    <BottomSheetScrollView
+      bounces={false}
+      fadingEdgeLength={20}
+      contentContainerStyle={[styles.container, { paddingHorizontal: padding }]}
     >
-      <FlexView margin={['0', 'm', 'm', 'm']}>
+      <FlexView margin={['0', '0', 'm', '0']}>
         <InputText
           value={tokenSearch}
           icon="search"
@@ -50,27 +51,21 @@ export function WalletSendSelectTokenView() {
           clearButtonMode="while-editing"
         />
       </FlexView>
-      <BottomSheetScrollView
-        bounces={false}
-        fadingEdgeLength={20}
-        contentContainerStyle={styles.tokenList}
-      >
-        <Text variant="paragraph-500" color="fg-200" style={styles.title}>
-          Your tokens
-        </Text>
-        {filteredTokens.map((token, index) => (
-          <ListToken
-            key={`${token.name}${index}`}
-            name={token.name}
-            imageSrc={token.iconUrl}
-            networkSrc={networkImage}
-            value={token.value}
-            amount={token.quantity.numeric}
-            currency={token.symbol}
-            onPress={() => onTokenPress(token)}
-          />
-        ))}
-      </BottomSheetScrollView>
-    </FlexView>
+      <Text variant="paragraph-500" color="fg-200" style={styles.title}>
+        Your tokens
+      </Text>
+      {filteredTokens.map((token, index) => (
+        <ListToken
+          key={`${token.name}${index}`}
+          name={token.name}
+          imageSrc={token.iconUrl}
+          networkSrc={networkImage}
+          value={token.value}
+          amount={token.quantity.numeric}
+          currency={token.symbol}
+          onPress={() => onTokenPress(token)}
+        />
+      ))}
+    </BottomSheetScrollView>
   );
 }
