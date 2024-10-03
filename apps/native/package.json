@@ -15,7 +15,7 @@
     "eas:update": "eas update --branch preview"
   },
   "dependencies": {
-    "@gorhom/bottom-sheet": "^4.6.4",
+    "@gorhom/bottom-sheet": "4.6.4",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/netinfo": "11.3.1",
     "@reown/appkit-auth-wagmi-react-native": "1.0.0",
@@ -34,7 +34,6 @@
     "react-native": "0.74.3",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-get-random-values": "~1.11.0",
-    "react-native-modal": "13.0.1",
     "react-native-reanimated": "~3.10.1",
     "react-native-svg": "15.2.0",
     "react-native-web": "~0.19.10",

@@ -88,7 +88,7 @@ __metadata:
   resolution: "@apps/native@workspace:apps/native"
   dependencies:
     "@babel/core": "npm:^7.24.0"
-    "@gorhom/bottom-sheet": "npm:^4.6.4"
+    "@gorhom/bottom-sheet": "npm:4.6.4"
     "@react-native-async-storage/async-storage": "npm:1.23.1"
     "@react-native-community/netinfo": "npm:11.3.1"
     "@reown/appkit-auth-wagmi-react-native": "npm:1.0.0"
@@ -110,7 +110,6 @@ __metadata:
     react-native: "npm:0.74.3"
     react-native-gesture-handler: "npm:~2.16.1"
     react-native-get-random-values: "npm:~1.11.0"
-    react-native-modal: "npm:13.0.1"
     react-native-reanimated: "npm:~3.10.1"
     react-native-svg: "npm:15.2.0"
     react-native-web: "npm:~0.19.10"
@@ -5064,7 +5063,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gorhom/bottom-sheet@npm:4.6.4, @gorhom/bottom-sheet@npm:^4.6.4":
+"@gorhom/bottom-sheet@npm:4.6.4":
   version: 4.6.4
   resolution: "@gorhom/bottom-sheet@npm:4.6.4"
   dependencies:
@@ -7213,7 +7212,6 @@ __metadata:
     "@gorhom/bottom-sheet": ">=4"
     react: ">=17"
     react-native: ">=0.68.5"
-    react-native-modal: ">=13"
   languageName: unknown
   linkType: soft
 
@@ -10092,7 +10090,6 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.74.3"
     react-native-builder-bob: "npm:0.23.2"
-    react-native-modal: "npm:13.0.1"
     react-native-svg: "npm:15.4.0"
     react-native-webview: "npm:13.10.5"
     react-test-renderer: "npm:18.2.0"
@@ -19675,7 +19672,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -20032,15 +20029,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-animatable@npm:1.3.3":
-  version: 1.3.3
-  resolution: "react-native-animatable@npm:1.3.3"
-  dependencies:
-    prop-types: "npm:^15.7.2"
-  checksum: ce18b871c29d17377c08aa143be64d06e20df8e669720d2fe4eed5465c37ac4e6ebbfb4464aecb23e3e22d82114768dfacb65b0c49c33dd736f54a0507265641
-  languageName: node
-  linkType: hard
-
 "react-native-builder-bob@npm:0.23.2":
   version: 0.23.2
   resolution: "react-native-builder-bob@npm:0.23.2"
@@ -20104,19 +20092,6 @@ __metadata:
     react: "*"
     react-native: ">=0.71.0"
   checksum: 835626215db96509d46a845012e4a2510f126604ba3d4df7b5edff49fdb7af6e5d01ad16b3f760126145099fd647328d6229bbe91f2408768da1964af32afadc
-  languageName: node
-  linkType: hard
-
-"react-native-modal@npm:13.0.1":
-  version: 13.0.1
-  resolution: "react-native-modal@npm:13.0.1"
-  dependencies:
-    prop-types: "npm:^15.6.2"
-    react-native-animatable: "npm:1.3.3"
-  peerDependencies:
-    react: "*"
-    react-native: ">=0.65.0"
-  checksum: 8ec5728c2a27eb31c97451968b4ecefdf005afda51fab2fc864fc442122573c70f7bf3fa0c6e3bd1d6aab3565c684104d1d30df916c3f9a6c7c3223e4d3b9249
   languageName: node
   linkType: hard
 
