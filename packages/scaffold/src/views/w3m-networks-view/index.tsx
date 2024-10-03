@@ -1,14 +1,5 @@
-import { View } from 'react-native';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import {
-  CardSelect,
-  CardSelectWidth,
-  FlexView,
-  Link,
-  Separator,
-  Spacing,
-  Text
-} from '@reown/appkit-ui-react-native';
+import { FlexView, Icon, Link, ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
   AssetUtil,
@@ -27,16 +18,32 @@ export function NetworksView() {
     NetworkController.state;
   const imageHeaders = ApiController._getApiHeaders();
   const { maxWidth: width, padding } = useCustomDimensions();
-  const numColumns = 4;
-  const usableWidth = width - Spacing.xs * 2 - Spacing['4xs'];
-  const itemWidth = Math.abs(Math.trunc(usableWidth / numColumns));
-  const itemGap = Math.abs(
-    Math.trunc((usableWidth - numColumns * CardSelectWidth) / numColumns) / 2
-  );
 
   const onHelpPress = () => {
     RouterController.push('WhatIsANetwork');
     EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORK_HELP' });
+  };
+
+  const onNetworkPress = async (network: CaipNetwork) => {
+    if (AccountController.state.isConnected && caipNetwork?.id !== network.id) {
+      if (approvedCaipNetworkIds?.includes(network.id)) {
+        await NetworkController.switchActiveNetwork(network);
+        RouterUtil.navigateAfterNetworkSwitch(['ConnectingSiwe']);
+
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SWITCH_NETWORK',
+          properties: {
+            network: network.id
+          }
+        });
+      } else if (supportsAllNetworks) {
+        RouterController.push('SwitchNetwork', { network });
+      }
+    } else if (!AccountController.state.isConnected) {
+      NetworkController.setCaipNetwork(network);
+      RouterController.push('Connect');
+    }
   };
 
   const networksTemplate = () => {
@@ -54,49 +61,24 @@ export function NetworksView() {
       });
     }
 
-    const onNetworkPress = async (network: CaipNetwork) => {
-      if (AccountController.state.isConnected && caipNetwork?.id !== network.id) {
-        if (approvedCaipNetworkIds?.includes(network.id)) {
-          await NetworkController.switchActiveNetwork(network);
-          RouterUtil.navigateAfterNetworkSwitch(['ConnectingSiwe']);
-
-          EventsController.sendEvent({
-            type: 'track',
-            event: 'SWITCH_NETWORK',
-            properties: {
-              network: network.id
-            }
-          });
-        } else if (supportsAllNetworks) {
-          RouterController.push('SwitchNetwork', { network });
-        }
-      } else if (!AccountController.state.isConnected) {
-        NetworkController.setCaipNetwork(network);
-        RouterController.push('Connect');
-      }
-    };
-
     return requested.map(network => (
-      <View
+      <ListItem
         key={network.id}
-        style={[
-          styles.itemContainer,
-          {
-            width: itemWidth,
-            marginVertical: itemGap
-          }
-        ]}
+        icon="networkPlaceholder"
+        iconBackgroundColor="gray-glass-010"
+        imageSrc={AssetUtil.getNetworkImage(network)}
+        imageHeaders={imageHeaders}
+        onPress={() => onNetworkPress(network)}
+        testID="button-network"
+        style={styles.networkItem}
+        contentStyle={styles.networkItemContent}
+        disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
       >
-        <CardSelect
-          name={network.name ?? 'Unknown'}
-          type="network"
-          imageSrc={AssetUtil.getNetworkImage(network)}
-          imageHeaders={imageHeaders}
-          disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
-          selected={caipNetwork?.id === network.id}
-          onPress={() => onNetworkPress(network)}
-        />
-      </View>
+        <Text numberOfLines={1} color="fg-100">
+          {network.name ?? 'Unknown'}
+        </Text>
+        {network.id === caipNetwork?.id && <Icon name="checkmark" color="accent-100" />}
+      </ListItem>
     ));
   };
 
@@ -106,6 +88,7 @@ export function NetworksView() {
         bounces={false}
         fadingEdgeLength={20}
         style={{ paddingHorizontal: padding }}
+        contentContainerStyle={styles.contentContainer}
       >
         <FlexView flexDirection="row" flexWrap="wrap" padding={['xs', 'xs', 's', 'xs']}>
           {networksTemplate()}

@@ -2,11 +2,16 @@ import { Spacing } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  itemContainer: {
-    alignItems: 'center',
-    justifyContent: 'center'
+  contentContainer: {
+    paddingBottom: Spacing.s
   },
   helpButton: {
     marginTop: Spacing.s
+  },
+  networkItem: {
+    marginVertical: Spacing['3xs']
+  },
+  networkItemContent: {
+    justifyContent: 'space-between'
   }
 });
