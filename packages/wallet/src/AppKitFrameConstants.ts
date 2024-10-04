@@ -67,7 +67,8 @@ export const AppKitFrameConstants = {
   FRAME_SYNC_THEME_SUCCESS: '@w3m-frame/SYNC_THEME_SUCCESS',
   FRAME_SYNC_THEME_ERROR: '@w3m-frame/SYNC_THEME_ERROR',
   FRAME_SYNC_DAPP_DATA_SUCCESS: '@w3m-frame/SYNC_DAPP_DATA_SUCCESS',
-  FRAME_SYNC_DAPP_DATA_ERROR: '@w3m-frame/SYNC_DAPP_DATA_ERROR'
+  FRAME_SYNC_DAPP_DATA_ERROR: '@w3m-frame/SYNC_DAPP_DATA_ERROR',
+  FRAME_READY: '@w3m-frame/READY'
 } as const;
 
 export const AppKitFrameRpcConstants = {
