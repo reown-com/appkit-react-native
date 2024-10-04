@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
-import { RefreshControl, ScrollView, type StyleProp, type ViewStyle } from 'react-native';
+import { type StyleProp, type ViewStyle } from 'react-native';
 import { useSnapshot } from 'valtio';
+import { ScrollView, RefreshControl } from 'react-native-gesture-handler';
 import {
   AccountController,
   AssetUtil,

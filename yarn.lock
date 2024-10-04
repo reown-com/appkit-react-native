@@ -7213,6 +7213,7 @@ __metadata:
     "@gorhom/bottom-sheet": ">=4"
     react: ">=17"
     react-native: ">=0.68.5"
+    react-native-gesture-handler: ">=2"
   languageName: unknown
   linkType: soft
 
@@ -10091,6 +10092,8 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.74.3"
     react-native-builder-bob: "npm:0.23.2"
+    react-native-gesture-handler: "npm:2.16.1"
+    react-native-reanimated: "npm:3.10.1"
     react-native-svg: "npm:15.4.0"
     react-native-webview: "npm:13.10.5"
     react-test-renderer: "npm:18.2.0"
@@ -20059,6 +20062,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-gesture-handler@npm:2.16.1":
+  version: 2.16.1
+  resolution: "react-native-gesture-handler@npm:2.16.1"
+  dependencies:
+    "@egjs/hammerjs": "npm:^2.0.17"
+    hoist-non-react-statics: "npm:^3.3.0"
+    invariant: "npm:^2.2.4"
+    lodash: "npm:^4.17.21"
+    prop-types: "npm:^15.7.2"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: fea9cc67b645ec77f26c61b10edf379adf3084d4280ea76c7986cf1b175c2957c53fa4b880d0a67232fd6cdc260057e3b97752ccb028c1d635b8db87a79bad27
+  languageName: node
+  linkType: hard
+
 "react-native-gesture-handler@npm:~2.16.1":
   version: 2.16.2
   resolution: "react-native-gesture-handler@npm:2.16.2"
@@ -20096,7 +20115,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-reanimated@npm:~3.10.1":
+"react-native-reanimated@npm:3.10.1, react-native-reanimated@npm:~3.10.1":
   version: 3.10.1
   resolution: "react-native-reanimated@npm:3.10.1"
   dependencies:

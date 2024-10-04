@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { ScrollView, View, type StyleProp, type ViewStyle, RefreshControl } from 'react-native';
+import { View, type StyleProp, type ViewStyle } from 'react-native';
+import { ScrollView, RefreshControl } from 'react-native-gesture-handler';
 import {
   FlexView,
   Link,
@@ -82,7 +83,7 @@ export function AccountActivity({ style }: Props) {
     <ScrollView
       style={[styles.container, style]}
       fadingEdgeLength={20}
-      contentContainerStyle={[styles.contentContainer]}
+      contentContainerStyle={styles.contentContainer}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
