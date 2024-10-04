@@ -86,6 +86,7 @@ export function AccountActivity({ style }: Props) {
       contentContainerStyle={styles.contentContainer}
       refreshControl={
         <RefreshControl
+          // @ts-ignore
           refreshing={refreshing}
           onRefresh={onRefresh}
           tintColor={Theme['accent-100']}

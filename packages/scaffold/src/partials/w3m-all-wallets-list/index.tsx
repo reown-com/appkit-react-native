@@ -118,7 +118,7 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
       onEndReached={fetchNextPage}
       onEndReachedThreshold={2}
       keyExtractor={(item: WcWallet, index: number) => item?.id ?? index}
-      getItemLayout={(_: WcWallet, index: number) => ({
+      getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,
         index

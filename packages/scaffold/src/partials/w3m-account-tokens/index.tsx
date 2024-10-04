@@ -52,6 +52,7 @@ export function AccountTokens({ style }: Props) {
       style={style}
       refreshControl={
         <RefreshControl
+          // @ts-ignore
           refreshing={refreshing}
           onRefresh={onRefresh}
           tintColor={Theme['accent-100']}
