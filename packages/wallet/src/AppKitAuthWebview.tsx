@@ -144,15 +144,19 @@ export function AuthWebview() {
                 webviewRef.current?.injectJavaScript(AppKitFrameConstants.FRAME_MESSAGES_HANDLER);
               }
               const themeMode = Appearance.getColorScheme() ?? undefined;
-              provider?.syncTheme({
-                themeMode,
-                w3mThemeVariables: {
-                  '--w3m-accent': Theme['accent-100'],
-                  '--w3m-background': Theme['bg-100']
-                }
-              });
-              provider?.syncDappData?.({ projectId, sdkVersion });
-              provider?.onWebviewLoaded();
+
+              // TODO: replace with FRAME_READY when the event is available
+              setTimeout(() => {
+                provider?.syncTheme({
+                  themeMode,
+                  w3mThemeVariables: {
+                    '--w3m-accent': Theme['accent-100'],
+                    '--w3m-background': Theme['bg-100']
+                  }
+                });
+                provider?.syncDappData?.({ projectId, sdkVersion });
+                provider?.onWebviewLoaded();
+              }, 1500);
             }
           }}
           onError={({ nativeEvent }) => {
