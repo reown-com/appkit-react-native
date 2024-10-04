@@ -15,4 +15,4 @@
 '@reown/appkit-wagmi-react-native': patch
 ---
 
-chore: add timeout for frame sdk to init
+chore: wait for FRAME_READY event to send messages to frame + siwe import fix
