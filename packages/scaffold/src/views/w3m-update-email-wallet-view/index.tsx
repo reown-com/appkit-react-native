@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Platform } from 'react-native';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 import {
   ConnectorController,
   CoreHelperUtil,
@@ -60,37 +61,39 @@ export function UpdateEmailWalletView() {
   };
 
   return (
-    <FlexView padding={['l', 's', '0', 's']} style={{ paddingBottom }}>
-      <EmailInput
-        initialValue={data?.email}
-        onSubmit={onEmailSubmit}
-        submitEnabled={isValidNewEmail}
-        onChangeText={onChangeText}
-        loading={loading}
-        errorMessage={error}
-        style={styles.emailInput}
-        autoFocus
-      />
-      <FlexView
-        flexDirection="row"
-        justifyContent="center"
-        alignItems="center"
-        margin={['0', 'xs', '0', 'xs']}
-      >
-        <Button onPress={RouterController.goBack} variant="shade" style={styles.cancelButton}>
-          <Text variant="paragraph-600" color="fg-100">
-            Cancel
-          </Text>
-        </Button>
-        <Button
-          onPress={() => onEmailSubmit(email)}
-          variant="fill"
-          style={styles.saveButton}
-          disabled={loading || !isValidNewEmail}
+    <BottomSheetView>
+      <FlexView padding={['l', 's', '0', 's']} style={{ paddingBottom }}>
+        <EmailInput
+          initialValue={data?.email}
+          onSubmit={onEmailSubmit}
+          submitEnabled={isValidNewEmail}
+          onChangeText={onChangeText}
+          loading={loading}
+          errorMessage={error}
+          style={styles.emailInput}
+          autoFocus
+        />
+        <FlexView
+          flexDirection="row"
+          justifyContent="center"
+          alignItems="center"
+          margin={['0', 'xs', '0', 'xs']}
         >
-          Save
-        </Button>
+          <Button onPress={RouterController.goBack} variant="shade" style={styles.cancelButton}>
+            <Text variant="paragraph-600" color="fg-100">
+              Cancel
+            </Text>
+          </Button>
+          <Button
+            onPress={() => onEmailSubmit(email)}
+            variant="fill"
+            style={styles.saveButton}
+            disabled={loading || !isValidNewEmail}
+          >
+            Save
+          </Button>
+        </FlexView>
       </FlexView>
-    </FlexView>
+    </BottomSheetView>
   );
 }

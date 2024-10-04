@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 import {
   ConnectorController,
   CoreHelperUtil,
@@ -40,16 +40,18 @@ export function UpdateEmailPrimaryOtpView() {
   };
 
   return (
-    <OtpCodeView
-      loading={loading}
-      error={error}
-      email={data?.email}
-      onSubmit={onOtpSubmit}
-      onRetry={RouterController.goBack}
-      codeExpiry={10}
-      retryLabel="Something wrong?"
-      retryDisabledButtonLabel="Try again"
-      retryButtonLabel="Try again"
-    />
+    <BottomSheetView>
+      <OtpCodeView
+        loading={loading}
+        error={error}
+        email={data?.email}
+        onSubmit={onOtpSubmit}
+        onRetry={RouterController.goBack}
+        codeExpiry={10}
+        retryLabel="Something wrong?"
+        retryDisabledButtonLabel="Try again"
+        retryButtonLabel="Try again"
+      />
+    </BottomSheetView>
   );
 }
