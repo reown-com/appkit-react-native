@@ -180,10 +180,12 @@ export const ConnectionController = {
     this.clearUri();
     state.pressedWallet = undefined;
     state.connectedWalletImageUrl = undefined;
+    state.connectedSocialProvider = undefined;
     ConnectorController.setConnectedConnector(undefined);
     StorageUtil.removeWalletConnectDeepLink();
     StorageUtil.removeConnectedWalletImageUrl();
     StorageUtil.removeConnectedConnector();
+    StorageUtil.removeConnectedSocialProvider();
   },
 
   async disconnect() {
