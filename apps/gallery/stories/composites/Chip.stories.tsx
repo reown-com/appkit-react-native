@@ -23,7 +23,7 @@ const meta: Meta<typeof Chip> = {
     imageSrc: {
       control: { type: 'text' }
     },
-    icon: {
+    rightIcon: {
       options: iconOptions,
       control: { type: 'select' }
     }
@@ -32,7 +32,7 @@ const meta: Meta<typeof Chip> = {
     variant: 'fill',
     size: 'md',
     disabled: false,
-    icon: 'disconnect',
+    rightIcon: 'disconnect',
     label: externalLabel,
     imageSrc: walletImageSrc
   }
@@ -50,7 +50,7 @@ export const Default: Story = {
       onPress={() => {}}
       label={args.label}
       imageSrc={args.imageSrc}
-      icon={args.icon}
+      rightIcon={args.rightIcon}
     />
   )
 };

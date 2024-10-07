@@ -34,6 +34,7 @@ export function Header() {
       ConnectingFarcaster: socialName ?? 'Connecting Social',
       ConnectingSocial: socialName ?? 'Connecting Social',
       ConnectingWalletConnect: walletName ?? 'WalletConnect',
+      Create: 'Create wallet',
       EmailVerifyDevice: ' ',
       EmailVerifyOtp: 'Confirm email',
       GetWallet: 'Get a wallet',

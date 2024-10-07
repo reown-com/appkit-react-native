@@ -45,9 +45,9 @@ export function authConnector(parameters: AuthConnectorOptions) {
       return {
         accounts: [address as Address],
         account: address as Address,
-        chainId,
+        chainId: chainId as number,
         chain: {
-          id: chainId,
+          id: chainId as number,
           unsuported: false
         }
       };

@@ -172,6 +172,7 @@ export const iconOptions: IconType[] = [
   'wallet',
   'walletSmall',
   'walletConnect',
+  'walletConnectLightBrown',
   'walletPlaceholder',
   'warningCircle'
 ];
