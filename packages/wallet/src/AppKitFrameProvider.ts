@@ -386,14 +386,6 @@ export class AppKitFrameProvider {
     });
   }
 
-  public onFrameReady(event: AppKitFrameTypes.FrameEvent, callback: () => void) {
-    this.onFrameEvent(event, frameEvent => {
-      if (frameEvent.type === AppKitFrameConstants.FRAME_READY) {
-        callback();
-      }
-    });
-  }
-
   public onIsConnected(event: AppKitFrameTypes.FrameEvent, callback: () => void) {
     this.onFrameEvent(event, frameEvent => {
       if (frameEvent.type === AppKitFrameConstants.FRAME_GET_USER_SUCCESS) {

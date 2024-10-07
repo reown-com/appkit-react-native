@@ -18,7 +18,6 @@ const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
 export function AuthWebview() {
   const webviewRef = useRef<WebView>(null);
-  const themeMode = Appearance.getColorScheme() ?? undefined;
   const Theme = useTheme();
   const { connectors } = useSnapshot(ConnectorController.state);
   const { projectId, sdkVersion } = useSnapshot(OptionsController.state) as OptionsControllerState;
@@ -58,18 +57,6 @@ export function AuthWebview() {
 
     provider.onRpcResponse(event, () => {
       setIsVisible(false);
-    });
-
-    provider.onFrameReady(event, () => {
-      provider?.syncTheme({
-        themeMode,
-        w3mThemeVariables: {
-          '--w3m-accent': Theme['accent-100'],
-          '--w3m-background': Theme['bg-100']
-        }
-      });
-      provider?.syncDappData?.({ projectId, sdkVersion });
-      provider?.onWebviewLoaded();
     });
 
     provider.onIsConnected(event, () => {
@@ -156,6 +143,16 @@ export function AuthWebview() {
               if (Platform.OS === 'android') {
                 webviewRef.current?.injectJavaScript(AppKitFrameConstants.FRAME_MESSAGES_HANDLER);
               }
+              const themeMode = Appearance.getColorScheme() ?? undefined;
+              provider?.syncTheme({
+                themeMode,
+                w3mThemeVariables: {
+                  '--w3m-accent': Theme['accent-100'],
+                  '--w3m-background': Theme['bg-100']
+                }
+              });
+              provider?.syncDappData?.({ projectId, sdkVersion });
+              provider?.onWebviewLoaded();
             }
           }}
           onError={({ nativeEvent }) => {
