@@ -26,6 +26,7 @@ export type InputTextProps = TextInputProps & {
   icon?: IconType;
   disabled?: boolean;
   size?: Exclude<SizeType, 'xl' | 'lg' | 'xxs'>;
+  inputComponent?: typeof TextInput;
 };
 
 export const InputText = forwardRef<InputRef, InputTextProps>(
@@ -40,10 +41,12 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
       returnKeyType,
       onBlur,
       onFocus,
+      inputComponent,
       ...rest
     }: InputTextProps,
     ref
   ) => {
+    const InputComponent = inputComponent || TextInput;
     const inputRef = useRef<TextInput>(null);
     const Theme = useTheme();
     const { animatedValue, valueRef, setStartValue, setEndValue } = useAnimatedValue(
@@ -107,7 +110,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
             ]}
           >
             {icon && <Icon name={icon} size="md" color="fg-275" style={styles.icon} />}
-            <TextInput
+            <InputComponent
               ref={inputRef}
               onFocus={handleFocus}
               onBlur={handleBlur}

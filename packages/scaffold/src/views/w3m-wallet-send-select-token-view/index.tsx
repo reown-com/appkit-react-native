@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import type { TextInput } from 'react-native';
+import { BottomSheetScrollView, BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { FlexView, InputText, ListToken, Text } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
@@ -49,6 +50,7 @@ export function WalletSendSelectTokenView() {
           placeholder="Search token"
           onChangeText={onSearchChange}
           clearButtonMode="while-editing"
+          inputComponent={BottomSheetTextInput as unknown as typeof TextInput}
         />
       </FlexView>
       <Text variant="paragraph-500" color="fg-200" style={styles.title}>
