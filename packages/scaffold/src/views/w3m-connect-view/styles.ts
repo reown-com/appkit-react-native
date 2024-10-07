@@ -7,5 +7,12 @@ export default StyleSheet.create({
   },
   socialSeparator: {
     marginVertical: Spacing.xs
+  },
+  connectWalletButton: {
+    justifyContent: 'space-between'
+  },
+  connectWalletEmpty: {
+    height: 20,
+    width: 20
   }
 });
