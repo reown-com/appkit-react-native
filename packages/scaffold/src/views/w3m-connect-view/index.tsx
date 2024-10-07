@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import {
   ConnectorController,
   EventUtil,
@@ -8,8 +8,8 @@ import {
   RouterController,
   type WcWallet
 } from '@reown/appkit-core-react-native';
-import { FlexView, Separator, Spacing } from '@reown/appkit-ui-react-native';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { FlexView, Icon, ListItem, Separator, Spacing, Text } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectEmailInput } from './components/connect-email-input';
 import { useKeyboard } from '../../hooks/useKeyboard';
@@ -33,6 +33,8 @@ export function ConnectView() {
   const isCoinbaseEnabled = connectors.some(c => c.type === 'COINBASE');
   const isEmailEnabled = isAuthEnabled && features?.email;
   const isSocialEnabled = isAuthEnabled && features?.socials && features?.socials.length > 0;
+  const showConnectWalletsButton =
+    isWalletConnectEnabled && isAuthEnabled && !features?.emailShowWallets;
   const showSeparator =
     isAuthEnabled &&
     (isEmailEnabled || isSocialEnabled) &&
@@ -74,28 +76,42 @@ export function ConnectView() {
         {isEmailEnabled && <ConnectEmailInput loading={authLoading} />}
         {isSocialEnabled && <SocialLoginList options={features?.socials} disabled={authLoading} />}
         {showSeparator && <Separator text="or" style={styles.socialSeparator} />}
+
         <FlexView padding={['0', 's', '0', 's']}>
-          <RecentWalletList
-            itemStyle={styles.item}
-            onWalletPress={onWalletPress}
-            isWalletConnectEnabled={isWalletConnectEnabled}
-          />
-          <AllWalletList
-            itemStyle={styles.item}
-            onWalletPress={onWalletPress}
-            isWalletConnectEnabled={isWalletConnectEnabled}
-          />
-          <CustomWalletList
-            itemStyle={styles.item}
-            onWalletPress={onWalletPress}
-            isWalletConnectEnabled={isWalletConnectEnabled}
-          />
-          <ConnectorList itemStyle={styles.item} isWalletConnectEnabled={isWalletConnectEnabled} />
-          <AllWalletsButton
-            itemStyle={styles.item}
-            onPress={onViewAllPress}
-            isWalletConnectEnabled={isWalletConnectEnabled}
-          />
+          {showConnectWalletsButton ? (
+            <ListItem contentStyle={styles.connectWalletButton} onPress={onViewAllPress}>
+              <Icon name="wallet" size="lg" />
+              <Text variant="paragraph-500">Connect wallet</Text>
+              <View style={styles.connectWalletEmpty} />
+            </ListItem>
+          ) : (
+            <>
+              <RecentWalletList
+                itemStyle={styles.item}
+                onWalletPress={onWalletPress}
+                isWalletConnectEnabled={isWalletConnectEnabled}
+              />
+              <AllWalletList
+                itemStyle={styles.item}
+                onWalletPress={onWalletPress}
+                isWalletConnectEnabled={isWalletConnectEnabled}
+              />
+              <CustomWalletList
+                itemStyle={styles.item}
+                onWalletPress={onWalletPress}
+                isWalletConnectEnabled={isWalletConnectEnabled}
+              />
+              <ConnectorList
+                itemStyle={styles.item}
+                isWalletConnectEnabled={isWalletConnectEnabled}
+              />
+              <AllWalletsButton
+                itemStyle={styles.item}
+                onPress={onViewAllPress}
+                isWalletConnectEnabled={isWalletConnectEnabled}
+              />
+            </>
+          )}
         </FlexView>
       </FlexView>
     </BottomSheetScrollView>
