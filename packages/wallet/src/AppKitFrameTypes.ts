@@ -55,8 +55,7 @@ import {
   RpcEthChainId,
   FrameSwitchNetworkResponse,
   AppSyncDappDataRequest,
-  FrameUpdateEmailResponse,
-  FrameReadyResponse
+  FrameUpdateEmailResponse
 } from './AppKitFrameSchema';
 
 export namespace AppKitFrameTypes {
@@ -84,7 +83,6 @@ export namespace AppKitFrameTypes {
     FrameUpdateEmailSecondaryOtpResolver: z.infer<typeof FrameUpdateEmailSecondaryOtpResolver>;
     FrameSwitchNetworkResponse: z.infer<typeof FrameSwitchNetworkResponse>;
     FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>;
-    FrameReadyResponse: z.infer<typeof FrameReadyResponse>;
   }
 
   export interface Network {

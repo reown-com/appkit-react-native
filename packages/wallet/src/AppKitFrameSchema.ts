@@ -75,11 +75,6 @@ export const FrameGetChainIdResponse = z.object({ chainId: z.number() });
 export const FrameSwitchNetworkResponse = z.object({ chainId: z.number() });
 export const FrameUpdateEmailSecondaryOtpResolver = z.object({ newEmail: z.string().email() });
 
-export const FrameReadyResponse = z.object({
-  // Placeholder for future data
-  version: z.string().optional()
-});
-
 export const RpcResponse = z.any();
 
 export const RpcEthAccountsRequest = z.object({
@@ -472,6 +467,4 @@ export const AppKitFrameSchema = {
     )
 
     .or(z.object({ type: zType('FRAME_SYNC_DAPP_DATA_SUCCESS'), origin: z.string() }))
-
-    .or(z.object({ type: zType('FRAME_READY'), payload: FrameReadyResponse, origin: z.string() }))
 };

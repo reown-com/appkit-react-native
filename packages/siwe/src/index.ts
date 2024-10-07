@@ -6,7 +6,7 @@ import type {
   SIWEVerifyMessageArgs,
   SIWEClientMethods
 } from './utils/TypeUtils';
-import { AppKitSIWEClient } from './client';
+import { AppKitSIWEClient } from '../src/client';
 export { getAddressFromMessage, getChainIdFromMessage, verifySignature } from './helpers/index';
 export { SIWEController, type SIWEControllerClient } from './controller/SIWEController';
 
