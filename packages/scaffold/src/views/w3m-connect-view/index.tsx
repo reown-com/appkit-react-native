@@ -20,6 +20,7 @@ import { AllWalletList } from './components/all-wallet-list';
 import { RecentWalletList } from './components/recent-wallet-list';
 import { SocialLoginList } from './components/social-login-list';
 import styles from './styles';
+import { WalletGuide } from './components/wallet-guide';
 
 export function ConnectView() {
   const connectors = ConnectorController.state.connectors;
@@ -112,6 +113,7 @@ export function ConnectView() {
               />
             </>
           )}
+          {isAuthEnabled && <WalletGuide guide="get-started" />}
         </FlexView>
       </FlexView>
     </BottomSheetScrollView>

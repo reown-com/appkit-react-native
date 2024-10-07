@@ -24,6 +24,7 @@ export interface RouterControllerState {
     | 'ConnectingSocial'
     | 'ConnectingFarcaster'
     | 'ConnectingWalletConnect'
+    | 'Create'
     | 'EmailVerifyDevice'
     | 'EmailVerifyOtp'
     | 'GetWallet'

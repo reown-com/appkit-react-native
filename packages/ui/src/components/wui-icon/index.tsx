@@ -52,7 +52,7 @@ import SwapVerticalSvg from '../../assets/svg/SwapVertical';
 import TelegramSvg from '../../assets/svg/Telegram';
 import TwitchSvg from '../../assets/svg/Twitch';
 import VerifySvg from '../../assets/svg/Verify';
-import WalletConnectSvg from '../../assets/svg/WalletConnect';
+import WalletConnectSvg, { WalletConnectLightBrownSvg } from '../../assets/svg/WalletConnect';
 import WalletSvg from '../../assets/svg/Wallet';
 import WalletSmallSvg from '../../assets/svg/WalletSmall';
 import WarningCircleSvg from '../../assets/svg/WarningCircle';
@@ -116,6 +116,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   walletSmall: WalletSmallSvg,
   warningCircle: WarningCircleSvg,
   walletConnect: WalletConnectSvg,
+  walletConnectLightBrown: WalletConnectLightBrownSvg,
   walletPlaceholder: WalletPlaceholderSvg,
   x: XSvg
 };

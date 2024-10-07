@@ -21,7 +21,7 @@ export function UpgradeEmailWalletView() {
         <Text variant="paragraph-400">Follow the instructions on</Text>
         <Chip
           label="secure.walletconnect.com"
-          icon="externalLink"
+          rightIcon="externalLink"
           imageSrc={authProvider.getSecureSiteIconURL()}
           style={styles.chip}
           onPress={onLinkPress}

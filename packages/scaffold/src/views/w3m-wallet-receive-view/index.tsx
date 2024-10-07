@@ -58,7 +58,7 @@ export function WalletReceiveView() {
       <FlexView padding={['xl', 'xl', '2xl', 'xl']} alignItems="center">
         <Chip
           label={label}
-          icon={canCopy ? 'copy' : undefined}
+          rightIcon={canCopy ? 'copy' : undefined}
           imageSrc={networkImage}
           variant="transparent"
           onPress={onCopyAddress}
