@@ -69,13 +69,12 @@ export function AccountActivity({ style }: Props) {
 
   if (!Object.keys(transactionsByYear).length) {
     return (
-      <FlexView style={[styles.placeholder, style]} alignItems="center" justifyContent="center">
-        <AccountPlaceholder
-          icon="swapHorizontal"
-          title="No activity yet"
-          description="Your next transactions will appear here"
-        />
-      </FlexView>
+      <AccountPlaceholder
+        icon="swapHorizontal"
+        title="No activity yet"
+        description="Your next transactions will appear here"
+        style={style}
+      />
     );
   }
 
