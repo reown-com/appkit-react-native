@@ -116,6 +116,10 @@ export class AppKitFrameProvider {
     } catch (e) {}
   }
 
+  public getEventEmitter() {
+    return this.events;
+  }
+
   public async connectEmail(payload: AppKitFrameTypes.Requests['AppConnectEmailRequest']) {
     await this.webviewLoadPromise;
     await AppKitFrameHelpers.checkIfAllowedToTriggerEmail();

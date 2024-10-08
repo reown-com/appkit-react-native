@@ -1,3 +1,4 @@
+import { type EventEmitter } from 'events';
 import type { Balance, SocialProvider, Transaction } from '@reown/appkit-common-react-native';
 
 export interface BaseError {
@@ -451,6 +452,27 @@ export type Event =
         token: string;
         amount: number;
       };
+    }
+  | {
+      type: 'track';
+      event: 'SOCIAL_LOGIN_STARTED';
+      properties: {
+        provider: SocialProvider;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SOCIAL_LOGIN_SUCCESS';
+      properties: {
+        provider: SocialProvider;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SOCIAL_LOGIN_ERROR';
+      properties: {
+        provider: SocialProvider;
+      };
     };
 
 // -- Send Controller Types -------------------------------------
@@ -481,6 +503,7 @@ export interface WriteContractArgs {
 export interface AppKitFrameProvider {
   readonly id: string;
   readonly name: string;
+  getEventEmitter(): EventEmitter;
   getSecureSiteURL(): string;
   getSecureSiteDashboardURL(): string;
   getSecureSiteIconURL(): string;

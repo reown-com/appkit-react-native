@@ -4,11 +4,8 @@ import { Animated, SafeAreaView, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import {
-  ConnectionController,
   ConnectorController,
-  ModalController,
   RouterController,
-  SnackController,
   WebviewController
 } from '@reown/appkit-core-react-native';
 import { useTheme, BorderRadius, IconLink, Spacing } from '@reown/appkit-ui-react-native';
@@ -20,7 +17,7 @@ export function AppKitWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
   const authConnector = ConnectorController.getAuthConnector();
-  const { webviewVisible, webviewUrl, connectingProvider } = useSnapshot(WebviewController.state);
+  const { webviewVisible, webviewUrl } = useSnapshot(WebviewController.state);
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   const animatedHeight = useRef(new Animated.Value(0));
   const backdropOpacity = useRef(new Animated.Value(0));
@@ -103,19 +100,8 @@ export function AppKitWebview() {
           containerStyle={styles.webview}
           ref={webviewRef}
           onNavigationStateChange={async navState => {
-            try {
-              if (authConnector && webviewVisible && navState.url.includes('/sdk/oauth')) {
-                WebviewController.setWebviewVisible(false);
-                const parsedUrl = new URL(navState.url);
-                await provider?.connectSocial(parsedUrl.search);
-                await ConnectionController.connectExternal(authConnector);
-                ConnectionController.setConnectedSocialProvider(connectingProvider);
-                WebviewController.setConnecting(false);
-                ModalController.close();
-              }
-            } catch (e) {
-              onClose();
-              SnackController.showError('Something went wrong');
+            if (webviewVisible) {
+              provider.events.emit('social', navState.url);
             }
           }}
         />

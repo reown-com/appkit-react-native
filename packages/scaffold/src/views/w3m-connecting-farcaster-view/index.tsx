@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   ConnectionController,
   ConnectorController,
+  EventsController,
   ModalController,
   OptionsController,
   RouterController,
@@ -43,10 +44,20 @@ export function ConnectingFarcasterView() {
         await provider.connectFarcaster();
         await ConnectionController.connectExternal(authConnector);
         ConnectionController.setConnectedSocialProvider(socialProvider);
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SOCIAL_LOGIN_SUCCESS',
+          properties: { provider: socialProvider }
+        });
         WebviewController.setConnecting(false);
         ModalController.close();
       }
     } catch (e) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SOCIAL_LOGIN_ERROR',
+        properties: { provider: socialProvider! }
+      });
       SnackController.showError('Something went wrong');
       setError(true);
     }

@@ -2,7 +2,10 @@ import { useSnapshot } from 'valtio';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useCallback, useEffect, useState } from 'react';
 import {
+  ConnectionController,
   ConnectorController,
+  EventsController,
+  ModalController,
   RouterController,
   SnackController,
   WebviewController,
@@ -44,9 +47,54 @@ export function ConnectingSocialView() {
     }
   }, [provider, socialProvider]);
 
+  const socialMessageHandler = useCallback(
+    async (url: string) => {
+      try {
+        if (url.includes('/sdk/oauth') && socialProvider && authConnector) {
+          WebviewController.setWebviewVisible(false);
+          const parsedUrl = new URL(url);
+          await provider?.connectSocial(parsedUrl.search);
+          await ConnectionController.connectExternal(authConnector);
+          ConnectionController.setConnectedSocialProvider(socialProvider);
+          WebviewController.setConnecting(false);
+
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'SOCIAL_LOGIN_SUCCESS',
+            properties: { provider: socialProvider }
+          });
+
+          ModalController.close();
+        }
+      } catch (e) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SOCIAL_LOGIN_ERROR',
+          properties: { provider: socialProvider! }
+        });
+        WebviewController.setWebviewVisible(false);
+        WebviewController.setConnecting(false);
+        WebviewController.setConnectingProvider(undefined);
+        RouterController.goBack();
+        SnackController.showError('Something went wrong');
+      }
+    },
+    [socialProvider, authConnector, provider]
+  );
+
   useEffect(() => {
     onConnect();
   }, [onConnect]);
+
+  useEffect(() => {
+    if (!provider) return;
+
+    const unsubscribe = provider?.getEventEmitter().addListener('social', socialMessageHandler);
+
+    return () => {
+      unsubscribe.removeListener('social', socialMessageHandler);
+    };
+  }, [socialMessageHandler, provider]);
 
   return (
     <BottomSheetView>
@@ -74,7 +122,7 @@ export function ConnectingSocialView() {
           {`Continue with ${StringUtil.capitalize(socialProvider)}`}
         </Text>
         <Text variant="small-400" color="fg-200">
-          {connecting ? 'Connecting...' : 'Connect in the provider window'}
+          {connecting ? 'Retrieving user data' : 'Connect in the provider window'}
         </Text>
       </FlexView>
     </BottomSheetView>
