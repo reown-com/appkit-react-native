@@ -6,6 +6,7 @@ import { WebView } from 'react-native-webview';
 import {
   ConnectionController,
   ConnectorController,
+  EventsController,
   ModalController,
   RouterController,
   SnackController,
@@ -104,16 +105,33 @@ export function AppKitWebview() {
           ref={webviewRef}
           onNavigationStateChange={async navState => {
             try {
-              if (authConnector && webviewVisible && navState.url.includes('/sdk/oauth')) {
+              if (
+                authConnector &&
+                connectingProvider &&
+                webviewVisible &&
+                navState.url.includes('/sdk/oauth')
+              ) {
                 WebviewController.setWebviewVisible(false);
                 const parsedUrl = new URL(navState.url);
                 await provider?.connectSocial(parsedUrl.search);
                 await ConnectionController.connectExternal(authConnector);
                 ConnectionController.setConnectedSocialProvider(connectingProvider);
                 WebviewController.setConnecting(false);
+
+                EventsController.sendEvent({
+                  type: 'track',
+                  event: 'SOCIAL_LOGIN_SUCCESS',
+                  properties: { provider: connectingProvider }
+                });
+
                 ModalController.close();
               }
             } catch (e) {
+              EventsController.sendEvent({
+                type: 'track',
+                event: 'SOCIAL_LOGIN_ERROR',
+                properties: { provider: connectingProvider! }
+              });
               onClose();
               SnackController.showError('Something went wrong');
             }
