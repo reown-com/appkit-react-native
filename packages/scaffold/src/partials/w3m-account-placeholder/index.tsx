@@ -1,15 +1,16 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { IconBox, Text, FlexView, Spacing, type IconType } from '@reown/appkit-ui-react-native';
 
 interface Props {
   icon: IconType;
   title: string;
   description: string;
+  style?: StyleProp<ViewStyle>;
 }
 
-export function AccountPlaceholder({ icon, title, description }: Props) {
+export function AccountPlaceholder({ icon, title, description, style }: Props) {
   return (
-    <FlexView alignItems="center" justifyContent="center" style={styles.container}>
+    <FlexView alignItems="center" justifyContent="center" style={[styles.container, style]}>
       <IconBox icon={icon} size="lg" iconColor="fg-175" background />
       <Text variant="paragraph-500" style={styles.title}>
         {title}
@@ -23,7 +24,8 @@ export function AccountPlaceholder({ icon, title, description }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    minHeight: 200
   },
   title: {
     marginTop: Spacing.xl,
