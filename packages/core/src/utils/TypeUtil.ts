@@ -1,3 +1,4 @@
+import { type EventEmitter } from 'events';
 import type { Balance, SocialProvider, Transaction } from '@reown/appkit-common-react-native';
 
 export interface BaseError {
@@ -502,6 +503,7 @@ export interface WriteContractArgs {
 export interface AppKitFrameProvider {
   readonly id: string;
   readonly name: string;
+  getEventEmitter(): EventEmitter;
   getSecureSiteURL(): string;
   getSecureSiteDashboardURL(): string;
   getSecureSiteIconURL(): string;
