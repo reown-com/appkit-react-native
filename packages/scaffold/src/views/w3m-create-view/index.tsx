@@ -1,4 +1,4 @@
-import { Platform, ScrollView } from 'react-native';
+import { Platform } from 'react-native';
 import { useSnapshot } from 'valtio';
 import { FlexView, Spacing } from '@reown/appkit-ui-react-native';
 import { ConnectEmailInput } from '../w3m-connect-view/components/connect-email-input';
@@ -7,6 +7,7 @@ import { WalletGuide } from '../w3m-connect-view/components/wallet-guide';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectorController, OptionsController } from '@reown/appkit-core-react-native';
 import { useKeyboard } from '../../hooks/useKeyboard';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 export function CreateView() {
   const connectors = ConnectorController.state.connectors;
@@ -24,12 +25,12 @@ export function CreateView() {
   });
 
   return (
-    <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
+    <BottomSheetScrollView style={{ paddingHorizontal: padding }} bounces={false}>
       <FlexView padding={['xs', '0', '0', '0']} style={{ paddingBottom }}>
         {isEmailEnabled && <ConnectEmailInput loading={authLoading} />}
         {isSocialEnabled && <SocialLoginList options={features?.socials} disabled={authLoading} />}
         {isAuthEnabled && <WalletGuide guide="explore" />}
       </FlexView>
-    </ScrollView>
+    </BottomSheetScrollView>
   );
 }
