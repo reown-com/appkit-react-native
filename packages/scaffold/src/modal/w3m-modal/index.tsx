@@ -18,6 +18,7 @@ import {
   type CaipAddress,
   type AppKitFrameProvider
 } from '@reown/appkit-core-react-native';
+import { useTheme } from '@reown/appkit-ui-react-native';
 
 import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
@@ -25,6 +26,7 @@ import { Snackbar } from '../../partials/w3m-snackbar';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function AppKit() {
+  const Theme = useTheme();
   const { open, loading } = useSnapshot(ModalController.state);
   const { connectors } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
@@ -130,6 +132,7 @@ export function AppKit() {
         keyboardBlurBehavior="restore"
         handleComponent={Header}
         topInset={isLandscape ? 70 : 100}
+        backgroundStyle={{ backgroundColor: Theme['bg-100'] }}
       >
         <AppKitRouter />
         <Snackbar />
