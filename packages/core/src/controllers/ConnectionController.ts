@@ -1,8 +1,10 @@
-import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy, ref } from 'valtio';
+import { subscribeKey as subKey } from 'valtio/utils';
+import type { SocialProvider } from '@reown/appkit-common-react-native';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type {
+  AppKitFrameProvider,
   Connector,
   SendTransactionArgs,
   WcWallet,
@@ -10,7 +12,7 @@ import type {
 } from '../utils/TypeUtil';
 import { RouterController } from './RouterController';
 import { ConnectorController } from './ConnectorController';
-import type { SocialProvider } from '@reown/appkit-common-react-native';
+import { AccountController } from './AccountController';
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -143,6 +145,26 @@ export const ConnectionController = {
     } else {
       StorageUtil.removeConnectedSocialProvider();
     }
+  },
+
+  async setPreferredAccountType(accountType: 'eoa' | 'smartAccount') {
+    // ModalController.setLoading(true);
+    const authConnector = ConnectorController.getAuthConnector();
+    if (!authConnector) {
+      return;
+    }
+    const provider = authConnector.provider as AppKitFrameProvider;
+    await provider.setPreferredAccount(accountType);
+    AccountController.setPreferredAccountType(accountType);
+    // ModalController.setLoading(false);
+    // EventsController.sendEvent({
+    //   type: 'track',
+    //   event: 'SET_PREFERRED_ACCOUNT_TYPE',
+    //   properties: {
+    //     accountType,
+    //     network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+    //   }
+    // });
   },
 
   parseUnits(value: string, decimals: number) {

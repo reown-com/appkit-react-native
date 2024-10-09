@@ -559,9 +559,18 @@ export interface AppKitFrameProvider {
     chainId: number;
     email: string;
     address: string;
+    smartAccountDeployed: boolean;
+    preferredAccountType: 'eoa' | 'smartAccount';
   }>;
   switchNetwork(chainId: number): Promise<{
     chainId: number;
+  }>;
+  setPreferredAccount(type: 'eoa' | 'smartAccount'): Promise<{
+    type: string;
+    address: string;
+  }>;
+  getSmartAccountEnabledNetworks(): Promise<{
+    smartAccountEnabledNetworks: number[];
   }>;
   disconnect(): Promise<unknown>;
   request(req: any): Promise<any>;

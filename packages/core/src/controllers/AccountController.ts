@@ -20,6 +20,8 @@ export interface AccountControllerState {
   profileImage?: string;
   addressExplorerUrl?: string;
   connectedWalletInfo?: ConnectedWalletInfo;
+  preferredAccountType?: 'eoa' | 'smartAccount';
+  smartAccountDeployed?: boolean;
 }
 
 type StateKey = keyof AccountControllerState;
@@ -74,6 +76,14 @@ export const AccountController = {
 
   setAddressExplorerUrl(explorerUrl: AccountControllerState['addressExplorerUrl']) {
     state.addressExplorerUrl = explorerUrl;
+  },
+
+  async setPreferredAccountType(accountType: AccountControllerState['preferredAccountType']) {
+    state.preferredAccountType = accountType;
+  },
+
+  setSmartAccountDeployed(smartAccountDeployed: AccountControllerState['smartAccountDeployed']) {
+    state.smartAccountDeployed = smartAccountDeployed;
   },
 
   async fetchTokenBalance() {

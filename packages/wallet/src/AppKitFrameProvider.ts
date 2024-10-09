@@ -69,7 +69,6 @@ export class AppKitFrameProvider {
   }
 
   public onMessage(event: AppKitFrameTypes.FrameEvent) {
-    // console.log('💻 received', event); // eslint-disable-line no-console
     this.events.emit('message', event);
   }
 
@@ -306,6 +305,31 @@ export class AppKitFrameProvider {
     return response;
   }
 
+  public async getSmartAccountEnabledNetworks() {
+    try {
+      const response = await this.appEvent<'GetSmartAccountEnabledNetworks'>({
+        type: AppKitFrameConstants.APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS
+      } as AppKitFrameTypes.AppEvent);
+      this.persistSmartAccountEnabledNetworks(response.smartAccountEnabledNetworks);
+
+      return response;
+    } catch (error) {
+      this.persistSmartAccountEnabledNetworks([]);
+      throw error;
+    }
+  }
+
+  public async setPreferredAccount(type: AppKitFrameTypes.AccountType) {
+    try {
+      return this.appEvent<'SetPreferredAccount'>({
+        type: AppKitFrameConstants.APP_SET_PREFERRED_ACCOUNT,
+        payload: { type }
+      } as AppKitFrameTypes.AppEvent);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: AppKitFrameTypes.Requests['AppGetUserRequest']) {
     const lastUsedChain = await this.getLastUsedChainId();
@@ -454,6 +478,10 @@ export class AppKitFrameProvider {
     return undefined;
   }
 
+  private persistSmartAccountEnabledNetworks(networks: number[]) {
+    AppKitFrameStorage.set(AppKitFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS, networks.join(','));
+  }
+
   private async registerFrameEventHandler(
     id: string,
     callback: (event: AppKitFrameTypes.FrameEvent) => void,
@@ -528,6 +556,7 @@ export class AppKitFrameProvider {
     ) {
       return;
     }
+    // console.log('💻 received', event); // eslint-disable-line no-console
     const frameEvent = AppKitFrameSchema.frameEvent.parse(event);
     callback(frameEvent);
   }
