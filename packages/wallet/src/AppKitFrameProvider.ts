@@ -589,7 +589,7 @@ export class AppKitFrameProvider {
     console.log('📡 sending', strEvent); // eslint-disable-line no-console
     const send = `
       (function() {
-        iframe = document.getElementById("frame-mobile-sdk");
+        let iframe = document.getElementById('frame-mobile-sdk');
         iframe.contentWindow.postMessage(${strEvent}, '*');
       })()
       `;
