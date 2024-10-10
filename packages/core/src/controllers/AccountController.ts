@@ -29,7 +29,9 @@ type StateKey = keyof AccountControllerState;
 // -- State --------------------------------------------- //
 const state = proxy<AccountControllerState>({
   isConnected: false,
-  tokenBalance: []
+  tokenBalance: [],
+  smartAccountDeployed: false,
+  preferredAccountType: 'eoa'
 });
 
 // -- Controller ---------------------------------------- //
@@ -120,5 +122,7 @@ export const AccountController = {
     state.addressExplorerUrl = undefined;
     state.tokenBalance = [];
     state.connectedWalletInfo = undefined;
+    state.preferredAccountType = 'eoa';
+    state.smartAccountDeployed = false;
   }
 };

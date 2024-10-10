@@ -10,7 +10,9 @@ import {
   type OptionsControllerState,
   StorageUtil,
   RouterController,
-  WebviewController
+  WebviewController,
+  AccountController,
+  NetworkController
 } from '@reown/appkit-core-react-native';
 import { useTheme, BorderRadius } from '@reown/appkit-ui-react-native';
 import type { AppKitFrameProvider } from './AppKitFrameProvider';
@@ -85,7 +87,13 @@ export function AuthWebview() {
       WebviewController.setFrameViewVisible(false);
     });
 
-    provider.onIsConnected(event, () => {
+    provider.onIsConnected(event, response => {
+      if (response.smartAccountDeployed) {
+        AccountController.setSmartAccountDeployed(true);
+        provider.getSmartAccountEnabledNetworks();
+      }
+
+      AccountController.setPreferredAccountType(response.preferredAccountType);
       ConnectorController.setAuthLoading(false);
       ModalController.setLoading(false);
     });
@@ -95,6 +103,15 @@ export function AuthWebview() {
       ModalController.setLoading(false);
       StorageUtil.removeConnectedConnector();
     });
+
+    provider.onGetSmartAccountEnabledNetworks(event, response => {
+      return NetworkController.setSmartAccountEnabledNetworks(response.smartAccountEnabledNetworks);
+    });
+
+    // provider.onSetPreferredAccount(event, response => {
+    //   // AccountController.setPreferredAccountType(response.type);
+    //   // RECONNECT
+    // });
   };
 
   const show = animatedHeight.current.interpolate({

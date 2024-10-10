@@ -3,6 +3,7 @@ import {
   type GetAccountReturnType,
   type GetEnsAddressReturnType,
   connect,
+  reconnect,
   disconnect,
   signMessage,
   getAccount,
@@ -229,6 +230,12 @@ export class AppKit extends AppKitScaffold {
 
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
         await connect(this.wagmiConfig, { connector, chainId });
+      },
+
+      reconnectExternal: async ({ connector, address }) => {
+        if (!address) return;
+
+        reconnect(this.wagmiConfig, { connectors: [connector] });
       },
 
       signMessage: async message => signMessage(this.wagmiConfig, { message }),

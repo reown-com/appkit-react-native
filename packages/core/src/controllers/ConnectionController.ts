@@ -22,12 +22,18 @@ export interface ConnectExternalOptions {
   info?: Connector['info'];
 }
 
+interface ReconnectExternalOptions {
+  connectonr: ConnectExternalOptions;
+  address: string;
+}
+
 export interface ConnectionControllerClient {
   connectWalletConnect: (
     onUri: (uri: string) => void,
     walletUniversalLink?: string
   ) => Promise<void>;
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>;
+  reconnectExternal?: (options: ReconnectExternalOptions) => Promise<void>;
   signMessage: (message: string) => Promise<string>;
   sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>;
   parseUnits: (value: string, decimals: number) => bigint;
@@ -154,8 +160,10 @@ export const ConnectionController = {
       return;
     }
     const provider = authConnector.provider as AppKitFrameProvider;
-    await provider.setPreferredAccount(accountType);
+    const { address } = await provider.setPreferredAccount(accountType);
+    await this._getClient().reconnectExternal?.({ connector: authConnector, address });
     AccountController.setPreferredAccountType(accountType);
+    //AccountController.setCaipAddress(address);
     // ModalController.setLoading(false);
     // EventsController.sendEvent({
     //   type: 'track',
@@ -163,7 +171,7 @@ export const ConnectionController = {
     //   properties: {
     //     accountType,
     //     network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
-    //   }
+    //   } 252892.17
     // });
   },
 

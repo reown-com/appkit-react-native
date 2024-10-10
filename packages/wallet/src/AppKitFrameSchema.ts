@@ -63,6 +63,11 @@ export const AppSyncDappDataRequest = z.object({
 });
 export const AppSetPreferredAccountRequest = z.object({ type: z.string() });
 
+const AccountTypeEnum = z.enum([
+  AppKitFrameRpcConstants.ACCOUNT_TYPES.EOA,
+  AppKitFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+]);
+
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
 });
@@ -74,7 +79,7 @@ export const FrameGetUserResponse = z.object({
   address: z.string(),
   chainId: z.string().or(z.number()),
   smartAccountDeployed: z.boolean(),
-  preferredAccountType: z.enum(['eoa', 'smartAccount'])
+  preferredAccountType: AccountTypeEnum
 });
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() });
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() });
@@ -90,10 +95,7 @@ export const FrameConnectSocialResponse = z.object({
     .array(
       z.object({
         address: z.string(),
-        type: z.enum([
-          AppKitFrameRpcConstants.ACCOUNT_TYPES.EOA,
-          AppKitFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-        ])
+        type: AccountTypeEnum
       })
     )
     .optional(),
@@ -108,7 +110,10 @@ export const FrameConnectFarcasterResponse = z.object({
   userName: z.string()
 });
 
-export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() });
+export const FrameSetPreferredAccountResponse = z.object({
+  type: AccountTypeEnum,
+  address: z.string()
+});
 
 export const FrameGetSmartAccountEnabledNetworksResponse = z.object({
   smartAccountEnabledNetworks: z.array(z.number())
@@ -677,6 +682,20 @@ export const AppKitFrameSchema = {
     )
 
     .or(EventSchema.extend({ type: zType('FRAME_SYNC_DAPP_DATA_SUCCESS'), origin: z.string() }))
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS'),
+        payload: FrameGetSmartAccountEnabledNetworksResponse
+      })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR'),
+        payload: zError
+      })
+    )
 
     .or(
       EventSchema.extend({

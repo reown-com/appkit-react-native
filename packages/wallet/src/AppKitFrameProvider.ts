@@ -409,18 +409,13 @@ export class AppKitFrameProvider {
     this.rpcErrorHandler = callback;
   }
 
-  public onRpcResponse(event: AppKitFrameTypes.FrameEvent, callback: (request: unknown) => void) {
-    this.onFrameEvent(event, frameEvent => {
-      if (frameEvent.type.includes(AppKitFrameConstants.RPC_METHOD_KEY)) {
-        callback(frameEvent);
-      }
-    });
-  }
-
-  public onIsConnected(event: AppKitFrameTypes.FrameEvent, callback: () => void) {
+  public onIsConnected(
+    event: AppKitFrameTypes.FrameEvent,
+    callback: (response: AppKitFrameTypes.Responses['FrameGetUserResponse']) => void
+  ) {
     this.onFrameEvent(event, frameEvent => {
       if (frameEvent.type === AppKitFrameConstants.FRAME_GET_USER_SUCCESS) {
-        callback();
+        callback(frameEvent.payload);
       }
     });
   }
@@ -435,6 +430,32 @@ export class AppKitFrameProvider {
         !frameEvent.payload.isConnected
       ) {
         callback();
+      }
+    });
+  }
+
+  public onGetSmartAccountEnabledNetworks(
+    event: AppKitFrameTypes.FrameEvent,
+    callback: (
+      response: AppKitFrameTypes.Responses['FrameGetSmartAccountEnabledNetworksResponse']
+    ) => void
+  ) {
+    this.onFrameEvent(event, frameEvent => {
+      if (
+        frameEvent.type === AppKitFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS
+      ) {
+        callback(frameEvent.payload);
+      }
+    });
+  }
+
+  public onSetPreferredAccount(
+    event: AppKitFrameTypes.FrameEvent,
+    callback: (response: AppKitFrameTypes.Responses['FrameSetPreferredAccountResponse']) => void
+  ) {
+    this.onFrameEvent(event, frameEvent => {
+      if (frameEvent.type === AppKitFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS) {
+        callback(frameEvent.payload);
       }
     });
   }
@@ -550,13 +571,10 @@ export class AppKitFrameProvider {
     event: AppKitFrameTypes.FrameEvent,
     callback: (event: AppKitFrameTypes.FrameEvent) => void
   ) {
-    if (
-      !event.type?.includes(AppKitFrameConstants.FRAME_EVENT_KEY) ||
-      event.origin !== AppKitFrameConstants.SECURE_SITE_ORIGIN
-    ) {
+    if (!event.type?.includes(AppKitFrameConstants.FRAME_EVENT_KEY)) {
       return;
     }
-    // console.log('💻 received', event); // eslint-disable-line no-console
+    console.log('💻 received', event); // eslint-disable-line no-console
     const frameEvent = AppKitFrameSchema.frameEvent.parse(event);
     callback(frameEvent);
   }
@@ -568,9 +586,10 @@ export class AppKitFrameProvider {
 
     AppKitFrameSchema.appEvent.parse(event);
     const strEvent = JSON.stringify(event);
-    // console.log('📡 sending', strEvent); // eslint-disable-line no-console
+    console.log('📡 sending', strEvent); // eslint-disable-line no-console
     const send = `
       (function() {
+        iframe = document.getElementById("frame-mobile-sdk");
         iframe.contentWindow.postMessage(${strEvent}, '*');
       })()
       `;
