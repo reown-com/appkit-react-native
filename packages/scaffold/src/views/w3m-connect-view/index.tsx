@@ -81,7 +81,7 @@ export function ConnectView() {
           {showConnectWalletsButton ? (
             <ListItem contentStyle={styles.connectWalletButton} onPress={onViewAllPress}>
               <Icon name="wallet" size="lg" />
-              <Text variant="paragraph-500">Connect wallet</Text>
+              <Text variant="paragraph-500">Continue with a wallet</Text>
               <View style={styles.connectWalletEmpty} />
             </ListItem>
           ) : (
