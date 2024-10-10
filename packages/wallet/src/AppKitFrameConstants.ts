@@ -15,12 +15,9 @@ export const AppKitFrameConstants = {
   EMAIL: 'EMAIL',
 
   FRAME_MESSAGES_HANDLER: `
-  const iframe = document.getElementById("frame-mobile-sdk");
-  iframe.onload = () => {
-    window.addEventListener('message', ({ data, origin }) => {
-      window.ReactNativeWebView.postMessage(JSON.stringify({ ...data, origin }))
-    })
-  }
+  window.addEventListener('message', ({ data, origin }) => {
+    window.ReactNativeWebView.postMessage(JSON.stringify({ ...data, origin }))
+  })
 `,
 
   APP_SWITCH_NETWORK: '@w3m-app/SWITCH_NETWORK',
