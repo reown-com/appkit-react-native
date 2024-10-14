@@ -4,6 +4,7 @@ import type {
   Features,
   Metadata,
   ProjectId,
+  SdkType,
   SdkVersion,
   Tokens
 } from '../utils/TypeUtil';
@@ -23,7 +24,7 @@ export interface OptionsControllerState {
   customWallets?: CustomWallet[];
   tokens?: Tokens;
   enableAnalytics?: boolean;
-  sdkType: string;
+  sdkType: SdkType;
   sdkVersion: SdkVersion;
   metadata?: Metadata;
   isSiweEnabled?: boolean;

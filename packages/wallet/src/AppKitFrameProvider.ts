@@ -460,6 +460,15 @@ export class AppKitFrameProvider {
     });
   }
 
+  public async getLastUsedChainId() {
+    const chainId = await AppKitFrameStorage.get(AppKitFrameConstants.LAST_USED_CHAIN_KEY);
+    if (chainId) {
+      return Number(chainId);
+    }
+
+    return undefined;
+  }
+
   // -- Private Methods -------------------------------------------------
   private setNewLastEmailLoginTime() {
     AppKitFrameStorage.set(AppKitFrameConstants.LAST_EMAIL_LOGIN_TIME, Date.now().toString());
@@ -488,15 +497,6 @@ export class AppKitFrameProvider {
 
   private setLastUsedChainId(chainId: number) {
     AppKitFrameStorage.set(AppKitFrameConstants.LAST_USED_CHAIN_KEY, String(chainId));
-  }
-
-  private async getLastUsedChainId() {
-    const chainId = await AppKitFrameStorage.get(AppKitFrameConstants.LAST_USED_CHAIN_KEY);
-    if (chainId) {
-      return Number(chainId);
-    }
-
-    return undefined;
   }
 
   private persistSmartAccountEnabledNetworks(networks: number[]) {
@@ -571,10 +571,13 @@ export class AppKitFrameProvider {
     event: AppKitFrameTypes.FrameEvent,
     callback: (event: AppKitFrameTypes.FrameEvent) => void
   ) {
-    if (!event.type?.includes(AppKitFrameConstants.FRAME_EVENT_KEY)) {
+    if (
+      !event.type?.includes(AppKitFrameConstants.FRAME_EVENT_KEY) ||
+      event.origin !== AppKitFrameConstants.SECURE_SITE_ORIGIN
+    ) {
       return;
     }
-    console.log('💻 received', event); // eslint-disable-line no-console
+    // console.log('💻 received', event); // eslint-disable-line no-console
     const frameEvent = AppKitFrameSchema.frameEvent.parse(event);
     callback(frameEvent);
   }
@@ -586,7 +589,7 @@ export class AppKitFrameProvider {
 
     AppKitFrameSchema.appEvent.parse(event);
     const strEvent = JSON.stringify(event);
-    console.log('📡 sending', strEvent); // eslint-disable-line no-console
+    // console.log('📡 sending', strEvent); // eslint-disable-line no-console
     const send = `
       (function() {
         let iframe = document.getElementById('frame-mobile-sdk');

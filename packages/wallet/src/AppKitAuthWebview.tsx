@@ -26,7 +26,9 @@ export function AuthWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
   const authConnector = ConnectorController.getAuthConnector();
-  const { projectId, sdkVersion } = useSnapshot(OptionsController.state) as OptionsControllerState;
+  const { projectId, sdkVersion, sdkType } = useSnapshot(
+    OptionsController.state
+  ) as OptionsControllerState;
   const { frameViewVisible } = useSnapshot(WebviewController.state);
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   const animatedHeight = useRef(new Animated.Value(0));
@@ -90,9 +92,9 @@ export function AuthWebview() {
     provider.onIsConnected(event, response => {
       if (response.smartAccountDeployed) {
         AccountController.setSmartAccountDeployed(true);
-        provider.getSmartAccountEnabledNetworks();
       }
 
+      provider.getSmartAccountEnabledNetworks();
       AccountController.setPreferredAccountType(response.preferredAccountType);
       ConnectorController.setAuthLoading(false);
       ModalController.setLoading(false);
@@ -107,11 +109,6 @@ export function AuthWebview() {
     provider.onGetSmartAccountEnabledNetworks(event, response => {
       return NetworkController.setSmartAccountEnabledNetworks(response.smartAccountEnabledNetworks);
     });
-
-    // provider.onSetPreferredAccount(event, response => {
-    //   // AccountController.setPreferredAccountType(response.type);
-    //   // RECONNECT
-    // });
   };
 
   const show = animatedHeight.current.interpolate({
@@ -196,7 +193,7 @@ export function AuthWebview() {
                     '--w3m-background': Theme['bg-100']
                   }
                 });
-                provider?.syncDappData?.({ projectId, sdkVersion });
+                provider?.syncDappData?.({ projectId, sdkVersion, sdkType });
                 provider?.onWebviewLoaded();
               }, 1500);
             }

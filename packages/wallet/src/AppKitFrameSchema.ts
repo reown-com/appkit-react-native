@@ -59,6 +59,7 @@ export const AppSyncDappDataRequest = z.object({
     | `react-native-ethers5-${string}`
     | `react-native-ethers-${string}`
   >,
+  sdkType: z.enum(['appkit']),
   projectId: z.string()
 });
 export const AppSetPreferredAccountRequest = z.object({ type: z.string() });
@@ -686,14 +687,16 @@ export const AppKitFrameSchema = {
     .or(
       EventSchema.extend({
         type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS'),
-        payload: FrameGetSmartAccountEnabledNetworksResponse
+        payload: FrameGetSmartAccountEnabledNetworksResponse,
+        origin: z.string()
       })
     )
 
     .or(
       EventSchema.extend({
         type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR'),
-        payload: zError
+        payload: zError,
+        origin: z.string()
       })
     )
 

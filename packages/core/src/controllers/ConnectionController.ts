@@ -4,6 +4,7 @@ import type { SocialProvider } from '@reown/appkit-common-react-native';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type {
+  AppKitFrameAccountType,
   AppKitFrameProvider,
   Connector,
   SendTransactionArgs,
@@ -22,18 +23,13 @@ export interface ConnectExternalOptions {
   info?: Connector['info'];
 }
 
-interface ReconnectExternalOptions {
-  connectonr: ConnectExternalOptions;
-  address: string;
-}
-
 export interface ConnectionControllerClient {
   connectWalletConnect: (
     onUri: (uri: string) => void,
     walletUniversalLink?: string
   ) => Promise<void>;
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>;
-  reconnectExternal?: (options: ReconnectExternalOptions) => Promise<void>;
+  reconnectExternal?: (options: ConnectExternalOptions) => Promise<void>;
   signMessage: (message: string) => Promise<string>;
   sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>;
   parseUnits: (value: string, decimals: number) => bigint;
@@ -153,26 +149,19 @@ export const ConnectionController = {
     }
   },
 
-  async setPreferredAccountType(accountType: 'eoa' | 'smartAccount') {
-    // ModalController.setLoading(true);
+  async setPreferredAccountType(accountType: AppKitFrameAccountType) {
     const authConnector = ConnectorController.getAuthConnector();
     if (!authConnector) {
       return;
     }
+
     const provider = authConnector.provider as AppKitFrameProvider;
     const { address } = await provider.setPreferredAccount(accountType);
-    await this._getClient().reconnectExternal?.({ connector: authConnector, address });
+    if (!address) {
+      return;
+    }
+    await this._getClient().reconnectExternal?.(authConnector);
     AccountController.setPreferredAccountType(accountType);
-    //AccountController.setCaipAddress(address);
-    // ModalController.setLoading(false);
-    // EventsController.sendEvent({
-    //   type: 'track',
-    //   event: 'SET_PREFERRED_ACCOUNT_TYPE',
-    //   properties: {
-    //     accountType,
-    //     network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
-    //   } 252892.17
-    // });
   },
 
   parseUnits(value: string, decimals: number) {

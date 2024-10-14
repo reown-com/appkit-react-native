@@ -6,9 +6,12 @@ import { AccountDefaultView } from '../../views/w3m-account-default-view';
 import { AccountView } from '../../views/w3m-account-view';
 import { AllWalletsView } from '../../views/w3m-all-wallets-view';
 import { ConnectView } from '../../views/w3m-connect-view';
+import { ConnectSocialsView } from '../../views/w3m-connect-socials-view';
 import { ConnectingView } from '../../views/w3m-connecting-view';
 import { ConnectingExternalView } from '../../views/w3m-connecting-external-view';
+import { ConnectingFarcasterView } from '../../views/w3m-connecting-farcaster-view';
 import { ConnectingSocialView } from '../../views/w3m-connecting-social-view';
+import { CreateView } from '../../views/w3m-create-view';
 import { ConnectingSiweView } from '@reown/appkit-siwe-react-native';
 import { EmailVerifyOtpView } from '../../views/w3m-email-verify-otp-view';
 import { EmailVerifyDeviceView } from '../../views/w3m-email-verify-device-view';
@@ -19,6 +22,7 @@ import { UpdateEmailWalletView } from '../../views/w3m-update-email-wallet-view'
 import { UpdateEmailPrimaryOtpView } from '../../views/w3m-update-email-primary-otp-view';
 import { UpdateEmailSecondaryOtpView } from '../../views/w3m-update-email-secondary-otp-view';
 import { UpgradeEmailWalletView } from '../../views/w3m-upgrade-email-wallet-view';
+import { UpgradeToSmartAccountView } from '../../views/w3m-upgrade-to-smart-account-view';
 import { TransactionsView } from '../../views/w3m-transactions-view';
 import { WalletCompatibleNetworks } from '../../views/w3m-wallet-compatible-networks-view';
 import { WalletReceiveView } from '../../views/w3m-wallet-receive-view';
@@ -29,9 +33,6 @@ import { WhatIsANetworkView } from '../../views/w3m-what-is-a-network-view';
 import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
 
 import { UiUtil } from '../../utils/UiUtil';
-import { ConnectingFarcasterView } from '../../views/w3m-connecting-farcaster-view';
-import { ConnectSocialsView } from '../../views/w3m-connect-socials-view';
-import { CreateView } from '../../views/w3m-create-view';
 
 export function AppKitRouter() {
   const { view } = useSnapshot(RouterController.state);
@@ -84,6 +85,8 @@ export function AppKitRouter() {
         return UpdateEmailWalletView;
       case 'UpgradeEmailWallet':
         return UpgradeEmailWalletView;
+      case 'UpgradeToSmartAccount':
+        return UpgradeToSmartAccountView;
       case 'WalletCompatibleNetworks':
         return WalletCompatibleNetworks;
       case 'WalletReceive':

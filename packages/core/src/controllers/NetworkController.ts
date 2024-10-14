@@ -1,6 +1,7 @@
 import { proxy, ref } from 'valtio';
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil';
 import { PublicStateController } from './PublicStateController';
+import { NetworkUtil } from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -66,7 +67,7 @@ export const NetworkController = {
   },
 
   checkIfSmartAccountEnabled() {
-    const networkId = state.caipNetwork?.id;
+    const networkId = NetworkUtil.caipNetworkIdToNumber(state.caipNetwork?.id);
 
     if (!networkId) {
       return false;

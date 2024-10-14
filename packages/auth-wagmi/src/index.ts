@@ -39,15 +39,24 @@ export function authConnector(parameters: AuthConnectorOptions) {
     },
     async connect(options = {}) {
       const provider = await this.getProvider();
+      let chainId = options.chainId;
       await provider.webviewLoadPromise;
-      const { address, chainId } = await provider.connect({ chainId: options.chainId });
+
+      if (options.isReconnecting) {
+        chainId = await provider.getLastUsedChainId();
+        if (!chainId) {
+          throw new Error('ChainId not found in provider');
+        }
+      }
+
+      const { address, chainId: frameChainId } = await provider.connect({ chainId });
 
       return {
         accounts: [address as Address],
         account: address as Address,
-        chainId: chainId as number,
+        chainId: frameChainId as number,
         chain: {
-          id: chainId as number,
+          id: frameChainId as number,
           unsuported: false
         }
       };
