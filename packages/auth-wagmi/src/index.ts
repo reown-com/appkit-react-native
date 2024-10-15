@@ -1,5 +1,5 @@
 import { createConnector, ChainNotConfiguredError } from 'wagmi';
-import { SwitchChainError, getAddress, type Address } from 'viem';
+import { SwitchChainError, getAddress, type Address, type Hex } from 'viem';
 
 import { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
@@ -80,8 +80,14 @@ export function authConnector(parameters: AuthConnectorOptions) {
 
         const provider = await this.getProvider();
         await provider.webviewLoadPromise;
-        await provider.switchNetwork(chainId);
-        config.emitter.emit('change', { chainId: Number(chainId) });
+
+        // We connect instead, since changing the chain may cause the address to change as well
+        const response = await provider.connect({ chainId });
+
+        config.emitter.emit('change', {
+          chainId: Number(chainId),
+          accounts: [response.address as Hex]
+        });
         _chainId = chainId;
 
         return chain;
