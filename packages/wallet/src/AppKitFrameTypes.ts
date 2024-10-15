@@ -61,8 +61,12 @@ import {
   AppGetSocialRedirectUriRequest,
   AppConnectSocialRequest,
   FrameGetFarcasterUriResponse,
-  FrameConnectFarcasterResponse
+  FrameConnectFarcasterResponse,
+  AppSetPreferredAccountRequest,
+  FrameSetPreferredAccountResponse,
+  FrameGetSmartAccountEnabledNetworksResponse
 } from './AppKitFrameSchema';
+import type { AppKitFrameRpcConstants } from './AppKitFrameConstants';
 
 export namespace AppKitFrameTypes {
   export type AppEvent = z.infer<typeof AppKitFrameSchema.appEvent>;
@@ -81,6 +85,8 @@ export namespace AppKitFrameTypes {
     AppUpdateEmailSecondaryOtpRequest: z.infer<typeof AppUpdateEmailSecondaryOtpRequest>;
     AppGetSocialRedirectUriRequest: z.infer<typeof AppGetSocialRedirectUriRequest>;
     AppConnectSocialRequest: z.infer<typeof AppConnectSocialRequest>;
+    AppSetPreferredAccountRequest: z.infer<typeof AppSetPreferredAccountRequest>;
+    AppGetSmartAccountEnabledNetworksRequest: undefined;
   }
 
   export interface Responses {
@@ -101,6 +107,10 @@ export namespace AppKitFrameTypes {
     FrameUpdateEmailSecondaryOtpResponse: z.infer<typeof FrameUpdateEmailSecondaryOtpResponse>;
     FrameConnectDeviceResponse: undefined;
     FrameSignOutResponse: undefined;
+    FrameGetSmartAccountEnabledNetworksResponse: z.infer<
+      typeof FrameGetSmartAccountEnabledNetworksResponse
+    >;
+    FrameSetPreferredAccountResponse: z.infer<typeof FrameSetPreferredAccountResponse>;
     FrameRpcResponse: RPCResponse;
   }
 
@@ -159,6 +169,9 @@ export namespace AppKitFrameTypes {
 
   export type FrameSessionType = z.infer<typeof FrameSession>;
 
+  export type AccountType =
+    (typeof AppKitFrameRpcConstants.ACCOUNT_TYPES)[keyof typeof AppKitFrameRpcConstants.ACCOUNT_TYPES];
+
   export type ProviderRequestType =
     | 'GetUser'
     | 'ConnectDevice'
@@ -175,6 +188,8 @@ export namespace AppKitFrameTypes {
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
     | 'GetChainId'
+    | 'GetSmartAccountEnabledNetworks'
+    | 'SetPreferredAccount'
     | 'IsConnected'
     | 'SignOut'
     | 'Rpc';

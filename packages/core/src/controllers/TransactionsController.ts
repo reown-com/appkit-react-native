@@ -5,6 +5,7 @@ import { EventsController } from './EventsController';
 import { SnackController } from './SnackController';
 import { NetworkController } from './NetworkController';
 import { BlockchainApiController } from './BlockchainApiController';
+import { AccountController } from './AccountController';
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<string, Transaction[]>;
@@ -74,7 +75,7 @@ export const TransactionsController = {
           address: accountAddress,
           projectId,
           cursor: state.next,
-          isSmartAccount: false
+          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
         }
       });
       SnackController.showError('Failed to fetch transactions');

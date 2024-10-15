@@ -30,6 +30,8 @@ authConnector.type = 'appKitAuth' as const;
 authConnector.id = 'appKitAuth' as const;
 export function authConnector(parameters: AuthConnectorOptions) {
   let _provider: AppKitFrameProvider = {} as AppKitFrameProvider;
+  let _currentAddress: Address | null = null;
+  let _chainId: number | null = null;
 
   function parseChainId(chainId: string | number) {
     return NetworkUtil.parseEvmChainId(chainId) || 1;
@@ -44,14 +46,26 @@ export function authConnector(parameters: AuthConnectorOptions) {
     },
     async connect(options = {}) {
       const provider = await this.getProvider();
+      let chainId = options.chainId;
       await provider.webviewLoadPromise;
-      const { address, chainId } = await provider.connect({ chainId: options.chainId });
 
-      const parsedChainId = parseChainId(chainId);
+      if (options.isReconnecting) {
+        chainId = await provider.getLastUsedChainId();
+        if (!chainId) {
+          throw new Error('ChainId not found in provider');
+        }
+      }
+
+      const { address, chainId: frameChainId } = await provider.connect({ chainId });
+
+      _chainId = frameChainId as number;
+      _currentAddress = address as Address;
+
+      const parsedChainId = parseChainId(frameChainId);
 
       return {
-        accounts: [address as Address],
-        account: address as Address,
+        accounts: [_currentAddress as Address],
+        account: _currentAddress as Address,
         chainId: parsedChainId,
         chain: {
           id: parsedChainId,
@@ -63,6 +77,8 @@ export function authConnector(parameters: AuthConnectorOptions) {
       const provider = await this.getProvider();
       await provider.webviewLoadPromise;
       await provider.disconnect();
+      _chainId = null;
+      _currentAddress = null;
     },
     async switchChain({ chainId }) {
       try {
@@ -73,6 +89,7 @@ export function authConnector(parameters: AuthConnectorOptions) {
         await provider.webviewLoadPromise;
         await provider.switchNetwork(chainId);
         config.emitter.emit('change', { chainId: Number(chainId) });
+        _chainId = chainId;
 
         return chain;
       } catch (error) {
@@ -83,6 +100,8 @@ export function authConnector(parameters: AuthConnectorOptions) {
       }
     },
     async getAccounts() {
+      if (_currentAddress) return [_currentAddress];
+
       const provider = await this.getProvider();
       await provider.webviewLoadPromise;
 
@@ -93,6 +112,8 @@ export function authConnector(parameters: AuthConnectorOptions) {
       ).map(getAddress);
     },
     async getChainId() {
+      if (_chainId) return _chainId;
+
       const provider = await this.getProvider();
       await provider.webviewLoadPromise;
       const { chainId } = await provider.getChainId();
@@ -124,11 +145,16 @@ export function authConnector(parameters: AuthConnectorOptions) {
     },
     onAccountsChanged(accounts) {
       if (accounts.length === 0) config.emitter.emit('disconnect');
-      else config.emitter.emit('change', { accounts: accounts.map(getAddress) });
+      else {
+        const account = accounts[0] ? getAddress(accounts[0]) : null;
+        config.emitter.emit('change', { accounts: account ? [account] : undefined });
+        _currentAddress = account;
+      }
     },
     onChainChanged(chain) {
       const chainId = Number(chain);
       config.emitter.emit('change', { chainId });
+      _chainId = chainId;
     },
     async onDisconnect() {
       const provider = await this.getProvider();

@@ -56,6 +56,8 @@ export type CaipNamespaces = Record<
   }
 >;
 
+export type SdkType = 'appkit';
+
 export type SdkVersion =
   | `react-native-wagmi-${string}`
   | `react-native-ethers5-${string}`
@@ -375,18 +377,34 @@ export type Event =
   | {
       type: 'track';
       event: 'CLICK_SIGN_SIWE_MESSAGE';
+      properties: {
+        network: string;
+        isSmartAccount: boolean;
+      };
     }
   | {
       type: 'track';
       event: 'CLICK_CANCEL_SIWE';
+      properties: {
+        network: string;
+        isSmartAccount: boolean;
+      };
     }
   | {
       type: 'track';
       event: 'SIWE_AUTH_SUCCESS';
+      properties: {
+        network: string;
+        isSmartAccount: boolean;
+      };
     }
   | {
       type: 'track';
       event: 'SIWE_AUTH_ERROR';
+      properties: {
+        network: string;
+        isSmartAccount: boolean;
+      };
     }
   | {
       type: 'track';
@@ -473,6 +491,14 @@ export type Event =
       properties: {
         provider: SocialProvider;
       };
+    }
+  | {
+      type: 'track';
+      event: 'SET_PREFERRED_ACCOUNT_TYPE';
+      properties: {
+        accountType: AppKitFrameAccountType;
+        network: string;
+      };
     };
 
 // -- Send Controller Types -------------------------------------
@@ -500,6 +526,9 @@ export interface WriteContractArgs {
  * Matches type defined for packages/wallet/src/AppKitFrameProvider.ts
  * It's duplicated in order to decouple scaffold from email package
  */
+
+export type AppKitFrameAccountType = 'eoa' | 'smartAccount';
+
 export interface AppKitFrameProvider {
   readonly id: string;
   readonly name: string;
@@ -510,6 +539,7 @@ export interface AppKitFrameProvider {
   getSecureSiteHeaders(): Record<string, string>;
   getEmail(): string | undefined;
   getUsername(): string | undefined;
+  getLastUsedChainId(): Promise<number | undefined>;
   rejectRpcRequest(): void;
   connectEmail(payload: { email: string }): Promise<{
     action: 'VERIFY_DEVICE' | 'VERIFY_OTP';
@@ -521,7 +551,7 @@ export interface AppKitFrameProvider {
     address: string;
     accounts?:
       | {
-          type: 'eoa' | 'smartAccount';
+          type: AppKitFrameAccountType;
           address: string;
         }[]
       | undefined;
@@ -553,15 +583,25 @@ export interface AppKitFrameProvider {
   syncDappData(payload: {
     projectId: string;
     sdkVersion: SdkVersion;
+    sdkType: SdkType;
     metadata?: Metadata;
   }): Promise<unknown>;
   connect(payload?: { chainId: number | undefined }): Promise<{
     chainId: number;
     email: string;
     address: string;
+    smartAccountDeployed: boolean;
+    preferredAccountType: AppKitFrameAccountType;
   }>;
   switchNetwork(chainId: number): Promise<{
     chainId: number;
+  }>;
+  setPreferredAccount(type: AppKitFrameAccountType): Promise<{
+    type: string;
+    address: string;
+  }>;
+  getSmartAccountEnabledNetworks(): Promise<{
+    smartAccountEnabledNetworks: number[];
   }>;
   disconnect(): Promise<unknown>;
   request(req: any): Promise<any>;

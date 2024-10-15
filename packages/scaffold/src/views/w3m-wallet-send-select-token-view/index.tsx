@@ -13,6 +13,7 @@ import {
 import type { Balance } from '@reown/appkit-common-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { AccountPlaceholder } from '../../partials/w3m-account-placeholder';
 import styles from './styles';
 
 export function WalletSendSelectTokenView() {
@@ -56,18 +57,26 @@ export function WalletSendSelectTokenView() {
       <Text variant="paragraph-500" color="fg-200" style={styles.title}>
         Your tokens
       </Text>
-      {filteredTokens.map((token, index) => (
-        <ListToken
-          key={`${token.name}${index}`}
-          name={token.name}
-          imageSrc={token.iconUrl}
-          networkSrc={networkImage}
-          value={token.value}
-          amount={token.quantity.numeric}
-          currency={token.symbol}
-          onPress={() => onTokenPress(token)}
+      {filteredTokens.length ? (
+        filteredTokens.map((token, index) => (
+          <ListToken
+            key={`${token.name}${index}`}
+            name={token.name}
+            imageSrc={token.iconUrl}
+            networkSrc={networkImage}
+            value={token.value}
+            amount={token.quantity.numeric}
+            currency={token.symbol}
+            onPress={() => onTokenPress(token)}
+          />
+        ))
+      ) : (
+        <AccountPlaceholder
+          icon="coinPlaceholder"
+          title="No tokens found"
+          description="Your tokens will appear here"
         />
-      ))}
+      )}
     </BottomSheetScrollView>
   );
 }

@@ -59,9 +59,15 @@ export const AppSyncDappDataRequest = z.object({
     | `react-native-ethers5-${string}`
     | `react-native-ethers-${string}`
   >,
+  sdkType: z.enum(['appkit']),
   projectId: z.string()
 });
 export const AppSetPreferredAccountRequest = z.object({ type: z.string() });
+
+const AccountTypeEnum = z.enum([
+  AppKitFrameRpcConstants.ACCOUNT_TYPES.EOA,
+  AppKitFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+]);
 
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
@@ -72,7 +78,9 @@ export const FrameUpdateEmailResponse = z.object({
 export const FrameGetUserResponse = z.object({
   email: z.string().email().optional().nullable(),
   address: z.string(),
-  chainId: z.string().or(z.number())
+  chainId: z.string().or(z.number()),
+  smartAccountDeployed: z.boolean(),
+  preferredAccountType: AccountTypeEnum
 });
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() });
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() });
@@ -88,10 +96,7 @@ export const FrameConnectSocialResponse = z.object({
     .array(
       z.object({
         address: z.string(),
-        type: z.enum([
-          AppKitFrameRpcConstants.ACCOUNT_TYPES.EOA,
-          AppKitFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-        ])
+        type: AccountTypeEnum
       })
     )
     .optional(),
@@ -104,6 +109,15 @@ export const FrameGetFarcasterUriResponse = z.object({
 
 export const FrameConnectFarcasterResponse = z.object({
   userName: z.string()
+});
+
+export const FrameSetPreferredAccountResponse = z.object({
+  type: AccountTypeEnum,
+  address: z.string()
+});
+
+export const FrameGetSmartAccountEnabledNetworksResponse = z.object({
+  smartAccountEnabledNetworks: z.array(z.number())
 });
 
 export const RpcResponse = z.any();
@@ -333,6 +347,15 @@ export const AppKitFrameSchema = {
     .or(EventSchema.extend({ type: zType('APP_IS_CONNECTED'), payload: z.optional(FrameSession) }))
 
     .or(EventSchema.extend({ type: zType('APP_GET_CHAIN_ID') }))
+
+    .or(EventSchema.extend({ type: zType('APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS') }))
+
+    .or(
+      EventSchema.extend({
+        type: zType('APP_SET_PREFERRED_ACCOUNT'),
+        payload: AppSetPreferredAccountRequest
+      })
+    )
 
     .or(
       EventSchema.extend({
@@ -660,4 +683,35 @@ export const AppKitFrameSchema = {
     )
 
     .or(EventSchema.extend({ type: zType('FRAME_SYNC_DAPP_DATA_SUCCESS'), origin: z.string() }))
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS'),
+        payload: FrameGetSmartAccountEnabledNetworksResponse,
+        origin: z.string()
+      })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR'),
+        payload: zError,
+        origin: z.string()
+      })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_SET_PREFERRED_ACCOUNT_SUCCESS'),
+        payload: FrameSetPreferredAccountResponse,
+        origin: z.string()
+      })
+    )
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_SET_PREFERRED_ACCOUNT_ERROR'),
+        payload: zError,
+        origin: z.string()
+      })
+    )
 };

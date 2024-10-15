@@ -305,6 +305,31 @@ export class AppKitFrameProvider {
     return response;
   }
 
+  public async getSmartAccountEnabledNetworks() {
+    try {
+      const response = await this.appEvent<'GetSmartAccountEnabledNetworks'>({
+        type: AppKitFrameConstants.APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS
+      } as AppKitFrameTypes.AppEvent);
+      this.persistSmartAccountEnabledNetworks(response.smartAccountEnabledNetworks);
+
+      return response;
+    } catch (error) {
+      this.persistSmartAccountEnabledNetworks([]);
+      throw error;
+    }
+  }
+
+  public async setPreferredAccount(type: AppKitFrameTypes.AccountType) {
+    try {
+      return this.appEvent<'SetPreferredAccount'>({
+        type: AppKitFrameConstants.APP_SET_PREFERRED_ACCOUNT,
+        payload: { type }
+      } as AppKitFrameTypes.AppEvent);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: AppKitFrameTypes.Requests['AppGetUserRequest']) {
     const lastUsedChain = await this.getLastUsedChainId();
@@ -384,18 +409,13 @@ export class AppKitFrameProvider {
     this.rpcErrorHandler = callback;
   }
 
-  public onRpcResponse(event: AppKitFrameTypes.FrameEvent, callback: (request: unknown) => void) {
-    this.onFrameEvent(event, frameEvent => {
-      if (frameEvent.type.includes(AppKitFrameConstants.RPC_METHOD_KEY)) {
-        callback(frameEvent);
-      }
-    });
-  }
-
-  public onIsConnected(event: AppKitFrameTypes.FrameEvent, callback: () => void) {
+  public onIsConnected(
+    event: AppKitFrameTypes.FrameEvent,
+    callback: (response: AppKitFrameTypes.Responses['FrameGetUserResponse']) => void
+  ) {
     this.onFrameEvent(event, frameEvent => {
       if (frameEvent.type === AppKitFrameConstants.FRAME_GET_USER_SUCCESS) {
-        callback();
+        callback(frameEvent.payload);
       }
     });
   }
@@ -412,6 +432,41 @@ export class AppKitFrameProvider {
         callback();
       }
     });
+  }
+
+  public onGetSmartAccountEnabledNetworks(
+    event: AppKitFrameTypes.FrameEvent,
+    callback: (
+      response: AppKitFrameTypes.Responses['FrameGetSmartAccountEnabledNetworksResponse']
+    ) => void
+  ) {
+    this.onFrameEvent(event, frameEvent => {
+      if (
+        frameEvent.type === AppKitFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS
+      ) {
+        callback(frameEvent.payload);
+      }
+    });
+  }
+
+  public onSetPreferredAccount(
+    event: AppKitFrameTypes.FrameEvent,
+    callback: (response: AppKitFrameTypes.Responses['FrameSetPreferredAccountResponse']) => void
+  ) {
+    this.onFrameEvent(event, frameEvent => {
+      if (frameEvent.type === AppKitFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS) {
+        callback(frameEvent.payload);
+      }
+    });
+  }
+
+  public async getLastUsedChainId() {
+    const chainId = await AppKitFrameStorage.get(AppKitFrameConstants.LAST_USED_CHAIN_KEY);
+    if (chainId) {
+      return Number(chainId);
+    }
+
+    return undefined;
   }
 
   // -- Private Methods -------------------------------------------------
@@ -444,13 +499,8 @@ export class AppKitFrameProvider {
     AppKitFrameStorage.set(AppKitFrameConstants.LAST_USED_CHAIN_KEY, String(chainId));
   }
 
-  private async getLastUsedChainId() {
-    const chainId = await AppKitFrameStorage.get(AppKitFrameConstants.LAST_USED_CHAIN_KEY);
-    if (chainId) {
-      return Number(chainId);
-    }
-
-    return undefined;
+  private persistSmartAccountEnabledNetworks(networks: number[]) {
+    AppKitFrameStorage.set(AppKitFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS, networks.join(','));
   }
 
   private async registerFrameEventHandler(

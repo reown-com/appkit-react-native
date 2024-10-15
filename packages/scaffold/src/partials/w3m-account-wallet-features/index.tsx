@@ -35,7 +35,7 @@ export function AccountWalletFeatures() {
       type: 'track',
       event: 'CLICK_TRANSACTIONS',
       properties: {
-        isSmartAccount: false
+        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
       }
     });
   };
@@ -46,7 +46,7 @@ export function AccountWalletFeatures() {
       event: 'OPEN_SEND',
       properties: {
         network: NetworkController.state.caipNetwork?.id || '',
-        isSmartAccount: false
+        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
       }
     });
     RouterController.push('WalletSend');

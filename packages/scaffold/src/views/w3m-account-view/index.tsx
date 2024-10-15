@@ -7,7 +7,8 @@ import {
   Icon,
   IconLink,
   NetworkButton,
-  useTheme
+  useTheme,
+  Promo
 } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
@@ -29,7 +30,11 @@ export function AccountView() {
   const Theme = useTheme();
   const { padding } = useCustomDimensions();
   const { caipNetwork } = useSnapshot(NetworkController.state);
-  const { address, profileName, profileImage } = useSnapshot(AccountController.state);
+  const { address, profileName, profileImage, preferredAccountType } = useSnapshot(
+    AccountController.state
+  );
+  const showActivate =
+    preferredAccountType === 'eoa' && NetworkController.checkIfSmartAccountEnabled();
 
   const onCopyAddress = (value: string) => {
     if (OptionsController.isClipboardAvailable() && value) {
@@ -44,6 +49,10 @@ export function AccountView() {
 
   const onNetworkPress = () => {
     RouterController.push('Networks');
+  };
+
+  const onActivatePress = () => {
+    RouterController.push('UpgradeToSmartAccount');
   };
 
   useEffect(() => {
@@ -73,6 +82,9 @@ export function AccountView() {
       </NetworkButton>
       <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
       <FlexView padding={['3xl', '0', '0', '0']} style={[{ backgroundColor: Theme['bg-100'] }]}>
+        {showActivate && (
+          <Promo style={styles.promoPill} text="Activate your account" onPress={onActivatePress} />
+        )}
         <AccountPill
           address={address}
           profileName={profileName}

@@ -3,6 +3,7 @@ import {
   type GetAccountReturnType,
   type GetEnsAddressReturnType,
   connect,
+  reconnect,
   disconnect,
   signMessage,
   getAccount,
@@ -231,6 +232,15 @@ export class AppKit extends AppKitScaffold {
         await connect(this.wagmiConfig, { connector, chainId });
       },
 
+      reconnectExternal: async connector => {
+        const _connector = wagmiConfig.connectors.find(c => c.id === connector.id);
+        if (!_connector) {
+          throw new Error('connectionControllerClient:reconnectExternal - connector is undefined');
+        }
+
+        await reconnect(this.wagmiConfig, { connectors: [_connector] });
+      },
+
       signMessage: async message => signMessage(this.wagmiConfig, { message }),
 
       disconnect: async () => {
@@ -400,7 +410,6 @@ export class AppKit extends AppKitScaffold {
     GetAccountReturnType,
     'address' | 'isConnected' | 'chainId' | 'connector' | 'isConnecting' | 'isReconnecting'
   >) {
-    this.resetAccount();
     this.syncNetwork(address, chainId, isConnected);
     this.setLoading(!!connector && (isConnecting || isReconnecting));
 
@@ -416,6 +425,7 @@ export class AppKit extends AppKitScaffold {
       ]);
       this.hasSyncedConnectedAccount = true;
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
+      this.resetAccount();
       this.resetWcConnection();
       this.resetNetwork();
     }

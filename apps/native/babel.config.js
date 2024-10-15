@@ -1,8 +1,11 @@
 const path = require('path');
-const uipak = require('../../packages/ui/package.json');
-const corepak = require('../../packages/core/package.json');
-const scaffoldpak = require('../../packages/scaffold/package.json');
-const wagmipak = require('../../packages/wagmi/package.json');
+const uipack = require('../../packages/ui/package.json');
+const corepack = require('../../packages/core/package.json');
+const scaffoldpack = require('../../packages/scaffold/package.json');
+const wagmipack = require('../../packages/wagmi/package.json');
+const authpack = require('../../packages/auth-wagmi/package.json');
+const commonpack = require('../../packages/common/package.json');
+const siwepack = require('../../packages/siwe/package.json');
 
 module.exports = function (api) {
   api.cache(true);
@@ -15,11 +18,18 @@ module.exports = function (api) {
         {
           extensions: ['.tsx', '.ts', '.js', '.json'],
           alias: {
-            // For development, we want to alias the ui library to the source
-            [uipak.name]: path.join(__dirname, '../../packages/ui', uipak.source),
-            [corepak.name]: path.join(__dirname, '../../packages/core', corepak.source),
-            [scaffoldpak.name]: path.join(__dirname, '../../packages/scaffold', scaffoldpak.source),
-            [wagmipak.name]: path.join(__dirname, '../../packages/wagmi', wagmipak.source)
+            // For development, we want to alias the packages to the source
+            [uipack.name]: path.join(__dirname, '../../packages/ui', uipack.source),
+            [corepack.name]: path.join(__dirname, '../../packages/core', corepack.source),
+            [scaffoldpack.name]: path.join(
+              __dirname,
+              '../../packages/scaffold',
+              scaffoldpack.source
+            ),
+            [wagmipack.name]: path.join(__dirname, '../../packages/wagmi', wagmipack.source),
+            [authpack.name]: path.join(__dirname, '../../packages/auth-wagmi', authpack.source),
+            [commonpack.name]: path.join(__dirname, '../../packages/common', commonpack.source),
+            [siwepack.name]: path.join(__dirname, '../../packages/siwe', siwepack.source)
           }
         }
       ],

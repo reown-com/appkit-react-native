@@ -26,14 +26,14 @@ export function ActionsView() {
       <Button disabled={isPending} onPress={() => signMessage({ message: 'Hello AppKit!' })}>
         Sign
       </Button>
-      {isSuccess && <Text>Signature: {data}</Text>}
+      {isSuccess && <Text numberOfLines={5}>Signature: {data}</Text>}
       {isGasError && <Text>Error estimating gas</Text>}
       {isError && <Text>Error signing message</Text>}
       <Button disabled={isSending} onPress={() => sendTransaction({ ...TX, gas })}>
         Send
       </Button>
       {isSending && <Text>Check Wallet</Text>}
-      {isSendSuccess && <Text>Transaction: {JSON.stringify(sendData)}</Text>}
+      {isSendSuccess && <Text numberOfLines={5}>Transaction: {JSON.stringify(sendData)}</Text>}
     </View>
   ) : null;
 }
