@@ -377,18 +377,34 @@ export type Event =
   | {
       type: 'track';
       event: 'CLICK_SIGN_SIWE_MESSAGE';
+      properties: {
+        network: string;
+        isSmartAccount: boolean;
+      };
     }
   | {
       type: 'track';
       event: 'CLICK_CANCEL_SIWE';
+      properties: {
+        network: string;
+        isSmartAccount: boolean;
+      };
     }
   | {
       type: 'track';
       event: 'SIWE_AUTH_SUCCESS';
+      properties: {
+        network: string;
+        isSmartAccount: boolean;
+      };
     }
   | {
       type: 'track';
       event: 'SIWE_AUTH_ERROR';
+      properties: {
+        network: string;
+        isSmartAccount: boolean;
+      };
     }
   | {
       type: 'track';
