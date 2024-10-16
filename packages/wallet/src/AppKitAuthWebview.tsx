@@ -89,25 +89,22 @@ export function AuthWebview() {
       WebviewController.setFrameViewVisible(false);
     });
 
-    provider.onIsConnected(event, response => {
-      if (response.smartAccountDeployed) {
-        AccountController.setSmartAccountDeployed(true);
-      }
-
+    provider.onIsConnected(({ smartAccountDeployed, preferredAccountType }) => {
       provider.getSmartAccountEnabledNetworks();
-      AccountController.setPreferredAccountType(response.preferredAccountType);
+      AccountController.setPreferredAccountType(preferredAccountType);
+      AccountController.setSmartAccountDeployed(smartAccountDeployed);
       ConnectorController.setAuthLoading(false);
       ModalController.setLoading(false);
     });
 
-    provider.onNotConnected(event, () => {
+    provider.onNotConnected(() => {
       ConnectorController.setAuthLoading(false);
       ModalController.setLoading(false);
       StorageUtil.removeConnectedConnector();
     });
 
-    provider.onGetSmartAccountEnabledNetworks(event, response => {
-      return NetworkController.setSmartAccountEnabledNetworks(response.smartAccountEnabledNetworks);
+    provider.onGetSmartAccountEnabledNetworks(({ smartAccountEnabledNetworks }) => {
+      return NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks);
     });
   };
 

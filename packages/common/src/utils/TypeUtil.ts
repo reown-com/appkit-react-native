@@ -95,10 +95,6 @@ export interface TransactionQuantity {
 }
 
 export type SocialProvider =
-  | 'google'
-  | 'github'
-  | 'apple'
-  | 'facebook'
-  | 'x'
-  | 'discord'
-  | 'farcaster';
+  // | 'google'
+  // | 'github'
+  'apple' | 'facebook' | 'x' | 'discord' | 'farcaster';

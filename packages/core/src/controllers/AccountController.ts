@@ -80,7 +80,7 @@ export const AccountController = {
     state.addressExplorerUrl = explorerUrl;
   },
 
-  async setPreferredAccountType(accountType: AccountControllerState['preferredAccountType']) {
+  setPreferredAccountType(accountType: AccountControllerState['preferredAccountType']) {
     state.preferredAccountType = accountType;
   },
 

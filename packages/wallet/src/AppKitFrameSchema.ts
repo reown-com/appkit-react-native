@@ -29,14 +29,14 @@ export const GetTransactionByHashResponse = z.object({
   v: z.string(),
   value: z.string()
 });
-export const AppSwitchNetworkRequest = z.object({ chainId: z.string().or(z.number()) });
+export const AppSwitchNetworkRequest = z.object({ chainId: z.number() });
 export const AppConnectEmailRequest = z.object({ email: z.string().email() });
 export const AppConnectOtpRequest = z.object({ otp: z.string() });
 export const AppConnectSocialRequest = z.object({ uri: z.string() });
 export const AppGetSocialRedirectUriRequest = z.object({
   provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord', 'farcaster'])
 });
-export const AppGetUserRequest = z.object({ chainId: z.optional(z.string().or(z.number())) });
+export const AppGetUserRequest = z.object({ chainId: z.optional(z.number()) });
 export const AppUpdateEmailRequest = z.object({ email: z.string().email() });
 export const AppUpdateEmailPrimaryOtpRequest = z.object({ otp: z.string() });
 export const AppUpdateEmailSecondaryOtpRequest = z.object({ otp: z.string() });
@@ -78,7 +78,7 @@ export const FrameUpdateEmailResponse = z.object({
 export const FrameGetUserResponse = z.object({
   email: z.string().email().optional().nullable(),
   address: z.string(),
-  chainId: z.string().or(z.number()),
+  chainId: z.number(),
   smartAccountDeployed: z.boolean(),
   preferredAccountType: AccountTypeEnum
 });

@@ -4,8 +4,6 @@ import type { SocialProvider } from '@reown/appkit-common-react-native';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type {
-  AppKitFrameAccountType,
-  AppKitFrameProvider,
   Connector,
   SendTransactionArgs,
   WcWallet,
@@ -13,7 +11,6 @@ import type {
 } from '../utils/TypeUtil';
 import { RouterController } from './RouterController';
 import { ConnectorController } from './ConnectorController';
-import { AccountController } from './AccountController';
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -29,7 +26,6 @@ export interface ConnectionControllerClient {
     walletUniversalLink?: string
   ) => Promise<void>;
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>;
-  reconnectExternal?: (options: ConnectExternalOptions) => Promise<void>;
   signMessage: (message: string) => Promise<string>;
   sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>;
   parseUnits: (value: string, decimals: number) => bigint;
@@ -147,21 +143,6 @@ export const ConnectionController = {
     } else {
       StorageUtil.removeConnectedSocialProvider();
     }
-  },
-
-  async setPreferredAccountType(accountType: AppKitFrameAccountType) {
-    const authConnector = ConnectorController.getAuthConnector();
-    if (!authConnector) {
-      return;
-    }
-
-    const provider = authConnector.provider as AppKitFrameProvider;
-    const { address } = await provider.setPreferredAccount(accountType);
-    if (!address) {
-      return;
-    }
-    await this._getClient().reconnectExternal?.(authConnector);
-    AccountController.setPreferredAccountType(accountType);
   },
 
   parseUnits(value: string, decimals: number) {

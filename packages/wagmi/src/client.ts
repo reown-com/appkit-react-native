@@ -2,6 +2,7 @@ import { formatUnits, type Hex, parseUnits } from 'viem';
 import {
   type GetAccountReturnType,
   type GetEnsAddressReturnType,
+  type Connector as WagmiConnector,
   connect,
   reconnect,
   disconnect,
@@ -34,7 +35,8 @@ import {
   type SendTransactionArgs,
   type Token,
   AppKitScaffold,
-  type WriteContractArgs
+  type WriteContractArgs,
+  type AppKitFrameProvider
 } from '@reown/appkit-scaffold-react-native';
 import {
   ConstantsUtil,
@@ -232,15 +234,6 @@ export class AppKit extends AppKitScaffold {
         await connect(this.wagmiConfig, { connector, chainId });
       },
 
-      reconnectExternal: async connector => {
-        const _connector = wagmiConfig.connectors.find(c => c.id === connector.id);
-        if (!_connector) {
-          throw new Error('connectionControllerClient:reconnectExternal - connector is undefined');
-        }
-
-        await reconnect(this.wagmiConfig, { connectors: [_connector] });
-      },
-
       signMessage: async message => signMessage(this.wagmiConfig, { message }),
 
       disconnect: async () => {
@@ -350,7 +343,6 @@ export class AppKit extends AppKitScaffold {
 
     this.syncRequestedNetworks([...wagmiConfig.chains]);
     this.syncConnectors([...wagmiConfig.connectors]);
-    this.listenAuthConnector([...wagmiConfig.connectors]);
 
     watchConnectors(wagmiConfig, {
       onChange: connectors => this.syncConnectors([...connectors])
@@ -563,15 +555,21 @@ export class AppKit extends AppKitScaffold {
         name: 'Auth',
         provider
       });
+      this.addAuthListeners(authConnector);
     }
   }
 
-  private async listenAuthConnector(connectors: AppKitClientOptions['wagmiConfig']['connectors']) {
-    const connector = connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID);
-
+  private async addAuthListeners(connector: WagmiConnector) {
     const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
     if (connector && connectedConnector === 'AUTH') {
       super.setLoading(true);
+
+      const provider = (await connector.getProvider()) as AppKitFrameProvider;
+
+      provider.onSetPreferredAccount(async () => {
+        await reconnect(this.wagmiConfig, { connectors: [connector] });
+        this.setLoading(false);
+      });
     }
   }
 }

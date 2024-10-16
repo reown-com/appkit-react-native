@@ -1,5 +1,6 @@
 import { Contract, ethers, utils } from 'ethers';
 import {
+  type AppKitFrameAccountType,
   type CaipAddress,
   type CaipNetwork,
   type CaipNetworkId,
@@ -381,8 +382,8 @@ export class AppKit extends AppKitScaffold {
 
     this.createProvider();
 
-    EthersStoreUtil.subscribeKey('address', () => {
-      this.syncAccount();
+    EthersStoreUtil.subscribeKey('address', address => {
+      this.syncAccount({ address });
     });
 
     EthersStoreUtil.subscribeKey('chainId', () => {
@@ -661,12 +662,10 @@ export class AppKit extends AppKitScaffold {
     }
   }
 
-  private async syncAccount() {
-    const address = EthersStoreUtil.state.address;
+  private async syncAccount({ address }: { address?: Address }) {
     const chainId = EthersStoreUtil.state.chainId;
     const isConnected = EthersStoreUtil.state.isConnected;
 
-    this.resetAccount();
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
 
@@ -681,6 +680,7 @@ export class AppKit extends AppKitScaffold {
       ]);
       this.hasSyncedConnectedAccount = true;
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
+      this.resetAccount();
       this.resetWcConnection();
       this.resetNetwork();
     }
@@ -840,6 +840,18 @@ export class AppKit extends AppKitScaffold {
     }
   }
 
+  private async handleAuthSetPreferredAccount(address: string, type: AppKitFrameAccountType) {
+    if (!address) {
+      return;
+    }
+    const chainId = this.getCaipNetwork()?.id;
+    const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
+    this.setCaipAddress(caipAddress);
+    this.setPreferredAccountType(type);
+    await this.syncAccount({ address: address as Address });
+    this.setLoading(false);
+  }
+
   private syncConnectors(config: ProviderType) {
     const _connectors: Connector[] = [];
     const EXCLUDED_CONNECTORS = [ConstantsUtil.AUTH_CONNECTOR_ID];
@@ -905,5 +917,16 @@ export class AppKit extends AppKitScaffold {
     if (isConnected) {
       this.setAuthProvider();
     }
+
+    this.addAuthListeners(this.authProvider);
+  }
+
+  private async addAuthListeners(authProvider: AppKitFrameProvider) {
+    authProvider.onSetPreferredAccount(async ({ address, type }) => {
+      if (address) {
+        await this.handleAuthSetPreferredAccount(address, type);
+      }
+      this.setLoading(false);
+    });
   }
 }

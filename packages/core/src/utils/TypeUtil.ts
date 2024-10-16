@@ -561,7 +561,7 @@ export interface AppKitFrameProvider {
     uri: string;
   }>;
   connectOtp(payload: { otp: string }): Promise<unknown>;
-  connectFarcaster: () => Promise<{ username: string }>;
+  connectFarcaster: () => Promise<{ userName: string }>;
   getFarcasterUri(): Promise<{ url: string }>;
   isConnected(): Promise<{
     isConnected: boolean;
@@ -588,7 +588,7 @@ export interface AppKitFrameProvider {
   }): Promise<unknown>;
   connect(payload?: { chainId: number | undefined }): Promise<{
     chainId: number;
-    email: string;
+    email?: string | null | undefined;
     address: string;
     smartAccountDeployed: boolean;
     preferredAccountType: AppKitFrameAccountType;
@@ -597,7 +597,7 @@ export interface AppKitFrameProvider {
     chainId: number;
   }>;
   setPreferredAccount(type: AppKitFrameAccountType): Promise<{
-    type: string;
+    type: AppKitFrameAccountType;
     address: string;
   }>;
   getSmartAccountEnabledNetworks(): Promise<{
@@ -607,4 +607,7 @@ export interface AppKitFrameProvider {
   request(req: any): Promise<any>;
   AuthView: () => JSX.Element | null;
   Webview: () => JSX.Element | null;
+  onSetPreferredAccount: (
+    callback: (values: { type: AppKitFrameAccountType; address: string }) => void
+  ) => void;
 }
