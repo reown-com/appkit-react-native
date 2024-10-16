@@ -1,25 +1,28 @@
-import { useState } from 'react';
+import { Linking } from 'react-native';
+import { useSnapshot } from 'valtio';
 import { Button, FlexView, Icon, Link, Text, Visual } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
-  ConnectionController,
+  ConnectorController,
   EventsController,
+  ModalController,
   NetworkController,
   RouterController,
-  SnackController
+  SnackController,
+  type AppKitFrameProvider
 } from '@reown/appkit-core-react-native';
 import styles from './styles';
-import { Linking } from 'react-native';
 
 export function UpgradeToSmartAccountView() {
-  const [isAccountTypeLoading, setIsAccountTypeLoading] = useState(false);
+  const { loading } = useSnapshot(ModalController.state);
 
   const onSwitchAccountType = async () => {
     try {
-      setIsAccountTypeLoading(true);
+      ModalController.setLoading(true);
       const accountType =
         AccountController.state.preferredAccountType === 'eoa' ? 'smartAccount' : 'eoa';
-      await ConnectionController.setPreferredAccountType(accountType);
+      const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
+      await provider?.setPreferredAccount(accountType);
       EventsController.sendEvent({
         type: 'track',
         event: 'SET_PREFERRED_ACCOUNT_TYPE',
@@ -28,9 +31,9 @@ export function UpgradeToSmartAccountView() {
           network: NetworkController.state.caipNetwork?.id || ''
         }
       });
-      setIsAccountTypeLoading(false);
       RouterController.goBack();
     } catch (error) {
+      ModalController.setLoading(false);
       SnackController.showError('Error switching account type');
     }
   };
@@ -63,11 +66,7 @@ export function UpgradeToSmartAccountView() {
           >
             Do it later
           </Button>
-          <Button
-            onPress={onSwitchAccountType}
-            loading={isAccountTypeLoading}
-            style={styles.button}
-          >
+          <Button onPress={onSwitchAccountType} loading={loading} style={styles.button}>
             Continue
           </Button>
         </FlexView>

@@ -62,6 +62,8 @@ export class AppKitFrameProvider {
     this.getAsyncUsername().then(username => {
       this.username = username;
     });
+
+    this.events.setMaxListeners(Number.POSITIVE_INFINITY);
   }
 
   public setWebviewRef(webviewRef: RefObject<WebView>) {
@@ -410,18 +412,17 @@ export class AppKitFrameProvider {
   }
 
   public onIsConnected(
-    event: AppKitFrameTypes.FrameEvent,
     callback: (response: AppKitFrameTypes.Responses['FrameGetUserResponse']) => void
   ) {
-    this.onFrameEvent(event, frameEvent => {
+    this.onFrameEvent(frameEvent => {
       if (frameEvent.type === AppKitFrameConstants.FRAME_GET_USER_SUCCESS) {
         callback(frameEvent.payload);
       }
     });
   }
 
-  public onNotConnected(event: AppKitFrameTypes.FrameEvent, callback: () => void) {
-    this.onFrameEvent(event, frameEvent => {
+  public onNotConnected(callback: () => void) {
+    this.onFrameEvent(frameEvent => {
       if (frameEvent.type === AppKitFrameConstants.FRAME_IS_CONNECTED_ERROR) {
         callback();
       }
@@ -435,12 +436,11 @@ export class AppKitFrameProvider {
   }
 
   public onGetSmartAccountEnabledNetworks(
-    event: AppKitFrameTypes.FrameEvent,
     callback: (
       response: AppKitFrameTypes.Responses['FrameGetSmartAccountEnabledNetworksResponse']
     ) => void
   ) {
-    this.onFrameEvent(event, frameEvent => {
+    this.onFrameEvent(frameEvent => {
       if (
         frameEvent.type === AppKitFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS
       ) {
@@ -450,10 +450,9 @@ export class AppKitFrameProvider {
   }
 
   public onSetPreferredAccount(
-    event: AppKitFrameTypes.FrameEvent,
     callback: (response: AppKitFrameTypes.Responses['FrameSetPreferredAccountResponse']) => void
   ) {
-    this.onFrameEvent(event, frameEvent => {
+    this.onFrameEvent(frameEvent => {
       if (frameEvent.type === AppKitFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS) {
         callback(frameEvent.payload);
       }
@@ -567,19 +566,19 @@ export class AppKitFrameProvider {
     });
   }
 
-  private onFrameEvent(
-    event: AppKitFrameTypes.FrameEvent,
-    callback: (event: AppKitFrameTypes.FrameEvent) => void
-  ) {
-    if (
-      !event.type?.includes(AppKitFrameConstants.FRAME_EVENT_KEY) ||
-      event.origin !== AppKitFrameConstants.SECURE_SITE_ORIGIN
-    ) {
-      return;
-    }
-    // console.log('💻 received', event); // eslint-disable-line no-console
-    const frameEvent = AppKitFrameSchema.frameEvent.parse(event);
-    callback(frameEvent);
+  private onFrameEvent(callback: (event: AppKitFrameTypes.FrameEvent) => void) {
+    const eventHandler = (event: AppKitFrameTypes.FrameEvent) => {
+      if (
+        !event.type?.includes(AppKitFrameConstants.FRAME_EVENT_KEY) ||
+        event.origin !== AppKitFrameConstants.SECURE_SITE_ORIGIN
+      ) {
+        return;
+      }
+      // console.log('💻 received', event); // eslint-disable-line no-console
+      callback(event);
+    };
+
+    this.events.addListener('message', eventHandler);
   }
 
   private postAppEvent(event: AppKitFrameTypes.AppEvent) {

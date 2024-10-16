@@ -41,8 +41,8 @@ export function AccountDefaultView() {
     addressExplorerUrl,
     preferredAccountType
   } = useSnapshot(AccountController.state);
+  const { loading } = useSnapshot(ModalController.state);
   const [disconnecting, setDisconnecting] = useState(false);
-  const [isAccountTypeLoading, setIsAccountTypeLoading] = useState(false);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { connectedConnector } = useSnapshot(ConnectorController.state);
   const { connectedSocialProvider } = useSnapshot(ConnectionController.state);
@@ -78,10 +78,11 @@ export function AccountDefaultView() {
   const onSwitchAccountType = async () => {
     try {
       if (isAuth) {
-        setIsAccountTypeLoading(true);
+        ModalController.setLoading(true);
         const accountType =
           AccountController.state.preferredAccountType === 'eoa' ? 'smartAccount' : 'eoa';
-        await ConnectionController.setPreferredAccountType(accountType);
+        const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
+        await provider?.setPreferredAccount(accountType);
         EventsController.sendEvent({
           type: 'track',
           event: 'SET_PREFERRED_ACCOUNT_TYPE',
@@ -90,9 +91,9 @@ export function AccountDefaultView() {
             network: NetworkController.state.caipNetwork?.id || ''
           }
         });
-        setIsAccountTypeLoading(false);
       }
     } catch (error) {
+      ModalController.setLoading(false);
       SnackController.showError('Error switching account type');
     }
   };
@@ -253,7 +254,7 @@ export function AccountDefaultView() {
                 onPress={onSwitchAccountType}
                 testID="button-account-type"
                 style={styles.actionButton}
-                loading={isAccountTypeLoading}
+                loading={loading}
               >
                 <Text color="fg-100">{`Switch to your ${
                   preferredAccountType === 'eoa' ? 'smart account' : 'EOA'
