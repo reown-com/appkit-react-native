@@ -24,7 +24,6 @@ export function AccountPlaceholder({ icon, title, description, style }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     minHeight: 200
   },
   title: {
