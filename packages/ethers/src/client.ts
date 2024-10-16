@@ -686,7 +686,6 @@ export class AppKit extends AppKitScaffold {
     const chainId = EthersStoreUtil.state.chainId;
     const isConnected = EthersStoreUtil.state.isConnected;
 
-    this.resetAccount();
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
 
@@ -701,6 +700,7 @@ export class AppKit extends AppKitScaffold {
       ]);
       this.hasSyncedConnectedAccount = true;
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
+      this.resetAccount();
       this.resetWcConnection();
       this.resetNetwork();
     }
