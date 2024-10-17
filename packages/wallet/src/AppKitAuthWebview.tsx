@@ -55,63 +55,14 @@ export function AuthWebview() {
     let event = parseMessage(e);
 
     provider.onMessage(event);
-
-    provider.onRpcRequest((request: AppKitFrameTypes.RPCRequest) => {
-      if (AppKitFrameHelpers.checkIfRequestExists(request)) {
-        if (!AppKitFrameHelpers.checkIfRequestIsAllowed(request)) {
-          WebviewController.setFrameViewVisible(true);
-        }
-      }
-    });
-
-    provider.onRpcSuccess((_, request) => {
-      const isSafeRequest = AppKitFrameHelpers.checkIfRequestIsSafe(request);
-      if (isSafeRequest) {
-        return;
-      }
-
-      if (RouterController.state.transactionStack.length === 0) {
-        ModalController.close();
-      } else {
-        RouterController?.popTransactionStack();
-      }
-      WebviewController.setFrameViewVisible(false);
-    });
-
-    provider.onRpcError(() => {
-      if (ModalController.state.open) {
-        if (RouterController.state.transactionStack.length === 0) {
-          ModalController.close();
-        } else {
-          RouterController?.popTransactionStack(true);
-        }
-      }
-      WebviewController.setFrameViewVisible(false);
-    });
-
-    provider.onIsConnected(({ smartAccountDeployed, preferredAccountType }) => {
-      provider.getSmartAccountEnabledNetworks();
-      AccountController.setPreferredAccountType(preferredAccountType);
-      AccountController.setSmartAccountDeployed(smartAccountDeployed);
-      ConnectorController.setAuthLoading(false);
-      ModalController.setLoading(false);
-    });
-
-    provider.onNotConnected(() => {
-      ConnectorController.setAuthLoading(false);
-      ModalController.setLoading(false);
-      StorageUtil.removeConnectedConnector();
-    });
-
-    provider.onGetSmartAccountEnabledNetworks(({ smartAccountEnabledNetworks }) => {
-      return NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks);
-    });
   };
 
   const show = animatedHeight.current.interpolate({
     inputRange: [0, 1],
     outputRange: ['0%', '80%']
   });
+
+  useEffect(() => {}, [provider]);
 
   useEffect(() => {
     Animated.timing(animatedHeight.current, {
@@ -138,7 +89,59 @@ export function AuthWebview() {
   }, [animatedHeight, backdropOpacity, frameViewVisible, setIsBackdropVisible]);
 
   useEffect(() => {
-    provider?.setWebviewRef(webviewRef);
+    if (provider) {
+      provider.setWebviewRef(webviewRef);
+      provider.onRpcRequest((request: AppKitFrameTypes.RPCRequest) => {
+        if (AppKitFrameHelpers.checkIfRequestExists(request)) {
+          if (!AppKitFrameHelpers.checkIfRequestIsAllowed(request)) {
+            WebviewController.setFrameViewVisible(true);
+          }
+        }
+      });
+
+      provider.onRpcSuccess((_, request) => {
+        const isSafeRequest = AppKitFrameHelpers.checkIfRequestIsSafe(request);
+        if (isSafeRequest) {
+          return;
+        }
+
+        if (RouterController.state.transactionStack.length === 0) {
+          ModalController.close();
+        } else {
+          RouterController?.popTransactionStack();
+        }
+        WebviewController.setFrameViewVisible(false);
+      });
+
+      provider.onRpcError(() => {
+        if (ModalController.state.open) {
+          if (RouterController.state.transactionStack.length === 0) {
+            ModalController.close();
+          } else {
+            RouterController?.popTransactionStack(true);
+          }
+        }
+        WebviewController.setFrameViewVisible(false);
+      });
+
+      provider.onIsConnected(({ smartAccountDeployed, preferredAccountType }) => {
+        provider.getSmartAccountEnabledNetworks();
+        AccountController.setPreferredAccountType(preferredAccountType);
+        AccountController.setSmartAccountDeployed(smartAccountDeployed);
+        ConnectorController.setAuthLoading(false);
+        ModalController.setLoading(false);
+      });
+
+      provider.onNotConnected(() => {
+        ConnectorController.setAuthLoading(false);
+        ModalController.setLoading(false);
+        StorageUtil.removeConnectedConnector();
+      });
+
+      provider.onGetSmartAccountEnabledNetworks(({ smartAccountEnabledNetworks }) => {
+        return NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks);
+      });
+    }
   }, [provider, webviewRef]);
 
   return provider ? (
