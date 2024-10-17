@@ -486,7 +486,8 @@ export class AppKit extends AppKitScaffold {
     if (chain) {
       const balance = await getBalance(this.wagmiConfig, {
         address,
-        chainId: chain.id
+        chainId: chain.id,
+        token: this.options?.tokens?.[chainId]?.address as Hex
       });
       const formattedBalance = formatUnits(balance.value, balance.decimals);
       this.setBalance(formattedBalance, balance.symbol);
