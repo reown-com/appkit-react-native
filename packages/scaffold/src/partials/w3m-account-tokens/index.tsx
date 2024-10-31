@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { type StyleProp, type ViewStyle } from 'react-native';
+import { type StyleProp, type ViewStyle, StyleSheet } from 'react-native';
 import { useSnapshot } from 'valtio';
 import { ScrollView, RefreshControl } from 'react-native-gesture-handler';
 import {
@@ -8,7 +8,14 @@ import {
   NetworkController,
   RouterController
 } from '@reown/appkit-core-react-native';
-import { FlexView, ListItem, Text, ListToken, useTheme } from '@reown/appkit-ui-react-native';
+import {
+  FlexView,
+  ListItem,
+  Text,
+  ListToken,
+  useTheme,
+  Spacing
+} from '@reown/appkit-ui-react-native';
 
 interface Props {
   style?: StyleProp<ViewStyle>;
@@ -33,7 +40,12 @@ export function AccountTokens({ style }: Props) {
 
   if (!tokenBalance?.length) {
     return (
-      <ListItem icon="arrowBottomCircle" iconColor="magenta-100" onPress={onReceivePress}>
+      <ListItem
+        icon="arrowBottomCircle"
+        iconColor="magenta-100"
+        onPress={onReceivePress}
+        style={styles.receiveButton}
+      >
         <FlexView flexDirection="column" alignItems="flex-start">
           <Text variant="paragraph-500" color="fg-100">
             Receive funds
@@ -74,3 +86,10 @@ export function AccountTokens({ style }: Props) {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  receiveButton: {
+    width: 'auto',
+    marginHorizontal: Spacing.l
+  }
+});

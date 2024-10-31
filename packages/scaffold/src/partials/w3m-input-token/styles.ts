@@ -6,7 +6,7 @@ export default StyleSheet.create({
     height: 100,
     width: '100%',
     borderRadius: BorderRadius.s,
-    borderWidth: 1
+    borderWidth: StyleSheet.hairlineWidth
   },
   input: {
     fontSize: 32,

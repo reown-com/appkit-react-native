@@ -7,7 +7,7 @@ export default StyleSheet.create({
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderRadius: BorderRadius.full,
     paddingHorizontal: Spacing['2xs']
   },

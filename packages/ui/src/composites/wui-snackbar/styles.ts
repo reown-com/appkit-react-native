@@ -7,7 +7,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 8,
     borderRadius: BorderRadius.full,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     alignItems: 'center'
   },
   text: {

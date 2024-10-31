@@ -7,7 +7,7 @@ const baseStyle = {
   borderRadius: BorderRadius.xxs,
   alignItems: 'center',
   paddingHorizontal: Spacing.xs,
-  borderWidth: 1
+  borderWidth: StyleSheet.hairlineWidth
 } as ViewStyle;
 
 export const outerBorderRadius = {
