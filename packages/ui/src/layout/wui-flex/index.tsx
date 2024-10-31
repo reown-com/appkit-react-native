@@ -1,4 +1,4 @@
-import { View, type StyleProp, type ViewStyle } from 'react-native';
+import { type StyleProp, type ViewStyle } from 'react-native';
 
 import type {
   FlexAlignType,
@@ -9,8 +9,8 @@ import type {
   FlexWrapType,
   SpacingType
 } from '../../utils/TypesUtil';
-
 import { UiUtil } from '../../utils/UiUtil';
+import { LeanView } from '../../components/wui-lean-view';
 
 export interface FlexViewProps {
   children?: React.ReactNode;
@@ -45,5 +45,5 @@ export function FlexView(props: FlexViewProps) {
     marginLeft: props.margin && UiUtil.getSpacingStyles(props.margin, 3)
   };
 
-  return <View style={[styles, props.style]}>{props.children}</View>;
+  return <LeanView style={[styles, props.style]}>{props.children}</LeanView>;
 }

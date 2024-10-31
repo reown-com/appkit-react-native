@@ -14,7 +14,7 @@ import {
   sepolia
 } from 'wagmi/chains';
 
-export const chains = [
+export const chains: CreateConfigParameters['chains'] = [
   mainnet,
   polygon,
   avalanche,
@@ -27,4 +27,4 @@ export const chains = [
   celo,
   aurora,
   sepolia
-] as CreateConfigParameters['chains'];
+];
