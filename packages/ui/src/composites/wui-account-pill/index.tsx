@@ -66,7 +66,13 @@ export function AccountPill({
               truncate: 'middle'
             })}
       </Text>
-      <IconLink icon="copy" size="sm" iconColor="fg-200" onPress={handleCopyAddress} />
+      <IconLink
+        icon="copy"
+        size="sm"
+        iconColor="fg-200"
+        onPress={handleCopyAddress}
+        style={styles.copyButton}
+      />
     </AnimatedPressable>
   );
 }

@@ -52,9 +52,11 @@ export function AuthWebview() {
   };
 
   const handleMessage = (e: WebViewMessageEvent) => {
-    let event = parseMessage(e);
+    try {
+      let event = parseMessage(e);
 
-    provider.onMessage(event);
+      provider.onMessage(event);
+    } catch (error) {}
   };
 
   const show = animatedHeight.current.interpolate({
