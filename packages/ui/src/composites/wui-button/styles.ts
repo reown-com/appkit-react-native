@@ -62,7 +62,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: BorderRadius.xs,
-    borderWidth: 1
+    borderWidth: StyleSheet.hairlineWidth
   },
   smButton: {
     height: 32,

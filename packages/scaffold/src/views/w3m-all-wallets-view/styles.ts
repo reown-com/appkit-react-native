@@ -13,6 +13,6 @@ export default StyleSheet.create({
   },
   icon: {
     marginLeft: 8,
-    borderWidth: 1
+    borderWidth: StyleSheet.hairlineWidth
   }
 });

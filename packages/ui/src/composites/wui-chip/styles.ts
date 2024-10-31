@@ -65,11 +65,11 @@ export default StyleSheet.create({
     paddingHorizontal: Spacing.xs,
     alignItems: 'center',
     borderRadius: BorderRadius.s,
-    borderWidth: 1
+    borderWidth: StyleSheet.hairlineWidth
   },
   image: {
     borderRadius: BorderRadius.full,
-    borderWidth: 1
+    borderWidth: StyleSheet.hairlineWidth
   },
   smImage: {
     width: 16,

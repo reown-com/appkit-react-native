@@ -6,7 +6,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     height: 40,
     borderRadius: BorderRadius.full,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: Spacing['3xs']
@@ -36,7 +36,7 @@ export default StyleSheet.create({
     paddingLeft: Spacing['3xs'],
     paddingRight: Spacing.xs,
     borderRadius: BorderRadius.full,
-    borderWidth: 1
+    borderWidth: StyleSheet.hairlineWidth
   },
   address: {
     marginLeft: Spacing['3xs']
