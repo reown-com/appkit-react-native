@@ -15,5 +15,8 @@ export default StyleSheet.create({
   },
   text: {
     marginLeft: Spacing['2xs']
+  },
+  copyButton: {
+    marginHorizontal: Spacing['3xs']
   }
 });

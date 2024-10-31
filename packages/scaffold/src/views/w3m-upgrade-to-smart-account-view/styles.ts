@@ -21,8 +21,8 @@ export default StyleSheet.create({
   },
   closeButton: {
     alignSelf: 'flex-end',
-    right: 30,
-    top: 20,
+    right: Spacing.xl,
+    top: Spacing.l,
     position: 'absolute',
     zIndex: 2
   }

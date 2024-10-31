@@ -1,6 +1,7 @@
 import { Linking } from 'react-native';
+import { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { Button, FlexView, Icon, Link, Text, Visual } from '@reown/appkit-ui-react-native';
+import { Button, FlexView, IconLink, Link, Text, Visual } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
   ConnectorController,
@@ -15,10 +16,12 @@ import styles from './styles';
 
 export function UpgradeToSmartAccountView() {
   const { loading } = useSnapshot(ModalController.state);
+  const [isSwitchingAccountType, setIsSwitchingAccountType] = useState(false);
 
   const onSwitchAccountType = async () => {
     try {
       ModalController.setLoading(true);
+      setIsSwitchingAccountType(true);
       const accountType =
         AccountController.state.preferredAccountType === 'eoa' ? 'smartAccount' : 'eoa';
       const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
@@ -31,20 +34,42 @@ export function UpgradeToSmartAccountView() {
           network: NetworkController.state.caipNetwork?.id || ''
         }
       });
-      RouterController.goBack();
     } catch (error) {
       ModalController.setLoading(false);
       SnackController.showError('Error switching account type');
     }
   };
 
+  const onClose = () => {
+    ModalController.close();
+    ModalController.setLoading(false);
+  };
+
+  const onGoBack = () => {
+    RouterController.goBack();
+    ModalController.setLoading(false);
+  };
+
   const onLearnMorePress = () => {
     Linking.openURL('https://reown.com/faq');
   };
 
+  useEffect(() => {
+    if (isSwitchingAccountType && !loading) {
+      RouterController.goBack();
+    }
+  }, [loading, isSwitchingAccountType]);
+
   return (
     <>
-      <Icon name="close" onPress={RouterController.goBack} style={styles.closeButton} />
+      <IconLink
+        icon="close"
+        size="md"
+        onPress={onClose}
+        testID="button-close"
+        style={styles.closeButton}
+      />
+
       <FlexView style={styles.container} padding={['4xl', 'm', '2xl', 'm']}>
         <FlexView alignItems="center" justifyContent="center" flexDirection="row">
           <Visual name="google" />
@@ -61,7 +86,8 @@ export function UpgradeToSmartAccountView() {
         <FlexView flexDirection="row" margin={['m', '4xl', 'm', '4xl']}>
           <Button
             variant="accent"
-            onPress={RouterController.goBack}
+            onPress={onGoBack}
+            disabled={loading}
             style={[styles.button, styles.cancelButton]}
           >
             Do it later
