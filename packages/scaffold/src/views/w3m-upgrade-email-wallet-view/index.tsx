@@ -18,7 +18,7 @@ export function UpgradeEmailWalletView() {
     <FlexView padding={['l', 'l', '3xl', 'l']} alignItems="center">
       <Text variant="paragraph-400">Follow the instructions on</Text>
       <Chip
-        label="secure.walletconnect.com"
+        label="secure.reown.com"
         rightIcon="externalLink"
         imageSrc={authProvider.getSecureSiteIconURL()}
         style={styles.chip}
