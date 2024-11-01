@@ -28,9 +28,10 @@ import {
   ListItem
 } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { Snackbar } from '../../partials/w3m-snackbar';
 
-import styles from './styles';
 import { AuthButtons } from './components/auth-buttons';
+import styles from './styles';
 
 export function AccountDefaultView() {
   const {
@@ -277,6 +278,7 @@ export function AccountDefaultView() {
             </ListItem>
           </FlexView>
         </FlexView>
+        <Snackbar />
       </BottomSheetScrollView>
     </>
   );

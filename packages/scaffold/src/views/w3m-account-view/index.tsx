@@ -24,6 +24,8 @@ import {
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { AccountWalletFeatures } from '../../partials/w3m-account-wallet-features';
+import { Snackbar } from '../../partials/w3m-snackbar';
+
 import styles from './styles';
 
 export function AccountView() {
@@ -95,6 +97,7 @@ export function AccountView() {
         />
         <AccountWalletFeatures />
       </FlexView>
+      <Snackbar />
     </BottomSheetScrollView>
   );
 }

@@ -13,6 +13,8 @@ import {
   SnackController,
   type AppKitFrameProvider
 } from '@reown/appkit-core-react-native';
+import { Snackbar } from '../../partials/w3m-snackbar';
+
 import styles from './styles';
 
 export function UpgradeToSmartAccountView() {
@@ -100,6 +102,7 @@ export function UpgradeToSmartAccountView() {
             Learn more
           </Link>
         </FlexView>
+        <Snackbar />
       </BottomSheetView>
     </>
   );

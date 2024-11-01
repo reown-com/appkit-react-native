@@ -8,6 +8,8 @@ import {
 import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
 import { StringUtil } from '@reown/appkit-common-react-native';
 
+import { Snackbar } from '../../partials/w3m-snackbar';
+
 export function Header() {
   const { data, view } = useSnapshot(RouterController.state);
   const onHelpPress = () => {
@@ -81,17 +83,20 @@ export function Header() {
   const bottomPadding = header === ' ' ? '0' : '4xs';
 
   return (
-    <FlexView
-      justifyContent="space-between"
-      flexDirection="row"
-      alignItems="center"
-      padding={['l', 'xl', bottomPadding, 'xl']}
-    >
-      {dynamicButtonTemplate()}
-      <Text variant="paragraph-600" numberOfLines={1}>
-        {header}
-      </Text>
-      <IconLink icon="close" size="md" onPress={ModalController.close} testID="button-close" />
-    </FlexView>
+    <>
+      <FlexView
+        justifyContent="space-between"
+        flexDirection="row"
+        alignItems="center"
+        padding={['l', 'xl', bottomPadding, 'xl']}
+      >
+        {dynamicButtonTemplate()}
+        <Text variant="paragraph-600" numberOfLines={1}>
+          {header}
+        </Text>
+        <IconLink icon="close" size="md" onPress={ModalController.close} testID="button-close" />
+      </FlexView>
+      <Snackbar />
+    </>
   );
 }
