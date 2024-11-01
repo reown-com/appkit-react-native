@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { Animated, SafeAreaView, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 
@@ -13,7 +13,7 @@ import type { AppKitFrameProvider } from './AppKitFrameProvider';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
-export function AppKitWebview() {
+function _AppKitWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
   const authConnector = ConnectorController.getAuthConnector();
@@ -109,6 +109,8 @@ export function AppKitWebview() {
     </>
   ) : null;
 }
+
+export const AppKitWebview = memo(_AppKitWebview);
 
 const styles = StyleSheet.create({
   backdrop: {

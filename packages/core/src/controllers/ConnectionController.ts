@@ -86,15 +86,11 @@ export const ConnectionController = {
     state.wcPromise = this._getClient().connectWalletConnect(uri => {
       state.wcUri = uri;
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry();
-      ConnectorController.setConnectedConnector('WALLET_CONNECT');
-      StorageUtil.setConnectedConnector('WALLET_CONNECT');
     }, walletUniversalLink);
   },
 
   async connectExternal(options: ConnectExternalOptions) {
     await this._getClient().connectExternal?.(options);
-    ConnectorController.setConnectedConnector(options.type);
-    StorageUtil.setConnectedConnector(options.type);
   },
 
   async signMessage(message: string) {

@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { Animated, Appearance, Linking, Platform, SafeAreaView, StyleSheet } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 
@@ -8,11 +8,11 @@ import {
   OptionsController,
   ModalController,
   type OptionsControllerState,
-  StorageUtil,
   RouterController,
   WebviewController,
   AccountController,
-  NetworkController
+  NetworkController,
+  ConnectionController
 } from '@reown/appkit-core-react-native';
 import { useTheme, BorderRadius } from '@reown/appkit-ui-react-native';
 import type { AppKitFrameProvider } from './AppKitFrameProvider';
@@ -22,7 +22,7 @@ import type { AppKitFrameTypes } from './AppKitFrameTypes';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
-export function AuthWebview() {
+function _AuthWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
   const authConnector = ConnectorController.getAuthConnector();
@@ -137,7 +137,7 @@ export function AuthWebview() {
       provider.onNotConnected(() => {
         ConnectorController.setAuthLoading(false);
         ModalController.setLoading(false);
-        StorageUtil.removeConnectedConnector();
+        ConnectionController.disconnect();
       });
 
       provider.onGetSmartAccountEnabledNetworks(({ smartAccountEnabledNetworks }) => {
@@ -197,6 +197,7 @@ export function AuthWebview() {
                 });
                 provider?.syncDappData?.({ projectId, sdkVersion, sdkType });
                 provider?.onWebviewLoaded();
+                provider?.isConnected();
               }, 1500);
             }
           }}
@@ -208,6 +209,8 @@ export function AuthWebview() {
     </>
   ) : null;
 }
+
+export const AuthWebview = memo(_AuthWebview);
 
 const styles = StyleSheet.create({
   backdrop: {
