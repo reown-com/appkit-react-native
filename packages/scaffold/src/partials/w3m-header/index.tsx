@@ -8,6 +8,8 @@ import {
 import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
 import { StringUtil } from '@reown/appkit-common-react-native';
 
+import styles from './styles';
+
 export function Header() {
   const { data, view } = useSnapshot(RouterController.state);
   const onHelpPress = () => {
@@ -30,7 +32,7 @@ export function Header() {
       Connect: 'Connect wallet',
       ConnectSocials: 'All socials',
       ConnectingExternal: connectorName ?? 'Connect wallet',
-      ConnectingSiwe: 'Sign In',
+      ConnectingSiwe: undefined,
       ConnectingFarcaster: socialName ?? 'Connecting Social',
       ConnectingSocial: socialName ?? 'Connecting Social',
       ConnectingWalletConnect: walletName ?? 'WalletConnect',
@@ -59,10 +61,13 @@ export function Header() {
   const header = headings(data, view);
 
   const dynamicButtonTemplate = () => {
-    const hideBackViews = ['ConnectingSiwe'];
-    const showBack =
-      RouterController.state.history.length > 1 &&
-      !hideBackViews.includes(RouterController.state.view);
+    const noButtonViews = ['ConnectingSiwe'];
+
+    if (noButtonViews.includes(RouterController.state.view)) {
+      return <FlexView style={styles.iconPlaceholder} />;
+    }
+
+    const showBack = RouterController.state.history.length > 1;
 
     return showBack ? (
       <IconLink

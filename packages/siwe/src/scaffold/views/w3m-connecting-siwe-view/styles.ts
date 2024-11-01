@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   logoContainer: {
+    marginTop: Spacing.xl,
     marginBottom: Spacing.m
   },
   button: {
@@ -14,5 +15,12 @@ export default StyleSheet.create({
   subtitle: {
     marginHorizontal: '10%',
     marginVertical: Spacing.l
+  },
+  closeButton: {
+    alignSelf: 'flex-end',
+    right: Spacing.xl,
+    top: Spacing.l,
+    position: 'absolute',
+    zIndex: 2
   }
 });
