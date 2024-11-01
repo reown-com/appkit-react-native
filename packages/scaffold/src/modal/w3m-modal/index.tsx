@@ -22,7 +22,6 @@ import { useTheme } from '@reown/appkit-ui-react-native';
 
 import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
-import { Snackbar } from '../../partials/w3m-snackbar';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function AppKit() {
@@ -135,7 +134,6 @@ export function AppKit() {
         backgroundStyle={{ backgroundColor: Theme['bg-100'] }}
       >
         <AppKitRouter />
-        <Snackbar />
       </BottomSheet>
 
       {!!authProvider && AuthView && <AuthView />}
