@@ -90,6 +90,6 @@ export function AccountTokens({ style }: Props) {
 const styles = StyleSheet.create({
   receiveButton: {
     width: 'auto',
-    marginHorizontal: Spacing.l
+    marginHorizontal: Spacing.s
   }
 });
