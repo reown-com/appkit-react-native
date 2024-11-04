@@ -55,6 +55,7 @@ export function ConnectingSocialView() {
           const parsedUrl = new URL(url);
           await provider?.connectSocial(parsedUrl.search);
           await ConnectionController.connectExternal(authConnector);
+          ConnectorController.setConnectedConnector('AUTH');
           ConnectionController.setConnectedSocialProvider(socialProvider);
           WebviewController.setConnecting(false);
 

@@ -27,7 +27,7 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 export function AppKit() {
   const Theme = useTheme();
   const { open, loading } = useSnapshot(ModalController.state);
-  const { connectors } = useSnapshot(ConnectorController.state);
+  const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
   const { isSiweEnabled } = OptionsController.state;
   const { isLandscape } = useCustomDimensions();
@@ -35,6 +35,7 @@ export function AppKit() {
   const AuthView = authProvider?.AuthView;
   const SocialView = authProvider?.Webview;
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const showAuth = !connectedConnector || connectedConnector === 'AUTH';
 
   const prefetch = async () => {
     await ApiController.prefetch();
@@ -136,8 +137,8 @@ export function AppKit() {
         <AppKitRouter />
       </BottomSheet>
 
-      {!!authProvider && AuthView && <AuthView />}
-      {!!authProvider && SocialView && <SocialView />}
+      {!!showAuth && AuthView && <AuthView />}
+      {!!showAuth && SocialView && <SocialView />}
     </>
   );
 }

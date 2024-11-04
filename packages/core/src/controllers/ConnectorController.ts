@@ -1,6 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy, ref } from 'valtio';
 import type { Connector, ConnectorType } from '../utils/TypeUtil';
+import { StorageUtil } from '../utils/StorageUtil';
 
 // -- Types --------------------------------------------- //
 export interface ConnectorControllerState {
@@ -40,8 +41,19 @@ export const ConnectorController = {
     return state.connectors.find(c => c.type === 'AUTH');
   },
 
-  setConnectedConnector(connectorType: ConnectorControllerState['connectedConnector']) {
+  setConnectedConnector(
+    connectorType: ConnectorControllerState['connectedConnector'],
+    saveStorage = true
+  ) {
     state.connectedConnector = connectorType;
+
+    if (saveStorage) {
+      if (connectorType) {
+        StorageUtil.setConnectedConnector(connectorType);
+      } else {
+        StorageUtil.removeConnectedConnector();
+      }
+    }
   },
 
   setAuthLoading(loading: ConnectorControllerState['authLoading']) {

@@ -18,13 +18,13 @@ import { Snackbar } from '../../partials/w3m-snackbar';
 import styles from './styles';
 
 export function UpgradeToSmartAccountView() {
+  const { address } = useSnapshot(AccountController.state);
   const { loading } = useSnapshot(ModalController.state);
-  const [isSwitchingAccountType, setIsSwitchingAccountType] = useState(false);
+  const [initialAddress] = useState(address);
 
   const onSwitchAccountType = async () => {
     try {
       ModalController.setLoading(true);
-      setIsSwitchingAccountType(true);
       const accountType =
         AccountController.state.preferredAccountType === 'eoa' ? 'smartAccount' : 'eoa';
       const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
@@ -58,10 +58,11 @@ export function UpgradeToSmartAccountView() {
   };
 
   useEffect(() => {
-    if (isSwitchingAccountType && !loading) {
+    // Go back if the address has changed
+    if (address && initialAddress !== address) {
       RouterController.goBack();
     }
-  }, [loading, isSwitchingAccountType]);
+  }, [initialAddress, address]);
 
   return (
     <>
