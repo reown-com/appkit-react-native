@@ -104,9 +104,9 @@ export class AppKit extends AppKitScaffold {
       async getApprovedCaipNetworksData() {
         const walletChoice = await StorageUtil.getConnectedConnector();
         const walletConnectType =
-          PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
+          PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]!;
 
-        const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID];
+        const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID]!;
 
         if (walletChoice?.includes(walletConnectType)) {
           const connector = wagmiConfig.connectors.find(

@@ -127,9 +127,9 @@ export class AppKit extends AppKitScaffold {
         new Promise(async resolve => {
           const walletChoice = await StorageUtil.getConnectedConnector();
           const walletConnectType =
-            PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
+            PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]!;
 
-          const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID];
+          const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID]!;
           if (walletChoice?.includes(walletConnectType)) {
             const provider = await this.getWalletConnectProvider();
             const result = getWalletConnectCaipNetworks(provider);
