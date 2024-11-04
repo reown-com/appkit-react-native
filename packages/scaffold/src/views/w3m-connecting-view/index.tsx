@@ -12,8 +12,7 @@ import {
   OptionsController,
   ApiController,
   EventsController,
-  ConnectorController,
-  StorageUtil
+  ConnectorController
 } from '@reown/appkit-core-react-native';
 
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
@@ -51,7 +50,6 @@ export function ConnectingView() {
         ConnectionController.connectWalletConnect(routeData?.wallet?.link_mode ?? undefined);
         await ConnectionController.state.wcPromise;
         ConnectorController.setConnectedConnector('WALLET_CONNECT');
-        StorageUtil.setConnectedConnector('WALLET_CONNECT');
         AccountController.setIsConnected(true);
 
         if (OptionsController.state.isSiweEnabled) {

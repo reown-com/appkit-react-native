@@ -175,13 +175,10 @@ export const ConnectionController = {
   resetWcConnection() {
     this.clearUri();
     state.pressedWallet = undefined;
-    state.connectedWalletImageUrl = undefined;
-    state.connectedSocialProvider = undefined;
+    ConnectionController.setConnectedSocialProvider(undefined);
+    ConnectionController.setConnectedWalletImageUrl(undefined);
     ConnectorController.setConnectedConnector(undefined);
     StorageUtil.removeWalletConnectDeepLink();
-    StorageUtil.removeConnectedWalletImageUrl();
-    StorageUtil.removeConnectedConnector();
-    StorageUtil.removeConnectedSocialProvider();
   },
 
   async disconnect() {

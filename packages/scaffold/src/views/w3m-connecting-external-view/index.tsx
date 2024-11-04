@@ -56,7 +56,6 @@ export function ConnectingExternalView() {
       if (connector) {
         await ConnectionController.connectExternal(connector);
         ConnectorController.setConnectedConnector(connector.type);
-        StorageUtil.setConnectedConnector(connector.type);
         storeConnectedWallet(data?.wallet);
         ModalController.close();
         EventsController.sendEvent({
