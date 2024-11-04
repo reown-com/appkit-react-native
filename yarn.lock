@@ -6758,6 +6758,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@reown/appkit-auth-wagmi-react-native@workspace:packages/auth-wagmi"
   dependencies:
+    "@reown/appkit-core-react-native": "npm:1.0.2"
     "@reown/appkit-wallet-react-native": "npm:1.0.2"
   peerDependencies:
     wagmi: ">=2"

@@ -2,6 +2,7 @@ import { createConnector, ChainNotConfiguredError } from 'wagmi';
 import { SwitchChainError, getAddress, type Address, type Hex } from 'viem';
 
 import { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
+import { StorageUtil } from '@reown/appkit-core-react-native';
 
 export type Metadata = {
   name: string;
@@ -22,7 +23,7 @@ type AuthConnectorOptions = {
 type Provider = AppKitFrameProvider;
 
 type StorageItemMap = {
-  '@w3m/connected_connector'?: string;
+  recentConnectorId?: string;
 };
 
 authConnector.type = 'appKitAuth' as const;
@@ -124,20 +125,16 @@ export function authConnector(parameters: AuthConnectorOptions) {
     },
     async isAuthorized() {
       try {
+        const connectedConnector = await StorageUtil.getConnectedConnector();
+        if (connectedConnector && connectedConnector !== 'AUTH') {
+          return false;
+        }
+
         const provider = await this.getProvider();
         await provider.webviewLoadPromise;
-        const connectedConnector = await config.storage?.getItem('recentConnectorId');
+        const { isConnected } = await provider.isConnected();
 
-        if (connectedConnector !== authConnector.id) {
-          // isConnected still needs to be called to disable email input loader
-          provider.isConnected();
-
-          return false;
-        } else {
-          const { isConnected } = await provider.isConnected();
-
-          return isConnected;
-        }
+        return isConnected;
       } catch (error) {
         return false;
       }
