@@ -137,7 +137,9 @@ function _AuthWebview() {
       provider.onNotConnected(() => {
         ConnectorController.setAuthLoading(false);
         ModalController.setLoading(false);
-        ConnectionController.disconnect();
+        if (ConnectorController.state.connectedConnector === 'AUTH') {
+          ConnectionController.disconnect();
+        }
       });
 
       provider.onGetSmartAccountEnabledNetworks(({ smartAccountEnabledNetworks }) => {

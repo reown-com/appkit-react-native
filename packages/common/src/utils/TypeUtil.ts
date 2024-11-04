@@ -94,7 +94,4 @@ export interface TransactionQuantity {
   numeric: string;
 }
 
-export type SocialProvider =
-  // | 'google'
-  // | 'github'
-  'apple' | 'facebook' | 'x' | 'discord' | 'farcaster';
+export type SocialProvider = 'apple' | 'x' | 'discord' | 'farcaster';
