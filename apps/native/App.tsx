@@ -65,7 +65,7 @@ createAppKit({
   metadata,
   features: {
     email: true,
-    socials: ['x', 'discord', 'apple', 'farcaster', 'facebook'],
+    socials: ['x', 'farcaster', 'discord', 'apple'],
     emailShowWallets: false
   }
 });
