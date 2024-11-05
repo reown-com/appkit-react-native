@@ -62,7 +62,12 @@ createAppKit({
   clipboardClient,
   customWallets,
   enableAnalytics: true,
-  metadata
+  metadata,
+  features: {
+    email: true,
+    socials: ['x', 'discord', 'apple', 'farcaster', 'facebook'],
+    emailShowWallets: true
+  }
 });
 
 export default function Native() {

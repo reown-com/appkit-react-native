@@ -1,4 +1,5 @@
-import type { Balance, Transaction } from '@reown/appkit-common-react-native';
+import { type EventEmitter } from 'events';
+import type { Balance, SocialProvider, Transaction } from '@reown/appkit-common-react-native';
 
 export interface BaseError {
   message?: string;
@@ -59,6 +60,24 @@ export type SdkVersion =
   | `react-native-wagmi-${string}`
   | `react-native-ethers5-${string}`
   | `react-native-ethers-${string}`;
+
+export type Features = {
+  /**
+   * @description Enable or disable the email feature. Enabled by default.
+   * @type {boolean}
+   */
+  email?: boolean;
+  /**
+   * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
+   * @type {boolean}
+   */
+  emailShowWallets?: boolean;
+  /**
+   * @description Enable or disable the socials feature. Enabled by default.
+   * @type {FeaturesSocials[]}
+   */
+  socials?: SocialProvider[] | false;
+};
 
 // -- ApiController Types -------------------------------------------------------
 export interface WcWallet {
@@ -433,6 +452,27 @@ export type Event =
         token: string;
         amount: number;
       };
+    }
+  | {
+      type: 'track';
+      event: 'SOCIAL_LOGIN_STARTED';
+      properties: {
+        provider: SocialProvider;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SOCIAL_LOGIN_SUCCESS';
+      properties: {
+        provider: SocialProvider;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SOCIAL_LOGIN_ERROR';
+      properties: {
+        provider: SocialProvider;
+      };
     };
 
 // -- Send Controller Types -------------------------------------
@@ -457,24 +497,42 @@ export interface WriteContractArgs {
 
 // -- Email Types ------------------------------------------------
 /**
- * Matches type defined for packages/email/src/AppKitFrameProvider.ts
+ * Matches type defined for packages/wallet/src/AppKitFrameProvider.ts
  * It's duplicated in order to decouple scaffold from email package
  */
 export interface AppKitFrameProvider {
   readonly id: string;
   readonly name: string;
+  getEventEmitter(): EventEmitter;
   getSecureSiteURL(): string;
   getSecureSiteDashboardURL(): string;
   getSecureSiteIconURL(): string;
   getSecureSiteHeaders(): Record<string, string>;
-  getLoginEmailUsed(): Promise<boolean>;
   getEmail(): string | undefined;
+  getUsername(): string | undefined;
   rejectRpcRequest(): void;
   connectEmail(payload: { email: string }): Promise<{
     action: 'VERIFY_DEVICE' | 'VERIFY_OTP';
   }>;
   connectDevice(): Promise<unknown>;
+  connectSocial(uri: string): Promise<{
+    chainId: string | number;
+    email: string;
+    address: string;
+    accounts?:
+      | {
+          type: 'eoa' | 'smartAccount';
+          address: string;
+        }[]
+      | undefined;
+    userName?: string | undefined;
+  }>;
+  getSocialRedirectUri(payload: { provider: SocialProvider }): Promise<{
+    uri: string;
+  }>;
   connectOtp(payload: { otp: string }): Promise<unknown>;
+  connectFarcaster: () => Promise<{ username: string }>;
+  getFarcasterUri(): Promise<{ url: string }>;
   isConnected(): Promise<{
     isConnected: boolean;
   }>;
@@ -508,4 +566,5 @@ export interface AppKitFrameProvider {
   disconnect(): Promise<unknown>;
   request(req: any): Promise<any>;
   AuthView: () => JSX.Element | null;
+  Webview: () => JSX.Element | null;
 }

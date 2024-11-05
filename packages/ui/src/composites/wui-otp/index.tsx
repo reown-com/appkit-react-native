@@ -90,7 +90,6 @@ export function Otp({ length, style, onChangeText, autoFocus }: OtpProps) {
           inputRef={refArray[index]}
           onChangeText={text => _onChangeText(text, index)}
           onKeyPress={(e: any) => onKeyPress(e, index)}
-          textContentType="oneTimeCode"
           autoComplete={Platform.OS === 'android' ? 'sms-otp' : 'one-time-code'}
         />
       ))}

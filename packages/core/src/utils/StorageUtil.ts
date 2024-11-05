@@ -1,12 +1,14 @@
 /* eslint-disable no-console */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { ConnectorType, WcWallet } from './TypeUtil';
+import type { SocialProvider } from '@reown/appkit-common-react-native';
 
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE';
 const RECENT_WALLET = '@w3m/recent';
 const CONNECTED_WALLET_IMAGE_URL = '@w3m/connected_wallet_image_url';
 const CONNECTED_CONNECTOR = '@w3m/connected_connector';
+const CONNECTED_SOCIAL = '@appkit/connected_social';
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -133,6 +135,34 @@ export const StorageUtil = {
       await AsyncStorage.removeItem(CONNECTED_WALLET_IMAGE_URL);
     } catch {
       console.info('Unable to remove Connected Wallet Image URL');
+    }
+  },
+
+  async setConnectedSocialProvider(provider: SocialProvider) {
+    try {
+      await AsyncStorage.setItem(CONNECTED_SOCIAL, JSON.stringify(provider));
+    } catch {
+      console.info('Unable to set Connected Social Provider');
+    }
+  },
+
+  async getConnectedSocialProvider() {
+    try {
+      const provider = (await AsyncStorage.getItem(CONNECTED_SOCIAL)) as SocialProvider;
+
+      return provider ? JSON.parse(provider) : undefined;
+    } catch {
+      console.info('Unable to get Connected Social Provider');
+    }
+
+    return undefined;
+  },
+
+  async removeConnectedSocialProvider() {
+    try {
+      await AsyncStorage.removeItem(CONNECTED_SOCIAL);
+    } catch {
+      console.info('Unable to remove Connected Social Provider');
     }
   }
 };

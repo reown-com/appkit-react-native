@@ -4,5 +4,6 @@ export { DateUtil } from './utils/DateUtil';
 export { NamesUtil } from './utils/NamesUtil';
 export { NetworkUtil } from './utils/NetworkUtil';
 export { NumberUtil } from './utils/NumberUtil';
+export { StringUtil } from './utils/StringUtil';
 export { erc20ABI } from './contracts/erc20';
 export * from './utils/TypeUtil';

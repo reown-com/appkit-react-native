@@ -149,6 +149,8 @@ export const iconOptions: IconType[] = [
   'extension',
   'externalLink',
   'facebook',
+  'farcaster',
+  'farcasterSquare',
   'filters',
   'github',
   'google',
@@ -156,6 +158,7 @@ export const iconOptions: IconType[] = [
   'infoCircle',
   'mail',
   'mobile',
+  'more',
   'networkPlaceholder',
   'nftPlaceholder',
   'off',
@@ -166,11 +169,10 @@ export const iconOptions: IconType[] = [
   'swapVertical',
   'telegram',
   'twitch',
-  'twitterIcon',
-  'twitter',
   'wallet',
   'walletSmall',
   'walletConnect',
+  'walletConnectLightBrown',
   'walletPlaceholder',
   'warningCircle'
 ];
@@ -195,11 +197,13 @@ export const logoOptions: LogoType[] = [
   'apple',
   'discord',
   'facebook',
+  'farcaster',
   'github',
   'google',
+  'more',
   'telegram',
   'twitch',
-  'twitter'
+  'x'
 ];
 
 export const cardSelectOptions: CardSelectType[] = ['wallet', 'network'];

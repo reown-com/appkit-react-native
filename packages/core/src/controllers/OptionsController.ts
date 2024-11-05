@@ -1,5 +1,13 @@
 import { proxy, ref } from 'valtio';
-import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil';
+import type {
+  CustomWallet,
+  Features,
+  Metadata,
+  ProjectId,
+  SdkVersion,
+  Tokens
+} from '../utils/TypeUtil';
+import { ConstantsUtil } from '../utils/ConstantsUtil';
 
 // -- Types --------------------------------------------- //
 export interface ClipboardClient {
@@ -19,13 +27,15 @@ export interface OptionsControllerState {
   sdkVersion: SdkVersion;
   metadata?: Metadata;
   isSiweEnabled?: boolean;
+  features?: Features;
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
   projectId: '',
   sdkType: 'appkit',
-  sdkVersion: 'react-native-wagmi-undefined'
+  sdkVersion: 'react-native-wagmi-undefined',
+  features: ConstantsUtil.DEFAULT_FEATURES
 });
 
 // -- Controller ---------------------------------------- //
@@ -74,6 +84,10 @@ export const OptionsController = {
 
   setIsSiweEnabled(isSiweEnabled: OptionsControllerState['isSiweEnabled']) {
     state.isSiweEnabled = isSiweEnabled;
+  },
+
+  setFeatures(features: OptionsControllerState['features']) {
+    state.features = { ...ConstantsUtil.DEFAULT_FEATURES, ...features };
   },
 
   isClipboardAvailable() {

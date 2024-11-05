@@ -1,30 +1,40 @@
+import { useSnapshot } from 'valtio';
 import {
   RouterController,
   ModalController,
-  EventsController
+  EventsController,
+  type RouterControllerState
 } from '@reown/appkit-core-react-native';
 import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
+import { StringUtil } from '@reown/appkit-common-react-native';
 
 export function Header() {
+  const { data, view } = useSnapshot(RouterController.state);
   const onHelpPress = () => {
     RouterController.push('WhatIsAWallet');
     EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' });
   };
 
-  const headings = () => {
-    const { data } = RouterController.state;
-    const connectorName = data?.connector?.name;
-    const walletName = data?.wallet?.name;
-    const networkName = data?.network?.name;
+  const headings = (_data: RouterControllerState['data'], _view: RouterControllerState['view']) => {
+    const connectorName = _data?.connector?.name;
+    const walletName = _data?.wallet?.name;
+    const networkName = _data?.network?.name;
+    const socialName = _data?.socialProvider
+      ? StringUtil.capitalize(_data?.socialProvider)
+      : undefined;
 
     return {
       Account: undefined,
       AccountDefault: undefined,
       AllWallets: 'All wallets',
       Connect: 'Connect wallet',
+      ConnectSocials: 'All socials',
       ConnectingExternal: connectorName ?? 'Connect wallet',
       ConnectingSiwe: 'Sign In',
+      ConnectingFarcaster: socialName ?? 'Connecting Social',
+      ConnectingSocial: socialName ?? 'Connecting Social',
       ConnectingWalletConnect: walletName ?? 'WalletConnect',
+      Create: 'Create wallet',
       EmailVerifyDevice: ' ',
       EmailVerifyOtp: 'Confirm email',
       GetWallet: 'Get a wallet',
@@ -42,10 +52,10 @@ export function Header() {
       WalletSendSelectToken: 'Select token',
       WhatIsANetwork: 'What is a network?',
       WhatIsAWallet: 'What is a wallet?'
-    };
+    }[_view];
   };
 
-  const header = headings()[RouterController.state.view];
+  const header = headings(data, view);
 
   const dynamicButtonTemplate = () => {
     const hideBackViews = ['ConnectingSiwe'];

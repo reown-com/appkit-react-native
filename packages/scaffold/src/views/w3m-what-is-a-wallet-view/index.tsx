@@ -1,5 +1,5 @@
-import { Linking, ScrollView } from 'react-native';
-import { Button, FlexView, Link, Text, Visual } from '@reown/appkit-ui-react-native';
+import { ScrollView } from 'react-native';
+import { Button, FlexView, Text, Visual } from '@reown/appkit-ui-react-native';
 import { EventsController, RouterController } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
@@ -12,13 +12,9 @@ export function WhatIsAWalletView() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_GET_WALLET' });
   };
 
-  const onHelpPress = () => {
-    Linking.openURL('https://secure.walletconnect.com/dashboard/faq');
-  };
-
   return (
     <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
-      <FlexView alignItems="center" padding={['xs', '4xl', '3xl', '4xl']}>
+      <FlexView alignItems="center" padding={['xs', '4xl', 'xl', '4xl']}>
         <FlexView flexDirection="row" padding={['0', '0', 's', '0']}>
           <Visual name="login" />
           <Visual name="profile" style={styles.visual} />
@@ -60,9 +56,6 @@ export function WhatIsAWalletView() {
         >
           Get a wallet
         </Button>
-        <Link size="sm" iconLeft="helpCircle" onPress={onHelpPress}>
-          What is an email wallet?
-        </Link>
       </FlexView>
     </ScrollView>
   );

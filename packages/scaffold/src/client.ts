@@ -13,7 +13,8 @@ import type {
   ThemeMode,
   ThemeVariables,
   Connector,
-  ConnectedWalletInfo
+  ConnectedWalletInfo,
+  Features
 } from '@reown/appkit-core-react-native';
 import type { SIWEControllerClient } from '@reown/appkit-siwe-react-native';
 import {
@@ -48,6 +49,7 @@ export interface LibraryOptions {
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
   _sdkVersion: OptionsControllerState['sdkVersion'];
   metadata?: OptionsControllerState['metadata'];
+  features?: Features;
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -262,6 +264,10 @@ export class AppKitScaffold {
 
       SIWEController.setSIWEClient(options.siweControllerClient);
     }
+
+    if (options.features) {
+      OptionsController.setFeatures(options.features);
+    }
   }
 
   private async setConnectorExcludedWallets(connectors: Connector[]) {
@@ -309,8 +315,14 @@ export class AppKitScaffold {
     }
   }
 
+  private async initSocial() {
+    const connectedSocialProvider = await StorageUtil.getConnectedSocialProvider();
+    ConnectionController.setConnectedSocialProvider(connectedSocialProvider);
+  }
+
   private async initAsyncValues(options: ScaffoldOptions) {
     await this.initConnectedConnector();
     await this.initRecentWallets(options);
+    await this.initSocial();
   }
 }

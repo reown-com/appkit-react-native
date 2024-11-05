@@ -12,7 +12,8 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export interface ChipProps {
   label?: string;
   imageSrc?: string;
-  icon?: IconType;
+  leftIcon?: IconType;
+  rightIcon?: IconType;
   variant?: ChipType;
   size?: Exclude<SizeType, 'xl' | 'lg' | 'xs' | 'xxs'>;
   disabled?: boolean;
@@ -23,7 +24,8 @@ export interface ChipProps {
 export function Chip({
   onPress,
   imageSrc,
-  icon,
+  leftIcon,
+  rightIcon,
   variant = 'fill',
   size = 'md',
   disabled,
@@ -89,15 +91,16 @@ export function Chip({
           source={imageSrc}
         />
       )}
+      {leftIcon && <Icon name={leftIcon} color={themedTextColor as ColorType} />}
       <Text
         variant={size === 'md' ? 'paragraph-600' : 'small-600'}
         style={[styles.link, { color: Theme[themedTextColor] }]}
       >
         {label}
       </Text>
-      {icon && (
+      {rightIcon && (
         <Icon
-          name={icon}
+          name={rightIcon}
           size={iconSize}
           color={themedTextColor as ColorType}
           style={styles.icon}

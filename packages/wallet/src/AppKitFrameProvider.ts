@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import type { RefObject } from 'react';
-import type WebView from 'react-native-webview';
+import WebView from 'react-native-webview';
 import { CoreHelperUtil } from '@reown/appkit-core-react-native';
 import type { AppKitFrameTypes } from './AppKitFrameTypes';
 import { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameConstants';
@@ -8,6 +8,7 @@ import { AppKitFrameStorage } from './AppKitFrameStorage';
 import { AppKitFrameHelpers } from './AppKitFrameHelpers';
 import { AppKitFrameSchema } from './AppKitFrameSchema';
 import { AuthWebview } from './AppKitAuthWebview';
+import { AppKitWebview } from './AppKitWebview';
 
 // -- Provider --------------------------------------------------------
 export class AppKitFrameProvider {
@@ -18,6 +19,8 @@ export class AppKitFrameProvider {
   private metadata: AppKitFrameTypes.Metadata | undefined;
 
   private email: string | undefined;
+
+  private username: string | undefined;
 
   private rpcRequestHandler?: (request: AppKitFrameTypes.RPCRequest) => void;
   private rpcSuccessHandler?: (
@@ -37,6 +40,8 @@ export class AppKitFrameProvider {
 
   public AuthView = AuthWebview;
 
+  public Webview = AppKitWebview;
+
   private openRpcRequests: Array<
     AppKitFrameTypes.RPCRequest & { abortController: AbortController }
   > = [];
@@ -53,6 +58,10 @@ export class AppKitFrameProvider {
     this.getAsyncEmail().then(email => {
       this.email = email;
     });
+
+    this.getAsyncUsername().then(username => {
+      this.username = username;
+    });
   }
 
   public setWebviewRef(webviewRef: RefObject<WebView>) {
@@ -60,7 +69,7 @@ export class AppKitFrameProvider {
   }
 
   public onMessage(event: AppKitFrameTypes.FrameEvent) {
-    // console.log('💻 received', e); // eslint-disable-line no-console
+    // console.log('💻 received', event); // eslint-disable-line no-console
     this.events.emit('message', event);
   }
 
@@ -89,14 +98,12 @@ export class AppKitFrameProvider {
     return { 'X-Bundle-Id': CoreHelperUtil.getBundleId() };
   }
 
-  public async getLoginEmailUsed() {
-    const email = await AppKitFrameStorage.get(AppKitFrameConstants.EMAIL_LOGIN_USED_KEY);
-
-    return Boolean(email);
-  }
-
   public getEmail() {
     return this.email;
+  }
+
+  public getUsername() {
+    return this.username;
   }
 
   public rejectRpcRequest() {
@@ -108,6 +115,10 @@ export class AppKitFrameProvider {
       });
       this.openRpcRequests = [];
     } catch (e) {}
+  }
+
+  public getEventEmitter() {
+    return this.events;
   }
 
   public async connectEmail(payload: AppKitFrameTypes.Requests['AppConnectEmailRequest']) {
@@ -134,6 +145,51 @@ export class AppKitFrameProvider {
     return response;
   }
 
+  public async connectSocial(uri: string) {
+    try {
+      const response = await this.appEvent<'ConnectSocial'>({
+        type: AppKitFrameConstants.APP_CONNECT_SOCIAL,
+        payload: { uri }
+      } as AppKitFrameTypes.AppEvent);
+
+      if (response.userName) {
+        this.setSocialLoginSuccess(response.userName);
+      }
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getFarcasterUri() {
+    try {
+      const response = await this.appEvent<'GetFarcasterUri'>({
+        type: AppKitFrameConstants.APP_GET_FARCASTER_URI
+      } as AppKitFrameTypes.AppEvent);
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async connectFarcaster() {
+    try {
+      const response = await this.appEvent<'ConnectFarcaster'>({
+        type: AppKitFrameConstants.APP_CONNECT_FARCASTER
+      } as AppKitFrameTypes.AppEvent);
+
+      if (response.userName) {
+        this.setSocialLoginSuccess(response.userName);
+      }
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async connectOtp(payload: AppKitFrameTypes.Requests['AppConnectOtpRequest']) {
     await this.webviewLoadPromise;
 
@@ -154,7 +210,7 @@ export class AppKitFrameProvider {
     } as AppKitFrameTypes.AppEvent);
 
     if (!response.isConnected) {
-      this.deleteEmailLoginCache();
+      this.deleteLoginCache();
     }
 
     return response;
@@ -170,6 +226,19 @@ export class AppKitFrameProvider {
     this.setLastUsedChainId(response.chainId);
 
     return response;
+  }
+
+  public async getSocialRedirectUri(
+    payload: AppKitFrameTypes.Requests['AppGetSocialRedirectUriRequest']
+  ) {
+    try {
+      return this.appEvent<'GetSocialRedirectUri'>({
+        type: AppKitFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
+        payload
+      } as AppKitFrameTypes.AppEvent);
+    } catch (error) {
+      throw error;
+    }
   }
 
   public async updateEmail(payload: AppKitFrameTypes.Requests['AppUpdateEmailRequest']) {
@@ -248,8 +317,11 @@ export class AppKitFrameProvider {
       payload: { ...payload, chainId }
     } as AppKitFrameTypes.AppEvent);
 
-    this.setEmailLoginSuccess(response.email);
-    this.setLastUsedChainId(response.chainId);
+    if (response.email) {
+      this.setEmailLoginSuccess(response.email);
+    }
+
+    this.setLastUsedChainId(Number(response.chainId));
 
     return response;
   }
@@ -274,7 +346,7 @@ export class AppKitFrameProvider {
       type: AppKitFrameConstants.APP_SIGN_OUT
     });
 
-    this.deleteEmailLoginCache();
+    this.deleteLoginCache();
 
     return response;
   }
@@ -348,6 +420,11 @@ export class AppKitFrameProvider {
     AppKitFrameStorage.set(AppKitFrameConstants.LAST_EMAIL_LOGIN_TIME, Date.now().toString());
   }
 
+  private setSocialLoginSuccess(username: string) {
+    AppKitFrameStorage.set(AppKitFrameConstants.SOCIAL_USERNAME, username);
+    this.username = username;
+  }
+
   private setEmailLoginSuccess(email: string) {
     AppKitFrameStorage.set(AppKitFrameConstants.EMAIL, email);
     AppKitFrameStorage.set(AppKitFrameConstants.EMAIL_LOGIN_USED_KEY, 'true');
@@ -355,11 +432,13 @@ export class AppKitFrameProvider {
     this.email = email;
   }
 
-  private deleteEmailLoginCache() {
+  private deleteLoginCache() {
     AppKitFrameStorage.delete(AppKitFrameConstants.EMAIL_LOGIN_USED_KEY);
     AppKitFrameStorage.delete(AppKitFrameConstants.EMAIL);
     AppKitFrameStorage.delete(AppKitFrameConstants.LAST_USED_CHAIN_KEY);
+    AppKitFrameStorage.delete(AppKitFrameConstants.SOCIAL_USERNAME);
     this.email = undefined;
+    this.username = undefined;
   }
 
   private setLastUsedChainId(chainId: number) {
@@ -480,22 +559,10 @@ export class AppKitFrameProvider {
 
     return email;
   }
-}
 
-export interface AppKitFrameProviderMethods {
-  // Email
-  connectEmail: AppKitFrameProvider['connectEmail'];
-  connectOtp: AppKitFrameProvider['connectOtp'];
-  updateEmail: AppKitFrameProvider['updateEmail'];
-  updateEmailPrimaryOtp: AppKitFrameProvider['updateEmailPrimaryOtp'];
-  updateEmailSecondaryOtp: AppKitFrameProvider['updateEmailSecondaryOtp'];
-  getEmail: AppKitFrameProvider['getEmail'];
+  private async getAsyncUsername() {
+    const username = await AppKitFrameStorage.get(AppKitFrameConstants.SOCIAL_USERNAME);
 
-  // Social
-  connectDevice: AppKitFrameProvider['connectDevice'];
-
-  // Misc
-  syncTheme: AppKitFrameProvider['syncTheme'];
-  syncDappData: AppKitFrameProvider['syncDappData'];
-  switchNetwork: AppKitFrameProvider['switchNetwork'];
+    return username;
+  }
 }

@@ -10,6 +10,7 @@ import type {
 } from '../utils/TypeUtil';
 import { RouterController } from './RouterController';
 import { ConnectorController } from './ConnectorController';
+import type { SocialProvider } from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -48,6 +49,7 @@ export interface ConnectionControllerState {
   pressedWallet?: WcWallet;
   recentWallets?: WcWallet[];
   connectedWalletImageUrl?: string;
+  connectedSocialProvider?: SocialProvider;
 }
 
 type StateKey = keyof ConnectionControllerState;
@@ -133,6 +135,16 @@ export const ConnectionController = {
     }
   },
 
+  setConnectedSocialProvider(provider: ConnectionControllerState['connectedSocialProvider']) {
+    state.connectedSocialProvider = provider;
+
+    if (provider) {
+      StorageUtil.setConnectedSocialProvider(provider);
+    } else {
+      StorageUtil.removeConnectedSocialProvider();
+    }
+  },
+
   parseUnits(value: string, decimals: number) {
     return this._getClient().parseUnits(value, decimals);
   },
@@ -168,10 +180,12 @@ export const ConnectionController = {
     this.clearUri();
     state.pressedWallet = undefined;
     state.connectedWalletImageUrl = undefined;
+    state.connectedSocialProvider = undefined;
     ConnectorController.setConnectedConnector(undefined);
     StorageUtil.removeWalletConnectDeepLink();
     StorageUtil.removeConnectedWalletImageUrl();
     StorageUtil.removeConnectedConnector();
+    StorageUtil.removeConnectedSocialProvider();
   },
 
   async disconnect() {

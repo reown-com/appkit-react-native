@@ -1,4 +1,4 @@
-import { OptionsController } from '../../index';
+import { ConstantsUtil, OptionsController } from '../../index';
 
 const MOCK_WALLET_IDS = [
   '1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369',
@@ -15,7 +15,8 @@ describe('OptionsController', () => {
     expect(OptionsController.state).toEqual({
       projectId: '',
       sdkType: 'appkit',
-      sdkVersion: 'react-native-wagmi-undefined'
+      sdkVersion: 'react-native-wagmi-undefined',
+      features: ConstantsUtil.DEFAULT_FEATURES
     });
   });
 
