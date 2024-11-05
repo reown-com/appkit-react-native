@@ -10,12 +10,6 @@ export default StyleSheet.create({
   tokenInput: {
     marginBottom: Spacing.xs
   },
-  mockInput: {
-    width: '100%',
-    borderWidth: 1,
-    height: 120,
-    borderRadius: 20
-  },
   arrowIcon: {
     position: 'absolute',
     top: -30,

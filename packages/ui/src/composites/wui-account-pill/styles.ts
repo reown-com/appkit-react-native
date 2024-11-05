@@ -11,9 +11,12 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: BorderRadius.full,
-    borderWidth: 1
+    borderWidth: StyleSheet.hairlineWidth
   },
   text: {
     marginLeft: Spacing['2xs']
+  },
+  copyButton: {
+    marginHorizontal: Spacing['3xs']
   }
 });

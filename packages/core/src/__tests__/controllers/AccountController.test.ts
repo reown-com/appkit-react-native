@@ -9,7 +9,9 @@ const profileImage = 'https://ipfs.com/0x123.png';
 
 const initialState = {
   isConnected: false,
-  tokenBalance: []
+  tokenBalance: [],
+  preferredAccountType: 'eoa',
+  smartAccountDeployed: false
 };
 
 // -- Tests --------------------------------------------------------------------

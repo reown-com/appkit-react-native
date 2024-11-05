@@ -22,7 +22,7 @@ export default StyleSheet.create({
   activeMark: {
     position: 'absolute',
     height: 28,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderRadius: BorderRadius['3xl'],
     margin: Spacing['3xs']
   }

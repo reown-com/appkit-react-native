@@ -97,7 +97,7 @@ export const SendController = {
         type: 'track',
         event: 'SEND_INITIATED',
         properties: {
-          isSmartAccount: false,
+          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
           token: this.state.token.address,
           amount: this.state.sendTokenAmount,
           network: NetworkController.state.caipNetwork?.id || ''
@@ -120,7 +120,7 @@ export const SendController = {
         type: 'track',
         event: 'SEND_INITIATED',
         properties: {
-          isSmartAccount: false,
+          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
           token: this.state.token?.symbol,
           amount: this.state.sendTokenAmount,
           network: NetworkController.state.caipNetwork?.id || ''
@@ -162,7 +162,7 @@ export const SendController = {
         type: 'track',
         event: 'SEND_SUCCESS',
         properties: {
-          isSmartAccount: false,
+          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
           network: NetworkController.state.caipNetwork?.id || ''
@@ -175,7 +175,7 @@ export const SendController = {
         type: 'track',
         event: 'SEND_ERROR',
         properties: {
-          isSmartAccount: false,
+          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
           network: NetworkController.state.caipNetwork?.id || ''

@@ -56,18 +56,18 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
     );
   };
 
-  const walletTemplate = ({ item, index }: { item: WcWallet; index: number }) => {
+  const walletTemplate = ({ item }: { item: WcWallet; index: number }) => {
     const isInstalled = ApiController.state.installed.find(wallet => wallet?.id === item?.id);
     if (!item?.id) {
       return (
-        <View key={index} style={[styles.itemContainer, { width: itemWidth }]}>
+        <View style={[styles.itemContainer, { width: itemWidth }]}>
           <CardSelectLoader />
         </View>
       );
     }
 
     return (
-      <View key={item?.id} style={[styles.itemContainer, { width: itemWidth }]}>
+      <View style={[styles.itemContainer, { width: itemWidth }]}>
         <CardSelect
           imageSrc={AssetUtil.getWalletImage(item)}
           imageHeaders={imageHeaders}

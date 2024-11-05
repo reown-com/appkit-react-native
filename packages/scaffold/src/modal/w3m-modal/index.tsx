@@ -27,7 +27,7 @@ import styles from './styles';
 
 export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
-  const { connectors } = useSnapshot(ConnectorController.state);
+  const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
   const { frameViewVisible, webviewVisible } = useSnapshot(WebviewController.state);
   const { isSiweEnabled } = OptionsController.state;
@@ -38,6 +38,7 @@ export function AppKit() {
   const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
   const AuthView = authProvider?.AuthView;
   const SocialView = authProvider?.Webview;
+  const showAuth = !connectedConnector || connectedConnector === 'AUTH';
 
   const onBackButtonPress = () => {
     if (RouterController.state.history.length > 1) {
@@ -70,7 +71,7 @@ export function AppKit() {
 
       const newAddress = CoreHelperUtil.getPlainAddress(address);
       TransactionsController.resetTransactions();
-      TransactionsController.fetchTransactions(newAddress);
+      TransactionsController.fetchTransactions(newAddress, true);
 
       if (isSiweEnabled) {
         const newNetworkId = CoreHelperUtil.getNetworkId(address);
@@ -136,8 +137,8 @@ export function AppKit() {
           <Snackbar />
         </Card>
       </Modal>
-      {!!authProvider && AuthView && <AuthView />}
-      {!!authProvider && SocialView && <SocialView />}
+      {!!showAuth && AuthView && <AuthView />}
+      {!!showAuth && SocialView && <SocialView />}
     </>
   );
 }

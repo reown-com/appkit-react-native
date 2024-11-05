@@ -3,7 +3,7 @@ import { subscribeKey as subKey } from 'valtio/utils';
 import type { Balance } from '@reown/appkit-common-react-native';
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
-import type { CaipAddress, ConnectedWalletInfo } from '../utils/TypeUtil';
+import type { AppKitFrameAccountType, CaipAddress, ConnectedWalletInfo } from '../utils/TypeUtil';
 import { NetworkController } from './NetworkController';
 import { BlockchainApiController } from './BlockchainApiController';
 import { SnackController } from './SnackController';
@@ -20,6 +20,8 @@ export interface AccountControllerState {
   profileImage?: string;
   addressExplorerUrl?: string;
   connectedWalletInfo?: ConnectedWalletInfo;
+  preferredAccountType?: AppKitFrameAccountType;
+  smartAccountDeployed?: boolean;
 }
 
 type StateKey = keyof AccountControllerState;
@@ -27,7 +29,9 @@ type StateKey = keyof AccountControllerState;
 // -- State --------------------------------------------- //
 const state = proxy<AccountControllerState>({
   isConnected: false,
-  tokenBalance: []
+  tokenBalance: [],
+  smartAccountDeployed: false,
+  preferredAccountType: 'eoa'
 });
 
 // -- Controller ---------------------------------------- //
@@ -76,6 +80,14 @@ export const AccountController = {
     state.addressExplorerUrl = explorerUrl;
   },
 
+  setPreferredAccountType(accountType: AccountControllerState['preferredAccountType']) {
+    state.preferredAccountType = accountType;
+  },
+
+  setSmartAccountDeployed(smartAccountDeployed: AccountControllerState['smartAccountDeployed']) {
+    state.smartAccountDeployed = smartAccountDeployed;
+  },
+
   async fetchTokenBalance() {
     const chainId = NetworkController.state.caipNetwork?.id;
     const address = AccountController.state.address;
@@ -110,5 +122,7 @@ export const AccountController = {
     state.addressExplorerUrl = undefined;
     state.tokenBalance = [];
     state.connectedWalletInfo = undefined;
+    state.preferredAccountType = 'eoa';
+    state.smartAccountDeployed = false;
   }
 };

@@ -1,4 +1,4 @@
-import { Animated, Pressable, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Animated, Pressable, type StyleProp, type ViewStyle } from 'react-native';
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import { useTheme } from '../../hooks/useTheme';
@@ -6,9 +6,10 @@ import type { IconType, TagType } from '../../utils/TypesUtil';
 import { Tag } from '../wui-tag';
 import { WalletImage } from '../wui-wallet-image';
 import { Icon } from '../../components/wui-icon';
+import { LeanView } from '../../components/wui-lean-view';
+import { IconBox } from '../wui-icon-box';
 
 import styles from './styles';
-import { IconBox } from '../wui-icon-box';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -67,7 +68,7 @@ export function ListWallet({
 
   function imageTemplate() {
     return (
-      <View>
+      <LeanView>
         <WalletImage
           style={[styles.image, disabled && styles.imageDisabled]}
           imageSrc={imageSrc}
@@ -76,7 +77,7 @@ export function ListWallet({
           size="sm"
         />
         {templateInstalled()}
-      </View>
+      </LeanView>
     );
   }
 
@@ -116,12 +117,12 @@ export function ListWallet({
       onPressOut={setStartValue}
       testID={testID}
     >
-      <View style={styles.leftSide}>
+      <LeanView style={styles.leftSide}>
         {imageTemplate()}
         <Text variant="paragraph-500" style={styles.name} color={disabled ? 'fg-300' : 'fg-100'}>
           {name}
         </Text>
-      </View>
+      </LeanView>
       {iconTemplate()}
     </AnimatedPressable>
   );

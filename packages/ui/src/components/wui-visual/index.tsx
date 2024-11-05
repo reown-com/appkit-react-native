@@ -14,6 +14,9 @@ import NounSvg from '../../assets/visual/Noun';
 import ProfileSvg from '../../assets/visual/Profile';
 import SystemSvg from '../../assets/visual/System';
 import type { VisualType } from '../../utils/TypesUtil';
+import GoogleSvg from '../../assets/visual/Google';
+import LightbulbSvg from '../../assets/visual/Lightbulb';
+import PencilSvg from '../../assets/visual/Pencil';
 
 const svgOptions: Record<VisualType, (props: SvgProps) => JSX.Element> = {
   browser: BrowserSvg,
@@ -21,12 +24,15 @@ const svgOptions: Record<VisualType, (props: SvgProps) => JSX.Element> = {
   defi: DefiSvg,
   defiAlt: DefiAltSvg,
   eth: EthSvg,
+  google: GoogleSvg,
   layers: LayersSvg,
+  lightbulb: LightbulbSvg,
   lock: LockSvg,
   login: LoginSvg,
   network: NetworkSvg,
   nft: NftSvg,
   noun: NounSvg,
+  pencil: PencilSvg,
   profile: ProfileSvg,
   system: SystemSvg
 };

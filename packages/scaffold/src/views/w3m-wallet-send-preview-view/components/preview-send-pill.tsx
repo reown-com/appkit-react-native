@@ -31,6 +31,6 @@ export function PreviewSendPill({ text, children }: PreviewSendPillProps) {
 const styles = StyleSheet.create({
   pill: {
     borderRadius: BorderRadius.full,
-    borderWidth: 1
+    borderWidth: StyleSheet.hairlineWidth
   }
 });

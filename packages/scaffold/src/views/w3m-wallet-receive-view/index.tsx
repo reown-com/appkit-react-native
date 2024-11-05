@@ -21,7 +21,7 @@ import {
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function WalletReceiveView() {
-  const { address, profileName } = useSnapshot(AccountController.state);
+  const { address, profileName, preferredAccountType } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const { padding } = useCustomDimensions();
@@ -31,6 +31,8 @@ export function WalletReceiveView() {
       .filter(network => network?.imageId)
       ?.slice(0, 5) || [];
   const imagesArray = slicedNetworks.map(AssetUtil.getNetworkImage).filter(Boolean) as string[];
+  const isSmartAccount =
+    preferredAccountType === 'smartAccount' && NetworkController.checkIfSmartAccountEnabled();
 
   const label = UiUtil.getTruncateString({
     string: profileName ?? address ?? '',
@@ -69,7 +71,9 @@ export function WalletReceiveView() {
         <CompatibleNetwork
           text="Only receive from networks"
           onPress={onNetworkPress}
-          networkImages={imagesArray}
+          networkImages={
+            isSmartAccount ? [AssetUtil.getNetworkImage(caipNetwork) || ''] : imagesArray
+          }
           imageHeaders={ApiController._getApiHeaders()}
           style={styles.networksButton}
         />

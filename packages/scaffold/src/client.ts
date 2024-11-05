@@ -228,6 +228,11 @@ export class AppKitScaffold {
     BlockchainApiController.setClientId(clientId);
   };
 
+  protected setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
+    preferredAccountType => {
+      AccountController.setPreferredAccountType(preferredAccountType);
+    };
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     this.initAsyncValues(options);
@@ -311,7 +316,7 @@ export class AppKitScaffold {
   private async initConnectedConnector() {
     const connectedConnector = await StorageUtil.getConnectedConnector();
     if (connectedConnector) {
-      ConnectorController.setConnectedConnector(connectedConnector);
+      ConnectorController.setConnectedConnector(connectedConnector, false);
     }
   }
 

@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { Animated, Appearance, Linking, Platform, SafeAreaView, StyleSheet } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 
@@ -8,9 +8,11 @@ import {
   OptionsController,
   ModalController,
   type OptionsControllerState,
-  StorageUtil,
   RouterController,
-  WebviewController
+  WebviewController,
+  AccountController,
+  NetworkController,
+  ConnectionController
 } from '@reown/appkit-core-react-native';
 import { useTheme, BorderRadius } from '@reown/appkit-ui-react-native';
 import type { AppKitFrameProvider } from './AppKitFrameProvider';
@@ -20,11 +22,13 @@ import type { AppKitFrameTypes } from './AppKitFrameTypes';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
-export function AuthWebview() {
+function _AuthWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
   const authConnector = ConnectorController.getAuthConnector();
-  const { projectId, sdkVersion } = useSnapshot(OptionsController.state) as OptionsControllerState;
+  const { projectId, sdkVersion, sdkType } = useSnapshot(
+    OptionsController.state
+  ) as OptionsControllerState;
   const { frameViewVisible } = useSnapshot(WebviewController.state);
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   const animatedHeight = useRef(new Animated.Value(0));
@@ -48,59 +52,19 @@ export function AuthWebview() {
   };
 
   const handleMessage = (e: WebViewMessageEvent) => {
-    let event = parseMessage(e);
+    try {
+      let event = parseMessage(e);
 
-    provider.onMessage(event);
-
-    provider.onRpcRequest((request: AppKitFrameTypes.RPCRequest) => {
-      if (AppKitFrameHelpers.checkIfRequestExists(request)) {
-        if (!AppKitFrameHelpers.checkIfRequestIsAllowed(request)) {
-          WebviewController.setFrameViewVisible(true);
-        }
-      }
-    });
-
-    provider.onRpcSuccess((_, request) => {
-      const isSafeRequest = AppKitFrameHelpers.checkIfRequestIsSafe(request);
-      if (isSafeRequest) {
-        return;
-      }
-
-      if (RouterController.state.transactionStack.length === 0) {
-        ModalController.close();
-      } else {
-        RouterController?.popTransactionStack();
-      }
-      WebviewController.setFrameViewVisible(false);
-    });
-
-    provider.onRpcError(() => {
-      if (ModalController.state.open) {
-        if (RouterController.state.transactionStack.length === 0) {
-          ModalController.close();
-        } else {
-          RouterController?.popTransactionStack(true);
-        }
-      }
-      WebviewController.setFrameViewVisible(false);
-    });
-
-    provider.onIsConnected(event, () => {
-      ConnectorController.setAuthLoading(false);
-      ModalController.setLoading(false);
-    });
-
-    provider.onNotConnected(event, () => {
-      ConnectorController.setAuthLoading(false);
-      ModalController.setLoading(false);
-      StorageUtil.removeConnectedConnector();
-    });
+      provider.onMessage(event);
+    } catch (error) {}
   };
 
   const show = animatedHeight.current.interpolate({
     inputRange: [0, 1],
     outputRange: ['0%', '80%']
   });
+
+  useEffect(() => {}, [provider]);
 
   useEffect(() => {
     Animated.timing(animatedHeight.current, {
@@ -127,7 +91,61 @@ export function AuthWebview() {
   }, [animatedHeight, backdropOpacity, frameViewVisible, setIsBackdropVisible]);
 
   useEffect(() => {
-    provider?.setWebviewRef(webviewRef);
+    if (provider) {
+      provider.setWebviewRef(webviewRef);
+      provider.onRpcRequest((request: AppKitFrameTypes.RPCRequest) => {
+        if (AppKitFrameHelpers.checkIfRequestExists(request)) {
+          if (!AppKitFrameHelpers.checkIfRequestIsAllowed(request)) {
+            WebviewController.setFrameViewVisible(true);
+          }
+        }
+      });
+
+      provider.onRpcSuccess((_, request) => {
+        const isSafeRequest = AppKitFrameHelpers.checkIfRequestIsSafe(request);
+        if (isSafeRequest) {
+          return;
+        }
+
+        if (RouterController.state.transactionStack.length === 0) {
+          ModalController.close();
+        } else {
+          RouterController?.popTransactionStack();
+        }
+        WebviewController.setFrameViewVisible(false);
+      });
+
+      provider.onRpcError(() => {
+        if (ModalController.state.open) {
+          if (RouterController.state.transactionStack.length === 0) {
+            ModalController.close();
+          } else {
+            RouterController?.popTransactionStack(true);
+          }
+        }
+        WebviewController.setFrameViewVisible(false);
+      });
+
+      provider.onIsConnected(({ smartAccountDeployed, preferredAccountType }) => {
+        provider.getSmartAccountEnabledNetworks();
+        AccountController.setPreferredAccountType(preferredAccountType);
+        AccountController.setSmartAccountDeployed(smartAccountDeployed);
+        ConnectorController.setAuthLoading(false);
+        ModalController.setLoading(false);
+      });
+
+      provider.onNotConnected(() => {
+        ConnectorController.setAuthLoading(false);
+        ModalController.setLoading(false);
+        if (ConnectorController.state.connectedConnector === 'AUTH') {
+          ConnectionController.disconnect();
+        }
+      });
+
+      provider.onGetSmartAccountEnabledNetworks(({ smartAccountEnabledNetworks }) => {
+        return NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks);
+      });
+    }
   }, [provider, webviewRef]);
 
   return provider ? (
@@ -179,8 +197,9 @@ export function AuthWebview() {
                     '--w3m-background': Theme['bg-100']
                   }
                 });
-                provider?.syncDappData?.({ projectId, sdkVersion });
+                provider?.syncDappData?.({ projectId, sdkVersion, sdkType });
                 provider?.onWebviewLoaded();
+                provider?.isConnected();
               }, 1500);
             }
           }}
@@ -192,6 +211,8 @@ export function AuthWebview() {
     </>
   ) : null;
 }
+
+export const AuthWebview = memo(_AuthWebview);
 
 const styles = StyleSheet.create({
   backdrop: {

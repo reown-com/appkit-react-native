@@ -1,5 +1,6 @@
-import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy, ref } from 'valtio';
+import { subscribeKey as subKey } from 'valtio/utils';
+import type { SocialProvider } from '@reown/appkit-common-react-native';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type {
@@ -10,7 +11,6 @@ import type {
 } from '../utils/TypeUtil';
 import { RouterController } from './RouterController';
 import { ConnectorController } from './ConnectorController';
-import type { SocialProvider } from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -86,15 +86,11 @@ export const ConnectionController = {
     state.wcPromise = this._getClient().connectWalletConnect(uri => {
       state.wcUri = uri;
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry();
-      ConnectorController.setConnectedConnector('WALLET_CONNECT');
-      StorageUtil.setConnectedConnector('WALLET_CONNECT');
     }, walletUniversalLink);
   },
 
   async connectExternal(options: ConnectExternalOptions) {
     await this._getClient().connectExternal?.(options);
-    ConnectorController.setConnectedConnector(options.type);
-    StorageUtil.setConnectedConnector(options.type);
   },
 
   async signMessage(message: string) {
@@ -179,13 +175,10 @@ export const ConnectionController = {
   resetWcConnection() {
     this.clearUri();
     state.pressedWallet = undefined;
-    state.connectedWalletImageUrl = undefined;
-    state.connectedSocialProvider = undefined;
+    ConnectionController.setConnectedSocialProvider(undefined);
+    ConnectionController.setConnectedWalletImageUrl(undefined);
     ConnectorController.setConnectedConnector(undefined);
     StorageUtil.removeWalletConnectDeepLink();
-    StorageUtil.removeConnectedWalletImageUrl();
-    StorageUtil.removeConnectedConnector();
-    StorageUtil.removeConnectedSocialProvider();
   },
 
   async disconnect() {

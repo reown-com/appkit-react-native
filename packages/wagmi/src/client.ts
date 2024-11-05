@@ -2,7 +2,9 @@ import { formatUnits, type Hex, parseUnits } from 'viem';
 import {
   type GetAccountReturnType,
   type GetEnsAddressReturnType,
+  type Connector as WagmiConnector,
   connect,
+  reconnect,
   disconnect,
   signMessage,
   getAccount,
@@ -33,7 +35,8 @@ import {
   type SendTransactionArgs,
   type Token,
   AppKitScaffold,
-  type WriteContractArgs
+  type WriteContractArgs,
+  type AppKitFrameProvider
 } from '@reown/appkit-scaffold-react-native';
 import {
   ConstantsUtil,
@@ -101,9 +104,9 @@ export class AppKit extends AppKitScaffold {
       async getApprovedCaipNetworksData() {
         const walletChoice = await StorageUtil.getConnectedConnector();
         const walletConnectType =
-          PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
+          PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]!;
 
-        const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID];
+        const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID]!;
 
         if (walletChoice?.includes(walletConnectType)) {
           const connector = wagmiConfig.connectors.find(
@@ -340,7 +343,6 @@ export class AppKit extends AppKitScaffold {
 
     this.syncRequestedNetworks([...wagmiConfig.chains]);
     this.syncConnectors([...wagmiConfig.connectors]);
-    this.listenAuthConnector([...wagmiConfig.connectors]);
 
     watchConnectors(wagmiConfig, {
       onChange: connectors => this.syncConnectors([...connectors])
@@ -400,7 +402,6 @@ export class AppKit extends AppKitScaffold {
     GetAccountReturnType,
     'address' | 'isConnected' | 'chainId' | 'connector' | 'isConnecting' | 'isReconnecting'
   >) {
-    this.resetAccount();
     this.syncNetwork(address, chainId, isConnected);
     this.setLoading(!!connector && (isConnecting || isReconnecting));
 
@@ -416,6 +417,7 @@ export class AppKit extends AppKitScaffold {
       ]);
       this.hasSyncedConnectedAccount = true;
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
+      this.resetAccount();
       this.resetWcConnection();
       this.resetNetwork();
     }
@@ -554,15 +556,21 @@ export class AppKit extends AppKitScaffold {
         name: 'Auth',
         provider
       });
+      this.addAuthListeners(authConnector);
     }
   }
 
-  private async listenAuthConnector(connectors: AppKitClientOptions['wagmiConfig']['connectors']) {
-    const connector = connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID);
-
+  private async addAuthListeners(connector: WagmiConnector) {
     const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
     if (connector && connectedConnector === 'AUTH') {
       super.setLoading(true);
+
+      const provider = (await connector.getProvider()) as AppKitFrameProvider;
+
+      provider.onSetPreferredAccount(async () => {
+        await reconnect(this.wagmiConfig, { connectors: [connector] });
+        this.setLoading(false);
+      });
     }
   }
 }

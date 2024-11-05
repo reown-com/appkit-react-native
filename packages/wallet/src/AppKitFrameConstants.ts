@@ -1,8 +1,8 @@
 export const AppKitFrameConstants = {
   SECURE_SITE_SDK: 'https://secure-mobile.walletconnect.com/mobile-sdk',
   SECURE_SITE_ORIGIN: 'https://secure.walletconnect.com',
-  SECURE_SITE_DASHBOARD: `https://secure.walletconnect.com/dashboard`,
-  SECURE_SITE_ICON: `https://secure.walletconnect.com/images/favicon.png`,
+  SECURE_SITE_DASHBOARD: `https://secure.reown.com/dashboard`,
+  SECURE_SITE_ICON: `https://secure.reown.com/images/favicon.png`,
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',
@@ -14,6 +14,7 @@ export const AppKitFrameConstants = {
   LAST_EMAIL_LOGIN_TIME: 'LAST_EMAIL_LOGIN_TIME', // Also present in core/src/utils/StorageUtil.ts
   EMAIL: 'EMAIL',
   SOCIAL_USERNAME: 'SOCIAL_USERNAME',
+  SMART_ACCOUNT_ENABLED_NETWORKS: 'SMART_ACCOUNT_ENABLED_NETWORKS',
 
   FRAME_MESSAGES_HANDLER: `
   window.addEventListener('message', ({ data, origin }) => {
@@ -40,6 +41,8 @@ export const AppKitFrameConstants = {
   APP_SYNC_DAPP_DATA: '@w3m-app/SYNC_DAPP_DATA',
   APP_CONNECT_FARCASTER: '@w3m-app/CONNECT_FARCASTER',
   APP_GET_FARCASTER_URI: '@w3m-app/GET_FARCASTER_URI',
+  APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS: '@w3m-app/GET_SMART_ACCOUNT_ENABLED_NETWORKS',
+  APP_SET_PREFERRED_ACCOUNT: '@w3m-app/SET_PREFERRED_ACCOUNT',
 
   FRAME_SWITCH_NETWORK_ERROR: '@w3m-frame/SWITCH_NETWORK_ERROR',
   FRAME_SWITCH_NETWORK_SUCCESS: '@w3m-frame/SWITCH_NETWORK_SUCCESS',
@@ -77,7 +80,13 @@ export const AppKitFrameConstants = {
   FRAME_SYNC_THEME_SUCCESS: '@w3m-frame/SYNC_THEME_SUCCESS',
   FRAME_SYNC_THEME_ERROR: '@w3m-frame/SYNC_THEME_ERROR',
   FRAME_SYNC_DAPP_DATA_SUCCESS: '@w3m-frame/SYNC_DAPP_DATA_SUCCESS',
-  FRAME_SYNC_DAPP_DATA_ERROR: '@w3m-frame/SYNC_DAPP_DATA_ERROR'
+  FRAME_SYNC_DAPP_DATA_ERROR: '@w3m-frame/SYNC_DAPP_DATA_ERROR',
+  FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS:
+    '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS',
+  FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR:
+    '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR',
+  FRAME_SET_PREFERRED_ACCOUNT_SUCCESS: '@w3m-frame/SET_PREFERRED_ACCOUNT_SUCCESS',
+  FRAME_SET_PREFERRED_ACCOUNT_ERROR: '@w3m-frame/SET_PREFERRED_ACCOUNT_ERROR'
 } as const;
 
 export const AppKitFrameRpcConstants = {

@@ -92,7 +92,7 @@ export const StorageUtil = {
     }
   },
 
-  async getConnectedConnector() {
+  async getConnectedConnector(): Promise<ConnectorType | undefined> {
     try {
       const connector = (await AsyncStorage.getItem(CONNECTED_CONNECTOR)) as ConnectorType;
 

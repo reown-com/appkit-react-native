@@ -13,9 +13,6 @@ export interface CompatibleNetworkProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const offset = [20, 15, 10, 5, 0];
-const zIndex = [5, 4, 3, 2, 1];
-
 export function CompatibleNetwork({
   text,
   onPress,
@@ -44,7 +41,7 @@ export function CompatibleNetwork({
             imageHeaders={imageHeaders}
             borderColor={Theme['bg-200']}
             borderWidth={2}
-            style={{ left: offset[index], zIndex: zIndex[index] }}
+            style={[styles.item, { zIndex: networkImages.length - index }]}
           />
         ))}
       </FlexView>
@@ -60,5 +57,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingRight: 0
+  },
+  item: {
+    marginLeft: -5
   }
 });

@@ -43,7 +43,7 @@ export function AccountActivity({ style }: Props) {
         address: AccountController.state.address,
         projectId: OptionsController.state.projectId,
         cursor: TransactionsController.state.next,
-        isSmartAccount: false
+        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
       }
     });
   };

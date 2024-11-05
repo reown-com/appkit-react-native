@@ -1,10 +1,11 @@
 import { useSnapshot } from 'valtio';
-import { Button, FlexView, Text } from '@reown/appkit-ui-react-native';
+import { Button, FlexView, IconLink, Text } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
   ConnectionController,
   EventsController,
   ModalController,
+  NetworkController,
   OptionsController,
   RouterController,
   SnackController
@@ -26,14 +27,22 @@ export function ConnectingSiweView() {
     setIsSigning(true);
     EventsController.sendEvent({
       event: 'CLICK_SIGN_SIWE_MESSAGE',
-      type: 'track'
+      type: 'track',
+      properties: {
+        network: NetworkController.state.caipNetwork?.id || '',
+        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+      }
     });
     try {
       const session = await SIWEController.signIn();
 
       EventsController.sendEvent({
         event: 'SIWE_AUTH_SUCCESS',
-        type: 'track'
+        type: 'track',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+        }
       });
 
       return session;
@@ -44,7 +53,11 @@ export function ConnectingSiweView() {
 
       return EventsController.sendEvent({
         event: 'SIWE_AUTH_ERROR',
-        type: 'track'
+        type: 'track',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+        }
       });
     } finally {
       setIsSigning(false);
@@ -63,12 +76,26 @@ export function ConnectingSiweView() {
     }
     EventsController.sendEvent({
       event: 'CLICK_CANCEL_SIWE',
-      type: 'track'
+      type: 'track',
+      properties: {
+        network: NetworkController.state.caipNetwork?.id || '',
+        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+      }
     });
   };
 
   return (
     <FlexView padding={['2xl', 's', '3xl', 's']}>
+      <IconLink
+        icon="close"
+        size="md"
+        onPress={onCancel}
+        testID="button-close"
+        style={styles.closeButton}
+      />
+      <Text variant="paragraph-600" numberOfLines={1} center>
+        Sign in
+      </Text>
       <ConnectingSiwe style={styles.logoContainer} />
       <Text center variant="medium-600" color="fg-100" style={styles.title}>
         {dappName} needs to connect to your wallet

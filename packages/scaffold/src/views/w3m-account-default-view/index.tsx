@@ -32,8 +32,16 @@ import styles from './styles';
 import { AuthButtons } from './components/auth-buttons';
 
 export function AccountDefaultView() {
-  const { address, profileName, profileImage, balance, balanceSymbol, addressExplorerUrl } =
-    useSnapshot(AccountController.state);
+  const {
+    address,
+    profileName,
+    profileImage,
+    balance,
+    balanceSymbol,
+    addressExplorerUrl,
+    preferredAccountType
+  } = useSnapshot(AccountController.state);
+  const { loading } = useSnapshot(ModalController.state);
   const [disconnecting, setDisconnecting] = useState(false);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { connectedConnector } = useSnapshot(ConnectorController.state);
@@ -45,6 +53,7 @@ export function AccountDefaultView() {
   const showBalance = balance && !isAuth;
   const showExplorer = addressExplorerUrl && !isAuth;
   const showBack = history.length > 1;
+  const showSwitchAccountType = isAuth && NetworkController.checkIfSmartAccountEnabled();
   const { padding } = useCustomDimensions();
 
   async function onDisconnect() {
@@ -65,6 +74,29 @@ export function AccountDefaultView() {
       });
     }
   }
+
+  const onSwitchAccountType = async () => {
+    try {
+      if (isAuth) {
+        ModalController.setLoading(true);
+        const accountType =
+          AccountController.state.preferredAccountType === 'eoa' ? 'smartAccount' : 'eoa';
+        const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
+        await provider?.setPreferredAccount(accountType);
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SET_PREFERRED_ACCOUNT_TYPE',
+          properties: {
+            accountType,
+            network: NetworkController.state.caipNetwork?.id || ''
+          }
+        });
+      }
+    } catch (error) {
+      ModalController.setLoading(false);
+      SnackController.showError('Error switching account type');
+    }
+  };
 
   const getUserEmail = () => {
     const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
@@ -213,6 +245,20 @@ export function AccountDefaultView() {
                 style={styles.actionButton}
               >
                 <Text color="fg-100">Activity</Text>
+              </ListItem>
+            )}
+            {showSwitchAccountType && (
+              <ListItem
+                chevron
+                icon="swapHorizontal"
+                onPress={onSwitchAccountType}
+                testID="button-account-type"
+                style={styles.actionButton}
+                loading={loading}
+              >
+                <Text color="fg-100">{`Switch to your ${
+                  preferredAccountType === 'eoa' ? 'smart account' : 'EOA'
+                }`}</Text>
               </ListItem>
             )}
             <ListItem
