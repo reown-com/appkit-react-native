@@ -55,13 +55,7 @@ export class AppKitFrameProvider {
     this.metadata = metadata;
     this.projectId = projectId;
 
-    this.getAsyncEmail().then(email => {
-      this.email = email;
-    });
-
-    this.getAsyncUsername().then(username => {
-      this.username = username;
-    });
+    this.loadAsyncValues();
 
     this.events.setMaxListeners(Number.POSITIVE_INFINITY);
   }
@@ -147,48 +141,36 @@ export class AppKitFrameProvider {
   }
 
   public async connectSocial(uri: string) {
-    try {
-      const response = await this.appEvent<'ConnectSocial'>({
-        type: AppKitFrameConstants.APP_CONNECT_SOCIAL,
-        payload: { uri }
-      } as AppKitFrameTypes.AppEvent);
+    const response = await this.appEvent<'ConnectSocial'>({
+      type: AppKitFrameConstants.APP_CONNECT_SOCIAL,
+      payload: { uri }
+    } as AppKitFrameTypes.AppEvent);
 
-      if (response.userName) {
-        this.setSocialLoginSuccess(response.userName);
-      }
-
-      return response;
-    } catch (error) {
-      throw error;
+    if (response.userName) {
+      this.setSocialLoginSuccess(response.userName);
     }
+
+    return response;
   }
 
   public async getFarcasterUri() {
-    try {
-      const response = await this.appEvent<'GetFarcasterUri'>({
-        type: AppKitFrameConstants.APP_GET_FARCASTER_URI
-      } as AppKitFrameTypes.AppEvent);
+    const response = await this.appEvent<'GetFarcasterUri'>({
+      type: AppKitFrameConstants.APP_GET_FARCASTER_URI
+    } as AppKitFrameTypes.AppEvent);
 
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    return response;
   }
 
   public async connectFarcaster() {
-    try {
-      const response = await this.appEvent<'ConnectFarcaster'>({
-        type: AppKitFrameConstants.APP_CONNECT_FARCASTER
-      } as AppKitFrameTypes.AppEvent);
+    const response = await this.appEvent<'ConnectFarcaster'>({
+      type: AppKitFrameConstants.APP_CONNECT_FARCASTER
+    } as AppKitFrameTypes.AppEvent);
 
-      if (response.userName) {
-        this.setSocialLoginSuccess(response.userName);
-      }
-
-      return response;
-    } catch (error) {
-      throw error;
+    if (response.userName) {
+      this.setSocialLoginSuccess(response.userName);
     }
+
+    return response;
   }
 
   public async connectOtp(payload: AppKitFrameTypes.Requests['AppConnectOtpRequest']) {
@@ -232,14 +214,10 @@ export class AppKitFrameProvider {
   public async getSocialRedirectUri(
     payload: AppKitFrameTypes.Requests['AppGetSocialRedirectUriRequest']
   ) {
-    try {
-      return this.appEvent<'GetSocialRedirectUri'>({
-        type: AppKitFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
-        payload
-      } as AppKitFrameTypes.AppEvent);
-    } catch (error) {
-      throw error;
-    }
+    return this.appEvent<'GetSocialRedirectUri'>({
+      type: AppKitFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
+      payload
+    } as AppKitFrameTypes.AppEvent);
   }
 
   public async updateEmail(payload: AppKitFrameTypes.Requests['AppUpdateEmailRequest']) {
@@ -322,14 +300,12 @@ export class AppKitFrameProvider {
   }
 
   public async setPreferredAccount(type: AppKitFrameTypes.AccountType) {
-    try {
-      return this.appEvent<'SetPreferredAccount'>({
-        type: AppKitFrameConstants.APP_SET_PREFERRED_ACCOUNT,
-        payload: { type }
-      } as AppKitFrameTypes.AppEvent);
-    } catch (error) {
-      throw error;
-    }
+    const response = await this.appEvent<'SetPreferredAccount'>({
+      type: AppKitFrameConstants.APP_SET_PREFERRED_ACCOUNT,
+      payload: { type }
+    } as AppKitFrameTypes.AppEvent);
+
+    return response;
   }
 
   // -- Provider Methods ------------------------------------------------
@@ -603,15 +579,10 @@ export class AppKitFrameProvider {
     );
   }
 
-  private async getAsyncEmail() {
+  private async loadAsyncValues() {
     const email = await AppKitFrameStorage.get(AppKitFrameConstants.EMAIL);
-
-    return email;
-  }
-
-  private async getAsyncUsername() {
+    this.email = email;
     const username = await AppKitFrameStorage.get(AppKitFrameConstants.SOCIAL_USERNAME);
-
-    return username;
+    this.username = username;
   }
 }

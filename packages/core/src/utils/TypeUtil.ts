@@ -549,13 +549,11 @@ export interface AppKitFrameProvider {
     chainId: string | number;
     email: string;
     address: string;
-    accounts?:
-      | {
-          type: AppKitFrameAccountType;
-          address: string;
-        }[]
-      | undefined;
-    userName?: string | undefined;
+    accounts?: {
+      type: AppKitFrameAccountType;
+      address: string;
+    }[];
+    userName?: string;
   }>;
   getSocialRedirectUri(payload: { provider: SocialProvider }): Promise<{
     uri: string;
