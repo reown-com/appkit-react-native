@@ -29,7 +29,7 @@ export function ConnectingFarcasterView() {
   const { maxWidth: width } = useCustomDimensions();
   const authConnector = ConnectorController.getAuthConnector();
   const [error, setError] = useState(false);
-  const [_url, setUrl] = useState<string | undefined>();
+  const [url, setUrl] = useState<string | undefined>();
   const showCopy = OptionsController.isClipboardAvailable();
   const socialProvider = data?.socialProvider;
   const provider = authConnector?.provider as AppKitFrameProvider;
@@ -38,9 +38,9 @@ export function ConnectingFarcasterView() {
     try {
       if (!WebviewController.state.connecting && provider && socialProvider && authConnector) {
         setError(false);
-        const { url } = await provider.getFarcasterUri();
-        setUrl(url);
-        Linking.openURL(url);
+        const { url: farcasterUrl } = await provider.getFarcasterUri();
+        setUrl(farcasterUrl);
+        Linking.openURL(farcasterUrl);
         await provider.connectFarcaster();
         await ConnectionController.connectExternal(authConnector);
         ConnectionController.setConnectedSocialProvider(socialProvider);
@@ -64,8 +64,8 @@ export function ConnectingFarcasterView() {
   }, [provider, socialProvider, authConnector]);
 
   const onCopyUrl = () => {
-    if (_url) {
-      OptionsController.copyToClipboard(_url);
+    if (url) {
+      OptionsController.copyToClipboard(url);
       SnackController.showSuccess('Link copied');
     }
   };
