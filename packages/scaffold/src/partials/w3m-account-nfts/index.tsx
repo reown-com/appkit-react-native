@@ -1,8 +1,8 @@
-import { AccountPlaceholder } from '../w3m-account-placeholder';
+import { Placeholder } from '../w3m-placeholder';
 
 export function AccountNfts() {
   return (
-    <AccountPlaceholder
+    <Placeholder
       icon="nftPlaceholder"
       title="Coming soon"
       description="Stay tuned for our upcoming NFTs feature"

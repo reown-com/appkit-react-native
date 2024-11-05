@@ -15,5 +15,8 @@ export default StyleSheet.create({
   },
   pageLoader: {
     marginTop: Spacing.xl
+  },
+  errorContainer: {
+    height: '90%'
   }
 });

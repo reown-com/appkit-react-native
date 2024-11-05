@@ -17,6 +17,7 @@ import { OptionsController } from './OptionsController';
 import { ConnectorController } from './ConnectorController';
 import { ConnectionController } from './ConnectionController';
 import { ApiUtil } from '../utils/ApiUtil';
+import { SnackController } from './SnackController';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl();
@@ -27,6 +28,7 @@ const recommendedEntries = '4';
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
   prefetchPromise?: Promise<unknown>;
+  prefetchError?: boolean;
   page: number;
   count: number;
   featured: WcWallet[];
@@ -326,23 +328,29 @@ export const ApiController = {
   },
 
   async prefetch() {
-    // this fetch must resolve first so we filter them in the other wallet requests
-    await ApiController.fetchInstalledWallets();
+    try {
+      state.prefetchError = false;
+      // this fetch must resolve first so we filter them in the other wallet requests
+      await ApiController.fetchInstalledWallets();
 
-    const promises = [
-      ApiController.fetchFeaturedWallets(),
-      ApiController.fetchRecommendedWallets(),
-      ApiController.fetchNetworkImages(),
-      ApiController.fetchConnectorImages()
-    ];
-    if (OptionsController.state.enableAnalytics === undefined) {
-      promises.push(ApiController.fetchAnalyticsConfig());
+      const promises = [
+        ApiController.fetchFeaturedWallets(),
+        ApiController.fetchRecommendedWallets(),
+        ApiController.fetchNetworkImages(),
+        ApiController.fetchConnectorImages()
+      ];
+      if (OptionsController.state.enableAnalytics === undefined) {
+        promises.push(ApiController.fetchAnalyticsConfig());
+      }
+
+      state.prefetchPromise = Promise.race([
+        CoreHelperUtil.allSettled(promises),
+        CoreHelperUtil.wait(3000)
+      ]);
+    } catch (error) {
+      state.prefetchError = true;
+      SnackController.showError('Failed to load wallets');
     }
-
-    state.prefetchPromise = Promise.race([
-      CoreHelperUtil.allSettled(promises),
-      CoreHelperUtil.wait(3000)
-    ]);
   },
 
   async fetchAnalyticsConfig() {

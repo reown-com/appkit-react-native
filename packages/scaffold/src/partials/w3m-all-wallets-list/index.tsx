@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { FlatList, View } from 'react-native';
-import { ApiController, AssetUtil, type WcWallet } from '@reown/appkit-core-react-native';
+import {
+  ApiController,
+  AssetUtil,
+  SnackController,
+  type WcWallet
+} from '@reown/appkit-core-react-native';
 import {
   CardSelect,
   CardSelectLoader,
@@ -12,6 +17,7 @@ import {
 import styles from './styles';
 import { UiUtil } from '../../utils/UiUtil';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { Placeholder } from '../w3m-placeholder';
 
 interface AllWalletsListProps {
   columns: number;
@@ -21,6 +27,7 @@ interface AllWalletsListProps {
 
 export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsListProps) {
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingError, setLoadingError] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const { maxWidth, padding } = useCustomDimensions();
   const { installed, featured, recommended, wallets } = useSnapshot(ApiController.state);
@@ -80,10 +87,18 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
   };
 
   const initialFetch = async () => {
-    setLoading(true);
-    await ApiController.fetchWallets({ page: 1 });
-    UiUtil.createViewTransition();
-    setLoading(false);
+    try {
+      setLoading(true);
+      setLoadingError(false);
+      await ApiController.fetchWallets({ page: 1 });
+      UiUtil.createViewTransition();
+      setLoading(false);
+    } catch (error) {
+      SnackController.showError('Failed to load wallets');
+      setLoadingError(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchNextPage = async () => {
@@ -104,7 +119,18 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
     return loadingTemplate(20);
   }
 
-  return (
+  return loadingError ? (
+    <FlexView alignItems="center" justifyContent="center" style={styles.errorContainer}>
+      <Placeholder
+        icon="warningCircle"
+        title="Error"
+        description="Unable to load wallets"
+        actionIcon="refresh"
+        actionPress={initialFetch}
+        actionTitle="Retry"
+      />
+    </FlexView>
+  ) : (
     <FlatList
       key={columns}
       fadingEdgeLength={20}

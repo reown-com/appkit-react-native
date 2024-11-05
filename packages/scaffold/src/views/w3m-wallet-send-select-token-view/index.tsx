@@ -12,7 +12,7 @@ import {
 import type { Balance } from '@reown/appkit-common-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import { AccountPlaceholder } from '../../partials/w3m-account-placeholder';
+import { Placeholder } from '../../partials/w3m-placeholder';
 import styles from './styles';
 
 export function WalletSendSelectTokenView() {
@@ -69,7 +69,7 @@ export function WalletSendSelectTokenView() {
             />
           ))
         ) : (
-          <AccountPlaceholder
+          <Placeholder
             icon="coinPlaceholder"
             title="No tokens found"
             description="Your tokens will appear here"

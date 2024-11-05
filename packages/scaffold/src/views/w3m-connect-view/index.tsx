@@ -1,6 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { Platform, ScrollView, View } from 'react-native';
 import {
+  ApiController,
   ConnectorController,
   EventUtil,
   EventsController,
@@ -12,18 +13,20 @@ import { FlexView, Icon, ListItem, Separator, Spacing, Text } from '@reown/appki
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectEmailInput } from './components/connect-email-input';
 import { useKeyboard } from '../../hooks/useKeyboard';
+import { Placeholder } from '../../partials/w3m-placeholder';
 import { ConnectorList } from './components/connectors-list';
 import { CustomWalletList } from './components/custom-wallet-list';
 import { AllWalletsButton } from './components/all-wallets-button';
 import { AllWalletList } from './components/all-wallet-list';
 import { RecentWalletList } from './components/recent-wallet-list';
 import { SocialLoginList } from './components/social-login-list';
-import styles from './styles';
 import { WalletGuide } from './components/wallet-guide';
+import styles from './styles';
 
 export function ConnectView() {
   const connectors = ConnectorController.state.connectors;
   const { authLoading } = useSnapshot(ConnectorController.state);
+  const { prefetchError } = useSnapshot(ApiController.state);
   const { features } = useSnapshot(OptionsController.state);
   const { padding } = useCustomDimensions();
   const { keyboardShown, keyboardHeight } = useKeyboard();
@@ -84,6 +87,18 @@ export function ConnectView() {
               <Text variant="paragraph-500">Continue with a wallet</Text>
               <View style={styles.connectWalletEmpty} />
             </ListItem>
+          ) : prefetchError ? (
+            <FlexView alignItems="center" justifyContent="center" margin={['l', '0', '0', '0']}>
+              <Placeholder
+                icon="warningCircle"
+                title="Error"
+                description="Unable to load wallets"
+                actionIcon="refresh"
+                actionPress={ApiController.prefetch}
+                actionTitle="Retry"
+              />
+              <Separator style={styles.socialSeparator} />
+            </FlexView>
           ) : (
             <>
               <RecentWalletList
