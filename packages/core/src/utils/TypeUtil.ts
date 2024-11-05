@@ -586,7 +586,7 @@ export interface AppKitFrameProvider {
   }): Promise<unknown>;
   connect(payload?: { chainId: number | undefined }): Promise<{
     chainId: number;
-    email?: string | null | undefined;
+    email?: string | null;
     address: string;
     smartAccountDeployed: boolean;
     preferredAccountType: AppKitFrameAccountType;
