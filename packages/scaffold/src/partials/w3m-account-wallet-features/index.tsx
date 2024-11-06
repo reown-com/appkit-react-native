@@ -9,7 +9,6 @@ import {
   RouterController
 } from '@reown/appkit-core-react-native';
 import type { Balance as BalanceType } from '@reown/appkit-common-react-native';
-import { AccountNfts } from '../w3m-account-nfts';
 import { AccountActivity } from '../w3m-account-activity';
 import { AccountTokens } from '../w3m-account-tokens';
 import styles from './styles';
@@ -87,12 +86,11 @@ export function AccountWalletFeatures() {
         />
       </FlexView>
       <FlexView style={styles.tab}>
-        <Tabs tabs={['Tokens', 'NFTs', 'Activity']} onTabChange={onTabChange} />
+        <Tabs tabs={['Tokens', 'Activity']} onTabChange={onTabChange} />
       </FlexView>
       <FlexView padding={['m', '0', '0', '0']} style={styles.tabContainer}>
         {activeTab === 0 && <AccountTokens style={styles.tabContent} />}
-        {activeTab === 1 && <AccountNfts />}
-        {activeTab === 2 && <AccountActivity style={styles.tabContent} />}
+        {activeTab === 1 && <AccountActivity style={styles.tabContent} />}
       </FlexView>
     </FlexView>
   );
