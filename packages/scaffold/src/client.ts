@@ -28,11 +28,12 @@ import {
   NetworkController,
   OptionsController,
   PublicStateController,
+  SnackController,
   StorageUtil,
   ThemeController,
   TransactionsController
 } from '@reown/appkit-core-react-native';
-import { ConstantsUtil } from '@reown/appkit-common-react-native';
+import { ConstantsUtil, ErrorUtil } from '@reown/appkit-common-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {
@@ -64,6 +65,8 @@ export interface OpenOptions {
 
 // -- Client --------------------------------------------------------------------
 export class AppKitScaffold {
+  public reportedAlertErrors: Record<string, boolean> = {};
+
   public constructor(options: ScaffoldOptions) {
     this.initControllers(options);
   }
@@ -232,6 +235,26 @@ export class AppKitScaffold {
     preferredAccountType => {
       AccountController.setPreferredAccountType(preferredAccountType);
     };
+
+  protected handleAlertError(error: Error) {
+    const matchedUniversalProviderError = Object.entries(ErrorUtil.UniversalProviderErrors).find(
+      ([, { message }]) => error.message.includes(message)
+    );
+
+    const [errorKey, errorValue] = matchedUniversalProviderError ?? [];
+
+    const { message, alertErrorKey } = errorValue ?? {};
+
+    if (errorKey && message && !this.reportedAlertErrors[errorKey]) {
+      const alertError =
+        ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS];
+
+      if (alertError) {
+        SnackController.showError(alertError.longMessage);
+        this.reportedAlertErrors[errorKey] = true;
+      }
+    }
+  }
 
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
