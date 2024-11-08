@@ -64,7 +64,6 @@ export function InputAddress({ value }: InputAddressProps) {
         selectionColor={Theme['accent-100']}
         underlineColorAndroid="transparent"
         selectTextOnFocus={false}
-        multiline
         returnKeyLabel="Done"
       />
     </FlexView>
