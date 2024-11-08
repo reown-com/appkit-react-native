@@ -88,6 +88,13 @@ export const NetworkController = {
       .filter(Boolean) as CaipNetwork[];
   },
 
+  getSmartAccountEnabledNetworks() {
+    return this.getApprovedCaipNetworks().filter(
+      network =>
+        state.smartAccountEnabledNetworks?.find(networkId => network.id === `eip155:${networkId}`)
+    );
+  },
+
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
     await this._getClient().switchCaipNetwork(network);
     state.caipNetwork = network;
