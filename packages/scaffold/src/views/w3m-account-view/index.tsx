@@ -82,7 +82,11 @@ export function AccountView() {
       <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
       <FlexView padding={['3xl', '0', '0', '0']} style={[{ backgroundColor: Theme['bg-100'] }]}>
         {showActivate && (
-          <Promo style={styles.promoPill} text="Activate your account" onPress={onActivatePress} />
+          <Promo
+            style={styles.promoPill}
+            text="Switch to your smart account"
+            onPress={onActivatePress}
+          />
         )}
         <AccountPill
           address={address}
