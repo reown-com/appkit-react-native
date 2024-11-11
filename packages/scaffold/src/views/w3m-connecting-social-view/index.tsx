@@ -1,5 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
+import { Platform } from 'react-native';
 import {
   ConnectionController,
   ConnectorController,
@@ -32,7 +33,10 @@ export function ConnectingSocialView() {
           provider: socialProvider
         });
         WebviewController.setWebviewUrl(uri);
-        WebviewController.setWebviewVisible(true);
+
+        const isNativeApple = socialProvider === 'apple' && Platform.OS === 'ios';
+
+        WebviewController.setWebviewVisible(!isNativeApple);
         WebviewController.setConnecting(true);
         WebviewController.setConnectingProvider(socialProvider);
       }
@@ -49,7 +53,13 @@ export function ConnectingSocialView() {
   const socialMessageHandler = useCallback(
     async (url: string) => {
       try {
-        if (url.includes('/sdk/oauth') && socialProvider && authConnector) {
+        if (
+          url.includes('/sdk/oauth') &&
+          socialProvider &&
+          authConnector &&
+          !WebviewController.state.processingAuth
+        ) {
+          WebviewController.setProcessingAuth(true);
           WebviewController.setWebviewVisible(false);
           const parsedUrl = new URL(url);
           await provider?.connectSocial(parsedUrl.search);
@@ -64,6 +74,7 @@ export function ConnectingSocialView() {
           });
 
           ModalController.close();
+          WebviewController.setProcessingAuth(false);
         }
       } catch (e) {
         EventsController.sendEvent({
@@ -72,6 +83,7 @@ export function ConnectingSocialView() {
           properties: { provider: socialProvider! }
         });
         WebviewController.setWebviewVisible(false);
+        WebviewController.setProcessingAuth(false);
         WebviewController.setConnecting(false);
         WebviewController.setConnectingProvider(undefined);
         RouterController.goBack();
