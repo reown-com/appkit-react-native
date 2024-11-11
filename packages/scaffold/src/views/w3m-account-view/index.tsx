@@ -16,15 +16,13 @@ import {
   AssetUtil,
   ModalController,
   NetworkController,
-  OptionsController,
   RouterController,
-  SendController,
-  SnackController
+  SendController
 } from '@reown/appkit-core-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import styles from './styles';
 import { AccountWalletFeatures } from '../../partials/w3m-account-wallet-features';
+import styles from './styles';
 
 export function AccountView() {
   const Theme = useTheme();
@@ -35,13 +33,6 @@ export function AccountView() {
   );
   const showActivate =
     preferredAccountType === 'eoa' && NetworkController.checkIfSmartAccountEnabled();
-
-  const onCopyAddress = (value: string) => {
-    if (OptionsController.isClipboardAvailable() && value) {
-      OptionsController.copyToClipboard(value);
-      SnackController.showSuccess('Address copied');
-    }
-  };
 
   const onProfilePress = () => {
     RouterController.push('AccountDefault');
@@ -92,7 +83,6 @@ export function AccountView() {
           address={address}
           profileName={profileName}
           profileImage={profileImage}
-          onCopy={onCopyAddress}
           onPress={onProfilePress}
           style={styles.accountPill}
         />

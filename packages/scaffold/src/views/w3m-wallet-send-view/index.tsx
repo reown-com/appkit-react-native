@@ -93,6 +93,7 @@ export function WalletSendView() {
   }, [token, tokenBalance, fetchNetworkPrice]);
 
   const actionText = getActionText();
+  const disabled = actionText !== 'Preview send';
 
   return (
     <ScrollView
@@ -130,7 +131,7 @@ export function WalletSendView() {
           {loading ? (
             <LoadingSpinner color="inverse-100" size="md" />
           ) : (
-            <Text variant="paragraph-600" color="inverse-100">
+            <Text variant="paragraph-600" color={disabled ? 'fg-250' : 'inverse-100'}>
               {getActionText()}
             </Text>
           )}
