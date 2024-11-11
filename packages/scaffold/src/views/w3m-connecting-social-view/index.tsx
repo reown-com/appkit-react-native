@@ -74,7 +74,7 @@ export function ConnectingSocialView() {
           });
 
           ModalController.close();
-          WebviewController.setProcessingAuth(false);
+          WebviewController.reset();
         }
       } catch (e) {
         EventsController.sendEvent({
@@ -82,10 +82,7 @@ export function ConnectingSocialView() {
           event: 'SOCIAL_LOGIN_ERROR',
           properties: { provider: socialProvider! }
         });
-        WebviewController.setWebviewVisible(false);
-        WebviewController.setProcessingAuth(false);
-        WebviewController.setConnecting(false);
-        WebviewController.setConnectingProvider(undefined);
+        WebviewController.reset();
         RouterController.goBack();
         SnackController.showError('Something went wrong');
       }

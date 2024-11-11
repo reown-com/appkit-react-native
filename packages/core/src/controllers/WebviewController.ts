@@ -50,5 +50,14 @@ export const WebviewController = {
 
   setProcessingAuth(processingAuth: WebviewControllerState['processingAuth']) {
     state.processingAuth = processingAuth;
+  },
+
+  reset() {
+    state.frameViewVisible = false;
+    state.webviewVisible = false;
+    state.connecting = false;
+    state.connectingProvider = undefined;
+    state.processingAuth = false;
+    state.webviewUrl = undefined;
   }
 };
