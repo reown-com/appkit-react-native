@@ -20,7 +20,7 @@ import styles from './styles';
 export function ConnectingSocialView() {
   const { data } = RouterController.state;
   const { maxWidth: width } = useCustomDimensions();
-  const { connecting } = useSnapshot(WebviewController.state);
+  const { processingAuth } = useSnapshot(WebviewController.state);
   const authConnector = ConnectorController.getAuthConnector();
   const [error, setError] = useState(false);
   const socialProvider = data?.socialProvider;
@@ -132,7 +132,7 @@ export function ConnectingSocialView() {
         {`Continue with ${StringUtil.capitalize(socialProvider)}`}
       </Text>
       <Text variant="small-400" color="fg-200">
-        {connecting ? 'Retrieving user data' : 'Connect in the provider window'}
+        {processingAuth ? 'Retrieving user data' : 'Connect in the provider window'}
       </Text>
     </FlexView>
   );
