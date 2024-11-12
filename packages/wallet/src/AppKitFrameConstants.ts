@@ -18,8 +18,12 @@ export const AppKitFrameConstants = {
 
   FRAME_MESSAGES_HANDLER: `
   window.addEventListener('message', ({ data, origin }) => {
-    window.ReactNativeWebView.postMessage(JSON.stringify({ ...data, origin }))
-  })
+    window.ReactNativeWebView.postMessage(
+      JSON.stringify({ ...data, origin }, (key, value) =>
+        typeof value === 'bigint' ? value.toString() : value
+      )
+    );
+  });
 `,
 
   APP_SWITCH_NETWORK: '@w3m-app/SWITCH_NETWORK',
