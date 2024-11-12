@@ -129,7 +129,7 @@ export function WalletSendView() {
           disabled={!actionText.includes('Preview send')}
         >
           {loading ? (
-            <LoadingSpinner color="inverse-100" size="md" />
+            <LoadingSpinner color={disabled ? 'fg-250' : 'inverse-100'} size="md" />
           ) : (
             <Text variant="paragraph-600" color={disabled ? 'fg-250' : 'inverse-100'}>
               {getActionText()}
