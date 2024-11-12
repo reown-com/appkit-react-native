@@ -1,5 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
+import { Platform } from 'react-native';
 import {
   ConnectionController,
   ConnectorController,
@@ -19,7 +20,7 @@ import styles from './styles';
 export function ConnectingSocialView() {
   const { data } = RouterController.state;
   const { maxWidth: width } = useCustomDimensions();
-  const { connecting } = useSnapshot(WebviewController.state);
+  const { processingAuth } = useSnapshot(WebviewController.state);
   const authConnector = ConnectorController.getAuthConnector();
   const [error, setError] = useState(false);
   const socialProvider = data?.socialProvider;
@@ -32,7 +33,10 @@ export function ConnectingSocialView() {
           provider: socialProvider
         });
         WebviewController.setWebviewUrl(uri);
-        WebviewController.setWebviewVisible(true);
+
+        const isNativeApple = socialProvider === 'apple' && Platform.OS === 'ios';
+
+        WebviewController.setWebviewVisible(!isNativeApple);
         WebviewController.setConnecting(true);
         WebviewController.setConnectingProvider(socialProvider);
       }
@@ -49,7 +53,13 @@ export function ConnectingSocialView() {
   const socialMessageHandler = useCallback(
     async (url: string) => {
       try {
-        if (url.includes('/sdk/oauth') && socialProvider && authConnector) {
+        if (
+          url.includes('/sdk/oauth') &&
+          socialProvider &&
+          authConnector &&
+          !WebviewController.state.processingAuth
+        ) {
+          WebviewController.setProcessingAuth(true);
           WebviewController.setWebviewVisible(false);
           const parsedUrl = new URL(url);
           await provider?.connectSocial(parsedUrl.search);
@@ -64,6 +74,7 @@ export function ConnectingSocialView() {
           });
 
           ModalController.close();
+          WebviewController.reset();
         }
       } catch (e) {
         EventsController.sendEvent({
@@ -71,9 +82,7 @@ export function ConnectingSocialView() {
           event: 'SOCIAL_LOGIN_ERROR',
           properties: { provider: socialProvider! }
         });
-        WebviewController.setWebviewVisible(false);
-        WebviewController.setConnecting(false);
-        WebviewController.setConnectingProvider(undefined);
+        WebviewController.reset();
         RouterController.goBack();
         SnackController.showError('Something went wrong');
       }
@@ -120,7 +129,7 @@ export function ConnectingSocialView() {
         {`Continue with ${StringUtil.capitalize(socialProvider)}`}
       </Text>
       <Text variant="small-400" color="fg-200">
-        {connecting ? 'Retrieving user data' : 'Connect in the provider window'}
+        {processingAuth ? 'Retrieving user data' : 'Connect in the provider window'}
       </Text>
     </FlexView>
   );
