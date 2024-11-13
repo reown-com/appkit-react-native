@@ -91,8 +91,9 @@ export function ConnectView() {
             <FlexView alignItems="center" justifyContent="center" margin={['l', '0', '0', '0']}>
               <Placeholder
                 icon="warningCircle"
-                title="Error"
-                description="Unable to load wallets"
+                iconColor="error-100"
+                title="Oops, we couldn’t load the wallets at the moment"
+                description={`This might be due to a temporary network issue.\nPlease try reloading to see if that helps.`}
                 actionIcon="refresh"
                 actionPress={ApiController.prefetch}
                 actionTitle="Retry"

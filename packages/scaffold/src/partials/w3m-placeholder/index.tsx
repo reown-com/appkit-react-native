@@ -5,11 +5,13 @@ import {
   FlexView,
   Spacing,
   type IconType,
-  Button
+  Button,
+  type ColorType
 } from '@reown/appkit-ui-react-native';
 
 interface Props {
   icon?: IconType;
+  iconColor?: ColorType;
   title?: string;
   description?: string;
   style?: StyleProp<ViewStyle>;
@@ -20,6 +22,7 @@ interface Props {
 
 export function Placeholder({
   icon,
+  iconColor = 'fg-175',
   title,
   description,
   style,
@@ -29,7 +32,9 @@ export function Placeholder({
 }: Props) {
   return (
     <FlexView alignItems="center" justifyContent="center" style={[styles.container, style]}>
-      {icon && <IconBox icon={icon} size="lg" iconColor="fg-175" background style={styles.icon} />}
+      {icon && (
+        <IconBox icon={icon} size="xl" iconColor={iconColor} background style={styles.icon} />
+      )}
       {title && (
         <Text variant="paragraph-500" style={styles.title}>
           {title}
@@ -67,7 +72,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing['2xs']
   },
   description: {
-    maxWidth: '50%'
+    // maxWidth: '50%'
   },
   button: {
     marginTop: Spacing.m

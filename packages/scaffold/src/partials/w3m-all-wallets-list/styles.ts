@@ -18,5 +18,9 @@ export default StyleSheet.create({
   },
   errorContainer: {
     height: '90%'
+  },
+  placeholderContainer: {
+    flex: 0,
+    height: '90%'
   }
 });

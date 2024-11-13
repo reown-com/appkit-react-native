@@ -95,16 +95,20 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
       setLoading(false);
     } catch (error) {
       SnackController.showError('Failed to load wallets');
-      setLoadingError(true);
-    } finally {
       setLoading(false);
+      setLoadingError(true);
     }
   };
 
   const fetchNextPage = async () => {
-    if (walletList.length < ApiController.state.count && !pageLoading) {
-      setPageLoading(true);
-      await ApiController.fetchWallets({ page: ApiController.state.page + 1 });
+    try {
+      if (walletList.length < ApiController.state.count && !pageLoading) {
+        setPageLoading(true);
+        await ApiController.fetchWallets({ page: ApiController.state.page + 1 });
+        setPageLoading(false);
+      }
+    } catch (error) {
+      SnackController.showError('Failed to load more wallets');
       setPageLoading(false);
     }
   };
@@ -119,18 +123,22 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
     return loadingTemplate(20);
   }
 
-  return loadingError ? (
-    <FlexView alignItems="center" justifyContent="center" style={styles.errorContainer}>
+  if (loadingError) {
+    return (
       <Placeholder
         icon="warningCircle"
-        title="Error"
-        description="Unable to load wallets"
+        iconColor="error-100"
+        title="Oops, we couldn’t load the wallets at the moment"
+        description={`This might be due to a temporary network issue.\nPlease try reloading to see if that helps.`}
         actionIcon="refresh"
         actionPress={initialFetch}
         actionTitle="Retry"
+        style={styles.placeholderContainer}
       />
-    </FlexView>
-  ) : (
+    );
+  }
+
+  return (
     <FlatList
       key={columns}
       fadingEdgeLength={20}
