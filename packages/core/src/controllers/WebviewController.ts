@@ -8,6 +8,7 @@ export interface WebviewControllerState {
   webviewUrl?: string;
   connecting?: boolean;
   connectingProvider?: SocialProvider;
+  processingAuth?: boolean;
 }
 
 // -- State --------------------------------------------- //
@@ -15,7 +16,8 @@ const state = proxy<WebviewControllerState>({
   frameViewVisible: false,
   webviewVisible: false,
   connecting: false,
-  connectingProvider: undefined
+  connectingProvider: undefined,
+  processingAuth: false
 });
 
 // -- Controller ---------------------------------------- //
@@ -44,5 +46,18 @@ export const WebviewController = {
 
   setConnectingProvider(provider: WebviewControllerState['connectingProvider']) {
     state.connectingProvider = provider;
+  },
+
+  setProcessingAuth(processingAuth: WebviewControllerState['processingAuth']) {
+    state.processingAuth = processingAuth;
+  },
+
+  reset() {
+    state.frameViewVisible = false;
+    state.webviewVisible = false;
+    state.connecting = false;
+    state.connectingProvider = undefined;
+    state.processingAuth = false;
+    state.webviewUrl = undefined;
   }
 };

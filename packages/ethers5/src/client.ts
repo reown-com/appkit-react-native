@@ -923,6 +923,7 @@ export class AppKit extends AppKitScaffold {
 
     const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
     if (connectedConnector === 'AUTH') {
+      // Set loader until it reconnects
       this.setLoading(true);
     }
 

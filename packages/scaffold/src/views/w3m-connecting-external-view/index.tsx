@@ -8,8 +8,7 @@ import {
   ModalController,
   EventsController,
   StorageUtil,
-  type WcWallet,
-  ConnectorController
+  type WcWallet
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -55,7 +54,6 @@ export function ConnectingExternalView() {
     try {
       if (connector) {
         await ConnectionController.connectExternal(connector);
-        ConnectorController.setConnectedConnector(connector.type);
         storeConnectedWallet(data?.wallet);
         ModalController.close();
         EventsController.sendEvent({

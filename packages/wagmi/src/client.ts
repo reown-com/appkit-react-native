@@ -562,15 +562,17 @@ export class AppKit extends AppKitScaffold {
 
   private async addAuthListeners(connector: WagmiConnector) {
     const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
-    if (connector && connectedConnector === 'AUTH') {
+
+    if (connectedConnector === 'AUTH') {
+      // Set loader until it reconnects
       super.setLoading(true);
-
-      const provider = (await connector.getProvider()) as AppKitFrameProvider;
-
-      provider.onSetPreferredAccount(async () => {
-        await reconnect(this.wagmiConfig, { connectors: [connector] });
-        this.setLoading(false);
-      });
     }
+
+    const provider = (await connector.getProvider()) as AppKitFrameProvider;
+
+    provider.onSetPreferredAccount(async () => {
+      await reconnect(this.wagmiConfig, { connectors: [connector] });
+      this.setLoading(false);
+    });
   }
 }

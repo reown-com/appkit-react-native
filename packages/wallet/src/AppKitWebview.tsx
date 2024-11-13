@@ -10,6 +10,7 @@ import {
 } from '@reown/appkit-core-react-native';
 import { useTheme, BorderRadius, IconLink, Spacing } from '@reown/appkit-ui-react-native';
 import type { AppKitFrameProvider } from './AppKitFrameProvider';
+import { AppKitFrameConstants } from './AppKitFrameConstants';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
@@ -100,7 +101,10 @@ function _AppKitWebview() {
           containerStyle={styles.webview}
           ref={webviewRef}
           onNavigationStateChange={async navState => {
-            if (webviewVisible) {
+            if (
+              !navState.loading &&
+              navState.url.includes(`${AppKitFrameConstants.SECURE_SITE_ORIGIN}/sdk/oauth`)
+            ) {
               provider.events.emit('social', navState.url);
             }
           }}

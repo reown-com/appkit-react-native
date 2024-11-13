@@ -16,15 +16,13 @@ import {
   AssetUtil,
   ModalController,
   NetworkController,
-  OptionsController,
   RouterController,
-  SendController,
-  SnackController
+  SendController
 } from '@reown/appkit-core-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import styles from './styles';
 import { AccountWalletFeatures } from '../../partials/w3m-account-wallet-features';
+import styles from './styles';
 
 export function AccountView() {
   const Theme = useTheme();
@@ -35,13 +33,6 @@ export function AccountView() {
   );
   const showActivate =
     preferredAccountType === 'eoa' && NetworkController.checkIfSmartAccountEnabled();
-
-  const onCopyAddress = (value: string) => {
-    if (OptionsController.isClipboardAvailable() && value) {
-      OptionsController.copyToClipboard(value);
-      SnackController.showSuccess('Address copied');
-    }
-  };
 
   const onProfilePress = () => {
     RouterController.push('AccountDefault');
@@ -82,13 +73,16 @@ export function AccountView() {
       <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
       <FlexView padding={['3xl', '0', '0', '0']} style={[{ backgroundColor: Theme['bg-100'] }]}>
         {showActivate && (
-          <Promo style={styles.promoPill} text="Activate your account" onPress={onActivatePress} />
+          <Promo
+            style={styles.promoPill}
+            text="Switch to your smart account"
+            onPress={onActivatePress}
+          />
         )}
         <AccountPill
           address={address}
           profileName={profileName}
           profileImage={profileImage}
-          onCopy={onCopyAddress}
           onPress={onProfilePress}
           style={styles.accountPill}
         />
