@@ -50,6 +50,7 @@ export interface LibraryOptions {
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
   _sdkVersion: OptionsControllerState['sdkVersion'];
   metadata?: OptionsControllerState['metadata'];
+  debug?: OptionsControllerState['debug'];
   features?: Features;
 }
 
@@ -236,9 +237,18 @@ export class AppKitScaffold {
       AccountController.setPreferredAccountType(preferredAccountType);
     };
 
-  protected handleAlertError(error: Error) {
+  protected handleAlertError(error?: string | { shortMessage: string; longMessage: string }) {
+    if (!error) return;
+
+    if (typeof error === 'object') {
+      SnackController.showInternalError(error);
+
+      return;
+    }
+
+    // Check if the error is a universal provider error
     const matchedUniversalProviderError = Object.entries(ErrorUtil.UniversalProviderErrors).find(
-      ([, { message }]) => error.message.includes(message)
+      ([, { message }]) => error?.includes(message)
     );
 
     const [errorKey, errorValue] = matchedUniversalProviderError ?? [];
@@ -250,7 +260,7 @@ export class AppKitScaffold {
         ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS];
 
       if (alertError) {
-        SnackController.showError(alertError.longMessage);
+        SnackController.showInternalError(alertError);
         this.reportedAlertErrors[errorKey] = true;
       }
     }
@@ -270,6 +280,7 @@ export class AppKitScaffold {
     OptionsController.setCustomWallets(options.customWallets);
     OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setSdkVersion(options._sdkVersion);
+    OptionsController.setDebug(options.debug);
 
     if (options.clipboardClient) {
       OptionsController.setClipboardClient(options.clipboardClient);

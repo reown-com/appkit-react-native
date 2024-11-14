@@ -4,30 +4,28 @@ export const ErrorUtil = {
       message: 'Unauthorized: origin not allowed',
       alertErrorKey: 'INVALID_APP_CONFIGURATION'
     },
+    PROJECT_ID_NOT_CONFIGURED: {
+      message: 'Project ID is missing',
+      alertErrorKey: 'PROJECT_ID_NOT_CONFIGURED'
+    },
     JWT_VALIDATION_ERROR: {
       message: 'JWT validation error: JWT Token is not yet valid',
       alertErrorKey: 'JWT_TOKEN_NOT_VALID'
     }
   },
   ALERT_ERRORS: {
-    SWITCH_NETWORK_NOT_FOUND: {
-      shortMessage: 'Network Not Found',
-      longMessage:
-        "Network not found - please make sure it is included in 'networks' array in createAppKit function"
-    },
     INVALID_APP_CONFIGURATION: {
       shortMessage: 'Invalid App Configuration',
-      longMessage: 'Origin not found on Allowlist - update configuration'
+      longMessage: `Bundle ID not found on Allowlist - Please verify that your bundle ID is allowed at cloud.reown.com`
     },
     SOCIALS_TIMEOUT: {
       shortMessage: 'Invalid App Configuration',
       longMessage:
-        'There was an issue loading the embedded wallet. Please verify that your domain is allowed at cloud.reown.com'
+        'There was an issue loading the embedded wallet. Please verify that your bundle ID is allowed at cloud.reown.com'
     },
     JWT_TOKEN_NOT_VALID: {
       shortMessage: 'Session Expired',
-      longMessage:
-        'Invalid session found on UniversalProvider - please check your time settings and connect again'
+      longMessage: 'Invalid session found - please check your time settings and connect again'
     },
     PROJECT_ID_NOT_CONFIGURED: {
       shortMessage: 'Project ID Not Configured',

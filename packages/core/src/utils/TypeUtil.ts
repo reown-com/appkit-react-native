@@ -598,6 +598,7 @@ export interface AppKitFrameProvider {
     type: AppKitFrameAccountType;
     address: string;
   }>;
+  setOnTimeout(callback: () => void): void;
   getSmartAccountEnabledNetworks(): Promise<{
     smartAccountEnabledNetworks: number[];
   }>;
