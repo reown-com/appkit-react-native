@@ -57,5 +57,7 @@ export const SnackController = {
   hide() {
     state.open = false;
     state.long = false;
+    state.message = '';
+    state.variant = 'success';
   }
 };

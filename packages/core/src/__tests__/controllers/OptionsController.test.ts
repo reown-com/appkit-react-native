@@ -16,7 +16,8 @@ describe('OptionsController', () => {
       projectId: '',
       sdkType: 'appkit',
       sdkVersion: 'react-native-wagmi-undefined',
-      features: ConstantsUtil.DEFAULT_FEATURES
+      features: ConstantsUtil.DEFAULT_FEATURES,
+      debug: false
     });
   });
 
