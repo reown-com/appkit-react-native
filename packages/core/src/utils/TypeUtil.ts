@@ -604,8 +604,8 @@ export interface AppKitFrameProvider {
   }>;
   disconnect(): Promise<unknown>;
   request(req: any): Promise<any>;
-  AuthView: () => React.MemoExoticComponent<() => React.JSX.Element | null>;
-  Webview: () => React.MemoExoticComponent<() => React.JSX.Element | null>;
+  AuthView: () => React.JSX.Element;
+  Webview: () => React.JSX.Element;
   onSetPreferredAccount: (
     callback: (values: { type: AppKitFrameAccountType; address: string }) => void
   ) => void;
