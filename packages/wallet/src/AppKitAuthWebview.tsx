@@ -12,8 +12,10 @@ import {
   WebviewController,
   AccountController,
   NetworkController,
-  ConnectionController
+  ConnectionController,
+  SnackController
 } from '@reown/appkit-core-react-native';
+import { ErrorUtil } from '@reown/appkit-common-react-native';
 import { useTheme, BorderRadius } from '@reown/appkit-ui-react-native';
 import type { AppKitFrameProvider } from './AppKitFrameProvider';
 import { AppKitFrameConstants } from './AppKitFrameConstants';
@@ -205,6 +207,9 @@ function _AuthWebview() {
           }}
           onError={({ nativeEvent }) => {
             provider?.onWebviewLoadError(nativeEvent.description);
+          }}
+          onHttpError={() => {
+            SnackController.showInternalError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
           }}
         />
       </AnimatedSafeAreaView>
