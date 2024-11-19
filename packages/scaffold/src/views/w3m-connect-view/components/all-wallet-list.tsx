@@ -1,3 +1,4 @@
+import { type StyleProp, type ViewStyle } from 'react-native';
 import { useSnapshot } from 'valtio';
 import {
   ApiController,
@@ -6,8 +7,7 @@ import {
   type ConnectionControllerState,
   type WcWallet
 } from '@reown/appkit-core-react-native';
-import { ListWallet } from '@reown/appkit-ui-react-native';
-import type { StyleProp, ViewStyle } from 'react-native';
+import { ListItemLoader, ListWallet } from '@reown/appkit-ui-react-native';
 import { UiUtil } from '../../../utils/UiUtil';
 import { filterOutRecentWallets } from '../utils';
 
@@ -18,7 +18,7 @@ interface Props {
 }
 
 export function AllWalletList({ itemStyle, onWalletPress, isWalletConnectEnabled }: Props) {
-  const { installed, featured, recommended } = useSnapshot(ApiController.state);
+  const { installed, featured, recommended, prefetchLoading } = useSnapshot(ApiController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state) as ConnectionControllerState;
   const imageHeaders = ApiController._getApiHeaders();
   const RECENT_COUNT = recentWallets?.length && installed.length ? 1 : recentWallets?.length ?? 0;
@@ -33,15 +33,22 @@ export function AllWalletList({ itemStyle, onWalletPress, isWalletConnectEnabled
     return null;
   }
 
-  return list.map(wallet => (
-    <ListWallet
-      key={wallet?.id}
-      imageSrc={AssetUtil.getWalletImage(wallet)}
-      imageHeaders={imageHeaders}
-      name={wallet?.name ?? 'Unknown'}
-      onPress={() => onWalletPress(wallet)}
-      style={itemStyle}
-      installed={!!installed.find(installedWallet => installedWallet.id === wallet.id)}
-    />
-  ));
+  return prefetchLoading ? (
+    <>
+      <ListItemLoader style={itemStyle} />
+      <ListItemLoader style={itemStyle} />
+    </>
+  ) : (
+    list.map(wallet => (
+      <ListWallet
+        key={wallet?.id}
+        imageSrc={AssetUtil.getWalletImage(wallet)}
+        imageHeaders={imageHeaders}
+        name={wallet?.name ?? 'Unknown'}
+        onPress={() => onWalletPress(wallet)}
+        style={itemStyle}
+        installed={!!installed.find(installedWallet => installedWallet.id === wallet.id)}
+      />
+    ))
+  );
 }

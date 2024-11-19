@@ -29,6 +29,7 @@ const recommendedEntries = '4';
 export interface ApiControllerState {
   prefetchPromise?: Promise<unknown>;
   prefetchError?: boolean;
+  prefetchLoading?: boolean;
   page: number;
   count: number;
   featured: WcWallet[];
@@ -330,6 +331,7 @@ export const ApiController = {
   async prefetch() {
     try {
       state.prefetchError = false;
+      state.prefetchLoading = true;
       // this fetch must resolve first so we filter them in the other wallet requests
       await ApiController.fetchInstalledWallets();
 
@@ -347,8 +349,13 @@ export const ApiController = {
         CoreHelperUtil.allSettled(promises),
         CoreHelperUtil.wait(3000)
       ]);
+
+      state.prefetchPromise.then(() => {
+        state.prefetchLoading = false;
+      });
     } catch (error) {
       state.prefetchError = true;
+      state.prefetchLoading = false;
       SnackController.showError('Failed to load wallets');
     }
   },

@@ -40,6 +40,7 @@ export { InputNumeric, type InputNumericProps } from './composites/wui-input-num
 export { InputText, type InputTextProps } from './composites/wui-input-text';
 export { Link, type LinkProps } from './composites/wui-link';
 export { ListItem, type ListItemProps } from './composites/wui-list-item';
+export { ListItemLoader, type ListItemLoaderProps } from './composites/wui-list-item-loader';
 export { ListSocial, type ListSocialProps } from './composites/wui-list-social';
 export { ListToken, type ListTokenProps } from './composites/wui-list-token';
 export { ListTransaction, type ListTransactionProps } from './composites/wui-list-transaction';
