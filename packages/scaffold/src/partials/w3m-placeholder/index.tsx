@@ -41,7 +41,7 @@ export function Placeholder({
         </Text>
       )}
       {description && (
-        <Text variant="small-400" color="fg-200" center style={styles.description}>
+        <Text variant="small-400" color="fg-200" center>
           {description}
         </Text>
       )}
@@ -70,9 +70,6 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: Spacing['2xs']
-  },
-  description: {
-    // maxWidth: '50%'
   },
   button: {
     marginTop: Spacing.m
