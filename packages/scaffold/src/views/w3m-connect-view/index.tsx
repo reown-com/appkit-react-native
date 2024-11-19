@@ -42,6 +42,8 @@ export function ConnectView() {
     isAuthEnabled &&
     (isEmailEnabled || isSocialEnabled) &&
     (isWalletConnectEnabled || isCoinbaseEnabled);
+  const showLoadingError = !showConnectWalletsButton && prefetchError;
+  const showList = !showConnectWalletsButton && !showLoadingError;
 
   const paddingBottom = Platform.select({
     android: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
@@ -81,13 +83,14 @@ export function ConnectView() {
         {showSeparator && <Separator text="or" style={styles.socialSeparator} />}
 
         <FlexView padding={['0', 's', '0', 's']}>
-          {showConnectWalletsButton ? (
+          {showConnectWalletsButton && (
             <ListItem contentStyle={styles.connectWalletButton} onPress={onViewAllPress}>
               <Icon name="wallet" size="lg" />
               <Text variant="paragraph-500">Continue with a wallet</Text>
               <View style={styles.connectWalletEmpty} />
             </ListItem>
-          ) : prefetchError ? (
+          )}
+          {showLoadingError && (
             <FlexView alignItems="center" justifyContent="center" margin={['l', '0', '0', '0']}>
               <Placeholder
                 icon="warningCircle"
@@ -100,7 +103,8 @@ export function ConnectView() {
               />
               <Separator style={styles.socialSeparator} />
             </FlexView>
-          ) : (
+          )}
+          {showList && (
             <>
               <RecentWalletList
                 itemStyle={styles.item}
