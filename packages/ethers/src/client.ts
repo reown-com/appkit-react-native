@@ -975,10 +975,12 @@ export class AppKit extends AppKitScaffold {
 
   private async addWalletConnectListeners(provider: EthereumProvider) {
     if (provider) {
-      provider.signer.client.core.relayer.provider.on('payload', (payload: JsonRpcError) => {
-        if (payload?.error) {
-          this.handleAlertError(payload?.error.message);
-        }
+      provider.signer.client.core.relayer.on('relayer_connect', () => {
+        provider.signer.client.core.relayer?.provider?.on('payload', (payload: JsonRpcError) => {
+          if (payload?.error) {
+            this.handleAlertError(payload?.error.message);
+          }
+        });
       });
     }
   }

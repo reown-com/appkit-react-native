@@ -554,10 +554,13 @@ export class AppKit extends AppKitScaffold {
     const connector = connectors.find(({ id }) => id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID);
     if (connector) {
       const provider = (await connector.getProvider()) as EthereumProvider;
-      provider.signer.client.core.relayer.provider.on('payload', (payload: JsonRpcError) => {
-        if (payload?.error) {
-          this.handleAlertError(payload?.error.message);
-        }
+
+      provider.signer.client.core.relayer.on('relayer_connect', () => {
+        provider.signer.client.core.relayer?.provider?.on('payload', (payload: JsonRpcError) => {
+          if (payload?.error) {
+            this.handleAlertError(payload?.error.message);
+          }
+        });
       });
     }
   }
