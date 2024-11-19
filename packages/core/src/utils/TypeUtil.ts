@@ -598,13 +598,14 @@ export interface AppKitFrameProvider {
     type: AppKitFrameAccountType;
     address: string;
   }>;
+  setOnTimeout(callback: () => void): void;
   getSmartAccountEnabledNetworks(): Promise<{
     smartAccountEnabledNetworks: number[];
   }>;
   disconnect(): Promise<unknown>;
   request(req: any): Promise<any>;
-  AuthView: () => JSX.Element | null;
-  Webview: () => JSX.Element | null;
+  AuthView: () => React.JSX.Element | null;
+  Webview: () => React.JSX.Element | null;
   onSetPreferredAccount: (
     callback: (values: { type: AppKitFrameAccountType; address: string }) => void
   ) => void;

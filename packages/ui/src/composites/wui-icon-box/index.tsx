@@ -7,7 +7,7 @@ import styles from './styles';
 
 export interface IconBoxProps {
   icon: IconType;
-  size?: Exclude<SizeType, 'xl' | 'xs' | 'xxs'>;
+  size?: Exclude<SizeType, 'xs' | 'xxs'>;
   iconColor?: ColorType;
   iconSize?: Exclude<SizeType, 'xl'>;
   background?: boolean;
@@ -33,6 +33,9 @@ export function IconBox({
   const Theme = useTheme();
   let _iconSize: SizeType;
   switch (size) {
+    case 'xl':
+      _iconSize = 'xl';
+      break;
     case 'lg':
       _iconSize = 'lg';
       break;
@@ -48,6 +51,9 @@ export function IconBox({
 
   let boxSize: number;
   switch (size) {
+    case 'xl':
+      boxSize = 56;
+      break;
     case 'lg':
       boxSize = 40;
       break;
@@ -58,7 +64,17 @@ export function IconBox({
       boxSize = 24;
   }
 
-  const borderRadius = size === 'lg' ? 'xxs' : '3xl';
+  let borderRadius: keyof typeof BorderRadius;
+  switch (size) {
+    case 'xl':
+      borderRadius = 's';
+      break;
+    case 'lg':
+      borderRadius = 'xxs';
+      break;
+    default:
+      borderRadius = '3xl';
+  }
 
   const backgroundStyle = {
     backgroundColor:

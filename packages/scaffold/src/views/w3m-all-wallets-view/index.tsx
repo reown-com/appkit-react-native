@@ -59,7 +59,7 @@ export function AllWalletsView() {
         alignItems="center"
         style={[
           styles.header,
-          { backgroundColor: Theme['bg-125'], shadowColor: Theme['bg-125'], width: maxWidth }
+          { backgroundColor: Theme['bg-100'], shadowColor: Theme['bg-100'], width: maxWidth }
         ]}
       >
         <SearchBar onChangeText={onInputChange} testID="input-search" />

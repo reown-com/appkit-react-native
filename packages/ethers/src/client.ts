@@ -27,7 +27,7 @@ import {
   type WriteContractArgs,
   type AppKitFrameAccountType
 } from '@reown/appkit-scaffold-react-native';
-import { erc20ABI, NamesUtil, NetworkUtil } from '@reown/appkit-common-react-native';
+import { erc20ABI, ErrorUtil, NamesUtil, NetworkUtil } from '@reown/appkit-common-react-native';
 import {
   ConstantsUtil,
   PresetsUtil,
@@ -47,6 +47,7 @@ import {
 } from '@reown/appkit-scaffold-utils-react-native';
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
+import { type JsonRpcError } from '@walletconnect/jsonrpc-types';
 
 import { getAuthCaipNetworks, getWalletConnectCaipNetworks } from './utils/helpers';
 import type { AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
@@ -108,7 +109,7 @@ export class AppKit extends AppKitScaffold {
     }
 
     if (!appKitOptions.projectId) {
-      throw new Error('appkit:constructor - projectId is undefined');
+      throw new Error(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED.shortMessage);
     }
 
     const networkControllerClient: NetworkControllerClient = {
@@ -506,6 +507,7 @@ export class AppKit extends AppKitScaffold {
     };
 
     this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions);
+    this.addWalletConnectListeners(this.walletConnectProvider);
 
     await this.checkActiveWalletConnectProvider();
   }
@@ -965,5 +967,21 @@ export class AppKit extends AppKitScaffold {
       }
       this.setLoading(false);
     });
+
+    authProvider.setOnTimeout(async () => {
+      this.handleAlertError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
+    });
+  }
+
+  private async addWalletConnectListeners(provider: EthereumProvider) {
+    if (provider) {
+      provider.signer.client.core.relayer.on('relayer_connect', () => {
+        provider.signer.client.core.relayer?.provider?.on('payload', (payload: JsonRpcError) => {
+          if (payload?.error) {
+            this.handleAlertError(payload?.error.message);
+          }
+        });
+      });
+    }
   }
 }

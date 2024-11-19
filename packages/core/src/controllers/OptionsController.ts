@@ -29,6 +29,7 @@ export interface OptionsControllerState {
   metadata?: Metadata;
   isSiweEnabled?: boolean;
   features?: Features;
+  debug?: boolean;
 }
 
 // -- State --------------------------------------------- //
@@ -36,7 +37,8 @@ const state = proxy<OptionsControllerState>({
   projectId: '',
   sdkType: 'appkit',
   sdkVersion: 'react-native-wagmi-undefined',
-  features: ConstantsUtil.DEFAULT_FEATURES
+  features: ConstantsUtil.DEFAULT_FEATURES,
+  debug: false
 });
 
 // -- Controller ---------------------------------------- //
@@ -89,6 +91,10 @@ export const OptionsController = {
 
   setFeatures(features: OptionsControllerState['features']) {
     state.features = { ...ConstantsUtil.DEFAULT_FEATURES, ...features };
+  },
+
+  setDebug(debug: OptionsControllerState['debug']) {
+    state.debug = debug;
   },
 
   isClipboardAvailable() {

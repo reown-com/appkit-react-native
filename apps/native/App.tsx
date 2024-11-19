@@ -63,10 +63,11 @@ createAppKit({
   customWallets,
   enableAnalytics: true,
   metadata,
+  debug: true,
   features: {
     email: true,
     socials: ['x', 'farcaster', 'discord', 'apple'],
-    emailShowWallets: false
+    emailShowWallets: true
   }
 });
 

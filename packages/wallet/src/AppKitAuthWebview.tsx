@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { memo, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Animated, Appearance, Linking, Platform, SafeAreaView, StyleSheet } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 
@@ -12,8 +12,10 @@ import {
   WebviewController,
   AccountController,
   NetworkController,
-  ConnectionController
+  ConnectionController,
+  SnackController
 } from '@reown/appkit-core-react-native';
+import { ErrorUtil } from '@reown/appkit-common-react-native';
 import { useTheme, BorderRadius } from '@reown/appkit-ui-react-native';
 import type { AppKitFrameProvider } from './AppKitFrameProvider';
 import { AppKitFrameConstants } from './AppKitFrameConstants';
@@ -22,7 +24,7 @@ import type { AppKitFrameTypes } from './AppKitFrameTypes';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
-function _AuthWebview() {
+export function AuthWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
   const authConnector = ConnectorController.getAuthConnector();
@@ -206,13 +208,14 @@ function _AuthWebview() {
           onError={({ nativeEvent }) => {
             provider?.onWebviewLoadError(nativeEvent.description);
           }}
+          onHttpError={() => {
+            SnackController.showInternalError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
+          }}
         />
       </AnimatedSafeAreaView>
     </>
   ) : null;
 }
-
-export const AuthWebview = memo(_AuthWebview);
 
 const styles = StyleSheet.create({
   backdrop: {

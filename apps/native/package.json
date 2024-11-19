@@ -37,8 +37,8 @@
     "react-native-web": "~0.19.10",
     "react-native-webview": "13.8.6",
     "uuid": "3.4.0",
-    "viem": "2.21.37",
-    "wagmi": "2.12.25"
+    "viem": "2.21.48",
+    "wagmi": "2.12.33"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

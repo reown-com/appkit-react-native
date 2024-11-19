@@ -22,7 +22,8 @@ import {
 } from '@wagmi/core';
 import { normalize } from 'viem/ens';
 import { mainnet, type Chain } from '@wagmi/core/chains';
-import { EthereumProvider, OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
+import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
+import { type JsonRpcError } from '@walletconnect/jsonrpc-types';
 import {
   type CaipAddress,
   type CaipNetwork,
@@ -44,7 +45,7 @@ import {
   PresetsUtil,
   StorageUtil
 } from '@reown/appkit-scaffold-utils-react-native';
-import { NetworkUtil, NamesUtil } from '@reown/appkit-common-react-native';
+import { NetworkUtil, NamesUtil, ErrorUtil } from '@reown/appkit-common-react-native';
 import { type AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
 import {
   getCaipDefaultChain,
@@ -90,7 +91,7 @@ export class AppKit extends AppKitScaffold {
     }
 
     if (!appKitOptions.projectId) {
-      throw new Error('appkit:constructor - projectId is undefined');
+      throw new Error(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED.shortMessage);
     }
 
     const networkControllerClient: NetworkControllerClient = {
@@ -543,7 +544,25 @@ export class AppKit extends AppKitScaffold {
     });
 
     this.setConnectors(_connectors);
+    this.syncWalletConnectListeners(filteredConnectors);
     this.syncAuthConnector(filteredConnectors);
+  }
+
+  private async syncWalletConnectListeners(
+    connectors: AppKitClientOptions['wagmiConfig']['connectors']
+  ) {
+    const connector = connectors.find(({ id }) => id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID);
+    if (connector) {
+      const provider = (await connector.getProvider()) as EthereumProvider;
+
+      provider.signer.client.core.relayer.on('relayer_connect', () => {
+        provider.signer.client.core.relayer?.provider?.on('payload', (payload: JsonRpcError) => {
+          if (payload?.error) {
+            this.handleAlertError(payload?.error.message);
+          }
+        });
+      });
+    }
   }
 
   private async syncAuthConnector(connectors: AppKitClientOptions['wagmiConfig']['connectors']) {
@@ -573,6 +592,10 @@ export class AppKit extends AppKitScaffold {
     provider.onSetPreferredAccount(async () => {
       await reconnect(this.wagmiConfig, { connectors: [connector] });
       this.setLoading(false);
+    });
+
+    provider.setOnTimeout(async () => {
+      this.handleAlertError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
     });
   }
 }

@@ -19,7 +19,7 @@ import {
   OptionsController,
   TransactionsController
 } from '@reown/appkit-core-react-native';
-import { AccountPlaceholder } from '../w3m-account-placeholder';
+import { Placeholder } from '../w3m-placeholder';
 import { getTransactionListItemProps } from './utils';
 import styles from './styles';
 
@@ -68,7 +68,7 @@ export function AccountActivity({ style }: Props) {
 
   if (!Object.keys(transactionsByYear).length) {
     return (
-      <AccountPlaceholder
+      <Placeholder
         icon="swapHorizontal"
         title="No activity yet"
         description="Your next transactions will appear here"
