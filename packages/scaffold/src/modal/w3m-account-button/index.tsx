@@ -33,7 +33,7 @@ export function AccountButton({ balance, disabled, style, testID }: AccountButto
 
   return (
     <AccountButtonUI
-      onPress={ModalController.open}
+      onPress={() => ModalController.open()}
       address={address}
       profileName={profileName}
       networkSrc={networkImage}

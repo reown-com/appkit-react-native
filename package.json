@@ -23,6 +23,7 @@
     "gallery": "turbo run dev:gallery",
     "android": "cd apps/native && yarn android",
     "ios": "cd apps/native && yarn ios",
+    "web": "cd apps/native && yarn web",
     "build": "turbo build",
     "build:gallery": "turbo run build:gallery",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",

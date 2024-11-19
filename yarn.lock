@@ -95,6 +95,7 @@ __metadata:
   resolution: "@apps/native@workspace:apps/native"
   dependencies:
     "@babel/core": "npm:^7.24.0"
+    "@expo/metro-runtime": "npm:~3.2.3"
     "@react-native-async-storage/async-storage": "npm:1.23.1"
     "@react-native-community/netinfo": "npm:11.3.1"
     "@reown/appkit-auth-wagmi-react-native": "npm:1.0.2"
@@ -4523,6 +4524,15 @@ __metadata:
     postcss: "npm:~8.4.32"
     resolve-from: "npm:^5.0.0"
   checksum: 507aba80bcff43fd37ddd05d2535da8e6a247502a12b53dc3505e45a0ee9f4561e06f268a81b45813254fc60d511a6c2176361f288813851c6506c6098aeccea
+  languageName: node
+  linkType: hard
+
+"@expo/metro-runtime@npm:~3.2.3":
+  version: 3.2.3
+  resolution: "@expo/metro-runtime@npm:3.2.3"
+  peerDependencies:
+    react-native: "*"
+  checksum: a5357c32663e516833feed8f6fd899e1a6ab6acf79b198e860bb82076512e07f95730420eefc87a354d4004d9482b29fbecadcbdcf59b6f8737bba4da03e405e
   languageName: node
   linkType: hard
 
