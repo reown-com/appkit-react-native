@@ -16,7 +16,7 @@ import type {
   ConnectedWalletInfo,
   Features
 } from '@reown/appkit-core-react-native';
-import type { SIWEControllerClient } from '@reown/appkit-siwe-react-native';
+import { SIWEController, type SIWEControllerClient } from '@reown/appkit-siwe-react-native';
 import {
   AccountController,
   BlockchainApiController,
@@ -299,8 +299,6 @@ export class AppKitScaffold {
     }
 
     if (options.siweControllerClient) {
-      const { SIWEController } = await import('@reown/appkit-siwe-react-native');
-
       SIWEController.setSIWEClient(options.siweControllerClient);
     }
 
