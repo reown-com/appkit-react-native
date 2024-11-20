@@ -13,8 +13,8 @@ const SvgProfile = (props: SvgProps) => (
       <Circle cx="35.5" cy="23.5" r="1.5" fill="#fff" />
       <Path
         stroke="#fff"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         strokeWidth="2"
         d="m31 20-3 8h4"
       />
