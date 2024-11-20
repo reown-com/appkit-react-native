@@ -45,12 +45,17 @@ import {
   type CombinedProviderType,
   type AppKitFrameProvider
 } from '@reown/appkit-scaffold-utils-react-native';
+import {
+  type AppKitSIWEClient,
+  SIWEController,
+  getDidChainId,
+  getDidAddress
+} from '@reown/appkit-siwe-react-native';
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 import { type JsonRpcError } from '@walletconnect/jsonrpc-types';
 
 import { getAuthCaipNetworks, getWalletConnectCaipNetworks } from './utils/helpers';
-import type { AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface AppKitClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -170,9 +175,6 @@ export class AppKit extends AppKitScaffold {
         // SIWE
         const params = await siweConfig?.getMessageParams?.();
         if (siweConfig?.options?.enabled && params && Object.keys(params).length > 0) {
-          const { SIWEController, getDidChainId, getDidAddress } = await import(
-            '@reown/appkit-siwe-react-native'
-          );
           const result = await WalletConnectProvider.authenticate({
             nonce: await siweConfig.getNonce(),
             methods: OPTIONAL_METHODS,
@@ -255,7 +257,6 @@ export class AppKit extends AppKitScaffold {
         const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID];
 
         if (siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@reown/appkit-siwe-react-native');
           await SIWEController.signOut();
         }
 

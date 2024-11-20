@@ -18,6 +18,7 @@ import {
   type AppKitFrameProvider,
   WebviewController
 } from '@reown/appkit-core-react-native';
+import { SIWEController } from '@reown/appkit-siwe-react-native';
 
 import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
@@ -30,7 +31,6 @@ export function AppKit() {
   const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
   const { frameViewVisible, webviewVisible } = useSnapshot(WebviewController.state);
-  const { isSiweEnabled } = OptionsController.state;
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
   const portraitHeight = height - 120;
@@ -54,9 +54,7 @@ export function AppKit() {
   };
 
   const handleClose = async () => {
-    if (isSiweEnabled) {
-      const { SIWEController } = await import('@reown/appkit-siwe-react-native');
-
+    if (OptionsController.state.isSiweEnabled) {
       if (SIWEController.state.status !== 'success' && AccountController.state.isConnected) {
         await ConnectionController.disconnect();
       }
@@ -73,9 +71,9 @@ export function AppKit() {
       TransactionsController.resetTransactions();
       TransactionsController.fetchTransactions(newAddress, true);
 
-      if (isSiweEnabled) {
+      if (OptionsController.state.isSiweEnabled) {
         const newNetworkId = CoreHelperUtil.getNetworkId(address);
-        const { SIWEController } = await import('@reown/appkit-siwe-react-native');
+
         const { signOutOnAccountChange, signOutOnNetworkChange } =
           SIWEController.state._client?.options ?? {};
         const session = await SIWEController.getSession();
@@ -98,7 +96,7 @@ export function AppKit() {
         }
       }
     },
-    [isSiweEnabled, isConnected, loading]
+    [isConnected, loading]
   );
 
   const onSiweNavigation = () => {
