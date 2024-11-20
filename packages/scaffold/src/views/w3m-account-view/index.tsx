@@ -51,6 +51,18 @@ export function AccountView() {
     SendController.resetSend();
   }, []);
 
+  useEffect(() => {
+    AccountController.fetchTokenBalance();
+
+    const balanceInterval = setInterval(() => {
+      AccountController.fetchTokenBalance();
+    }, 10000);
+
+    return () => {
+      clearInterval(balanceInterval);
+    };
+  }, []);
+
   return (
     <ScrollView
       bounces={false}
