@@ -539,7 +539,7 @@ export class AppKitFrameProvider {
 
     if (shouldCheckForTimeout && this.onTimeout) {
       // 15 seconds timeout
-      timer = setTimeout(this.onTimeout, 15000);
+      timer = setTimeout(this.onTimeout, 30000);
     }
 
     return new Promise((resolve, reject) => {

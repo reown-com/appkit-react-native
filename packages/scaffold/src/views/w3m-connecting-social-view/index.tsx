@@ -126,10 +126,14 @@ export function ConnectingSocialView() {
         )}
       </LoadingThumbnail>
       <Text style={styles.continueText} variant="paragraph-500">
-        {`Continue with ${StringUtil.capitalize(socialProvider)}`}
+        {processingAuth
+          ? 'Loading user data'
+          : `Continue with ${StringUtil.capitalize(socialProvider)}`}
       </Text>
       <Text variant="small-400" color="fg-200">
-        {processingAuth ? 'Retrieving user data' : 'Connect in the provider window'}
+        {processingAuth
+          ? 'Please wait a moment while we load your data'
+          : 'Connect in the provider window'}
       </Text>
     </FlexView>
   );
