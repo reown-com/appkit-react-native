@@ -21,7 +21,7 @@ export interface QrCodeProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const LABEL_HEIGHT = 15;
+const LABEL_HEIGHT = 18;
 
 export function QrCode({ size, uri, imageSrc, testID, arenaClear, icon, style }: QrCodeProps) {
   const Theme = LightTheme;

@@ -15,6 +15,7 @@
     "eas:update": "eas update --branch preview"
   },
   "dependencies": {
+    "@expo/metro-runtime": "~3.2.3",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/netinfo": "11.3.1",
     "@reown/appkit-auth-wagmi-react-native": "1.0.2",

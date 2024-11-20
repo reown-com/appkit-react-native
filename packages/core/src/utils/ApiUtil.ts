@@ -6,13 +6,21 @@ export const ApiUtil = {
     return CoreHelperUtil.getBundleId();
   },
 
-  getUserAgent() {
-    const reactNativeVersion = [
-      Platform.constants.reactNativeVersion.major,
-      Platform.constants.reactNativeVersion.minor,
-      Platform.constants.reactNativeVersion.patch
+  getReactNativeVersion() {
+    return [
+      Platform.constants?.reactNativeVersion?.major,
+      Platform.constants?.reactNativeVersion?.minor,
+      Platform.constants?.reactNativeVersion?.patch
     ].join('.');
+  },
 
-    return `${Platform.OS}-${Platform.Version}@rn-${reactNativeVersion}`;
+  getUserAgent() {
+    const rnVersion = Platform.select({
+      ios: this.getReactNativeVersion(),
+      android: this.getReactNativeVersion(),
+      default: 'undefined'
+    });
+
+    return `${Platform.OS}-${Platform.Version}@rn-${rnVersion}`;
   }
 };
