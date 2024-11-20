@@ -4,7 +4,9 @@ import { FlatList, View } from 'react-native';
 import {
   ApiController,
   AssetUtil,
+  OptionsController,
   SnackController,
+  type OptionsControllerState,
   type WcWallet
 } from '@reown/appkit-core-react-native';
 import {
@@ -31,11 +33,13 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const { maxWidth, padding } = useCustomDimensions();
   const { installed, featured, recommended, wallets } = useSnapshot(ApiController.state);
+  const { customWallets } = useSnapshot(OptionsController.state) as OptionsControllerState;
   const imageHeaders = ApiController._getApiHeaders();
   const preloadedWallets = installed.length + featured.length + recommended.length;
   const loadingItems = columns - ((100 + preloadedWallets) % columns);
 
   const walletList = [
+    ...(customWallets ?? []),
     ...installed,
     ...featured,
     ...recommended,
