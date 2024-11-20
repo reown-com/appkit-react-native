@@ -28,6 +28,7 @@ export function ConnectingFarcasterView() {
   const { maxWidth: width } = useCustomDimensions();
   const authConnector = ConnectorController.getAuthConnector();
   const [error, setError] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const [url, setUrl] = useState<string | undefined>();
   const showCopy = OptionsController.isClipboardAvailable();
   const socialProvider = data?.socialProvider;
@@ -41,6 +42,7 @@ export function ConnectingFarcasterView() {
         setUrl(farcasterUrl);
         Linking.openURL(farcasterUrl);
         await provider.connectFarcaster();
+        setProcessing(true);
         await ConnectionController.connectExternal(authConnector);
         ConnectionController.setConnectedSocialProvider(socialProvider);
         EventsController.sendEvent({
@@ -49,6 +51,7 @@ export function ConnectingFarcasterView() {
           properties: { provider: socialProvider }
         });
         WebviewController.setConnecting(false);
+        setProcessing(false);
         ModalController.close();
       }
     } catch (e) {
@@ -59,6 +62,7 @@ export function ConnectingFarcasterView() {
       });
       SnackController.showError('Something went wrong');
       setError(true);
+      setProcessing(false);
     }
   }, [provider, socialProvider, authConnector]);
 
@@ -96,7 +100,12 @@ export function ConnectingFarcasterView() {
           )}
         </LoadingThumbnail>
         <Text style={styles.continueText} variant="paragraph-500">
-          Continue in Farcaster
+          {processing ? 'Loading user data' : 'Continue in Farcaster'}
+        </Text>
+        <Text variant="small-400" color="fg-200">
+          {processing
+            ? 'Please wait a moment while we load your data'
+            : 'Connect in the Farcaster app'}
         </Text>
         {showCopy && (
           <Link
