@@ -20,15 +20,10 @@ export function AppKitWebview() {
   const authConnector = ConnectorController.getAuthConnector();
   const { webviewVisible, webviewUrl } = useSnapshot(WebviewController.state);
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
-  const animatedHeight = useRef(new Animated.Value(0));
   const backdropOpacity = useRef(new Animated.Value(0));
   const webviewOpacity = useRef(new Animated.Value(0));
   const provider = authConnector?.provider as AppKitFrameProvider;
-
-  const show = animatedHeight.current.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0%', '80%']
-  });
+  const display = webviewVisible ? 'flex' : 'none';
 
   const onClose = () => {
     WebviewController.setWebviewVisible(false);
@@ -38,16 +33,10 @@ export function AppKitWebview() {
   };
 
   useEffect(() => {
-    Animated.timing(animatedHeight.current, {
-      toValue: webviewVisible ? 1 : 0,
-      duration: 200,
-      useNativeDriver: false
-    }).start();
-
     Animated.timing(webviewOpacity.current, {
       toValue: webviewVisible ? 1 : 0,
       duration: 300,
-      useNativeDriver: false
+      useNativeDriver: true
     }).start(({ finished }) => {
       if (finished && !webviewVisible) {
         WebviewController.setWebviewUrl('');
@@ -61,9 +50,9 @@ export function AppKitWebview() {
     Animated.timing(backdropOpacity.current, {
       toValue: webviewVisible ? 0.7 : 0,
       duration: 300,
-      useNativeDriver: false
+      useNativeDriver: true
     }).start(() => setIsBackdropVisible(webviewVisible));
-  }, [animatedHeight, backdropOpacity, webviewVisible, setIsBackdropVisible]);
+  }, [backdropOpacity, webviewVisible, setIsBackdropVisible]);
 
   if (!webviewUrl) return null;
 
@@ -79,7 +68,7 @@ export function AppKitWebview() {
       <AnimatedSafeAreaView
         style={[
           styles.container,
-          { backgroundColor: Theme['bg-100'], height: show, opacity: webviewOpacity.current }
+          { backgroundColor: Theme['bg-100'], display, opacity: webviewOpacity.current }
         ]}
       >
         <IconLink
@@ -124,6 +113,7 @@ const styles = StyleSheet.create({
   container: {
     bottom: 0,
     position: 'absolute',
+    height: '80%',
     width: '100%',
     borderTopLeftRadius: BorderRadius.l,
     borderTopRightRadius: BorderRadius.l,
