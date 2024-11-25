@@ -5,7 +5,11 @@ import { Text } from '../../components/wui-text';
 import { useTheme } from '../../hooks/useTheme';
 import { FlexView } from '../../layout/wui-flex';
 import { UiUtil } from '../../utils/UiUtil';
+import { Spacing } from '../../utils/ThemeUtil';
 import styles from './styles';
+
+const ListTokenHeight = 52;
+export const ListTokenTotalHeight = ListTokenHeight + Spacing['2xs'];
 
 export interface ListTokenProps {
   imageSrc: string;
@@ -36,7 +40,7 @@ export function ListToken({
         alignItems="center"
         padding={['2xs', 'm', '2xs', 'xs']}
       >
-        <FlexView flexDirection="row" alignItems="center">
+        <FlexView flexDirection="row" alignItems="center" style={{ height: ListTokenHeight }}>
           {imageSrc ? (
             <Image
               source={imageSrc}
@@ -67,10 +71,21 @@ export function ListToken({
           </FlexView>
           <FlexView padding={['0', 's', '0', 's']}>
             <Text color="fg-100" variant="paragraph-500">
-              {name}
+              {UiUtil.getTruncateString({
+                string: name,
+                charsStart: 15,
+                charsEnd: 0,
+                truncate: 'end'
+              })}
             </Text>
             <Text variant="small-400" color="fg-200">
-              {UiUtil.formatNumberToLocalString(amount, 4)} {currency}
+              {UiUtil.formatNumberToLocalString(amount, 4)}{' '}
+              {UiUtil.getTruncateString({
+                string: currency,
+                charsStart: 8,
+                charsEnd: 0,
+                truncate: 'end'
+              })}
             </Text>
           </FlexView>
         </FlexView>

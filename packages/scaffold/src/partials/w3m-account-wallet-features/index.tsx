@@ -3,10 +3,13 @@ import { useSnapshot } from 'valtio';
 import { Balance, FlexView, IconLink, Tabs } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
+  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   NetworkController,
-  RouterController
+  OptionsController,
+  RouterController,
+  SnackController
 } from '@reown/appkit-core-react-native';
 import type { Balance as BalanceType } from '@reown/appkit-common-react-native';
 import { AccountActivity } from '../w3m-account-activity';
@@ -20,7 +23,9 @@ export interface AccountWalletFeaturesProps {
 export function AccountWalletFeatures() {
   const [activeTab, setActiveTab] = useState(0);
   const { tokenBalance } = useSnapshot(AccountController.state);
+  const { features } = useSnapshot(OptionsController.state);
   const balance = CoreHelperUtil.calculateAndFormatBalance(tokenBalance as BalanceType[]);
+  const isSwapsEnabled = features?.swaps;
 
   const onTabChange = (index: number) => {
     setActiveTab(index);
@@ -37,6 +42,29 @@ export function AccountWalletFeatures() {
         isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
       }
     });
+  };
+
+  const onSwapPress = () => {
+    if (
+      NetworkController.state.caipNetwork?.id &&
+      !ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(`${NetworkController.state.caipNetwork.id}`)
+    ) {
+      SnackController.showError('Unsupported Chain');
+      // RouterController.push('UnsupportedChain', {
+      //   swapUnsupportedChain: true
+      // });
+      RouterController.push('Swap');
+    } else {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'OPEN_SWAP',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+        }
+      });
+      RouterController.push('Swap');
+    }
   };
 
   const onSendPress = () => {
@@ -64,6 +92,18 @@ export function AccountWalletFeatures() {
         justifyContent="space-around"
         padding={['0', 's', '0', 's']}
       >
+        {isSwapsEnabled && (
+          <IconLink
+            icon="recycleHorizontal"
+            size="lg"
+            iconColor="accent-100"
+            background
+            backgroundColor="accent-glass-010"
+            pressedColor="accent-glass-020"
+            style={[styles.action, styles.actionLeft]}
+            onPress={onSwapPress}
+          />
+        )}
         <IconLink
           icon="arrowBottomCircle"
           size="lg"
@@ -71,7 +111,7 @@ export function AccountWalletFeatures() {
           background
           backgroundColor="accent-glass-010"
           pressedColor="accent-glass-020"
-          style={[styles.action, styles.actionLeft]}
+          style={[styles.action, isSwapsEnabled ? styles.actionCenter : styles.actionLeft]}
           onPress={onReceivePress}
         />
         <IconLink

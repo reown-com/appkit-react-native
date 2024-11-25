@@ -9,6 +9,10 @@ import type {
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse,
   BlockchainApiLookupEnsName,
+  BlockchainApiSwapQuoteRequest,
+  BlockchainApiSwapQuoteResponse,
+  BlockchainApiSwapTokensRequest,
+  BlockchainApiSwapTokensResponse,
   BlockchainApiTokenPriceRequest,
   BlockchainApiTokenPriceResponse,
   BlockchainApiTransactionsRequest,
@@ -88,6 +92,40 @@ export const BlockchainApiController = {
         'x-sdk-type': sdkType,
         'x-sdk-version': sdkVersion
       },
+      params: {
+        projectId,
+        chainId
+      }
+    });
+  },
+
+  fetchSwapQuote({
+    projectId,
+    amount,
+    userAddress,
+    from,
+    to,
+    gasPrice
+  }: BlockchainApiSwapQuoteRequest) {
+    return state.api.get<BlockchainApiSwapQuoteResponse>({
+      path: `/v1/convert/quotes`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        projectId,
+        amount,
+        userAddress,
+        from,
+        to,
+        gasPrice
+      }
+    });
+  },
+
+  fetchSwapTokens({ projectId, chainId }: BlockchainApiSwapTokensRequest) {
+    return state.api.get<BlockchainApiSwapTokensResponse>({
+      path: `/v1/convert/tokens`,
       params: {
         projectId,
         chainId

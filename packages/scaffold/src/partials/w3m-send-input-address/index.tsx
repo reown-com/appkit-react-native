@@ -6,11 +6,11 @@ import { ConnectionController, SendController } from '@reown/appkit-core-react-n
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import styles from './styles';
 
-export interface InputAddressProps {
+export interface SendInputAddressProps {
   value?: string;
 }
 
-export function InputAddress({ value }: InputAddressProps) {
+export function SendInputAddress({ value }: SendInputAddressProps) {
   const Theme = useTheme();
   const [inputValue, setInputValue] = useState<string | undefined>(value);
 

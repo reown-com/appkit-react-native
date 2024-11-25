@@ -65,6 +65,11 @@ export type SdkVersion =
 
 export type Features = {
   /**
+   * @description Enable or disable the swaps feature. Enabled by default.
+   * @type {boolean}
+   */
+  swaps?: boolean;
+  /**
    * @description Enable or disable the email feature. Enabled by default.
    * @type {boolean}
    */
@@ -217,6 +222,35 @@ export interface BlockchainApiLookupEnsName {
     avatar?: string;
     bio?: string;
   }[];
+}
+
+export interface BlockchainApiSwapQuoteRequest {
+  projectId: string;
+  chainId?: string;
+  amount: string;
+  userAddress: string;
+  from: string;
+  to: string;
+  gasPrice: string;
+}
+
+export interface BlockchainApiSwapQuoteResponse {
+  quotes: {
+    id: string | null;
+    fromAmount: string;
+    fromAccount: string;
+    toAmount: string;
+    toAccount: string;
+  }[];
+}
+
+export interface BlockchainApiSwapTokensRequest {
+  projectId: string;
+  chainId?: string;
+}
+
+export interface BlockchainApiSwapTokensResponse {
+  tokens: SwapToken[];
 }
 
 // -- OptionsController Types ---------------------------------------------------
@@ -443,6 +477,50 @@ export type Event =
     }
   | {
       type: 'track';
+      event: 'OPEN_SWAP';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'INITIATE_SWAP';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        swapFromToken: string;
+        swapToToken: string;
+        swapFromAmount: string;
+        swapToAmount: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SWAP_SUCCESS';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        swapFromToken: string;
+        swapToToken: string;
+        swapFromAmount: string;
+        swapToAmount: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SWAP_ERROR';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        swapFromToken: string;
+        swapToToken: string;
+        swapFromAmount: string;
+        swapToAmount: string;
+      };
+    }
+  | {
+      type: 'track';
       event: 'SEND_INITIATED';
       properties: {
         isSmartAccount: boolean;
@@ -520,6 +598,27 @@ export interface WriteContractArgs {
   method: 'send' | 'transfer' | 'call';
   abi: any;
 }
+
+// -- Swap Controller Types -------------------------------------
+export type SwapToken = {
+  name: string;
+  symbol: string;
+  address: CaipAddress;
+  decimals: number;
+  logoUri: string;
+  eip2612?: boolean;
+};
+
+export type SwapTokenWithBalance = SwapToken & {
+  quantity: {
+    decimals: string;
+    numeric: string;
+  };
+  price: number;
+  value: number;
+};
+
+export type SwapInputTarget = 'sourceToken' | 'toToken';
 
 // -- Email Types ------------------------------------------------
 /**

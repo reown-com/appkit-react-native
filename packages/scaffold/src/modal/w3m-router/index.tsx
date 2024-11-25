@@ -18,12 +18,14 @@ import { EmailVerifyDeviceView } from '../../views/w3m-email-verify-device-view'
 import { GetWalletView } from '../../views/w3m-get-wallet-view';
 import { NetworksView } from '../../views/w3m-networks-view';
 import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
+import { SwapView } from '../../views/w3m-swap-view';
+import { SwapSelectTokenView } from '../../views/w3m-swap-select-token-view';
+import { TransactionsView } from '../../views/w3m-transactions-view';
 import { UpdateEmailWalletView } from '../../views/w3m-update-email-wallet-view';
 import { UpdateEmailPrimaryOtpView } from '../../views/w3m-update-email-primary-otp-view';
 import { UpdateEmailSecondaryOtpView } from '../../views/w3m-update-email-secondary-otp-view';
 import { UpgradeEmailWalletView } from '../../views/w3m-upgrade-email-wallet-view';
 import { UpgradeToSmartAccountView } from '../../views/w3m-upgrade-to-smart-account-view';
-import { TransactionsView } from '../../views/w3m-transactions-view';
 import { WalletCompatibleNetworks } from '../../views/w3m-wallet-compatible-networks-view';
 import { WalletReceiveView } from '../../views/w3m-wallet-receive-view';
 import { WalletSendView } from '../../views/w3m-wallet-send-view';
@@ -75,6 +77,10 @@ export function AppKitRouter() {
         return NetworksView;
       case 'SwitchNetwork':
         return NetworkSwitchView;
+      case 'Swap':
+        return SwapView;
+      case 'SwapSelectToken':
+        return SwapSelectTokenView;
       case 'Transactions':
         return TransactionsView;
       case 'UpdateEmailPrimaryOtp':

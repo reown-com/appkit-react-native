@@ -16,10 +16,10 @@ import {
   Spacing,
   Text
 } from '@reown/appkit-ui-react-native';
-import { InputToken } from '../../partials/w3m-input-token/intex';
+import { SendInputToken } from '../../partials/w3m-send-input-token';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { useKeyboard } from '../../hooks/useKeyboard';
-import { InputAddress } from '../../partials/w3m-input-address';
+import { SendInputAddress } from '../../partials/w3m-send-input-address';
 import styles from './styles';
 
 export function WalletSendView() {
@@ -102,7 +102,7 @@ export function WalletSendView() {
       keyboardShouldPersistTaps="always"
     >
       <FlexView padding="l" alignItems="center" justifyContent="center" style={{ paddingBottom }}>
-        <InputToken
+        <SendInputToken
           token={token}
           sendTokenAmount={sendTokenAmount}
           gasPrice={Number(gasPrice)}
@@ -110,7 +110,7 @@ export function WalletSendView() {
           onTokenPress={() => RouterController.push('WalletSendSelectToken')}
         />
         <FlexView alignItems="center" justifyContent="center" style={styles.addressContainer}>
-          <InputAddress value={receiverProfileName || receiverAddress} />
+          <SendInputAddress value={receiverProfileName || receiverAddress} />
           <IconBox
             icon="arrowBottom"
             size="lg"

@@ -45,6 +45,7 @@ import NftPlaceholderSvg from '../../assets/svg/NftPlaceholder';
 import OffSvg from '../../assets/svg/Off';
 import PaperplaneSvg from '../../assets/svg/Paperplane';
 import QrCodeSvg from '../../assets/svg/QrCode';
+import RecycleHorizontalSvg from '../../assets/svg/RecycleHorizontal';
 import RefreshSvg from '../../assets/svg/Refresh';
 import SearchSvg from '../../assets/svg/Search';
 import SwapHorizontalSvg from '../../assets/svg/SwapHorizontal';
@@ -105,6 +106,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   off: OffSvg,
   paperplane: PaperplaneSvg,
   qrCode: QrCodeSvg,
+  recycleHorizontal: RecycleHorizontalSvg,
   refresh: RefreshSvg,
   search: SearchSvg,
   swapHorizontal: SwapHorizontalSvg,

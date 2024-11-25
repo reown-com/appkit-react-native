@@ -1,5 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy, subscribe as sub } from 'valtio';
+import { NumberUtil } from '@reown/appkit-common-react-native';
 
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 import { SwapApiUtil } from '../utils/SwapApiUtil';
@@ -7,40 +8,101 @@ import { NetworkController } from './NetworkController';
 import { BlockchainApiController } from './BlockchainApiController';
 import { OptionsController } from './OptionsController';
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil';
+import { SnackController } from './SnackController';
+import { RouterController } from './RouterController';
+import type { SwapInputTarget, SwapTokenWithBalance } from '../utils/TypeUtil';
+import { ConnectorController } from './ConnectorController';
+import { AccountController } from './AccountController';
+import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000;
 export const TO_AMOUNT_DECIMALS = 6;
 
 // -- Types --------------------------------------------- //
-
 export interface SwapControllerState {
+  // Loading states
+  initializing: boolean;
+  initialized: boolean;
+  loadingPrices: boolean;
+  loadingQuote?: boolean;
+  loadingApprovalTransaction?: boolean;
+  loadingBuildTransaction?: boolean;
+  loadingTransaction?: boolean;
+
   // Input values
+  sourceToken?: SwapTokenWithBalance;
+  sourceTokenAmount: string;
+  sourceTokenPriceInUSD: number;
+  toToken?: SwapTokenWithBalance;
+  toTokenAmount: string;
+  toTokenPriceInUSD: number;
   networkPrice: string;
+  networkBalanceInUSD: string;
   networkTokenSymbol: string;
+  inputError: string | undefined;
+
+  // Request values
+  slippage: number;
 
   // Tokens
+  tokens?: SwapTokenWithBalance[];
+  suggestedTokens?: SwapTokenWithBalance[];
+  popularTokens?: SwapTokenWithBalance[];
+  foundTokens?: SwapTokenWithBalance[];
+  myTokensWithBalance?: SwapTokenWithBalance[];
   tokensPriceMap: Record<string, number>;
 
   // Calculations
   gasFee: string;
   gasPriceInUSD?: number;
+  priceImpact: number | undefined;
+  maxSlippage: number | undefined;
+  providerFee: string | undefined;
 }
 
 type StateKey = keyof SwapControllerState;
 
 // -- State --------------------------------------------- //
 const initialState: SwapControllerState = {
+  // Loading states
+  initializing: false,
+  initialized: false,
+  loadingPrices: false,
+  loadingQuote: false,
+  loadingApprovalTransaction: false,
+  loadingBuildTransaction: false,
+  loadingTransaction: false,
+
   // Input values
+  sourceToken: undefined,
+  sourceTokenAmount: '',
+  sourceTokenPriceInUSD: 0,
+  toToken: undefined,
+  toTokenAmount: '',
+  toTokenPriceInUSD: 0,
   networkPrice: '0',
+  networkBalanceInUSD: '0',
   networkTokenSymbol: '',
+  inputError: undefined,
+
+  // Request values
+  slippage: ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE,
 
   // Tokens
+  tokens: undefined,
+  popularTokens: undefined,
+  suggestedTokens: undefined,
+  foundTokens: undefined,
+  myTokensWithBalance: undefined,
   tokensPriceMap: {},
 
   // Calculations
   gasFee: '0',
-  gasPriceInUSD: 0
+  gasPriceInUSD: 0,
+  priceImpact: undefined,
+  maxSlippage: undefined,
+  providerFee: undefined
 };
 
 const state = proxy<SwapControllerState>(initialState);
@@ -58,21 +120,168 @@ export const SwapController = {
   },
 
   getParams() {
-    const caipNetwork = NetworkController.state.caipNetwork;
-    const networkAddress = `${caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`;
+    const caipAddress = AccountController.state.caipAddress;
+    const address = CoreHelperUtil.getPlainAddress(caipAddress);
+    const networkAddress = NetworkController.getActiveNetworkTokenAddress();
+    const type = ConnectorController.state.connectedConnector;
+
+    if (!address) {
+      throw new Error('No address found to swap the tokens from.');
+    }
+
+    const invalidToToken = !state.toToken?.address || !state.toToken?.decimals;
+    const invalidSourceToken =
+      !state.sourceToken?.address ||
+      !state.sourceToken?.decimals ||
+      !NumberUtil.bigNumber(state.sourceTokenAmount).isGreaterThan(0);
+    const invalidSourceTokenAmount = !state.sourceTokenAmount;
 
     return {
-      networkAddress
+      networkAddress,
+      fromAddress: address,
+      fromCaipAddress: caipAddress,
+      sourceTokenAddress: state.sourceToken?.address,
+      toTokenAddress: state.toToken?.address,
+      toTokenAmount: state.toTokenAmount,
+      toTokenDecimals: state.toToken?.decimals,
+      sourceTokenAmount: state.sourceTokenAmount,
+      sourceTokenDecimals: state.sourceToken?.decimals,
+      invalidToToken,
+      invalidSourceToken,
+      invalidSourceTokenAmount,
+      availableToSwap:
+        caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
+      isAuthConnector: type === 'AUTH'
     };
   },
 
   resetState() {
+    state.myTokensWithBalance = initialState.myTokensWithBalance;
     state.tokensPriceMap = initialState.tokensPriceMap;
+    state.initialized = initialState.initialized;
+    state.sourceToken = initialState.sourceToken;
+    state.sourceTokenAmount = initialState.sourceTokenAmount;
+    state.sourceTokenPriceInUSD = initialState.sourceTokenPriceInUSD;
+    state.toToken = initialState.toToken;
+    state.toTokenAmount = initialState.toTokenAmount;
+    state.toTokenPriceInUSD = initialState.toTokenPriceInUSD;
     state.networkPrice = initialState.networkPrice;
     state.networkTokenSymbol = initialState.networkTokenSymbol;
+    state.networkBalanceInUSD = initialState.networkBalanceInUSD;
+    state.inputError = initialState.inputError;
   },
 
-  //this
+  async fetchTokens() {
+    const { networkAddress } = this.getParams();
+
+    await this.getTokenList();
+    await this.getNetworkTokenPrice();
+    await this.getMyTokensWithBalance();
+
+    const networkToken = state.tokens?.find(token => token.address === networkAddress);
+
+    if (networkToken) {
+      state.networkTokenSymbol = networkToken.symbol;
+      const sourceToken = state.myTokensWithBalance?.find(token =>
+        token.address.startsWith(networkAddress)
+      );
+      this.setSourceToken(sourceToken);
+      this.setSourceTokenAmount('1');
+    }
+  },
+
+  async getTokenList() {
+    const tokens = await SwapApiUtil.getTokenList();
+
+    state.tokens = tokens;
+    state.popularTokens = tokens.sort((aTokenInfo, bTokenInfo) => {
+      if (aTokenInfo.symbol < bTokenInfo.symbol) {
+        return -1;
+      }
+      if (aTokenInfo.symbol > bTokenInfo.symbol) {
+        return 1;
+      }
+
+      return 0;
+    });
+    state.suggestedTokens = tokens.filter(token => {
+      if (ConstantsUtil.SWAP_SUGGESTED_TOKENS.includes(token.symbol)) {
+        return true;
+      }
+
+      return false;
+    }, {});
+  },
+
+  async getMyTokensWithBalance(forceUpdate?: string) {
+    const balances = await SwapApiUtil.getMyTokensWithBalance(forceUpdate);
+
+    if (!balances) {
+      return;
+    }
+
+    await this.getInitialGasPrice();
+    this.setBalances(balances);
+  },
+
+  setSourceToken(sourceToken: SwapTokenWithBalance | undefined) {
+    if (!sourceToken) {
+      state.sourceToken = sourceToken;
+      state.sourceTokenAmount = '';
+      state.sourceTokenPriceInUSD = 0;
+
+      return;
+    }
+
+    state.sourceToken = sourceToken;
+    this.setTokenPrice(sourceToken.address, 'sourceToken');
+  },
+
+  setSourceTokenAmount(amount: string) {
+    state.sourceTokenAmount = amount;
+  },
+
+  async initializeState() {
+    if (state.initializing) {
+      return;
+    }
+
+    state.initializing = true;
+    if (!state.initialized) {
+      try {
+        await this.fetchTokens();
+        state.initialized = true;
+      } catch (error) {
+        state.initialized = false;
+        SnackController.showError('Failed to initialize swap');
+        RouterController.goBack();
+      }
+    }
+    state.initializing = false;
+  },
+
+  async getAddressPrice(address: string) {
+    const existPrice = state.tokensPriceMap[address];
+
+    if (existPrice) {
+      return existPrice;
+    }
+
+    const response = await BlockchainApiController.fetchTokenPrice({
+      projectId: OptionsController.state.projectId,
+      addresses: [address]
+    });
+    const fungibles = response?.fungibles || [];
+    const allTokens = [...(state.tokens || []), ...(state.myTokensWithBalance || [])];
+    const symbol = allTokens?.find(token => token.address === address)?.symbol;
+    const price = fungibles.find(p => p.symbol.toLowerCase() === symbol?.toLowerCase())?.price || 0;
+    const priceAsFloat = parseFloat(price.toString());
+
+    state.tokensPriceMap[address] = priceAsFloat;
+
+    return priceAsFloat;
+  },
+
   async getNetworkTokenPrice() {
     const { networkAddress } = this.getParams();
 
@@ -80,6 +289,7 @@ export const SwapController = {
       projectId: OptionsController.state.projectId,
       addresses: [networkAddress]
     });
+
     const token = response?.fungibles?.[0];
     const price = token?.price.toString() || '0';
     state.tokensPriceMap[networkAddress] = parseFloat(price);
@@ -87,7 +297,6 @@ export const SwapController = {
     state.networkPrice = price;
   },
 
-  //this
   async getInitialGasPrice() {
     const res = await SwapApiUtil.fetchGasPrice();
 
@@ -104,5 +313,165 @@ export const SwapController = {
     state.gasPriceInUSD = gasPrice;
 
     return { gasPrice: gasFee, gasPriceInUSD: state.gasPriceInUSD };
+  },
+
+  setBalances(balances: SwapTokenWithBalance[]) {
+    const { networkAddress } = this.getParams();
+    const caipNetwork = NetworkController.state.caipNetwork;
+
+    if (!caipNetwork) {
+      return;
+    }
+
+    const networkToken = balances.find(token => token.address === networkAddress);
+
+    balances.forEach(token => {
+      state.tokensPriceMap[token.address] = token.price || 0;
+    });
+
+    state.myTokensWithBalance = balances.filter(token => token.address?.startsWith(caipNetwork.id));
+
+    state.networkBalanceInUSD = networkToken
+      ? NumberUtil.multiply(networkToken.quantity.numeric, networkToken.price).toString()
+      : '0';
+  },
+
+  setToToken(toToken: SwapTokenWithBalance | undefined) {
+    if (!toToken) {
+      state.toToken = toToken;
+      state.toTokenAmount = '';
+      state.toTokenPriceInUSD = 0;
+
+      return;
+    }
+
+    state.toToken = toToken;
+    this.setTokenPrice(toToken.address, 'toToken');
+  },
+
+  setToTokenAmount(amount: string) {
+    state.toTokenAmount = amount
+      ? NumberUtil.formatNumberToLocalString(amount, TO_AMOUNT_DECIMALS)
+      : '';
+  },
+
+  async setTokenPrice(address: string, target: SwapInputTarget) {
+    const { availableToSwap } = this.getParams();
+    let price = state.tokensPriceMap[address] || 0;
+
+    if (!price) {
+      state.loadingPrices = true;
+      price = await this.getAddressPrice(address);
+    }
+
+    if (target === 'sourceToken') {
+      state.sourceTokenPriceInUSD = price;
+    } else if (target === 'toToken') {
+      state.toTokenPriceInUSD = price;
+    }
+
+    if (state.loadingPrices) {
+      state.loadingPrices = false;
+      if (availableToSwap) {
+        this.swapTokens();
+      }
+    }
+  },
+
+  async swapTokens() {
+    const address = AccountController.state.address as `${string}:${string}:${string}`;
+    const sourceToken = state.sourceToken;
+    const toToken = state.toToken;
+    const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).isGreaterThan(0);
+
+    if (!toToken || !sourceToken || state.loadingPrices || !haveSourceTokenAmount) {
+      return;
+    }
+
+    state.loadingQuote = true;
+
+    const amountDecimal = NumberUtil.bigNumber(state.sourceTokenAmount)
+      .multipliedBy(10 ** sourceToken.decimals)
+      .integerValue();
+
+    const quoteResponse = await BlockchainApiController.fetchSwapQuote({
+      userAddress: address,
+      projectId: OptionsController.state.projectId,
+      from: sourceToken.address,
+      to: toToken.address,
+      gasPrice: state.gasFee,
+      amount: amountDecimal.toString()
+    });
+
+    state.loadingQuote = false;
+
+    const quoteToAmount = quoteResponse?.quotes?.[0]?.toAmount;
+
+    if (!quoteToAmount) {
+      return;
+    }
+
+    const toTokenAmount = NumberUtil.bigNumber(quoteToAmount)
+      .dividedBy(10 ** toToken.decimals)
+      .toString();
+
+    this.setToTokenAmount(toTokenAmount);
+
+    const isInsufficientToken = this.hasInsufficientToken(
+      state.sourceTokenAmount,
+      sourceToken.address
+    );
+
+    if (isInsufficientToken) {
+      state.inputError = 'Insufficient balance';
+    } else {
+      state.inputError = undefined;
+      this.setTransactionDetails();
+    }
+  },
+
+  // -- Checks -------------------------------------------- //
+  hasInsufficientToken(sourceTokenAmount: string, sourceTokenAddress: string) {
+    const isInsufficientSourceTokenForSwap = SwapCalculationUtil.isInsufficientSourceTokenForSwap(
+      sourceTokenAmount,
+      sourceTokenAddress,
+      state.myTokensWithBalance
+    );
+
+    let insufficientNetworkTokenForGas = true;
+    if (AccountController.state.preferredAccountType === 'smartAccount') {
+      // Smart Accounts may pay gas in any ERC20 token
+      insufficientNetworkTokenForGas = false;
+    } else {
+      insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
+        state.networkBalanceInUSD,
+        state.gasPriceInUSD
+      );
+    }
+
+    return insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap;
+  },
+
+  // -- Calculations -------------------------------------- //
+  setTransactionDetails() {
+    const { toTokenAddress, toTokenDecimals } = this.getParams();
+
+    if (!toTokenAddress || !toTokenDecimals) {
+      return;
+    }
+
+    state.gasPriceInUSD = SwapCalculationUtil.getGasPriceInUSD(
+      state.networkPrice,
+      BigInt(state.gasFee),
+      BigInt(INITIAL_GAS_LIMIT)
+    );
+    state.priceImpact = SwapCalculationUtil.getPriceImpact({
+      sourceTokenAmount: state.sourceTokenAmount,
+      sourceTokenPriceInUSD: state.sourceTokenPriceInUSD,
+      toTokenPriceInUSD: state.toTokenPriceInUSD,
+      toTokenAmount: state.toTokenAmount
+    });
+    state.maxSlippage = SwapCalculationUtil.getMaxSlippage(state.slippage, state.toTokenAmount);
+    state.providerFee = SwapCalculationUtil.getProviderFee(state.sourceTokenAmount);
   }
 };

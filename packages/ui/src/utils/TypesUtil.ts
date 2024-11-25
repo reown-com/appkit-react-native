@@ -174,6 +174,7 @@ export type IconType =
   | 'off'
   | 'paperplane'
   | 'qrCode'
+  | 'recycleHorizontal'
   | 'refresh'
   | 'search'
   | 'swapHorizontal'

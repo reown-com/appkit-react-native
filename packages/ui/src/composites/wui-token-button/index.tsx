@@ -1,4 +1,3 @@
-import type { Balance } from '@reown/appkit-common-react-native';
 import { Image } from '../../components/wui-image';
 import { Text } from '../../components/wui-text';
 import { Button } from '../wui-button';
@@ -6,11 +5,12 @@ import styles from './styles';
 
 export interface TokenButtonProps {
   onPress?: () => void;
-  token?: Balance;
+  imageUrl?: string;
+  symbol?: string;
 }
 
-export function TokenButton({ token, onPress }: TokenButtonProps) {
-  if (!token) {
+export function TokenButton({ imageUrl, symbol, onPress }: TokenButtonProps) {
+  if (!symbol) {
     return (
       <Button variant="accent" style={styles.selectButton} size="sm" onPress={onPress}>
         <Text variant="small-600" color="accent-100">
@@ -22,8 +22,8 @@ export function TokenButton({ token, onPress }: TokenButtonProps) {
 
   return (
     <Button variant="shade" style={styles.container} size="sm" onPress={onPress}>
-      {token?.iconUrl && <Image source={token?.iconUrl} style={styles.image} />}
-      {token?.symbol && <Text>{token.symbol}</Text>}
+      {imageUrl && <Image source={imageUrl} style={styles.image} />}
+      <Text>{symbol}</Text>
     </Button>
   );
 }
