@@ -14,6 +14,7 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { SwapInput } from '../../partials/w3m-swap-input';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import styles from './styles';
+import { SwapDetails } from '../../partials/w3m-swap-details';
 
 export function SwapView() {
   const { padding } = useCustomDimensions();
@@ -26,9 +27,11 @@ export function SwapView() {
     loadingPrices,
     loadingQuote,
     sourceTokenPriceInUSD,
-    toTokenPriceInUSD
+    toTokenPriceInUSD,
+    inputError
   } = useSnapshot(SwapController.state);
   const { keyboardShown, keyboardHeight } = useKeyboard();
+  const showDetails = !!sourceToken && !!toToken && !inputError;
 
   const getActionButtonState = () => {
     // if (fetchError) {
@@ -164,6 +167,7 @@ export function SwapView() {
             style={styles.arrowIcon}
           />
         </FlexView>
+        {showDetails && <SwapDetails />}
         <Button
           style={styles.actionButton}
           loading={actionLoading}

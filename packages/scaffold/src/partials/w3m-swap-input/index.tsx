@@ -60,7 +60,7 @@ export function SwapInput({
   const handleInputChange = (_value: string) => {
     const formattedValue = _value.replace(/,/g, '.');
 
-    if (Number(formattedValue) || formattedValue === '') {
+    if (Number(formattedValue) >= 0 || formattedValue === '') {
       onChange?.(formattedValue);
     }
   };

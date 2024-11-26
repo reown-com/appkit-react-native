@@ -2,6 +2,10 @@ import * as BigNumber from 'bignumber.js';
 
 export const NumberUtil = {
   bigNumber(value: BigNumber.BigNumber.Value) {
+    if (typeof value === 'string') {
+      return new BigNumber.BigNumber(value.replace(/,/g, ''));
+    }
+
     return new BigNumber.BigNumber(value);
   },
 
@@ -16,8 +20,8 @@ export const NumberUtil = {
       return BigNumber.BigNumber(0);
     }
 
-    const aBigNumber = new BigNumber.BigNumber(a);
-    const bBigNumber = new BigNumber.BigNumber(b);
+    const aBigNumber = new BigNumber.BigNumber(typeof a === 'string' ? a.replace(/,/g, '') : a);
+    const bBigNumber = new BigNumber.BigNumber(typeof b === 'string' ? b.replace(/,/g, '') : b);
 
     return aBigNumber.multipliedBy(bBigNumber);
   },

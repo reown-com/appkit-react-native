@@ -8,14 +8,7 @@ import {
   SendController,
   SwapController
 } from '@reown/appkit-core-react-native';
-import {
-  Button,
-  FlexView,
-  IconBox,
-  LoadingSpinner,
-  Spacing,
-  Text
-} from '@reown/appkit-ui-react-native';
+import { Button, FlexView, IconBox, Spacing } from '@reown/appkit-ui-react-native';
 import { SendInputToken } from '../../partials/w3m-send-input-token';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { useKeyboard } from '../../hooks/useKeyboard';
@@ -93,7 +86,6 @@ export function WalletSendView() {
   }, [token, tokenBalance, fetchNetworkPrice]);
 
   const actionText = getActionText();
-  const disabled = actionText !== 'Preview send';
 
   return (
     <ScrollView
@@ -127,14 +119,9 @@ export function WalletSendView() {
           style={styles.sendButton}
           onPress={onSendPress}
           disabled={!actionText.includes('Preview send')}
+          loading={loading}
         >
-          {loading ? (
-            <LoadingSpinner color={disabled ? 'fg-250' : 'inverse-100'} size="md" />
-          ) : (
-            <Text variant="paragraph-600" color={disabled ? 'fg-250' : 'inverse-100'}>
-              {getActionText()}
-            </Text>
-          )}
+          {actionText}
         </Button>
       </FlexView>
     </ScrollView>

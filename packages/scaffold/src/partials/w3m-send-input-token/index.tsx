@@ -32,7 +32,7 @@ export function SendInputToken({
   const onInputChange = (value: string) => {
     const formattedValue = value.replace(/,/g, '.');
 
-    if (Number(formattedValue) || formattedValue === '') {
+    if (Number(formattedValue) >= 0 || formattedValue === '') {
       setInputValue(formattedValue);
       SendController.setTokenAmount(Number(formattedValue));
     }
