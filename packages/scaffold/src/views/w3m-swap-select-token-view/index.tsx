@@ -39,13 +39,17 @@ export function SwapSelectTokenView() {
 
     if (isSourceToken) {
       filtered =
-        SwapController.state.myTokensWithBalance?.filter(token =>
-          token.name.toLowerCase().includes(value.toLowerCase())
+        SwapController.state.myTokensWithBalance?.filter(
+          token =>
+            token.name.toLowerCase().includes(value.toLowerCase()) ||
+            token.symbol.toLowerCase().includes(value.toLowerCase())
         ) ?? [];
     } else {
       filtered =
-        SwapController.state.popularTokens?.filter(token =>
-          token.name.toLowerCase().includes(value.toLowerCase())
+        SwapController.state.popularTokens?.filter(
+          token =>
+            token.name.toLowerCase().includes(value.toLowerCase()) ||
+            token.symbol.toLowerCase().includes(value.toLowerCase())
         ) ?? [];
     }
 

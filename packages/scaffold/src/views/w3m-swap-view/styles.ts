@@ -12,5 +12,9 @@ export default StyleSheet.create({
   },
   tokenInput: {
     marginBottom: Spacing.xs
+  },
+  actionButton: {
+    marginTop: Spacing.xs,
+    width: '100%'
   }
 });

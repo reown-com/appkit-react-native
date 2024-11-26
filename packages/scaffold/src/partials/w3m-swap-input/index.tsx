@@ -1,19 +1,36 @@
 import { useRef } from 'react';
+import type BigNumber from 'bignumber.js';
 import { TextInput, type StyleProp, type ViewStyle } from 'react-native';
-import { FlexView, useTheme, TokenButton, Shimmer } from '@reown/appkit-ui-react-native';
-import { type SwapToken } from '@reown/appkit-core-react-native';
+import {
+  FlexView,
+  useTheme,
+  TokenButton,
+  Shimmer,
+  Text,
+  UiUtil,
+  Link
+} from '@reown/appkit-ui-react-native';
+import { type SwapTokenWithBalance } from '@reown/appkit-core-react-native';
 
 import styles from './styles';
+import { NumberUtil } from '@reown/appkit-common-react-native';
 
 export interface SwapInputProps {
-  token?: SwapToken;
+  token?: SwapTokenWithBalance;
   value?: string;
   gasPrice?: number;
   style?: StyleProp<ViewStyle>;
   loading?: boolean;
   onTokenPress?: () => void;
+  onMaxPress?: () => void;
   onChange?: (value: string) => void;
+  balance?: BigNumber;
+  marketValue?: number;
+  editable?: boolean;
+  autoFocus?: boolean;
 }
+
+const MINIMUM_USD_VALUE_TO_CONVERT = 0.00005;
 
 export function SwapInput({
   token,
@@ -21,22 +38,40 @@ export function SwapInput({
   style,
   loading,
   onTokenPress,
-  onChange
+  onMaxPress,
+  onChange,
+  marketValue,
+  editable,
+  autoFocus
 }: SwapInputProps) {
   const Theme = useTheme();
   const valueInputRef = useRef<TextInput | null>(null);
-  // const [inputValue, setInputValue] = useState<string | undefined>(value?.toString());
-  // const sendValue = getSendValue(token, sendTokenAmount);
-  // const maxAmount = getMaxAmount(token);
-  // const maxError = token && sendTokenAmount && sendTokenAmount > Number(token.quantity.numeric);
+  const isMarketValueGreaterThanZero =
+    !!marketValue && NumberUtil.bigNumber(marketValue).isGreaterThan('0');
+  const maxAmount = UiUtil.formatNumberToLocalString(token?.quantity.numeric, 3);
+  const maxError = Number(value) > Number(token?.quantity.numeric);
+  const showMax =
+    onMaxPress &&
+    !!token?.quantity.numeric &&
+    NumberUtil.multiply(token?.quantity.numeric, token?.price).isGreaterThan(
+      MINIMUM_USD_VALUE_TO_CONVERT
+    );
 
-  const onInputChange = (_value: string) => {
-    onChange?.(_value);
+  const handleInputChange = (_value: string) => {
+    const formattedValue = _value.replace(/,/g, '.');
+
+    if (Number(formattedValue) || formattedValue === '') {
+      onChange?.(formattedValue);
+    }
   };
 
-  // const onMaxPress = () => {
-  //   //
-  // };
+  const handleMaxPress = () => {
+    if (valueInputRef.current) {
+      valueInputRef.current.blur();
+    }
+
+    onMaxPress?.();
+  };
 
   return (
     <FlexView
@@ -65,7 +100,7 @@ export function SwapInput({
               autoCapitalize="none"
               autoCorrect={false}
               value={value}
-              onChangeText={onInputChange}
+              onChangeText={handleInputChange}
               keyboardType="decimal-pad"
               inputMode="decimal"
               autoComplete="off"
@@ -74,32 +109,37 @@ export function SwapInput({
               underlineColorAndroid="transparent"
               selectTextOnFocus={false}
               numberOfLines={1}
-              autoFocus={!!token}
+              editable={editable}
+              autoFocus={autoFocus}
             />
             <TokenButton symbol={token?.symbol} imageUrl={token?.logoUri} onPress={onTokenPress} />
           </FlexView>
-          {/* {token && (
+          {(showMax || isMarketValueGreaterThanZero) && (
             <FlexView
               flexDirection="row"
               alignItems="center"
               justifyContent="space-between"
               margin={['3xs', '0', '0', '0']}
             >
-              <Text variant="small-400" color="fg-200" style={styles.sendValue} numberOfLines={1}>
-                {sendValue ?? ''}
+              <Text variant="small-400" color="fg-200" numberOfLines={1}>
+                {isMarketValueGreaterThanZero
+                  ? `$${UiUtil.formatNumberToLocalString(marketValue, 2)}`
+                  : ''}
               </Text>
-              <FlexView flexDirection="row" alignItems="center" justifyContent="center">
-                <Text
-                  variant="small-400"
-                  color={maxError ? 'error-100' : 'fg-200'}
-                  numberOfLines={1}
-                >
-                  {maxAmount ?? ''}
-                </Text>
-                <Link onPress={onMaxPress}>Max</Link>
-              </FlexView>
+              {showMax && (
+                <FlexView flexDirection="row" alignItems="center" justifyContent="center">
+                  <Text
+                    variant="small-400"
+                    color={maxError ? 'error-100' : 'fg-200'}
+                    numberOfLines={1}
+                  >
+                    {showMax ? maxAmount : ''}
+                  </Text>
+                  <Link onPress={handleMaxPress}>Max</Link>
+                </FlexView>
+              )}
             </FlexView>
-          )} */}
+          )}
         </>
       )}
     </FlexView>

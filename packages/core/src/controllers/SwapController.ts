@@ -239,6 +239,10 @@ export const SwapController = {
 
   setSourceTokenAmount(amount: string) {
     state.sourceTokenAmount = amount;
+
+    if (amount === '') {
+      state.toTokenAmount = '';
+    }
   },
 
   async initializeState() {

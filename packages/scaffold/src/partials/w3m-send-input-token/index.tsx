@@ -31,10 +31,11 @@ export function SendInputToken({
 
   const onInputChange = (value: string) => {
     const formattedValue = value.replace(/,/g, '.');
-    setInputValue(formattedValue);
-    Number(formattedValue)
-      ? SendController.setTokenAmount(Number(formattedValue))
-      : SendController.setTokenAmount(undefined);
+
+    if (Number(formattedValue) || formattedValue === '') {
+      setInputValue(formattedValue);
+      SendController.setTokenAmount(Number(formattedValue));
+    }
   };
 
   const onMaxPress = () => {

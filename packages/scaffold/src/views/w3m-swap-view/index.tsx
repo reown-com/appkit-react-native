@@ -1,21 +1,58 @@
 import { useSnapshot } from 'valtio';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Platform, ScrollView } from 'react-native';
-import { RouterController, SwapController } from '@reown/appkit-core-react-native';
-import { FlexView, IconBox, Spacing } from '@reown/appkit-ui-react-native';
+import {
+  NetworkController,
+  RouterController,
+  SwapController
+} from '@reown/appkit-core-react-native';
+import { Button, FlexView, IconBox, Spacing } from '@reown/appkit-ui-react-native';
+import { NumberUtil } from '@reown/appkit-common-react-native';
 
 import { useKeyboard } from '../../hooks/useKeyboard';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import styles from './styles';
 import { SwapInput } from '../../partials/w3m-swap-input';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
+import styles from './styles';
 
 export function SwapView() {
   const { padding } = useCustomDimensions();
-  const { initializing, sourceToken, toToken, sourceTokenAmount, toTokenAmount } = useSnapshot(
-    SwapController.state
-  );
+  const {
+    initializing,
+    sourceToken,
+    toToken,
+    sourceTokenAmount,
+    toTokenAmount,
+    loadingPrices,
+    loadingQuote,
+    sourceTokenPriceInUSD,
+    toTokenPriceInUSD
+  } = useSnapshot(SwapController.state);
   const { keyboardShown, keyboardHeight } = useKeyboard();
+
+  const getActionButtonState = () => {
+    // if (fetchError) {
+    //   return 'Swap'
+    // }
+
+    if (!SwapController.state.sourceToken || !SwapController.state.toToken) {
+      return { text: 'Select token', disabled: true };
+    }
+
+    if (!SwapController.state.sourceTokenAmount || !SwapController.state.toTokenAmount) {
+      return { text: 'Enter amount', disabled: true };
+    }
+
+    if (SwapController.state.inputError) {
+      return { text: SwapController.state.inputError, disabled: true };
+    }
+
+    return { text: 'Review swap', disabled: false };
+  };
+
+  const actionState = getActionButtonState();
+  const actionLoading = initializing || loadingPrices || loadingQuote;
+
   const onDebouncedSwap = useDebounceCallback({
     callback: SwapController.swapTokens.bind(SwapController),
     delay: 400
@@ -40,14 +77,51 @@ export function SwapView() {
     RouterController.push('SwapSelectToken', { swapTarget: 'sourceToken' });
   };
 
+  const onSourceMaxPress = () => {
+    const isNetworkToken =
+      SwapController.state.sourceToken?.address ===
+      NetworkController.getActiveNetworkTokenAddress();
+
+    const _gasPriceInUSD = SwapController.state.gasPriceInUSD;
+    const _sourceTokenPriceInUSD = SwapController.state.sourceTokenPriceInUSD;
+    const _balance = SwapController.state.sourceToken?.quantity.numeric;
+
+    if (_balance) {
+      if (!_gasPriceInUSD) {
+        return SwapController.setSourceTokenAmount(_balance);
+      }
+
+      const amountOfTokenGasRequires = NumberUtil.bigNumber(_gasPriceInUSD.toFixed(5)).dividedBy(
+        _sourceTokenPriceInUSD
+      );
+
+      const maxValue = isNetworkToken
+        ? NumberUtil.bigNumber(_balance).minus(amountOfTokenGasRequires)
+        : NumberUtil.bigNumber(_balance);
+
+      SwapController.setSourceTokenAmount(maxValue.isGreaterThan(0) ? maxValue.toFixed(20) : '0');
+    }
+  };
+
   const onToTokenPress = () => {
     RouterController.push('SwapSelectToken', { swapTarget: 'toToken' });
   };
 
+  const watchTokens = useCallback(() => {
+    SwapController.getNetworkTokenPrice();
+    SwapController.getMyTokensWithBalance();
+    SwapController.swapTokens();
+  }, []);
+
   useEffect(() => {
     SwapController.initializeState();
-    // watch values
-  }, []);
+
+    const interval = setInterval(watchTokens, 10000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [watchTokens]);
 
   return (
     <ScrollView
@@ -59,19 +133,24 @@ export function SwapView() {
         <SwapInput
           token={sourceToken}
           value={sourceTokenAmount}
+          marketValue={parseFloat(sourceTokenAmount) * sourceTokenPriceInUSD}
           style={styles.tokenInput}
           loading={initializing}
           onChange={onSourceTokenChange}
           onTokenPress={onSourceTokenPress}
+          onMaxPress={onSourceMaxPress}
+          autoFocus
         />
         <FlexView alignItems="center" justifyContent="center" style={styles.bottomInputContainer}>
           <SwapInput
-            style={styles.tokenInput}
-            loading={initializing}
             token={toToken}
             value={toTokenAmount}
+            marketValue={NumberUtil.parseLocalStringToNumber(toTokenAmount) * toTokenPriceInUSD}
+            style={styles.tokenInput}
+            loading={initializing}
             onChange={onToTokenChange}
             onTokenPress={onToTokenPress}
+            editable={false}
           />
           <IconBox
             icon="recycleHorizontal"
@@ -85,6 +164,13 @@ export function SwapView() {
             style={styles.arrowIcon}
           />
         </FlexView>
+        <Button
+          style={styles.actionButton}
+          loading={actionLoading}
+          disabled={actionState.disabled || actionLoading}
+        >
+          {actionState.text}
+        </Button>
       </FlexView>
     </ScrollView>
   );
