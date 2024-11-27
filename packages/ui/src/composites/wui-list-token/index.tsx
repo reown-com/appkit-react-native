@@ -1,15 +1,14 @@
-import { Pressable } from 'react-native';
+// import { Pressable } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import { Image } from '../../components/wui-image';
 import { Text } from '../../components/wui-text';
 import { useTheme } from '../../hooks/useTheme';
 import { FlexView } from '../../layout/wui-flex';
 import { UiUtil } from '../../utils/UiUtil';
-import { Spacing } from '../../utils/ThemeUtil';
+import { Pressable } from '../../components/wui-pressable';
 import styles from './styles';
 
-const ListTokenHeight = 52;
-export const ListTokenTotalHeight = ListTokenHeight + Spacing['2xs'];
+export const ListTokenTotalHeight = 64;
 
 export interface ListTokenProps {
   imageSrc: string;
@@ -19,6 +18,8 @@ export interface ListTokenProps {
   amount?: string;
   currency: string;
   onPress?: () => void;
+  disabled?: boolean;
+  pressable?: boolean;
 }
 
 export function ListToken({
@@ -28,19 +29,27 @@ export function ListToken({
   value,
   amount,
   currency,
-  onPress
+  onPress,
+  disabled,
+  pressable = true
 }: ListTokenProps) {
   const Theme = useTheme();
 
   return (
-    <Pressable onPress={onPress}>
+    <Pressable
+      onPress={onPress}
+      disabled={disabled || !pressable}
+      style={styles.pressable}
+      backgroundColor="transparent"
+    >
       <FlexView
         flexDirection="row"
         justifyContent="space-between"
         alignItems="center"
-        padding={['2xs', 'm', '2xs', 'xs']}
+        padding={['0', 'm', '0', 'xs']}
+        style={{ height: ListTokenTotalHeight }}
       >
-        <FlexView flexDirection="row" alignItems="center" style={{ height: ListTokenHeight }}>
+        <FlexView flexDirection="row" alignItems="center">
           {imageSrc ? (
             <Image
               source={imageSrc}
@@ -70,7 +79,7 @@ export function ListToken({
             )}
           </FlexView>
           <FlexView padding={['0', 's', '0', 's']}>
-            <Text color="fg-100" variant="paragraph-500">
+            <Text color={disabled ? 'fg-200' : 'fg-100'} variant="paragraph-500">
               {UiUtil.getTruncateString({
                 string: name,
                 charsStart: 15,
@@ -89,7 +98,7 @@ export function ListToken({
             </Text>
           </FlexView>
         </FlexView>
-        <Text color="fg-100" variant="paragraph-500">
+        <Text color={disabled ? 'fg-200' : 'fg-100'} variant="paragraph-500">
           ${value?.toFixed(2) ?? '0.00'}
         </Text>
       </FlexView>

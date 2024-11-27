@@ -112,6 +112,7 @@ export type ColorType =
   | 'gray-glass-020'
   | 'gray-glass-010'
   | 'gray-glass-005'
+  | 'gray-glass-002'
   | 'inverse-000'
   | 'inverse-100'
   | 'success-100'

@@ -6,15 +6,15 @@ import {
   RouterController,
   SwapController
 } from '@reown/appkit-core-react-native';
-import { Button, FlexView, IconBox, Spacing } from '@reown/appkit-ui-react-native';
+import { Button, FlexView, IconLink, Spacing, useTheme } from '@reown/appkit-ui-react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
 
 import { useKeyboard } from '../../hooks/useKeyboard';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { SwapInput } from '../../partials/w3m-swap-input';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
-import styles from './styles';
 import { SwapDetails } from '../../partials/w3m-swap-details';
+import styles from './styles';
 
 export function SwapView() {
   const { padding } = useCustomDimensions();
@@ -28,10 +28,19 @@ export function SwapView() {
     loadingQuote,
     sourceTokenPriceInUSD,
     toTokenPriceInUSD,
+    myTokensWithBalance,
+    gasPriceInUSD = 0,
     inputError
   } = useSnapshot(SwapController.state);
+  const Theme = useTheme();
   const { keyboardShown, keyboardHeight } = useKeyboard();
   const showDetails = !!sourceToken && !!toToken && !inputError;
+
+  const showSwitch =
+    myTokensWithBalance &&
+    myTokensWithBalance.findIndex(
+      token => token.address === SwapController.state.toToken?.address
+    ) >= 0;
 
   const getActionButtonState = () => {
     // if (fetchError) {
@@ -110,6 +119,10 @@ export function SwapView() {
     RouterController.push('SwapSelectToken', { swapTarget: 'toToken' });
   };
 
+  const onSwitchPress = () => {
+    SwapController.switchTokens();
+  };
+
   const watchTokens = useCallback(() => {
     SwapController.getNetworkTokenPrice();
     SwapController.getMyTokensWithBalance();
@@ -148,24 +161,27 @@ export function SwapView() {
           <SwapInput
             token={toToken}
             value={toTokenAmount}
-            marketValue={NumberUtil.parseLocalStringToNumber(toTokenAmount) * toTokenPriceInUSD}
+            marketValue={
+              NumberUtil.parseLocalStringToNumber(toTokenAmount) * toTokenPriceInUSD - gasPriceInUSD
+            }
             style={styles.tokenInput}
             loading={initializing}
             onChange={onToTokenChange}
             onTokenPress={onToTokenPress}
             editable={false}
           />
-          <IconBox
-            icon="recycleHorizontal"
-            size="lg"
-            iconColor="fg-275"
-            background
-            backgroundColor="bg-175"
-            border
-            borderColor="bg-100"
-            borderSize={10}
-            style={styles.arrowIcon}
-          />
+          {showSwitch && (
+            <IconLink
+              icon="recycleHorizontal"
+              size="lg"
+              iconColor="fg-275"
+              background
+              backgroundColor="bg-175"
+              pressedColor="bg-250"
+              style={[styles.arrowIcon, { borderColor: Theme['bg-100'] }]}
+              onPress={onSwitchPress}
+            />
+          )}
         </FlexView>
         {showDetails && <SwapDetails />}
         <Button

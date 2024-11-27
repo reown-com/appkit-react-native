@@ -8,7 +8,10 @@ export default StyleSheet.create({
   arrowIcon: {
     position: 'absolute',
     top: -30,
-    borderRadius: BorderRadius.s
+    borderRadius: BorderRadius.xs,
+    borderWidth: 4,
+    height: 50,
+    width: 50
   },
   tokenInput: {
     marginBottom: Spacing.xs

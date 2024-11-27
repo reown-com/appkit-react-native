@@ -1,17 +1,23 @@
 import { useSnapshot } from 'valtio';
-import { ConstantsUtil, SwapController } from '@reown/appkit-core-react-native';
+import { SwapController } from '@reown/appkit-core-react-native';
 import { FlexView, Text, UiUtil, Toggle, useTheme } from '@reown/appkit-ui-react-native';
 
 import styles from './styles';
+import { NumberUtil } from '@reown/appkit-common-react-native';
 
 // -- Constants ----------------------------------------- //
-const slippageRate = ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE;
+// const slippageRate = ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE;
 
 export function SwapDetails() {
   const Theme = useTheme();
-  const { maxSlippage, sourceToken, toToken, gasPriceInUSD, priceImpact } = useSnapshot(
-    SwapController.state
-  );
+  const {
+    maxSlippage = 0,
+    // sourceToken,
+    toToken,
+    gasPriceInUSD = 0,
+    priceImpact,
+    toTokenAmount
+  } = useSnapshot(SwapController.state);
   const toTokenSwappedAmount =
     SwapController.state.sourceTokenPriceInUSD && SwapController.state.toTokenPriceInUSD
       ? (1 / SwapController.state.toTokenPriceInUSD) * SwapController.state.sourceTokenPriceInUSD
@@ -25,10 +31,13 @@ export function SwapDetails() {
         {SwapController.state.toToken?.symbol}
       </Text>
       <Text variant="small-400" color="fg-200" style={styles.titlePrice}>
-        ${UiUtil.formatNumberToLocalString(SwapController.state.sourceTokenPriceInUSD)}
+        ~$
+        {UiUtil.formatNumberToLocalString(SwapController.state.sourceTokenPriceInUSD)}
       </Text>
     </FlexView>
   );
+
+  const minimumReceive = NumberUtil.parseLocalStringToNumber(toTokenAmount) - maxSlippage;
 
   return (
     <Toggle
@@ -53,7 +62,17 @@ export function SwapDetails() {
           </Text>
         </FlexView>
       )}
-      {maxSlippage !== undefined && maxSlippage > 0 && !!sourceToken?.symbol && (
+      {minimumReceive !== undefined && minimumReceive > 0 && !!toToken?.symbol && (
+        <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
+          <Text variant="small-400" color="fg-150">
+            Minimum receive
+          </Text>
+          <Text variant="small-400" color="fg-200">
+            {UiUtil.formatNumberToLocalString(minimumReceive, 6)} {toToken?.symbol}
+          </Text>
+        </FlexView>
+      )}
+      {/* {maxSlippage !== undefined && maxSlippage > 0 && !!sourceToken?.symbol && (
         <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
           <Text variant="small-400" color="fg-150">
             Max. slippage
@@ -65,11 +84,11 @@ export function SwapDetails() {
             </Text>
           </Text>
         </FlexView>
-      )}
+      )} */}
 
       <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
         <Text variant="small-400" color="fg-150">
-          Provider fee
+          Included provider fee
         </Text>
         <Text variant="small-400" color="fg-100">
           0.85%

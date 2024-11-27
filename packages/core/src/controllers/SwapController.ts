@@ -155,6 +155,32 @@ export const SwapController = {
     };
   },
 
+  switchTokens() {
+    if (state.initializing || !state.initialized) {
+      return;
+    }
+
+    let newSourceToken = state.toToken ? { ...state.toToken } : undefined;
+    const sourceTokenWithBalance = state.myTokensWithBalance?.find(
+      token => token.address === newSourceToken?.address
+    );
+
+    if (sourceTokenWithBalance) {
+      newSourceToken = sourceTokenWithBalance;
+    }
+
+    const newToToken = state.sourceToken ? { ...state.sourceToken } : undefined;
+    const newSourceTokenAmount =
+      newSourceToken && state.toTokenAmount === '' ? '1' : state.toTokenAmount;
+
+    this.setSourceToken(newSourceToken);
+    this.setToToken(newToToken);
+
+    this.setSourceTokenAmount(newSourceTokenAmount);
+    this.setToTokenAmount('');
+    this.swapTokens();
+  },
+
   resetState() {
     state.myTokensWithBalance = initialState.myTokensWithBalance;
     state.tokensPriceMap = initialState.tokensPriceMap;
@@ -222,6 +248,12 @@ export const SwapController = {
 
     await this.getInitialGasPrice();
     this.setBalances(balances);
+  },
+
+  getFilteredPopularTokens() {
+    return state.popularTokens?.filter(
+      token => !state.myTokensWithBalance?.some(t => t.address === token.address)
+    );
   },
 
   setSourceToken(sourceToken: SwapTokenWithBalance | undefined) {
@@ -361,7 +393,7 @@ export const SwapController = {
 
   async setTokenPrice(address: string, target: SwapInputTarget) {
     const { availableToSwap } = this.getParams();
-    let price = state.tokensPriceMap[address] || 0;
+    let price = state.tokensPriceMap[address] || 0; // TODO: check this
 
     if (!price) {
       state.loadingPrices = true;

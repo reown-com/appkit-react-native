@@ -7,7 +7,8 @@ export default StyleSheet.create({
     maxHeight: 600
   },
   title: {
-    marginBottom: Spacing.xs
+    paddingTop: Spacing.s,
+    paddingBottom: Spacing.xs
   },
   tokenList: {
     paddingHorizontal: Spacing.m

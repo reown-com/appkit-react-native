@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { FlatList } from 'react-native';
+import { SectionList, type SectionListData } from 'react-native';
 import {
   FlexView,
   InputText,
   ListToken,
   ListTokenTotalHeight,
-  Text
+  Text,
+  useTheme
 } from '@reown/appkit-ui-react-native';
 
 import {
@@ -20,40 +21,22 @@ import {
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { Placeholder } from '../../partials/w3m-placeholder';
 import styles from './styles';
+import { createSections } from './utils';
 
 export function SwapSelectTokenView() {
   const { padding } = useCustomDimensions();
+  const Theme = useTheme();
   const { caipNetwork } = useSnapshot(NetworkController.state);
-  const { myTokensWithBalance, popularTokens } = useSnapshot(SwapController.state);
-
+  const { sourceToken } = useSnapshot(SwapController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const isSourceToken = RouterController.state.data?.swapTarget === 'sourceToken';
-  const [filteredTokens, setFilteredTokens] = useState(
-    isSourceToken ? myTokensWithBalance : popularTokens
-  );
+
+  const [filteredTokens, setFilteredTokens] = useState(createSections(isSourceToken, tokenSearch));
 
   const onSearchChange = (value: string) => {
-    let filtered = [];
     setTokenSearch(value);
-
-    if (isSourceToken) {
-      filtered =
-        SwapController.state.myTokensWithBalance?.filter(
-          token =>
-            token.name.toLowerCase().includes(value.toLowerCase()) ||
-            token.symbol.toLowerCase().includes(value.toLowerCase())
-        ) ?? [];
-    } else {
-      filtered =
-        SwapController.state.popularTokens?.filter(
-          token =>
-            token.name.toLowerCase().includes(value.toLowerCase()) ||
-            token.symbol.toLowerCase().includes(value.toLowerCase())
-        ) ?? [];
-    }
-
-    setFilteredTokens(filtered);
+    setFilteredTokens(createSections(isSourceToken, value));
   };
 
   const onTokenPress = (token: SwapTokenWithBalance) => {
@@ -82,16 +65,20 @@ export function SwapSelectTokenView() {
           clearButtonMode="while-editing"
         />
       </FlexView>
-      <FlatList
-        data={filteredTokens}
+      <SectionList
+        sections={filteredTokens as SectionListData<SwapTokenWithBalance>[]}
         bounces={false}
         fadingEdgeLength={20}
         contentContainerStyle={styles.tokenList}
-        ListHeaderComponent={
-          <Text variant="paragraph-500" color="fg-200" style={styles.title}>
-            Your tokens
+        renderSectionHeader={({ section: { title } }) => (
+          <Text
+            variant="paragraph-500"
+            color="fg-200"
+            style={[styles.title, { backgroundColor: Theme['bg-100'] }]}
+          >
+            {title}
           </Text>
-        }
+        )}
         ListEmptyComponent={
           <Placeholder
             icon="coinPlaceholder"
@@ -114,6 +101,7 @@ export function SwapSelectTokenView() {
             amount={item.quantity.numeric}
             currency={item.symbol}
             onPress={() => onTokenPress(item)}
+            disabled={item.address === sourceToken?.address}
           />
         )}
       />
