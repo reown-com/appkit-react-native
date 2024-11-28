@@ -44,7 +44,7 @@ export function Header() {
       SwitchNetwork: networkName ?? 'Switch network',
       Swap: 'Swap',
       SwapSelectToken: 'Select token',
-      SwapPreview: 'Preview swap',
+      SwapPreview: 'Review swap',
       Transactions: 'Activity',
       UnsupportedChain: 'Unsupported network',
       UpdateEmailPrimaryOtp: 'Confirm current email',

@@ -89,6 +89,10 @@ export function SwapView() {
     RouterController.push('SwapSelectToken', { swapTarget: 'sourceToken' });
   };
 
+  const onReviewPress = () => {
+    RouterController.push('SwapPreview');
+  };
+
   const onSourceMaxPress = () => {
     const isNetworkToken =
       SwapController.state.sourceToken?.address ===
@@ -188,6 +192,7 @@ export function SwapView() {
           style={styles.actionButton}
           loading={actionLoading}
           disabled={actionState.disabled || actionLoading}
+          onPress={onReviewPress}
         >
           {actionState.text}
         </Button>

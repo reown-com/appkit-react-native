@@ -51,6 +51,17 @@ export const SwapCalculationUtil = {
     return providerFee.toString();
   },
 
+  getProviderFeePrice(
+    sourceTokenAmount: string,
+    sourceTokenPriceInUSD: number,
+    feePercentage = 0.0085
+  ) {
+    const providerFee = SwapCalculationUtil.getProviderFee(sourceTokenAmount, feePercentage);
+    const providerFeePrice = NumberUtil.bigNumber(providerFee).multipliedBy(sourceTokenPriceInUSD);
+
+    return providerFeePrice.toNumber();
+  },
+
   isInsufficientNetworkTokenForGas(networkBalanceInUSD: string, gasPriceInUSD: number | undefined) {
     const gasPrice = gasPriceInUSD || '0';
 

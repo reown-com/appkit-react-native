@@ -351,6 +351,13 @@ export const SwapController = {
     return { gasPrice: gasFee, gasPriceInUSD: state.gasPriceInUSD };
   },
 
+  getProviderFeePrice() {
+    return SwapCalculationUtil.getProviderFeePrice(
+      state.sourceTokenAmount,
+      state.sourceTokenPriceInUSD
+    );
+  },
+
   setBalances(balances: SwapTokenWithBalance[]) {
     const { networkAddress } = this.getParams();
     const caipNetwork = NetworkController.state.caipNetwork;

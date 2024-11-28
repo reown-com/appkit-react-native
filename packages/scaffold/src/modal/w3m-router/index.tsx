@@ -19,6 +19,7 @@ import { GetWalletView } from '../../views/w3m-get-wallet-view';
 import { NetworksView } from '../../views/w3m-networks-view';
 import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
 import { SwapView } from '../../views/w3m-swap-view';
+import { SwapPreviewView } from '../../views/w3m-swap-preview-view';
 import { SwapSelectTokenView } from '../../views/w3m-swap-select-token-view';
 import { TransactionsView } from '../../views/w3m-transactions-view';
 import { UpdateEmailWalletView } from '../../views/w3m-update-email-wallet-view';
@@ -79,6 +80,8 @@ export function AppKitRouter() {
         return NetworkSwitchView;
       case 'Swap':
         return SwapView;
+      case 'SwapPreview':
+        return SwapPreviewView;
       case 'SwapSelectToken':
         return SwapSelectTokenView;
       case 'Transactions':

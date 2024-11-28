@@ -1,11 +1,10 @@
-// import { Pressable } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import { Image } from '../../components/wui-image';
 import { Text } from '../../components/wui-text';
+import { Pressable } from '../../components/wui-pressable';
 import { useTheme } from '../../hooks/useTheme';
 import { FlexView } from '../../layout/wui-flex';
 import { UiUtil } from '../../utils/UiUtil';
-import { Pressable } from '../../components/wui-pressable';
 import styles from './styles';
 
 export const ListTokenTotalHeight = 64;
