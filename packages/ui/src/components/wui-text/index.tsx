@@ -1,6 +1,5 @@
-import { type TextProps as NativeProps } from 'react-native';
+import { Text as NativeText, type TextProps as NativeProps } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
-import { LeanText } from '../wui-lean-text';
 import type { ColorType, TextType } from '../../utils/TypesUtil';
 import styles from './styles';
 
@@ -21,7 +20,7 @@ export function Text({
   const Theme = useTheme();
 
   return (
-    <LeanText
+    <NativeText
       style={[
         styles.base,
         styles[variant],
@@ -32,6 +31,6 @@ export function Text({
       {...rest}
     >
       {children}
-    </LeanText>
+    </NativeText>
   );
 }
