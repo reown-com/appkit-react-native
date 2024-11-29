@@ -17,7 +17,7 @@ export interface PressableProps extends RNPressableProps {
   backgroundColor?: ColorType | 'transparent';
   pressedBackgroundColor?: ColorType;
   bounceScale?: number;
-  bounceDuration?: number;
+  animationDuration?: number;
   disabled?: boolean;
   pressable?: boolean;
 }
@@ -30,8 +30,8 @@ export function Pressable({
   onPress,
   backgroundColor = 'gray-glass-002',
   pressedBackgroundColor = 'gray-glass-010',
-  bounceScale = 0.99, // Scale to 98% of original size
-  bounceDuration = 200, // 100ms animation
+  bounceScale = 0.99, // Scale to 99% of original size
+  animationDuration = 200, // 200ms animation
   ...rest
 }: PressableProps) {
   const Theme = useTheme();
@@ -43,13 +43,13 @@ export function Pressable({
       Animated.timing(pressAnimation.current, {
         toValue: 1,
         useNativeDriver: false,
-        duration: bounceDuration
+        duration: animationDuration
       }),
 
       Animated.timing(scaleAnimation.current, {
         toValue: bounceScale,
         useNativeDriver: false,
-        duration: bounceDuration
+        duration: animationDuration
       })
     ]).start();
   };
@@ -59,12 +59,12 @@ export function Pressable({
       Animated.timing(pressAnimation.current, {
         toValue: 0,
         useNativeDriver: false,
-        duration: bounceDuration
+        duration: animationDuration
       }),
       Animated.timing(scaleAnimation.current, {
         toValue: 1,
         useNativeDriver: false,
-        duration: bounceDuration
+        duration: animationDuration
       })
     ]).start();
   };
