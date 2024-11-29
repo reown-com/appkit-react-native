@@ -20,8 +20,8 @@ export const NumberUtil = {
       return BigNumber.BigNumber(0);
     }
 
-    const aBigNumber = new BigNumber.BigNumber(typeof a === 'string' ? a.replace(/,/g, '') : a);
-    const bBigNumber = new BigNumber.BigNumber(typeof b === 'string' ? b.replace(/,/g, '') : b);
+    const aBigNumber = new BigNumber.BigNumber(typeof a === 'string' ? a.replace(/,/gu, '') : a);
+    const bBigNumber = new BigNumber.BigNumber(typeof b === 'string' ? b.replace(/,/gu, '') : b);
 
     return aBigNumber.multipliedBy(bBigNumber);
   },
@@ -67,6 +67,6 @@ export const NumberUtil = {
     }
 
     // Remove any commas used as thousand separators and parse the float
-    return parseFloat(value.replace(/,/g, ''));
+    return parseFloat(value.replace(/,/gu, ''));
   }
 };

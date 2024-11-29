@@ -17,7 +17,6 @@ import { SwapDetails } from '../../partials/w3m-swap-details';
 import styles from './styles';
 
 export function SwapView() {
-  const { padding } = useCustomDimensions();
   const {
     initializing,
     sourceToken,
@@ -29,10 +28,10 @@ export function SwapView() {
     sourceTokenPriceInUSD,
     toTokenPriceInUSD,
     myTokensWithBalance,
-    gasPriceInUSD = 0,
     inputError
   } = useSnapshot(SwapController.state);
   const Theme = useTheme();
+  const { padding } = useCustomDimensions();
   const { keyboardShown, keyboardHeight } = useKeyboard();
   const showDetails = !!sourceToken && !!toToken && !inputError;
 
@@ -41,6 +40,11 @@ export function SwapView() {
     myTokensWithBalance.findIndex(
       token => token.address === SwapController.state.toToken?.address
     ) >= 0;
+
+  const paddingBottom = Platform.select({
+    android: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
+    default: Spacing['2xl']
+  });
 
   const getActionButtonState = () => {
     // if (fetchError) {
@@ -68,11 +72,6 @@ export function SwapView() {
   const onDebouncedSwap = useDebounceCallback({
     callback: SwapController.swapTokens.bind(SwapController),
     delay: 400
-  });
-
-  const paddingBottom = Platform.select({
-    android: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
-    default: Spacing['2xl']
   });
 
   const onSourceTokenChange = (value: string) => {
@@ -165,9 +164,7 @@ export function SwapView() {
           <SwapInput
             token={toToken}
             value={toTokenAmount}
-            marketValue={
-              NumberUtil.parseLocalStringToNumber(toTokenAmount) * toTokenPriceInUSD - gasPriceInUSD
-            }
+            marketValue={NumberUtil.parseLocalStringToNumber(toTokenAmount) * toTokenPriceInUSD}
             style={styles.tokenInput}
             loading={initializing}
             onChange={onToTokenChange}

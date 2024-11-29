@@ -1,8 +1,13 @@
 import { BlockchainApiController } from '../controllers/BlockchainApiController';
 import { OptionsController } from '../controllers/OptionsController';
 import { NetworkController } from '../controllers/NetworkController';
-import type { BlockchainApiBalanceResponse, SwapTokenWithBalance } from './TypeUtil';
+import type {
+  BlockchainApiBalanceResponse,
+  BlockchainApiSwapAllowanceRequest,
+  SwapTokenWithBalance
+} from './TypeUtil';
 import { AccountController } from '../controllers/AccountController';
+import { ConnectionController } from '../controllers/ConnectionController';
 
 export const SwapApiUtil = {
   async getTokenList() {
@@ -28,6 +33,34 @@ export const SwapApiUtil = {
     return tokens;
   },
 
+  async fetchSwapAllowance({
+    tokenAddress,
+    userAddress,
+    sourceTokenAmount,
+    sourceTokenDecimals
+  }: Pick<BlockchainApiSwapAllowanceRequest, 'tokenAddress' | 'userAddress'> & {
+    sourceTokenAmount: string;
+    sourceTokenDecimals: number;
+  }) {
+    const projectId = OptionsController.state.projectId;
+
+    const response = await BlockchainApiController.fetchSwapAllowance({
+      projectId,
+      tokenAddress,
+      userAddress
+    });
+
+    if (response?.allowance && sourceTokenAmount && sourceTokenDecimals) {
+      const parsedValue =
+        ConnectionController.parseUnits(sourceTokenAmount, sourceTokenDecimals) || 0;
+      const hasAllowance = BigInt(response.allowance) >= parsedValue;
+
+      return hasAllowance;
+    }
+
+    return false;
+  },
+
   async getMyTokensWithBalance(forceUpdate?: string) {
     const address = AccountController.state.address;
     const chainId = NetworkController.state.caipNetwork?.id;
@@ -50,7 +83,7 @@ export const SwapApiUtil = {
         token =>
           ({
             ...token,
-            address: token?.address || NetworkController.getActiveNetworkTokenAddress(), //TODO: check this
+            address: token?.address || NetworkController.getActiveNetworkTokenAddress(),
             decimals: parseInt(token.quantity.decimals, 10),
             logoUri: token.iconUrl,
             eip2612: false

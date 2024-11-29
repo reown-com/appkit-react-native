@@ -174,6 +174,56 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null;
 }
 
+export interface BlockchainApiSwapAllowanceResponse {
+  allowance: string;
+}
+
+export interface BlockchainApiGenerateSwapCalldataRequest {
+  projectId: string;
+  userAddress: string;
+  from: string;
+  to: string;
+  amount: string;
+  eip155?: {
+    slippage: string;
+    permit?: string;
+  };
+}
+
+export interface BlockchainApiGenerateSwapCalldataResponse {
+  tx: {
+    from: CaipAddress;
+    to: CaipAddress;
+    data: `0x${string}`;
+    amount: string;
+    eip155: {
+      gas: string;
+      gasPrice: string;
+    };
+  };
+}
+
+export interface BlockchainApiGenerateApproveCalldataRequest {
+  projectId: string;
+  userAddress: string;
+  from: string;
+  to: string;
+  amount?: number;
+}
+
+export interface BlockchainApiGenerateApproveCalldataResponse {
+  tx: {
+    from: CaipAddress;
+    to: CaipAddress;
+    data: `0x${string}`;
+    value: string;
+    eip155: {
+      gas: number;
+      gasPrice: string;
+    };
+  };
+}
+
 export interface BlockchainApiTokenPriceRequest {
   projectId: string;
   currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth';
@@ -187,6 +237,12 @@ export interface BlockchainApiTokenPriceResponse {
     iconUrl: string;
     price: number;
   }[];
+}
+
+export interface BlockchainApiSwapAllowanceRequest {
+  projectId: string;
+  tokenAddress: string;
+  userAddress: string;
 }
 
 export interface BlockchainApiGasPriceRequest {
@@ -580,6 +636,12 @@ export type Event =
     };
 
 // -- Send Controller Types -------------------------------------
+export type EstimateGasTransactionArgs = {
+  chainNamespace?: undefined | 'eip155';
+  address: `0x${string}`;
+  to: `0x${string}`;
+  data: `0x${string}`;
+};
 
 export interface SendTransactionArgs {
   to: `0x${string}`;
@@ -588,6 +650,7 @@ export interface SendTransactionArgs {
   gas?: bigint;
   gasPrice: bigint;
   address: `0x${string}`;
+  chainNamespace?: 'eip155';
 }
 
 export interface WriteContractArgs {

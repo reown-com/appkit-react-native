@@ -14,12 +14,34 @@ import type { SwapInputTarget, SwapTokenWithBalance } from '../utils/TypeUtil';
 import { ConnectorController } from './ConnectorController';
 import { AccountController } from './AccountController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
+import { ConnectionController } from './ConnectionController';
+import { TransactionsController } from './TransactionsController';
+// import { EventsController } from './EventsController';
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000;
 export const TO_AMOUNT_DECIMALS = 6;
 
 // -- Types --------------------------------------------- //
+type TransactionParams = {
+  data: string;
+  to: string;
+  gas: bigint;
+  gasPrice: bigint;
+  value: bigint;
+  toAmount: string;
+};
+
+class TransactionError extends Error {
+  shortMessage?: string;
+
+  constructor(message?: string, shortMessage?: string) {
+    super(message);
+    this.name = 'TransactionError';
+    this.shortMessage = shortMessage;
+  }
+}
+
 export interface SwapControllerState {
   // Loading states
   initializing: boolean;
@@ -29,6 +51,14 @@ export interface SwapControllerState {
   loadingApprovalTransaction?: boolean;
   loadingBuildTransaction?: boolean;
   loadingTransaction?: boolean;
+
+  // Error states
+  fetchError: boolean;
+
+  // Approval & Swap transaction states
+  approvalTransaction: TransactionParams | undefined;
+  swapTransaction: TransactionParams | undefined;
+  transactionError?: string;
 
   // Input values
   sourceToken?: SwapTokenWithBalance;
@@ -73,6 +103,14 @@ const initialState: SwapControllerState = {
   loadingApprovalTransaction: false,
   loadingBuildTransaction: false,
   loadingTransaction: false,
+
+  // Error states
+  fetchError: false,
+
+  // Approval & Swap transaction states
+  approvalTransaction: undefined,
+  swapTransaction: undefined,
+  transactionError: undefined,
 
   // Input values
   sourceToken: undefined,
@@ -400,7 +438,7 @@ export const SwapController = {
 
   async setTokenPrice(address: string, target: SwapInputTarget) {
     const { availableToSwap } = this.getParams();
-    let price = state.tokensPriceMap[address] || 0; // TODO: check this
+    let price = state.tokensPriceMap[address] || 0;
 
     if (!price) {
       state.loadingPrices = true;
@@ -421,6 +459,7 @@ export const SwapController = {
     }
   },
 
+  // -- Swap ---------------------------------------------- //
   async swapTokens() {
     const address = AccountController.state.address as `${string}:${string}:${string}`;
     const sourceToken = state.sourceToken;
@@ -470,6 +509,299 @@ export const SwapController = {
     } else {
       state.inputError = undefined;
       this.setTransactionDetails();
+    }
+  },
+
+  // -- Create Transactions -------------------------------------- //
+  async getTransaction() {
+    const { fromCaipAddress, availableToSwap } = this.getParams();
+    const sourceToken = state.sourceToken;
+    const toToken = state.toToken;
+
+    if (!fromCaipAddress || !availableToSwap || !sourceToken || !toToken || state.loadingQuote) {
+      return undefined;
+    }
+
+    try {
+      state.loadingBuildTransaction = true;
+      const hasAllowance = await SwapApiUtil.fetchSwapAllowance({
+        userAddress: fromCaipAddress,
+        tokenAddress: sourceToken.address,
+        sourceTokenAmount: state.sourceTokenAmount,
+        sourceTokenDecimals: sourceToken.decimals
+      });
+
+      let transaction: TransactionParams | undefined;
+
+      if (hasAllowance) {
+        transaction = await this.createSwapTransaction();
+      } else {
+        transaction = await this.createAllowanceTransaction();
+      }
+
+      state.loadingBuildTransaction = false;
+      state.fetchError = false;
+
+      return transaction;
+    } catch (error) {
+      RouterController.goBack();
+      SnackController.showError('Failed to check allowance');
+      state.loadingBuildTransaction = false;
+      state.approvalTransaction = undefined;
+      state.swapTransaction = undefined;
+      state.fetchError = true;
+
+      return undefined;
+    }
+  },
+
+  async createAllowanceTransaction() {
+    const { fromCaipAddress, fromAddress, sourceTokenAddress, toTokenAddress } = this.getParams();
+
+    if (!fromCaipAddress || !toTokenAddress) {
+      return undefined;
+    }
+
+    if (!sourceTokenAddress) {
+      throw new Error('createAllowanceTransaction - No source token address found.');
+    }
+
+    try {
+      const response = await BlockchainApiController.generateApproveCalldata({
+        projectId: OptionsController.state.projectId,
+        from: sourceTokenAddress,
+        to: toTokenAddress,
+        userAddress: fromCaipAddress
+      });
+
+      if (!response) {
+        throw new Error('createAllowanceTransaction - No response from generateApproveCalldata');
+      }
+      const gasLimit = await ConnectionController.estimateGas({
+        address: fromAddress as `0x${string}`,
+        to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
+        data: response.tx.data
+      });
+
+      const transaction = {
+        data: response.tx.data,
+        to: CoreHelperUtil.getPlainAddress(response.tx.from) as `0x${string}`,
+        gas: gasLimit,
+        gasPrice: BigInt(response.tx.eip155.gasPrice),
+        value: BigInt(response.tx.value),
+        toAmount: state.toTokenAmount
+      };
+
+      state.swapTransaction = undefined;
+      state.approvalTransaction = {
+        data: transaction.data,
+        to: transaction.to,
+        gas: transaction.gas ?? BigInt(0),
+        gasPrice: transaction.gasPrice,
+        value: transaction.value,
+        toAmount: transaction.toAmount
+      };
+
+      return {
+        data: transaction.data,
+        to: transaction.to,
+        gas: transaction.gas ?? BigInt(0),
+        gasPrice: transaction.gasPrice,
+        value: transaction.value,
+        toAmount: transaction.toAmount
+      };
+    } catch (error) {
+      RouterController.goBack();
+      SnackController.showError('Failed to create approval transaction');
+      state.approvalTransaction = undefined;
+      state.swapTransaction = undefined;
+      state.fetchError = true;
+
+      return undefined;
+    }
+  },
+
+  async createSwapTransaction() {
+    const { networkAddress, fromCaipAddress, sourceTokenAmount } = this.getParams();
+    const sourceToken = state.sourceToken;
+    const toToken = state.toToken;
+
+    if (!fromCaipAddress || !sourceTokenAmount || !sourceToken || !toToken) {
+      return undefined;
+    }
+
+    const amount = ConnectionController.parseUnits(
+      sourceTokenAmount,
+      sourceToken.decimals
+    )?.toString();
+
+    try {
+      const response = await BlockchainApiController.generateSwapCalldata({
+        projectId: OptionsController.state.projectId,
+        userAddress: fromCaipAddress,
+        from: sourceToken.address,
+        to: toToken.address,
+        amount: amount as string
+      });
+
+      if (!response) {
+        throw new Error('createSwapTransaction - No response from generateSwapCalldata');
+      }
+
+      const isSourceNetworkToken = sourceToken.address === networkAddress;
+
+      const gas = BigInt(response.tx.eip155.gas);
+      const gasPrice = BigInt(response.tx.eip155.gasPrice);
+
+      const transaction = {
+        data: response.tx.data,
+        to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
+        gas,
+        gasPrice,
+        value: isSourceNetworkToken ? BigInt(amount ?? '0') : BigInt('0'),
+        toAmount: state.toTokenAmount
+      };
+
+      state.gasPriceInUSD = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gas, gasPrice);
+
+      state.approvalTransaction = undefined;
+      state.swapTransaction = transaction;
+
+      return transaction;
+    } catch (error) {
+      RouterController.goBack();
+      SnackController.showError('Failed to create transaction');
+      state.approvalTransaction = undefined;
+      state.swapTransaction = undefined;
+      state.fetchError = true;
+
+      return undefined;
+    }
+  },
+
+  async sendTransactionForApproval(data: TransactionParams) {
+    const { fromAddress, isAuthConnector } = this.getParams();
+
+    state.loadingApprovalTransaction = true;
+    const approveLimitMessage = `Approve limit increase in your wallet`;
+
+    if (isAuthConnector) {
+      RouterController.pushTransactionStack({
+        view: null,
+        goBack: true,
+        onSuccess() {
+          SnackController.showLoading(approveLimitMessage);
+        }
+      });
+    } else {
+      SnackController.showLoading(approveLimitMessage);
+    }
+
+    try {
+      await ConnectionController.sendTransaction({
+        address: fromAddress as `0x${string}`,
+        to: data.to as `0x${string}`,
+        data: data.data as `0x${string}`,
+        value: BigInt(data.value),
+        gasPrice: BigInt(data.gasPrice),
+        chainNamespace: 'eip155'
+      });
+
+      await this.swapTokens();
+      await this.getTransaction();
+      state.approvalTransaction = undefined;
+      state.loadingApprovalTransaction = false;
+    } catch (err) {
+      const error = err as TransactionError;
+      state.transactionError = error?.shortMessage as unknown as string;
+      state.loadingApprovalTransaction = false;
+      SnackController.showError(error?.shortMessage || 'Transaction error');
+    }
+  },
+
+  async sendTransactionForSwap(data: TransactionParams | undefined) {
+    if (!data) {
+      return undefined;
+    }
+
+    const { fromAddress, toTokenAmount, isAuthConnector } = this.getParams();
+
+    state.loadingTransaction = true;
+
+    const snackbarPendingMessage = `Swapping ${state.sourceToken
+      ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
+      ?.symbol}`;
+    const snackbarSuccessMessage = `Swapped ${state.sourceToken
+      ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
+      ?.symbol}`;
+
+    if (isAuthConnector) {
+      RouterController.pushTransactionStack({
+        view: 'Account',
+        goBack: false,
+        onSuccess() {
+          SnackController.showLoading(snackbarPendingMessage);
+          SwapController.resetState();
+        }
+      });
+    } else {
+      SnackController.showLoading('Confirm transaction in your wallet');
+    }
+
+    try {
+      const forceUpdateAddresses = [state.sourceToken?.address, state.toToken?.address].join(',');
+      const transactionHash = await ConnectionController.sendTransaction({
+        address: fromAddress as `0x${string}`,
+        to: data.to as `0x${string}`,
+        data: data.data as `0x${string}`,
+        gas: data.gas,
+        gasPrice: BigInt(data.gasPrice),
+        value: data.value,
+        chainNamespace: 'eip155'
+      });
+
+      state.loadingTransaction = false;
+      SnackController.showSuccess(snackbarSuccessMessage);
+      // EventsController.sendEvent({
+      //   type: 'track',
+      //   event: 'SWAP_SUCCESS',
+      //   properties: {
+      //     network: NetworkController.state.caipNetwork?.id || '',
+      //     swapFromToken: this.state.sourceToken?.symbol || '',
+      //     swapToToken: this.state.toToken?.symbol || '',
+      //     swapFromAmount: this.state.sourceTokenAmount || '',
+      //     swapToAmount: this.state.toTokenAmount || '',
+      //     isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+      //   }
+      // });
+      SwapController.resetState();
+      if (!isAuthConnector) {
+        RouterController.replace('Account');
+      }
+      SwapController.getMyTokensWithBalance(forceUpdateAddresses);
+      TransactionsController.fetchTransactions();
+
+      return transactionHash;
+    } catch (err) {
+      const error = err as TransactionError;
+      state.transactionError = error?.shortMessage;
+      state.loadingTransaction = false;
+      SnackController.showError(error?.shortMessage || 'Transaction error');
+      // EventsController.sendEvent({
+      //   type: 'track',
+      //   event: 'SWAP_ERROR',
+      //   properties: {
+      //     message: error?.shortMessage || error?.message || 'Unknown',
+      //     network: NetworkController.state.caipNetwork?.id || '',
+      //     swapFromToken: this.state.sourceToken?.symbol || '',
+      //     swapToToken: this.state.toToken?.symbol || '',
+      //     swapFromAmount: this.state.sourceTokenAmount || '',
+      //     swapToAmount: this.state.toTokenAmount || '',
+      //     isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+      //   }
+      // });
+
+      return undefined;
     }
   },
 

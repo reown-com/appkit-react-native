@@ -16,28 +16,44 @@ export interface ToggleProps {
   children?: React.ReactNode;
   title?: string | React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  initialOpen?: boolean;
+  canClose?: boolean;
 }
 
-export function Toggle({ children, style, title = 'Details' }: ToggleProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export function Toggle({
+  children,
+  style,
+  title = 'Details',
+  initialOpen = false,
+  canClose = true
+}: ToggleProps) {
+  const [isOpen, setIsOpen] = useState(initialOpen);
   const animatedHeight = useRef(new Animated.Value(0)).current;
   const contentHeight = useRef(0);
+  const hasInitialized = useRef(false);
 
   const toggleDetails = () => {
-    const toValue = isOpen ? 0 : contentHeight.current;
+    if (canClose) {
+      const toValue = isOpen ? 0 : contentHeight.current;
 
-    Animated.spring(animatedHeight, {
-      toValue,
-      useNativeDriver: false,
-      bounciness: 0
-    }).start();
+      Animated.spring(animatedHeight, {
+        toValue,
+        useNativeDriver: false,
+        bounciness: 0
+      }).start();
 
-    setIsOpen(!isOpen);
+      setIsOpen(!isOpen);
+    }
   };
 
   const measureContent = (event: LayoutChangeEvent) => {
     const height = event.nativeEvent.layout.height;
     contentHeight.current = height;
+
+    if (!hasInitialized.current && initialOpen) {
+      hasInitialized.current = true;
+      animatedHeight.setValue(height);
+    }
   };
 
   return (
@@ -50,7 +66,9 @@ export function Toggle({ children, style, title = 'Details' }: ToggleProps) {
         ) : (
           title
         )}
-        <IconBox icon={isOpen ? 'chevronTop' : 'chevronBottom'} size="sm" iconColor="fg-200" />
+        {canClose && (
+          <IconBox icon={isOpen ? 'chevronTop' : 'chevronBottom'} size="sm" iconColor="fg-200" />
+        )}
       </Pressable>
 
       <Animated.View style={[styles.contentWrapper, { height: animatedHeight }]}>

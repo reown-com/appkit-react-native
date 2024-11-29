@@ -6,6 +6,7 @@ import {
   type CaipNetworkId,
   type ConnectionControllerClient,
   type Connector,
+  type EstimateGasTransactionArgs,
   type LibraryOptions,
   type NetworkControllerClient,
   type PublicStateControllerState,
@@ -273,6 +274,45 @@ export class AppKit extends AppKitScaffold {
         });
 
         return signature as `0x${string}`;
+      },
+
+      estimateGas: async ({
+        address,
+        to,
+        data,
+        chainNamespace
+      }: EstimateGasTransactionArgs): Promise<bigint> => {
+        const networkId = EthersStoreUtil.state.chainId;
+        const provider = EthersStoreUtil.state.provider;
+
+        if (!provider) {
+          throw new Error('Provider is undefined');
+        }
+
+        try {
+          if (!provider) {
+            throw new Error('estimateGas - provider is undefined');
+          }
+          if (!address) {
+            throw new Error('estimateGas - address is undefined');
+          }
+          if (chainNamespace && chainNamespace !== 'eip155') {
+            throw new Error('estimateGas - chainNamespace is not eip155');
+          }
+
+          const txParams = {
+            from: address,
+            to,
+            data,
+            type: 0
+          };
+          const browserProvider = new ethers.providers.Web3Provider(provider, networkId);
+          const signer = browserProvider.getSigner(address);
+
+          return (await signer.estimateGas(txParams)).toBigInt();
+        } catch (error) {
+          throw new Error('Ethers: estimateGas - Estimate gas failed');
+        }
       },
 
       parseUnits: (value: string, decimals: number) =>

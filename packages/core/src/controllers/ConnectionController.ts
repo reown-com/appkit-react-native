@@ -5,6 +5,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type {
   Connector,
+  EstimateGasTransactionArgs,
   SendTransactionArgs,
   WcWallet,
   WriteContractArgs
@@ -31,6 +32,7 @@ export interface ConnectionControllerClient {
   parseUnits: (value: string, decimals: number) => bigint;
   formatUnits: (value: bigint, decimals: number) => string;
   writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>;
+  estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>;
   disconnect: () => Promise<void>;
   getEnsAddress: (value: string) => Promise<false | string>;
   getEnsAvatar: (value: string) => Promise<false | string>;
@@ -154,6 +156,9 @@ export const ConnectionController = {
     return this._getClient().sendTransaction(args);
   },
 
+  async estimateGas(args: EstimateGasTransactionArgs) {
+    return this._getClient()?.estimateGas(args);
+  },
   async writeContract(args: WriteContractArgs) {
     return this._getClient().writeContract(args);
   },
