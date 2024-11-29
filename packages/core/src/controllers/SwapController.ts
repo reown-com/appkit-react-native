@@ -779,7 +779,8 @@ export const SwapController = {
         RouterController.replace('Account');
       }
       SwapController.getMyTokensWithBalance(forceUpdateAddresses);
-      TransactionsController.fetchTransactions();
+      AccountController.fetchTokenBalance();
+      TransactionsController.fetchTransactions(AccountController.state.address, true);
 
       return transactionHash;
     } catch (err) {
