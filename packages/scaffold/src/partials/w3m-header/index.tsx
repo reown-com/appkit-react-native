@@ -46,7 +46,7 @@ export function Header() {
       SwapSelectToken: 'Select token',
       SwapPreview: 'Review swap',
       Transactions: 'Activity',
-      UnsupportedChain: 'Unsupported network',
+      UnsupportedChain: 'Switch network',
       UpdateEmailPrimaryOtp: 'Confirm current email',
       UpdateEmailSecondaryOtp: 'Confirm new email',
       UpdateEmailWallet: 'Edit email',

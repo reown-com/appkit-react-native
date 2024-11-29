@@ -573,6 +573,7 @@ export type Event =
         swapToToken: string;
         swapFromAmount: string;
         swapToAmount: string;
+        message: string;
       };
     }
   | {

@@ -22,6 +22,7 @@ import { SwapView } from '../../views/w3m-swap-view';
 import { SwapPreviewView } from '../../views/w3m-swap-preview-view';
 import { SwapSelectTokenView } from '../../views/w3m-swap-select-token-view';
 import { TransactionsView } from '../../views/w3m-transactions-view';
+import { UnsupportedChainView } from '../../views/w3m-unsupported-chain-view';
 import { UpdateEmailWalletView } from '../../views/w3m-update-email-wallet-view';
 import { UpdateEmailPrimaryOtpView } from '../../views/w3m-update-email-primary-otp-view';
 import { UpdateEmailSecondaryOtpView } from '../../views/w3m-update-email-secondary-otp-view';
@@ -86,6 +87,8 @@ export function AppKitRouter() {
         return SwapSelectTokenView;
       case 'Transactions':
         return TransactionsView;
+      case 'UnsupportedChain':
+        return UnsupportedChainView;
       case 'UpdateEmailPrimaryOtp':
         return UpdateEmailPrimaryOtpView;
       case 'UpdateEmailSecondaryOtp':

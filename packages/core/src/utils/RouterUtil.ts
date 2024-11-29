@@ -8,7 +8,10 @@ export const RouterUtil = {
     }
 
     const { history } = RouterController.state;
-    const networkSelectIndex = history.findIndex(name => name === 'Networks');
+    const networkSelectIndex = history.findIndex(
+      name => name === 'Networks' || name === 'UnsupportedChain'
+    );
+
     if (networkSelectIndex >= 1) {
       RouterController.goBackToIndex(networkSelectIndex - 1);
     } else {

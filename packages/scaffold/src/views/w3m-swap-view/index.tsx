@@ -2,6 +2,8 @@ import { useSnapshot } from 'valtio';
 import { useCallback, useEffect } from 'react';
 import { Platform, ScrollView } from 'react-native';
 import {
+  AccountController,
+  EventsController,
   NetworkController,
   RouterController,
   SwapController
@@ -89,6 +91,18 @@ export function SwapView() {
   };
 
   const onReviewPress = () => {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'INITIATE_SWAP',
+      properties: {
+        network: NetworkController.state.caipNetwork?.id || '',
+        swapFromToken: SwapController.state.sourceToken?.symbol || '',
+        swapToToken: SwapController.state.toToken?.symbol || '',
+        swapFromAmount: SwapController.state.sourceTokenAmount || '',
+        swapToAmount: SwapController.state.toTokenAmount || '',
+        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+      }
+    });
     RouterController.push('SwapPreview');
   };
 

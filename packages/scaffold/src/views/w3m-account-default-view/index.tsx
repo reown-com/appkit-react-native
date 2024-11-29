@@ -8,6 +8,7 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  ConnectionUtil,
   EventsController,
   ModalController,
   NetworkController,
@@ -57,22 +58,9 @@ export function AccountDefaultView() {
   const { padding } = useCustomDimensions();
 
   async function onDisconnect() {
-    try {
-      setDisconnecting(true);
-      await ConnectionController.disconnect();
-      AccountController.setIsConnected(false);
-      ModalController.close();
-      setDisconnecting(false);
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'DISCONNECT_SUCCESS'
-      });
-    } catch (error) {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'DISCONNECT_ERROR'
-      });
-    }
+    setDisconnecting(true);
+    await ConnectionUtil.disconnect();
+    setDisconnecting(false);
   }
 
   const onSwitchAccountType = async () => {

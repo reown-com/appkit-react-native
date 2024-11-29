@@ -16,7 +16,7 @@ import { AccountController } from './AccountController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { ConnectionController } from './ConnectionController';
 import { TransactionsController } from './TransactionsController';
-// import { EventsController } from './EventsController';
+import { EventsController } from './EventsController';
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000;
@@ -762,18 +762,18 @@ export const SwapController = {
 
       state.loadingTransaction = false;
       SnackController.showSuccess(snackbarSuccessMessage);
-      // EventsController.sendEvent({
-      //   type: 'track',
-      //   event: 'SWAP_SUCCESS',
-      //   properties: {
-      //     network: NetworkController.state.caipNetwork?.id || '',
-      //     swapFromToken: this.state.sourceToken?.symbol || '',
-      //     swapToToken: this.state.toToken?.symbol || '',
-      //     swapFromAmount: this.state.sourceTokenAmount || '',
-      //     swapToAmount: this.state.toTokenAmount || '',
-      //     isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
-      //   }
-      // });
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWAP_SUCCESS',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          swapFromToken: this.state.sourceToken?.symbol || '',
+          swapToToken: this.state.toToken?.symbol || '',
+          swapFromAmount: this.state.sourceTokenAmount || '',
+          swapToAmount: this.state.toTokenAmount || '',
+          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+        }
+      });
       SwapController.resetState();
       if (!isAuthConnector) {
         RouterController.replace('Account');
@@ -788,19 +788,19 @@ export const SwapController = {
       state.transactionError = error?.shortMessage;
       state.loadingTransaction = false;
       SnackController.showError(error?.shortMessage || 'Transaction error');
-      // EventsController.sendEvent({
-      //   type: 'track',
-      //   event: 'SWAP_ERROR',
-      //   properties: {
-      //     message: error?.shortMessage || error?.message || 'Unknown',
-      //     network: NetworkController.state.caipNetwork?.id || '',
-      //     swapFromToken: this.state.sourceToken?.symbol || '',
-      //     swapToToken: this.state.toToken?.symbol || '',
-      //     swapFromAmount: this.state.sourceTokenAmount || '',
-      //     swapToAmount: this.state.toTokenAmount || '',
-      //     isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
-      //   }
-      // });
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWAP_ERROR',
+        properties: {
+          message: error?.shortMessage || error?.message || 'Unknown',
+          network: NetworkController.state.caipNetwork?.id || '',
+          swapFromToken: this.state.sourceToken?.symbol || '',
+          swapToToken: this.state.toToken?.symbol || '',
+          swapFromAmount: this.state.sourceTokenAmount || '',
+          swapToAmount: this.state.toTokenAmount || '',
+          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+        }
+      });
 
       return undefined;
     }

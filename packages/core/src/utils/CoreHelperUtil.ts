@@ -4,7 +4,7 @@ import { Linking, Platform } from 'react-native';
 import { ConstantsUtil as CommonConstants, type Balance } from '@reown/appkit-common-react-native';
 
 import { ConstantsUtil } from './ConstantsUtil';
-import type { CaipAddress, DataWallet, LinkingRecord } from './TypeUtil';
+import type { CaipAddress, CaipNetwork, DataWallet, LinkingRecord } from './TypeUtil';
 
 // -- Helpers -----------------------------------------------------------------
 async function isAppInstalledIos(deepLink?: string): Promise<boolean> {
@@ -268,5 +268,24 @@ export const CoreHelperUtil = {
     const [dollars, pennies] = roundedNumber.split('.');
 
     return { dollars, pennies };
+  },
+
+  sortNetworks(
+    approvedCaipNetworkIds: `${string}:${string}`[] | undefined,
+    requestedCaipNetworks: CaipNetwork[] = []
+  ) {
+    const approvedIds = approvedCaipNetworkIds;
+    const requested = [...requestedCaipNetworks];
+
+    if (approvedIds?.length) {
+      requested?.sort((a, b) => {
+        if (approvedIds.includes(a.id) && !approvedIds.includes(b.id)) return -1;
+        if (approvedIds.includes(b.id) && !approvedIds.includes(a.id)) return 1;
+
+        return 0;
+      });
+    }
+
+    return requested;
   }
 };

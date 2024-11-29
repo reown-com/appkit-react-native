@@ -8,8 +8,7 @@ import {
   EventsController,
   NetworkController,
   OptionsController,
-  RouterController,
-  SnackController
+  RouterController
 } from '@reown/appkit-core-react-native';
 import type { Balance as BalanceType } from '@reown/appkit-common-react-native';
 import { AccountActivity } from '../w3m-account-activity';
@@ -49,11 +48,7 @@ export function AccountWalletFeatures() {
       NetworkController.state.caipNetwork?.id &&
       !ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(`${NetworkController.state.caipNetwork.id}`)
     ) {
-      SnackController.showError('Unsupported Chain');
-      // RouterController.push('UnsupportedChain', {
-      //   swapUnsupportedChain: true
-      // });
-      RouterController.push('Swap');
+      RouterController.push('UnsupportedChain');
     } else {
       EventsController.sendEvent({
         type: 'track',

@@ -10,7 +10,6 @@ import type {
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil';
-import { RouterController } from './RouterController';
 import { ConnectorController } from './ConnectorController';
 
 // -- Types --------------------------------------------- //
@@ -191,6 +190,6 @@ export const ConnectionController = {
     await this._getClient().disconnect();
     this.resetWcConnection();
     // remove transactions
-    RouterController.reset('Connect');
+    // RouterController.reset('Connect');
   }
 };
