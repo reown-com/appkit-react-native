@@ -442,13 +442,16 @@ export const SwapController = {
     if (!price) {
       state.loadingPrices = true;
       price = await this.getAddressPrice(address);
-      state.loadingPrices = false;
     }
 
     if (target === 'sourceToken') {
       state.sourceTokenPriceInUSD = price;
     } else if (target === 'toToken') {
       state.toTokenPriceInUSD = price;
+    }
+
+    if (state.loadingPrices) {
+      state.loadingPrices = false;
     }
 
     if (this.getParams().availableToSwap) {
