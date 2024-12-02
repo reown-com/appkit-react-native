@@ -7,10 +7,24 @@ export default StyleSheet.create({
     maxHeight: 600
   },
   title: {
-    paddingTop: Spacing.s,
-    paddingBottom: Spacing.xs
+    paddingTop: Spacing['2xs']
   },
   tokenList: {
     paddingHorizontal: Spacing.m
+  },
+  input: {
+    marginHorizontal: Spacing.xs
+  },
+  suggestedList: {
+    marginTop: Spacing.xs
+  },
+  suggestedListContent: {
+    paddingHorizontal: Spacing.s
+  },
+  suggestedToken: {
+    marginRight: Spacing.s
+  },
+  suggestedSeparator: {
+    marginVertical: Spacing.s
   }
 });

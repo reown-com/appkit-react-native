@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { SectionList, type SectionListData } from 'react-native';
+import { ScrollView, SectionList, type SectionListData } from 'react-native';
 import {
   FlexView,
   InputText,
   ListToken,
   ListTokenTotalHeight,
+  Separator,
   Text,
+  TokenButton,
   useTheme
 } from '@reown/appkit-ui-react-native';
 
@@ -27,12 +29,13 @@ export function SwapSelectTokenView() {
   const { padding } = useCustomDimensions();
   const Theme = useTheme();
   const { caipNetwork } = useSnapshot(NetworkController.state);
-  const { sourceToken } = useSnapshot(SwapController.state);
+  const { sourceToken, suggestedTokens } = useSnapshot(SwapController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const isSourceToken = RouterController.state.data?.swapTarget === 'sourceToken';
 
   const [filteredTokens, setFilteredTokens] = useState(createSections(isSourceToken, tokenSearch));
+  const suggestedList = suggestedTokens?.slice(0, 8);
 
   const onSearchChange = (value: string) => {
     setTokenSearch(value);
@@ -56,15 +59,37 @@ export function SwapSelectTokenView() {
       margin={['l', '0', '2xl', '0']}
       style={[styles.container, { paddingHorizontal: padding }]}
     >
-      <FlexView margin={['0', 'm', 'm', 'm']}>
+      <FlexView>
         <InputText
           value={tokenSearch}
           icon="search"
           placeholder="Search token"
           onChangeText={onSearchChange}
           clearButtonMode="while-editing"
+          style={styles.input}
         />
+        {!isSourceToken && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            bounces={false}
+            fadingEdgeLength={20}
+            style={styles.suggestedList}
+            contentContainerStyle={styles.suggestedListContent}
+          >
+            {suggestedList?.map((token, index) => (
+              <TokenButton
+                key={token.name}
+                text={token.symbol}
+                imageUrl={token.logoUri}
+                onPress={() => onTokenPress(token)}
+                style={index !== suggestedList.length - 1 ? styles.suggestedToken : undefined}
+              />
+            ))}
+          </ScrollView>
+        )}
       </FlexView>
+      <Separator style={styles.suggestedSeparator} />
       <SectionList
         sections={filteredTokens as SectionListData<SwapTokenWithBalance>[]}
         bounces={false}
@@ -74,7 +99,7 @@ export function SwapSelectTokenView() {
           <Text
             variant="paragraph-500"
             color="fg-200"
-            style={[styles.title, { backgroundColor: Theme['bg-100'] }]}
+            style={[{ backgroundColor: Theme['bg-100'] }, styles.title]}
           >
             {title}
           </Text>
