@@ -3,6 +3,7 @@ import { RouterController } from '../controllers/RouterController';
 import { NetworkController } from '../controllers/NetworkController';
 import { AccountController } from '../controllers/AccountController';
 import { ConnectorController } from '../controllers/ConnectorController';
+import { SwapController } from '../controllers/SwapController';
 import type { CaipNetwork } from '../utils/TypeUtil';
 
 export const NetworkUtil = {
@@ -10,13 +11,13 @@ export const NetworkUtil = {
     const { isConnected } = AccountController.state;
     const { caipNetwork, approvedCaipNetworkIds, supportsAllNetworks } = NetworkController.state;
     const isAuthConnected = ConnectorController.state.connectedConnector === 'AUTH';
+    let eventData = null;
 
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id) && !isAuthConnected) {
         await NetworkController.switchActiveNetwork(network);
         RouterUtil.navigateAfterNetworkSwitch(['ConnectingSiwe']);
-
-        return { type: 'SWITCH_NETWORK', networkId: network.id };
+        eventData = { type: 'SWITCH_NETWORK', networkId: network.id };
       } else if (supportsAllNetworks || isAuthConnected) {
         RouterController.push('SwitchNetwork', { network });
       }
@@ -25,6 +26,8 @@ export const NetworkUtil = {
       RouterController.push('Connect');
     }
 
-    return;
+    SwapController.resetState();
+
+    return eventData;
   }
 };

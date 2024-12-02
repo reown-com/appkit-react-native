@@ -8,7 +8,8 @@ import {
   EventsController,
   NetworkController,
   OptionsController,
-  RouterController
+  RouterController,
+  SwapController
 } from '@reown/appkit-core-react-native';
 import type { Balance as BalanceType } from '@reown/appkit-common-react-native';
 import { AccountActivity } from '../w3m-account-activity';
@@ -50,6 +51,7 @@ export function AccountWalletFeatures() {
     ) {
       RouterController.push('UnsupportedChain');
     } else {
+      SwapController.resetState();
       EventsController.sendEvent({
         type: 'track',
         event: 'OPEN_SWAP',

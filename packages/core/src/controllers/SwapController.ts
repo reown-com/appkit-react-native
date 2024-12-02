@@ -246,12 +246,14 @@ export const SwapController = {
 
     if (networkToken) {
       state.networkTokenSymbol = networkToken.symbol;
-      const sourceToken = state.myTokensWithBalance?.find(token =>
-        token.address.startsWith(networkAddress)
-      );
-      this.setSourceToken(sourceToken);
-      this.setSourceTokenAmount('1');
     }
+
+    const sourceToken =
+      state.myTokensWithBalance?.find(token => token.address.startsWith(networkAddress)) ||
+      state.myTokensWithBalance?.[0];
+
+    this.setSourceToken(sourceToken);
+    this.setSourceTokenAmount('1');
   },
 
   async getTokenList() {
