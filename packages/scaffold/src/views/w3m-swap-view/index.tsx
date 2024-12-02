@@ -129,6 +129,7 @@ export function SwapView() {
         : NumberUtil.bigNumber(_balance);
 
       SwapController.setSourceTokenAmount(maxValue.isGreaterThan(0) ? maxValue.toFixed(20) : '0');
+      SwapController.swapTokens();
     }
   };
 
