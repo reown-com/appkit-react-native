@@ -98,7 +98,7 @@ export function SwapDetails({ initialOpen, canClose }: SwapDetailsProps) {
             <Text variant="small-400" color="fg-150" style={styles.detailTitle}>
               Network cost
             </Text>
-            <Pressable onPress={onNetworkCostPress} style={styles.infoIcon}>
+            <Pressable onPress={onNetworkCostPress} style={styles.infoIcon} hitSlop={10}>
               <Icon name="infoCircle" size="sm" color="fg-150" />
             </Pressable>
           </FlexView>
@@ -112,7 +112,7 @@ export function SwapDetails({ initialOpen, canClose }: SwapDetailsProps) {
               <Text variant="small-400" color="fg-150" style={styles.detailTitle}>
                 Price impact
               </Text>
-              <Pressable onPress={onPriceImpactPress} style={styles.infoIcon}>
+              <Pressable onPress={onPriceImpactPress} style={styles.infoIcon} hitSlop={10}>
                 <Icon name="infoCircle" size="sm" color="fg-150" />
               </Pressable>
             </FlexView>
@@ -127,7 +127,7 @@ export function SwapDetails({ initialOpen, canClose }: SwapDetailsProps) {
               <Text variant="small-400" color="fg-150" style={styles.detailTitle}>
                 Max. slippage
               </Text>
-              <Pressable onPress={onSlippagePress} style={styles.infoIcon}>
+              <Pressable onPress={onSlippagePress} style={styles.infoIcon} hitSlop={10}>
                 <Icon name="infoCircle" size="sm" color="fg-150" />
               </Pressable>
             </FlexView>
