@@ -9,6 +9,9 @@ export default StyleSheet.create({
   titlePrice: {
     marginLeft: Spacing['3xs']
   },
+  detailTitle: {
+    marginRight: Spacing['3xs']
+  },
   item: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -16,5 +19,8 @@ export default StyleSheet.create({
     padding: Spacing.s,
     borderRadius: BorderRadius.xxs,
     marginTop: Spacing['2xs']
+  },
+  infoIcon: {
+    borderRadius: BorderRadius.full
   }
 });

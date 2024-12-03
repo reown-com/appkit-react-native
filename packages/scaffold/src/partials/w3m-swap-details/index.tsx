@@ -1,9 +1,20 @@
 import { useSnapshot } from 'valtio';
-import { ConstantsUtil, SwapController } from '@reown/appkit-core-react-native';
-import { FlexView, Text, UiUtil, Toggle, useTheme } from '@reown/appkit-ui-react-native';
+import { useState } from 'react';
+import { ConstantsUtil, NetworkController, SwapController } from '@reown/appkit-core-react-native';
+import {
+  FlexView,
+  Text,
+  UiUtil,
+  Toggle,
+  useTheme,
+  Pressable,
+  Icon
+} from '@reown/appkit-ui-react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
 
+import { InformationModal } from '../w3m-information-modal';
 import styles from './styles';
+import { getModalData } from './utils';
 
 interface SwapDetailsProps {
   initialOpen?: boolean;
@@ -23,6 +34,9 @@ export function SwapDetails({ initialOpen, canClose }: SwapDetailsProps) {
     priceImpact,
     toTokenAmount
   } = useSnapshot(SwapController.state);
+
+  const [modalData, setModalData] = useState<{ title: string; description: string } | undefined>();
+
   const toTokenSwappedAmount =
     SwapController.state.sourceTokenPriceInUSD && SwapController.state.toTokenPriceInUSD
       ? (1 / SwapController.state.toTokenPriceInUSD) * SwapController.state.sourceTokenPriceInUSD
@@ -45,63 +59,102 @@ export function SwapDetails({ initialOpen, canClose }: SwapDetailsProps) {
   const minimumReceive = NumberUtil.parseLocalStringToNumber(toTokenAmount) - maxSlippage;
   const providerFee = SwapController.getProviderFeePrice();
 
+  const onPriceImpactPress = () => {
+    setModalData(getModalData('priceImpact'));
+  };
+
+  const onSlippagePress = () => {
+    const minimumString = UiUtil.formatNumberToLocalString(
+      minimumReceive,
+      minimumReceive < 1 ? 8 : 2
+    );
+    setModalData(
+      getModalData('slippage', {
+        minimumReceive: minimumString,
+        toTokenSymbol: SwapController.state.toToken?.symbol
+      })
+    );
+  };
+
+  const onNetworkCostPress = () => {
+    setModalData(
+      getModalData('networkCost', {
+        networkSymbol: SwapController.state.networkTokenSymbol,
+        networkName: NetworkController.state.caipNetwork?.name
+      })
+    );
+  };
+
   return (
-    <Toggle
-      title={renderTitle()}
-      style={[styles.container, { backgroundColor: Theme['gray-glass-005'] }]}
-      initialOpen={initialOpen}
-      canClose={canClose}
-    >
-      <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
-        <Text variant="small-400" color="fg-150">
-          Network cost
-        </Text>
-        <Text variant="small-400" color="fg-100">
-          ${UiUtil.formatNumberToLocalString(gasPriceInUSD, gasPriceInUSD < 1 ? 8 : 2)}
-        </Text>
-      </FlexView>
-      {!!priceImpact && (
+    <>
+      <Toggle
+        title={renderTitle()}
+        style={[styles.container, { backgroundColor: Theme['gray-glass-005'] }]}
+        initialOpen={initialOpen}
+        canClose={canClose}
+      >
         <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
-          <Text variant="small-400" color="fg-150">
-            Price impact
-          </Text>
-          <Text variant="small-400" color="fg-100">
-            ~{UiUtil.formatNumberToLocalString(priceImpact, 3)}%
-          </Text>
-        </FlexView>
-      )}
-      {minimumReceive !== undefined && minimumReceive > 0 && !!toToken?.symbol && (
-        <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
-          <Text variant="small-400" color="fg-150">
-            Minimum receive
-          </Text>
-          <Text variant="small-400" color="fg-100">
-            {UiUtil.formatNumberToLocalString(minimumReceive, minimumReceive < 1 ? 8 : 2)}{' '}
-            {toToken?.symbol}
-          </Text>
-        </FlexView>
-      )}
-      {maxSlippage !== undefined && maxSlippage > 0 && !!sourceToken?.symbol && (
-        <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
-          <Text variant="small-400" color="fg-150">
-            Max. slippage
-          </Text>
-          <Text variant="small-400" color="fg-200">
-            {UiUtil.formatNumberToLocalString(maxSlippage, 6)} {toToken?.symbol}{' '}
-            <Text variant="small-400" color="fg-100">
-              {slippageRate}%
+          <FlexView flexDirection="row" alignItems="center">
+            <Text variant="small-400" color="fg-150" style={styles.detailTitle}>
+              Network cost
             </Text>
+            <Pressable onPress={onNetworkCostPress} style={styles.infoIcon}>
+              <Icon name="infoCircle" size="sm" color="fg-200" />
+            </Pressable>
+          </FlexView>
+          <Text variant="small-400" color="fg-100">
+            ${UiUtil.formatNumberToLocalString(gasPriceInUSD, gasPriceInUSD < 1 ? 8 : 2)}
           </Text>
         </FlexView>
-      )}
-      <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
-        <Text variant="small-400" color="fg-150">
-          Included provider fee
-        </Text>
-        <Text variant="small-400" color="fg-100">
-          ${UiUtil.formatNumberToLocalString(providerFee, providerFee < 1 ? 8 : 2)}
-        </Text>
-      </FlexView>
-    </Toggle>
+        {!!priceImpact && (
+          <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
+            <FlexView flexDirection="row" alignItems="center">
+              <Text variant="small-400" color="fg-150" style={styles.detailTitle}>
+                Price impact
+              </Text>
+              <Pressable onPress={onPriceImpactPress} style={styles.infoIcon}>
+                <Icon name="infoCircle" size="sm" color="fg-200" />
+              </Pressable>
+            </FlexView>
+            <Text variant="small-400" color="fg-100">
+              ~{UiUtil.formatNumberToLocalString(priceImpact, 3)}%
+            </Text>
+          </FlexView>
+        )}
+        {maxSlippage !== undefined && maxSlippage > 0 && !!sourceToken?.symbol && (
+          <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
+            <FlexView flexDirection="row" alignItems="center">
+              <Text variant="small-400" color="fg-150" style={styles.detailTitle}>
+                Max. slippage
+              </Text>
+              <Pressable onPress={onSlippagePress} style={styles.infoIcon}>
+                <Icon name="infoCircle" size="sm" color="fg-200" />
+              </Pressable>
+            </FlexView>
+            <Text variant="small-400" color="fg-200">
+              {UiUtil.formatNumberToLocalString(maxSlippage, 6)} {toToken?.symbol}{' '}
+              <Text variant="small-400" color="fg-100">
+                {slippageRate}%
+              </Text>
+            </Text>
+          </FlexView>
+        )}
+        <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
+          <Text variant="small-400" color="fg-150" style={styles.detailTitle}>
+            Included provider fee
+          </Text>
+          <Text variant="small-400" color="fg-100">
+            ${UiUtil.formatNumberToLocalString(providerFee, providerFee < 1 ? 8 : 2)}
+          </Text>
+        </FlexView>
+      </Toggle>
+      <InformationModal
+        iconName="infoCircle"
+        title={modalData?.title}
+        description={modalData?.description}
+        visible={!!modalData}
+        onClose={() => setModalData(undefined)}
+      />
+    </>
   );
 }
