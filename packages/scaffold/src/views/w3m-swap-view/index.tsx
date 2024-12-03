@@ -173,7 +173,6 @@ export function SwapView() {
           onChange={onSourceTokenChange}
           onTokenPress={onSourceTokenPress}
           onMaxPress={onSourceMaxPress}
-          autoFocus
         />
         <FlexView alignItems="center" justifyContent="center" style={styles.bottomInputContainer}>
           <SwapInput

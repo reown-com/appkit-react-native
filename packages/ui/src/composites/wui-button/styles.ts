@@ -9,11 +9,12 @@ export const getThemedButtonStyle = (
   pressed?: boolean
 ): StyleProp<any> => {
   const buttonBaseStyle = {
-    borderColor: theme['gray-glass-020']
+    borderColor: theme['accent-glass-020']
   };
 
   if (disabled) {
     return {
+      ...buttonBaseStyle,
       backgroundColor: variant === 'fill' ? theme['gray-glass-005'] : theme['gray-glass-010']
     };
   }
