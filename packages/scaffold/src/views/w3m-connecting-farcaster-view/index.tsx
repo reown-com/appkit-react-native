@@ -7,7 +7,6 @@ import {
   ModalController,
   OptionsController,
   SnackController,
-  WebviewController,
   type AppKitFrameProvider
 } from '@reown/appkit-core-react-native';
 import {
@@ -33,19 +32,18 @@ export function ConnectingFarcasterView() {
 
   const onConnect = useCallback(async () => {
     try {
-      if (!WebviewController.state.connecting && provider && authConnector) {
+      if (provider && authConnector) {
         setError(false);
         const { url: farcasterUrl } = await provider.getFarcasterUri();
         setUrl(farcasterUrl);
         Linking.openURL(farcasterUrl);
 
+        await provider.connectFarcaster();
         EventsController.sendEvent({
           type: 'track',
           event: 'SOCIAL_LOGIN_REQUEST_USER_DATA',
           properties: { provider: 'farcaster' }
         });
-
-        await provider.connectFarcaster();
         setProcessing(true);
         await ConnectionController.connectExternal(authConnector);
         ConnectionController.setConnectedSocialProvider('farcaster');
@@ -54,7 +52,7 @@ export function ConnectingFarcasterView() {
           event: 'SOCIAL_LOGIN_SUCCESS',
           properties: { provider: 'farcaster' }
         });
-        WebviewController.setConnecting(false);
+
         setProcessing(false);
         ModalController.close();
       }

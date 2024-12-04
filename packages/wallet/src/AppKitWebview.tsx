@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, SafeAreaView, StyleSheet } from 'react-native';
+import { Animated, Pressable, SafeAreaView, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 import {
   ConnectionController,
@@ -14,6 +14,7 @@ import type { AppKitFrameProvider } from './AppKitFrameProvider';
 import { AppKitFrameConstants } from './AppKitFrameConstants';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function AppKitWebview() {
   const webviewRef = useRef<WebView>(null);
@@ -65,7 +66,8 @@ export function AppKitWebview() {
 
   return provider ? (
     <>
-      <Animated.View
+      <AnimatedPressable
+        onPress={onClose}
         style={[
           styles.backdrop,
           !isBackdropVisible && styles.hidden,
@@ -115,7 +117,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
-    top: 0
+    top: 0,
+    zIndex: 999
   },
   container: {
     bottom: 0,

@@ -61,6 +61,29 @@ export function Header() {
 
   const header = headings(data, view);
 
+  const checkSocial = () => {
+    if (
+      RouterController.state.view === 'ConnectingFarcaster' ||
+      RouterController.state.view === 'ConnectingSocial'
+    ) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SOCIAL_LOGIN_CANCELED',
+        properties: { provider: ConnectionController.state.selectedSocialProvider! }
+      });
+    }
+  };
+
+  const handleGoBack = () => {
+    checkSocial();
+    RouterController.goBack();
+  };
+
+  const handleClose = () => {
+    checkSocial();
+    ModalController.close();
+  };
+
   const dynamicButtonTemplate = () => {
     const noButtonViews = ['ConnectingSiwe'];
 
@@ -71,12 +94,7 @@ export function Header() {
     const showBack = RouterController.state.history.length > 1;
 
     return showBack ? (
-      <IconLink
-        icon="chevronLeft"
-        size="md"
-        onPress={RouterController.goBack}
-        testID="button-back"
-      />
+      <IconLink icon="chevronLeft" size="md" onPress={handleGoBack} testID="button-back" />
     ) : (
       <IconLink icon="helpCircle" size="md" onPress={onHelpPress} testID="button-help" />
     );
@@ -97,7 +115,7 @@ export function Header() {
       <Text variant="paragraph-600" numberOfLines={1}>
         {header}
       </Text>
-      <IconLink icon="close" size="md" onPress={ModalController.close} testID="button-close" />
+      <IconLink icon="close" size="md" onPress={handleClose} testID="button-close" />
     </FlexView>
   );
 }
