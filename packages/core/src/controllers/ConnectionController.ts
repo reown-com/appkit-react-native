@@ -48,6 +48,7 @@ export interface ConnectionControllerState {
   wcError?: boolean;
   pressedWallet?: WcWallet;
   recentWallets?: WcWallet[];
+  selectedSocialProvider?: SocialProvider;
   connectedWalletImageUrl?: string;
   connectedSocialProvider?: SocialProvider;
 }
@@ -122,6 +123,10 @@ export const ConnectionController = {
     state.recentWallets = wallets;
   },
 
+  setSelectedSocialProvider(provider: ConnectionControllerState['selectedSocialProvider']) {
+    state.selectedSocialProvider = provider;
+  },
+
   async setConnectedWalletImageUrl(url: ConnectionControllerState['connectedWalletImageUrl']) {
     state.connectedWalletImageUrl = url;
 
@@ -176,7 +181,7 @@ export const ConnectionController = {
   resetWcConnection() {
     this.clearUri();
     state.pressedWallet = undefined;
-    ConnectionController.setConnectedSocialProvider(undefined);
+    state.selectedSocialProvider = undefined;
     ConnectionController.setConnectedWalletImageUrl(undefined);
     ConnectorController.setConnectedConnector(undefined);
     StorageUtil.removeWalletConnectDeepLink();

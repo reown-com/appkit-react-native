@@ -3,7 +3,8 @@ import {
   RouterController,
   ModalController,
   EventsController,
-  type RouterControllerState
+  type RouterControllerState,
+  ConnectionController
 } from '@reown/appkit-core-react-native';
 import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
 import { StringUtil } from '@reown/appkit-common-react-native';
@@ -21,8 +22,8 @@ export function Header() {
     const connectorName = _data?.connector?.name;
     const walletName = _data?.wallet?.name;
     const networkName = _data?.network?.name;
-    const socialName = _data?.socialProvider
-      ? StringUtil.capitalize(_data?.socialProvider)
+    const socialName = ConnectionController.state.selectedSocialProvider
+      ? StringUtil.capitalize(ConnectionController.state.selectedSocialProvider)
       : undefined;
 
     return {

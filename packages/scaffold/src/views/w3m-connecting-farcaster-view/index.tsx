@@ -6,7 +6,6 @@ import {
   EventsController,
   ModalController,
   OptionsController,
-  RouterController,
   SnackController,
   WebviewController,
   type AppKitFrameProvider
@@ -24,31 +23,36 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function ConnectingFarcasterView() {
-  const { data } = RouterController.state;
   const { maxWidth: width } = useCustomDimensions();
   const authConnector = ConnectorController.getAuthConnector();
   const [error, setError] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [url, setUrl] = useState<string | undefined>();
   const showCopy = OptionsController.isClipboardAvailable();
-  const socialProvider = data?.socialProvider;
   const provider = authConnector?.provider as AppKitFrameProvider;
 
   const onConnect = useCallback(async () => {
     try {
-      if (!WebviewController.state.connecting && provider && socialProvider && authConnector) {
+      if (!WebviewController.state.connecting && provider && authConnector) {
         setError(false);
         const { url: farcasterUrl } = await provider.getFarcasterUri();
         setUrl(farcasterUrl);
         Linking.openURL(farcasterUrl);
+
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SOCIAL_LOGIN_REQUEST_USER_DATA',
+          properties: { provider: 'farcaster' }
+        });
+
         await provider.connectFarcaster();
         setProcessing(true);
         await ConnectionController.connectExternal(authConnector);
-        ConnectionController.setConnectedSocialProvider(socialProvider);
+        ConnectionController.setConnectedSocialProvider('farcaster');
         EventsController.sendEvent({
           type: 'track',
           event: 'SOCIAL_LOGIN_SUCCESS',
-          properties: { provider: socialProvider }
+          properties: { provider: 'farcaster' }
         });
         WebviewController.setConnecting(false);
         setProcessing(false);
@@ -58,13 +62,13 @@ export function ConnectingFarcasterView() {
       EventsController.sendEvent({
         type: 'track',
         event: 'SOCIAL_LOGIN_ERROR',
-        properties: { provider: socialProvider! }
+        properties: { provider: 'farcaster' }
       });
       SnackController.showError('Something went wrong');
       setError(true);
       setProcessing(false);
     }
-  }, [provider, socialProvider, authConnector]);
+  }, [provider, authConnector]);
 
   const onCopyUrl = () => {
     if (url) {

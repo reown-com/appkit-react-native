@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 import { FlexView, ListSocial, LogoSelect, Spacing, Text } from '@reown/appkit-ui-react-native';
 import { type SocialProvider, StringUtil } from '@reown/appkit-common-react-native';
 import {
+  ConnectionController,
   EventsController,
   RouterController,
   WebviewController
@@ -21,18 +22,19 @@ export function SocialLoginList({ options, disabled }: SocialLoginListProps) {
   let bottomSocials = showBigSocial ? options.slice(1) : options;
   bottomSocials = showMoreButton ? bottomSocials.slice(0, MAX_OPTIONS - 2) : bottomSocials;
 
-  const onItemPress = (social: SocialProvider) => {
+  const onItemPress = (provider: SocialProvider) => {
+    ConnectionController.setSelectedSocialProvider(provider);
     EventsController.sendEvent({
       type: 'track',
       event: 'SOCIAL_LOGIN_STARTED',
-      properties: { provider: social }
+      properties: { provider }
     });
     WebviewController.setConnecting(false);
 
-    if (social === 'farcaster') {
-      RouterController.push('ConnectingFarcaster', { socialProvider: social });
+    if (provider === 'farcaster') {
+      RouterController.push('ConnectingFarcaster');
     } else {
-      RouterController.push('ConnectingSocial', { socialProvider: social });
+      RouterController.push('ConnectingSocial');
     }
   };
 

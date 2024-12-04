@@ -487,6 +487,20 @@ export type Event =
     }
   | {
       type: 'track';
+      event: 'SOCIAL_LOGIN_REQUEST_USER_DATA';
+      properties: {
+        provider: SocialProvider;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SOCIAL_LOGIN_CANCELED';
+      properties: {
+        provider: SocialProvider;
+      };
+    }
+  | {
+      type: 'track';
       event: 'SOCIAL_LOGIN_ERROR';
       properties: {
         provider: SocialProvider;

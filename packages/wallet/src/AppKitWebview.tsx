@@ -2,9 +2,10 @@ import { useSnapshot } from 'valtio';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, SafeAreaView, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
-
 import {
+  ConnectionController,
   ConnectorController,
+  EventsController,
   RouterController,
   WebviewController
 } from '@reown/appkit-core-react-native';
@@ -26,6 +27,12 @@ export function AppKitWebview() {
   const display = webviewVisible ? 'flex' : 'none';
 
   const onClose = () => {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SOCIAL_LOGIN_CANCELED',
+      properties: { provider: ConnectionController.state.selectedSocialProvider! }
+    });
+
     WebviewController.setWebviewVisible(false);
     WebviewController.setConnecting(false);
     WebviewController.setConnectingProvider(undefined);
