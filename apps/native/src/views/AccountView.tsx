@@ -1,5 +1,5 @@
-import { View } from 'react-native';
-import { Text } from '@reown/appkit-ui-react-native';
+import { StyleSheet } from 'react-native';
+import { Text, FlexView } from '@reown/appkit-ui-react-native';
 import { useAccount, useBalance } from 'wagmi';
 
 export function AccountView() {
@@ -7,15 +7,28 @@ export function AccountView() {
   const { data, isLoading } = useBalance({ address });
 
   return isConnected ? (
-    <View>
-      <Text variant="large-600">Wagmi Account Info</Text>
-      {isConnected && <Text>{address}</Text>}
-      {isLoading && <Text>Fetching balance...</Text>}
+    <FlexView style={styles.container}>
+      <Text variant="medium-600">Wagmi Account Info</Text>
+      <FlexView>
+        <Text variant="small-600">Address:</Text>
+        {isConnected && <Text variant="small-400">{address}</Text>}
+      </FlexView>
+      {isLoading && <Text variant="small-400">Fetching balance...</Text>}
       {data && (
-        <Text>
-          Balance: {data?.formatted} {data?.symbol}
-        </Text>
+        <FlexView>
+          <Text variant="small-600">Balance:</Text>
+          <Text variant="small-400">
+            {data?.formatted} {data?.symbol}
+          </Text>
+        </FlexView>
       )}
-    </View>
+    </FlexView>
   ) : null;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 32,
+    gap: 8
+  }
+});

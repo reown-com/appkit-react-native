@@ -84,7 +84,7 @@ export function AppKitWebview() {
           icon="close"
           size="md"
           onPress={onClose}
-          testID="button-close"
+          testID="header-close"
           style={styles.closeButton}
           iconColor="inverse-100"
           backgroundColor="gray-glass-030"

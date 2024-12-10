@@ -36,6 +36,7 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
       style={style}
       onPress={onNetworkPress}
       loading={loading}
+      testID="network-button"
     >
       {caipNetwork?.name ?? (isConnected ? 'Unknown Network' : 'Select Network')}
     </NetworkButtonUI>

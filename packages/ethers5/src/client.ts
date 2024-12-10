@@ -683,6 +683,7 @@ export class AppKit extends AppKitScaffold {
       ]);
       this.hasSyncedConnectedAccount = true;
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
+      this.close();
       this.resetAccount();
       this.resetWcConnection();
       this.resetNetwork();

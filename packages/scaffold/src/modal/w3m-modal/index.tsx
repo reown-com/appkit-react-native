@@ -128,6 +128,7 @@ export function AppKit() {
         onModalHide={handleClose}
         onBackdropPress={ModalController.close}
         onBackButtonPress={onBackButtonPress}
+        testID="w3m-modal"
       >
         <Card style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}>
           <Header />

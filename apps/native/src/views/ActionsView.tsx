@@ -1,39 +1,76 @@
-import { Button, Text } from '@reown/appkit-ui-react-native';
-import { View } from 'react-native';
+import { Button, Text, FlexView } from '@reown/appkit-ui-react-native';
+import { StyleSheet } from 'react-native';
 import { useSignMessage, useAccount, useSendTransaction, useEstimateGas } from 'wagmi';
 import { Hex, parseEther } from 'viem';
+import { SendTransactionData, SignMessageData } from 'wagmi/query';
+import { ToastUtils } from '../utils/ToastUtils';
 
 export function ActionsView() {
   const { isConnected } = useAccount();
-  const { data, isError, isPending, isSuccess, signMessage } = useSignMessage();
+
+  const onSignSuccess = (data: SignMessageData) => {
+    ToastUtils.showSuccessToast('Signature successful', data);
+  };
+
+  const onSignError = (error: Error) => {
+    ToastUtils.showErrorToast('Signature failed', error.message);
+  };
+
+  const onSendSuccess = (data: SendTransactionData) => {
+    ToastUtils.showSuccessToast('Transaction successful', data);
+  };
+
+  const onSendError = (error: Error) => {
+    ToastUtils.showErrorToast('Transaction failed', error.message);
+  };
+
+  const { isPending, signMessage } = useSignMessage({
+    mutation: {
+      onSuccess: onSignSuccess,
+      onError: onSignError
+    }
+  });
   const TX = {
-    to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045' as Hex, // vitalik.eth
+    to: '0x704457b418E9Fb723e1Bc0cB98106a6B8Cf87689' as Hex, // Test wallet
     value: parseEther('0.001'),
     data: '0x' as Hex
   };
+
   const { data: gas, isError: isGasError } = useEstimateGas(TX);
 
   const {
-    data: sendData,
     isPending: isSending,
-    isSuccess: isSendSuccess,
+
     sendTransaction
-  } = useSendTransaction();
+  } = useSendTransaction({
+    mutation: {
+      onSuccess: onSendSuccess,
+      onError: onSendError
+    }
+  });
 
   return isConnected ? (
-    <View>
-      <Text variant="large-600">Wagmi Actions</Text>
-      <Button disabled={isPending} onPress={() => signMessage({ message: 'Hello AppKit!' })}>
+    <FlexView style={styles.container}>
+      <Text variant="medium-600">Wagmi Actions</Text>
+      <Button
+        disabled={isPending}
+        testID="sign-message-button"
+        onPress={() => signMessage({ message: 'Hello AppKit!' })}
+      >
         Sign
       </Button>
-      {isSuccess && <Text numberOfLines={5}>Signature: {data}</Text>}
       {isGasError && <Text>Error estimating gas</Text>}
-      {isError && <Text>Error signing message</Text>}
       <Button disabled={isSending} onPress={() => sendTransaction({ ...TX, gas })}>
         Send
       </Button>
       {isSending && <Text>Check Wallet</Text>}
-      {isSendSuccess && <Text numberOfLines={5}>Transaction: {JSON.stringify(sendData)}</Text>}
-    </View>
+    </FlexView>
   ) : null;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 16,
+    gap: 8
+  }
+});

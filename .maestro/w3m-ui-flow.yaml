@@ -19,7 +19,7 @@ appId: com.walletconnect.web3modal.rnclisdk
     id: 'button-back'
 
 - tapOn:
-    id: 'button-all-wallets'
+    id: 'all-wallets'
 
 - tapOn:
     id: 'button-qr-code'
@@ -57,7 +57,7 @@ appId: com.walletconnect.web3modal.rnclisdk
     text: 'Open'
 
 - tapOn:
-    id: 'button-close'
+    id: 'header-close'
 
 - assertNotVisible:
     text: 'Abra Wallet'

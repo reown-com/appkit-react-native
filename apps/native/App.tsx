@@ -1,9 +1,10 @@
-import { StyleSheet, View, useColorScheme } from 'react-native';
+import { Platform, SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
 import '@walletconnect/react-native-compat';
 import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Toast from 'react-native-toast-message';
 
 import {
   AppKit,
@@ -21,6 +22,7 @@ import { AccountView } from './src/views/AccountView';
 import { ActionsView } from './src/views/ActionsView';
 import { getCustomWallets } from './src/utils/misc';
 import { chains } from './src/utils/WagmiUtils';
+import { OpenButton } from './src/components/OpenButton';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -44,11 +46,17 @@ const clipboardClient = {
 
 const auth = authConnector({ projectId, metadata });
 
+const extraConnectors = Platform.select({
+  ios: [auth],
+  android: [auth],
+  default: []
+});
+
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
   metadata,
-  extraConnectors: [auth]
+  extraConnectors
 });
 
 const queryClient = new QueryClient();
@@ -77,7 +85,7 @@ export default function Native() {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <View style={[styles.container, isDarkMode && styles.dark]}>
+        <SafeAreaView style={[styles.container, isDarkMode && styles.dark]}>
           <StatusBar style="auto" />
           <AppKitButton
             connectStyle={styles.button}
@@ -87,10 +95,12 @@ export default function Native() {
             balance="show"
           />
           <NetworkButton />
-          <AccountView />
           <ActionsView />
+          <AccountView />
+          <OpenButton />
           <AppKit />
-        </View>
+        </SafeAreaView>
+        <Toast />
       </QueryClientProvider>
     </WagmiProvider>
   );
