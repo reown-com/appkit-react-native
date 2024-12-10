@@ -1,4 +1,3 @@
-import { useSnapshot } from 'valtio';
 import { Linking } from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -24,7 +23,6 @@ import styles from './styles';
 
 export function ConnectingFarcasterView() {
   const { maxWidth: width } = useCustomDimensions();
-  const { open } = useSnapshot(ModalController.state);
   const authConnector = ConnectorController.getAuthConnector();
   const [error, setError] = useState(false);
   const [processing, setProcessing] = useState(false);
@@ -83,13 +81,13 @@ export function ConnectingFarcasterView() {
   useEffect(() => {
     return () => {
       // TODO: remove this once Farcaster session refresh is implemented
-      if (!open) {
+      if (!ModalController.state.open) {
         // @ts-expect-error
         provider.webviewRef?.current?.reload();
       }
     };
     // @ts-expect-error
-  }, [open, provider.webviewRef]);
+  }, [provider.webviewRef]);
 
   useEffect(() => {
     onConnect();
