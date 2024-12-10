@@ -62,6 +62,9 @@ export function ConnectingFarcasterView() {
         event: 'SOCIAL_LOGIN_ERROR',
         properties: { provider: 'farcaster' }
       });
+      // TODO: remove this once Farcaster session refresh is implemented
+      // @ts-expect-error
+      provider?.webviewRef?.current?.reload();
       SnackController.showError('Something went wrong');
       setError(true);
       setProcessing(false);
@@ -74,6 +77,17 @@ export function ConnectingFarcasterView() {
       SnackController.showSuccess('Link copied');
     }
   };
+
+  useEffect(() => {
+    return () => {
+      // TODO: remove this once Farcaster session refresh is implemented
+      if (!ModalController.state.open) {
+        // @ts-expect-error
+        provider.webviewRef?.current?.reload();
+      }
+    };
+    // @ts-expect-error
+  }, [provider.webviewRef]);
 
   useEffect(() => {
     onConnect();

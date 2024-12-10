@@ -4,7 +4,9 @@ import {
   ModalController,
   EventsController,
   type RouterControllerState,
-  ConnectionController
+  ConnectionController,
+  ConnectorController,
+  type AppKitFrameProvider
 } from '@reown/appkit-core-react-native';
 import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
 import { StringUtil } from '@reown/appkit-common-react-native';
@@ -66,6 +68,15 @@ export function Header() {
       RouterController.state.view === 'ConnectingFarcaster' ||
       RouterController.state.view === 'ConnectingSocial'
     ) {
+      const socialProvider = ConnectionController.state.selectedSocialProvider;
+      const authProvider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
+
+      if (authProvider && socialProvider === 'farcaster') {
+        // TODO: remove this once Farcaster session refresh is implemented
+        // @ts-expect-error
+        authProvider.webviewRef?.current?.reload();
+      }
+
       EventsController.sendEvent({
         type: 'track',
         event: 'SOCIAL_LOGIN_CANCELED',
