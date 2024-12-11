@@ -37,12 +37,6 @@ jobs:
   ui_tests:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4, 5]
-        shardTotal: [5]
-    timeout-minutes: 20
     steps:
       # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
       # It's not supported in self-hosted runners, however, so commenting it out for now
