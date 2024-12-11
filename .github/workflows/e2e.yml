@@ -87,7 +87,7 @@ jobs:
       - name: Run Playwright tests
         working-directory: ./apps/native/
         env:
-          BASE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/preview/${{ github.sha }}
+          BASE_URL: ${{ steps.deployment.outputs.page_url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
           DEBUG: pw:api
