@@ -12,7 +12,9 @@
     "dev:android": "expo start --android",
     "eas:build": "eas build --platform all",
     "eas:build:local": "eas build --local --platform all",
-    "eas:update": "eas update --branch preview"
+    "eas:update": "eas update --branch preview",
+    "playwright:test": "playwright test",
+    "playwright:install": "playwright install --with-deps"
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
