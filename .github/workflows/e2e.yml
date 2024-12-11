@@ -50,7 +50,7 @@ jobs:
 
       - name: Create ENV file in apps/native
         working-directory: ./apps/native/
-        run: echo "EXPO_PUBLIC_PROJECT_ID=$CLOUD_PROJECT_ID" >> .env
+        run: echo "EXPO_PUBLIC_PROJECT_ID=${{ secrets.CLOUD_PROJECT_ID }}" >> .env
 
       - name: Install Playwright Browsers
         working-directory: ./apps/native/
