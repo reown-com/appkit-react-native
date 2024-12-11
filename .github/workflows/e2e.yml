@@ -19,11 +19,6 @@ on:
         default: 'https://react-wallet.walletconnect.com/'
         required: false
         type: string
-      command:
-        description: 'The test command to run'
-        default: 'playwright:test'
-        required: false
-        type: string
       skip-playwright-webserver:
         description: 'Skip setting up a local test server'
         default: false
@@ -67,7 +62,7 @@ jobs:
           CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
           SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
           CI: true
-        run: yarn ${{ inputs.command }}
+        run: yarn playwright:test
 
       - uses: actions/upload-artifact@v4
         if: failure()

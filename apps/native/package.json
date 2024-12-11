@@ -14,7 +14,7 @@
     "eas:build:local": "eas build --local --platform all",
     "eas:update": "eas update --branch preview",
     "playwright:test": "playwright test",
-    "playwright:install": "playwright install --with-deps"
+    "playwright:install": "playwright install chromium"
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
