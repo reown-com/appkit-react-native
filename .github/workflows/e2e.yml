@@ -49,10 +49,10 @@ jobs:
         working-directory: ./apps/native/
         run: yarn playwright install chromium
 
-      - name: Setup Chrome
+      - name: Setup Chrome and xvfb
         run: |
           sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+          sudo apt-get install -y google-chrome-stable xvfb
           echo "Chrome version:"
           google-chrome --version
 
@@ -62,11 +62,12 @@ jobs:
           BASE_URL: ${{ inputs.base-url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
-          CI: false
           DEBUG: pw:api
-          # Use the system Chrome instead of the bundled one
           PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
-        run: yarn playwright test --debug
+          CI: false
+        run: |
+          echo "Starting tests with xvfb..."
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" yarn playwright test --debug
 
       - uses: actions/upload-artifact@v4
         if: always()
