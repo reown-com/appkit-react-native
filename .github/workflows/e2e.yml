@@ -62,7 +62,7 @@ jobs:
           BASE_URL: ${{ inputs.base-url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
-          CI: true
+          CI: ''
           DEBUG: pw:api
           # Use the system Chrome instead of the bundled one
           PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
