@@ -15,7 +15,8 @@
     "eas:update": "eas update --branch preview",
     "playwright:test": "playwright test",
     "playwright:install": "playwright install chromium",
-    "build:web": "npx expo export -p web"
+    "deploy": "gh-pages --nojekyll -d dist",
+    "build:web": "expo export -p web"
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
@@ -48,10 +49,12 @@
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@playwright/test": "^1.49.1",
+    "@types/gh-pages": "^6",
     "@types/node": "^22.10.1",
     "@types/react": "~18.2.79",
     "@types/react-native": "0.72.2",
     "babel-plugin-module-resolver": "^5.0.0",
+    "gh-pages": "^6.2.0",
     "typescript": "~5.3.3"
   }
 }
