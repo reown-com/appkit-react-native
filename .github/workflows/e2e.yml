@@ -30,6 +30,9 @@ jobs:
     permissions:
       pages: write # to deploy to Pages
       id-token: write # to verify the deployment originates from an appropriate source
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
       # It's not supported in self-hosted runners, however, so commenting it out for now
@@ -48,14 +51,14 @@ jobs:
       - name: Create ENV file in apps/native
         run: cd apps/native && echo "EXPO_PUBLIC_PROJECT_ID=$CLOUD_PROJECT_ID" >> .env
 
+      - name: Install Playwright Browsers
+        working-directory: ./apps/native/
+        run: yarn playwright install chromium
+
       - name: Build SDK
         run: |
           echo "Building SDK..."
           yarn build
-
-      - name: Install Playwright Browsers
-        working-directory: ./apps/native/
-        run: yarn playwright install chromium
 
       - name: Build web app
         working-directory: ./apps/native/
@@ -71,6 +74,7 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
+        id: deployment
         with:
           artifact_name: github-pages
           preview: true
