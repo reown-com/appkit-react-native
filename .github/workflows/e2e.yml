@@ -21,7 +21,7 @@ on:
         type: string
       command:
         description: 'The test command to run'
-        default: 'playwright:test'
+        default: 'playwright:test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}'
         required: false
         type: string
       skip-playwright-webserver:
@@ -37,6 +37,10 @@ jobs:
   ui_tests:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [1, 2, 3]
+        shardTotal: [3]
     steps:
       # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
       # It's not supported in self-hosted runners, however, so commenting it out for now
@@ -58,23 +62,35 @@ jobs:
       - name: build packages
         run: yarn build
 
-      - name: Install Playwright Browsers
+      - name: Start Expo Web and Run Tests
         working-directory: ./apps/native/
-        run: yarn playwright:install
-
-      - name: Start Expo Web
-        working-directory: ./apps/native/
-        run: yarn web
-
-      - name: Run Playwright tests
         env:
           BASE_URL: ${{ inputs.base-url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
           SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
           CI: true
-        working-directory: ./apps/native/
-        run: yarn ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
+        run: |
+          # Start the Expo web server in the background
+          yarn web & 
+
+          # Wait for the server to be ready
+          echo "Waiting for Expo web server to be ready..."
+          timeout=300  # 5 minutes timeout
+          start_time=$(date +%s)
+          while ! curl -s http://localhost:8081 > /dev/null; do
+            current_time=$(date +%s)
+            elapsed=$((current_time - start_time))
+            if [ $elapsed -gt $timeout ]; then
+              echo "Timeout waiting for Expo web server"
+              exit 1
+            fi
+            sleep 2
+          done
+          echo "Expo web server is ready!"
+
+          # Run the Playwright tests
+          yarn ${{ inputs.command }}
 
       - uses: actions/upload-artifact@v4
         if: failure()
