@@ -65,7 +65,6 @@ jobs:
         run: yarn build
 
       - name: Install Playwright Browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: ./apps/native/
         run: yarn playwright:install
 
