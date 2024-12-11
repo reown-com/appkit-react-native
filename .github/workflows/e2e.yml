@@ -49,6 +49,13 @@ jobs:
         working-directory: ./apps/native/
         run: yarn playwright install chromium
 
+      - name: Setup Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          echo "Chrome version:"
+          google-chrome --version
+
       - name: Run Playwright tests
         working-directory: ./apps/native/
         env:
@@ -57,47 +64,9 @@ jobs:
           CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
           CI: true
           DEBUG: pw:api
-        run: |
-          # Start Metro bundler in background and capture its output
-          yarn web > metro.log 2>&1 & 
-          METRO_PID=$!
-
-          echo "Waiting for Metro bundler to be ready..."
-          TIMEOUT=120
-          COUNTER=0
-          while ! curl -s http://localhost:8081 > /dev/null; do
-            if ! kill -0 $METRO_PID 2>/dev/null; then
-              echo "Metro process died. Last logs:"
-              tail -n 50 metro.log
-              exit 1
-            fi
-            
-            if [ $COUNTER -gt $TIMEOUT ]; then
-              echo "Timeout waiting for Metro. Last logs:"
-              tail -n 50 metro.log
-              exit 1
-            fi
-            
-            echo "Metro not ready yet ($COUNTER seconds)..."
-            tail -n 2 metro.log
-            sleep 1
-            COUNTER=$((COUNTER + 1))
-          done
-
-          echo "Metro bundler is ready! Starting tests..."
-          xvfb-run --auto-servernum yarn playwright test --debug
-          TEST_EXIT_CODE=$?
-
-          # Kill Metro process
-          kill $METRO_PID || true
-
-          # Show full logs if tests failed
-          if [ $TEST_EXIT_CODE -ne 0 ]; then
-            echo "Tests failed. Full Metro logs:"
-            cat metro.log
-          fi
-
-          exit $TEST_EXIT_CODE
+          # Use the system Chrome instead of the bundled one
+          PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
+        run: yarn playwright test --debug
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -106,5 +75,4 @@ jobs:
           path: |
             ./apps/native/playwright-report/
             ./apps/native/test-results/
-            ./apps/native/metro.log
           retention-days: 7
