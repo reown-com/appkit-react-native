@@ -21,7 +21,7 @@ on:
         type: string
       command:
         description: 'The test command to run'
-        default: 'playwright:test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}'
+        default: 'playwright:test --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}'
         required: false
         type: string
       skip-playwright-webserver:
