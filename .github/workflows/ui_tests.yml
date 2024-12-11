@@ -69,6 +69,10 @@ jobs:
         working-directory: ./apps/native/
         run: yarn playwright:install
 
+      - name: Start Expo Web
+        working-directory: ./apps/native/
+        run: yarn web
+
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ inputs.base-url }}
