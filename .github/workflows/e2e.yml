@@ -31,7 +31,7 @@ jobs:
       pages: write # to deploy to Pages
       id-token: write # to verify the deployment originates from an appropriate source
     environment:
-      name: github-pages
+      name: preview
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
