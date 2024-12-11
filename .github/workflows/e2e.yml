@@ -11,7 +11,7 @@ on:
         type: string
       base-url:
         description: 'The AppKit App url'
-        default: 'http://localhost:8081/'
+        default: 'http://localhost:3000/'
         required: false
         type: string
       wallet-url:
