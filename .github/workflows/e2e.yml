@@ -45,6 +45,11 @@ jobs:
       - name: Create ENV file in apps/native
         run: cd apps/native && echo "EXPO_PUBLIC_PROJECT_ID=$CLOUD_PROJECT_ID" >> .env
 
+      - name: Build SDK
+        run: |
+          echo "Building SDK..."
+          yarn build
+
       - name: Install Playwright Browsers
         working-directory: ./apps/native/
         run: yarn playwright install chromium
@@ -60,7 +65,6 @@ jobs:
         working-directory: ./apps/native/
         run: |
           echo "Building web app..."
-          yarn build
           yarn build:web
           npm install -g serve
 
