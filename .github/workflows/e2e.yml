@@ -56,6 +56,13 @@ jobs:
           echo "Chrome version:"
           google-chrome --version
 
+      - name: Build web app
+        working-directory: ./apps/native/
+        run: |
+          echo "Building web app..."
+          yarn build:web
+          npm install -g serve
+
       - name: Run Playwright tests
         working-directory: ./apps/native/
         env:
