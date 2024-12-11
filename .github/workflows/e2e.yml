@@ -55,7 +55,11 @@ jobs:
       - name: Create ENV file in apps/native
         run: cd apps/native && echo "EXPO_PUBLIC_PROJECT_ID=$CLOUD_PROJECT_ID" >> .env
 
-      - name: Start Expo Web and Run Tests
+      - name: Install Playwright Browsers
+        working-directory: ./apps/native/
+        run: yarn playwright:install
+
+      - name: Run Playwright tests
         working-directory: ./apps/native/
         env:
           BASE_URL: ${{ inputs.base-url }}
@@ -63,38 +67,11 @@ jobs:
           CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
           SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
           CI: true
-        run: |
-          # Start the Expo web server in the background
-          echo "Starting Expo web server..."
-          yarn web & 
-          EXPO_PID=$!
-
-          # Wait for the server to be ready
-          echo "Waiting for Expo web server to be ready..."
-          while ! curl -s http://localhost:8081 > /dev/null; do
-            if ! kill -0 $EXPO_PID 2>/dev/null; then
-              echo "Expo web server process died"
-              exit 1
-            fi
-            echo "Server not ready yet, waiting..."
-            sleep 2
-          done
-          echo "Expo web server is ready!"
-
-          # Run the Playwright tests
-          echo "Starting Playwright tests..."
-          yarn ${{ inputs.command }}
-          TEST_EXIT_CODE=$?
-
-          # Kill the Expo server
-          kill $EXPO_PID
-
-          # Exit with the test exit code
-          exit $TEST_EXIT_CODE
+        run: yarn ${{ inputs.command }}
 
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: playwright-report-${{ matrix.shard }}
+          name: playwright-report
           path: ./apps/native/playwright-report/
           retention-days: 7
