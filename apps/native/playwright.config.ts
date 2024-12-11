@@ -22,7 +22,7 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [['html'], ['list']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -30,7 +30,9 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    permissions: ['clipboard-read', 'clipboard-write']
+    permissions: ['clipboard-read', 'clipboard-write'],
+    navigationTimeout: 30000,
+    actionTimeout: 30000
   },
 
   /* Configure projects for major browsers */
@@ -46,6 +48,13 @@ export default defineConfig({
     command: 'yarn web',
     url: 'http://localhost:8081',
     reuseExistingServer: !process.env.CI,
-    timeout: 120000
+    timeout: 120000,
+    stdout: 'pipe',
+    stderr: 'pipe'
+  },
+
+  globalTimeout: 600000,
+  expect: {
+    timeout: 10000
   }
 });

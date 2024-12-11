@@ -19,11 +19,6 @@ on:
         default: 'https://react-wallet.walletconnect.com/'
         required: false
         type: string
-      skip-playwright-webserver:
-        description: 'Skip setting up a local test server'
-        default: false
-        required: false
-        type: boolean
     secrets:
       CLOUD_PROJECT_ID:
         required: true
@@ -59,14 +54,17 @@ jobs:
         env:
           BASE_URL: ${{ inputs.base-url }}
           WALLET_URL: ${{ inputs.wallet-url }}
-          CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
-          SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
           CI: true
-        run: yarn playwright:test
+          DEBUG: pw:api
+        run: |
+          echo "Starting Playwright tests with debug logging..."
+          yarn playwright test --debug
 
       - uses: actions/upload-artifact@v4
-        if: failure()
+        if: always()
         with:
           name: playwright-report
-          path: ./apps/native/playwright-report/
+          path: |
+            ./apps/native/playwright-report/
+            ./apps/native/test-results/
           retention-days: 7
