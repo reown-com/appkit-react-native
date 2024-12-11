@@ -32,14 +32,18 @@ export default defineConfig({
     trace: 'on-first-retry',
     permissions: ['clipboard-read', 'clipboard-write'],
     navigationTimeout: 30000,
-    actionTimeout: 30000
+    actionTimeout: 30000,
+    headless: !!process.env.CI
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      use: {
+        ...devices['Desktop Chrome'],
+        headless: !!process.env.CI
+      }
     }
   ],
 
