@@ -54,32 +54,38 @@ jobs:
         working-directory: ./apps/native/
         run: yarn playwright install chromium
 
-      - name: Setup Chrome and xvfb
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable xvfb
-          echo "Chrome version:"
-          google-chrome --version
-
       - name: Build web app
         working-directory: ./apps/native/
         run: |
           echo "Building web app..."
           yarn build:web
-          npm install -g serve
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./apps/native/dist
+          name: github-pages
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
+          preview: true
+
+      # Wait a bit for the deployment to be available
+      - name: Wait for deployment
+        run: sleep 30
 
       - name: Run Playwright tests
         working-directory: ./apps/native/
         env:
-          BASE_URL: ${{ inputs.base-url }}
+          BASE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/preview/${{ github.sha }}
           WALLET_URL: ${{ inputs.wallet-url }}
           CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
           DEBUG: pw:api
-          PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
-          CI: false
         run: |
-          echo "Starting tests with xvfb..."
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" yarn playwright test --debug
+          echo "Running tests against $BASE_URL"
+          yarn playwright:test --debug
 
       - uses: actions/upload-artifact@v4
         if: always()

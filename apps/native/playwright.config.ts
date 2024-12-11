@@ -26,14 +26,13 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.BASE_URL || 'http://localhost:8081',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     permissions: ['clipboard-read', 'clipboard-write'],
     navigationTimeout: 30000,
-    actionTimeout: 30000,
-    headless: !!process.env.CI
+    actionTimeout: 30000
   },
 
   /* Configure projects for major browsers */
@@ -51,14 +50,14 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'npx serve dist --single',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 30000,
-    stdout: 'pipe',
-    stderr: 'pipe'
-  },
+  // webServer: {
+  //   command: 'npx serve dist --single',
+  //   url: 'http://localhost:3000',
+  //   reuseExistingServer: !process.env.CI,
+  //   timeout: 30000,
+  //   stdout: 'pipe',
+  //   stderr: 'pipe'
+  // },
 
   globalTimeout: 600000,
   expect: {
