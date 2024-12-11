@@ -82,7 +82,7 @@ jobs:
 
       # Wait a bit for the deployment to be available
       - name: Wait for deployment
-        run: sleep 60
+        run: sleep 120
 
       - name: Run Playwright tests
         working-directory: ./apps/native/
