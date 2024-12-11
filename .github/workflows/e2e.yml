@@ -21,7 +21,7 @@ on:
         type: string
       command:
         description: 'The test command to run'
-        default: 'playwright:test --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}'
+        default: 'playwright:test'
         required: false
         type: string
       skip-playwright-webserver:
@@ -90,7 +90,7 @@ jobs:
           echo "Expo web server is ready!"
 
           # Run the Playwright tests
-          yarn ${{ inputs.command }}
+          yarn ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
 
       - uses: actions/upload-artifact@v4
         if: failure()
