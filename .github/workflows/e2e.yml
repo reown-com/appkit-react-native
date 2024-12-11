@@ -71,7 +71,7 @@ jobs:
 
           # Wait for the server to be ready
           echo "Waiting for Expo web server to be ready..."
-          while ! curl -s http://localhost:19006 > /dev/null; do
+          while ! curl -s http://localhost:8081 > /dev/null; do
             if ! kill -0 $EXPO_PID 2>/dev/null; then
               echo "Expo web server process died"
               exit 1
