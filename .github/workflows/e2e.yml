@@ -60,6 +60,7 @@ jobs:
         working-directory: ./apps/native/
         run: |
           echo "Building web app..."
+          yarn build
           yarn build:web
           npm install -g serve
 
