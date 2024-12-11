@@ -37,10 +37,6 @@ jobs:
   ui_tests:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        shard: [1, 2, 3]
-        shardTotal: [3]
     steps:
       # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
       # It's not supported in self-hosted runners, however, so commenting it out for now
@@ -90,7 +86,7 @@ jobs:
           echo "Expo web server is ready!"
 
           # Run the Playwright tests
-          yarn ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
+          yarn ${{ inputs.command }}
 
       - uses: actions/upload-artifact@v4
         if: failure()
