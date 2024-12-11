@@ -55,9 +55,6 @@ jobs:
       - name: Create ENV file in apps/native
         run: cd apps/native && echo "EXPO_PUBLIC_PROJECT_ID=$CLOUD_PROJECT_ID" >> .env
 
-      - name: build packages
-        run: yarn build
-
       - name: Start Expo Web and Run Tests
         working-directory: ./apps/native/
         env:
