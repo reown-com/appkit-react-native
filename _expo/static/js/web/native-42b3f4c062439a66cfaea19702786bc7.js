@@ -1,0 +1,2 @@
+__d((function(g,r,i,a,m,e,d){Object.defineProperty(e,"__esModule",{value:!0}),e.WebSocket=void 0;const t=(0,r(d[0]).getNativeWebSocket)();e.WebSocket=t}),2141,[2143]);
+__d((function(g,r,i,a,m,e,d){Object.defineProperty(e,"__esModule",{value:!0}),e.getNativeWebSocket=function(){if("undefined"!=typeof WebSocket)return WebSocket;if(void 0!==g.WebSocket)return g.WebSocket;if(void 0!==window.WebSocket)return window.WebSocket;if(void 0!==self.WebSocket)return self.WebSocket;throw new Error("`WebSocket` is not supported in this environment")}}),2143,[]);

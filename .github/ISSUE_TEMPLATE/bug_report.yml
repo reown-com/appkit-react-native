@@ -1,0 +1,55 @@
+name: 🐛 Bug Report
+description: Report a reproducible bug or regression in AppKit for React Native.
+title: '[bug]: '
+labels: ['bug', 'needs review']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please provide all the information requested. Issues that do not follow this format are likely to stall.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Please provide a clear and concise description of what the bug is. Include screenshots if needed. Test using the [latest SDK release](https://github.com/reown-com/appkit-react-native/releases) to make sure your issue has not already been fixed.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: AppKit SDK version
+      description: What is the latest version of AppKit SDK that this issue reproduces on?
+      placeholder: ex. @reown/appkit-wagmi-react-native 1.0.0
+    validations:
+      required: true
+  - type: textarea
+    id: react-native-info
+    attributes:
+      label: Output of `npx react-native info`
+      description: Run `npx react-native info` in your terminal, copy and paste the results here.
+    validations:
+      required: true
+  - type: input
+    id: expo
+    attributes:
+      label: Expo Version (if applies)
+      description: Which SDK version of Expo are you using?
+      placeholder: Expo 51.0.0
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Provide a detailed list of steps that reproduce the issue.
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Snack, code example, screenshot, or link to a repository
+      description: |
+        Please provide a Snack (https://snack.expo.dev/), a link to a repository on GitHub, or provide a minimal code example that reproduces the problem.
+        You may provide a screenshot of the application if you think it is relevant to your bug report.
+        Here are some tips for providing a minimal example: https://stackoverflow.com/help/mcve
+        Please note that a reproducer is **mandatory**. Issues without reproducer are more likely to stall and will be closed.
+    validations:
+      required: true

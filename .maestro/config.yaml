@@ -1,0 +1,4 @@
+# Maestro configuration file
+baselineBranch: V1
+flows:
+  - '*'
