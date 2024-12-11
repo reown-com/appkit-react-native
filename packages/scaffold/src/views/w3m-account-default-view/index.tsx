@@ -158,7 +158,12 @@ export function AccountDefaultView() {
       {showBack && (
         <IconLink icon="chevronLeft" style={styles.backIcon} onPress={RouterController.goBack} />
       )}
-      <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
+      <IconLink
+        icon="close"
+        style={styles.closeIcon}
+        onPress={ModalController.close}
+        testID="header-close"
+      />
       <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
         <FlexView alignItems="center" padding={['3xl', 's', '3xl', 's']}>
           <Avatar imageSrc={profileImage} address={address} />
@@ -230,7 +235,7 @@ export function AccountDefaultView() {
               testID="w3m-account-select-network"
               style={styles.actionButton}
             >
-              <Text numberOfLines={1} color="fg-100">
+              <Text numberOfLines={1} color="fg-100" testID="w3m-account-select-network-text">
                 {caipNetwork?.name}
               </Text>
             </ListItem>

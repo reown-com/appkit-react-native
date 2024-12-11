@@ -4,6 +4,7 @@ import { BASE_URL, DEFAULT_SESSION_PARAMS } from '../constants';
 import { WalletValidator } from '../validators/WalletValidator';
 import { WalletPage } from './WalletPage';
 import { TimingRecords } from '../types';
+import { ModalValidator } from '../validators/ModalValidator';
 
 export class ModalPage {
   private readonly connectButton: Locator;
@@ -32,10 +33,7 @@ export class ModalPage {
 
     const qrCode = this.page.getByTestId('qr-code');
     await expect(qrCode).toBeVisible();
-    const copyButton = this.page.getByTestId('button-copy-uri');
-    await expect(copyButton).toBeVisible();
-    await copyButton.click();
-    const uri = (await this.page.evaluate('navigator.clipboard.readText()')) as string;
+    const uri = await this.clickCopyLink();
 
     const qrLoadedTime = new Date();
     if (timingRecords) {
@@ -54,11 +52,7 @@ export class ModalPage {
 
     const qrCode = this.page.getByTestId('qr-code');
     await expect(qrCode).toBeVisible();
-    const copyButton = this.page.getByTestId('button-copy-uri');
-    await expect(copyButton).toBeVisible();
-    await copyButton.click();
-
-    const uri = (await this.page.evaluate('navigator.clipboard.readText()')) as string;
+    const uri = await this.clickCopyLink();
     const qrLoadedTime = new Date();
     if (timingRecords) {
       timingRecords.push({
@@ -85,6 +79,14 @@ export class ModalPage {
     await walletValidator.expectConnected();
   }
 
+  async searchWalletFlow(page: ModalPage, walletName: string, walletId: string) {
+    await this.openAllWallets();
+    await this.search(walletName);
+    await this.page.waitForTimeout(1000);
+    const modalValidator = new ModalValidator(page.page);
+    await modalValidator.expectAllWalletsListSearchItem(walletId);
+  }
+
   async disconnect() {
     const accountBtn = this.page.getByTestId('account-button');
     await expect(accountBtn, 'Account button should be visible').toBeVisible();
@@ -102,10 +104,6 @@ export class ModalPage {
     await signButton.click();
   }
 
-  // async clickWalletGuideGetStarted() {
-  //   await this.page.getByTestId('w3m-wallet-guide-get-started').click();
-  // }
-
   async clickWhatIsAWalletButton() {
     await this.page.getByTestId('help-button').click();
   }
@@ -114,34 +112,34 @@ export class ModalPage {
     await this.page.getByTestId('get-a-wallet-button').click();
   }
 
-  async promptSiwe() {
-    const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign');
-    await expect(siweSign, 'Siwe prompt sign button should be visible').toBeVisible({
-      timeout: 10_000
-    });
-    await expect(siweSign, 'Siwe prompt sign button should be enabled').toBeEnabled();
-    await siweSign.click();
-  }
+  // async promptSiwe() {
+  //   const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign');
+  //   await expect(siweSign, 'Siwe prompt sign button should be visible').toBeVisible({
+  //     timeout: 10_000
+  //   });
+  //   await expect(siweSign, 'Siwe prompt sign button should be enabled').toBeEnabled();
+  //   await siweSign.click();
+  // }
 
-  async cancelSiwe() {
-    await this.page.getByTestId('w3m-connecting-siwe-cancel').click();
-  }
+  // async cancelSiwe() {
+  //   await this.page.getByTestId('w3m-connecting-siwe-cancel').click();
+  // }
 
   async switchNetwork(network: string) {
-    await this.page.getByTestId('account-button').click();
+    await this.openAccountModal();
     await this.page.getByTestId('w3m-account-select-network').click();
     await this.page.getByTestId(`w3m-network-switch-${network}`).click();
     // The state is chaing too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
     await this.page.waitForTimeout(300);
   }
 
-  async clickWalletDeeplink() {
-    await this.connectButton.click();
-    await this.page.getByTestId('wallet-selector-react-wallet-v2').click();
-    await this.page.getByTestId('tab-desktop').click();
-  }
+  // async clickWalletDeeplink() {
+  //   await this.connectButton.click();
+  //   await this.page.getByTestId('wallet-selector-react-wallet-v2').click();
+  //   await this.page.getByTestId('tab-desktop').click();
+  // }
 
-  async openAccount() {
+  async openAccountModal() {
     await this.page.getByTestId('account-button').click();
   }
 
@@ -159,13 +157,13 @@ export class ModalPage {
     await this.page.waitForTimeout(300);
   }
 
-  async switchNetworkWithNetworkButton(networkName: string) {
-    const networkButton = this.page.getByTestId('wui-network-button');
-    await networkButton.click();
+  // async switchNetworkWithNetworkButton(networkName: string) {
+  //   const networkButton = this.page.getByTestId('wui-network-button');
+  //   await networkButton.click();
 
-    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`);
-    await networkToSwitchButton.click();
-  }
+  //   const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`);
+  //   await networkToSwitchButton.click();
+  // }
 
   async openAllWallets() {
     const allWallets = this.page.getByTestId('all-wallets');
@@ -179,17 +177,17 @@ export class ModalPage {
     await qrCodeButton.click();
   }
 
-  async clickAllWalletsListSearchItem(id: string) {
-    const allWalletsListSearchItem = this.page.getByTestId(`wallet-search-item-${id}`);
-    await expect(allWalletsListSearchItem).toBeVisible();
-    await allWalletsListSearchItem.click();
-  }
+  // async clickAllWalletsListSearchItem(id: string) {
+  //   const allWalletsListSearchItem = this.page.getByTestId(`wallet-search-item-${id}`);
+  //   await expect(allWalletsListSearchItem).toBeVisible();
+  //   await allWalletsListSearchItem.click();
+  // }
 
-  async clickTabWebApp() {
-    const tabWebApp = this.page.getByTestId('tab-webapp');
-    await expect(tabWebApp).toBeVisible();
-    await tabWebApp.click();
-  }
+  // async clickTabWebApp() {
+  //   const tabWebApp = this.page.getByTestId('tab-webapp');
+  //   await expect(tabWebApp).toBeVisible();
+  //   await tabWebApp.click();
+  // }
 
   async clickHookDisconnectButton() {
     const disconnectHookButton = this.page.getByTestId('disconnect-hook-button');
@@ -198,7 +196,7 @@ export class ModalPage {
   }
 
   async clickCopyLink() {
-    const copyLink = this.page.getByTestId('wui-link-copy');
+    const copyLink = this.page.getByTestId('copy-link');
     await expect(copyLink).toBeVisible();
 
     let hasCopied = false;
@@ -218,41 +216,38 @@ export class ModalPage {
     return this.page.evaluate(() => navigator.clipboard.readText());
   }
 
-  async clickOpenWebApp() {
-    let url = '';
+  // async clickOpenWebApp() {
+  //   let url = '';
 
-    const openButton = this.page.getByTestId('w3m-connecting-widget-secondary-button');
-    await expect(openButton).toBeVisible();
-    await expect(openButton).toHaveText('Open');
+  //   const openButton = this.page.getByTestId('w3m-connecting-widget-secondary-button');
+  //   await expect(openButton).toBeVisible();
+  //   await expect(openButton).toHaveText('Open');
 
-    while (!url) {
-      await openButton.click();
-      await this.page.waitForTimeout(500);
+  //   while (!url) {
+  //     await openButton.click();
+  //     await this.page.waitForTimeout(500);
 
-      const pages = this.page.context().pages();
+  //     const pages = this.page.context().pages();
 
-      // Check if more than 1 tab is open
-      if (pages.length > 1) {
-        const lastTab = pages[pages.length - 1];
+  //     // Check if more than 1 tab is open
+  //     if (pages.length > 1) {
+  //       const lastTab = pages[pages.length - 1];
 
-        if (lastTab) {
-          url = lastTab.url();
-          break;
-        }
-      }
-    }
+  //       if (lastTab) {
+  //         url = lastTab.url();
+  //         break;
+  //       }
+  //     }
+  //   }
 
-    return url;
-  }
+  //   return url;
+  // }
 
   async search(value: string) {
     const searchInput = this.page.getByTestId('wui-input-text');
     await expect(searchInput, 'Search input should be visible').toBeVisible();
+    await searchInput.click();
     await searchInput.fill(value);
-  }
-
-  async openModal() {
-    await this.page.getByTestId('account-button').click();
   }
 
   async openNetworks() {
@@ -260,25 +255,25 @@ export class ModalPage {
     await expect(this.page.getByText('Select network')).toBeVisible();
   }
 
-  async openProfileView() {
-    await this.page.getByTestId('wui-profile-button').click();
-  }
+  // async openProfileView() {
+  //   await this.page.getByTestId('wui-profile-button').click();
+  // }
 
-  async getAddress(): Promise<`0x${string}`> {
-    const address = await this.page.getByTestId('w3m-address').textContent();
-    expect(address, 'Address should be present').toBeTruthy();
+  // async getAddress(): Promise<`0x${string}`> {
+  //   const address = await this.page.getByTestId('w3m-address').textContent();
+  //   expect(address, 'Address should be present').toBeTruthy();
 
-    return address as `0x${string}`;
-  }
+  //   return address as `0x${string}`;
+  // }
 
-  async getChainId(): Promise<number> {
-    const chainId = await this.page.getByTestId('w3m-chain-id').textContent();
-    expect(chainId, 'Chain ID should be present').toBeTruthy();
+  // async getChainId(): Promise<number> {
+  //   const chainId = await this.page.getByTestId('w3m-chain-id').textContent();
+  //   expect(chainId, 'Chain ID should be present').toBeTruthy();
 
-    return Number(chainId);
-  }
+  //   return Number(chainId);
+  // }
 
-  async switchNetworkWithHook() {
-    await this.page.getByTestId('switch-network-hook-button').click();
-  }
+  // async switchNetworkWithHook() {
+  //   await this.page.getByTestId('switch-network-hook-button').click();
+  // }
 }

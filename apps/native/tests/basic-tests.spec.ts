@@ -2,6 +2,8 @@ import { test, BrowserContext, Page } from '@playwright/test';
 import { ModalPage } from './shared/pages/ModalPage';
 import { ModalValidator } from './shared/validators/ModalValidator';
 
+const METAMASK_WALLET_ID = 'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96';
+
 let context: BrowserContext;
 let browserPage: Page;
 let modalPage: ModalPage;
@@ -43,5 +45,12 @@ test('it should display what is a wallet view', async () => {
   await modalValidator.expectWhatIsAWalletView();
   await modalPage.clickGetAWalletButton();
   await modalValidator.expectGetAWalletView();
+  await modalPage.closeModal();
+});
+
+test('it should search for a wallet', async () => {
+  await modalPage.openConnectModal();
+  await modalValidator.expectConnectScreen();
+  await modalPage.searchWalletFlow(modalPage, 'MetaMask', METAMASK_WALLET_ID);
   await modalPage.closeModal();
 });

@@ -23,6 +23,7 @@ import { ActionsView } from './src/views/ActionsView';
 import { getCustomWallets } from './src/utils/misc';
 import { chains } from './src/utils/WagmiUtils';
 import { OpenButton } from './src/components/OpenButton';
+import { DisconnectButton } from './src/components/DisconnectButton';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -98,6 +99,7 @@ export default function Native() {
           <ActionsView />
           <AccountView />
           <OpenButton />
+          <DisconnectButton />
           <AppKit />
         </SafeAreaView>
         <Toast />
