@@ -93,7 +93,7 @@ jobs:
           DEBUG: pw:api
         run: |
           echo "Running tests against $BASE_URL"
-          yarn playwright:test --debug
+          yarn playwright:test
 
       - uses: actions/upload-artifact@v4
         if: always()
