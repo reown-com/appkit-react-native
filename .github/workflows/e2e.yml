@@ -60,7 +60,6 @@ jobs:
         working-directory: ./apps/native/
         run: |
           echo "Building web app..."
-          export EXPO_PUBLIC_PROJECT_ID=${{ secrets.CLOUD_PROJECT_ID }}
           yarn build:web
 
       # - name: Upload Pages artifact
@@ -85,7 +84,6 @@ jobs:
         env:
           BASE_URL: ${{ inputs.base-url }}
           WALLET_URL: ${{ inputs.wallet-url }}
-          CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
 
         ## Uncomment to see better logs in the terminal
         # DEBUG: pw:api
@@ -100,4 +98,5 @@ jobs:
           path: |
             ./apps/native/playwright-report/
             ./apps/native/test-results/
+            ./apps/native/dist/
           retention-days: 7
