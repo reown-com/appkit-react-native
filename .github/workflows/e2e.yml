@@ -60,6 +60,7 @@ jobs:
         working-directory: ./apps/native/
         run: |
           echo "Building web app..."
+          export EXPO_PUBLIC_PROJECT_ID=${{ secrets.CLOUD_PROJECT_ID }}
           yarn build:web
 
       # - name: Upload Pages artifact
