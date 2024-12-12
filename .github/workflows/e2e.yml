@@ -55,7 +55,7 @@ jobs:
 
       - name: Install Playwright Browsers
         working-directory: ./apps/native/
-        run: yarn playwright install --with-deps --only-shell
+        run: yarn playwright install chromium
 
       ## Uncomment to build the web and add ./apps/native/dist to upload the artifact
       # - name: Build web app
