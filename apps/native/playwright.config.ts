@@ -32,6 +32,9 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
 
+    /* Take a screenshot when the test fails */
+    screenshot: 'only-on-failure',
+
     permissions: ['clipboard-read', 'clipboard-write'],
     navigationTimeout: 30000,
     actionTimeout: 30000,
@@ -51,9 +54,11 @@ export default defineConfig({
     command: 'yarn web',
     url: 'http://localhost:8081',
     reuseExistingServer: !process.env.CI,
-    timeout: 30000,
-    stdout: 'pipe',
-    stderr: 'pipe'
+    timeout: 30000
+
+    /* Uncomment to see better logs in the terminal */
+    // stdout: 'pipe',
+    // stderr: 'pipe'
   },
 
   globalTimeout: 600000,

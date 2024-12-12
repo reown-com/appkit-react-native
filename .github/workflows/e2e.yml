@@ -85,7 +85,9 @@ jobs:
           BASE_URL: ${{ inputs.base-url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
-          DEBUG: pw:api
+
+        ## Uncomment to see better logs in the terminal
+        # DEBUG: pw:api
         run: |
           echo "Running tests against $BASE_URL"
           yarn playwright:test
