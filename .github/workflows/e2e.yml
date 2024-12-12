@@ -57,6 +57,13 @@ jobs:
         working-directory: ./apps/native/
         run: yarn playwright install chromium
 
+      ## Uncomment to build the web and add ./apps/native/dist to upload the artifact
+      # - name: Build web app
+      #   working-directory: ./apps/native/
+      #   run: |
+      #     echo "Building web app..."
+      #     yarn build:web
+
       - name: Run Playwright tests
         working-directory: ./apps/native/
         env:
@@ -76,5 +83,4 @@ jobs:
           path: |
             ./apps/native/playwright-report/
             ./apps/native/test-results/
-            ./apps/native/dist/
           retention-days: 7
