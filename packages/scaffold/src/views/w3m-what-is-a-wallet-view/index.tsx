@@ -13,7 +13,12 @@ export function WhatIsAWalletView() {
   };
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
+    <ScrollView
+      bounces={false}
+      fadingEdgeLength={20}
+      style={{ paddingHorizontal: padding }}
+      testID="what-is-a-wallet-view"
+    >
       <FlexView alignItems="center" padding={['xs', '4xl', 'xl', '4xl']}>
         <FlexView flexDirection="row" padding={['0', '0', 's', '0']}>
           <Visual name="login" />
@@ -53,6 +58,7 @@ export function WhatIsAWalletView() {
           iconLeft="walletSmall"
           style={styles.getWalletButton}
           onPress={onGetWalletPress}
+          testID="get-a-wallet-button"
         >
           Get a wallet
         </Button>

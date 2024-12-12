@@ -30,7 +30,12 @@ export function GetWalletView() {
   };
 
   return (
-    <ScrollView bounces={false} style={{ paddingHorizontal: padding }} fadingEdgeLength={20}>
+    <ScrollView
+      bounces={false}
+      style={{ paddingHorizontal: padding }}
+      fadingEdgeLength={20}
+      testID="get-a-wallet-view"
+    >
       <FlexView padding={['s', 's', '3xl', 's']}>
         {listTemplate()}
         <ListWallet

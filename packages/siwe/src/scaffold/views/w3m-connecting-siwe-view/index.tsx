@@ -90,7 +90,7 @@ export function ConnectingSiweView() {
         icon="close"
         size="md"
         onPress={onCancel}
-        testID="button-close"
+        testID="header-close"
         style={styles.closeButton}
       />
       <Text variant="paragraph-600" numberOfLines={1} center>

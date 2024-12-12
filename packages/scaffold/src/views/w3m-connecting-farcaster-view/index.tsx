@@ -129,7 +129,7 @@ export function ConnectingFarcasterView() {
             color="fg-200"
             style={styles.copyButton}
             onPress={onCopyUrl}
-            testID="button-copy-uri"
+            testID="copy-link"
           >
             Copy link
           </Link>
