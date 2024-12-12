@@ -11,7 +11,7 @@ on:
         type: string
       base-url:
         description: 'The AppKit App url'
-        default: 'http://localhost:3000/'
+        default: 'http://localhost:8081/'
         required: false
         type: string
       wallet-url:
@@ -27,18 +27,13 @@ jobs:
   ui_tests:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
-    permissions:
-      pages: write # to deploy to Pages
-      id-token: write # to verify the deployment originates from an appropriate source
-    environment:
-      name: preview
-      url: ${{ steps.deployment.outputs.page_url }}
+    # permissions:
+    #   pages: write # to deploy to Pages
+    #   id-token: write # to verify the deployment originates from an appropriate source
+    # environment:
+    #   name: preview
+    #   url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
-      # It's not supported in self-hosted runners, however, so commenting it out for now
-      # - name: Tune GitHub-hosted runner network
-      #   uses: smorimoto/tune-github-hosted-runner-network@v1
-
       - name: checkout
         uses: actions/checkout@v4
         with:
@@ -67,27 +62,27 @@ jobs:
           echo "Building web app..."
           yarn build:web
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./apps/native/dist
-          name: github-pages
+      # - name: Upload Pages artifact
+      #   uses: actions/upload-pages-artifact@v3
+      #   with:
+      #     path: ./apps/native/dist
+      #     name: github-pages
 
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
-        id: deployment
-        with:
-          artifact_name: github-pages
-          preview: true
+      # - name: Deploy to GitHub Pages
+      #   uses: actions/deploy-pages@v4
+      #   id: deployment
+      #   with:
+      #     artifact_name: github-pages
+      #     preview: true
 
-      # Wait a bit for the deployment to be available
-      - name: Wait for deployment
-        run: sleep 60
+      # # Wait a bit for the deployment to be available
+      # - name: Wait for deployment
+      #   run: sleep 60
 
       - name: Run Playwright tests
         working-directory: ./apps/native/
         env:
-          BASE_URL: ${{ steps.deployment.outputs.page_url }}
+          BASE_URL: ${{ inputs.base-url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
           DEBUG: pw:api
