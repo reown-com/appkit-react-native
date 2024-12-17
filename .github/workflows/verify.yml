@@ -29,4 +29,3 @@ jobs:
         uses: ./.github/workflows/e2e.yml
         with:
           skip_setup: true # Skip redundant setup steps
-        secrets: inherit
