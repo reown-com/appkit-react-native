@@ -1,6 +1,9 @@
 name: Verify
 on:
   workflow_call:
+    secrets:
+      CLOUD_PROJECT_ID:
+        required: true
   workflow_dispatch:
 
 jobs:
@@ -26,7 +29,7 @@ jobs:
         run: yarn test
 
       - name: E2E Tests
-        uses: ./.github/workflows/e2e.yml@${{ github.ref }}
+        uses: ./.github/workflows/e2e.yml
         secrets:
           CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
         with:
