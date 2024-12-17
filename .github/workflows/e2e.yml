@@ -4,11 +4,6 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
-      branch:
-        description: 'The branch to use'
-        default: 'main'
-        required: false
-        type: string
       base-url:
         description: 'The AppKit App url'
         default: 'http://localhost:8081/'
@@ -19,10 +14,6 @@ on:
         default: 'https://react-wallet.walletconnect.com/'
         required: false
         type: string
-      skip_setup:
-        description: 'Skip setup steps if already done'
-        type: boolean
-        default: false
     secrets:
       CLOUD_PROJECT_ID:
         required: true
@@ -32,19 +23,13 @@ jobs:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        if: ${{ !inputs.skip_setup }}
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          repository: reown-com/appkit-react-native
-          ref: ${{ inputs.branch }}
 
       - name: Setup
-        if: ${{ !inputs.skip_setup }}
         uses: ./.github/actions/setup
 
       - name: Build SDK
-        if: ${{ !inputs.skip_setup }}
         run: |
           echo "Building SDK..."
           yarn build
