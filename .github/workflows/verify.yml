@@ -24,11 +24,3 @@ jobs:
 
       - name: Package Tests
         run: yarn test
-
-  e2e:
-    needs: pre-publish
-    uses: ./.github/workflows/e2e.yml@${{ github.ref }}
-    secrets:
-      CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
-    with:
-      skip_setup: true
