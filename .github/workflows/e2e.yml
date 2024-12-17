@@ -4,11 +4,6 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
-      branch:
-        description: 'The branch to use'
-        default: 'main'
-        required: false
-        type: string
       base-url:
         description: 'The AppKit App url'
         default: 'http://localhost:8081/'
@@ -28,11 +23,8 @@ jobs:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          repository: reown-com/appkit-react-native
-          ref: ${{ inputs.branch }}
 
       - name: Setup
         uses: ./.github/actions/setup
