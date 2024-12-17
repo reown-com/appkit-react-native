@@ -65,7 +65,7 @@ export function ConnectingQrCode() {
             color="fg-200"
             style={styles.copyButton}
             onPress={onCopyAddress}
-            testID="button-copy-uri"
+            testID="copy-link"
           >
             Copy link
           </Link>

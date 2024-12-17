@@ -158,7 +158,12 @@ export function AccountDefaultView() {
       {showBack && (
         <IconLink icon="chevronLeft" style={styles.backIcon} onPress={RouterController.goBack} />
       )}
-      <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
+      <IconLink
+        icon="close"
+        style={styles.closeIcon}
+        onPress={ModalController.close}
+        testID="header-close"
+      />
       <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
         <FlexView alignItems="center" padding={['3xl', 's', '3xl', 's']}>
           <Avatar imageSrc={profileImage} address={address} />
@@ -227,10 +232,10 @@ export function AccountDefaultView() {
               imageSrc={networkImage}
               imageHeaders={ApiController._getApiHeaders()}
               onPress={onNetworkPress}
-              testID="button-network"
+              testID="w3m-account-select-network"
               style={styles.actionButton}
             >
-              <Text numberOfLines={1} color="fg-100">
+              <Text numberOfLines={1} color="fg-100" testID="w3m-account-select-network-text">
                 {caipNetwork?.name}
               </Text>
             </ListItem>
@@ -252,7 +257,7 @@ export function AccountDefaultView() {
                 chevron
                 icon="swapHorizontal"
                 onPress={onSwitchAccountType}
-                testID="button-account-type"
+                testID="account-button-type"
                 style={styles.actionButton}
                 loading={loading}
               >
@@ -266,7 +271,7 @@ export function AccountDefaultView() {
               onPress={onDisconnect}
               loading={disconnecting}
               iconBackgroundColor="gray-glass-010"
-              testID="button-disconnect"
+              testID="disconnect-button"
             >
               <Text color="fg-200">Disconnect</Text>
             </ListItem>

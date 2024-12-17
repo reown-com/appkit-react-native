@@ -67,7 +67,7 @@ export function UpgradeToSmartAccountView() {
         icon="close"
         size="md"
         onPress={onClose}
-        testID="button-close"
+        testID="header-close"
         style={styles.closeButton}
       />
 

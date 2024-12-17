@@ -49,6 +49,7 @@ export function AllWalletsSearch({
           name={item?.name ?? 'Unknown'}
           onPress={() => onItemPress(item)}
           installed={!!isInstalled}
+          testID={`wallet-search-item-${item?.id}`}
         />
       </View>
     );

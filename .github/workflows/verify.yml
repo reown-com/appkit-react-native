@@ -22,5 +22,11 @@ jobs:
       - name: Build
         run: yarn build
 
-      - name: Test
+      - name: Package Tests
         run: yarn test
+
+      - name: E2E Tests
+        uses: ./.github/workflows/e2e.yml
+        with:
+          skip_setup: true # Skip redundant setup steps
+        secrets: inherit

@@ -19,6 +19,7 @@ export interface NetworkButtonProps {
   imageHeaders?: Record<string, string>;
   loading?: boolean;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
 export function NetworkButton({
@@ -29,7 +30,8 @@ export function NetworkButton({
   imageSrc,
   imageHeaders,
   loading,
-  style
+  style,
+  testID
 }: NetworkButtonProps) {
   const Theme = useTheme();
   const textColor = disabled ? 'fg-300' : 'fg-100';
@@ -49,6 +51,7 @@ export function NetworkButton({
       onPressIn={setEndValue}
       onPressOut={setStartValue}
       disabled={disabled}
+      testID={testID}
     >
       <LoaderComponent loading={loading} />
       <ImageComponent

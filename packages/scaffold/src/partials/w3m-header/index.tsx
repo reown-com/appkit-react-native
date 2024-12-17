@@ -107,7 +107,7 @@ export function Header() {
     return showBack ? (
       <IconLink icon="chevronLeft" size="md" onPress={handleGoBack} testID="button-back" />
     ) : (
-      <IconLink icon="helpCircle" size="md" onPress={onHelpPress} testID="button-help" />
+      <IconLink icon="helpCircle" size="md" onPress={onHelpPress} testID="help-button" />
     );
   };
 
@@ -123,10 +123,10 @@ export function Header() {
       padding={['l', 'xl', bottomPadding, 'xl']}
     >
       {dynamicButtonTemplate()}
-      <Text variant="paragraph-600" numberOfLines={1}>
+      <Text variant="paragraph-600" numberOfLines={1} testID="header-text">
         {header}
       </Text>
-      <IconLink icon="close" size="md" onPress={handleClose} testID="button-close" />
+      <IconLink icon="close" size="md" onPress={handleClose} testID="header-close" />
     </FlexView>
   );
 }

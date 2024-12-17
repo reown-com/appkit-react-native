@@ -25,7 +25,12 @@ export function Snackbar({ message, iconColor, icon, style }: SnackbarProps) {
       ]}
     >
       <IconBox icon={icon} iconColor={iconColor} size="sm" background />
-      <Text variant="paragraph-500" color="fg-100" style={styles.text}>
+      <Text
+        variant="paragraph-500"
+        color="fg-100"
+        style={styles.text}
+        testID="wui-snackbar-message"
+      >
         {message}
       </Text>
     </Animated.View>
