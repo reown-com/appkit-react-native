@@ -24,6 +24,10 @@ jobs:
       - name:
         uses: ./.github/actions/setup
 
+      - name: E2E Tests
+        uses: ./.github/workflows/e2e.yml
+        secrets: inherit
+
       - name: Create Release Pull Request or Publish to NPM
         id: changesets
         uses: changesets/action@v1

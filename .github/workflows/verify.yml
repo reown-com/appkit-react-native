@@ -27,10 +27,3 @@ jobs:
 
       - name: Package Tests
         run: yarn test
-
-      - name: E2E Tests
-        uses: ./.github/workflows/e2e.yml
-        secrets:
-          CLOUD_PROJECT_ID: ${{ secrets.CLOUD_PROJECT_ID }}
-        with:
-          skip_setup: true

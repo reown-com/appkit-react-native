@@ -19,10 +19,6 @@ on:
         default: 'https://react-wallet.walletconnect.com/'
         required: false
         type: string
-      skip_setup:
-        description: 'Skip setup steps if already done'
-        type: boolean
-        default: false
     secrets:
       CLOUD_PROJECT_ID:
         required: true
@@ -33,18 +29,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        if: ${{ !inputs.skip_setup }}
         uses: actions/checkout@v4
         with:
           repository: reown-com/appkit-react-native
           ref: ${{ inputs.branch }}
 
       - name: Setup
-        if: ${{ !inputs.skip_setup }}
         uses: ./.github/actions/setup
 
       - name: Build SDK
-        if: ${{ !inputs.skip_setup }}
         run: |
           echo "Building SDK..."
           yarn build
