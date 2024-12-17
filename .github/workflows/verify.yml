@@ -1,9 +1,6 @@
 name: Verify
 on:
   workflow_call:
-    secrets:
-      CLOUD_PROJECT_ID:
-        required: true
   workflow_dispatch:
 
 jobs:
