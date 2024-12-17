@@ -176,7 +176,6 @@ function _AuthWebview() {
           containerStyle={styles.webview}
           injectedJavaScript={AppKitFrameConstants.FRAME_MESSAGES_HANDLER}
           ref={webviewRef}
-          webviewDebuggingEnabled
           onOpenWindow={syntheticEvent => {
             const { nativeEvent } = syntheticEvent;
             const { targetUrl } = nativeEvent;
