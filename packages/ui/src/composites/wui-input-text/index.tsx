@@ -105,7 +105,6 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
           ]}
           disabled={disabled}
           onPress={() => inputRef.current?.focus()}
-          testID={rest.testID}
         >
           <Animated.View
             style={[
@@ -131,6 +130,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
               underlineColorAndroid="transparent"
               selectTextOnFocus={false}
               editable={!disabled}
+              testID="wui-input-text"
               {...rest}
             />
             {children}

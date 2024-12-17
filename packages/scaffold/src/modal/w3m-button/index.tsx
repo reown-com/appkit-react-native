@@ -30,7 +30,7 @@ export function AppKitButton({
       style={accountStyle}
       balance={balance}
       disabled={disabled}
-      testID="button-account"
+      testID="account-button"
     />
   ) : (
     <ConnectButton
@@ -39,7 +39,7 @@ export function AppKitButton({
       label={label}
       loadingLabel={loadingLabel}
       disabled={disabled}
-      testID="button-connect"
+      testID="connect-button"
     />
   );
 }

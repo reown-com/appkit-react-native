@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { Animated, Appearance, Linking, Platform, SafeAreaView, StyleSheet } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 
@@ -24,7 +24,7 @@ import type { AppKitFrameTypes } from './AppKitFrameTypes';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
-export function AuthWebview() {
+function _AuthWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
   const authConnector = ConnectorController.getAuthConnector();
@@ -176,6 +176,7 @@ export function AuthWebview() {
           containerStyle={styles.webview}
           injectedJavaScript={AppKitFrameConstants.FRAME_MESSAGES_HANDLER}
           ref={webviewRef}
+          webviewDebuggingEnabled
           onOpenWindow={syntheticEvent => {
             const { nativeEvent } = syntheticEvent;
             const { targetUrl } = nativeEvent;
@@ -216,6 +217,8 @@ export function AuthWebview() {
     </>
   ) : null;
 }
+
+export const AuthWebview = memo(_AuthWebview);
 
 const styles = StyleSheet.create({
   backdrop: {

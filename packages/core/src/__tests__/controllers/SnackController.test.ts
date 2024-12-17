@@ -3,6 +3,9 @@ import { OptionsController, SnackController } from '../../index';
 // Setup
 OptionsController.state.debug = true;
 
+// eslint-disable-next-line no-console
+console.error = jest.fn();
+
 // -- Tests --------------------------------------------------------------------
 describe('SnackController', () => {
   it('should have valid default state', () => {

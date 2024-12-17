@@ -66,6 +66,7 @@ export function NetworksView() {
         ]}
       >
         <CardSelect
+          testID={`w3m-network-switch-${network.name ?? network.id}`}
           name={network.name ?? 'Unknown'}
           type="network"
           imageSrc={AssetUtil.getNetworkImage(network)}
@@ -95,7 +96,13 @@ export function NetworksView() {
         <Text variant="small-400" color="fg-300" center>
           Your connected wallet may not support some of the networks available for this dApp
         </Text>
-        <Link size="sm" iconLeft="helpCircle" onPress={onHelpPress} style={styles.helpButton}>
+        <Link
+          size="sm"
+          iconLeft="helpCircle"
+          onPress={onHelpPress}
+          style={styles.helpButton}
+          testID="what-is-a-network-button"
+        >
           What is a network?
         </Link>
       </FlexView>
