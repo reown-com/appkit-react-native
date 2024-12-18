@@ -1,9 +1,11 @@
+/* eslint-disable valtio/state-snapshot-rule */
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
 import {
   ApiController,
   AssetUtil,
   ConnectionController,
+  ConnectorController,
   EventsController,
   NetworkController,
   RouterController
@@ -22,6 +24,7 @@ export function NetworkSwitchView() {
   const { data } = useSnapshot(RouterController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
+  const isAuthConnected = ConnectorController.state.connectedConnector === 'AUTH';
   const [error, setError] = useState<boolean>(false);
   const [showRetry, setShowRetry] = useState<boolean>(false);
   const network = data?.network!;
@@ -86,6 +89,14 @@ export function NetworkSwitchView() {
             still active
           </Text>
         </>
+      );
+    }
+
+    if (isAuthConnected) {
+      return (
+        <Text variant="paragraph-500" style={styles.text}>
+          Switching to {network.name} network
+        </Text>
       );
     }
 

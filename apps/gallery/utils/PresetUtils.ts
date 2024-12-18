@@ -32,8 +32,6 @@ export const avatarImageSrc =
 export const wcUri =
   'wc:139520827546986d057472f8bbd7ef0484409458034b61cca59d908563773c7a@2?relay-protocol=irn&symKey=43b5fad11bf07bc8a0aa12231435a4ad3e72e2d1fa257cf191a90ec5b62cb0a';
 
-export const externalLink = 'https://www.fireblocks.com';
-
 export const externalLabel = 'www.fireblocks.com';
 
 export const colorOptions: ColorType[] = [
@@ -151,6 +149,8 @@ export const iconOptions: IconType[] = [
   'extension',
   'externalLink',
   'facebook',
+  'farcaster',
+  'farcasterSquare',
   'filters',
   'github',
   'google',
@@ -158,6 +158,7 @@ export const iconOptions: IconType[] = [
   'infoCircle',
   'mail',
   'mobile',
+  'more',
   'networkPlaceholder',
   'nftPlaceholder',
   'off',
@@ -168,11 +169,10 @@ export const iconOptions: IconType[] = [
   'swapVertical',
   'telegram',
   'twitch',
-  'twitterIcon',
-  'twitter',
   'wallet',
   'walletSmall',
   'walletConnect',
+  'walletConnectLightBrown',
   'walletPlaceholder',
   'warningCircle'
 ];
@@ -197,11 +197,13 @@ export const logoOptions: LogoType[] = [
   'apple',
   'discord',
   'facebook',
+  'farcaster',
   'github',
   'google',
+  'more',
   'telegram',
   'twitch',
-  'twitter'
+  'x'
 ];
 
 export const cardSelectOptions: CardSelectType[] = ['wallet', 'network'];

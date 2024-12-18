@@ -1,12 +1,12 @@
 import { StyleSheet } from 'react-native';
-import { Spacing } from '../../utils/ThemeUtil';
+import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 
 export default StyleSheet.create({
   container: {
     flexDirection: 'row',
     height: 40,
-    borderRadius: 100,
-    borderWidth: 1,
+    borderRadius: BorderRadius.full,
+    borderWidth: StyleSheet.hairlineWidth,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: Spacing['3xs']
@@ -14,7 +14,7 @@ export default StyleSheet.create({
   image: {
     height: 24,
     width: 24,
-    borderRadius: 100,
+    borderRadius: BorderRadius.full,
     borderWidth: 2
   },
   avatarPlaceholder: {
@@ -35,8 +35,8 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingLeft: Spacing['3xs'],
     paddingRight: Spacing.xs,
-    borderRadius: 100,
-    borderWidth: 1
+    borderRadius: BorderRadius.full,
+    borderWidth: StyleSheet.hairlineWidth
   },
   address: {
     marginLeft: Spacing['3xs']

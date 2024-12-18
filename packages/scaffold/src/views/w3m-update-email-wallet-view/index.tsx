@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSnapshot } from 'valtio';
 import { Platform } from 'react-native';
 import {
   ConnectorController,
@@ -15,7 +14,7 @@ import { useKeyboard } from '../../hooks/useKeyboard';
 import styles from './styles';
 
 export function UpdateEmailWalletView() {
-  const { data } = useSnapshot(RouterController.state);
+  const { data } = RouterController.state;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [email, setEmail] = useState(data?.email || '');

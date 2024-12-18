@@ -16,7 +16,7 @@ import styles from './styles';
 export function EmailVerifyDeviceView() {
   const Theme = useTheme();
   const { connectors } = useSnapshot(ConnectorController.state);
-  const { data } = useSnapshot(RouterController.state);
+  const { data } = RouterController.state;
   const { timeLeft, startTimer } = useTimeout(0);
   const [loading, setLoading] = useState(false);
   const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;

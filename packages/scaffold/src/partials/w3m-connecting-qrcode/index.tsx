@@ -19,8 +19,8 @@ export function ConnectingQrCode() {
   const qrSize = (windowSize - Spacing.xl * 2) / (isPortrait ? 1 : 1.5);
 
   const onCopyAddress = () => {
-    if (wcUri) {
-      OptionsController.copyToClipboard(wcUri);
+    if (ConnectionController.state.wcUri) {
+      OptionsController.copyToClipboard(ConnectionController.state.wcUri);
       SnackController.showSuccess('Link copied');
     }
   };
@@ -65,7 +65,7 @@ export function ConnectingQrCode() {
             color="fg-200"
             style={styles.copyButton}
             onPress={onCopyAddress}
-            testID="button-copy-uri"
+            testID="copy-link"
           >
             Copy link
           </Link>

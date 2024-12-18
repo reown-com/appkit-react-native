@@ -1,6 +1,6 @@
 #### 📚 [Documentation](https://docs.reown.com/appkit/react-native/core/installation)
 
-#### 🔎 [Examples](https://github.com/WalletConnect/react-native-examples)
+#### 🔎 [Examples](https://github.com/reown-com/react-native-examples)
 
 #### 🔗 [Website](https://reown.com/appkit)
 

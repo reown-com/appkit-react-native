@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import { proxy, subscribe as sub } from 'valtio/vanilla';
 import { ApiController } from './ApiController';
 import { OptionsController } from './OptionsController';
@@ -34,17 +33,6 @@ export const EventsController = {
     return sub(state, () => callback(state));
   },
 
-  _getApiHeaders() {
-    const { projectId, sdkType, sdkVersion } = OptionsController.state;
-
-    return {
-      'x-project-id': projectId,
-      'x-sdk-type': sdkType,
-      'x-sdk-version': sdkVersion,
-      'User-Agent': `${Platform.OS}-${Platform.Version}`
-    };
-  },
-
   async _sendAnalyticsEvent(data: EventsControllerState['data'], timestamp: number) {
     if (excluded.includes(data.event)) {
       return;
@@ -53,7 +41,7 @@ export const EventsController = {
     try {
       await api.post({
         path: '/e',
-        headers: this._getApiHeaders(),
+        headers: ApiController._getApiHeaders(),
         body: {
           eventId: CoreHelperUtil.getUUID(),
           bundleId: CoreHelperUtil.getBundleId(),

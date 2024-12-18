@@ -1,4 +1,4 @@
-import { View, type StyleProp, type ViewStyle } from 'react-native';
+import { type StyleProp, type ViewStyle, View } from 'react-native';
 
 import type {
   FlexAlignType,
@@ -9,7 +9,6 @@ import type {
   FlexWrapType,
   SpacingType
 } from '../../utils/TypesUtil';
-
 import { UiUtil } from '../../utils/UiUtil';
 
 export interface FlexViewProps {

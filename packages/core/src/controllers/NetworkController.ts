@@ -1,6 +1,7 @@
 import { proxy, ref } from 'valtio';
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil';
 import { PublicStateController } from './PublicStateController';
+import { NetworkUtil } from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -18,12 +19,14 @@ export interface NetworkControllerState {
   caipNetwork?: CaipNetwork;
   requestedCaipNetworks?: CaipNetwork[];
   approvedCaipNetworkIds?: CaipNetworkId[];
+  smartAccountEnabledNetworks: number[];
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<NetworkControllerState>({
   supportsAllNetworks: true,
-  isDefaultCaipNetwork: false
+  isDefaultCaipNetwork: false,
+  smartAccountEnabledNetworks: []
 });
 
 // -- Controller ---------------------------------------- //
@@ -57,10 +60,39 @@ export const NetworkController = {
     state.requestedCaipNetworks = requestedNetworks;
   },
 
+  setSmartAccountEnabledNetworks(
+    smartAccountEnabledNetworks: NetworkControllerState['smartAccountEnabledNetworks']
+  ) {
+    state.smartAccountEnabledNetworks = smartAccountEnabledNetworks;
+  },
+
+  checkIfSmartAccountEnabled() {
+    const networkId = NetworkUtil.caipNetworkIdToNumber(state.caipNetwork?.id);
+
+    if (!networkId) {
+      return false;
+    }
+
+    return Boolean(state.smartAccountEnabledNetworks?.includes(Number(networkId)));
+  },
+
   async getApprovedCaipNetworksData() {
     const data = await this._getClient().getApprovedCaipNetworksData();
     state.supportsAllNetworks = data.supportsAllNetworks;
     state.approvedCaipNetworkIds = data.approvedCaipNetworkIds;
+  },
+
+  getApprovedCaipNetworks() {
+    return state.approvedCaipNetworkIds
+      ?.map(id => state.requestedCaipNetworks?.find(network => network.id === id))
+      .filter(Boolean) as CaipNetwork[];
+  },
+
+  getSmartAccountEnabledNetworks() {
+    return this.getApprovedCaipNetworks().filter(
+      network =>
+        state.smartAccountEnabledNetworks?.find(networkId => network.id === `eip155:${networkId}`)
+    );
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
@@ -75,5 +107,6 @@ export const NetworkController = {
     }
     state.approvedCaipNetworkIds = undefined;
     state.supportsAllNetworks = true;
+    state.smartAccountEnabledNetworks = [];
   }
 };

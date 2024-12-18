@@ -1,4 +1,4 @@
-import { View, type StyleProp, type ViewStyle } from 'react-native';
+import { type StyleProp, type ViewStyle, View } from 'react-native';
 import { Text } from '../../components/wui-text';
 import { FlexView } from '../../layout/wui-flex';
 import { useTheme } from '../../hooks/useTheme';

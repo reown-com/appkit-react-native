@@ -4,6 +4,7 @@ import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 export default StyleSheet.create({
   container: {
     height: 34,
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: Spacing['3xs'],
@@ -13,7 +14,6 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 100,
     paddingVertical: Spacing['2xs']
   },
   tabIcon: {
@@ -22,8 +22,7 @@ export default StyleSheet.create({
   activeMark: {
     position: 'absolute',
     height: 28,
-    width: 100,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderRadius: BorderRadius['3xl'],
     margin: Spacing['3xs']
   }

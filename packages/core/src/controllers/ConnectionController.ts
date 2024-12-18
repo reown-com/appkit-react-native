@@ -1,8 +1,14 @@
-import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy, ref } from 'valtio';
+import { subscribeKey as subKey } from 'valtio/utils';
+import type { SocialProvider } from '@reown/appkit-common-react-native';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
-import type { Connector, WcWallet } from '../utils/TypeUtil';
+import type {
+  Connector,
+  SendTransactionArgs,
+  WcWallet,
+  WriteContractArgs
+} from '../utils/TypeUtil';
 import { RouterController } from './RouterController';
 import { ConnectorController } from './ConnectorController';
 
@@ -21,7 +27,13 @@ export interface ConnectionControllerClient {
   ) => Promise<void>;
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>;
   signMessage: (message: string) => Promise<string>;
+  sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>;
+  parseUnits: (value: string, decimals: number) => bigint;
+  formatUnits: (value: bigint, decimals: number) => string;
+  writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>;
   disconnect: () => Promise<void>;
+  getEnsAddress: (value: string) => Promise<false | string>;
+  getEnsAvatar: (value: string) => Promise<false | string>;
 }
 
 export interface ConnectionControllerState {
@@ -36,7 +48,9 @@ export interface ConnectionControllerState {
   wcError?: boolean;
   pressedWallet?: WcWallet;
   recentWallets?: WcWallet[];
+  selectedSocialProvider?: SocialProvider;
   connectedWalletImageUrl?: string;
+  connectedSocialProvider?: SocialProvider;
 }
 
 type StateKey = keyof ConnectionControllerState;
@@ -73,15 +87,12 @@ export const ConnectionController = {
     state.wcPromise = this._getClient().connectWalletConnect(uri => {
       state.wcUri = uri;
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry();
-      ConnectorController.setConnectedConnector('WALLET_CONNECT');
-      StorageUtil.setConnectedConnector('WALLET_CONNECT');
     }, walletUniversalLink);
   },
 
   async connectExternal(options: ConnectExternalOptions) {
     await this._getClient().connectExternal?.(options);
     ConnectorController.setConnectedConnector(options.type);
-    StorageUtil.setConnectedConnector(options.type);
   },
 
   async signMessage(message: string) {
@@ -112,6 +123,10 @@ export const ConnectionController = {
     state.recentWallets = wallets;
   },
 
+  setSelectedSocialProvider(provider: ConnectionControllerState['selectedSocialProvider']) {
+    state.selectedSocialProvider = provider;
+  },
+
   async setConnectedWalletImageUrl(url: ConnectionControllerState['connectedWalletImageUrl']) {
     state.connectedWalletImageUrl = url;
 
@@ -120,6 +135,40 @@ export const ConnectionController = {
     } else {
       StorageUtil.removeConnectedWalletImageUrl();
     }
+  },
+
+  setConnectedSocialProvider(provider: ConnectionControllerState['connectedSocialProvider']) {
+    state.connectedSocialProvider = provider;
+
+    if (provider) {
+      StorageUtil.setConnectedSocialProvider(provider);
+    } else {
+      StorageUtil.removeConnectedSocialProvider();
+    }
+  },
+
+  parseUnits(value: string, decimals: number) {
+    return this._getClient().parseUnits(value, decimals);
+  },
+
+  formatUnits(value: bigint, decimals: number) {
+    return this._getClient().formatUnits(value, decimals);
+  },
+
+  async sendTransaction(args: SendTransactionArgs) {
+    return this._getClient().sendTransaction(args);
+  },
+
+  async writeContract(args: WriteContractArgs) {
+    return this._getClient().writeContract(args);
+  },
+
+  async getEnsAddress(value: string) {
+    return this._getClient().getEnsAddress(value);
+  },
+
+  async getEnsAvatar(value: string) {
+    return this._getClient().getEnsAvatar(value);
   },
 
   clearUri() {
@@ -132,16 +181,16 @@ export const ConnectionController = {
   resetWcConnection() {
     this.clearUri();
     state.pressedWallet = undefined;
-    state.connectedWalletImageUrl = undefined;
+    state.selectedSocialProvider = undefined;
+    ConnectionController.setConnectedWalletImageUrl(undefined);
     ConnectorController.setConnectedConnector(undefined);
     StorageUtil.removeWalletConnectDeepLink();
-    StorageUtil.removeConnectedWalletImageUrl();
-    StorageUtil.removeConnectedConnector();
   },
 
   async disconnect() {
     await this._getClient().disconnect();
     this.resetWcConnection();
+    // remove transactions
     RouterController.reset('Connect');
   }
 };

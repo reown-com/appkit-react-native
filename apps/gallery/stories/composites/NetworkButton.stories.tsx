@@ -6,10 +6,6 @@ import { networkImageSrc } from '../../utils/PresetUtils';
 const meta: Meta<typeof NetworkButton> = {
   component: NetworkButton,
   argTypes: {
-    variant: {
-      options: ['fill', 'shade'],
-      control: { type: 'select' }
-    },
     disabled: {
       control: { type: 'boolean' }
     },
@@ -21,7 +17,6 @@ const meta: Meta<typeof NetworkButton> = {
     }
   },
   args: {
-    variant: 'fill',
     disabled: false,
     children: 'Ethereum',
     imageSrc: networkImageSrc
@@ -33,12 +28,7 @@ type Story = StoryObj<typeof NetworkButton>;
 
 export const Default: Story = {
   render: args => (
-    <NetworkButton
-      variant={args.variant}
-      disabled={args.disabled}
-      imageSrc={args.imageSrc}
-      onPress={() => {}}
-    >
+    <NetworkButton disabled={args.disabled} imageSrc={args.imageSrc} onPress={() => {}}>
       {args.children}
     </NetworkButton>
   )

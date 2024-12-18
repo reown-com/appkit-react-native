@@ -1,51 +1,57 @@
-import { Animated, Pressable, type StyleProp, type ViewStyle } from 'react-native';
+import { Animated, Pressable, View, type StyleProp, type ViewStyle } from 'react-native';
 import { Image } from '../../components/wui-image';
 import { Text } from '../../components/wui-text';
 import { useTheme } from '../../hooks/useTheme';
 import { IconBox } from '../wui-icon-box';
+import { LoadingSpinner } from '../../components/wui-loading-spinner';
+import useAnimatedValue from '../../hooks/useAnimatedValue';
 
 import styles from './styles';
-import useAnimatedValue from '../../hooks/useAnimatedValue';
-import { LoadingSpinner } from '../../components/wui-loading-spinner';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface NetworkButtonProps {
-  children: string;
+  children: string | React.ReactNode;
   onPress: () => void;
+  background?: boolean;
+  disabled?: boolean;
   imageSrc?: string;
   imageHeaders?: Record<string, string>;
-  disabled?: boolean;
-  style?: StyleProp<ViewStyle>;
   loading?: boolean;
+  style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
 export function NetworkButton({
+  children,
+  onPress,
+  background = true,
+  disabled,
   imageSrc,
   imageHeaders,
-  disabled,
-  onPress,
-  style,
   loading,
-  children
+  style,
+  testID
 }: NetworkButtonProps) {
   const Theme = useTheme();
   const textColor = disabled ? 'fg-300' : 'fg-100';
 
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
-    Theme['gray-glass-005'],
+    background ? Theme['gray-glass-005'] : 'transparent',
     Theme['gray-glass-010']
   );
 
   const backgroundColor = disabled ? Theme['gray-glass-015'] : animatedValue;
+  const borderColor = background ? Theme['gray-glass-005'] : 'transparent';
 
   return (
     <AnimatedPressable
-      style={[styles.container, { backgroundColor, borderColor: Theme['gray-glass-005'] }, style]}
+      style={[styles.container, { backgroundColor, borderColor }, style]}
       onPress={onPress}
       onPressIn={setEndValue}
       onPressOut={setStartValue}
       disabled={disabled}
+      testID={testID}
     >
       <LoaderComponent loading={loading} />
       <ImageComponent
@@ -55,9 +61,13 @@ export function NetworkButton({
         imageHeaders={imageHeaders}
         borderColor={Theme['gray-glass-005']}
       />
-      <Text style={styles.text} variant="paragraph-600" color={textColor}>
-        {children}
-      </Text>
+      {typeof children === 'string' ? (
+        <Text style={styles.children} variant="paragraph-600" color={textColor}>
+          {children}
+        </Text>
+      ) : (
+        <View style={styles.children}>{children}</View>
+      )}
     </AnimatedPressable>
   );
 }

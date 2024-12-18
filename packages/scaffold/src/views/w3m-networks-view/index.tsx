@@ -1,4 +1,3 @@
-import { useSnapshot } from 'valtio';
 import { ScrollView, View } from 'react-native';
 import {
   CardSelect,
@@ -17,15 +16,15 @@ import {
   type CaipNetwork,
   AccountController,
   EventsController,
-  RouterUtil
+  RouterUtil,
+  ConnectorController
 } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function NetworksView() {
-  const { isConnected } = useSnapshot(AccountController.state);
   const { caipNetwork, requestedCaipNetworks, approvedCaipNetworkIds, supportsAllNetworks } =
-    useSnapshot(NetworkController.state);
+    NetworkController.state;
   const imageHeaders = ApiController._getApiHeaders();
   const { maxWidth: width, padding } = useCustomDimensions();
   const numColumns = 4;
@@ -34,6 +33,7 @@ export function NetworksView() {
   const itemGap = Math.abs(
     Math.trunc((usableWidth - numColumns * CardSelectWidth) / numColumns) / 2
   );
+  const isAuthConnected = ConnectorController.state.connectedConnector === 'AUTH';
 
   const onHelpPress = () => {
     RouterController.push('WhatIsANetwork');
@@ -56,8 +56,8 @@ export function NetworksView() {
     }
 
     const onNetworkPress = async (network: CaipNetwork) => {
-      if (isConnected && caipNetwork?.id !== network.id) {
-        if (approvedCaipNetworkIds?.includes(network.id)) {
+      if (AccountController.state.isConnected && caipNetwork?.id !== network.id) {
+        if (approvedCaipNetworkIds?.includes(network.id) && !isAuthConnected) {
           await NetworkController.switchActiveNetwork(network);
           RouterUtil.navigateAfterNetworkSwitch(['ConnectingSiwe']);
 
@@ -68,10 +68,10 @@ export function NetworksView() {
               network: network.id
             }
           });
-        } else if (supportsAllNetworks) {
+        } else if (supportsAllNetworks || isAuthConnected) {
           RouterController.push('SwitchNetwork', { network });
         }
-      } else if (!isConnected) {
+      } else if (!AccountController.state.isConnected) {
         NetworkController.setCaipNetwork(network);
         RouterController.push('Connect');
       }
@@ -89,6 +89,7 @@ export function NetworksView() {
         ]}
       >
         <CardSelect
+          testID={`w3m-network-switch-${network.name ?? network.id}`}
           name={network.name ?? 'Unknown'}
           type="network"
           imageSrc={AssetUtil.getNetworkImage(network)}
@@ -118,7 +119,13 @@ export function NetworksView() {
         <Text variant="small-400" color="fg-300" center>
           Your connected wallet may not support some of the networks available for this dApp
         </Text>
-        <Link size="sm" iconLeft="helpCircle" onPress={onHelpPress} style={styles.helpButton}>
+        <Link
+          size="sm"
+          iconLeft="helpCircle"
+          onPress={onHelpPress}
+          style={styles.helpButton}
+          testID="what-is-a-network-button"
+        >
           What is a network?
         </Link>
       </FlexView>

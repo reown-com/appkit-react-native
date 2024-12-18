@@ -1,18 +1,29 @@
-import { formatUnits, type Hex } from 'viem';
+import { formatUnits, type Hex, parseUnits } from 'viem';
 import {
   type GetAccountReturnType,
+  type GetEnsAddressReturnType,
+  type Connector as WagmiConnector,
   connect,
+  reconnect,
   disconnect,
   signMessage,
+  getAccount,
   switchChain,
   watchAccount,
   watchConnectors,
   getEnsName,
   getEnsAvatar as wagmiGetEnsAvatar,
-  getBalance
+  getEnsAddress as wagmiGetEnsAddress,
+  getBalance,
+  prepareTransactionRequest,
+  sendTransaction as wagmiSendTransaction,
+  waitForTransactionReceipt,
+  writeContract as wagmiWriteContract
 } from '@wagmi/core';
+import { normalize } from 'viem/ens';
 import { mainnet, type Chain } from '@wagmi/core/chains';
-import { EthereumProvider, OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
+import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
+import { type JsonRpcError } from '@walletconnect/jsonrpc-types';
 import {
   type CaipAddress,
   type CaipNetwork,
@@ -22,8 +33,11 @@ import {
   type LibraryOptions,
   type NetworkControllerClient,
   type PublicStateControllerState,
+  type SendTransactionArgs,
   type Token,
-  AppKitScaffold
+  AppKitScaffold,
+  type WriteContractArgs,
+  type AppKitFrameProvider
 } from '@reown/appkit-scaffold-react-native';
 import {
   ConstantsUtil,
@@ -31,12 +45,18 @@ import {
   PresetsUtil,
   StorageUtil
 } from '@reown/appkit-scaffold-utils-react-native';
-import { NetworkUtil } from '@reown/appkit-common-react-native';
-import { type AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
+import { NetworkUtil, NamesUtil, ErrorUtil } from '@reown/appkit-common-react-native';
+import {
+  SIWEController,
+  getDidChainId,
+  getDidAddress,
+  type AppKitSIWEClient
+} from '@reown/appkit-siwe-react-native';
 import {
   getCaipDefaultChain,
   getAuthCaipNetworks,
-  getWalletConnectCaipNetworks
+  getWalletConnectCaipNetworks,
+  requireCaipAddress
 } from './utils/helpers';
 import { defaultWagmiConfig } from './utils/defaultWagmiConfig';
 
@@ -76,7 +96,7 @@ export class AppKit extends AppKitScaffold {
     }
 
     if (!appKitOptions.projectId) {
-      throw new Error('appkit:constructor - projectId is undefined');
+      throw new Error(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED.shortMessage);
     }
 
     const networkControllerClient: NetworkControllerClient = {
@@ -90,9 +110,9 @@ export class AppKit extends AppKitScaffold {
       async getApprovedCaipNetworksData() {
         const walletChoice = await StorageUtil.getConnectedConnector();
         const walletConnectType =
-          PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
+          PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]!;
 
-        const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID];
+        const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID]!;
 
         if (walletChoice?.includes(walletConnectType)) {
           const connector = wagmiConfig.connectors.find(
@@ -144,9 +164,6 @@ export class AppKit extends AppKitScaffold {
           siweParams &&
           Object.keys(siweParams || {}).length > 0
         ) {
-          const { SIWEController, getDidChainId, getDidAddress } = await import(
-            '@reown/appkit-siwe-react-native'
-          );
           // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
           await connector.setRequestedChainsIds(siweParams.chains);
           const result = await provider.authenticate(
@@ -227,9 +244,89 @@ export class AppKit extends AppKitScaffold {
         this.setClientId(null);
 
         if (siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@reown/appkit-siwe-react-native');
           await SIWEController.signOut();
         }
+      },
+
+      sendTransaction: async (data: SendTransactionArgs) => {
+        const { chainId } = getAccount(this.wagmiConfig);
+
+        const txParams = {
+          account: data.address,
+          to: data.to,
+          value: data.value,
+          gas: data.gas,
+          gasPrice: data.gasPrice,
+          data: data.data,
+          chainId,
+          type: 'legacy' as const
+        };
+
+        await prepareTransactionRequest(this.wagmiConfig, txParams);
+        const tx = await wagmiSendTransaction(this.wagmiConfig, txParams);
+
+        await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 });
+
+        return tx;
+      },
+
+      writeContract: async (data: WriteContractArgs) => {
+        const caipAddress = this.getCaipAddress() || '';
+        const account = requireCaipAddress(caipAddress);
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+
+        const tx = await wagmiWriteContract(wagmiConfig, {
+          chainId,
+          address: data.tokenAddress,
+          account,
+          abi: data.abi,
+          functionName: data.method,
+          args: [data.receiverAddress, data.tokenAmount]
+        });
+
+        return tx;
+      },
+
+      parseUnits,
+
+      formatUnits,
+
+      getEnsAddress: async (value: string) => {
+        try {
+          if (!this.wagmiConfig) {
+            throw new Error(
+              'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
+            );
+          }
+          const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id));
+          let ensName: boolean | GetEnsAddressReturnType = false;
+          let wcName: boolean | string = false;
+          if (NamesUtil.isReownName(value)) {
+            wcName = (await this.resolveReownName(value)) || false;
+          }
+          if (chainId === 1) {
+            ensName = await wagmiGetEnsAddress(this.wagmiConfig, {
+              name: normalize(value),
+              chainId
+            });
+          }
+
+          return ensName || wcName || false;
+        } catch {
+          return false;
+        }
+      },
+      getEnsAvatar: async (value: string) => {
+        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id));
+        if (chainId !== mainnet.id) {
+          return false;
+        }
+        const avatar = await wagmiGetEnsAvatar(this.wagmiConfig, {
+          name: normalize(value),
+          chainId
+        });
+
+        return avatar || false;
       }
     };
 
@@ -248,7 +345,6 @@ export class AppKit extends AppKitScaffold {
 
     this.syncRequestedNetworks([...wagmiConfig.chains]);
     this.syncConnectors([...wagmiConfig.connectors]);
-    this.listenAuthConnector([...wagmiConfig.connectors]);
 
     watchConnectors(wagmiConfig, {
       onChange: connectors => this.syncConnectors([...connectors])
@@ -308,7 +404,6 @@ export class AppKit extends AppKitScaffold {
     GetAccountReturnType,
     'address' | 'isConnected' | 'chainId' | 'connector' | 'isConnecting' | 'isReconnecting'
   >) {
-    this.resetAccount();
     this.syncNetwork(address, chainId, isConnected);
     this.setLoading(!!connector && (isConnecting || isReconnecting));
 
@@ -324,6 +419,8 @@ export class AppKit extends AppKitScaffold {
       ]);
       this.hasSyncedConnectedAccount = true;
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
+      this.close();
+      this.resetAccount();
       this.resetWcConnection();
       this.resetNetwork();
     }
@@ -394,7 +491,8 @@ export class AppKit extends AppKitScaffold {
     if (chain) {
       const balance = await getBalance(this.wagmiConfig, {
         address,
-        chainId: chain.id
+        chainId: chain.id,
+        token: this.options?.tokens?.[chainId]?.address as Hex
       });
       const formattedBalance = formatUnits(balance.value, balance.decimals);
       this.setBalance(formattedBalance, balance.symbol);
@@ -448,7 +546,25 @@ export class AppKit extends AppKitScaffold {
     });
 
     this.setConnectors(_connectors);
+    this.syncWalletConnectListeners(filteredConnectors);
     this.syncAuthConnector(filteredConnectors);
+  }
+
+  private async syncWalletConnectListeners(
+    connectors: AppKitClientOptions['wagmiConfig']['connectors']
+  ) {
+    const connector = connectors.find(({ id }) => id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID);
+    if (connector) {
+      const provider = (await connector.getProvider()) as EthereumProvider;
+
+      provider.signer.client.core.relayer.on('relayer_connect', () => {
+        provider.signer.client.core.relayer?.provider?.on('payload', (payload: JsonRpcError) => {
+          if (payload?.error) {
+            this.handleAlertError(payload?.error.message);
+          }
+        });
+      });
+    }
   }
 
   private async syncAuthConnector(connectors: AppKitClientOptions['wagmiConfig']['connectors']) {
@@ -461,15 +577,27 @@ export class AppKit extends AppKitScaffold {
         name: 'Auth',
         provider
       });
+      this.addAuthListeners(authConnector);
     }
   }
 
-  private async listenAuthConnector(connectors: AppKitClientOptions['wagmiConfig']['connectors']) {
-    const connector = connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID);
-
+  private async addAuthListeners(connector: WagmiConnector) {
     const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
-    if (connector && connectedConnector === 'AUTH') {
+
+    if (connectedConnector === 'AUTH') {
+      // Set loader until it reconnects
       super.setLoading(true);
     }
+
+    const provider = (await connector.getProvider()) as AppKitFrameProvider;
+
+    provider.onSetPreferredAccount(async () => {
+      await reconnect(this.wagmiConfig, { connectors: [connector] });
+      this.setLoading(false);
+    });
+
+    provider.setOnTimeout(async () => {
+      this.handleAlertError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
+    });
   }
 }

@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { Animated, Appearance, Linking, Platform, SafeAreaView, StyleSheet } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 
@@ -8,25 +8,34 @@ import {
   OptionsController,
   ModalController,
   type OptionsControllerState,
-  StorageUtil
+  RouterController,
+  WebviewController,
+  AccountController,
+  NetworkController,
+  ConnectionController,
+  SnackController
 } from '@reown/appkit-core-react-native';
+import { ErrorUtil } from '@reown/appkit-common-react-native';
 import { useTheme, BorderRadius } from '@reown/appkit-ui-react-native';
 import type { AppKitFrameProvider } from './AppKitFrameProvider';
-import { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameConstants';
+import { AppKitFrameConstants } from './AppKitFrameConstants';
+import { AppKitFrameHelpers } from './AppKitFrameHelpers';
+import type { AppKitFrameTypes } from './AppKitFrameTypes';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
-export function AuthWebview() {
+function _AuthWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
-  const { connectors } = useSnapshot(ConnectorController.state);
-  const { projectId, sdkVersion } = useSnapshot(OptionsController.state) as OptionsControllerState;
-  const [isVisible, setIsVisible] = useState(false);
+  const authConnector = ConnectorController.getAuthConnector();
+  const { projectId, sdkVersion, sdkType } = useSnapshot(
+    OptionsController.state
+  ) as OptionsControllerState;
+  const { frameViewVisible } = useSnapshot(WebviewController.state);
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   const animatedHeight = useRef(new Animated.Value(0));
   const backdropOpacity = useRef(new Animated.Value(0));
   const webviewOpacity = useRef(new Animated.Value(0));
-  const authConnector = connectors.find(c => c.type === 'AUTH');
   const provider = authConnector?.provider as AppKitFrameProvider;
 
   const parseMessage = (event: WebViewMessageEvent) => {
@@ -45,30 +54,11 @@ export function AuthWebview() {
   };
 
   const handleMessage = (e: WebViewMessageEvent) => {
-    let event = parseMessage(e);
+    try {
+      let event = parseMessage(e);
 
-    provider.onMessage(event);
-
-    provider.onRpcRequest(event, () => {
-      if (!AppKitFrameRpcConstants.SAFE_RPC_METHODS.includes(event.payload.method)) {
-        setIsVisible(true);
-      }
-    });
-
-    provider.onRpcResponse(event, () => {
-      setIsVisible(false);
-    });
-
-    provider.onIsConnected(event, () => {
-      ConnectorController.setAuthLoading(false);
-      ModalController.setLoading(false);
-    });
-
-    provider.onNotConnected(event, () => {
-      ConnectorController.setAuthLoading(false);
-      ModalController.setLoading(false);
-      StorageUtil.removeConnectedConnector();
-    });
+      provider.onMessage(event);
+    } catch (error) {}
   };
 
   const show = animatedHeight.current.interpolate({
@@ -76,32 +66,88 @@ export function AuthWebview() {
     outputRange: ['0%', '80%']
   });
 
+  useEffect(() => {}, [provider]);
+
   useEffect(() => {
     Animated.timing(animatedHeight.current, {
-      toValue: isVisible ? 1 : 0,
+      toValue: frameViewVisible ? 1 : 0,
       duration: 200,
       useNativeDriver: false
     }).start();
 
     Animated.timing(webviewOpacity.current, {
-      toValue: isVisible ? 1 : 0,
+      toValue: frameViewVisible ? 1 : 0,
       duration: 300,
       useNativeDriver: false
     }).start();
 
-    if (isVisible) {
+    if (frameViewVisible) {
       setIsBackdropVisible(true);
     }
 
     Animated.timing(backdropOpacity.current, {
-      toValue: isVisible ? 0.7 : 0,
+      toValue: frameViewVisible ? 0.7 : 0,
       duration: 300,
       useNativeDriver: false
-    }).start(() => setIsBackdropVisible(isVisible));
-  }, [animatedHeight, backdropOpacity, isVisible, setIsBackdropVisible]);
+    }).start(() => setIsBackdropVisible(frameViewVisible));
+  }, [animatedHeight, backdropOpacity, frameViewVisible, setIsBackdropVisible]);
 
   useEffect(() => {
-    provider?.setWebviewRef(webviewRef);
+    if (provider) {
+      provider.setWebviewRef(webviewRef);
+      provider.onRpcRequest((request: AppKitFrameTypes.RPCRequest) => {
+        if (AppKitFrameHelpers.checkIfRequestExists(request)) {
+          if (!AppKitFrameHelpers.checkIfRequestIsAllowed(request)) {
+            WebviewController.setFrameViewVisible(true);
+          }
+        }
+      });
+
+      provider.onRpcSuccess((_, request) => {
+        const isSafeRequest = AppKitFrameHelpers.checkIfRequestIsSafe(request);
+        if (isSafeRequest) {
+          return;
+        }
+
+        if (RouterController.state.transactionStack.length === 0) {
+          ModalController.close();
+        } else {
+          RouterController?.popTransactionStack();
+        }
+        WebviewController.setFrameViewVisible(false);
+      });
+
+      provider.onRpcError(() => {
+        if (ModalController.state.open) {
+          if (RouterController.state.transactionStack.length === 0) {
+            ModalController.close();
+          } else {
+            RouterController?.popTransactionStack(true);
+          }
+        }
+        WebviewController.setFrameViewVisible(false);
+      });
+
+      provider.onIsConnected(({ smartAccountDeployed, preferredAccountType }) => {
+        provider.getSmartAccountEnabledNetworks();
+        AccountController.setPreferredAccountType(preferredAccountType);
+        AccountController.setSmartAccountDeployed(smartAccountDeployed);
+        ConnectorController.setAuthLoading(false);
+        ModalController.setLoading(false);
+      });
+
+      provider.onNotConnected(() => {
+        ConnectorController.setAuthLoading(false);
+        ModalController.setLoading(false);
+        if (ConnectorController.state.connectedConnector === 'AUTH') {
+          ConnectionController.disconnect();
+        }
+      });
+
+      provider.onGetSmartAccountEnabledNetworks(({ smartAccountEnabledNetworks }) => {
+        return NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks);
+      });
+    }
   }, [provider, webviewRef]);
 
   return provider ? (
@@ -153,19 +199,25 @@ export function AuthWebview() {
                     '--w3m-background': Theme['bg-100']
                   }
                 });
-                provider?.syncDappData?.({ projectId, sdkVersion });
+                provider?.syncDappData?.({ projectId, sdkVersion, sdkType });
                 provider?.onWebviewLoaded();
+                provider?.isConnected();
               }, 1500);
             }
           }}
           onError={({ nativeEvent }) => {
             provider?.onWebviewLoadError(nativeEvent.description);
           }}
+          onHttpError={() => {
+            SnackController.showInternalError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
+          }}
         />
       </AnimatedSafeAreaView>
     </>
   ) : null;
 }
+
+export const AuthWebview = memo(_AuthWebview);
 
 const styles = StyleSheet.create({
   backdrop: {

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { Spacing } from '../../utils/ThemeUtil';
+import { BorderRadius, Spacing } from '../../utils/ThemeUtil';
 
 export default StyleSheet.create({
   container: {
@@ -7,11 +7,11 @@ export default StyleSheet.create({
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderRadius: 100,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: BorderRadius.full,
     paddingHorizontal: Spacing['2xs']
   },
-  text: {
+  children: {
     paddingHorizontal: Spacing['2xs']
   },
   loader: {
@@ -20,7 +20,7 @@ export default StyleSheet.create({
   image: {
     height: 24,
     width: 24,
-    borderRadius: 100,
+    borderRadius: BorderRadius.full,
     borderWidth: 2,
     paddingLeft: Spacing['4xs']
   },

@@ -1,4 +1,4 @@
-import { Animated, Pressable, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Animated, Pressable, type StyleProp, type ViewStyle, View } from 'react-native';
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import { useTheme } from '../../hooks/useTheme';
@@ -6,9 +6,9 @@ import type { IconType, TagType } from '../../utils/TypesUtil';
 import { Tag } from '../wui-tag';
 import { WalletImage } from '../wui-wallet-image';
 import { Icon } from '../../components/wui-icon';
+import { IconBox } from '../wui-icon-box';
 
 import styles from './styles';
-import { IconBox } from '../wui-icon-box';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 

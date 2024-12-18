@@ -91,14 +91,36 @@ export type ColorType =
   | 'error-100'
   | 'fg-100'
   | 'fg-150'
+  | 'fg-175'
   | 'fg-200'
   | 'fg-250'
   | 'fg-275'
   | 'fg-300'
+  | 'bg-100'
+  | 'bg-125'
+  | 'bg-150'
+  | 'bg-175'
+  | 'bg-200'
+  | 'bg-225'
+  | 'bg-250'
+  | 'bg-275'
+  | 'bg-300'
+  | 'accent-glass-020'
+  | 'accent-glass-015'
+  | 'accent-glass-010'
+  | 'accent-glass-005'
   | 'gray-glass-020'
+  | 'gray-glass-010'
+  | 'gray-glass-005'
   | 'inverse-000'
   | 'inverse-100'
-  | 'success-100';
+  | 'success-100'
+  | 'teal-100'
+  | 'magenta-100'
+  | 'indigo-100'
+  | 'orange-100'
+  | 'purple-100'
+  | 'yellow-100';
 
 export type SizeType = 'xl' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
 
@@ -112,6 +134,7 @@ export type IconType =
   | 'allWallets'
   | 'apple'
   | 'arrowBottom'
+  | 'arrowBottomCircle'
   | 'arrowLeft'
   | 'arrowRight'
   | 'arrowTop'
@@ -136,6 +159,8 @@ export type IconType =
   | 'extension'
   | 'externalLink'
   | 'facebook'
+  | 'farcaster'
+  | 'farcasterSquare'
   | 'filters'
   | 'github'
   | 'google'
@@ -143,9 +168,11 @@ export type IconType =
   | 'infoCircle'
   | 'mail'
   | 'mobile'
+  | 'more'
   | 'networkPlaceholder'
   | 'nftPlaceholder'
   | 'off'
+  | 'paperplane'
   | 'qrCode'
   | 'refresh'
   | 'search'
@@ -153,14 +180,14 @@ export type IconType =
   | 'swapVertical'
   | 'telegram'
   | 'twitch'
-  | 'twitter'
-  | 'twitterIcon'
   | 'verify'
   | 'wallet'
   | 'walletSmall'
   | 'walletConnect'
+  | 'walletConnectLightBrown'
   | 'walletPlaceholder'
-  | 'warningCircle';
+  | 'warningCircle'
+  | 'x';
 
 export type VisualType =
   | 'browser'
@@ -168,12 +195,15 @@ export type VisualType =
   | 'defi'
   | 'defiAlt'
   | 'eth'
+  | 'google'
   | 'layers'
+  | 'lightbulb'
   | 'lock'
   | 'login'
   | 'network'
   | 'nft'
   | 'noun'
+  | 'pencil'
   | 'profile'
   | 'system';
 
@@ -181,11 +211,14 @@ export type LogoType =
   | 'apple'
   | 'discord'
   | 'facebook'
+  | 'farcaster'
+  | 'farcasterSquare'
   | 'github'
   | 'google'
+  | 'more'
   | 'telegram'
   | 'twitch'
-  | 'twitter';
+  | 'x';
 
 export type TagType = 'main' | 'shade' | 'error' | 'success';
 
@@ -193,7 +226,7 @@ export type CardSelectType = 'wallet' | 'network';
 
 export type TabOptionType = {
   icon: IconType;
-  label: string;
+  label?: string;
 };
 
 export type SpacingType =
@@ -238,3 +271,22 @@ export type TruncateOptions = {
   charsEnd: number;
   truncate: TruncateType;
 };
+
+export type TransactionType =
+  | 'approve'
+  | 'bought'
+  | 'borrow'
+  | 'burn'
+  | 'cancel'
+  | 'claim'
+  | 'deploy'
+  | 'deposit'
+  | 'execute'
+  | 'mint'
+  | 'receive'
+  | 'repay'
+  | 'send'
+  | 'stake'
+  | 'trade'
+  | 'unstake'
+  | 'withdraw';

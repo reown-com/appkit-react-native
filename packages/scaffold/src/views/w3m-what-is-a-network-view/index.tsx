@@ -3,7 +3,7 @@ import { Button, FlexView, Text, Visual } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
-export function WhatIsNetworkView() {
+export function WhatIsANetworkView() {
   const { padding } = useCustomDimensions();
   const onLearnMorePress = () => {
     Linking.openURL('https://ethereum.org/en/developers/docs/networks/');

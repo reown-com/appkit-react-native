@@ -11,8 +11,10 @@ import {
   type Platform,
   OptionsController,
   ApiController,
-  EventsController
+  EventsController,
+  ConnectorController
 } from '@reown/appkit-core-react-native';
+import { SIWEController } from '@reown/appkit-siwe-react-native';
 
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
 import { ConnectingMobile } from '../../partials/w3m-connecting-mobile';
@@ -22,7 +24,7 @@ import { UiUtil } from '../../utils/UiUtil';
 
 export function ConnectingView() {
   const { installed } = useSnapshot(ApiController.state);
-  const { data } = useSnapshot(RouterController.state);
+  const { data } = RouterController.state;
   const [lastRetry, setLastRetry] = useState(Date.now());
   const isQr = !data?.wallet;
   const isInstalled = !!installed?.find(wallet => wallet.id === data?.wallet?.id);
@@ -48,10 +50,10 @@ export function ConnectingView() {
         ConnectionController.setWcError(false);
         ConnectionController.connectWalletConnect(routeData?.wallet?.link_mode ?? undefined);
         await ConnectionController.state.wcPromise;
+        ConnectorController.setConnectedConnector('WALLET_CONNECT');
         AccountController.setIsConnected(true);
 
         if (OptionsController.state.isSiweEnabled) {
-          const { SIWEController } = await import('@reown/appkit-siwe-react-native');
           if (SIWEController.state.status === 'success') {
             ModalController.close();
           } else {

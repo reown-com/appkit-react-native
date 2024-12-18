@@ -5,7 +5,7 @@ import { Image } from '../../components/wui-image';
 import { LoadingSpinner } from '../../components/wui-loading-spinner';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import { useTheme } from '../../hooks/useTheme';
-import type { IconType } from '../../utils/TypesUtil';
+import type { ColorType, IconType } from '../../utils/TypesUtil';
 import { IconBox } from '../wui-icon-box';
 import styles from './styles';
 
@@ -13,8 +13,9 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface ListItemProps {
   icon?: IconType;
-  iconVariant?: 'blue' | 'overlay';
-  variant?: 'image' | 'icon';
+  iconColor?: ColorType;
+  iconBackgroundColor?: ColorType;
+  iconBorderColor?: ColorType;
   imageSrc?: string;
   imageHeaders?: Record<string, string>;
   chevron?: boolean;
@@ -23,21 +24,24 @@ export interface ListItemProps {
   onPress?: () => void;
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
+  contentStyle?: StyleProp<ViewStyle>;
   testID?: string;
 }
 
 export function ListItem({
   children,
   icon,
-  variant,
   imageSrc,
   imageHeaders,
-  iconVariant = 'blue',
+  iconColor = 'fg-200',
+  iconBackgroundColor,
+  iconBorderColor = 'gray-glass-005',
   chevron,
   loading,
   disabled,
   onPress,
   style,
+  contentStyle,
   testID
 }: ListItemProps) {
   const Theme = useTheme();
@@ -47,7 +51,7 @@ export function ListItem({
   );
 
   function visualTemplate() {
-    if (variant === 'image' && imageSrc) {
+    if (imageSrc) {
       return (
         <View style={[styles.imageContainer, { borderColor: Theme['gray-glass-005'] }]}>
           <Image
@@ -57,18 +61,15 @@ export function ListItem({
           />
         </View>
       );
-    } else if (variant === 'icon' && icon) {
-      const iconColor = iconVariant === 'blue' ? 'accent-100' : 'fg-200';
-      const borderColor = iconVariant === 'blue' ? 'accent-glass-005' : 'gray-glass-005';
-
+    } else if (icon) {
       return (
-        <View style={[styles.imageContainer, { borderColor: Theme[borderColor] }]}>
+        <View style={[styles.imageContainer, { borderColor: Theme[iconBorderColor] }]}>
           <IconBox
             icon={icon}
             iconColor={iconColor}
             size="md"
             background
-            backgroundColor="gray-glass-010"
+            backgroundColor={iconBackgroundColor}
           />
         </View>
       );
@@ -81,7 +82,7 @@ export function ListItem({
     if (loading) {
       return <LoadingSpinner color="fg-200" size="lg" style={styles.rightIcon} />;
     } else if (chevron) {
-      return <Icon name="chevronRight" size="md" color="fg-150" style={styles.rightIcon} />;
+      return <Icon name="chevronRight" size="md" color="fg-200" style={styles.rightIcon} />;
     }
 
     return null;
@@ -101,7 +102,7 @@ export function ListItem({
       testID={testID}
     >
       {visualTemplate()}
-      <View style={styles.content}>{children}</View>
+      <View style={[styles.content, contentStyle]}>{children}</View>
       {rightTemplate()}
     </AnimatedPressable>
   );

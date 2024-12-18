@@ -2,59 +2,112 @@ import { useSnapshot } from 'valtio';
 import {
   RouterController,
   ModalController,
-  EventsController
+  EventsController,
+  type RouterControllerState,
+  ConnectionController,
+  ConnectorController,
+  type AppKitFrameProvider
 } from '@reown/appkit-core-react-native';
 import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
+import { StringUtil } from '@reown/appkit-common-react-native';
+
+import styles from './styles';
 
 export function Header() {
-  const { view, history } = useSnapshot(RouterController.state);
-
+  const { data, view } = useSnapshot(RouterController.state);
   const onHelpPress = () => {
     RouterController.push('WhatIsAWallet');
     EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' });
   };
 
-  const headings = () => {
-    const connectorName = RouterController.state.data?.connector?.name;
-    const walletName = RouterController.state.data?.wallet?.name;
-    const networkName = RouterController.state.data?.network?.name;
+  const headings = (_data: RouterControllerState['data'], _view: RouterControllerState['view']) => {
+    const connectorName = _data?.connector?.name;
+    const walletName = _data?.wallet?.name;
+    const networkName = _data?.network?.name;
+    const socialName = ConnectionController.state.selectedSocialProvider
+      ? StringUtil.capitalize(ConnectionController.state.selectedSocialProvider)
+      : undefined;
 
     return {
-      Connect: 'Connect wallet',
       Account: undefined,
-      ConnectingWalletConnect: walletName ?? 'WalletConnect',
-      ConnectingExternal: connectorName ?? 'Connect wallet',
-      ConnectingSiwe: 'Sign In',
-      Networks: 'Select network',
-      SwitchNetwork: networkName ?? 'Switch network',
+      AccountDefault: undefined,
       AllWallets: 'All wallets',
-      WhatIsANetwork: 'What is a network?',
-      WhatIsAWallet: 'What is a wallet?',
-      GetWallet: 'Get a wallet',
+      Connect: 'Connect wallet',
+      ConnectSocials: 'All socials',
+      ConnectingExternal: connectorName ?? 'Connect wallet',
+      ConnectingSiwe: undefined,
+      ConnectingFarcaster: socialName ?? 'Connecting Social',
+      ConnectingSocial: socialName ?? 'Connecting Social',
+      ConnectingWalletConnect: walletName ?? 'WalletConnect',
+      Create: 'Create wallet',
       EmailVerifyDevice: ' ',
       EmailVerifyOtp: 'Confirm email',
-      UpdateEmailWallet: 'Edit email',
+      GetWallet: 'Get a wallet',
+      Networks: 'Select network',
+      SwitchNetwork: networkName ?? 'Switch network',
+      Transactions: 'Activity',
       UpdateEmailPrimaryOtp: 'Confirm current email',
       UpdateEmailSecondaryOtp: 'Confirm new email',
-      UpgradeEmailWallet: 'Upgrade wallet'
-    };
+      UpdateEmailWallet: 'Edit email',
+      UpgradeEmailWallet: 'Upgrade wallet',
+      UpgradeToSmartAccount: undefined,
+      WalletCompatibleNetworks: 'Compatible networks',
+      WalletReceive: 'Receive',
+      WalletSend: 'Send',
+      WalletSendPreview: 'Review send',
+      WalletSendSelectToken: 'Select token',
+      WhatIsANetwork: 'What is a network?',
+      WhatIsAWallet: 'What is a wallet?'
+    }[_view];
   };
 
-  const header = headings()[view];
+  const header = headings(data, view);
+
+  const checkSocial = () => {
+    if (
+      RouterController.state.view === 'ConnectingFarcaster' ||
+      RouterController.state.view === 'ConnectingSocial'
+    ) {
+      const socialProvider = ConnectionController.state.selectedSocialProvider;
+      const authProvider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
+
+      if (authProvider && socialProvider === 'farcaster') {
+        // TODO: remove this once Farcaster session refresh is implemented
+        // @ts-expect-error
+        authProvider.webviewRef?.current?.reload();
+      }
+
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SOCIAL_LOGIN_CANCELED',
+        properties: { provider: ConnectionController.state.selectedSocialProvider! }
+      });
+    }
+  };
+
+  const handleGoBack = () => {
+    checkSocial();
+    RouterController.goBack();
+  };
+
+  const handleClose = () => {
+    checkSocial();
+    ModalController.close();
+  };
 
   const dynamicButtonTemplate = () => {
-    const hideBackViews = ['ConnectingSiwe'];
-    const showBack = history.length > 1 && !hideBackViews.includes(view);
+    const noButtonViews = ['ConnectingSiwe'];
+
+    if (noButtonViews.includes(RouterController.state.view)) {
+      return <FlexView style={styles.iconPlaceholder} />;
+    }
+
+    const showBack = RouterController.state.history.length > 1;
 
     return showBack ? (
-      <IconLink
-        icon="chevronLeft"
-        size="md"
-        onPress={RouterController.goBack}
-        testID="button-back"
-      />
+      <IconLink icon="chevronLeft" size="md" onPress={handleGoBack} testID="button-back" />
     ) : (
-      <IconLink icon="helpCircle" size="md" onPress={onHelpPress} testID="button-help" />
+      <IconLink icon="helpCircle" size="md" onPress={onHelpPress} testID="help-button" />
     );
   };
 
@@ -70,10 +123,10 @@ export function Header() {
       padding={['l', 'xl', bottomPadding, 'xl']}
     >
       {dynamicButtonTemplate()}
-      <Text variant="paragraph-600" numberOfLines={1}>
+      <Text variant="paragraph-600" numberOfLines={1} testID="header-text">
         {header}
       </Text>
-      <IconLink icon="close" size="md" onPress={ModalController.close} testID="button-close" />
+      <IconLink icon="close" size="md" onPress={handleClose} testID="header-close" />
     </FlexView>
   );
 }

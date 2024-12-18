@@ -1,4 +1,3 @@
-import { useSnapshot } from 'valtio';
 import { useState } from 'react';
 import {
   ConnectionController,
@@ -15,7 +14,7 @@ import { OtpCodeView } from '../../partials/w3m-otp-code';
 
 export function EmailVerifyOtpView() {
   const { timeLeft, startTimer } = useTimeout(0);
-  const { data } = useSnapshot(RouterController.state);
+  const { data } = RouterController.state;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const authConnector = ConnectorController.getAuthConnector();

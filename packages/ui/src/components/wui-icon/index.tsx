@@ -5,6 +5,7 @@ import type { ColorType, IconType, SizeType, ThemeKeys } from '../../utils/Types
 import AllWalletsSvg from '../../assets/svg/AllWallets';
 import AppleSvg from '../../assets/svg/Apple';
 import ArrowBottomSvg from '../../assets/svg/ArrowBottom';
+import ArrowBottomCircleSvg from '../../assets/svg/ArrowBottomCircle';
 import ArrowLeftSvg from '../../assets/svg/ArrowLeft';
 import ArrowRightSvg from '../../assets/svg/ArrowRight';
 import ArrowTopSvg from '../../assets/svg/ArrowTop';
@@ -29,6 +30,8 @@ import EtherscanSvg from '../../assets/svg/Etherscan';
 import ExtensionSvg from '../../assets/svg/Extension';
 import ExternalLinkSvg from '../../assets/svg/ExternalLink';
 import FacebookSvg from '../../assets/svg/Facebook';
+import FarcasterSvg from '../../assets/svg/Farcaster';
+import FarcasterSquareSvg from '../../assets/svg/FarcasterSquare';
 import FiltersSvg from '../../assets/svg/Filters';
 import GithubSvg from '../../assets/svg/Github';
 import GoogleSvg from '../../assets/svg/Google';
@@ -36,24 +39,25 @@ import HelpCircleSvg from '../../assets/svg/HelpCircle';
 import InfoCircleSvg from '../../assets/svg/InfoCircle';
 import MailSvg from '../../assets/svg/Mail';
 import MobileSvg from '../../assets/svg/Mobile';
+import MoreSvg from '../../assets/svg/More';
 import NetworkPlaceholderSvg from '../../assets/svg/NetworkPlaceholder';
 import NftPlaceholderSvg from '../../assets/svg/NftPlaceholder';
 import OffSvg from '../../assets/svg/Off';
+import PaperplaneSvg from '../../assets/svg/Paperplane';
 import QrCodeSvg from '../../assets/svg/QrCode';
 import RefreshSvg from '../../assets/svg/Refresh';
 import SearchSvg from '../../assets/svg/Search';
 import SwapHorizontalSvg from '../../assets/svg/SwapHorizontal';
 import SwapVerticalSvg from '../../assets/svg/SwapVertical';
 import TelegramSvg from '../../assets/svg/Telegram';
-import TwitterSvg from '../../assets/svg/Twitter';
+import TwitchSvg from '../../assets/svg/Twitch';
 import VerifySvg from '../../assets/svg/Verify';
-import WalletConnectSvg from '../../assets/svg/WalletConnect';
+import WalletConnectSvg, { WalletConnectLightBrownSvg } from '../../assets/svg/WalletConnect';
 import WalletSvg from '../../assets/svg/Wallet';
 import WalletSmallSvg from '../../assets/svg/WalletSmall';
 import WarningCircleSvg from '../../assets/svg/WarningCircle';
-import TwitchSvg from '../../assets/svg/Twitch';
-import TwitterIconSvg from '../../assets/svg/TwitterIcon';
 import WalletPlaceholderSvg from '../../assets/svg/WalletPlaceholder';
+import XSvg from '../../assets/svg/X';
 import { useTheme } from '../../hooks/useTheme';
 import { IconSize } from '../../utils/ThemeUtil';
 
@@ -61,6 +65,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   allWallets: AllWalletsSvg,
   apple: AppleSvg,
   arrowBottom: ArrowBottomSvg,
+  arrowBottomCircle: ArrowBottomCircleSvg,
   arrowLeft: ArrowLeftSvg,
   arrowRight: ArrowRightSvg,
   arrowTop: ArrowTopSvg,
@@ -85,6 +90,8 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   extension: ExtensionSvg,
   externalLink: ExternalLinkSvg,
   facebook: FacebookSvg,
+  farcaster: FarcasterSvg,
+  farcasterSquare: FarcasterSquareSvg,
   filters: FiltersSvg,
   github: GithubSvg,
   google: GoogleSvg,
@@ -92,9 +99,11 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   infoCircle: InfoCircleSvg,
   mail: MailSvg,
   mobile: MobileSvg,
+  more: MoreSvg,
   networkPlaceholder: NetworkPlaceholderSvg,
   nftPlaceholder: NftPlaceholderSvg,
   off: OffSvg,
+  paperplane: PaperplaneSvg,
   qrCode: QrCodeSvg,
   refresh: RefreshSvg,
   search: SearchSvg,
@@ -102,19 +111,19 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   swapVertical: SwapVerticalSvg,
   telegram: TelegramSvg,
   twitch: TwitchSvg,
-  twitter: TwitterSvg,
-  twitterIcon: TwitterIconSvg,
   verify: VerifySvg,
   wallet: WalletSvg,
   walletSmall: WalletSmallSvg,
   warningCircle: WarningCircleSvg,
   walletConnect: WalletConnectSvg,
-  walletPlaceholder: WalletPlaceholderSvg
+  walletConnectLightBrown: WalletConnectLightBrownSvg,
+  walletPlaceholder: WalletPlaceholderSvg,
+  x: XSvg
 };
 
 export type IconProps = SvgProps & {
   name: IconType;
-  size?: Exclude<SizeType, 'xl'>;
+  size?: SizeType;
   color?: ColorType;
   style?: SvgProps['style'];
 };

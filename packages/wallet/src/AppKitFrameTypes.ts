@@ -48,15 +48,25 @@ import {
   FrameSession,
   AppGetUserRequest,
   AppUpdateEmailRequest,
-  FrameUpdateEmailSecondaryOtpResolver,
+  FrameUpdateEmailSecondaryOtpResponse,
   AppUpdateEmailPrimaryOtpRequest,
   AppUpdateEmailSecondaryOtpRequest,
   AppSyncThemeRequest,
   RpcEthChainId,
   FrameSwitchNetworkResponse,
   AppSyncDappDataRequest,
-  FrameUpdateEmailResponse
+  FrameUpdateEmailResponse,
+  FrameGetSocialRedirectUriResponse,
+  FrameConnectSocialResponse,
+  AppGetSocialRedirectUriRequest,
+  AppConnectSocialRequest,
+  FrameGetFarcasterUriResponse,
+  FrameConnectFarcasterResponse,
+  AppSetPreferredAccountRequest,
+  FrameSetPreferredAccountResponse,
+  FrameGetSmartAccountEnabledNetworksResponse
 } from './AppKitFrameSchema';
+import type { AppKitFrameRpcConstants } from './AppKitFrameConstants';
 
 export namespace AppKitFrameTypes {
   export type AppEvent = z.infer<typeof AppKitFrameSchema.appEvent>;
@@ -73,6 +83,10 @@ export namespace AppKitFrameTypes {
     AppSyncDappDataRequest: z.infer<typeof AppSyncDappDataRequest>;
     AppUpdateEmailPrimaryOtpRequest: z.infer<typeof AppUpdateEmailPrimaryOtpRequest>;
     AppUpdateEmailSecondaryOtpRequest: z.infer<typeof AppUpdateEmailSecondaryOtpRequest>;
+    AppGetSocialRedirectUriRequest: z.infer<typeof AppGetSocialRedirectUriRequest>;
+    AppConnectSocialRequest: z.infer<typeof AppConnectSocialRequest>;
+    AppSetPreferredAccountRequest: z.infer<typeof AppSetPreferredAccountRequest>;
+    AppGetSmartAccountEnabledNetworksRequest: undefined;
   }
 
   export interface Responses {
@@ -80,9 +94,24 @@ export namespace AppKitFrameTypes {
     FrameGetChainIdResponse: z.infer<typeof FrameGetChainIdResponse>;
     FrameGetUserResponse: z.infer<typeof FrameGetUserResponse>;
     FrameIsConnectedResponse: z.infer<typeof FrameIsConnectedResponse>;
-    FrameUpdateEmailSecondaryOtpResolver: z.infer<typeof FrameUpdateEmailSecondaryOtpResolver>;
     FrameSwitchNetworkResponse: z.infer<typeof FrameSwitchNetworkResponse>;
     FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>;
+    FrameConnectOtpResponse: undefined;
+    FrameGetSocialRedirectUriResponse: z.infer<typeof FrameGetSocialRedirectUriResponse>;
+    FrameConnectSocialResponse: z.infer<typeof FrameConnectSocialResponse>;
+    FrameGetFarcasterUriResponse: z.infer<typeof FrameGetFarcasterUriResponse>;
+    FrameConnectFarcasterResponse: z.infer<typeof FrameConnectFarcasterResponse>;
+    FrameSyncThemeResponse: undefined;
+    FrameSyncDappDataResponse: undefined;
+    FrameUpdateEmailPrimaryOtpResponse: undefined;
+    FrameUpdateEmailSecondaryOtpResponse: z.infer<typeof FrameUpdateEmailSecondaryOtpResponse>;
+    FrameConnectDeviceResponse: undefined;
+    FrameSignOutResponse: undefined;
+    FrameGetSmartAccountEnabledNetworksResponse: z.infer<
+      typeof FrameGetSmartAccountEnabledNetworksResponse
+    >;
+    FrameSetPreferredAccountResponse: z.infer<typeof FrameSetPreferredAccountResponse>;
+    FrameRpcResponse: RPCResponse;
   }
 
   export interface Network {
@@ -139,4 +168,29 @@ export namespace AppKitFrameTypes {
   export type RPCResponse = z.infer<typeof RpcResponse>;
 
   export type FrameSessionType = z.infer<typeof FrameSession>;
+
+  export type AccountType =
+    (typeof AppKitFrameRpcConstants.ACCOUNT_TYPES)[keyof typeof AppKitFrameRpcConstants.ACCOUNT_TYPES];
+
+  export type ProviderRequestType =
+    | 'GetUser'
+    | 'ConnectDevice'
+    | 'ConnectEmail'
+    | 'ConnectFarcaster'
+    | 'ConnectSocial'
+    | 'ConnectOtp'
+    | 'GetFarcasterUri'
+    | 'GetSocialRedirectUri'
+    | 'SwitchNetwork'
+    | 'UpdateEmail'
+    | 'SyncTheme'
+    | 'SyncDappData'
+    | 'UpdateEmailPrimaryOtp'
+    | 'UpdateEmailSecondaryOtp'
+    | 'GetChainId'
+    | 'GetSmartAccountEnabledNetworks'
+    | 'SetPreferredAccount'
+    | 'IsConnected'
+    | 'SignOut'
+    | 'Rpc';
 }

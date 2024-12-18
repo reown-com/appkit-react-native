@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSnapshot } from 'valtio';
 import {
   ConnectionController,
   ConnectorController,
@@ -17,7 +16,6 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function AllWalletsView() {
   const Theme = useTheme();
-  const { connectors } = useSnapshot(ConnectorController.state);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { maxWidth } = useCustomDimensions();
   const numColumns = 4;
@@ -27,7 +25,7 @@ export function AllWalletsView() {
   const onInputChange = useDebounceCallback({ callback: setSearchQuery });
 
   const onWalletPress = (wallet: WcWallet) => {
-    const connector = connectors.find(c => c.explorerId === wallet.id);
+    const connector = ConnectorController.state.connectors.find(c => c.explorerId === wallet.id);
     if (connector) {
       RouterController.push('ConnectingExternal', { connector, wallet });
     } else {
@@ -61,10 +59,10 @@ export function AllWalletsView() {
         alignItems="center"
         style={[
           styles.header,
-          { backgroundColor: Theme['bg-125'], shadowColor: Theme['bg-125'], width: maxWidth }
+          { backgroundColor: Theme['bg-100'], shadowColor: Theme['bg-100'], width: maxWidth }
         ]}
       >
-        <SearchBar onChangeText={onInputChange} testID="input-search" />
+        <SearchBar onChangeText={onInputChange} />
         <IconLink
           icon="qrCode"
           iconColor="accent-100"

@@ -13,9 +13,12 @@ import {
   ModalController,
   OptionsController,
   RouterController,
+  TransactionsController,
   type CaipAddress,
-  type AppKitFrameProvider
+  type AppKitFrameProvider,
+  WebviewController
 } from '@reown/appkit-core-react-native';
+import { SIWEController } from '@reown/appkit-siwe-react-native';
 
 import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
@@ -25,20 +28,20 @@ import styles from './styles';
 
 export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
-  const { history, view } = useSnapshot(RouterController.state);
-  const { connectors } = useSnapshot(ConnectorController.state);
+  const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
-  const { isSiweEnabled } = OptionsController.state;
+  const { frameViewVisible, webviewVisible } = useSnapshot(WebviewController.state);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
   const portraitHeight = height - 120;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
   const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
-  const modalCoverScreen = view !== 'ConnectingSiwe';
   const AuthView = authProvider?.AuthView;
+  const SocialView = authProvider?.Webview;
+  const showAuth = !connectedConnector || connectedConnector === 'AUTH';
 
   const onBackButtonPress = () => {
-    if (history.length > 1) {
+    if (RouterController.state.history.length > 1) {
       return RouterController.goBack();
     }
 
@@ -51,10 +54,8 @@ export function AppKit() {
   };
 
   const handleClose = async () => {
-    if (isSiweEnabled) {
-      const { SIWEController } = await import('@reown/appkit-siwe-react-native');
-
-      if (SIWEController.state.status !== 'success' && isConnected) {
+    if (OptionsController.state.isSiweEnabled) {
+      if (SIWEController.state.status !== 'success' && AccountController.state.isConnected) {
         await ConnectionController.disconnect();
       }
     }
@@ -66,10 +67,13 @@ export function AppKit() {
         return;
       }
 
-      if (isSiweEnabled) {
-        const newAddress = CoreHelperUtil.getPlainAddress(address);
+      const newAddress = CoreHelperUtil.getPlainAddress(address);
+      TransactionsController.resetTransactions();
+      TransactionsController.fetchTransactions(newAddress, true);
+
+      if (OptionsController.state.isSiweEnabled) {
         const newNetworkId = CoreHelperUtil.getNetworkId(address);
-        const { SIWEController } = await import('@reown/appkit-siwe-react-native');
+
         const { signOutOnAccountChange, signOutOnNetworkChange } =
           SIWEController.state._client?.options ?? {};
         const session = await SIWEController.getSession();
@@ -92,17 +96,14 @@ export function AppKit() {
         }
       }
     },
-    [isSiweEnabled, isConnected, loading]
+    [isConnected, loading]
   );
 
   const onSiweNavigation = () => {
-    const { open: modalOpen } = ModalController.state;
-    if (modalOpen) {
+    if (ModalController.state.open) {
       RouterController.push('ConnectingSiwe');
     } else {
-      ModalController.open({
-        view: 'ConnectingSiwe'
-      });
+      ModalController.open({ view: 'ConnectingSiwe' });
     }
   };
 
@@ -118,7 +119,7 @@ export function AppKit() {
     <>
       <Modal
         style={styles.modal}
-        coverScreen={modalCoverScreen}
+        coverScreen={!frameViewVisible && !webviewVisible}
         isVisible={open}
         useNativeDriver
         statusBarTranslucent
@@ -127,6 +128,7 @@ export function AppKit() {
         onModalHide={handleClose}
         onBackdropPress={ModalController.close}
         onBackButtonPress={onBackButtonPress}
+        testID="w3m-modal"
       >
         <Card style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}>
           <Header />
@@ -134,7 +136,8 @@ export function AppKit() {
           <Snackbar />
         </Card>
       </Modal>
-      {!!authProvider && AuthView && <AuthView />}
+      {!!showAuth && AuthView && <AuthView />}
+      {!!showAuth && SocialView && <SocialView />}
     </>
   );
 }

@@ -1,4 +1,10 @@
-import { SnackController } from '../../index';
+import { OptionsController, SnackController } from '../../index';
+
+// Setup
+OptionsController.state.debug = true;
+
+// eslint-disable-next-line no-console
+console.error = jest.fn();
 
 // -- Tests --------------------------------------------------------------------
 describe('SnackController', () => {
@@ -6,7 +12,8 @@ describe('SnackController', () => {
     expect(SnackController.state).toEqual({
       message: '',
       variant: 'success',
-      open: false
+      open: false,
+      long: false
     });
   });
 
@@ -15,16 +22,18 @@ describe('SnackController', () => {
     expect(SnackController.state).toEqual({
       message: 'Success Msg',
       variant: 'success',
-      open: true
+      open: true,
+      long: false
     });
   });
 
   it('should update state correctly on hide()', () => {
     SnackController.hide();
     expect(SnackController.state).toEqual({
-      message: 'Success Msg',
+      message: '',
       variant: 'success',
-      open: false
+      open: false,
+      long: false
     });
   });
 
@@ -33,7 +42,18 @@ describe('SnackController', () => {
     expect(SnackController.state).toEqual({
       message: 'Error Msg',
       variant: 'error',
-      open: true
+      open: true,
+      long: false
+    });
+  });
+
+  it('should update state correctly on showInternalError()', () => {
+    SnackController.showInternalError({ shortMessage: 'Error Msg', longMessage: 'Error Msg' });
+    expect(SnackController.state).toEqual({
+      message: 'Error Msg',
+      variant: 'error',
+      open: true,
+      long: true
     });
   });
 });

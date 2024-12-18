@@ -14,7 +14,7 @@ export const getThemedButtonStyle = (
 
   if (disabled) {
     return {
-      backgroundColor: variant === 'fill' ? theme['gray-glass-002'] : theme['gray-glass-010'],
+      backgroundColor: variant === 'fill' ? theme['gray-glass-005'] : theme['gray-glass-010'],
       borderColor: theme['gray-glass-002']
     };
   }
@@ -28,7 +28,7 @@ export const getThemedButtonStyle = (
 
   return {
     ...buttonBaseStyle,
-    backgroundColor: variant === 'fill' ? theme['accent-100'] : 'transparent'
+    backgroundColor: variant === 'fill' ? theme['accent-100'] : theme['gray-glass-002']
   };
 };
 
@@ -62,7 +62,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: BorderRadius.xs,
-    borderWidth: 1
+    borderWidth: StyleSheet.hairlineWidth
   },
   smButton: {
     height: 32,

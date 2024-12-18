@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { FlatList, View } from 'react-native';
-import { ApiController, AssetUtil, type WcWallet } from '@reown/appkit-core-react-native';
+import {
+  ApiController,
+  AssetUtil,
+  OptionsController,
+  SnackController,
+  type OptionsControllerState,
+  type WcWallet
+} from '@reown/appkit-core-react-native';
 import {
   CardSelect,
   CardSelectLoader,
@@ -12,6 +19,7 @@ import {
 import styles from './styles';
 import { UiUtil } from '../../utils/UiUtil';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { Placeholder } from '../w3m-placeholder';
 
 interface AllWalletsListProps {
   columns: number;
@@ -21,16 +29,17 @@ interface AllWalletsListProps {
 
 export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsListProps) {
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingError, setLoadingError] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const { maxWidth, padding } = useCustomDimensions();
-  const { installed, featured, recommended, wallets, page, count } = useSnapshot(
-    ApiController.state
-  );
+  const { installed, featured, recommended, wallets } = useSnapshot(ApiController.state);
+  const { customWallets } = useSnapshot(OptionsController.state) as OptionsControllerState;
   const imageHeaders = ApiController._getApiHeaders();
   const preloadedWallets = installed.length + featured.length + recommended.length;
   const loadingItems = columns - ((100 + preloadedWallets) % columns);
 
   const walletList = [
+    ...(customWallets ?? []),
     ...installed,
     ...featured,
     ...recommended,
@@ -58,18 +67,18 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
     );
   };
 
-  const walletTemplate = ({ item, index }: { item: WcWallet; index: number }) => {
-    const isInstalled = installed.find(wallet => wallet?.id === item?.id);
+  const walletTemplate = ({ item }: { item: WcWallet; index: number }) => {
+    const isInstalled = ApiController.state.installed.find(wallet => wallet?.id === item?.id);
     if (!item?.id) {
       return (
-        <View key={index} style={[styles.itemContainer, { width: itemWidth }]}>
+        <View style={[styles.itemContainer, { width: itemWidth }]}>
           <CardSelectLoader />
         </View>
       );
     }
 
     return (
-      <View key={item?.id} style={[styles.itemContainer, { width: itemWidth }]}>
+      <View style={[styles.itemContainer, { width: itemWidth }]}>
         <CardSelect
           imageSrc={AssetUtil.getWalletImage(item)}
           imageHeaders={imageHeaders}
@@ -82,29 +91,55 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
   };
 
   const initialFetch = async () => {
-    setLoading(true);
-    await ApiController.fetchWallets({ page: 1 });
-    UiUtil.createViewTransition();
-    setLoading(false);
+    try {
+      setLoading(true);
+      setLoadingError(false);
+      await ApiController.fetchWallets({ page: 1 });
+      UiUtil.createViewTransition();
+      setLoading(false);
+    } catch (error) {
+      SnackController.showError('Failed to load wallets');
+      setLoading(false);
+      setLoadingError(true);
+    }
   };
 
   const fetchNextPage = async () => {
-    if (walletList.length < count && !pageLoading) {
-      setPageLoading(true);
-      await ApiController.fetchWallets({ page: page + 1 });
+    try {
+      if (walletList.length < ApiController.state.count && !pageLoading) {
+        setPageLoading(true);
+        await ApiController.fetchWallets({ page: ApiController.state.page + 1 });
+        setPageLoading(false);
+      }
+    } catch (error) {
+      SnackController.showError('Failed to load more wallets');
       setPageLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!wallets.length) {
+    if (!ApiController.state.wallets.length) {
       initialFetch();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {
     return loadingTemplate(20);
+  }
+
+  if (loadingError) {
+    return (
+      <Placeholder
+        icon="warningCircle"
+        iconColor="error-100"
+        title="Oops, we couldn’t load the wallets at the moment"
+        description={`This might be due to a temporary network issue.\nPlease try reloading to see if that helps.`}
+        actionIcon="refresh"
+        actionPress={initialFetch}
+        actionTitle="Retry"
+        style={styles.placeholderContainer}
+      />
+    );
   }
 
   return (

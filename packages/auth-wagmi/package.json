@@ -24,18 +24,19 @@
     "react-native",
     "wagmi"
   ],
-  "repository": "https://github.com/WalletConnect/web3modal-react-native",
+  "repository": "https://github.com/reown-com/appkit-react-native",
   "author": "Reown <support@reown.com> (https://reown.com)",
-  "homepage": "https://github.com/WalletConnect/web3modal-react-native",
+  "homepage": "https://reown.com/appkit",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/WalletConnect/web3modal-react-native/issues"
+    "url": "https://github.com/reown-com/appkit-react-native/issues"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
   "dependencies": {
+    "@reown/appkit-core-react-native": "1.0.2",
     "@reown/appkit-wallet-react-native": "1.0.2"
   },
   "peerDependencies": {

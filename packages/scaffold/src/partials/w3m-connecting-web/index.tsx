@@ -28,7 +28,7 @@ interface ConnectingWebProps {
 }
 
 export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
-  const { data } = useSnapshot(RouterController.state);
+  const { data } = RouterController.state;
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
   const showCopy = OptionsController.isClipboardAvailable();
   const bodyMessage = getMessage({

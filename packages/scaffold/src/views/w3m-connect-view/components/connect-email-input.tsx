@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useState } from 'react';
-import { EmailInput, FlexView, Separator, Spacing } from '@reown/appkit-ui-react-native';
+import { EmailInput, FlexView } from '@reown/appkit-ui-react-native';
 import {
   ConnectorController,
   CoreHelperUtil,
@@ -9,15 +9,12 @@ import {
   SnackController,
   type AppKitFrameProvider
 } from '@reown/appkit-core-react-native';
-import { StyleSheet } from 'react-native';
 
 interface Props {
-  isEmailEnabled: boolean;
-  showSeparator: boolean;
   loading?: boolean;
 }
 
-export function ConnectEmailInput({ isEmailEnabled, showSeparator, loading }: Props) {
+export function ConnectEmailInput({ loading }: Props) {
   const { connectors } = useSnapshot(ConnectorController.state);
   const [inputLoading, setInputLoading] = useState(false);
   const [error, setError] = useState('');
@@ -57,29 +54,16 @@ export function ConnectEmailInput({ isEmailEnabled, showSeparator, loading }: Pr
     }
   };
 
-  if (!isEmailEnabled) {
-    return null;
-  }
-
   return (
-    <>
-      <FlexView padding={['0', 's', '0', 's']}>
-        <EmailInput
-          onSubmit={onEmailSubmit}
-          onFocus={onEmailFocus}
-          loading={inputLoading || loading}
-          errorMessage={error}
-          onChangeText={onChangeText}
-          submitEnabled={isValidEmail}
-        />
-      </FlexView>
-      {showSeparator && <Separator text="or" style={styles.emailSeparator} />}
-    </>
+    <FlexView padding={['0', 's', '0', 's']}>
+      <EmailInput
+        onSubmit={onEmailSubmit}
+        onFocus={onEmailFocus}
+        loading={inputLoading || loading}
+        errorMessage={error}
+        onChangeText={onChangeText}
+        submitEnabled={isValidEmail}
+      />
+    </FlexView>
   );
 }
-
-const styles = StyleSheet.create({
-  emailSeparator: {
-    marginVertical: Spacing.xs
-  }
-});

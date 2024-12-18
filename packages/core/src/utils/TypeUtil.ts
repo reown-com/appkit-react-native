@@ -1,3 +1,10 @@
+import { type EventEmitter } from 'events';
+import type { Balance, SocialProvider, Transaction } from '@reown/appkit-common-react-native';
+
+export interface BaseError {
+  message?: string;
+}
+
 export type CaipAddress = `${string}:${string}:${string}`;
 
 export type CaipNetworkId = `${string}:${string}`;
@@ -49,10 +56,32 @@ export type CaipNamespaces = Record<
   }
 >;
 
+export type SdkType = 'appkit';
+
 export type SdkVersion =
   | `react-native-wagmi-${string}`
   | `react-native-ethers5-${string}`
   | `react-native-ethers-${string}`;
+
+type EnabledSocials = Exclude<SocialProvider, 'farcaster'>;
+
+export type Features = {
+  /**
+   * @description Enable or disable the email feature. Enabled by default.
+   * @type {boolean}
+   */
+  email?: boolean;
+  /**
+   * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
+   * @type {boolean}
+   */
+  emailShowWallets?: boolean;
+  /**
+   * @description Enable or disable the socials feature. Enabled by default.
+   * @type {EnabledSocials[]}
+   */
+  socials?: EnabledSocials[] | false;
+};
 
 // -- ApiController Types -------------------------------------------------------
 export interface WcWallet {
@@ -98,6 +127,16 @@ export interface ApiGetAnalyticsConfigResponse {
   isAnalyticsEnabled: boolean;
 }
 
+export type RequestCache =
+  | 'default'
+  | 'force-cache'
+  | 'no-cache'
+  | 'no-store'
+  | 'only-if-cached'
+  | 'reload';
+
+// -- ThemeController Types ---------------------------------------------------
+
 export type ThemeMode = 'dark' | 'light';
 
 export interface ThemeVariables {
@@ -112,6 +151,74 @@ export interface BlockchainApiIdentityRequest {
 export interface BlockchainApiIdentityResponse {
   avatar: string;
   name: string;
+}
+
+export interface BlockchainApiBalanceResponse {
+  balances: Balance[];
+}
+
+export interface BlockchainApiTransactionsRequest {
+  account: string;
+  projectId: string;
+  cursor?: string;
+  onramp?: 'coinbase';
+  signal?: AbortSignal;
+  cache?: RequestCache;
+}
+
+export interface BlockchainApiTransactionsResponse {
+  data: Transaction[];
+  next: string | null;
+}
+
+export interface BlockchainApiTokenPriceRequest {
+  projectId: string;
+  currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth';
+  addresses: string[];
+}
+
+export interface BlockchainApiTokenPriceResponse {
+  fungibles: {
+    name: string;
+    symbol: string;
+    iconUrl: string;
+    price: number;
+  }[];
+}
+
+export interface BlockchainApiGasPriceRequest {
+  projectId: string;
+  chainId: string;
+}
+
+export interface BlockchainApiGasPriceResponse {
+  standard: string;
+  fast: string;
+  instant: string;
+}
+
+export interface BlockchainApiEnsError extends BaseError {
+  status: string;
+  reasons: { name: string; description: string }[];
+}
+
+export type ReownName = `${string}.reown.id` | `${string}.wcn.id`;
+
+export interface BlockchainApiLookupEnsName {
+  name: ReownName;
+  registered: number;
+  updated: number;
+  addresses: Record<
+    string,
+    {
+      address: string;
+      created: string;
+    }
+  >;
+  attributes: {
+    avatar?: string;
+    bio?: string;
+  }[];
 }
 
 // -- OptionsController Types ---------------------------------------------------
@@ -272,40 +379,204 @@ export type Event =
   | {
       type: 'track';
       event: 'CLICK_SIGN_SIWE_MESSAGE';
+      properties: {
+        network: string;
+        isSmartAccount: boolean;
+      };
     }
   | {
       type: 'track';
       event: 'CLICK_CANCEL_SIWE';
+      properties: {
+        network: string;
+        isSmartAccount: boolean;
+      };
     }
   | {
       type: 'track';
       event: 'SIWE_AUTH_SUCCESS';
+      properties: {
+        network: string;
+        isSmartAccount: boolean;
+      };
     }
   | {
       type: 'track';
       event: 'SIWE_AUTH_ERROR';
+      properties: {
+        network: string;
+        isSmartAccount: boolean;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'CLICK_TRANSACTIONS';
+      properties: {
+        isSmartAccount: boolean;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'ERROR_FETCH_TRANSACTIONS';
+      properties: {
+        address: string;
+        projectId: string;
+        cursor: string | undefined;
+        isSmartAccount: boolean;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'LOAD_MORE_TRANSACTIONS';
+      properties: {
+        address: string | undefined;
+        projectId: string;
+        cursor: string | undefined;
+        isSmartAccount: boolean;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'OPEN_SEND';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SEND_INITIATED';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        token: string;
+        amount: number;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SEND_SUCCESS';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        token: string;
+        amount: number;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SEND_ERROR';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        token: string;
+        amount: number;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SOCIAL_LOGIN_STARTED';
+      properties: {
+        provider: SocialProvider;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SOCIAL_LOGIN_SUCCESS';
+      properties: {
+        provider: SocialProvider;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SOCIAL_LOGIN_REQUEST_USER_DATA';
+      properties: {
+        provider: SocialProvider;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SOCIAL_LOGIN_CANCELED';
+      properties: {
+        provider: SocialProvider;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SOCIAL_LOGIN_ERROR';
+      properties: {
+        provider: SocialProvider;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SET_PREFERRED_ACCOUNT_TYPE';
+      properties: {
+        accountType: AppKitFrameAccountType;
+        network: string;
+      };
     };
+
+// -- Send Controller Types -------------------------------------
+
+export interface SendTransactionArgs {
+  to: `0x${string}`;
+  data: `0x${string}`;
+  value: bigint;
+  gas?: bigint;
+  gasPrice: bigint;
+  address: `0x${string}`;
+}
+
+export interface WriteContractArgs {
+  receiverAddress: `0x${string}`;
+  tokenAmount: bigint;
+  tokenAddress: `0x${string}`;
+  fromAddress: `0x${string}`;
+  method: 'send' | 'transfer' | 'call';
+  abi: any;
+}
 
 // -- Email Types ------------------------------------------------
 /**
- * Matches type defined for packages/email/src/AppKitFrameProvider.ts
+ * Matches type defined for packages/wallet/src/AppKitFrameProvider.ts
  * It's duplicated in order to decouple scaffold from email package
  */
+
+export type AppKitFrameAccountType = 'eoa' | 'smartAccount';
+
 export interface AppKitFrameProvider {
   readonly id: string;
   readonly name: string;
+  getEventEmitter(): EventEmitter;
   getSecureSiteURL(): string;
   getSecureSiteDashboardURL(): string;
   getSecureSiteIconURL(): string;
   getSecureSiteHeaders(): Record<string, string>;
-  getLoginEmailUsed(): Promise<boolean>;
   getEmail(): string | undefined;
+  getUsername(): string | undefined;
+  getLastUsedChainId(): Promise<number | undefined>;
   rejectRpcRequest(): void;
   connectEmail(payload: { email: string }): Promise<{
     action: 'VERIFY_DEVICE' | 'VERIFY_OTP';
   }>;
   connectDevice(): Promise<unknown>;
+  connectSocial(uri: string): Promise<{
+    chainId: string | number;
+    email: string;
+    address: string;
+    accounts?: {
+      type: AppKitFrameAccountType;
+      address: string;
+    }[];
+    userName?: string;
+  }>;
+  getSocialRedirectUri(payload: { provider: SocialProvider }): Promise<{
+    uri: string;
+  }>;
   connectOtp(payload: { otp: string }): Promise<unknown>;
+  connectFarcaster: () => Promise<{ userName: string }>;
+  getFarcasterUri(): Promise<{ url: string }>;
   isConnected(): Promise<{
     isConnected: boolean;
   }>;
@@ -326,17 +597,32 @@ export interface AppKitFrameProvider {
   syncDappData(payload: {
     projectId: string;
     sdkVersion: SdkVersion;
+    sdkType: SdkType;
     metadata?: Metadata;
   }): Promise<unknown>;
   connect(payload?: { chainId: number | undefined }): Promise<{
     chainId: number;
-    email: string;
+    email?: string | null;
     address: string;
+    smartAccountDeployed: boolean;
+    preferredAccountType: AppKitFrameAccountType;
   }>;
   switchNetwork(chainId: number): Promise<{
     chainId: number;
   }>;
+  setPreferredAccount(type: AppKitFrameAccountType): Promise<{
+    type: AppKitFrameAccountType;
+    address: string;
+  }>;
+  setOnTimeout(callback: () => void): void;
+  getSmartAccountEnabledNetworks(): Promise<{
+    smartAccountEnabledNetworks: number[];
+  }>;
   disconnect(): Promise<unknown>;
   request(req: any): Promise<any>;
-  AuthView: () => JSX.Element | null;
+  AuthView: () => React.JSX.Element | null;
+  Webview: () => React.JSX.Element | null;
+  onSetPreferredAccount: (
+    callback: (values: { type: AppKitFrameAccountType; address: string }) => void
+  ) => void;
 }

@@ -155,7 +155,8 @@ export const BorderRadius = {
   's': 20,
   'm': 28,
   'l': 36,
-  '3xl': 80
+  '3xl': 80,
+  'full': 100
 };
 
 export const IconSize = {
@@ -163,7 +164,8 @@ export const IconSize = {
   xs: 12,
   sm: 14,
   md: 16,
-  lg: 20
+  lg: 20,
+  xl: 24
 };
 
 export const SpinnerSize = {

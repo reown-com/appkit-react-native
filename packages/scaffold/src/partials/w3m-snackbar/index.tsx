@@ -7,7 +7,7 @@ import { Snackbar as SnackbarComponent } from '@reown/appkit-ui-react-native';
 import styles from './styles';
 
 export function Snackbar() {
-  const { open, message, variant } = useSnapshot(SnackController.state);
+  const { open, message, variant, long } = useSnapshot(SnackController.state);
   const componentOpacity = useMemo(() => new Animated.Value(0), []);
 
   useEffect(() => {
@@ -17,17 +17,20 @@ export function Snackbar() {
         duration: 150,
         useNativeDriver: true
       }).start();
-      setTimeout(() => {
-        Animated.timing(componentOpacity, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true
-        }).start(() => {
-          SnackController.hide();
-        });
-      }, 2200);
+      setTimeout(
+        () => {
+          Animated.timing(componentOpacity, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true
+          }).start(() => {
+            SnackController.hide();
+          });
+        },
+        long ? 15000 : 2200
+      );
     }
-  }, [open, componentOpacity]);
+  }, [open, long, componentOpacity]);
 
   return (
     <SnackbarComponent

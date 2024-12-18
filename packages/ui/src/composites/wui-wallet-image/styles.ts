@@ -32,7 +32,7 @@ export default StyleSheet.create({
     borderRadius: BorderRadius.m
   },
   border: {
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     position: 'absolute'
   }
 });

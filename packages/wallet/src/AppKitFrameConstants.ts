@@ -1,8 +1,8 @@
 export const AppKitFrameConstants = {
   SECURE_SITE_SDK: 'https://secure-mobile.walletconnect.com/mobile-sdk',
   SECURE_SITE_ORIGIN: 'https://secure.walletconnect.com',
-  SECURE_SITE_DASHBOARD: `https://secure.walletconnect.com/dashboard`,
-  SECURE_SITE_ICON: `https://secure.walletconnect.com/images/favicon.png`,
+  SECURE_SITE_DASHBOARD: `https://secure.reown.com/dashboard`,
+  SECURE_SITE_ICON: `https://secure.reown.com/images/favicon.png`,
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',
@@ -13,17 +13,25 @@ export const AppKitFrameConstants = {
   LAST_USED_CHAIN_KEY: 'LAST_USED_CHAIN_KEY',
   LAST_EMAIL_LOGIN_TIME: 'LAST_EMAIL_LOGIN_TIME', // Also present in core/src/utils/StorageUtil.ts
   EMAIL: 'EMAIL',
+  SOCIAL_USERNAME: 'SOCIAL_USERNAME',
+  SMART_ACCOUNT_ENABLED_NETWORKS: 'SMART_ACCOUNT_ENABLED_NETWORKS',
 
   FRAME_MESSAGES_HANDLER: `
   window.addEventListener('message', ({ data, origin }) => {
-    window.ReactNativeWebView.postMessage(JSON.stringify({ ...data, origin }))
-  })
+    window.ReactNativeWebView.postMessage(
+      JSON.stringify({ ...data, origin }, (key, value) =>
+        typeof value === 'bigint' ? value.toString() : value
+      )
+    );
+  });
 `,
 
   APP_SWITCH_NETWORK: '@w3m-app/SWITCH_NETWORK',
   APP_CONNECT_EMAIL: '@w3m-app/CONNECT_EMAIL',
   APP_CONNECT_DEVICE: '@w3m-app/CONNECT_DEVICE',
   APP_CONNECT_OTP: '@w3m-app/CONNECT_OTP',
+  APP_CONNECT_SOCIAL: '@w3m-app/CONNECT_SOCIAL',
+  APP_GET_SOCIAL_REDIRECT_URI: '@w3m-app/GET_SOCIAL_REDIRECT_URI',
   APP_GET_USER: '@w3m-app/GET_USER',
   APP_SIGN_OUT: '@w3m-app/SIGN_OUT',
   APP_IS_CONNECTED: '@w3m-app/IS_CONNECTED',
@@ -35,6 +43,10 @@ export const AppKitFrameConstants = {
   APP_AWAIT_UPDATE_EMAIL: '@w3m-app/AWAIT_UPDATE_EMAIL',
   APP_SYNC_THEME: '@w3m-app/SYNC_THEME',
   APP_SYNC_DAPP_DATA: '@w3m-app/SYNC_DAPP_DATA',
+  APP_CONNECT_FARCASTER: '@w3m-app/CONNECT_FARCASTER',
+  APP_GET_FARCASTER_URI: '@w3m-app/GET_FARCASTER_URI',
+  APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS: '@w3m-app/GET_SMART_ACCOUNT_ENABLED_NETWORKS',
+  APP_SET_PREFERRED_ACCOUNT: '@w3m-app/SET_PREFERRED_ACCOUNT',
 
   FRAME_SWITCH_NETWORK_ERROR: '@w3m-frame/SWITCH_NETWORK_ERROR',
   FRAME_SWITCH_NETWORK_SUCCESS: '@w3m-frame/SWITCH_NETWORK_SUCCESS',
@@ -44,8 +56,16 @@ export const AppKitFrameConstants = {
   FRAME_CONNECT_DEVICE_SUCCESS: '@w3m-frame/CONNECT_DEVICE_SUCCESS',
   FRAME_CONNECT_OTP_SUCCESS: '@w3m-frame/CONNECT_OTP_SUCCESS',
   FRAME_CONNECT_OTP_ERROR: '@w3m-frame/CONNECT_OTP_ERROR',
+  FRAME_CONNECT_SOCIAL_SUCCESS: '@w3m-frame/CONNECT_SOCIAL_SUCCESS',
+  FRAME_CONNECT_SOCIAL_ERROR: '@w3m-frame/CONNECT_SOCIAL_ERROR',
+  FRAME_CONNECT_FARCASTER_SUCCESS: '@w3m-frame/CONNECT_FARCASTER_SUCCESS',
+  FRAME_CONNECT_FARCASTER_ERROR: '@w3m-frame/CONNECT_FARCASTER_ERROR',
+  FRAME_GET_FARCASTER_URI_SUCCESS: '@w3m-frame/GET_FARCASTER_URI_SUCCESS',
+  FRAME_GET_FARCASTER_URI_ERROR: '@w3m-frame/GET_FARCASTER_URI_ERROR',
   FRAME_GET_USER_SUCCESS: '@w3m-frame/GET_USER_SUCCESS',
   FRAME_GET_USER_ERROR: '@w3m-frame/GET_USER_ERROR',
+  FRAME_GET_SOCIAL_REDIRECT_URI_SUCCESS: '@w3m-frame/GET_SOCIAL_REDIRECT_URI_SUCCESS',
+  FRAME_GET_SOCIAL_REDIRECT_URI_ERROR: '@w3m-frame/GET_SOCIAL_REDIRECT_URI_ERROR',
   FRAME_SIGN_OUT_SUCCESS: '@w3m-frame/SIGN_OUT_SUCCESS',
   FRAME_SIGN_OUT_ERROR: '@w3m-frame/SIGN_OUT_ERROR',
   FRAME_IS_CONNECTED_SUCCESS: '@w3m-frame/IS_CONNECTED_SUCCESS',
@@ -64,7 +84,13 @@ export const AppKitFrameConstants = {
   FRAME_SYNC_THEME_SUCCESS: '@w3m-frame/SYNC_THEME_SUCCESS',
   FRAME_SYNC_THEME_ERROR: '@w3m-frame/SYNC_THEME_ERROR',
   FRAME_SYNC_DAPP_DATA_SUCCESS: '@w3m-frame/SYNC_DAPP_DATA_SUCCESS',
-  FRAME_SYNC_DAPP_DATA_ERROR: '@w3m-frame/SYNC_DAPP_DATA_ERROR'
+  FRAME_SYNC_DAPP_DATA_ERROR: '@w3m-frame/SYNC_DAPP_DATA_ERROR',
+  FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS:
+    '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS',
+  FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR:
+    '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR',
+  FRAME_SET_PREFERRED_ACCOUNT_SUCCESS: '@w3m-frame/SET_PREFERRED_ACCOUNT_SUCCESS',
+  FRAME_SET_PREFERRED_ACCOUNT_ERROR: '@w3m-frame/SET_PREFERRED_ACCOUNT_ERROR'
 } as const;
 
 export const AppKitFrameRpcConstants = {
@@ -102,10 +128,22 @@ export const AppKitFrameRpcConstants = {
     'eth_newPendingTransactionFilter',
     'eth_sendRawTransaction',
     'eth_syncing',
-    'eth_uninstallFilter'
+    'eth_uninstallFilter',
+    'wallet_getCapabilities',
+    'wallet_getCallsStatus'
   ],
-  NOT_SAFE_RPC_METHODS: ['personal_sign', 'eth_signTypedData_v4', 'eth_sendTransaction'],
+  NOT_SAFE_RPC_METHODS: [
+    'personal_sign',
+    'eth_signTypedData_v4',
+    'eth_sendTransaction',
+    'wallet_sendCalls',
+    'wallet_grantPermissions'
+  ],
   GET_CHAIN_ID: 'eth_chainId',
   RPC_METHOD_NOT_ALLOWED_MESSAGE: 'Requested RPC call is not allowed',
-  RPC_METHOD_NOT_ALLOWED_UI_MESSAGE: 'Action not allowed'
+  RPC_METHOD_NOT_ALLOWED_UI_MESSAGE: 'Action not allowed',
+  ACCOUNT_TYPES: {
+    EOA: 'eoa',
+    SMART_ACCOUNT: 'smartAccount'
+  } as const
 };

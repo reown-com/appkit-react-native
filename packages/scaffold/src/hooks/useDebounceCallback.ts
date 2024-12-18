@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 
 interface Props {
-  callback: (args: any) => void;
+  callback: ((args: any) => any) | ((args: any) => Promise<any>);
   delay?: number;
 }
 

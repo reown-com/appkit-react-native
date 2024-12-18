@@ -1,52 +1,65 @@
 // -- Controllers -------------------------------------------------------------
-export { ModalController } from './controllers/ModalController';
-export type { ModalControllerArguments, ModalControllerState } from './controllers/ModalController';
+export {
+  ModalController,
+  type ModalControllerArguments,
+  type ModalControllerState
+} from './controllers/ModalController';
 
-export { RouterController } from './controllers/RouterController';
-export type { RouterControllerState } from './controllers/RouterController';
+export { RouterController, type RouterControllerState } from './controllers/RouterController';
 
-export { AccountController } from './controllers/AccountController';
-export type { AccountControllerState } from './controllers/AccountController';
+export { AccountController, type AccountControllerState } from './controllers/AccountController';
 
-export { NetworkController } from './controllers/NetworkController';
-export type {
-  NetworkControllerClient,
-  NetworkControllerState
+export {
+  NetworkController,
+  type NetworkControllerClient,
+  type NetworkControllerState
 } from './controllers/NetworkController';
 
-export { ConnectionController } from './controllers/ConnectionController';
-export type {
-  ConnectionControllerClient,
-  ConnectionControllerState
+export {
+  ConnectionController,
+  type ConnectionControllerClient,
+  type ConnectionControllerState
 } from './controllers/ConnectionController';
 
-export { ConnectorController } from './controllers/ConnectorController';
-export type { ConnectorControllerState } from './controllers/ConnectorController';
+export {
+  ConnectorController,
+  type ConnectorControllerState
+} from './controllers/ConnectorController';
 
-export { SnackController } from './controllers/SnackController';
-export type { SnackControllerState } from './controllers/SnackController';
+export { SnackController, type SnackControllerState } from './controllers/SnackController';
 
-export { ApiController } from './controllers/ApiController';
-export type { ApiControllerState } from './controllers/ApiController';
+export { ApiController, type ApiControllerState } from './controllers/ApiController';
 
-export { AssetController } from './controllers/AssetController';
-export type { AssetControllerState } from './controllers/AssetController';
+export { AssetController, type AssetControllerState } from './controllers/AssetController';
 
-export { ThemeController } from './controllers/ThemeController';
-export type { ThemeControllerState } from './controllers/ThemeController';
+export { ThemeController, type ThemeControllerState } from './controllers/ThemeController';
 
-export { OptionsController } from './controllers/OptionsController';
-export type { OptionsControllerState } from './controllers/OptionsController';
+export { OptionsController, type OptionsControllerState } from './controllers/OptionsController';
 
-export { PublicStateController } from './controllers/PublicStateController';
-export type { PublicStateControllerState } from './controllers/PublicStateController';
+export {
+  PublicStateController,
+  type PublicStateControllerState
+} from './controllers/PublicStateController';
 
 export { BlockchainApiController } from './controllers/BlockchainApiController';
 
-export { EventsController } from './controllers/EventsController';
-export type { EventsControllerState } from './controllers/EventsController';
+export { SwapController, type SwapControllerState } from './controllers/SwapController';
+
+export { EventsController, type EventsControllerState } from './controllers/EventsController';
+
+export { EnsController, type EnsControllerState } from './controllers/EnsController';
+
+export {
+  TransactionsController,
+  type TransactionsControllerState
+} from './controllers/TransactionsController';
+
+export { SendController, type SendControllerState } from './controllers/SendController';
+
+export { WebviewController, type WebviewControllerState } from './controllers/WebviewController';
 
 // -- Utils -------------------------------------------------------------------
+export { ApiUtil } from './utils/ApiUtil';
 export { AssetUtil } from './utils/AssetUtil';
 export { ConstantsUtil } from './utils/ConstantsUtil';
 export { CoreHelperUtil } from './utils/CoreHelperUtil';

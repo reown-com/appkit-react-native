@@ -1,4 +1,3 @@
-import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import {
@@ -24,7 +23,7 @@ import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w
 import styles from './styles';
 
 export function ConnectingExternalView() {
-  const { data } = useSnapshot(RouterController.state);
+  const { data } = RouterController.state;
   const connector = data?.connector;
   const { maxWidth: width } = useCustomDimensions();
   const [errorType, setErrorType] = useState<BodyErrorType>();

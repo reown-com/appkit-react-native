@@ -13,13 +13,19 @@ function useTimeout(delay: number) {
         timeLeftRef.current -= 1;
         setTimeLeft(timeLeftRef.current);
       } else {
-        clearInterval(interval.current);
+        if (typeof interval.current === 'number') {
+          clearInterval(interval.current);
+        }
       }
     }, 1000);
   }, []);
 
   useEffect(() => {
-    return () => clearInterval(interval.current);
+    return () => {
+      if (typeof interval.current === 'number') {
+        clearInterval(interval.current);
+      }
+    };
   }, [interval]);
 
   return { timeLeft, startTimer };

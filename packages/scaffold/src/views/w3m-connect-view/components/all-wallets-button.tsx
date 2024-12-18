@@ -27,7 +27,7 @@ export function AllWalletsButton({ itemStyle, onPress, isWalletConnectEnabled }:
       tagVariant="shade"
       onPress={onPress}
       style={itemStyle}
-      testID="button-all-wallets"
+      testID="all-wallets"
     />
   );
 }

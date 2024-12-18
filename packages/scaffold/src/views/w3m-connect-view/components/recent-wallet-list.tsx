@@ -15,7 +15,7 @@ interface Props {
 }
 
 export function RecentWalletList({ itemStyle, onWalletPress, isWalletConnectEnabled }: Props) {
-  const { installed } = useSnapshot(ApiController.state);
+  const installed = ApiController.state.installed;
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const RECENT_COUNT = recentWallets?.length && installed.length ? 1 : recentWallets?.length ?? 0;

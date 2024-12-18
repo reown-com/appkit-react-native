@@ -23,22 +23,18 @@ export const AppKitFrameHelpers = {
     }
   },
 
-  checkIfRequestExists(request: unknown) {
-    const method = this.getRequestMethod(request);
-
+  checkIfRequestExists(request: AppKitFrameTypes.RPCRequest) {
     return (
-      AppKitFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(method) ||
-      AppKitFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
+      AppKitFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(request.method) ||
+      AppKitFrameRpcConstants.SAFE_RPC_METHODS.includes(request.method)
     );
   },
 
-  getRequestMethod(request: unknown) {
-    return (request as { payload: AppKitFrameTypes.RPCRequest })?.payload?.method;
+  checkIfRequestIsAllowed(request: AppKitFrameTypes.RPCRequest) {
+    return AppKitFrameRpcConstants.SAFE_RPC_METHODS.includes(request.method);
   },
 
-  checkIfRequestIsAllowed(request: unknown) {
-    const method = this.getRequestMethod(request);
-
-    return AppKitFrameRpcConstants.SAFE_RPC_METHODS.includes(method);
+  checkIfRequestIsSafe(request: AppKitFrameTypes.RPCRequest) {
+    return AppKitFrameRpcConstants.SAFE_RPC_METHODS.includes(request.method);
   }
 };

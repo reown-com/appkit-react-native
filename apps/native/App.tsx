@@ -1,9 +1,10 @@
-import { StyleSheet, View, useColorScheme } from 'react-native';
+import { Platform, SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
 import '@walletconnect/react-native-compat';
 import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Toast from 'react-native-toast-message';
 
 import {
   AppKit,
@@ -21,17 +22,19 @@ import { AccountView } from './src/views/AccountView';
 import { ActionsView } from './src/views/ActionsView';
 import { getCustomWallets } from './src/utils/misc';
 import { chains } from './src/utils/WagmiUtils';
+import { OpenButton } from './src/components/OpenButton';
+import { DisconnectButton } from './src/components/DisconnectButton';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
 const metadata = {
   name: 'AppKit RN',
-  description: 'AppKit RN by WalletConnect',
-  url: 'https://walletconnect.com/',
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
+  description: 'AppKit RN by Reown',
+  url: 'https://reown.com/appkit',
+  icons: ['https://avatars.githubusercontent.com/u/179229932'],
   redirect: {
     native: 'redirect://',
-    universal: 'https://lab.web3modal.com/rn_appkit',
+    universal: 'https://appkit-lab.reown.com/rn_appkit',
     linkMode: true
   }
 };
@@ -44,11 +47,17 @@ const clipboardClient = {
 
 const auth = authConnector({ projectId, metadata });
 
+const extraConnectors = Platform.select({
+  ios: [auth],
+  android: [auth],
+  default: []
+});
+
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
   metadata,
-  extraConnectors: [auth]
+  extraConnectors
 });
 
 const queryClient = new QueryClient();
@@ -62,7 +71,13 @@ createAppKit({
   clipboardClient,
   customWallets,
   enableAnalytics: true,
-  metadata
+  metadata,
+  debug: true,
+  features: {
+    email: true,
+    socials: ['x', 'discord', 'apple'],
+    emailShowWallets: true
+  }
 });
 
 export default function Native() {
@@ -71,7 +86,7 @@ export default function Native() {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <View style={[styles.container, isDarkMode && styles.dark]}>
+        <SafeAreaView style={[styles.container, isDarkMode && styles.dark]}>
           <StatusBar style="auto" />
           <AppKitButton
             connectStyle={styles.button}
@@ -81,10 +96,13 @@ export default function Native() {
             balance="show"
           />
           <NetworkButton />
-          <AccountView />
           <ActionsView />
+          <AccountView />
+          <OpenButton />
+          <DisconnectButton />
           <AppKit />
-        </View>
+        </SafeAreaView>
+        <Toast />
       </QueryClientProvider>
     </WagmiProvider>
   );

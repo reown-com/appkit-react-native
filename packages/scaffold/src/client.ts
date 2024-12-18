@@ -13,23 +13,27 @@ import type {
   ThemeMode,
   ThemeVariables,
   Connector,
-  ConnectedWalletInfo
+  ConnectedWalletInfo,
+  Features
 } from '@reown/appkit-core-react-native';
-import type { SIWEControllerClient } from '@reown/appkit-siwe-react-native';
+import { SIWEController, type SIWEControllerClient } from '@reown/appkit-siwe-react-native';
 import {
   AccountController,
   BlockchainApiController,
   ConnectionController,
   ConnectorController,
+  EnsController,
   EventsController,
   ModalController,
   NetworkController,
   OptionsController,
   PublicStateController,
+  SnackController,
   StorageUtil,
-  ThemeController
+  ThemeController,
+  TransactionsController
 } from '@reown/appkit-core-react-native';
-import { ConstantsUtil } from '@reown/appkit-common-react-native';
+import { ConstantsUtil, ErrorUtil } from '@reown/appkit-common-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {
@@ -46,6 +50,8 @@ export interface LibraryOptions {
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
   _sdkVersion: OptionsControllerState['sdkVersion'];
   metadata?: OptionsControllerState['metadata'];
+  debug?: OptionsControllerState['debug'];
+  features?: Features;
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -60,6 +66,8 @@ export interface OpenOptions {
 
 // -- Client --------------------------------------------------------------------
 export class AppKitScaffold {
+  public reportedAlertErrors: Record<string, boolean> = {};
+
   public constructor(options: ScaffoldOptions) {
     this.initControllers(options);
   }
@@ -134,6 +142,15 @@ export class AppKitScaffold {
     return EventsController.subscribe(callback);
   }
 
+  public resolveReownName = async (name: string) => {
+    const wcNameAddress = await EnsController.resolveName(name);
+    const networkNameAddresses = wcNameAddress?.addresses
+      ? Object.values(wcNameAddress?.addresses)
+      : [];
+
+    return networkNameAddresses[0]?.address || false;
+  };
+
   // -- Protected ----------------------------------------------------------------
   protected setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
     AccountController.setIsConnected(isConnected);
@@ -142,6 +159,8 @@ export class AppKitScaffold {
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = caipAddress => {
     AccountController.setCaipAddress(caipAddress);
   };
+
+  protected getCaipAddress = () => AccountController.state.caipAddress;
 
   protected setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol) => {
     AccountController.setBalance(balance, balanceSymbol);
@@ -193,6 +212,7 @@ export class AppKitScaffold {
 
   protected resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {
     ConnectionController.resetWcConnection();
+    TransactionsController.resetTransactions();
   };
 
   protected fetchIdentity: (typeof BlockchainApiController)['fetchIdentity'] = request =>
@@ -212,6 +232,40 @@ export class AppKitScaffold {
     BlockchainApiController.setClientId(clientId);
   };
 
+  protected setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
+    preferredAccountType => {
+      AccountController.setPreferredAccountType(preferredAccountType);
+    };
+
+  protected handleAlertError(error?: string | { shortMessage: string; longMessage: string }) {
+    if (!error) return;
+
+    if (typeof error === 'object') {
+      SnackController.showInternalError(error);
+
+      return;
+    }
+
+    // Check if the error is a universal provider error
+    const matchedUniversalProviderError = Object.entries(ErrorUtil.UniversalProviderErrors).find(
+      ([, { message }]) => error?.includes(message)
+    );
+
+    const [errorKey, errorValue] = matchedUniversalProviderError ?? [];
+
+    const { message, alertErrorKey } = errorValue ?? {};
+
+    if (errorKey && message && !this.reportedAlertErrors[errorKey]) {
+      const alertError =
+        ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS];
+
+      if (alertError) {
+        SnackController.showInternalError(alertError);
+        this.reportedAlertErrors[errorKey] = true;
+      }
+    }
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     this.initAsyncValues(options);
@@ -226,6 +280,7 @@ export class AppKitScaffold {
     OptionsController.setCustomWallets(options.customWallets);
     OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setSdkVersion(options._sdkVersion);
+    OptionsController.setDebug(options.debug);
 
     if (options.clipboardClient) {
       OptionsController.setClipboardClient(options.clipboardClient);
@@ -244,9 +299,11 @@ export class AppKitScaffold {
     }
 
     if (options.siweControllerClient) {
-      const { SIWEController } = await import('@reown/appkit-siwe-react-native');
-
       SIWEController.setSIWEClient(options.siweControllerClient);
+    }
+
+    if (options.features) {
+      OptionsController.setFeatures(options.features);
     }
   }
 
@@ -291,12 +348,18 @@ export class AppKitScaffold {
   private async initConnectedConnector() {
     const connectedConnector = await StorageUtil.getConnectedConnector();
     if (connectedConnector) {
-      ConnectorController.setConnectedConnector(connectedConnector);
+      ConnectorController.setConnectedConnector(connectedConnector, false);
     }
+  }
+
+  private async initSocial() {
+    const connectedSocialProvider = await StorageUtil.getConnectedSocialProvider();
+    ConnectionController.setConnectedSocialProvider(connectedSocialProvider);
   }
 
   private async initAsyncValues(options: ScaffoldOptions) {
     await this.initConnectedConnector();
     await this.initRecentWallets(options);
+    await this.initSocial();
   }
 }

@@ -33,7 +33,7 @@ interface Props {
 }
 
 export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
-  const { data } = useSnapshot(RouterController.state);
+  const { data } = RouterController.state;
   const { maxWidth: width } = useCustomDimensions();
   const { wcUri, wcError } = useSnapshot(ConnectionController.state);
   const [errorType, setErrorType] = useState<BodyErrorType>();
@@ -90,7 +90,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         setErrorType('default');
       }
     }
-  }, [data?.wallet, wcUri]);
+  }, [wcUri, data]);
 
   useEffect(() => {
     if (wcUri) {
@@ -109,7 +109,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         <LoadingThumbnail paused={!!errorType || wcError}>
           <WalletImage
             size="xl"
-            imageSrc={AssetUtil.getWalletImage(data?.wallet)}
+            imageSrc={AssetUtil.getWalletImage(RouterController.state.data?.wallet)}
             imageHeaders={ApiController._getApiHeaders()}
           />
           {wcError && (
