@@ -75,7 +75,7 @@ createAppKit({
   debug: true,
   features: {
     email: true,
-    socials: ['x', 'farcaster', 'discord', 'apple'],
+    socials: ['x', 'discord', 'apple'],
     emailShowWallets: true
   }
 });
