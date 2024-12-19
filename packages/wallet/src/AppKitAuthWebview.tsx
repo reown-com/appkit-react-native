@@ -217,7 +217,7 @@ function _AuthWebview() {
   ) : null;
 }
 
-export const AuthWebview = memo(_AuthWebview) as unknown as typeof WebView;
+export const AuthWebview = memo(_AuthWebview) as unknown as typeof _AuthWebview;
 
 const styles = StyleSheet.create({
   backdrop: {
