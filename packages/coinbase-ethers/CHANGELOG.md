@@ -1,5 +1,11 @@
 # @reown/appkit-coinbase-ethers-react-native
 
+## 1.1.1
+
+### Patch Changes
+
+- [#292](https://github.com/reown-com/appkit-react-native/pull/292) [`ff75ba8`](https://github.com/reown-com/appkit-react-native/commit/ff75ba8ce9828b85f0c38a08e0ce33e3020c48d8) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: solved auth ethers connector type error
+
 ## 1.1.0
 
 ### Minor Changes
