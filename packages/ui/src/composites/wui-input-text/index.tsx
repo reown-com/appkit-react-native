@@ -4,8 +4,10 @@ import {
   Pressable,
   TextInput,
   type NativeSyntheticEvent,
+  type StyleProp,
   type TextInputFocusEventData,
-  type TextInputProps
+  type TextInputProps,
+  type ViewStyle
 } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
@@ -26,6 +28,7 @@ export type InputTextProps = TextInputProps & {
   icon?: IconType;
   disabled?: boolean;
   size?: Exclude<SizeType, 'xl' | 'lg' | 'xxs'>;
+  style?: StyleProp<ViewStyle>;
 };
 
 export const InputText = forwardRef<InputRef, InputTextProps>(
@@ -40,6 +43,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
       returnKeyType,
       onBlur,
       onFocus,
+      style,
       ...rest
     }: InputTextProps,
     ref
@@ -94,7 +98,11 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
     return (
       <>
         <AnimatedPressable
-          style={[styles.outerBorder, { borderColor: outerBorder, borderRadius: outerRadius }]}
+          style={[
+            styles.outerBorder,
+            { borderColor: outerBorder, borderRadius: outerRadius },
+            style
+          ]}
           disabled={disabled}
           onPress={() => inputRef.current?.focus()}
         >

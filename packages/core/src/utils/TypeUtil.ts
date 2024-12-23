@@ -119,6 +119,11 @@ type EnabledSocials = Exclude<SocialProvider, 'farcaster'>;
 
 export type Features = {
   /**
+   * @description Enable or disable the swaps feature. Enabled by default.
+   * @type {boolean}
+   */
+  swaps?: boolean;
+  /**
    * @description Enable or disable the email feature. Enabled by default.
    * @type {boolean}
    */
@@ -223,6 +228,56 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null;
 }
 
+export interface BlockchainApiSwapAllowanceResponse {
+  allowance: string;
+}
+
+export interface BlockchainApiGenerateSwapCalldataRequest {
+  projectId: string;
+  userAddress: string;
+  from: string;
+  to: string;
+  amount: string;
+  eip155?: {
+    slippage: string;
+    permit?: string;
+  };
+}
+
+export interface BlockchainApiGenerateSwapCalldataResponse {
+  tx: {
+    from: CaipAddress;
+    to: CaipAddress;
+    data: `0x${string}`;
+    amount: string;
+    eip155: {
+      gas: string;
+      gasPrice: string;
+    };
+  };
+}
+
+export interface BlockchainApiGenerateApproveCalldataRequest {
+  projectId: string;
+  userAddress: string;
+  from: string;
+  to: string;
+  amount?: number;
+}
+
+export interface BlockchainApiGenerateApproveCalldataResponse {
+  tx: {
+    from: CaipAddress;
+    to: CaipAddress;
+    data: `0x${string}`;
+    value: string;
+    eip155: {
+      gas: number;
+      gasPrice: string;
+    };
+  };
+}
+
 export interface BlockchainApiTokenPriceRequest {
   projectId: string;
   currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth';
@@ -236,6 +291,12 @@ export interface BlockchainApiTokenPriceResponse {
     iconUrl: string;
     price: number;
   }[];
+}
+
+export interface BlockchainApiSwapAllowanceRequest {
+  projectId: string;
+  tokenAddress: string;
+  userAddress: string;
 }
 
 export interface BlockchainApiGasPriceRequest {
@@ -271,6 +332,35 @@ export interface BlockchainApiLookupEnsName {
     avatar?: string;
     bio?: string;
   }[];
+}
+
+export interface BlockchainApiSwapQuoteRequest {
+  projectId: string;
+  chainId?: string;
+  amount: string;
+  userAddress: string;
+  from: string;
+  to: string;
+  gasPrice: string;
+}
+
+export interface BlockchainApiSwapQuoteResponse {
+  quotes: {
+    id: string | null;
+    fromAmount: string;
+    fromAccount: string;
+    toAmount: string;
+    toAccount: string;
+  }[];
+}
+
+export interface BlockchainApiSwapTokensRequest {
+  projectId: string;
+  chainId?: string;
+}
+
+export interface BlockchainApiSwapTokensResponse {
+  tokens: SwapToken[];
 }
 
 // -- OptionsController Types ---------------------------------------------------
@@ -497,6 +587,51 @@ export type Event =
     }
   | {
       type: 'track';
+      event: 'OPEN_SWAP';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'INITIATE_SWAP';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        swapFromToken: string;
+        swapToToken: string;
+        swapFromAmount: string;
+        swapToAmount: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SWAP_SUCCESS';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        swapFromToken: string;
+        swapToToken: string;
+        swapFromAmount: string;
+        swapToAmount: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SWAP_ERROR';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        swapFromToken: string;
+        swapToToken: string;
+        swapFromAmount: string;
+        swapToAmount: string;
+        message: string;
+      };
+    }
+  | {
+      type: 'track';
       event: 'SEND_INITIATED';
       properties: {
         isSmartAccount: boolean;
@@ -570,6 +705,12 @@ export type Event =
     };
 
 // -- Send Controller Types -------------------------------------
+export type EstimateGasTransactionArgs = {
+  chainNamespace?: undefined | 'eip155';
+  address: `0x${string}`;
+  to: `0x${string}`;
+  data: `0x${string}`;
+};
 
 export interface SendTransactionArgs {
   to: `0x${string}`;
@@ -578,6 +719,7 @@ export interface SendTransactionArgs {
   gas?: bigint;
   gasPrice: bigint;
   address: `0x${string}`;
+  chainNamespace?: 'eip155';
 }
 
 export interface WriteContractArgs {
@@ -588,6 +730,27 @@ export interface WriteContractArgs {
   method: 'send' | 'transfer' | 'call';
   abi: any;
 }
+
+// -- Swap Controller Types -------------------------------------
+export type SwapToken = {
+  name: string;
+  symbol: string;
+  address: CaipAddress;
+  decimals: number;
+  logoUri: string;
+  eip2612?: boolean;
+};
+
+export type SwapTokenWithBalance = SwapToken & {
+  quantity: {
+    decimals: string;
+    numeric: string;
+  };
+  price: number;
+  value: number;
+};
+
+export type SwapInputTarget = 'sourceToken' | 'toToken';
 
 // -- Email Types ------------------------------------------------
 /**

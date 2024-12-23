@@ -7,7 +7,7 @@ import { ConstantsUtil, SendController } from '@reown/appkit-core-react-native';
 import { getMaxAmount, getSendValue } from './utils';
 import styles from './styles';
 
-export interface InputTokenProps {
+export interface SendInputTokenProps {
   token?: Balance;
   sendTokenAmount?: number;
   gasPrice?: number;
@@ -15,13 +15,13 @@ export interface InputTokenProps {
   onTokenPress?: () => void;
 }
 
-export function InputToken({
+export function SendInputToken({
   token,
   sendTokenAmount,
   gasPrice,
   style,
   onTokenPress
-}: InputTokenProps) {
+}: SendInputTokenProps) {
   const Theme = useTheme();
   const valueInputRef = useRef<TextInput | null>(null);
   const [inputValue, setInputValue] = useState<string | undefined>(sendTokenAmount?.toString());
@@ -31,10 +31,11 @@ export function InputToken({
 
   const onInputChange = (value: string) => {
     const formattedValue = value.replace(/,/g, '.');
-    setInputValue(formattedValue);
-    Number(formattedValue)
-      ? SendController.setTokenAmount(Number(formattedValue))
-      : SendController.setTokenAmount(undefined);
+
+    if (Number(formattedValue) >= 0 || formattedValue === '') {
+      setInputValue(formattedValue);
+      SendController.setTokenAmount(Number(formattedValue));
+    }
   };
 
   const onMaxPress = () => {
@@ -88,26 +89,26 @@ export function InputToken({
           numberOfLines={1}
           autoFocus={!!token}
         />
-        <TokenButton token={token} onPress={onTokenPress} />
+        <TokenButton imageUrl={token?.iconUrl} text={token?.symbol} onPress={onTokenPress} />
       </FlexView>
-      <FlexView
-        flexDirection="row"
-        alignItems="center"
-        justifyContent="space-between"
-        margin={['3xs', '0', '0', '0']}
-      >
-        <Text variant="small-400" color="fg-200" style={styles.sendValue} numberOfLines={1}>
-          {sendValue ?? ''}
-        </Text>
-        {token && (
+      {token && (
+        <FlexView
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="space-between"
+          margin={['3xs', '0', '0', '0']}
+        >
+          <Text variant="small-400" color="fg-200" style={styles.sendValue} numberOfLines={1}>
+            {sendValue ?? ''}
+          </Text>
           <FlexView flexDirection="row" alignItems="center" justifyContent="center">
             <Text variant="small-400" color={maxError ? 'error-100' : 'fg-200'} numberOfLines={1}>
               {maxAmount ?? ''}
             </Text>
             <Link onPress={onMaxPress}>Max</Link>
           </FlexView>
-        )}
-      </FlexView>
+        </FlexView>
+      )}
     </FlexView>
   );
 }

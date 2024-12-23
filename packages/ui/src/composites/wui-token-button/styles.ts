@@ -14,5 +14,9 @@ export default StyleSheet.create({
     height: 24,
     borderRadius: BorderRadius.full,
     marginRight: Spacing['2xs']
+  },
+  imageInverse: {
+    marginRight: 0,
+    marginLeft: Spacing['2xs']
   }
 });

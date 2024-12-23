@@ -24,6 +24,9 @@ export default StyleSheet.create({
   actionRight: {
     marginLeft: 8
   },
+  actionCenter: {
+    marginHorizontal: 8
+  },
   tab: {
     width: '100%',
     paddingHorizontal: Spacing.s

@@ -2,6 +2,7 @@ import { proxy, ref } from 'valtio';
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil';
 import { PublicStateController } from './PublicStateController';
 import { NetworkUtil } from '@reown/appkit-common-react-native';
+import { ConstantsUtil } from '../utils/ConstantsUtil';
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -93,6 +94,13 @@ export const NetworkController = {
       network =>
         state.smartAccountEnabledNetworks?.find(networkId => network.id === `eip155:${networkId}`)
     );
+  },
+
+  getActiveNetworkTokenAddress() {
+    const chainId = this.state.caipNetwork?.id || 'eip155:1';
+    const address = ConstantsUtil.NATIVE_TOKEN_ADDRESS;
+
+    return `${chainId}:${address}`;
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {

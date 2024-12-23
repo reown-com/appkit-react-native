@@ -1,4 +1,4 @@
-import { type StyleProp, type ViewStyle, View } from 'react-native';
+import { type LayoutChangeEvent, type StyleProp, type ViewStyle, View } from 'react-native';
 
 import type {
   FlexAlignType,
@@ -13,6 +13,7 @@ import { UiUtil } from '../../utils/UiUtil';
 
 export interface FlexViewProps {
   children?: React.ReactNode;
+  onLayout?: (event: LayoutChangeEvent) => void;
   flexDirection?: FlexDirectionType;
   flexWrap?: FlexWrapType;
   flexGrow?: FlexGrowType;
@@ -44,5 +45,9 @@ export function FlexView(props: FlexViewProps) {
     marginLeft: props.margin && UiUtil.getSpacingStyles(props.margin, 3)
   };
 
-  return <View style={[styles, props.style]}>{props.children}</View>;
+  return (
+    <View onLayout={props.onLayout} style={[styles, props.style]}>
+      {props.children}
+    </View>
+  );
 }

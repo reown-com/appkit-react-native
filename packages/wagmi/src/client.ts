@@ -16,6 +16,7 @@ import {
   getEnsAddress as wagmiGetEnsAddress,
   getBalance,
   prepareTransactionRequest,
+  estimateGas as wagmiEstimateGas,
   sendTransaction as wagmiSendTransaction,
   waitForTransactionReceipt,
   writeContract as wagmiWriteContract
@@ -37,7 +38,8 @@ import {
   type Token,
   AppKitScaffold,
   type WriteContractArgs,
-  type AppKitFrameProvider
+  type AppKitFrameProvider,
+  type EstimateGasTransactionArgs
 } from '@reown/appkit-scaffold-react-native';
 import {
   ConstantsUtil,
@@ -285,6 +287,30 @@ export class AppKit extends AppKitScaffold {
         });
 
         return tx;
+      },
+
+      estimateGas: async ({
+        address,
+        to,
+        data,
+        chainNamespace
+      }: EstimateGasTransactionArgs): Promise<bigint> => {
+        if (chainNamespace && chainNamespace !== 'eip155') {
+          throw new Error('estimateGas - chainNamespace is not eip155');
+        }
+
+        try {
+          const result = await wagmiEstimateGas(this.wagmiConfig, {
+            account: address as Hex,
+            to: to as Hex,
+            data: data as Hex,
+            type: 'legacy'
+          });
+
+          return result;
+        } catch (error) {
+          throw new Error('WagmiAdapter:estimateGas - error estimating gas');
+        }
       },
 
       parseUnits,

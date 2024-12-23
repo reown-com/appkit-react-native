@@ -9,7 +9,7 @@ interface Message {
 
 export interface SnackControllerState {
   message: string;
-  variant: 'error' | 'success';
+  variant: 'error' | 'success' | 'loading';
   open: boolean;
   long: boolean;
 }
@@ -35,6 +35,12 @@ export const SnackController = {
   showError(message: SnackControllerState['message']) {
     state.message = message;
     state.variant = 'error';
+    state.open = true;
+  },
+
+  showLoading(message: SnackControllerState['message']) {
+    state.message = message;
+    state.variant = 'loading';
     state.open = true;
   },
 

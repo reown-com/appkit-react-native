@@ -122,6 +122,7 @@ export function AppKit() {
         coverScreen={!frameViewVisible && !webviewVisible}
         isVisible={open}
         useNativeDriver
+        useNativeDriverForBackdrop
         statusBarTranslucent
         hideModalContentWhileAnimating
         propagateSwipe
