@@ -3,6 +3,7 @@ import { SwitchChainError, getAddress, type Address, type Hex } from 'viem';
 
 import { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 import { StorageUtil } from '@reown/appkit-core-react-native';
+import { W3mFrameProviderSingleton } from '@reown/appkit-react-native';
 
 export type Metadata = {
   name: string;
@@ -38,7 +39,8 @@ export function authConnector(parameters: AuthConnectorOptions) {
     name: 'AppKit Auth',
     type: authConnector.type,
     async setup() {
-      _provider = new AppKitFrameProvider(parameters.projectId, parameters.metadata);
+      const { projectId, metadata } = parameters;
+      _provider = W3mFrameProviderSingleton.getInstance({ projectId, metadata });
     },
     async connect(options = {}) {
       const provider = await this.getProvider();

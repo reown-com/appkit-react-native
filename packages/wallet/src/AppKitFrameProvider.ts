@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import type { RefObject } from 'react';
 import WebView from 'react-native-webview';
 import { CoreHelperUtil } from '@reown/appkit-core-react-native';
+import { type CaipNetworkId } from '@reown/appkit-common-react-native';
 import type { AppKitFrameTypes } from './AppKitFrameTypes';
 import { AppKitFrameConstants, AppKitFrameRpcConstants } from './AppKitFrameConstants';
 import { AppKitFrameStorage } from './AppKitFrameStorage';
@@ -55,7 +56,14 @@ export class AppKitFrameProvider {
 
   public events: EventEmitter = new EventEmitter();
 
-  public constructor(projectId: string, metadata: AppKitFrameTypes.Metadata) {
+  public constructor(props: {
+    projectId: string;
+    metadata: AppKitFrameTypes.Metadata;
+    chainId?: number | CaipNetworkId;
+    onTimeout?: () => void;
+  }) {
+    const { projectId, metadata, chainId, onTimeout } = props;
+
     this.webviewLoadPromise = new Promise((resolve, reject) => {
       this.webviewLoadPromiseResolver = { resolve, reject };
     });
@@ -63,6 +71,7 @@ export class AppKitFrameProvider {
     this.projectId = projectId;
 
     this.loadAsyncValues();
+    this.onTimeout = onTimeout;
 
     this.events.setMaxListeners(Number.POSITIVE_INFINITY);
   }

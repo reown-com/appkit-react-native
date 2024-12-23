@@ -16,6 +16,58 @@ export interface CaipNetwork {
   imageUrl?: string;
 }
 
+export interface NetworkControllerClient {
+  switchCaipNetwork: (network: CaipNetwork) => Promise<void>;
+  getApprovedCaipNetworksData: () => Promise<{
+    approvedCaipNetworkIds: CaipNetworkId[];
+    supportsAllNetworks: boolean;
+  }>;
+}
+
+export type AdapterNetworkState = {
+  supportsAllNetworks: boolean;
+  isUnsupportedChain?: boolean;
+  _client?: NetworkControllerClient;
+  caipNetwork?: CaipNetwork;
+  requestedCaipNetworks?: CaipNetwork[];
+  approvedCaipNetworkIds?: CaipNetworkId[];
+  allowUnsupportedCaipNetwork?: boolean;
+  smartAccountEnabledNetworks?: number[];
+};
+
+export type AdapterAccountState = {
+  currentTab: number;
+  caipAddress?: CaipAddress;
+  address?: string;
+  addressLabels: Map<string, string>;
+  allAccounts: AccountType[];
+  balance?: string;
+  balanceSymbol?: string;
+  profileName?: string | null;
+  profileImage?: string | null;
+  addressExplorerUrl?: string;
+  smartAccountDeployed?: boolean;
+  socialProvider?: SocialProvider;
+  tokenBalance?: Balance[];
+  shouldUpdateToAddress?: string;
+  connectedWalletInfo?: ConnectedWalletInfo;
+  preferredAccountType?: AppKitFrameAccountType;
+  socialWindow?: Window;
+  farcasterUrl?: string;
+  status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting';
+};
+
+export type ChainAdapter = {
+  connectionControllerClient?: ConnectionControllerClient;
+  networkControllerClient?: NetworkControllerClient;
+  accountState?: AdapterAccountState;
+  networkState?: AdapterNetworkState;
+  namespace?: ChainNamespace;
+  caipNetworks?: CaipNetwork[] | AppKitNetwork[];
+  projectId?: string;
+  adapterType?: string;
+};
+
 export type ConnectedWalletInfo =
   | {
       name?: string;

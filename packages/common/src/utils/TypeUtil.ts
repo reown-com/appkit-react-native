@@ -1,3 +1,32 @@
+import type { Chain as BaseChain } from 'viem/chains';
+import type { ChainFormatters } from 'viem';
+
+export type ChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122';
+
+export type CaipNetworkId = `${ChainNamespace}:${ChainId}`;
+
+export type ChainId = string | number;
+
+export type CaipNetwork<
+  formatters extends ChainFormatters | undefined = ChainFormatters | undefined,
+  custom extends Record<string, unknown> | undefined = Record<string, unknown> | undefined
+> = Omit<BaseChain<formatters, custom>, 'id'> & {
+  id: number | string;
+  chainNamespace: ChainNamespace;
+  caipNetworkId: CaipNetworkId;
+  assets?: {
+    imageId: string | undefined;
+    imageUrl: string | undefined;
+  };
+};
+
+export type BaseNetwork<
+  formatters extends ChainFormatters | undefined = ChainFormatters | undefined,
+  custom extends Record<string, unknown> | undefined = Record<string, unknown> | undefined
+> = BaseChain<formatters, custom>;
+
+export type AppKitNetwork = BaseNetwork | CaipNetwork;
+
 export interface Balance {
   name: string;
   symbol: string;

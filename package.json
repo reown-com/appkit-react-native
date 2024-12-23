@@ -17,6 +17,8 @@
     "packages/coinbase-ethers",
     "packages/ethers5",
     "packages/ethers",
+    "packages/appkit",
+    "packages/appkit-utils",
     "apps/*"
   ],
   "scripts": {

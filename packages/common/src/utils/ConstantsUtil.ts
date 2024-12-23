@@ -1,3 +1,5 @@
+import type { ChainNamespace } from './TypeUtil';
+
 export const ConstantsUtil = {
   WC_NAME_SUFFIX: '.reown.id',
   WC_NAME_SUFFIX_LEGACY: '.wcn.id',
@@ -6,6 +8,33 @@ export const ConstantsUtil = {
   API_URL: 'https://api.web3modal.org',
   COINBASE_CONNECTOR_ID: 'coinbaseWallet',
   COINBASE_EXPLORER_ID: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+  /* Connector IDs */
+  CONNECTOR_ID: {
+    WALLET_CONNECT: 'walletConnect',
+    INJECTED: 'injected',
+    WALLET_STANDARD: 'announced',
+    COINBASE: 'coinbaseWallet',
+    COINBASE_SDK: 'coinbaseWalletSDK',
+    SAFE: 'safe',
+    LEDGER: 'ledger',
+    EIP6963: 'eip6963',
+    AUTH: 'ID_AUTH'
+  },
+  LIMITS: {
+    PENDING_TRANSACTIONS: 99
+  },
+  CHAIN: {
+    EVM: 'eip155',
+    SOLANA: 'solana',
+    POLKADOT: 'polkadot',
+    BITCOIN: 'bip122'
+  } as const satisfies Record<string, ChainNamespace>,
+  CHAIN_NAME_MAP: {
+    eip155: 'Ethereum',
+    solana: 'Solana',
+    polkadot: 'Polkadot',
+    bip122: 'Bitcoin'
+  } as const satisfies Record<ChainNamespace, string>,
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet
     '0xdac17f958d2ee523a2206206994597c13d831ec7',
