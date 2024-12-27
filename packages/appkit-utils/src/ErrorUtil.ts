@@ -17,13 +17,11 @@ export const ErrorUtil = {
     },
     INVALID_APP_CONFIGURATION: {
       shortMessage: 'Invalid App Configuration',
-      longMessage: () =>
-        //TODO: check
-        `Origin ${'unknown'} not found on Allowlist - update configuration on cloud.reown.com`
+      longMessage: 'Bundle ID not found on Allowlist - update configuration on cloud.reown.com'
     },
     SOCIALS_TIMEOUT: {
       shortMessage: 'Invalid App Configuration',
-      longMessage: () =>
+      longMessage:
         'There was an issue loading the embedded wallet. Please verify that your domain is allowed at cloud.reown.com'
     },
     JWT_TOKEN_NOT_VALID: {
@@ -37,7 +35,3 @@ export const ErrorUtil = {
     }
   }
 };
-
-function isSafe() {
-  return typeof window !== 'undefined';
-}

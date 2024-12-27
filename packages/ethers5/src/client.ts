@@ -1,9 +1,6 @@
 import { Contract, ethers, utils } from 'ethers';
 import {
   type AppKitFrameAccountType,
-  type CaipAddress,
-  type CaipNetwork,
-  type CaipNetworkId,
   type ConnectionControllerClient,
   type Connector,
   type EstimateGasTransactionArgs,
@@ -38,7 +35,15 @@ import {
   getDidAddress,
   type AppKitSIWEClient
 } from '@reown/appkit-siwe-react-native';
-import { erc20ABI, ErrorUtil, NamesUtil, NetworkUtil } from '@reown/appkit-common-react-native';
+import {
+  erc20ABI,
+  ErrorUtil,
+  NamesUtil,
+  NetworkUtil,
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId
+} from '@reown/appkit-common-react-native';
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 import { type JsonRpcError } from '@walletconnect/jsonrpc-types';
@@ -107,7 +112,7 @@ export class AppKit extends AppKitScaffold {
 
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id);
+        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.caipNetworkId);
         if (chainId) {
           try {
             await this.switchNetwork(chainId);
@@ -552,10 +557,13 @@ export class AppKit extends AppKitScaffold {
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
-          id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
-          name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId]
+          id: chain.chainId,
+          chainNamespace: ConstantsUtil.EIP155,
+          caipNetworkId: `${ConstantsUtil.EIP155}:${chain.chainId}`,
+          assets: {
+            imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+            imageUrl: chainImages?.[chain.chainId]
+          }
         }) as CaipNetwork
     );
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? []);
@@ -710,7 +718,7 @@ export class AppKit extends AppKitScaffold {
     const isConnected = EthersStoreUtil.state.isConnected;
 
     if (isConnected && address && chainId) {
-      const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
+      const caipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}` as CaipAddress;
 
       this.setIsConnected(isConnected);
 
@@ -738,16 +746,20 @@ export class AppKit extends AppKitScaffold {
       const chain = this.chains.find(c => c.chainId === chainId);
 
       if (chain) {
-        const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}`;
+        const caipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}` as CaipNetworkId;
 
         this.setCaipNetwork({
-          id: caipChainId,
+          id: chain.chainId,
           name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId]
+          chainNamespace: ConstantsUtil.EIP155 as ChainNamespace,
+          caipNetworkId,
+          assets: {
+            imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+            imageUrl: chainImages?.[chain.chainId]
+          }
         });
         if (isConnected && address) {
-          const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
+          const caipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}` as CaipAddress;
           this.setCaipAddress(caipAddress);
           if (chain.explorerUrl) {
             const url = `${chain.explorerUrl}/address/${address}`;
@@ -902,7 +914,7 @@ export class AppKit extends AppKitScaffold {
       return;
     }
     const chainId = this.getCaipNetwork()?.id;
-    const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
+    const caipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}` as CaipAddress;
     this.setCaipAddress(caipAddress);
     this.setPreferredAccountType(type);
     await this.syncAccount({ address: address as Address });

@@ -3,7 +3,7 @@ import {
   type AppKitNetwork,
   type CaipNetwork,
   type CaipNetworkId
-} from '@reown/appkit-common';
+} from '@reown/appkit-common-react-native';
 import { PresetsUtil } from './PresetsUtil';
 import { fallback, http } from 'viem';
 

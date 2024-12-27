@@ -6,7 +6,7 @@ import { UiUtil } from '../../utils/UiUtil';
 import styles from './styles';
 
 export interface AvatarProps {
-  imageSrc?: string;
+  imageSrc?: string | null;
   address?: string;
   style?: StyleProp<ImageStyle>;
   size?: number;

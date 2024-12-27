@@ -58,6 +58,10 @@ export const AppSyncDappDataRequest = z.object({
     | `react-native-wagmi-${string}`
     | `react-native-ethers5-${string}`
     | `react-native-ethers-${string}`
+    | `react-native-universal-${string}`
+    | `react-native-solana-${string}`
+    | `react-native-polkadot-${string}`
+    | `react-native-bip122-${string}`
   >,
   sdkType: z.enum(['appkit']),
   projectId: z.string()
@@ -78,8 +82,19 @@ export const FrameUpdateEmailResponse = z.object({
 export const FrameGetUserResponse = z.object({
   email: z.string().email().optional().nullable(),
   address: z.string(),
-  chainId: z.number(),
+  chainId: z.number().or(z.string()),
   smartAccountDeployed: z.boolean(),
+  accounts: z
+    .array(
+      z.object({
+        address: z.string(),
+        type: z.enum([
+          AppKitFrameRpcConstants.ACCOUNT_TYPES.EOA,
+          AppKitFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        ])
+      })
+    )
+    .optional(),
   preferredAccountType: AccountTypeEnum
 });
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() });

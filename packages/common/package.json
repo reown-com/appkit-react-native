@@ -39,20 +39,6 @@
     "access": "public"
   },
   "react-native": "src/index.ts",
-  "react-native-builder-bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      "commonjs",
-      "module",
-      [
-        "typescript",
-        {
-          "tsc": "../../node_modules/.bin/tsc"
-        }
-      ]
-    ]
-  },
   "eslintIgnore": [
     "node_modules/",
     "lib/"

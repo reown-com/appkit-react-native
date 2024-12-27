@@ -3,18 +3,19 @@ import {
   RouterController,
   ModalController,
   EventsController,
-  type RouterControllerState,
   ConnectionController,
   ConnectorController,
-  type AppKitFrameProvider
+  type RouterControllerState
 } from '@reown/appkit-core-react-native';
 import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
 import { StringUtil } from '@reown/appkit-common-react-native';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 import styles from './styles';
 
 export function Header() {
-  const { data, view } = useSnapshot(RouterController.state);
+  const { data, view } = useSnapshot(RouterController.state) as RouterControllerState;
+
   const onHelpPress = () => {
     RouterController.push('WhatIsAWallet');
     EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' });

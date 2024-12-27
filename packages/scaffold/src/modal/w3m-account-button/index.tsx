@@ -2,9 +2,9 @@ import { useSnapshot } from 'valtio';
 import {
   AccountController,
   CoreHelperUtil,
-  NetworkController,
   ModalController,
-  AssetUtil
+  AssetUtil,
+  ChainController
 } from '@reown/appkit-core-react-native';
 
 import { AccountButton as AccountButtonUI } from '@reown/appkit-ui-react-native';
@@ -26,9 +26,9 @@ export function AccountButton({ balance, disabled, style, testID }: AccountButto
     profileImage,
     profileName
   } = useSnapshot(AccountController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { activeCaipNetwork } = useSnapshot(ChainController.state);
 
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const networkImage = AssetUtil.getNetworkImage(activeCaipNetwork);
   const showBalance = balance === 'show';
 
   return (

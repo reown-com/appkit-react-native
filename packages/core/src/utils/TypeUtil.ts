@@ -1,19 +1,22 @@
-import { type EventEmitter } from 'events';
-import type { Balance, SocialProvider, Transaction } from '@reown/appkit-common-react-native';
+// import { type EventEmitter } from 'events';
+import type {
+  AppKitNetwork,
+  Balance,
+  CaipNetwork,
+  CaipNetworkId,
+  ChainNamespace,
+  SocialProvider,
+  Transaction,
+  CaipAddress,
+  AdapterType
+} from '@reown/appkit-common-react-native';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
+import type UniversalProvider from '@walletconnect/universal-provider';
+import type { AccountControllerState } from '../controllers/AccountController';
+import type { ConnectionControllerClient } from '../controllers/ConnectionController';
 
 export interface BaseError {
   message?: string;
-}
-
-export type CaipAddress = `${string}:${string}:${string}`;
-
-export type CaipNetworkId = `${string}:${string}`;
-
-export interface CaipNetwork {
-  id: CaipNetworkId;
-  name?: string;
-  imageId?: string;
-  imageUrl?: string;
 }
 
 export interface NetworkControllerClient {
@@ -35,16 +38,34 @@ export type AdapterNetworkState = {
   smartAccountEnabledNetworks?: number[];
 };
 
+export type NamespaceTypeMap = {
+  eip155: 'eoa' | 'smartAccount';
+  solana: 'eoa';
+  bip122: 'payment' | 'ordinal' | 'stx';
+  polkadot: 'eoa';
+};
+
+export type AccountTypeMap = {
+  [K in ChainNamespace]: {
+    namespace: K;
+    address: string;
+    type: NamespaceTypeMap[K];
+  };
+};
+
+export type AccountType = AccountTypeMap[ChainNamespace];
+
 export type AdapterAccountState = {
   currentTab: number;
+  isConnected: boolean;
   caipAddress?: CaipAddress;
   address?: string;
   addressLabels: Map<string, string>;
   allAccounts: AccountType[];
   balance?: string;
   balanceSymbol?: string;
-  profileName?: string | null;
-  profileImage?: string | null;
+  profileName?: string;
+  profileImage?: string;
   addressExplorerUrl?: string;
   smartAccountDeployed?: boolean;
   socialProvider?: SocialProvider;
@@ -52,7 +73,6 @@ export type AdapterAccountState = {
   shouldUpdateToAddress?: string;
   connectedWalletInfo?: ConnectedWalletInfo;
   preferredAccountType?: AppKitFrameAccountType;
-  socialWindow?: Window;
   farcasterUrl?: string;
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting';
 };
@@ -85,7 +105,7 @@ export type ProjectId = string;
 
 export type Platform = 'mobile' | 'web' | 'qrcode' | 'email' | 'unsupported';
 
-export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
+export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL' | 'MULTI_CHAIN';
 
 export type Connector = {
   id: string;
@@ -94,10 +114,23 @@ export type Connector = {
   imageId?: string;
   explorerId?: string;
   imageUrl?: string;
-  info?: { rdns?: string };
-  provider?: unknown;
+  info?: {
+    uuid?: string;
+    name?: string;
+    icon?: string;
+    rdns?: string;
+  };
+  provider?: Provider | AppKitFrameProvider | UniversalProvider;
+  chain: ChainNamespace;
+  connectors?: Connector[];
   installed?: boolean;
 };
+
+export interface AuthConnector extends Connector {
+  provider: AppKitFrameProvider;
+  socials?: SocialProvider[];
+  email?: boolean;
+}
 
 export type CaipNamespaces = Record<
   string,
@@ -108,12 +141,8 @@ export type CaipNamespaces = Record<
   }
 >;
 
-export type SdkType = 'appkit';
-
-export type SdkVersion =
-  | `react-native-wagmi-${string}`
-  | `react-native-ethers5-${string}`
-  | `react-native-ethers-${string}`;
+export type SdkVersion = `react-native-${AdapterType}-${string}`;
+export type AppKitSdkVersion = `react-native-${string}-${string}`;
 
 type EnabledSocials = Exclude<SocialProvider, 'farcaster'>;
 
@@ -221,6 +250,7 @@ export interface BlockchainApiTransactionsRequest {
   onramp?: 'coinbase';
   signal?: AbortSignal;
   cache?: RequestCache;
+  chainId?: string;
 }
 
 export interface BlockchainApiTransactionsResponse {
@@ -469,6 +499,9 @@ export type Event =
   | {
       type: 'track';
       event: 'DISCONNECT_ERROR';
+      properties?: {
+        message: string;
+      };
     }
   | {
       type: 'track';
@@ -712,23 +745,26 @@ export type EstimateGasTransactionArgs = {
   data: `0x${string}`;
 };
 
-export interface SendTransactionArgs {
-  to: `0x${string}`;
-  data: `0x${string}`;
-  value: bigint;
-  gas?: bigint;
-  gasPrice: bigint;
-  address: `0x${string}`;
-  chainNamespace?: 'eip155';
-}
+export type SendTransactionArgs =
+  | {
+      chainNamespace?: undefined | 'eip155';
+      to: `0x${string}`;
+      data: `0x${string}`;
+      value: bigint;
+      gas?: bigint;
+      gasPrice: bigint;
+      address: `0x${string}`;
+    }
+  | { chainNamespace: 'solana'; to: string; value: number };
 
 export interface WriteContractArgs {
-  receiverAddress: `0x${string}`;
-  tokenAmount: bigint;
   tokenAddress: `0x${string}`;
   fromAddress: `0x${string}`;
-  method: 'send' | 'transfer' | 'call';
+  method: 'send' | 'transfer' | 'call' | 'approve';
+
   abi: any;
+  args: unknown[];
+  chainNamespace: ChainNamespace;
 }
 
 // -- Swap Controller Types -------------------------------------
@@ -760,84 +796,125 @@ export type SwapInputTarget = 'sourceToken' | 'toToken';
 
 export type AppKitFrameAccountType = 'eoa' | 'smartAccount';
 
-export interface AppKitFrameProvider {
-  readonly id: string;
-  readonly name: string;
-  getEventEmitter(): EventEmitter;
-  getSecureSiteURL(): string;
-  getSecureSiteDashboardURL(): string;
-  getSecureSiteIconURL(): string;
-  getSecureSiteHeaders(): Record<string, string>;
-  getEmail(): string | undefined;
-  getUsername(): string | undefined;
-  getLastUsedChainId(): Promise<number | undefined>;
-  rejectRpcRequest(): void;
-  connectEmail(payload: { email: string }): Promise<{
-    action: 'VERIFY_DEVICE' | 'VERIFY_OTP';
-  }>;
-  connectDevice(): Promise<unknown>;
-  connectSocial(uri: string): Promise<{
-    chainId: string | number;
-    email: string;
-    address: string;
-    accounts?: {
-      type: AppKitFrameAccountType;
-      address: string;
-    }[];
-    userName?: string;
-  }>;
-  getSocialRedirectUri(payload: { provider: SocialProvider }): Promise<{
-    uri: string;
-  }>;
-  connectOtp(payload: { otp: string }): Promise<unknown>;
-  connectFarcaster: () => Promise<{ userName: string }>;
-  getFarcasterUri(): Promise<{ url: string }>;
-  isConnected(): Promise<{
-    isConnected: boolean;
-  }>;
-  getChainId(): Promise<{
-    chainId: number;
-  }>;
-  updateEmail(payload: { email: string }): Promise<{
-    action: 'VERIFY_PRIMARY_OTP' | 'VERIFY_SECONDARY_OTP';
-  }>;
-  updateEmailPrimaryOtp(payload: { otp: string }): Promise<unknown>;
-  updateEmailSecondaryOtp(payload: { otp: string }): Promise<{
-    newEmail: string;
-  }>;
-  syncTheme(payload: {
-    themeMode: ThemeMode | undefined;
-    themeVariables: Record<string, string | number> | undefined;
-  }): Promise<unknown>;
-  syncDappData(payload: {
-    projectId: string;
-    sdkVersion: SdkVersion;
-    sdkType: SdkType;
-    metadata?: Metadata;
-  }): Promise<unknown>;
-  connect(payload?: { chainId: number | undefined }): Promise<{
-    chainId: number;
-    email?: string | null;
-    address: string;
-    smartAccountDeployed: boolean;
-    preferredAccountType: AppKitFrameAccountType;
-  }>;
-  switchNetwork(chainId: number): Promise<{
-    chainId: number;
-  }>;
-  setPreferredAccount(type: AppKitFrameAccountType): Promise<{
-    type: AppKitFrameAccountType;
-    address: string;
-  }>;
-  setOnTimeout(callback: () => void): void;
-  getSmartAccountEnabledNetworks(): Promise<{
-    smartAccountEnabledNetworks: number[];
-  }>;
-  disconnect(): Promise<unknown>;
-  request(req: any): Promise<any>;
-  AuthView: () => React.JSX.Element | null;
-  Webview: () => React.JSX.Element | null;
-  onSetPreferredAccount: (
-    callback: (values: { type: AppKitFrameAccountType; address: string }) => void
-  ) => void;
+// export interface AppKitFrameProvider {
+//   readonly id: string;
+//   readonly name: string;
+//   getEventEmitter(): EventEmitter;
+//   getSecureSiteURL(): string;
+//   getSecureSiteDashboardURL(): string;
+//   getSecureSiteIconURL(): string;
+//   getSecureSiteHeaders(): Record<string, string>;
+//   getEmail(): string | undefined;
+//   getUsername(): string | undefined;
+//   getLastUsedChainId(): Promise<number | undefined>;
+//   rejectRpcRequest(): void;
+//   connectEmail(payload: { email: string }): Promise<{
+//     action: 'VERIFY_DEVICE' | 'VERIFY_OTP';
+//   }>;
+//   connectDevice(): Promise<unknown>;
+//   connectSocial(uri: string): Promise<{
+//     chainId: string | number;
+//     email: string;
+//     address: string;
+//     accounts?: {
+//       type: AppKitFrameAccountType;
+//       address: string;
+//     }[];
+//     userName?: string;
+//   }>;
+//   getSocialRedirectUri(payload: { provider: SocialProvider }): Promise<{
+//     uri: string;
+//   }>;
+//   connectOtp(payload: { otp: string }): Promise<unknown>;
+//   connectFarcaster: () => Promise<{ userName: string }>;
+//   getFarcasterUri(): Promise<{ url: string }>;
+//   isConnected(): Promise<{
+//     isConnected: boolean;
+//   }>;
+//   getChainId(): Promise<{
+//     chainId: number;
+//   }>;
+//   updateEmail(payload: { email: string }): Promise<{
+//     action: 'VERIFY_PRIMARY_OTP' | 'VERIFY_SECONDARY_OTP';
+//   }>;
+//   updateEmailPrimaryOtp(payload: { otp: string }): Promise<unknown>;
+//   updateEmailSecondaryOtp(payload: { otp: string }): Promise<{
+//     newEmail: string;
+//   }>;
+//   syncTheme(payload: {
+//     themeMode: ThemeMode | undefined;
+//     themeVariables: Record<string, string | number> | undefined;
+//   }): Promise<unknown>;
+//   syncDappData(payload: {
+//     projectId: string;
+//     sdkVersion: SdkVersion;
+//     sdkType: 'appkit';
+//     metadata?: Metadata;
+//   }): Promise<unknown>;
+//   connect(payload?: { chainId: number | undefined }): Promise<{
+//     chainId: number;
+//     email?: string | null;
+//     address: string;
+//     smartAccountDeployed: boolean;
+//     preferredAccountType: AppKitFrameAccountType;
+//   }>;
+//   switchNetwork(chainId: number): Promise<{
+//     chainId: number;
+//   }>;
+//   setPreferredAccount(type: AppKitFrameAccountType): Promise<{
+//     type: AppKitFrameAccountType;
+//     address: string;
+//   }>;
+//   setOnTimeout(callback: () => void): void;
+//   getSmartAccountEnabledNetworks(): Promise<{
+//     smartAccountEnabledNetworks: number[];
+//   }>;
+//   disconnect(): Promise<unknown>;
+//   request(req: any): Promise<any>;
+//   AuthView: () => React.JSX.Element | null;
+//   Webview: () => React.JSX.Element | null;
+//   onSetPreferredAccount: (
+//     callback: (values: { type: AppKitFrameAccountType; address: string }) => void
+//   ) => void;
+// }
+
+export type ProviderEventListener = {
+  connect: (connectParams: { chainId: number }) => void;
+  disconnect: (error: Error) => void;
+  display_uri: (uri: string) => void;
+  chainChanged: (chainId: string) => void;
+  accountsChanged: (accounts: string[]) => void;
+  message: (message: { type: string; data: unknown }) => void;
+};
+
+export interface RequestArguments {
+  readonly method: string;
+  readonly params?: readonly unknown[] | object;
 }
+
+export interface Provider {
+  connect: (params?: { onUri?: (uri: string) => void }) => Promise<string>;
+  disconnect: () => Promise<void>;
+  request: <T>(args: RequestArguments) => Promise<T>;
+  on<T extends keyof ProviderEventListener>(event: T, listener: ProviderEventListener[T]): void;
+  removeListener: <T>(event: string, listener: (data: T) => void) => void;
+  emit: (event: string, data?: unknown) => void;
+}
+
+export type CombinedProvider = AppKitFrameProvider & Provider;
+
+export type UseAppKitAccountReturn = {
+  caipAddress: CaipAddress | undefined;
+  address: string | undefined;
+  isConnected: boolean;
+  status: AccountControllerState['status'];
+};
+
+export type UseAppKitNetworkReturn = {
+  caipNetwork: CaipNetwork | undefined;
+  chainId: number | string | undefined;
+  caipNetworkId: CaipNetworkId | undefined;
+  switchNetwork: (network: AppKitNetwork) => void;
+};
+
+export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 'reconnecting';

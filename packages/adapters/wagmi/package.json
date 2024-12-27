@@ -1,0 +1,63 @@
+{
+  "name": "@reown/appkit-adapters-wagmi-react-native",
+  "version": "1.1.1",
+  "main": "lib/commonjs/index.js",
+  "types": "lib/typescript/index.d.ts",
+  "module": "lib/module/index.js",
+  "source": "src/index.ts",
+  "scripts": {
+    "build": "bob build",
+    "clean": "rm -rf lib",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "files": [
+    "src",
+    "lib",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "keywords": [
+    "web3",
+    "crypto",
+    "ethereum",
+    "appkit",
+    "reown",
+    "utils",
+    "wagmi",
+    "react-native"
+  ],
+  "repository": "https://github.com/reown-com/appkit-react-native",
+  "author": "Reown <support@reown.com> (https://reown.com)",
+  "homepage": "https://reown.com/appkit",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/reown-com/appkit-react-native/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "dependencies": {
+    "@reown/appkit-common-react-native": "1.1.1",
+    "@reown/appkit-core-react-native": "1.1.1",
+    "@reown/appkit-react-native": "1.1.1",
+    "@reown/appkit-scaffold-react-native": "1.1.1",
+    "@reown/appkit-ui-react-native": "1.1.1",
+    "@reown/appkit-utils-react-native": "1.1.1",
+    "@reown/appkit-wallet-react-native": "1.1.1",
+    "@walletconnect/universal-provider": "2.17.2",
+    "@walletconnect/utils": "2.17.2",
+    "valtio": "1.10.5"
+  },
+  "peerDependencies": {
+    "@wagmi/core": ">=2.13",
+    "viem": "2.x",
+    "wagmi": ">=2.12"
+  },
+  "react-native": "src/index.ts",
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ]
+}

@@ -1,5 +1,5 @@
-import type { Assign, Prettify, ChainFormatters } from 'viem'
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { Assign, Prettify, ChainFormatters } from 'viem';
+import type { CaipNetwork } from '@reown/appkit-common-react-native';
 
 export function defineChain<
   formatters extends ChainFormatters,
@@ -10,5 +10,5 @@ export function defineChain<
     fees: undefined,
     serializers: undefined,
     ...chain
-  } as Assign<CaipNetwork<undefined>, chain>
+  } as Assign<CaipNetwork<undefined>, chain>;
 }

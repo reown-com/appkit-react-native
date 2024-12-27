@@ -1,10 +1,10 @@
-import { proxy, ref } from 'valtio';
+import { proxy, ref } from 'valtio/vanilla';
+import { subscribeKey as subKey } from 'valtio/vanilla/utils';
 import type {
   CustomWallet,
   Features,
   Metadata,
   ProjectId,
-  SdkType,
   SdkVersion,
   Tokens
 } from '../utils/TypeUtil';
@@ -15,7 +15,11 @@ export interface ClipboardClient {
   setString: (value: string) => Promise<void>;
 }
 
-export interface OptionsControllerState {
+export interface OptionsControllerStatePublic {
+  /**
+   * The project ID for the AppKit. You can find or create your project ID in the Cloud.
+   * @see https://cloud.walletconnect.com/
+   */
   projectId: ProjectId;
   _clipboardClient?: ClipboardClient;
   includeWalletIds?: string[];
@@ -24,13 +28,43 @@ export interface OptionsControllerState {
   customWallets?: CustomWallet[];
   tokens?: Tokens;
   enableAnalytics?: boolean;
-  sdkType: SdkType;
-  sdkVersion: SdkVersion;
+  /**
+   * Set of fields that related to your project which will be used to populate the metadata of the modal.
+   * @default {}
+   */
+
   metadata?: Metadata;
-  isSiweEnabled?: boolean;
+
+  /**
+   * Enable or disable the Coinbase wallet in your AppKit.
+   * @default true
+   */
+  enableCoinbase?: boolean;
+
   features?: Features;
+  /**
+   * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
+   * @default true
+   */
   debug?: boolean;
+  /**
+   * Allow users to switch to an unsupported chain.
+   * @default false
+   */
+  allowUnsupportedChain?: boolean;
 }
+
+export interface OptionsControllerStateInternal {
+  sdkType: 'appkit';
+  sdkVersion: SdkVersion;
+  isSiweEnabled?: boolean;
+  isUniversalProvider?: boolean;
+  hasMultipleAddresses?: boolean;
+  useInjectedUniversalProvider?: boolean;
+}
+
+type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal;
+export type OptionsControllerState = OptionsControllerStatePublic & OptionsControllerStateInternal;
 
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
@@ -38,12 +72,21 @@ const state = proxy<OptionsControllerState>({
   sdkType: 'appkit',
   sdkVersion: 'react-native-wagmi-undefined',
   features: ConstantsUtil.DEFAULT_FEATURES,
-  debug: false
+  debug: false,
+  allowUnsupportedChain: false
 });
 
 // -- Controller ---------------------------------------- //
 export const OptionsController = {
   state,
+
+  subscribeKey<K extends StateKey>(key: K, callback: (value: OptionsControllerState[K]) => void) {
+    return subKey(state, key, callback);
+  },
+
+  setOptions(options: OptionsControllerState) {
+    Object.assign(state, options);
+  },
 
   setClipboardClient(client: ClipboardClient) {
     state._clipboardClient = ref(client);
@@ -97,8 +140,26 @@ export const OptionsController = {
     state.debug = debug;
   },
 
+  setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
+    state.hasMultipleAddresses = hasMultipleAddresses;
+  },
+
+  // setEnableWalletConnect(enableWalletConnect: OptionsControllerState['enableWalletConnect']) {
+  //   state.enableWalletConnect = enableWalletConnect;
+  // },
+
   isClipboardAvailable() {
     return !!state._clipboardClient;
+  },
+
+  setAllowUnsupportedChain(allowUnsupportedChain: OptionsControllerState['allowUnsupportedChain']) {
+    state.allowUnsupportedChain = allowUnsupportedChain;
+  },
+
+  setUsingInjectedUniversalProvider(
+    useInjectedUniversalProvider: OptionsControllerState['useInjectedUniversalProvider']
+  ) {
+    state.useInjectedUniversalProvider = useInjectedUniversalProvider;
   },
 
   copyToClipboard(value: string) {

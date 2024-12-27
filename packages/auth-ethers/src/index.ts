@@ -10,6 +10,10 @@ export class AuthProvider extends AppKitFrameProvider {
   readonly name = 'AppKit Auth';
 
   constructor(props: AuthProviderProps) {
-    super(props.projectId, props.metadata);
+    const { projectId, metadata } = props;
+    super({
+      projectId,
+      metadata
+    });
   }
 }

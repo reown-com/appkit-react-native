@@ -36,6 +36,7 @@ export const EthersHelpersUtil = {
     return addresses;
   },
   async addEthereumChain(provider: Provider, caipNetwork: CaipNetwork) {
+    // @ts-expect-error
     const rpcUrls = caipNetwork.rpcUrls.chainDefault?.http || [];
     await provider.request({
       method: 'wallet_addEthereumChain',

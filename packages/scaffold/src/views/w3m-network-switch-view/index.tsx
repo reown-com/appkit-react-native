@@ -7,7 +7,7 @@ import {
   ConnectionController,
   ConnectorController,
   EventsController,
-  NetworkController,
+  ChainController,
   RouterController,
   RouterUtil
 } from '@reown/appkit-core-react-native';
@@ -24,7 +24,7 @@ import styles from './styles';
 export function NetworkSwitchView() {
   const { data } = useSnapshot(RouterController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { activeCaipNetwork } = useSnapshot(ChainController.state);
   const isAuthConnected = ConnectorController.state.connectedConnector === 'AUTH';
   const [error, setError] = useState<boolean>(false);
   const [showRetry, setShowRetry] = useState<boolean>(false);
@@ -34,12 +34,12 @@ export function NetworkSwitchView() {
   const onSwitchNetwork = async () => {
     try {
       setError(false);
-      await NetworkController.switchActiveNetwork(network);
+      await ChainController.switchActiveNetwork(network);
       EventsController.sendEvent({
         type: 'track',
         event: 'SWITCH_NETWORK',
         properties: {
-          network: network.id
+          network: network.caipNetworkId
         }
       });
     } catch {
@@ -55,10 +55,10 @@ export function NetworkSwitchView() {
 
   useEffect(() => {
     // Go back if network is already switched
-    if (caipNetwork?.id === network?.id) {
+    if (activeCaipNetwork?.id === network?.id) {
       RouterUtil.navigateAfterNetworkSwitch();
     }
-  }, [caipNetwork?.id, network?.id]);
+  }, [activeCaipNetwork?.id, network?.id]);
 
   const retryTemplate = () => {
     if (!showRetry) return null;

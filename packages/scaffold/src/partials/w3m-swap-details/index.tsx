@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useState } from 'react';
-import { ConstantsUtil, NetworkController, SwapController } from '@reown/appkit-core-react-native';
+import { ChainController, ConstantsUtil, SwapController } from '@reown/appkit-core-react-native';
 import {
   FlexView,
   Text,
@@ -80,7 +80,7 @@ export function SwapDetails({ initialOpen, canClose }: SwapDetailsProps) {
     setModalData(
       getModalData('networkCost', {
         networkSymbol: SwapController.state.networkTokenSymbol,
-        networkName: NetworkController.state.caipNetwork?.name
+        networkName: ChainController.state.activeCaipNetwork?.name
       })
     );
   };

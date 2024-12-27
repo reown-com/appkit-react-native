@@ -8,11 +8,11 @@ import {
   ModalController,
   RouterController,
   SnackController,
-  WebviewController,
-  type AppKitFrameProvider
+  WebviewController
 } from '@reown/appkit-core-react-native';
 import { FlexView, LoadingThumbnail, IconBox, Logo, Text } from '@reown/appkit-ui-react-native';
 import { StringUtil } from '@reown/appkit-common-react-native';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';

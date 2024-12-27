@@ -2,11 +2,7 @@ import { useSnapshot } from 'valtio';
 import { ScrollView } from 'react-native';
 import { Avatar, Button, FlexView, Icon, Image, Text, UiUtil } from '@reown/appkit-ui-react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
-import {
-  NetworkController,
-  RouterController,
-  SendController
-} from '@reown/appkit-core-react-native';
+import { RouterController, SendController, ChainController } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { PreviewSendPill } from './components/preview-send-pill';
 import styles from './styles';
@@ -14,7 +10,7 @@ import { PreviewSendDetails } from './components/preview-send-details';
 
 export function WalletSendPreviewView() {
   const { padding } = useCustomDimensions();
-  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { activeCaipNetwork } = useSnapshot(ChainController.state);
   const {
     token,
     receiverAddress,
@@ -112,7 +108,7 @@ export function WalletSendPreviewView() {
           networkFee={gasPriceInUSD}
           address={receiverAddress}
           name={receiverProfileName}
-          caipNetwork={caipNetwork}
+          caipNetwork={activeCaipNetwork}
         />
         <FlexView flexDirection="row" alignItems="center" justifyContent="center">
           <Icon name="warningCircle" size="sm" color="fg-200" style={styles.reviewIcon} />

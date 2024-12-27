@@ -10,15 +10,10 @@
     "packages/scaffold-utils",
     "packages/scaffold",
     "packages/siwe",
-    "packages/wagmi",
-    "packages/coinbase-wagmi",
     "packages/auth-wagmi",
-    "packages/auth-ethers",
-    "packages/coinbase-ethers",
-    "packages/ethers5",
-    "packages/ethers",
     "packages/appkit",
     "packages/appkit-utils",
+    "packages/adapters/*",
     "apps/*"
   ],
   "scripts": {

@@ -62,7 +62,7 @@ export class AppKitFrameProvider {
     chainId?: number | CaipNetworkId;
     onTimeout?: () => void;
   }) {
-    const { projectId, metadata, chainId, onTimeout } = props;
+    const { projectId, metadata, onTimeout } = props;
 
     this.webviewLoadPromise = new Promise((resolve, reject) => {
       this.webviewLoadPromiseResolver = { resolve, reject };
@@ -330,6 +330,7 @@ export class AppKitFrameProvider {
 
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: AppKitFrameTypes.Requests['AppGetUserRequest']) {
+    console.log('AppKitFrameProvider.connect');
     const lastUsedChain = await this.getLastUsedChainId();
     const chainId = payload?.chainId ?? lastUsedChain ?? 1;
     await this.webviewLoadPromise;
@@ -413,6 +414,14 @@ export class AppKitFrameProvider {
     this.onFrameEvent(frameEvent => {
       if (frameEvent.type === AppKitFrameConstants.FRAME_GET_USER_SUCCESS) {
         callback(frameEvent.payload);
+      }
+    });
+  }
+
+  public onConnect(callback: (user: AppKitFrameTypes.Responses['FrameGetUserResponse']) => void) {
+    this.onFrameEvent(event => {
+      if (event.type === AppKitFrameConstants.FRAME_GET_USER_SUCCESS) {
+        callback(event.payload);
       }
     });
   }
@@ -521,6 +530,19 @@ export class AppKitFrameProvider {
     });
   }
 
+  public rejectRpcRequests() {
+    try {
+      this.openRpcRequests.forEach(({ abortController, method }) => {
+        if (!AppKitFrameRpcConstants.SAFE_RPC_METHODS.includes(method)) {
+          abortController.abort();
+        }
+      });
+      this.openRpcRequests = [];
+    } catch (e) {
+      // this.w3mLogger.logger.error({ error: e }, 'Error aborting RPC request');
+    }
+  }
+
   private async appEvent<T extends AppKitFrameTypes.ProviderRequestType>(
     event: AppEventType
   ): Promise<AppKitFrameTypes.Responses[`Frame${T}Response`]> {
@@ -597,7 +619,7 @@ export class AppKitFrameProvider {
       ) {
         return;
       }
-      // console.log('💻 received', event); // eslint-disable-line no-console
+      console.log('💻 received', event); // eslint-disable-line no-console
       callback(event);
     };
 
@@ -611,7 +633,7 @@ export class AppKitFrameProvider {
 
     AppKitFrameSchema.appEvent.parse(event);
     const strEvent = JSON.stringify(event);
-    // console.log('📡 sending', strEvent); // eslint-disable-line no-console
+    console.log('📡 sending', strEvent); // eslint-disable-line no-console
     const send = `
       (function() {
         let iframe = document.getElementById('frame-mobile-sdk');

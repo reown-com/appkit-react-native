@@ -1,5 +1,6 @@
 import { proxy } from 'valtio';
-import type { WcWallet, CaipNetwork, Connector, SwapInputTarget } from '../utils/TypeUtil';
+import type { CaipNetwork } from '@reown/appkit-common-react-native';
+import type { WcWallet, Connector, SwapInputTarget } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {

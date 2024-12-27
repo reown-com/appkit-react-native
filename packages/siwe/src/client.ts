@@ -1,6 +1,6 @@
 import {
   AccountController,
-  NetworkController,
+  ChainController,
   ConnectionController,
   RouterUtil
 } from '@reown/appkit-core-react-native';
@@ -92,7 +92,9 @@ export class AppKitSIWEClient {
     if (!address) {
       throw new Error('An address is required to create a SIWE message.');
     }
-    const chainId = NetworkUtil.caipNetworkIdToNumber(NetworkController.state.caipNetwork?.id);
+    const chainId = NetworkUtil.caipNetworkIdToNumber(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    );
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.');
     }

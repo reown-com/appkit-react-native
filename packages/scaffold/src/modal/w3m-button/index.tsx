@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { AccountButton, type AccountButtonProps } from '../w3m-account-button';
 import { ConnectButton, type ConnectButtonProps } from '../w3m-connect-button';
-import { AccountController, ModalController } from '@reown/appkit-core-react-native';
+import { ChainController, ModalController } from '@reown/appkit-core-react-native';
 
 export interface AppKitButtonProps {
   balance?: AccountButtonProps['balance'];
@@ -22,10 +22,10 @@ export function AppKitButton({
   accountStyle,
   connectStyle
 }: AppKitButtonProps) {
-  const { isConnected } = useSnapshot(AccountController.state);
+  const { activeCaipAddress } = useSnapshot(ChainController.state);
   const { loading } = useSnapshot(ModalController.state);
 
-  return !loading && isConnected ? (
+  return !loading && activeCaipAddress ? (
     <AccountButton
       style={accountStyle}
       balance={balance}

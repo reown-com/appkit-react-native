@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Button } from '@reown/appkit-ui-react-native';
-import { useAppKit } from '@reown/appkit-wagmi-react-native';
+import { useAppKit } from '@reown/appkit-react-native';
 import { useAccount } from 'wagmi';
 
 export function OpenButton() {

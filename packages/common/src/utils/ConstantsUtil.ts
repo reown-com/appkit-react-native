@@ -11,13 +11,8 @@ export const ConstantsUtil = {
   /* Connector IDs */
   CONNECTOR_ID: {
     WALLET_CONNECT: 'walletConnect',
-    INJECTED: 'injected',
-    WALLET_STANDARD: 'announced',
     COINBASE: 'coinbaseWallet',
     COINBASE_SDK: 'coinbaseWalletSDK',
-    SAFE: 'safe',
-    LEDGER: 'ledger',
-    EIP6963: 'eip6963',
     AUTH: 'ID_AUTH'
   },
   LIMITS: {

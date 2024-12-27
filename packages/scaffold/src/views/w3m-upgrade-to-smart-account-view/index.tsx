@@ -4,14 +4,14 @@ import { useSnapshot } from 'valtio';
 import { Button, FlexView, IconLink, Link, Text, Visual } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
+  ChainController,
   ConnectorController,
   EventsController,
   ModalController,
-  NetworkController,
   RouterController,
-  SnackController,
-  type AppKitFrameProvider
+  SnackController
 } from '@reown/appkit-core-react-native';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 import styles from './styles';
 
 export function UpgradeToSmartAccountView() {
@@ -31,7 +31,7 @@ export function UpgradeToSmartAccountView() {
         event: 'SET_PREFERRED_ACCOUNT_TYPE',
         properties: {
           accountType,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
       });
     } catch (error) {

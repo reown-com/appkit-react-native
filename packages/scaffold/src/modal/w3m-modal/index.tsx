@@ -5,7 +5,8 @@ import Modal from 'react-native-modal';
 import { Card } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
-  ApiController,
+  // ApiController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
@@ -14,28 +15,28 @@ import {
   OptionsController,
   RouterController,
   TransactionsController,
-  type CaipAddress,
-  type AppKitFrameProvider,
   WebviewController
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
+import type { CaipAddress } from '@reown/appkit-common-react-native';
 
 import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
 import { Snackbar } from '../../partials/w3m-snackbar';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
-  const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
-  const { caipAddress, isConnected } = useSnapshot(AccountController.state);
+  const { connectedConnector } = useSnapshot(ConnectorController.state);
+  const { caipAddress } = useSnapshot(AccountController.state);
   const { frameViewVisible, webviewVisible } = useSnapshot(WebviewController.state);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
   const portraitHeight = height - 120;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
-  const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
+  const authProvider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
   const AuthView = authProvider?.AuthView;
   const SocialView = authProvider?.Webview;
   const showAuth = !connectedConnector || connectedConnector === 'AUTH';
@@ -48,14 +49,14 @@ export function AppKit() {
     return handleClose();
   };
 
-  const prefetch = async () => {
-    await ApiController.prefetch();
-    EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' });
-  };
+  //TODO: Check init event
+  // const prefetch = async () => {
+  //   await ApiController.prefetch();
+  // };
 
   const handleClose = async () => {
     if (OptionsController.state.isSiweEnabled) {
-      if (SIWEController.state.status !== 'success' && AccountController.state.isConnected) {
+      if (SIWEController.state.status !== 'success' && ChainController.state.activeCaipAddress) {
         await ConnectionController.disconnect();
       }
     }
@@ -63,7 +64,7 @@ export function AppKit() {
 
   const onNewAddress = useCallback(
     async (address?: CaipAddress) => {
-      if (!isConnected || loading) {
+      if (!ChainController.state.activeCaipAddress || loading) {
         return;
       }
 
@@ -96,7 +97,7 @@ export function AppKit() {
         }
       }
     },
-    [isConnected, loading]
+    [loading]
   );
 
   const onSiweNavigation = () => {
@@ -108,7 +109,8 @@ export function AppKit() {
   };
 
   useEffect(() => {
-    prefetch();
+    // prefetch();
+    EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' });
   }, []);
 
   useEffect(() => {

@@ -15,9 +15,9 @@ import {
   AccountController,
   AssetUtil,
   EventsController,
-  NetworkController,
   OptionsController,
-  TransactionsController
+  TransactionsController,
+  ChainController
 } from '@reown/appkit-core-react-native';
 import { Placeholder } from '../w3m-placeholder';
 import { getTransactionListItemProps } from './utils';
@@ -31,8 +31,8 @@ export function AccountActivity({ style }: Props) {
   const Theme = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const { loading, transactions, next } = useSnapshot(TransactionsController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const { activeCaipNetwork } = useSnapshot(ChainController.state);
+  const networkImage = AssetUtil.getNetworkImage(activeCaipNetwork);
 
   const handleLoadMore = () => {
     TransactionsController.fetchTransactions(AccountController.state.address);

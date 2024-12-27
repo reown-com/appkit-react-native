@@ -5,9 +5,9 @@ import { FlexView, InputText, ListToken, Text } from '@reown/appkit-ui-react-nat
 import {
   AccountController,
   AssetUtil,
-  NetworkController,
   RouterController,
-  SendController
+  SendController,
+  ChainController
 } from '@reown/appkit-core-react-native';
 import type { Balance } from '@reown/appkit-common-react-native';
 
@@ -18,9 +18,9 @@ import styles from './styles';
 export function WalletSendSelectTokenView() {
   const { padding } = useCustomDimensions();
   const { tokenBalance } = useSnapshot(AccountController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { activeCaipNetwork } = useSnapshot(ChainController.state);
   const { token } = useSnapshot(SendController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const networkImage = AssetUtil.getNetworkImage(activeCaipNetwork);
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const [filteredTokens, setFilteredTokens] = useState(tokenBalance ?? []);
 

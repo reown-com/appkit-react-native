@@ -1,10 +1,9 @@
 import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy, subscribe as sub } from 'valtio';
-import { NumberUtil } from '@reown/appkit-common-react-native';
+import { NumberUtil, type CaipAddress } from '@reown/appkit-common-react-native';
 
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 import { SwapApiUtil } from '../utils/SwapApiUtil';
-import { NetworkController } from './NetworkController';
 import { BlockchainApiController } from './BlockchainApiController';
 import { OptionsController } from './OptionsController';
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil';
@@ -17,6 +16,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { ConnectionController } from './ConnectionController';
 import { TransactionsController } from './TransactionsController';
 import { EventsController } from './EventsController';
+import { ChainController } from './ChainController';
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000;
@@ -160,7 +160,7 @@ export const SwapController = {
   getParams() {
     const caipAddress = AccountController.state.caipAddress;
     const address = CoreHelperUtil.getPlainAddress(caipAddress);
-    const networkAddress = NetworkController.getActiveNetworkTokenAddress();
+    const networkAddress = ChainController.getActiveNetworkTokenAddress();
     const type = ConnectorController.state.connectedConnector;
 
     if (!address) {
@@ -400,7 +400,7 @@ export const SwapController = {
 
   setBalances(balances: SwapTokenWithBalance[]) {
     const { networkAddress } = this.getParams();
-    const caipNetwork = NetworkController.state.caipNetwork;
+    const caipNetwork = ChainController.state.activeCaipNetwork;
 
     if (!caipNetwork) {
       return;
@@ -412,7 +412,9 @@ export const SwapController = {
       state.tokensPriceMap[token.address] = token.price || 0;
     });
 
-    state.myTokensWithBalance = balances.filter(token => token.address?.startsWith(caipNetwork.id));
+    state.myTokensWithBalance = balances.filter(
+      token => token.address?.startsWith(caipNetwork.caipNetworkId)
+    );
 
     state.networkBalanceInUSD = networkToken
       ? NumberUtil.multiply(networkToken.quantity.numeric, networkToken.price).toString()
@@ -463,7 +465,7 @@ export const SwapController = {
 
   // -- Swap ---------------------------------------------- //
   async swapTokens() {
-    const address = AccountController.state.address as `${string}:${string}:${string}`;
+    const address = AccountController.state.address as CaipAddress;
     const sourceToken = state.sourceToken;
     const toToken = state.toToken;
     const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).isGreaterThan(0);
@@ -768,7 +770,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_SUCCESS',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',
@@ -795,7 +797,7 @@ export const SwapController = {
         event: 'SWAP_ERROR',
         properties: {
           message: error?.shortMessage || error?.message || 'Unknown',
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',

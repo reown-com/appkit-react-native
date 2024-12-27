@@ -6,6 +6,8 @@ const wagmipack = require('../../packages/wagmi/package.json');
 const authpack = require('../../packages/auth-wagmi/package.json');
 const commonpack = require('../../packages/common/package.json');
 const siwepack = require('../../packages/siwe/package.json');
+const appkitpack = require('../../packages/appkit/package.json');
+const adapterswagmipack = require('../../packages/adapters/wagmi/package.json');
 
 module.exports = function (api) {
   api.cache(true);
@@ -29,7 +31,13 @@ module.exports = function (api) {
             [wagmipack.name]: path.join(__dirname, '../../packages/wagmi', wagmipack.source),
             [authpack.name]: path.join(__dirname, '../../packages/auth-wagmi', authpack.source),
             [commonpack.name]: path.join(__dirname, '../../packages/common', commonpack.source),
-            [siwepack.name]: path.join(__dirname, '../../packages/siwe', siwepack.source)
+            [siwepack.name]: path.join(__dirname, '../../packages/siwe', siwepack.source),
+            [appkitpack.name]: path.join(__dirname, '../../packages/appkit', appkitpack.source),
+            [adapterswagmipack.name]: path.join(
+              __dirname,
+              '../../packages/adapters/wagmi',
+              adapterswagmipack.source
+            )
           }
         }
       ]

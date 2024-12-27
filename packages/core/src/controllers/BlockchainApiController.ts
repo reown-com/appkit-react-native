@@ -26,6 +26,8 @@ import type {
 } from '../utils/TypeUtil';
 import { OptionsController } from './OptionsController';
 import { ConstantsUtil } from '../utils/ConstantsUtil';
+import { AccountController } from './AccountController';
+import { ChainController } from './ChainController';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getBlockchainApiUrl();
@@ -52,7 +54,10 @@ export const BlockchainApiController = {
     return state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
-        projectId: OptionsController.state.projectId
+        projectId: OptionsController.state.projectId,
+        sender: ChainController.state.activeCaipAddress
+          ? CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress)
+          : undefined
       },
       headers: {
         'Content-Type': 'application/json',
@@ -68,7 +73,8 @@ export const BlockchainApiController = {
     cursor,
     onramp,
     signal,
-    cache
+    cache,
+    chainId
   }: BlockchainApiTransactionsRequest) {
     const { sdkType, sdkVersion } = OptionsController.state;
 
@@ -82,7 +88,8 @@ export const BlockchainApiController = {
       params: {
         projectId,
         cursor,
-        onramp
+        onramp,
+        chainId
       },
       signal,
       cache
@@ -269,6 +276,17 @@ export const BlockchainApiController = {
         'x-sdk-version': sdkVersion
       },
       params: {
+        projectId: OptionsController.state.projectId,
+        apiVersion: '2'
+      }
+    });
+  },
+
+  async reverseLookupEnsName({ address }: { address: string }) {
+    return state.api.get<BlockchainApiLookupEnsName[]>({
+      path: `/v1/profile/reverse/${address}`,
+      params: {
+        sender: AccountController.state.address,
         projectId: OptionsController.state.projectId,
         apiVersion: '2'
       }

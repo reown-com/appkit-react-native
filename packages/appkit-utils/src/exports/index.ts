@@ -1,14 +1,13 @@
 import type UniversalProvider from '@walletconnect/universal-provider';
-export { ConstantsUtil } from '../src/ConstantsUtil';
-export { PresetsUtil } from '../src/PresetsUtil';
-export { HelpersUtil } from '../src/HelpersUtil';
-export { ErrorUtil } from '../src/ErrorUtil';
-export { LoggerUtil } from '../src/LoggerUtil';
-export { CaipNetworksUtil } from '../src/CaipNetworkUtil';
-export type { SocialProvider } from '../src/TypeUtil';
 import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
-
-export { SocialProviderEnum } from '../src/TypeUtil';
+export { ConstantsUtil } from '../ConstantsUtil';
+export { PresetsUtil } from '../PresetsUtil';
+export { HelpersUtil } from '../HelpersUtil';
+export { ErrorUtil } from '../ErrorUtil';
+export { LoggerUtil } from '../LoggerUtil';
+export { CaipNetworksUtil } from '../CaipNetworkUtil';
+export type { SocialProvider } from '../TypeUtil';
+export { SocialProviderEnum } from '../TypeUtil';
 
 export interface RequestArguments {
   readonly method: string;

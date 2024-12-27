@@ -1,11 +1,10 @@
-import { useSnapshot } from 'valtio';
 import { Linking, StyleSheet } from 'react-native';
 import { Chip, FlexView, Spacing, Text } from '@reown/appkit-ui-react-native';
-import { ConnectorController, type AppKitFrameProvider } from '@reown/appkit-core-react-native';
+import { ConnectorController } from '@reown/appkit-core-react-native';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 export function UpgradeEmailWalletView() {
-  const { connectors } = useSnapshot(ConnectorController.state);
-  const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
+  const authProvider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
 
   const onLinkPress = () => {
     const link = authProvider.getSecureSiteDashboardURL();

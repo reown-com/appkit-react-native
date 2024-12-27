@@ -27,6 +27,7 @@ import { ConnectionController } from './ConnectionController';
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
+  isConnected: false,
   currentTab: 0,
   tokenBalance: [],
   smartAccountDeployed: false,
@@ -102,9 +103,9 @@ export const ChainController = {
     });
   },
 
-  initialize(adapters: ChainAdapter[], caipNetworks: CaipNetwork[] | undefined) {
+  async initialize(adapters: ChainAdapter[], caipNetworks: CaipNetwork[] | undefined) {
     const { chainId: activeChainId, namespace: activeNamespace } =
-      StorageUtil.getActiveNetworkProps();
+      await StorageUtil.getActiveNetworkProps();
     const activeCaipNetwork = caipNetworks?.find(
       network => network.id.toString() === activeChainId?.toString()
     );
@@ -357,7 +358,7 @@ export const ChainController = {
     const adapter = state.chains.get(chainToFilter);
 
     const { approvedCaipNetworkIds = [], requestedCaipNetworks = [] } = adapter?.networkState || {};
-    const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
+    const sortedNetworks = CoreHelperUtil.sortNetworks(
       approvedCaipNetworkIds,
       requestedCaipNetworks
     );
@@ -440,6 +441,10 @@ export const ChainController = {
   // Smart Account Network Handlers
   setSmartAccountEnabledNetworks(smartAccountEnabledNetworks: number[], chain: ChainNamespace) {
     this.setAdapterNetworkState(chain, { smartAccountEnabledNetworks });
+  },
+
+  getSmartAccountEnabledNetworks(chain: ChainNamespace) {
+    return this.getNetworkProp('smartAccountEnabledNetworks', chain);
   },
 
   checkIfSmartAccountEnabled() {

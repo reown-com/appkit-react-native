@@ -1,7 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
 import {
-  AccountController,
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
@@ -11,8 +10,7 @@ import {
   type Platform,
   OptionsController,
   ApiController,
-  EventsController,
-  ConnectorController
+  EventsController
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -50,8 +48,6 @@ export function ConnectingView() {
         ConnectionController.setWcError(false);
         ConnectionController.connectWalletConnect(routeData?.wallet?.link_mode ?? undefined);
         await ConnectionController.state.wcPromise;
-        ConnectorController.setConnectedConnector('WALLET_CONNECT');
-        AccountController.setIsConnected(true);
 
         if (OptionsController.state.isSiweEnabled) {
           if (SIWEController.state.status === 'success') {

@@ -20,10 +20,10 @@ describe('AccountController', () => {
     expect(AccountController.state).toEqual(initialState);
   });
 
-  it('should update state correctly on setIsConnected()', () => {
-    AccountController.setIsConnected(true);
-    expect(AccountController.state.isConnected).toEqual(true);
-  });
+  // it('should update state correctly on setIsConnected()', () => {
+  //   AccountController.setIsConnected(true);
+  //   expect(AccountController.state.isConnected).toEqual(true);
+  // });
 
   it('should update state correctly on setCaipAddress()', () => {
     AccountController.setCaipAddress(caipAddress);

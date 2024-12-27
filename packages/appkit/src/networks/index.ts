@@ -7,4 +7,4 @@ export * from './bitcoin';
 export * from './utils';
 
 // -- Types ---------------------------------------------------------------
-export type { AppKitNetwork } from '@reown/appkit-common';
+export type { AppKitNetwork } from '@reown/appkit-common-react-native';

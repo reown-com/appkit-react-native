@@ -11,11 +11,10 @@ import {
   ConnectionUtil,
   EventsController,
   ModalController,
-  NetworkController,
   OptionsController,
   RouterController,
   SnackController,
-  type AppKitFrameProvider
+  ChainController
 } from '@reown/appkit-core-react-native';
 import {
   Avatar,
@@ -31,6 +30,7 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 import styles from './styles';
 import { AuthButtons } from './components/auth-buttons';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 export function AccountDefaultView() {
   const {
@@ -44,17 +44,17 @@ export function AccountDefaultView() {
   } = useSnapshot(AccountController.state);
   const { loading } = useSnapshot(ModalController.state);
   const [disconnecting, setDisconnecting] = useState(false);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { activeCaipNetwork } = useSnapshot(ChainController.state);
   const { connectedConnector } = useSnapshot(ConnectorController.state);
   const { connectedSocialProvider } = useSnapshot(ConnectionController.state);
   const { history } = useSnapshot(RouterController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const networkImage = AssetUtil.getNetworkImage(activeCaipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
   const isAuth = connectedConnector === 'AUTH';
   const showBalance = balance && !isAuth;
   const showExplorer = addressExplorerUrl && !isAuth;
   const showBack = history.length > 1;
-  const showSwitchAccountType = isAuth && NetworkController.checkIfSmartAccountEnabled();
+  const showSwitchAccountType = isAuth && ChainController.checkIfSmartAccountEnabled();
   const { padding } = useCustomDimensions();
 
   async function onDisconnect() {
@@ -76,7 +76,7 @@ export function AccountDefaultView() {
           event: 'SET_PREFERRED_ACCOUNT_TYPE',
           properties: {
             accountType,
-            network: NetworkController.state.caipNetwork?.id || ''
+            network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
           }
         });
       }
@@ -224,7 +224,7 @@ export function AccountDefaultView() {
               style={styles.actionButton}
             >
               <Text numberOfLines={1} color="fg-100" testID="w3m-account-select-network-text">
-                {caipNetwork?.name}
+                {activeCaipNetwork?.name}
               </Text>
             </ListItem>
             {!isAuth && (

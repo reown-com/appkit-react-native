@@ -10,12 +10,6 @@ export { RouterController, type RouterControllerState } from './controllers/Rout
 export { AccountController, type AccountControllerState } from './controllers/AccountController';
 
 export {
-  NetworkController,
-  type NetworkControllerClient,
-  type NetworkControllerState
-} from './controllers/NetworkController';
-
-export {
   ConnectionController,
   type ConnectionControllerClient,
   type ConnectionControllerState
@@ -25,6 +19,8 @@ export {
   ConnectorController,
   type ConnectorControllerState
 } from './controllers/ConnectorController';
+
+export { ChainController, type ChainControllerState } from './controllers/ChainController';
 
 export { SnackController, type SnackControllerState } from './controllers/SnackController';
 
@@ -67,6 +63,5 @@ export { CoreHelperUtil } from './utils/CoreHelperUtil';
 export { StorageUtil } from './utils/StorageUtil';
 export { EventUtil } from './utils/EventUtil';
 export { RouterUtil } from './utils/RouterUtil';
-export { NetworkUtil } from './utils/NetworkUtil';
 
 export type * from './utils/TypeUtil';

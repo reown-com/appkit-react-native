@@ -13,7 +13,8 @@ import {
   AccountController,
   ApiController,
   AssetUtil,
-  NetworkController,
+  ChainController,
+  CoreHelperUtil,
   OptionsController,
   RouterController,
   SnackController
@@ -22,17 +23,26 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function WalletReceiveView() {
   const { address, profileName, preferredAccountType } = useSnapshot(AccountController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const { activeCaipNetwork } = useSnapshot(ChainController.state);
+  const networkImage = AssetUtil.getNetworkImage(activeCaipNetwork);
   const { padding } = useCustomDimensions();
   const canCopy = OptionsController.isClipboardAvailable();
-  const isSmartAccount =
-    preferredAccountType === 'smartAccount' && NetworkController.checkIfSmartAccountEnabled();
-  const networks = isSmartAccount
-    ? NetworkController.getSmartAccountEnabledNetworks()
-    : NetworkController.getApprovedCaipNetworks();
 
-  const imagesArray = networks
+  const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks();
+  const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds();
+  const isNetworkEnabledForSmartAccounts = ChainController.checkIfSmartAccountEnabled();
+
+  let sortedNetworks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
+
+  if (isNetworkEnabledForSmartAccounts && preferredAccountType === 'smartAccount') {
+    if (!activeCaipNetwork) {
+      return null;
+    }
+    sortedNetworks = [activeCaipNetwork];
+  }
+
+  const imagesArray = sortedNetworks
+    // @ts-expect-error TODO: fix this
     .filter(network => network?.imageId)
     .slice(0, 5)
     .map(AssetUtil.getNetworkImage)

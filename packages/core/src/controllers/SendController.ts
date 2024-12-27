@@ -1,13 +1,13 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils';
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla';
-import { ContractUtil, type Balance } from '@reown/appkit-common-react-native';
+import { ContractUtil, type Balance, type CaipAddress } from '@reown/appkit-common-react-native';
 import { AccountController } from './AccountController';
 import { ConnectionController } from './ConnectionController';
 import { SnackController } from './SnackController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { EventsController } from './EventsController';
-import { NetworkController } from './NetworkController';
 import { RouterController } from './RouterController';
+import { ChainController } from './ChainController';
 
 // -- Types --------------------------------------------- //
 export interface TxParams {
@@ -91,6 +91,19 @@ export const SendController = {
   },
 
   sendToken() {
+    switch (ChainController.state.activeCaipNetwork?.chainNamespace) {
+      case 'eip155':
+        this.sendEvmToken();
+
+        return;
+      case 'solana':
+        throw new Error('Unsupported chain');
+      default:
+        throw new Error('Unsupported chain');
+    }
+  },
+
+  sendEvmToken() {
     if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
       state.loading = true;
       EventsController.sendEvent({
@@ -100,7 +113,7 @@ export const SendController = {
           isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
           token: this.state.token.address,
           amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
       });
       this.sendERC20Token({
@@ -123,7 +136,7 @@ export const SendController = {
           isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
           token: this.state.token?.symbol,
           amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
       });
       this.sendNativeToken({
@@ -165,7 +178,7 @@ export const SendController = {
           isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
       });
       this.resetSend();
@@ -178,7 +191,7 @@ export const SendController = {
           isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
       });
       SnackController.showError('Something went wrong');
@@ -204,15 +217,15 @@ export const SendController = {
         params.tokenAddress
       ) {
         const tokenAddress = CoreHelperUtil.getPlainAddress(
-          params.tokenAddress as `${string}:${string}:${string}`
+          params.tokenAddress as CaipAddress
         ) as `0x${string}`;
         await ConnectionController.writeContract({
           fromAddress: AccountController.state.address as `0x${string}`,
           tokenAddress,
-          receiverAddress: params.receiverAddress as `0x${string}`,
-          tokenAmount: amount,
+          args: [params.receiverAddress as `0x${string}`, amount ?? BigInt(0)],
           method: 'transfer',
-          abi: ContractUtil.getERC20Abi(tokenAddress)
+          abi: ContractUtil.getERC20Abi(tokenAddress),
+          chainNamespace: 'eip155'
         });
         SnackController.showSuccess('Transaction started');
         this.resetSend();

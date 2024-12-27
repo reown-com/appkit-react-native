@@ -84,7 +84,7 @@ export const WcHelpersUtil = {
 
   resolveReownName: async (name: string) => {
     const wcNameAddress = await EnsController.resolveName(name);
-    const networkNameAddresses = Object.values(wcNameAddress?.addresses) || [];
+    const networkNameAddresses = Object.values(wcNameAddress?.addresses || {}) || [];
 
     return networkNameAddresses[0]?.address || false;
   },

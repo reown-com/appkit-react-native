@@ -1,4 +1,3 @@
-import type { CaipNetwork } from '@reown/appkit-scaffold-react-native';
 import { ConstantsUtil } from './ConstantsUtil';
 import { PresetsUtil } from './PresetsUtil';
 import type { Chain, Provider } from './EthersTypesUtil';
@@ -13,7 +12,7 @@ export const EthersHelpersUtil = {
       id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
       name: chain.name,
       imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId]
-    } as CaipNetwork;
+    };
   },
   hexStringToNumber(value: string) {
     const string = value.startsWith('0x') ? value.slice(2) : value;

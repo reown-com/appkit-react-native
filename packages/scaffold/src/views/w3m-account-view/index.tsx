@@ -15,9 +15,9 @@ import {
   ApiController,
   AssetUtil,
   ModalController,
-  NetworkController,
   RouterController,
-  SendController
+  SendController,
+  ChainController
 } from '@reown/appkit-core-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
@@ -27,12 +27,12 @@ import styles from './styles';
 export function AccountView() {
   const Theme = useTheme();
   const { padding } = useCustomDimensions();
-  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { activeCaipNetwork } = useSnapshot(ChainController.state);
   const { address, profileName, profileImage, preferredAccountType } = useSnapshot(
     AccountController.state
   );
   const showActivate =
-    preferredAccountType === 'eoa' && NetworkController.checkIfSmartAccountEnabled();
+    preferredAccountType === 'eoa' && ChainController.checkIfSmartAccountEnabled();
 
   const onProfilePress = () => {
     RouterController.push('AccountDefault');
@@ -74,7 +74,7 @@ export function AccountView() {
       ]}
     >
       <NetworkButton
-        imageSrc={AssetUtil.getNetworkImage(caipNetwork)}
+        imageSrc={AssetUtil.getNetworkImage(activeCaipNetwork)}
         imageHeaders={ApiController._getApiHeaders()}
         onPress={onNetworkPress}
         style={styles.networkIcon}

@@ -1,4 +1,3 @@
-import { useSnapshot } from 'valtio';
 import { useState } from 'react';
 import { EmailInput, FlexView } from '@reown/appkit-ui-react-native';
 import {
@@ -6,20 +5,19 @@ import {
   CoreHelperUtil,
   EventsController,
   RouterController,
-  SnackController,
-  type AppKitFrameProvider
+  SnackController
 } from '@reown/appkit-core-react-native';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 interface Props {
   loading?: boolean;
 }
 
 export function ConnectEmailInput({ loading }: Props) {
-  const { connectors } = useSnapshot(ConnectorController.state);
   const [inputLoading, setInputLoading] = useState(false);
   const [error, setError] = useState('');
   const [isValidEmail, setIsValidEmail] = useState(false);
-  const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
+  const authProvider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
 
   const onChangeText = (value: string) => {
     setIsValidEmail(CoreHelperUtil.isValidEmail(value));

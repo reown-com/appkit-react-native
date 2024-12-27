@@ -7,32 +7,37 @@ import {
   AssetUtil,
   CoreHelperUtil,
   ConnectionUtil,
-  EventsController,
-  NetworkController,
-  NetworkUtil,
-  type CaipNetwork,
-  type NetworkControllerState
+  ChainController,
+  AccountController,
+  RouterController
 } from '@reown/appkit-core-react-native';
 import styles from './styles';
+import type { CaipNetwork } from '@reown/appkit-common-react-native';
 
 export function UnsupportedChainView() {
-  const { caipNetwork, supportsAllNetworks, approvedCaipNetworkIds, requestedCaipNetworks } =
-    useSnapshot(NetworkController.state) as NetworkControllerState;
+  const { activeCaipNetwork } = useSnapshot(ChainController.state);
 
   const [disconnecting, setDisconnecting] = useState(false);
+  const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds();
+  const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks();
+
   const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
   const imageHeaders = ApiController._getApiHeaders();
 
   const onNetworkPress = async (network: CaipNetwork) => {
-    const result = await NetworkUtil.handleNetworkSwitch(network);
-    if (result?.type === 'SWITCH_NETWORK') {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SWITCH_NETWORK',
-        properties: {
-          network: network.id
-        }
-      });
+    const caipAddress = AccountController.state.caipAddress;
+
+    const routerData = RouterController.state.data;
+
+    if (caipAddress) {
+      if (approvedCaipNetworkIds?.includes(network.caipNetworkId)) {
+        await ChainController.switchActiveNetwork(network);
+      } else {
+        RouterController.push('SwitchNetwork', { ...routerData, network });
+      }
+    } else if (!caipAddress) {
+      ChainController.setActiveCaipNetwork(network);
+      RouterController.push('Connect');
     }
   };
 
@@ -54,25 +59,32 @@ export function UnsupportedChainView() {
         </Text>
       }
       contentContainerStyle={styles.contentContainer}
-      renderItem={({ item }) => (
-        <ListItem
-          key={item.id}
-          icon="networkPlaceholder"
-          iconBackgroundColor="gray-glass-010"
-          imageSrc={AssetUtil.getNetworkImage(item)}
-          imageHeaders={imageHeaders}
-          onPress={() => onNetworkPress(item)}
-          testID="button-network"
-          style={styles.networkItem}
-          contentStyle={styles.networkItemContent}
-          disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(item.id)}
-        >
-          <Text numberOfLines={1} color="fg-100">
-            {item.name ?? 'Unknown'}
-          </Text>
-          {item.id === caipNetwork?.id && <Icon name="checkmark" color="accent-100" />}
-        </ListItem>
-      )}
+      renderItem={({ item }) => {
+        const supportsAllNetworks = ChainController.getNetworkProp(
+          'supportsAllNetworks',
+          item.chainNamespace
+        );
+
+        return (
+          <ListItem
+            key={item.id}
+            icon="networkPlaceholder"
+            iconBackgroundColor="gray-glass-010"
+            imageSrc={AssetUtil.getNetworkImage(item)}
+            imageHeaders={imageHeaders}
+            onPress={() => onNetworkPress(item)}
+            testID="button-network"
+            style={styles.networkItem}
+            contentStyle={styles.networkItemContent}
+            disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(item.caipNetworkId)}
+          >
+            <Text numberOfLines={1} color="fg-100">
+              {item.name ?? 'Unknown'}
+            </Text>
+            {item.id === activeCaipNetwork?.id && <Icon name="checkmark" color="accent-100" />}
+          </ListItem>
+        );
+      }}
       ListFooterComponent={
         <>
           <Separator text="or" style={styles.separator} />

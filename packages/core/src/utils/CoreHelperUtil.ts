@@ -1,10 +1,23 @@
 /* eslint-disable no-bitwise */
 
 import { Linking, Platform } from 'react-native';
-import { ConstantsUtil as CommonConstants, type Balance } from '@reown/appkit-common-react-native';
+import {
+  ConstantsUtil as CommonConstants,
+  type Balance,
+  type CaipAddress,
+  type CaipNetwork,
+  type ChainNamespace
+} from '@reown/appkit-common-react-native';
 
 import { ConstantsUtil } from './ConstantsUtil';
-import type { CaipAddress, CaipNetwork, DataWallet, LinkingRecord } from './TypeUtil';
+import type {
+  AccountTypeMap,
+  AppKitSdkVersion,
+  ChainAdapter,
+  DataWallet,
+  LinkingRecord,
+  NamespaceTypeMap
+} from './TypeUtil';
 
 // -- Helpers -----------------------------------------------------------------
 async function isAppInstalledIos(deepLink?: string): Promise<boolean> {
@@ -35,8 +48,8 @@ export const CoreHelperUtil = {
     return expiry ? expiry - Date.now() <= ConstantsUtil.TEN_SEC_MS : true;
   },
 
-  isAllowedRetry(lastRetry: number) {
-    return Date.now() - lastRetry >= ConstantsUtil.ONE_SEC_MS;
+  isAllowedRetry(lastRetry: number, differenceMs = ConstantsUtil.ONE_SEC_MS) {
+    return Date.now() - lastRetry >= differenceMs;
   },
 
   getPairingExpiry() {
@@ -279,13 +292,50 @@ export const CoreHelperUtil = {
 
     if (approvedIds?.length) {
       requested?.sort((a, b) => {
-        if (approvedIds.includes(a.id) && !approvedIds.includes(b.id)) return -1;
-        if (approvedIds.includes(b.id) && !approvedIds.includes(a.id)) return 1;
+        if (approvedIds.includes(a.caipNetworkId) && !approvedIds.includes(b.caipNetworkId))
+          return -1;
+        if (approvedIds.includes(b.caipNetworkId) && !approvedIds.includes(a.caipNetworkId))
+          return 1;
 
         return 0;
       });
     }
 
     return requested;
+  },
+
+  createAccount<N extends ChainNamespace>(
+    namespace: N,
+    address: string,
+    type: NamespaceTypeMap[N]
+  ): AccountTypeMap[N] {
+    return {
+      namespace,
+      address,
+      type
+    } as AccountTypeMap[N];
+  },
+
+  isCaipAddress(address?: unknown): address is CaipAddress {
+    if (typeof address !== 'string') {
+      return false;
+    }
+
+    const sections = address.split(':');
+    const namespace = sections[0];
+
+    return (
+      sections.filter(Boolean).length === 3 &&
+      (namespace as string) in CommonConstants.CHAIN_NAME_MAP
+    );
+  },
+
+  generateSdkVersion(adapters: ChainAdapter[], version: string): AppKitSdkVersion {
+    const noAdapters = adapters.length === 0;
+    const adapterNames = noAdapters
+      ? 'universal'
+      : adapters.map(adapter => adapter.adapterType).join(',');
+
+    return `react-native-${adapterNames}-${version}`;
   }
 };

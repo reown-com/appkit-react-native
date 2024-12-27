@@ -1,19 +1,45 @@
 import { proxy, subscribe as sub } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
-import type { CaipNetworkId } from '../utils/TypeUtil.js';
+import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 export interface PublicStateControllerState {
+  /**
+   * @description Indicates if the AppKit is loading.
+   * @type {boolean}
+   */
+  loading: boolean;
+  /**
+   * @description Indicates if the AppKit modal is open.
+   * @type {boolean}
+   */
   open: boolean;
-  selectedNetworkId?: CaipNetworkId;
+  /**
+   * @description Indicates the selected network id in CAIP-2 format.
+   * @type {CaipNetworkId | undefined}
+   */
+  selectedNetworkId?: CaipNetworkId | undefined;
+  /**
+   * @description Indicates the active chain namespace.
+   * @type {ChainNamespace | undefined}
+   */
+  activeChain?: ChainNamespace | undefined;
+  /**
+   * @description Indicates if the AppKit has been initialized. This sets to true when all controllers, adapters and internal state is ready.
+   * @type {boolean}
+   */
+  initialized: boolean;
 }
 
 type StateKey = keyof PublicStateControllerState;
 
 // -- State --------------------------------------------- //
 const state = proxy<PublicStateControllerState>({
+  loading: false,
   open: false,
-  selectedNetworkId: undefined
+  selectedNetworkId: undefined,
+  activeChain: undefined,
+  initialized: false
 });
 
 // -- Controller ---------------------------------------- //

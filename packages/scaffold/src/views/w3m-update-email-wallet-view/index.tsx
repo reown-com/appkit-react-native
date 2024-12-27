@@ -5,10 +5,10 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController,
-  EventsController,
-  type AppKitFrameProvider
+  EventsController
 } from '@reown/appkit-core-react-native';
 import { Button, EmailInput, FlexView, Spacing, Text } from '@reown/appkit-ui-react-native';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 import { useKeyboard } from '../../hooks/useKeyboard';
 
 import styles from './styles';

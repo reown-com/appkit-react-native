@@ -3,8 +3,8 @@ import { useCallback, useEffect } from 'react';
 import { Platform, ScrollView } from 'react-native';
 import {
   AccountController,
+  ChainController,
   EventsController,
-  NetworkController,
   RouterController,
   SwapController
 } from '@reown/appkit-core-react-native';
@@ -95,7 +95,7 @@ export function SwapView() {
       type: 'track',
       event: 'INITIATE_SWAP',
       properties: {
-        network: NetworkController.state.caipNetwork?.id || '',
+        network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         swapFromToken: SwapController.state.sourceToken?.symbol || '',
         swapToToken: SwapController.state.toToken?.symbol || '',
         swapFromAmount: SwapController.state.sourceTokenAmount || '',
@@ -108,8 +108,7 @@ export function SwapView() {
 
   const onSourceMaxPress = () => {
     const isNetworkToken =
-      SwapController.state.sourceToken?.address ===
-      NetworkController.getActiveNetworkTokenAddress();
+      SwapController.state.sourceToken?.address === ChainController.getActiveNetworkTokenAddress();
 
     const _gasPriceInUSD = SwapController.state.gasPriceInUSD;
     const _sourceTokenPriceInUSD = SwapController.state.sourceTokenPriceInUSD;

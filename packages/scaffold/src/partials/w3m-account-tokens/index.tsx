@@ -10,7 +10,7 @@ import { useSnapshot } from 'valtio';
 import {
   AccountController,
   AssetUtil,
-  NetworkController,
+  ChainController,
   RouterController
 } from '@reown/appkit-core-react-native';
 import {
@@ -30,8 +30,8 @@ export function AccountTokens({ style }: Props) {
   const Theme = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const { tokenBalance } = useSnapshot(AccountController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const { activeCaipNetwork } = useSnapshot(ChainController.state);
+  const networkImage = AssetUtil.getNetworkImage(activeCaipNetwork);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

@@ -12,12 +12,12 @@ import type {
   WcWallet
 } from '../utils/TypeUtil';
 import { AssetController } from './AssetController';
-import { NetworkController } from './NetworkController';
 import { OptionsController } from './OptionsController';
 import { ConnectorController } from './ConnectorController';
 import { ConnectionController } from './ConnectionController';
 import { ApiUtil } from '../utils/ApiUtil';
 import { SnackController } from './SnackController';
+import { ChainController } from './ChainController';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl();
@@ -76,6 +76,16 @@ export const ApiController = {
     };
   },
 
+  _getSdkProperties() {
+    const { projectId, sdkType, sdkVersion } = OptionsController.state;
+
+    return {
+      projectId,
+      st: sdkType,
+      sv: sdkVersion
+    };
+  },
+
   async _fetchWalletImage(imageId: string) {
     const headers = ApiController._getApiHeaders();
     const url = await api.fetchImage(`/getWalletImage/${imageId}`, headers);
@@ -109,8 +119,8 @@ export const ApiController = {
   },
 
   async fetchNetworkImages() {
-    const { requestedCaipNetworks } = NetworkController.state;
-    const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean);
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks();
+    const ids = requestedCaipNetworks?.map(network => network.assets?.imageId).filter(Boolean);
     if (ids) {
       await CoreHelperUtil.allSettled(
         (ids as string[]).map(id => ApiController._fetchNetworkImage(id))

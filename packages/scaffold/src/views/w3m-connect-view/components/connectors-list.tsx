@@ -4,7 +4,8 @@ import {
   AssetUtil,
   RouterController,
   type ConnectorType,
-  ApiController
+  ApiController,
+  type ConnectorControllerState
 } from '@reown/appkit-core-react-native';
 import { ListWallet } from '@reown/appkit-ui-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
@@ -15,7 +16,7 @@ interface Props {
 }
 
 export function ConnectorList({ itemStyle, isWalletConnectEnabled }: Props) {
-  const { connectors } = useSnapshot(ConnectorController.state);
+  const { connectors } = useSnapshot(ConnectorController.state) as ConnectorControllerState;
   const excludeConnectors: ConnectorType[] = ['WALLET_CONNECT', 'AUTH'];
   const imageHeaders = ApiController._getApiHeaders();
 

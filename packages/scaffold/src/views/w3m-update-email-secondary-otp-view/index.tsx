@@ -6,11 +6,11 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController,
-  EventsController,
-  type AppKitFrameProvider
+  EventsController
 } from '@reown/appkit-core-react-native';
 
 import { OtpCodeView } from '../../partials/w3m-otp-code';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 export function UpdateEmailSecondaryOtpView() {
   const { data } = useSnapshot(RouterController.state);

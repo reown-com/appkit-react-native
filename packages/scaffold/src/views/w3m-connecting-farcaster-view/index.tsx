@@ -6,8 +6,7 @@ import {
   EventsController,
   ModalController,
   OptionsController,
-  SnackController,
-  type AppKitFrameProvider
+  SnackController
 } from '@reown/appkit-core-react-native';
 import {
   FlexView,
@@ -20,6 +19,7 @@ import {
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 export function ConnectingFarcasterView() {
   const { maxWidth: width } = useCustomDimensions();

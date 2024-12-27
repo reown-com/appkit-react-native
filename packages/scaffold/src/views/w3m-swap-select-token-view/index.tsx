@@ -14,7 +14,7 @@ import {
 
 import {
   AssetUtil,
-  NetworkController,
+  ChainController,
   RouterController,
   SwapController,
   type SwapTokenWithBalance
@@ -28,9 +28,9 @@ import { createSections } from './utils';
 export function SwapSelectTokenView() {
   const { padding } = useCustomDimensions();
   const Theme = useTheme();
-  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { activeCaipNetwork } = useSnapshot(ChainController.state);
   const { sourceToken, suggestedTokens } = useSnapshot(SwapController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const networkImage = AssetUtil.getNetworkImage(activeCaipNetwork);
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const isSourceToken = RouterController.state.data?.swapTarget === 'sourceToken';
 

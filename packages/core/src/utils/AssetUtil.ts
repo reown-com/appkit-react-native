@@ -1,5 +1,6 @@
+import type { CaipNetwork } from '@reown/appkit-common-react-native';
 import { AssetController } from '../controllers/AssetController';
-import type { CaipNetwork, Connector, WcWallet } from './TypeUtil';
+import type { Connector, WcWallet } from './TypeUtil';
 
 export const AssetUtil = {
   getWalletImage(wallet?: WcWallet) {
@@ -15,12 +16,12 @@ export const AssetUtil = {
   },
 
   getNetworkImage(network?: CaipNetwork) {
-    if (network?.imageUrl) {
-      return network?.imageUrl;
+    if (network?.assets?.imageUrl) {
+      return network.assets.imageUrl;
     }
 
-    if (network?.imageId) {
-      return AssetController.state.networkImages[network.imageId];
+    if (network?.assets?.imageId) {
+      return AssetController.state.networkImages[network.assets.imageId];
     }
 
     return undefined;

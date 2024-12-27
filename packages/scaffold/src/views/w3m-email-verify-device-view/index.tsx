@@ -1,4 +1,3 @@
-import { useSnapshot } from 'valtio';
 import { View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { FlexView, Icon, Link, Text, useTheme } from '@reown/appkit-ui-react-native';
@@ -7,19 +6,19 @@ import {
   CoreHelperUtil,
   EventsController,
   RouterController,
-  SnackController,
-  type AppKitFrameProvider
+  SnackController
 } from '@reown/appkit-core-react-native';
 import useTimeout from '../../hooks/useTimeout';
 import styles from './styles';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 export function EmailVerifyDeviceView() {
   const Theme = useTheme();
-  const { connectors } = useSnapshot(ConnectorController.state);
+
   const { data } = RouterController.state;
   const { timeLeft, startTimer } = useTimeout(0);
   const [loading, setLoading] = useState(false);
-  const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
+  const authProvider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
 
   const listenForDeviceApproval = async () => {
     if (authProvider && data?.email) {

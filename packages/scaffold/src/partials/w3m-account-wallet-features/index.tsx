@@ -3,10 +3,10 @@ import { useSnapshot } from 'valtio';
 import { Balance, FlexView, IconLink, Tabs } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
+  ChainController,
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  NetworkController,
   OptionsController,
   RouterController,
   SwapController
@@ -46,8 +46,10 @@ export function AccountWalletFeatures() {
 
   const onSwapPress = () => {
     if (
-      NetworkController.state.caipNetwork?.id &&
-      !ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(`${NetworkController.state.caipNetwork.id}`)
+      ChainController.state.activeCaipNetwork?.caipNetworkId &&
+      !ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(
+        `${ChainController.state.activeCaipNetwork.caipNetworkId}`
+      )
     ) {
       RouterController.push('UnsupportedChain');
     } else {
@@ -56,7 +58,7 @@ export function AccountWalletFeatures() {
         type: 'track',
         event: 'OPEN_SWAP',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
         }
       });
@@ -69,7 +71,7 @@ export function AccountWalletFeatures() {
       type: 'track',
       event: 'OPEN_SEND',
       properties: {
-        network: NetworkController.state.caipNetwork?.id || '',
+        network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
       }
     });

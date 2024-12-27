@@ -1,3 +1,4 @@
+import { useSnapshot } from 'valtio';
 import { ScrollView, View } from 'react-native';
 import {
   CardSelect,
@@ -11,19 +12,20 @@ import {
 import {
   ApiController,
   AssetUtil,
-  NetworkController,
+  ChainController,
   RouterController,
-  type CaipNetwork,
   EventsController,
   CoreHelperUtil,
-  NetworkUtil
+  AccountController,
+  ConnectorController,
+  StorageUtil
 } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
+import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common-react-native';
 
 export function NetworksView() {
-  const { caipNetwork, requestedCaipNetworks, approvedCaipNetworkIds, supportsAllNetworks } =
-    NetworkController.state;
+  const { activeCaipNetwork } = useSnapshot(ChainController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const { maxWidth: width, padding } = useCustomDimensions();
   const numColumns = 4;
@@ -38,45 +40,94 @@ export function NetworksView() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORK_HELP' });
   };
 
+  const getNetworkDisabled = (network: CaipNetwork) => {
+    const networkNamespace = network.chainNamespace;
+    const isNamespaceConnected = AccountController.getCaipAddress(networkNamespace);
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds();
+    const supportsAllNetworks =
+      ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false;
+    const connectorId = ConnectorController.state.connectedConnector;
+    const authConnector = ConnectorController.getAuthConnector();
+    const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH && authConnector;
+
+    if (!isNamespaceConnected || supportsAllNetworks || isConnectedWithAuth) {
+      return false;
+    }
+
+    return !approvedCaipNetworkIds?.includes(network.caipNetworkId);
+  };
+
+  const onNetworkPress = async (network: CaipNetwork) => {
+    const routerData = RouterController.state.data;
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds();
+    const isSameNetwork = network.id === ChainController.state.activeCaipNetwork?.id;
+
+    if (isSameNetwork) {
+      return;
+    }
+
+    const isDifferentNamespace = network.chainNamespace !== ChainController.state.activeChain;
+    const isNewNetworkConnected = ChainController.getAccountProp(
+      'caipAddress',
+      network.chainNamespace
+    );
+    const isCurrentNetworkConnected = AccountController.state.caipAddress;
+    const isAuthConnected =
+      (await StorageUtil.getConnectedConnectorId()) === ConstantsUtil.CONNECTOR_ID.AUTH;
+
+    if (
+      isDifferentNamespace &&
+      isCurrentNetworkConnected &&
+      !isNewNetworkConnected &&
+      !isAuthConnected
+    ) {
+      //TODO Check this
+      //@ts-expect-error
+      RouterController.push('SwitchActiveChain', {
+        switchToChain: network.chainNamespace,
+        navigateTo: 'Connect',
+        navigateWithReplace: true,
+        network
+      });
+    } else {
+      if (approvedCaipNetworkIds?.includes(network.caipNetworkId)) {
+        await ChainController.switchActiveNetwork(network);
+      } else {
+        RouterController.push('SwitchNetwork', { ...routerData, network });
+      }
+    }
+  };
+
   const networksTemplate = () => {
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds();
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks();
     const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
 
-    const onNetworkPress = async (network: CaipNetwork) => {
-      const result = await NetworkUtil.handleNetworkSwitch(network);
-      if (result?.type === 'SWITCH_NETWORK') {
-        EventsController.sendEvent({
-          type: 'track',
-          event: 'SWITCH_NETWORK',
-          properties: {
-            network: network.id
-          }
-        });
-      }
-    };
-
-    return networks.map(network => (
-      <View
-        key={network.id}
-        style={[
-          styles.itemContainer,
-          {
-            width: itemWidth,
-            marginVertical: itemGap
-          }
-        ]}
-      >
-        <CardSelect
-          testID={`w3m-network-switch-${network.name ?? network.id}`}
-          name={network.name ?? 'Unknown'}
-          type="network"
-          imageSrc={AssetUtil.getNetworkImage(network)}
-          imageHeaders={imageHeaders}
-          disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
-          selected={caipNetwork?.id === network.id}
-          onPress={() => onNetworkPress(network)}
-        />
-      </View>
-    ));
+    return networks.map(network => {
+      return (
+        <View
+          key={network.caipNetworkId}
+          style={[
+            styles.itemContainer,
+            {
+              width: itemWidth,
+              marginVertical: itemGap
+            }
+          ]}
+        >
+          <CardSelect
+            testID={`w3m-network-switch-${network.name ?? network.caipNetworkId}`}
+            name={network.name ?? 'Unknown'}
+            type="network"
+            imageSrc={AssetUtil.getNetworkImage(network)}
+            imageHeaders={imageHeaders}
+            disabled={getNetworkDisabled(network)}
+            selected={activeCaipNetwork?.id === network.id}
+            onPress={() => onNetworkPress(network)}
+          />
+        </View>
+      );
+    });
   };
 
   return (

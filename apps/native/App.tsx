@@ -1,4 +1,4 @@
-import { Platform, SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
+import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
 import '@walletconnect/react-native-compat';
@@ -6,16 +6,14 @@ import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 
-import {
-  AppKit,
-  AppKitButton,
-  NetworkButton,
-  createAppKit,
-  defaultWagmiConfig
-} from '@reown/appkit-wagmi-react-native';
+import { AppKit, AppKitButton, NetworkButton } from '@reown/appkit-wagmi-react-native';
 
-import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
+// import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
 import { Text } from '@reown/appkit-ui-react-native';
+
+import { createAppKit } from '@reown/appkit-react-native';
+
+import { WagmiAdapter } from '@reown/appkit-adapters-wagmi-react-native';
 
 import { siweConfig } from './src/utils/SiweUtils';
 
@@ -46,30 +44,36 @@ const clipboardClient = {
   }
 };
 
-const auth = authConnector({ projectId, metadata });
+// const auth = authConnector({ projectId, metadata });
 
-const extraConnectors = Platform.select({
-  ios: [auth],
-  android: [auth],
-  default: []
-});
+// const extraConnectors = Platform.select({
+//   ios: [auth],
+//   android: [auth],
+//   default: []
+// });
 
-const wagmiConfig = defaultWagmiConfig({
-  chains,
-  projectId,
-  metadata,
-  extraConnectors
-});
+// const wagmiConfig = defaultWagmiConfig({
+//   chains,
+//   projectId,
+//   metadata,
+//   extraConnectors
+// });
 
 const queryClient = new QueryClient();
 
 const customWallets = getCustomWallets();
 
+// 4. Create Wagmi Adapter
+const wagmiAdapter = new WagmiAdapter({
+  networks: chains,
+  projectId
+});
+
 createAppKit({
+  adapters: [wagmiAdapter],
+  networks: chains,
   projectId,
-  wagmiConfig,
-  siweConfig,
-  clipboardClient,
+  // siweConfig,
   customWallets,
   enableAnalytics: true,
   metadata,
@@ -85,7 +89,7 @@ export default function Native() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <SafeAreaView style={[styles.container, isDarkMode && styles.dark]}>
           <StatusBar style="auto" />

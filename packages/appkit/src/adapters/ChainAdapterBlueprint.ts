@@ -1,10 +1,9 @@
 import {
-  getW3mThemeVariables,
   ConstantsUtil as CommonConstantsUtil,
   type CaipAddress,
   type CaipNetwork,
   type ChainNamespace
-} from '@reown/appkit-common';
+} from '@reown/appkit-common-react-native';
 import type { ChainAdapterConnector } from './ChainAdapterConnector';
 import {
   AccountController,
@@ -17,10 +16,10 @@ import {
   type Metadata,
   type Tokens,
   type WriteContractArgs
-} from '@reown/appkit-core';
+} from '@reown/appkit-core-react-native';
 import type UniversalProvider from '@walletconnect/universal-provider';
-import type { W3mFrameProvider } from '@reown/appkit-wallet';
-import { PresetsUtil } from '@reown/appkit-utils';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
+import { PresetsUtil } from '@reown/appkit-utils-react-native';
 import type { AppKitOptions } from '../utils/index';
 import type { AppKit } from '../client';
 import { snapshot } from 'valtio/vanilla';
@@ -113,7 +112,7 @@ export abstract class AdapterBlueprint<
    * Sets the auth provider.
    * @param {W3mFrameProvider} authProvider - The auth provider instance
    */
-  public setAuthProvider(authProvider: W3mFrameProvider): void {
+  public setAuthProvider(authProvider: AppKitFrameProvider): void {
     this.addConnector({
       id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       type: 'AUTH',
@@ -147,8 +146,7 @@ export abstract class AdapterBlueprint<
       });
       authConnector.provider.syncTheme({
         themeMode,
-        themeVariables,
-        w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
+        themeVariables
       });
     }
 
@@ -447,7 +445,6 @@ export namespace AdapterBlueprint {
     caipNetwork: CaipNetwork;
     provider?: AppKitConnector['provider'];
     caipAddress: CaipAddress;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   };
 
   export type WriteContractResult = {

@@ -21,7 +21,10 @@ export const ConnectionUtil = {
     } catch (error) {
       EventsController.sendEvent({
         type: 'track',
-        event: 'DISCONNECT_ERROR'
+        event: 'DISCONNECT_ERROR',
+        properties: {
+          message: (error as Error).message || 'Failed to disconnect chains'
+        }
       });
     }
   }

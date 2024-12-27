@@ -5,8 +5,6 @@ import type {
   ConnectionControllerClient,
   ModalControllerState,
   NetworkControllerClient,
-  NetworkControllerState,
-  OptionsControllerState,
   EventsControllerState,
   PublicStateControllerState,
   ThemeControllerState,
@@ -14,18 +12,19 @@ import type {
   ThemeVariables,
   Connector,
   ConnectedWalletInfo,
-  Features
+  Features,
+  OptionsControllerState
 } from '@reown/appkit-core-react-native';
 import { SIWEController, type SIWEControllerClient } from '@reown/appkit-siwe-react-native';
 import {
   AccountController,
   BlockchainApiController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   EnsController,
   EventsController,
   ModalController,
-  NetworkController,
   OptionsController,
   PublicStateController,
   SnackController,
@@ -33,7 +32,12 @@ import {
   ThemeController,
   TransactionsController
 } from '@reown/appkit-core-react-native';
-import { ConstantsUtil, ErrorUtil } from '@reown/appkit-common-react-native';
+import {
+  ConstantsUtil,
+  ErrorUtil,
+  type CaipNetwork,
+  type ChainNamespace
+} from '@reown/appkit-common-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {
@@ -44,7 +48,7 @@ export interface LibraryOptions {
   excludeWalletIds?: OptionsControllerState['excludeWalletIds'];
   featuredWalletIds?: OptionsControllerState['featuredWalletIds'];
   customWallets?: OptionsControllerState['customWallets'];
-  defaultChain?: NetworkControllerState['caipNetwork'];
+  defaultChain?: CaipNetwork;
   tokens?: OptionsControllerState['tokens'];
   clipboardClient?: OptionsControllerState['_clipboardClient'];
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
@@ -156,45 +160,61 @@ export class AppKitScaffold {
     AccountController.setIsConnected(isConnected);
   };
 
-  protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = caipAddress => {
-    AccountController.setCaipAddress(caipAddress);
+  public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
+    AccountController.setCaipAddress(caipAddress, chain);
   };
 
   protected getCaipAddress = () => AccountController.state.caipAddress;
 
-  protected setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol) => {
-    AccountController.setBalance(balance, balanceSymbol);
+  protected setBalance: (typeof AccountController)['setBalance'] = (
+    balance,
+    balanceSymbol,
+    chain
+  ) => {
+    AccountController.setBalance(balance, balanceSymbol, chain);
   };
 
-  protected setProfileName: (typeof AccountController)['setProfileName'] = profileName => {
-    AccountController.setProfileName(profileName);
+  protected setProfileName: (typeof AccountController)['setProfileName'] = (profileName, chain) => {
+    AccountController.setProfileName(profileName, chain);
   };
 
   protected setProfileImage: (typeof AccountController)['setProfileImage'] = profileImage => {
     AccountController.setProfileImage(profileImage);
   };
 
-  protected resetAccount: (typeof AccountController)['resetAccount'] = () => {
-    AccountController.resetAccount();
+  protected resetAccount: (typeof AccountController)['resetAccount'] = (chain: ChainNamespace) => {
+    AccountController.resetAccount(chain);
   };
 
-  protected setCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = caipNetwork => {
-    NetworkController.setCaipNetwork(caipNetwork);
+  protected setCaipNetwork: (typeof ChainController)['setActiveCaipNetwork'] = caipNetwork => {
+    ChainController.setActiveCaipNetwork(caipNetwork);
   };
 
-  protected getCaipNetwork = () => NetworkController.state.caipNetwork;
+  public getCaipNetwork = (chainNamespace?: ChainNamespace) => {
+    if (chainNamespace) {
+      return ChainController.getRequestedCaipNetworks(chainNamespace).filter(
+        c => c.chainNamespace === chainNamespace
+      )?.[0];
+    }
 
-  protected setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] =
-    requestedCaipNetworks => {
-      NetworkController.setRequestedCaipNetworks(requestedCaipNetworks);
-    };
-
-  protected getApprovedCaipNetworksData: (typeof NetworkController)['getApprovedCaipNetworksData'] =
-    () => NetworkController.getApprovedCaipNetworksData();
-
-  protected resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
-    NetworkController.resetNetwork();
+    return ChainController.state.activeCaipNetwork;
   };
+
+  public setRequestedCaipNetworks: (typeof ChainController)['setRequestedCaipNetworks'] = (
+    requestedCaipNetworks,
+    chain: ChainNamespace
+  ) => {
+    ChainController.setRequestedCaipNetworks(requestedCaipNetworks, chain);
+  };
+
+  public getApprovedCaipNetworkIds: (typeof ChainController)['getAllApprovedCaipNetworkIds'] = () =>
+    ChainController.getAllApprovedCaipNetworkIds();
+
+  // protected getApprovedCaipNetworksData: (typeof NetworkController)['getApprovedCaipNetworksData'] =
+  //   () => NetworkController.getApprovedCaipNetworksData();
+
+  public setApprovedCaipNetworksData: (typeof ChainController)['setApprovedCaipNetworksData'] =
+    namespace => ChainController.setApprovedCaipNetworksData(namespace);
 
   protected setConnectors: (typeof ConnectorController)['setConnectors'] = (
     connectors: Connector[]
@@ -218,24 +238,30 @@ export class AppKitScaffold {
   protected fetchIdentity: (typeof BlockchainApiController)['fetchIdentity'] = request =>
     BlockchainApiController.fetchIdentity(request);
 
-  protected setAddressExplorerUrl: (typeof AccountController)['setAddressExplorerUrl'] =
-    addressExplorerUrl => {
-      AccountController.setAddressExplorerUrl(addressExplorerUrl);
-    };
+  public setAddressExplorerUrl: (typeof AccountController)['setAddressExplorerUrl'] = (
+    addressExplorerUrl,
+    chain
+  ) => {
+    AccountController.setAddressExplorerUrl(addressExplorerUrl, chain);
+  };
 
-  protected setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] =
-    connectedWalletInfo => {
-      AccountController.setConnectedWalletInfo(connectedWalletInfo);
-    };
+  public setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] = (
+    connectedWalletInfo,
+    chain
+  ) => {
+    AccountController.setConnectedWalletInfo(connectedWalletInfo, chain);
+  };
 
   protected setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
     BlockchainApiController.setClientId(clientId);
   };
 
-  protected setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
-    preferredAccountType => {
-      AccountController.setPreferredAccountType(preferredAccountType);
-    };
+  public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] = (
+    preferredAccountType,
+    chain
+  ) => {
+    AccountController.setPreferredAccountType(preferredAccountType, chain);
+  };
 
   protected handleAlertError(error?: string | { shortMessage: string; longMessage: string }) {
     if (!error) return;
@@ -269,8 +295,6 @@ export class AppKitScaffold {
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     this.initAsyncValues(options);
-    NetworkController.setClient(options.networkControllerClient);
-    NetworkController.setDefaultCaipNetwork(options.defaultChain);
 
     OptionsController.setProjectId(options.projectId);
     OptionsController.setIncludeWalletIds(options.includeWalletIds);

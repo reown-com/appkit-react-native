@@ -7,7 +7,7 @@ import {
   ConnectionController,
   OptionsController
 } from '@reown/appkit-core-react-native';
-import bs58 from 'bs58';
+// import bs58 from 'bs58';
 import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common-react-native';
 
 export class UniversalAdapter extends AdapterBlueprint {
@@ -101,18 +101,17 @@ export class UniversalAdapter extends AdapterBlueprint {
     let signature = '';
 
     if (ChainController.state.activeCaipNetwork?.chainNamespace === ConstantsUtil.CHAIN.SOLANA) {
-      const response = await provider.request(
-        {
-          method: 'solana_signMessage',
-          params: {
-            message: bs58.encode(new TextEncoder().encode(message)),
-            pubkey: address
-          }
-        },
-        ChainController.state.activeCaipNetwork?.caipNetworkId
-      );
-
-      signature = (response as { signature: string }).signature;
+      // const response = await provider.request(
+      //   {
+      //     method: 'solana_signMessage',
+      //     params: {
+      //       message: bs58.encode(new TextEncoder().encode(message)),
+      //       pubkey: address
+      //     }
+      //   },
+      //   ChainController.state.activeCaipNetwork?.caipNetworkId
+      // );
+      // signature = (response as { signature: string }).signature;
     } else {
       signature = await provider.request(
         {

@@ -26,9 +26,6 @@ import { mainnet, type Chain } from '@wagmi/core/chains';
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import { type JsonRpcError } from '@walletconnect/jsonrpc-types';
 import {
-  type CaipAddress,
-  type CaipNetwork,
-  type CaipNetworkId,
   type ConnectionControllerClient,
   type Connector,
   type LibraryOptions,
@@ -47,7 +44,14 @@ import {
   PresetsUtil,
   StorageUtil
 } from '@reown/appkit-scaffold-utils-react-native';
-import { NetworkUtil, NamesUtil, ErrorUtil } from '@reown/appkit-common-react-native';
+import {
+  NetworkUtil,
+  NamesUtil,
+  ErrorUtil,
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId
+} from '@reown/appkit-common-react-native';
 import {
   SIWEController,
   getDidChainId,
@@ -103,7 +107,7 @@ export class AppKit extends AppKitScaffold {
 
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id);
+        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.caipNetworkId);
         if (chainId) {
           await switchChain(wagmiConfig, { chainId });
         }
@@ -155,7 +159,7 @@ export class AppKit extends AppKitScaffold {
           this.setClientId(clientId);
         }
 
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.caipNetworkId);
 
         // SIWE
         const siweParams = await siweConfig?.getMessageParams?.();
@@ -235,7 +239,7 @@ export class AppKit extends AppKitScaffold {
         // If connecting with something else than walletconnect, we need to clear the clientId in the store
         this.setClientId(null);
 
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.caipNetworkId);
         await connect(this.wagmiConfig, { connector, chainId });
       },
 
@@ -275,7 +279,7 @@ export class AppKit extends AppKitScaffold {
       writeContract: async (data: WriteContractArgs) => {
         const caipAddress = this.getCaipAddress() || '';
         const account = requireCaipAddress(caipAddress);
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.caipNetworkId);
 
         const tx = await wagmiWriteContract(wagmiConfig, {
           chainId,
@@ -410,10 +414,13 @@ export class AppKit extends AppKitScaffold {
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
-          id: `${ConstantsUtil.EIP155}:${chain.id}`,
-          name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
-          imageUrl: this.options?.chainImages?.[chain.id]
+          id: chain.id,
+          chainNamespace: ConstantsUtil.EIP155,
+          caipNetworkId: `${ConstantsUtil.EIP155}:${chain.id}`,
+          assets: {
+            imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
+            imageUrl: this.options?.chainImages?.[chain.id]
+          }
         }) as CaipNetwork
     );
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? []);
@@ -434,7 +441,7 @@ export class AppKit extends AppKitScaffold {
     this.setLoading(!!connector && (isConnecting || isReconnecting));
 
     if (isConnected && address && chainId) {
-      const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
+      const caipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}` as CaipAddress;
       this.setIsConnected(isConnected);
       this.setCaipAddress(caipAddress);
       await Promise.all([
@@ -458,15 +465,17 @@ export class AppKit extends AppKitScaffold {
     if (chain || chainId) {
       const name = chain?.name ?? chainId?.toString();
       const id = Number(chain?.id ?? chainId);
-      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}`;
+      const caipChainId = `${ConstantsUtil.EIP155}:${id}` as CaipNetworkId;
       this.setCaipNetwork({
         id: caipChainId,
-        name,
-        imageId: PresetsUtil.EIP155NetworkImageIds[id],
-        imageUrl: this.options?.chainImages?.[id]
+        name: name as string,
+        assets: {
+          imageId: PresetsUtil.EIP155NetworkImageIds[id],
+          imageUrl: this.options?.chainImages?.[id]
+        }
       });
       if (isConnected && address && chainId) {
-        const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`;
+        const caipAddress = `${ConstantsUtil.EIP155}:${id}:${address}` as CaipAddress;
         this.setCaipAddress(caipAddress);
         if (chain?.blockExplorers?.default?.url) {
           const url = `${chain.blockExplorers.default.url}/address/${address}`;

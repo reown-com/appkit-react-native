@@ -24,7 +24,7 @@ export function AppKitWebview() {
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   const backdropOpacity = useRef(new Animated.Value(0));
   const webviewOpacity = useRef(new Animated.Value(0));
-  const provider = authConnector?.provider as AppKitFrameProvider;
+  const provider = authConnector?.provider as unknown as AppKitFrameProvider;
   const display = webviewVisible ? 'flex' : 'none';
 
   const onClose = () => {

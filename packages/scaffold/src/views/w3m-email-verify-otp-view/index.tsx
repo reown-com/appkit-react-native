@@ -6,11 +6,11 @@ import {
   EventsController,
   ModalController,
   RouterController,
-  SnackController,
-  type AppKitFrameProvider
+  SnackController
 } from '@reown/appkit-core-react-native';
 import useTimeout from '../../hooks/useTimeout';
 import { OtpCodeView } from '../../partials/w3m-otp-code';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 export function EmailVerifyOtpView() {
   const { timeLeft, startTimer } = useTimeout(0);

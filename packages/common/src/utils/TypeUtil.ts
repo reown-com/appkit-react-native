@@ -3,7 +3,18 @@ import type { ChainFormatters } from 'viem';
 
 export type ChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122';
 
+export type AdapterType =
+  | 'solana'
+  | 'wagmi'
+  | 'ethers'
+  | 'ethers5'
+  | 'universal'
+  | 'polkadot'
+  | 'bip122';
+
 export type CaipNetworkId = `${ChainNamespace}:${ChainId}`;
+
+export type CaipAddress = `${ChainNamespace}:${ChainId}:${string}`;
 
 export type ChainId = string | number;
 

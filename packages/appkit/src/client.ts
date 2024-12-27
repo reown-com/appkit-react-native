@@ -20,13 +20,17 @@ import {
   type AdapterNetworkState,
   ConstantsUtil as CoreConstantsUtil,
   type Features,
-  SIWXUtil,
-  type ConnectionStatus,
+  // SIWXUtil,
+  // type ConnectionStatus,
   type OptionsControllerState,
-  type WalletFeature,
-  type ConnectMethod,
-  type SocialProvider
-} from '@reown/appkit-core';
+  type ConnectionStatus,
+  ApiController,
+  WebviewController
+  // type Connector
+  // type WalletFeature,
+  // type ConnectMethod,
+  // type SocialProvider
+} from '@reown/appkit-core-react-native';
 import {
   AccountController,
   BlockchainApiController,
@@ -43,11 +47,11 @@ import {
   EnsController,
   OptionsController,
   AssetUtil,
-  ApiController,
-  AlertController,
+  // ApiController,
+  // AlertController,
   StorageUtil
-} from '@reown/appkit-core';
-import { setColorTheme, setThemeVariables } from '@reown/appkit-ui';
+} from '@reown/appkit-core-react-native';
+// import { setColorTheme, setThemeVariables } from '@reown/appkit-ui';
 import {
   type CaipNetwork,
   type ChainNamespace,
@@ -56,7 +60,7 @@ import {
   NetworkUtil,
   ConstantsUtil,
   ParseUtil
-} from '@reown/appkit-common';
+} from '@reown/appkit-common-react-native';
 import type { AppKitOptions } from './utils/TypesUtil';
 import {
   UniversalAdapter,
@@ -67,13 +71,13 @@ import {
   ErrorUtil,
   LoggerUtil,
   ConstantsUtil as UtilConstantsUtil
-} from '@reown/appkit-utils';
+} from '@reown/appkit-utils-react-native';
 import {
-  W3mFrameHelpers,
-  W3mFrameRpcConstants,
-  type W3mFrameProvider,
-  type W3mFrameTypes
-} from '@reown/appkit-wallet';
+  AppKitFrameHelpers,
+  AppKitFrameProvider,
+  AppKitFrameRpcConstants,
+  type AppKitFrameTypes
+} from '@reown/appkit-wallet-react-native';
 import { ProviderUtil, type ProviderStoreUtilState } from './store/ProviderUtil';
 import type { AppKitNetwork } from './networks';
 import type { AdapterBlueprint } from './adapters/ChainAdapterBlueprint';
@@ -82,6 +86,7 @@ import type { SessionTypes } from '@walletconnect/types';
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider';
 import { AppKitFrameProviderSingleton } from './auth-provider/AppKitFrameProviderSingleton';
 import { WcHelpersUtil } from './utils/HelpersUtil';
+import { Appearance } from 'react-native';
 // import { WalletUtil } from '@reown/appkit-scaffold-ui/utils';
 
 declare global {
@@ -95,7 +100,7 @@ export { AccountController };
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
-  view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'ConnectingWalletConnectBasic';
+  view: 'Account' | 'Connect' | 'Networks';
   uri?: string;
 }
 
@@ -103,6 +108,7 @@ type Adapters = Record<ChainNamespace, AdapterBlueprint>;
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
+  isConnected: false,
   currentTab: 0,
   tokenBalance: [],
   smartAccountDeployed: false,
@@ -115,35 +121,35 @@ const networkState: AdapterNetworkState = {
   smartAccountEnabledNetworks: []
 };
 
-const OPTIONAL_METHODS = [
-  'eth_accounts',
-  'eth_requestAccounts',
-  'eth_sendRawTransaction',
-  'eth_sign',
-  'eth_signTransaction',
-  'eth_signTypedData',
-  'eth_signTypedData_v3',
-  'eth_signTypedData_v4',
-  'eth_sendTransaction',
-  'personal_sign',
-  'wallet_switchEthereumChain',
-  'wallet_addEthereumChain',
-  'wallet_getPermissions',
-  'wallet_requestPermissions',
-  'wallet_registerOnboarding',
-  'wallet_watchAsset',
-  'wallet_scanQRCode',
-  // EIP-5792
-  'wallet_getCallsStatus',
-  'wallet_sendCalls',
-  'wallet_getCapabilities',
-  // EIP-7715
-  'wallet_grantPermissions',
-  'wallet_revokePermissions'
-];
+// const OPTIONAL_METHODS = [
+//   'eth_accounts',
+//   'eth_requestAccounts',
+//   'eth_sendRawTransaction',
+//   'eth_sign',
+//   'eth_signTransaction',
+//   'eth_signTypedData',
+//   'eth_signTypedData_v3',
+//   'eth_signTypedData_v4',
+//   'eth_sendTransaction',
+//   'personal_sign',
+//   'wallet_switchEthereumChain',
+//   'wallet_addEthereumChain',
+//   'wallet_getPermissions',
+//   'wallet_requestPermissions',
+//   'wallet_registerOnboarding',
+//   'wallet_watchAsset',
+//   'wallet_scanQRCode',
+//   // EIP-5792
+//   'wallet_getCallsStatus',
+//   'wallet_sendCalls',
+//   'wallet_getCapabilities',
+//   // EIP-7715
+//   'wallet_grantPermissions',
+//   'wallet_revokePermissions'
+// ];
 
 // -- Helpers -------------------------------------------------------------------
-let isInitialized = false;
+// let isInitialized = false;
 
 // -- Client --------------------------------------------------------------------
 export class AppKit {
@@ -171,9 +177,9 @@ export class AppKit {
 
   private universalProviderInitPromise?: Promise<void>;
 
-  private authProvider?: W3mFrameProvider;
+  private authProvider?: AppKitFrameProvider;
 
-  private initPromise?: Promise<void> = undefined;
+  // private initPromise?: Promise<void> = undefined;
 
   public version?: SdkVersion;
 
@@ -208,43 +214,45 @@ export class AppKit {
     this.caipNetworks = this.extendCaipNetworks(options);
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options);
     this.initControllers(options);
+    await this.initAsyncValues(options);
     this.createClients();
-    ChainController.initialize(options.adapters ?? [], this.caipNetworks);
+    await ChainController.initialize(options.adapters ?? [], this.caipNetworks);
     this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[]);
     await this.initChainAdapters();
     this.syncRequestedNetworks();
-    await this.initOrContinue();
+    await ApiController.prefetch();
+    // await this.initOrContinue();
     await this.syncExistingConnection();
     this.version = options.sdkVersion;
 
     const { ...optionsCopy } = options;
     delete optionsCopy.adapters;
 
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'INITIALIZE',
-      properties: {
-        ...optionsCopy,
-        networks: options.networks.map(n => n.id),
-        siweConfig: {
-          options: options.siweConfig?.options || {}
-        }
-      }
-    });
+    // EventsController.sendEvent({
+    //   type: 'track',
+    //   event: 'INITIALIZE',
+    //   properties: {
+    //     ...optionsCopy,
+    //     networks: options.networks.map(n => n.id),
+    //     siweConfig: {
+    //       options: options.siweConfig?.options || {}
+    //     }
+    //   }
+    // });
     PublicStateController.set({ initialized: true });
   }
 
   // -- Public -------------------------------------------------------------------
   public async open(options?: OpenOptions) {
-    await this.initOrContinue();
-    if (options?.uri && this.universalAdapter) {
-      ConnectionController.setUri(options.uri);
-    }
+    // await this.initOrContinue();
+    // if (options?.uri && this.universalAdapter) {
+    //   ConnectionController.setUri(options.uri);
+    // }
     ModalController.open(options);
   }
 
   public async close() {
-    await this.initOrContinue();
+    // await this.initOrContinue();
     ModalController.close();
   }
 
@@ -265,7 +273,7 @@ export class AppKit {
     const network = this.caipNetworks?.find(n => n.id === appKitNetwork.id);
 
     if (!network) {
-      AlertController.open(ErrorUtil.ALERT_ERRORS.SWITCH_NETWORK_NOT_FOUND, 'error');
+      SnackController.showInternalError(ErrorUtil.ALERT_ERRORS.SWITCH_NETWORK_NOT_FOUND);
 
       return;
     }
@@ -299,20 +307,20 @@ export class AppKit {
 
   public setThemeMode(themeMode: ThemeControllerState['themeMode']) {
     ThemeController.setThemeMode(themeMode);
-    setColorTheme(ThemeController.state.themeMode);
+    // setColorTheme(ThemeController.state.themeMode);
   }
 
-  public setTermsConditionsUrl(termsConditionsUrl: string) {
-    OptionsController.setTermsConditionsUrl(termsConditionsUrl);
-  }
+  // public setTermsConditionsUrl(termsConditionsUrl: string) {
+  //   OptionsController.setTermsConditionsUrl(termsConditionsUrl);
+  // }
 
-  public setPrivacyPolicyUrl(privacyPolicyUrl: string) {
-    OptionsController.setPrivacyPolicyUrl(privacyPolicyUrl);
-  }
+  // public setPrivacyPolicyUrl(privacyPolicyUrl: string) {
+  //   OptionsController.setPrivacyPolicyUrl(privacyPolicyUrl);
+  // }
 
   public setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     ThemeController.setThemeVariables(themeVariables);
-    setThemeVariables(ThemeController.state.themeVariables);
+    // setThemeVariables(ThemeController.state.themeVariables);
   }
 
   public subscribeTheme(callback: (newState: ThemeControllerState) => void) {
@@ -460,7 +468,7 @@ export class AppKit {
   public getProvider = () => AccountController.state.provider;
 
   public getPreferredAccountType = () =>
-    AccountController.state.preferredAccountType as W3mFrameTypes.AccountType;
+    AccountController.state.preferredAccountType as AppKitFrameTypes.AccountType;
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain);
@@ -587,10 +595,6 @@ export class AppKit {
   public getReownName: (typeof EnsController)['getNamesForAddress'] = address =>
     EnsController.getNamesForAddress(address);
 
-  public setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {
-    OptionsController.setEIP6963Enabled(enabled);
-  };
-
   public setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
     BlockchainApiController.setClientId(clientId);
   };
@@ -598,20 +602,22 @@ export class AppKit {
   public getConnectorImage: (typeof AssetUtil)['getConnectorImage'] = connector =>
     AssetUtil.getConnectorImage(connector);
 
-  public handleUnsafeRPCRequest = () => {
-    if (this.isOpen()) {
-      // If we are on the modal but there is no transaction stack, close the modal
-      if (this.isTransactionStackEmpty()) {
-        return;
-      }
+  // public handleUnsafeRPCRequest = () => {
+  //   if (this.isOpen()) {
+  //     // If we are on the modal but there is no transaction stack, close the modal
+  //     if (this.isTransactionStackEmpty()) {
+  //       return;
+  //     }
 
-      // Check if we need to replace or redirect
-      this.redirect('ApproveTransaction');
-    } else {
-      // If called from outside the modal, open ApproveTransaction
-      this.open({ view: 'ApproveTransaction' });
-    }
-  };
+  //     // Check if we need to replace or redirect
+  //     //TODO: Check this
+  //     // this.redirect('ApproveTransaction');
+  //   } else {
+  //     // If called from outside the modal, open ApproveTransaction
+  //     //TODO: Check this
+  //     // this.open({ view: 'ApproveTransaction' });
+  //   }
+  // };
 
   public updateFeatures(newFeatures: Partial<Features>) {
     OptionsController.setFeatures(newFeatures);
@@ -623,32 +629,32 @@ export class AppKit {
     OptionsController.setOptions(updatedOptions);
   }
 
-  public setConnectMethodsOrder(connectMethodsOrder: ConnectMethod[]) {
-    OptionsController.setConnectMethodsOrder(connectMethodsOrder);
-  }
+  // public setConnectMethodsOrder(connectMethodsOrder: ConnectMethod[]) {
+  //   OptionsController.setConnectMethodsOrder(connectMethodsOrder);
+  // }
 
-  public setWalletFeaturesOrder(walletFeaturesOrder: WalletFeature[]) {
-    OptionsController.setWalletFeaturesOrder(walletFeaturesOrder);
-  }
+  // public setWalletFeaturesOrder(walletFeaturesOrder: WalletFeature[]) {
+  //   OptionsController.setWalletFeaturesOrder(walletFeaturesOrder);
+  // }
 
-  public setCollapseWallets(collapseWallets: boolean) {
-    OptionsController.setCollapseWallets(collapseWallets);
-  }
+  // public setCollapseWallets(collapseWallets: boolean) {
+  //   OptionsController.setCollapseWallets(collapseWallets);
+  // }
 
-  public setSocialsOrder(socialsOrder: SocialProvider[]) {
-    OptionsController.setSocialsOrder(socialsOrder);
-  }
+  // public setSocialsOrder(socialsOrder: SocialProvider[]) {
+  //   OptionsController.setSocialsOrder(socialsOrder);
+  // }
 
   public async disconnect() {
     await ChainController.disconnect();
   }
 
-  public getConnectMethodsOrder() {
-    return WalletUtil.getConnectOrderMethod(
-      OptionsController.state.features,
-      ConnectorController.getConnectors()
-    );
-  }
+  // public getConnectMethodsOrder() {
+  //   return WalletUtil.getConnectOrderMethod(
+  //     OptionsController.state.features,
+  //     ConnectorController.getConnectors()
+  //   );
+  // }
 
   // -- Private ------------------------------------------------------------------
   private initControllers(
@@ -661,42 +667,33 @@ export class AppKit {
     OptionsController.setDebug(options.debug !== false);
     OptionsController.setProjectId(options.projectId);
     OptionsController.setSdkVersion(options.sdkVersion);
-    OptionsController.setEnableEmbedded(options.enableEmbedded);
+    OptionsController.setMetadata(options.metadata);
 
     if (options.allowUnsupportedChain) {
       OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain);
     }
 
     if (!options.projectId) {
-      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error');
+      SnackController.showInternalError(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED);
 
       return;
     }
 
-    const defaultMetaData = this.getDefaultMetaData();
-
-    if (!options.metadata && defaultMetaData) {
-      options.metadata = defaultMetaData;
-    }
-
     this.setDefaultNetwork();
 
-    OptionsController.setAllWallets(options.allWallets);
+    // OptionsController.setAllWallets(options.allWallets);
     OptionsController.setIncludeWalletIds(options.includeWalletIds);
     OptionsController.setExcludeWalletIds(options.excludeWalletIds);
-    if (options.excludeWalletIds) {
-      ApiController.searchWalletByIds({ ids: options.excludeWalletIds });
-    }
+
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
     OptionsController.setTokens(options.tokens);
-    OptionsController.setTermsConditionsUrl(options.termsConditionsUrl);
-    OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl);
+    // OptionsController.setTermsConditionsUrl(options.termsConditionsUrl);
+    // OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl);
     OptionsController.setCustomWallets(options.customWallets);
     OptionsController.setFeatures(options.features);
-    OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false);
-    OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false);
-    OptionsController.setEnableWallets(options.enableWallets !== false);
-    OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false);
+    // OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false);
+    // OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false);
+    // OptionsController.setEnableWallets(options.enableWallets !== false);
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata);
@@ -704,19 +701,21 @@ export class AppKit {
 
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode);
+    } else {
+      ThemeController.setThemeMode(Appearance.getColorScheme() ?? 'dark');
     }
 
-    if (options.themeVariables) {
-      ThemeController.setThemeVariables(options.themeVariables);
-    }
+    // if (options.themeVariables) {
+    //   ThemeController.setThemeVariables(options.themeVariables);
+    // }
 
-    if (options.disableAppend) {
-      OptionsController.setDisableAppend(Boolean(options.disableAppend));
-    }
+    // if (options.disableAppend) {
+    //   OptionsController.setDisableAppend(Boolean(options.disableAppend));
+    // }
 
-    if (options.siwx) {
-      OptionsController.setSIWX(options.siwx);
-    }
+    // if (options.siwx) {
+    //   OptionsController.setSIWX(options.siwx);
+    // }
 
     const evmAdapter = options.adapters?.find(
       adapter => adapter.namespace === ConstantsUtil.CHAIN.EVM
@@ -725,27 +724,14 @@ export class AppKit {
     // Set the SIWE client for EVM chains
     if (evmAdapter) {
       if (options.siweConfig) {
-        if (options.siwx) {
-          throw new Error('Cannot set both `siweConfig` and `siwx` options');
-        }
+        // if (options.siwx) {
+        //   throw new Error('Cannot set both `siweConfig` and `siwx` options');
+        // }
 
-        OptionsController.setSIWX(options.siweConfig.mapToSIWX());
+        //TODO: Check this
+        OptionsController.setIsSiweEnabled(true);
       }
     }
-  }
-
-  private getDefaultMetaData() {
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-      return {
-        name: document.getElementsByTagName('title')?.[0]?.textContent || '',
-        description:
-          document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
-        url: window.location.origin,
-        icons: [document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || '']
-      };
-    }
-
-    return null;
   }
 
   private setUnsupportedNetwork(chainId: string | number) {
@@ -806,13 +792,13 @@ export class AppKit {
         let isAuthenticated = false;
 
         if (this.universalProvider) {
-          const chains = this.caipNetworks?.map(network => network.caipNetworkId) || [];
-
-          isAuthenticated = await SIWXUtil.universalProviderAuthenticate({
-            universalProvider: this.universalProvider,
-            chains,
-            methods: OPTIONAL_METHODS
-          });
+          //TODO: Check this
+          // const chains = this.caipNetworks?.map(network => network.caipNetworkId) || [];
+          // isAuthenticated = await SIWXUtil.universalProviderAuthenticate({
+          //   universalProvider: this.universalProvider,
+          //   chains,
+          //   methods: OPTIONAL_METHODS
+          // });
         }
 
         if (isAuthenticated) {
@@ -887,9 +873,9 @@ export class AppKit {
       },
       disconnect: async () => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace);
-        const provider = ProviderUtil.getProvider<UniversalProvider | Provider | W3mFrameProvider>(
-          ChainController.state.activeChain as ChainNamespace
-        );
+        const provider = ProviderUtil.getProvider<
+          UniversalProvider | Provider | AppKitFrameProvider
+        >(ChainController.state.activeChain as ChainNamespace);
         const providerType =
           ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace];
 
@@ -898,13 +884,13 @@ export class AppKit {
         ProviderUtil.resetChain(ChainController.state.activeChain as ChainNamespace);
         this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace);
       },
-      checkInstalled: (ids?: string[]) => {
-        if (!ids) {
-          return Boolean(window.ethereum);
-        }
+      // checkInstalled: (ids?: string[]) => {
+      //   if (!ids) {
+      //     return Boolean(window.ethereum);
+      //   }
 
-        return ids.some(id => Boolean(window.ethereum?.[String(id)]));
-      },
+      //   return ids.some(id => Boolean(window.ethereum?.[String(id)]));
+      // },
       signMessage: async (message: string) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace);
         const result = await adapter?.signMessage({
@@ -1002,26 +988,26 @@ export class AppKit {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace);
 
         return adapter?.formatUnits({ value, decimals }) ?? '0';
-      },
-      getCapabilities: async (params: AdapterBlueprint.GetCapabilitiesParams) => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace);
-
-        await adapter?.getCapabilities(params);
-      },
-      grantPermissions: async (params: AdapterBlueprint.GrantPermissionsParams) => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace);
-
-        return await adapter?.grantPermissions(params);
-      },
-      revokePermissions: async (params: AdapterBlueprint.RevokePermissionsParams) => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace);
-
-        if (adapter?.revokePermissions) {
-          return await adapter.revokePermissions(params);
-        }
-
-        return '0x';
       }
+      // getCapabilities: async (params: AdapterBlueprint.GetCapabilitiesParams) => {
+      //   const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace);
+
+      //   await adapter?.getCapabilities(params);
+      // },
+      // grantPermissions: async (params: AdapterBlueprint.GrantPermissionsParams) => {
+      //   const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace);
+
+      //   return await adapter?.grantPermissions(params);
+      // },
+      // revokePermissions: async (params: AdapterBlueprint.RevokePermissionsParams) => {
+      //   const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace);
+
+      //   if (adapter?.revokePermissions) {
+      //     return await adapter.revokePermissions(params);
+      //   }
+
+      //   return '0x';
+      // }
     };
 
     this.networkControllerClient = {
@@ -1035,7 +1021,7 @@ export class AppKit {
         ) {
           const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace);
           const provider = ProviderUtil.getProvider<
-            UniversalProvider | Provider | W3mFrameProvider
+            UniversalProvider | Provider | AppKitFrameProvider
           >(ChainController.state.activeChain as ChainNamespace);
           const providerType =
             ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace];
@@ -1051,7 +1037,7 @@ export class AppKit {
           const providerType =
             ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace];
 
-          if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
+          if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH && this.authProvider) {
             try {
               ChainController.state.activeChain = caipNetwork.chainNamespace;
               await this.connectionControllerClient?.connectExternal?.({
@@ -1116,35 +1102,40 @@ export class AppKit {
     }
   }
 
-  private async listenAuthConnector(provider: W3mFrameProvider) {
+  private async listenAuthConnector(provider: AppKitFrameProvider) {
+    console.log('listenAuthConnector');
     this.setLoading(true);
-    const isLoginEmailUsed = provider.getLoginEmailUsed();
+    const isLoginEmailUsed = Boolean(provider.getEmail());
     this.setLoading(isLoginEmailUsed);
 
     if (isLoginEmailUsed) {
       this.setStatus('connecting', ChainController.state.activeChain as ChainNamespace);
     }
 
+    await provider.webviewLoadPromise;
     const { isConnected } = await provider.isConnected();
 
-    provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
-      if (W3mFrameHelpers.checkIfRequestExists(request)) {
-        if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
-          this.handleUnsafeRPCRequest();
+    provider.onRpcRequest((request: AppKitFrameTypes.RPCRequest) => {
+      console.log('onRpcRequest');
+      if (AppKitFrameHelpers.checkIfRequestExists(request)) {
+        if (!AppKitFrameHelpers.checkIfRequestIsAllowed(request)) {
+          // this.handleUnsafeRPCRequest();
+          WebviewController.setFrameViewVisible(true);
         }
       } else {
         this.open();
         // eslint-disable-next-line no-console
-        console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, {
+        console.error(AppKitFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, {
           method: request.method
         });
         setTimeout(() => {
-          this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE);
+          this.showErrorMessage(AppKitFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE);
         }, 300);
         provider.rejectRpcRequests();
       }
     });
     provider.onRpcError(() => {
+      console.log('onRpcError');
       const isModalOpen = this.isOpen();
       if (isModalOpen) {
         if (this.isTransactionStackEmpty()) {
@@ -1153,9 +1144,11 @@ export class AppKit {
           this.popTransactionStack(true);
         }
       }
+      WebviewController.setFrameViewVisible(false);
     });
     provider.onRpcSuccess((_, request) => {
-      const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request);
+      console.log('onRpcSuccess');
+      const isSafeRequest = AppKitFrameHelpers.checkIfRequestIsAllowed(request);
       if (isSafeRequest) {
         return;
       }
@@ -1170,19 +1163,27 @@ export class AppKit {
           this.updateBalance();
         }
       }
+      WebviewController.setFrameViewVisible(false);
     });
     provider.onNotConnected(() => {
-      const connectorId = StorageUtil.getConnectedConnectorId();
+      console.log('onNotConnected');
+      const connectorId = ConnectorController.state.connectedConnector;
       const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH;
       if (!isConnected && isConnectedWithAuth) {
         this.setCaipAddress(undefined, ChainController.state.activeChain as ChainNamespace);
         this.setLoading(false);
       }
+      // TODO: check if ConnectionController.disconnect(); needs to be called here
+      ConnectorController.setAuthLoading(false); //TODO: check this
     });
     provider.onIsConnected(() => {
-      provider.connect();
+      console.log('onIsConnected');
+      // provider.connect();
+      ConnectorController.setAuthLoading(false); //TODO: check this
+      this.setLoading(false); //TODO: check this
     });
     provider.onConnect(async user => {
+      console.log('onConnect');
       const namespace = ChainController.state.activeChain as ChainNamespace;
       this.syncProvider({
         type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
@@ -1200,7 +1201,7 @@ export class AppKit {
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace);
 
       const preferredAccountType = (user.preferredAccountType ||
-        'eoa') as W3mFrameTypes.AccountType;
+        'eoa') as AppKitFrameTypes.AccountType;
       this.setPreferredAccountType(preferredAccountType, namespace);
 
       const userAccounts = user.accounts?.map(account =>
@@ -1218,21 +1219,24 @@ export class AppKit {
         namespace
       );
 
-      await provider.getSmartAccountEnabledNetworks();
+      // await provider.getSmartAccountEnabledNetworks();
       this.setLoading(false);
+      ConnectorController.setAuthLoading(false);
     });
     provider.onGetSmartAccountEnabledNetworks(networks => {
+      console.log('onGetSmartAccountEnabledNetworks');
       this.setSmartAccountEnabledNetworks(
-        networks,
+        networks.smartAccountEnabledNetworks,
         ChainController.state.activeChain as ChainNamespace
       );
     });
     provider.onSetPreferredAccount(({ address, type }) => {
+      console.log('onSetPreferredAccount');
       if (!address) {
         return;
       }
       this.setPreferredAccountType(
-        type as W3mFrameTypes.AccountType,
+        type as AppKitFrameTypes.AccountType,
         ChainController.state.activeChain as ChainNamespace
       );
     });
@@ -1242,6 +1246,7 @@ export class AppKit {
         id: ConstantsUtil.CONNECTOR_ID.AUTH,
         info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
         type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
+        //@ts-ignore
         provider,
         chainId: ChainController.state.activeCaipNetwork?.id
       });
@@ -1296,14 +1301,14 @@ export class AppKit {
     }
   }
 
-  private listenAdapter(chainNamespace: ChainNamespace) {
+  private async listenAdapter(chainNamespace: ChainNamespace) {
     const adapter = this.getAdapter(chainNamespace);
 
     if (!adapter) {
       return;
     }
 
-    const connectionStatus = StorageUtil.getConnectionStatus();
+    const connectionStatus = await StorageUtil.getConnectionStatus();
 
     if (connectionStatus === 'connected') {
       this.setStatus('connecting', chainNamespace);
@@ -1426,7 +1431,7 @@ export class AppKit {
           address = AccountController.state.address as string;
         }
 
-        if ((adapter as ChainAdapter)?.adapterType === 'wagmi') {
+        if ((adapter as ChainAdapterx)?.adapterType === 'wagmi') {
           try {
             await adapter?.connect({
               id: 'walletConnect',
@@ -1512,7 +1517,7 @@ export class AppKit {
     chainNamespace: ChainNamespace;
   }) {
     const { namespace: activeNamespace, chainId: activeChainId } =
-      StorageUtil.getActiveNetworkProps();
+      await StorageUtil.getActiveNetworkProps();
     const chainIdToUse = chainId || activeChainId;
 
     // Only update state when needed
@@ -1560,7 +1565,7 @@ export class AppKit {
   }
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
-    const connectorId = StorageUtil.getConnectedConnectorId();
+    const connectorId = ConnectorController.state.connectedConnector;
     const providerType = ProviderUtil.state.providerIds[chainNamespace];
 
     if (
@@ -1614,14 +1619,19 @@ export class AppKit {
       return;
     }
     try {
-      const { name, avatar } = await this.fetchIdentity({
+      const response = await this.fetchIdentity({
         address
       });
 
-      this.setProfileName(name, chainNamespace);
-      this.setProfileImage(avatar, chainNamespace);
+      if (response?.name) {
+        this.setProfileName(response.name, chainNamespace);
+      }
 
-      if (!name) {
+      if (response?.avatar) {
+        this.setProfileImage(response.avatar, chainNamespace);
+      }
+
+      if (!response?.name) {
         await this.syncReownName(address, chainNamespace);
         const adapter = this.getAdapter(chainNamespace);
         const result = await adapter?.getProfile({
@@ -1636,7 +1646,7 @@ export class AppKit {
           }
         } else {
           await this.syncReownName(address, chainNamespace);
-          this.setProfileImage(null, chainNamespace);
+          this.setProfileImage(undefined, chainNamespace);
         }
       }
     } catch {
@@ -1644,7 +1654,7 @@ export class AppKit {
         await this.syncReownName(address, chainNamespace);
       } else {
         await this.syncReownName(address, chainNamespace);
-        this.setProfileImage(null, chainNamespace);
+        this.setProfileImage(undefined, chainNamespace);
       }
     }
   }
@@ -1652,14 +1662,14 @@ export class AppKit {
   private async syncReownName(address: string, chainNamespace: ChainNamespace) {
     try {
       const registeredWcNames = await this.getReownName(address);
-      if (registeredWcNames[0]) {
+      if (registeredWcNames?.[0]) {
         const wcName = registeredWcNames[0];
         this.setProfileName(wcName.name, chainNamespace);
       } else {
-        this.setProfileName(null, chainNamespace);
+        this.setProfileName(undefined, chainNamespace);
       }
     } catch {
-      this.setProfileName(null, chainNamespace);
+      this.setProfileName(undefined, chainNamespace);
     }
   }
 
@@ -1680,8 +1690,8 @@ export class AppKit {
 
   private async syncExistingConnection() {
     try {
-      const connectorId = StorageUtil.getConnectedConnectorId();
-      const activeNamespace = StorageUtil.getActiveNamespace();
+      const connectorId = await StorageUtil.getConnectedConnectorId();
+      const activeNamespace = await StorageUtil.getActiveNamespace();
 
       if (connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT && activeNamespace) {
         this.syncWalletConnectAccount();
@@ -1740,11 +1750,7 @@ export class AppKit {
   }
 
   private createUniversalProvider() {
-    if (
-      !this.universalProviderInitPromise &&
-      CoreHelperUtil.isClient() &&
-      this.options?.projectId
-    ) {
+    if (!this.universalProviderInitPromise && this.options?.projectId) {
       this.universalProviderInitPromise = this.initializeUniversalAdapter();
     }
 
@@ -1765,7 +1771,7 @@ export class AppKit {
         ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS];
 
       if (alertError) {
-        AlertController.open(alertError, 'error');
+        SnackController.showInternalError(alertError);
         this.reportedAlertErrors[errorKey] = true;
       }
     }
@@ -1820,8 +1826,9 @@ export class AppKit {
     if (!this.authProvider && this.options?.projectId && (isEmailEnabled || isSocialsEnabled)) {
       this.authProvider = AppKitFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
+        metadata: this.options?.metadata!,
         onTimeout: () => {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error');
+          SnackController.showInternalError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
         }
       });
       this.listenAuthConnector(this.authProvider);
@@ -1900,8 +1907,8 @@ export class AppKit {
     );
   }
 
-  private setDefaultNetwork() {
-    const previousNetwork = StorageUtil.getActiveCaipNetworkId();
+  private async setDefaultNetwork() {
+    const previousNetwork = await StorageUtil.getActiveCaipNetworkId();
     const caipNetwork =
       previousNetwork && this.caipNetworks?.length
         ? this.caipNetworks.find(n => n.caipNetworkId === previousNetwork)
@@ -1913,22 +1920,63 @@ export class AppKit {
     }
   }
 
-  private async initOrContinue() {
-    if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
-      isInitialized = true;
-      this.initPromise = new Promise<void>(async resolve => {
-        await Promise.all([
-          import('@reown/appkit-ui'),
-          import('@reown/appkit-scaffold-ui/w3m-modal')
-        ]);
-        const modal = document.createElement('w3m-modal');
-        if (!OptionsController.state.disableAppend) {
-          document.body.insertAdjacentElement('beforeend', modal);
-        }
-        resolve();
-      });
-    }
+  private async initRecentWallets(options: AppKitOptions) {
+    const wallets = await StorageUtil.getRecentWallets();
+    const connectedWalletImage = await StorageUtil.getConnectedWalletImageUrl();
 
-    return this.initPromise;
+    const filteredWallets = wallets.filter(wallet => {
+      const { includeWalletIds, excludeWalletIds } = options;
+      if (includeWalletIds) {
+        return includeWalletIds.includes(wallet.id);
+      }
+      if (excludeWalletIds) {
+        return !excludeWalletIds.includes(wallet.id);
+      }
+
+      return true;
+    });
+
+    ConnectionController.setRecentWallets(filteredWallets);
+
+    if (connectedWalletImage) {
+      ConnectionController.setConnectedWalletImageUrl(connectedWalletImage);
+    }
   }
+
+  // private async initConnectedConnector() {
+  //   const connectedConnector = await StorageUtil.getConnectedConnector();
+  //   if (connectedConnector) {
+  //     ConnectorController.setConnectedConnector(connectedConnector, false);
+  //   }
+  // }
+
+  private async initSocial() {
+    const connectedSocialProvider = await StorageUtil.getConnectedSocialProvider();
+    ConnectionController.setConnectedSocialProvider(connectedSocialProvider);
+  }
+
+  private async initAsyncValues(options: AppKitOptions) {
+    // await this.initConnectedConnector();
+    await this.initRecentWallets(options);
+    await this.initSocial();
+  }
+
+  // private async initOrContinue() {
+  //   if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
+  //     isInitialized = true;
+  //     this.initPromise = new Promise<void>(async resolve => {
+  //       await Promise.all([
+  //         import('@reown/appkit-ui'),
+  //         import('@reown/appkit-scaffold-ui/w3m-modal')
+  //       ]);
+  //       const modal = document.createElement('w3m-modal');
+  //       if (!OptionsController.state.disableAppend) {
+  //         document.body.insertAdjacentElement('beforeend', modal);
+  //       }
+  //       resolve();
+  //     });
+  //   }
+
+  //   return this.initPromise;
+  // }
 }

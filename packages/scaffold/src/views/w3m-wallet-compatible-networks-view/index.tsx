@@ -5,7 +5,8 @@ import {
   AccountController,
   ApiController,
   AssetUtil,
-  NetworkController
+  ChainController,
+  CoreHelperUtil
 } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
@@ -13,18 +14,27 @@ import styles from './styles';
 export function WalletCompatibleNetworks() {
   const { padding } = useCustomDimensions();
   const { preferredAccountType } = useSnapshot(AccountController.state);
-  const isSmartAccount =
-    preferredAccountType === 'smartAccount' && NetworkController.checkIfSmartAccountEnabled();
-  const approvedNetworks = isSmartAccount
-    ? NetworkController.getSmartAccountEnabledNetworks()
-    : NetworkController.getApprovedCaipNetworks();
+  const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks();
+  const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds();
+  const caipNetwork = ChainController.state.activeCaipNetwork;
+  const isNetworkEnabledForSmartAccounts = ChainController.checkIfSmartAccountEnabled();
+
+  let sortedNetworks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
   const imageHeaders = ApiController._getApiHeaders();
+
+  // For now, each network has a unique account
+  if (isNetworkEnabledForSmartAccounts && preferredAccountType === 'smartAccount') {
+    if (!caipNetwork) {
+      return null;
+    }
+    sortedNetworks = [caipNetwork];
+  }
 
   return (
     <ScrollView bounces={false} style={{ paddingHorizontal: padding }} fadingEdgeLength={20}>
       <FlexView padding={['xl', 's', '2xl', 's']}>
         <Banner icon="warningCircle" text="You can only receive assets on these networks." />
-        {approvedNetworks.map((network, index) => (
+        {sortedNetworks.map((network, index) => (
           <FlexView
             key={network?.id ?? index}
             flexDirection="row"

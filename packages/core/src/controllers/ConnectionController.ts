@@ -1,6 +1,11 @@
 import { proxy, ref } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
-import type { SocialProvider } from '@reown/appkit-common-react-native';
+import {
+  ConstantsUtil,
+  type CaipNetwork,
+  type ChainNamespace,
+  type SocialProvider
+} from '@reown/appkit-common-react-native';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type {
@@ -10,7 +15,6 @@ import type {
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil';
-import { ConnectorController } from './ConnectorController';
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -18,6 +22,9 @@ export interface ConnectExternalOptions {
   type: Connector['type'];
   provider?: Connector['provider'];
   info?: Connector['info'];
+  chain?: ChainNamespace;
+  chainId?: number | string;
+  caipNetwork?: CaipNetwork;
 }
 
 export interface ConnectionControllerClient {
@@ -26,8 +33,9 @@ export interface ConnectionControllerClient {
     walletUniversalLink?: string
   ) => Promise<void>;
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>;
+  reconnectExternal?: (options: ConnectExternalOptions) => Promise<void>;
   signMessage: (message: string) => Promise<string>;
-  sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>;
+  sendTransaction: (args: SendTransactionArgs) => Promise<string | null>;
   parseUnits: (value: string, decimals: number) => bigint;
   formatUnits: (value: bigint, decimals: number) => string;
   writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>;
@@ -49,9 +57,9 @@ export interface ConnectionControllerState {
   wcError?: boolean;
   pressedWallet?: WcWallet;
   recentWallets?: WcWallet[];
-  selectedSocialProvider?: SocialProvider;
-  connectedWalletImageUrl?: string;
-  connectedSocialProvider?: SocialProvider;
+  selectedSocialProvider?: SocialProvider; //TODO: check this
+  connectedWalletImageUrl?: string; //TODO: check this
+  connectedSocialProvider?: SocialProvider; //TODO: check this
 }
 
 type StateKey = keyof ConnectionControllerState;
@@ -85,6 +93,8 @@ export const ConnectionController = {
   },
 
   connectWalletConnect(walletUniversalLink?: string) {
+    StorageUtil.setConnectedConnectorId(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT);
+
     state.wcPromise = this._getClient().connectWalletConnect(uri => {
       state.wcUri = uri;
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry();
@@ -93,11 +103,17 @@ export const ConnectionController = {
 
   async connectExternal(options: ConnectExternalOptions) {
     await this._getClient().connectExternal?.(options);
-    ConnectorController.setConnectedConnector(options.type);
+    StorageUtil.setConnectedConnectorId(options.id);
+    // ConnectorController.setConnectedConnector(options.type);
   },
 
   async signMessage(message: string) {
     return this._getClient().signMessage(message);
+  },
+
+  setUri(uri: string) {
+    state.wcUri = uri;
+    state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry();
   },
 
   setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {
@@ -187,7 +203,7 @@ export const ConnectionController = {
     state.pressedWallet = undefined;
     state.selectedSocialProvider = undefined;
     ConnectionController.setConnectedWalletImageUrl(undefined);
-    ConnectorController.setConnectedConnector(undefined);
+    // ConnectorController.setConnectedConnector(undefined);
     StorageUtil.removeWalletConnectDeepLink();
   },
 

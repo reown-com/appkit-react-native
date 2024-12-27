@@ -1,11 +1,11 @@
 import { proxy } from 'valtio';
-import { AccountController } from './AccountController';
 import type { RouterControllerState } from './RouterController';
 import { RouterController } from './RouterController';
 import { PublicStateController } from './PublicStateController';
 import { EventsController } from './EventsController';
 import { ApiController } from './ApiController';
 import { ConnectorController } from './ConnectorController';
+import { ChainController } from './ChainController';
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
@@ -31,10 +31,11 @@ export const ModalController = {
 
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise;
-    const connected = AccountController.state.isConnected;
+    const caipAddress = ChainController.state.activeCaipAddress;
+
     if (options?.view) {
       RouterController.reset(options.view);
-    } else if (AccountController.state.isConnected) {
+    } else if (caipAddress) {
       const isUniversalWallet = ConnectorController.state.connectedConnector === 'AUTH';
       RouterController.reset(isUniversalWallet ? 'Account' : 'AccountDefault');
     } else {
@@ -45,12 +46,12 @@ export const ModalController = {
     EventsController.sendEvent({
       type: 'track',
       event: 'MODAL_OPEN',
-      properties: { connected }
+      properties: { connected: Boolean(caipAddress) }
     });
   },
 
   close() {
-    const connected = AccountController.state.isConnected;
+    const connected = Boolean(ChainController.state.activeCaipAddress);
     state.open = false;
     PublicStateController.set({ open: false });
     EventsController.sendEvent({

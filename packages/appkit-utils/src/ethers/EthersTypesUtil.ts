@@ -1,7 +1,8 @@
-import type { W3mFrameProvider } from '@reown/appkit-wallet';
+// import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 import type { ProviderInterface } from '@coinbase/wallet-sdk';
 import type UniversalProvider from '@walletconnect/universal-provider';
 import type { SocialProvider } from '../TypeUtil';
+import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 export interface IEthersConfig {
   providers: ProviderType;
@@ -51,9 +52,9 @@ export type Metadata = {
   icons: string[];
 };
 
-export type CombinedProvider = W3mFrameProvider & Provider;
+export type CombinedProvider = AppKitFrameProvider & Provider;
 
-export type UniversalProviderType = UniversalProvider & W3mFrameProvider & Provider;
+export type UniversalProviderType = UniversalProvider & AppKitFrameProvider & Provider;
 
 export type Chain = {
   id: string | number;

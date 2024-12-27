@@ -24,7 +24,7 @@ import { WalletGuide } from './components/wallet-guide';
 import styles from './styles';
 
 export function ConnectView() {
-  const connectors = ConnectorController.state.connectors;
+  const connectors = ConnectorController.state.allConnectors;
   const { authLoading } = useSnapshot(ConnectorController.state);
   const { prefetchError } = useSnapshot(ApiController.state);
   const { features } = useSnapshot(OptionsController.state);
