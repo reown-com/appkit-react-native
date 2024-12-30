@@ -15,6 +15,28 @@ import type UniversalProvider from '@walletconnect/universal-provider';
 import type { AccountControllerState } from '../controllers/AccountController';
 import type { ConnectionControllerClient } from '../controllers/ConnectionController';
 
+type InitializeAppKitConfigs = {
+  showWallets?: boolean;
+  siweConfig?: {
+    options: {
+      enabled?: boolean;
+      nonceRefetchIntervalMs?: number;
+      sessionRefetchIntervalMs?: number;
+      signOutOnDisconnect?: boolean;
+      signOutOnAccountChange?: boolean;
+      signOutOnNetworkChange?: boolean;
+    };
+  };
+  themeMode?: 'dark' | 'light';
+  themeVariables?: ThemeVariables;
+  allowUnsupportedChain?: boolean;
+  networks: (string | number)[];
+  defaultNetwork?: AppKitNetwork;
+  chainImages?: Record<number | string, string>;
+  connectorImages?: Record<string, string>;
+  metadata?: Metadata;
+};
+
 export interface BaseError {
   message?: string;
 }
@@ -735,6 +757,11 @@ export type Event =
         accountType: AppKitFrameAccountType;
         network: string;
       };
+    }
+  | {
+      type: 'track';
+      event: 'INITIALIZE';
+      properties: InitializeAppKitConfigs;
     };
 
 // -- Send Controller Types -------------------------------------

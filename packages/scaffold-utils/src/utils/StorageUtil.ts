@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StorageUtil as CoreStorageUtil } from '@reown/appkit-core-react-native';
 
 export const StorageUtil = {
   async getItem<T>(key: string): Promise<T> {
@@ -14,9 +13,5 @@ export const StorageUtil = {
 
   async removeItem(key: string) {
     await AsyncStorage.removeItem(key);
-  },
-
-  async getConnectedConnector() {
-    return CoreStorageUtil.getConnectedConnector();
   }
 };

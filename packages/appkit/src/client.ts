@@ -221,24 +221,24 @@ export class AppKit {
     await this.initChainAdapters();
     this.syncRequestedNetworks();
     await ApiController.prefetch();
-    // await this.initOrContinue();
     await this.syncExistingConnection();
     this.version = options.sdkVersion;
 
     const { ...optionsCopy } = options;
     delete optionsCopy.adapters;
 
-    // EventsController.sendEvent({
-    //   type: 'track',
-    //   event: 'INITIALIZE',
-    //   properties: {
-    //     ...optionsCopy,
-    //     networks: options.networks.map(n => n.id),
-    //     siweConfig: {
-    //       options: options.siweConfig?.options || {}
-    //     }
-    //   }
-    // });
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'INITIALIZE',
+      properties: {
+        ...optionsCopy,
+        networks: options.networks.map(n => n.id),
+        siweConfig: {
+          options: options.siweConfig?.options || {}
+        }
+      }
+    });
+
     PublicStateController.set({ initialized: true });
   }
 
@@ -252,7 +252,6 @@ export class AppKit {
   }
 
   public async close() {
-    // await this.initOrContinue();
     ModalController.close();
   }
 
@@ -1103,23 +1102,21 @@ export class AppKit {
   }
 
   private async listenAuthConnector(provider: AppKitFrameProvider) {
-    console.log('listenAuthConnector');
-    this.setLoading(true);
-    const isLoginEmailUsed = Boolean(provider.getEmail());
-    this.setLoading(isLoginEmailUsed);
+    let isConnected = false;
+    const isAuthConnected =
+      (await StorageUtil.getConnectedConnectorId()) === ConstantsUtil.CONNECTOR_ID.AUTH;
 
-    if (isLoginEmailUsed) {
+    if (isAuthConnected) {
+      this.setLoading(true);
       this.setStatus('connecting', ChainController.state.activeChain as ChainNamespace);
+      await provider.webviewLoadPromise;
+      const { isConnected: _isConnected } = await provider.isConnected();
+      isConnected = _isConnected;
     }
 
-    await provider.webviewLoadPromise;
-    const { isConnected } = await provider.isConnected();
-
     provider.onRpcRequest((request: AppKitFrameTypes.RPCRequest) => {
-      console.log('onRpcRequest');
       if (AppKitFrameHelpers.checkIfRequestExists(request)) {
         if (!AppKitFrameHelpers.checkIfRequestIsAllowed(request)) {
-          // this.handleUnsafeRPCRequest();
           WebviewController.setFrameViewVisible(true);
         }
       } else {
@@ -1134,8 +1131,8 @@ export class AppKit {
         provider.rejectRpcRequests();
       }
     });
+
     provider.onRpcError(() => {
-      console.log('onRpcError');
       const isModalOpen = this.isOpen();
       if (isModalOpen) {
         if (this.isTransactionStackEmpty()) {
@@ -1146,8 +1143,8 @@ export class AppKit {
       }
       WebviewController.setFrameViewVisible(false);
     });
+
     provider.onRpcSuccess((_, request) => {
-      console.log('onRpcSuccess');
       const isSafeRequest = AppKitFrameHelpers.checkIfRequestIsAllowed(request);
       if (isSafeRequest) {
         return;
@@ -1165,25 +1162,32 @@ export class AppKit {
       }
       WebviewController.setFrameViewVisible(false);
     });
-    provider.onNotConnected(() => {
-      console.log('onNotConnected');
-      const connectorId = ConnectorController.state.connectedConnector;
+
+    provider.onNotConnected(async () => {
+      const connectorId = await StorageUtil.getConnectedConnectorId();
       const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH;
       if (!isConnected && isConnectedWithAuth) {
         this.setCaipAddress(undefined, ChainController.state.activeChain as ChainNamespace);
-        this.setLoading(false);
+        StorageUtil.deleteConnectedConnectorId();
       }
-      // TODO: check if ConnectionController.disconnect(); needs to be called here
-      ConnectorController.setAuthLoading(false); //TODO: check this
+      this.setLoading(false);
+      ConnectorController.setAuthLoading(false);
     });
-    provider.onIsConnected(() => {
-      console.log('onIsConnected');
-      // provider.connect();
-      ConnectorController.setAuthLoading(false); //TODO: check this
-      this.setLoading(false); //TODO: check this
+
+    provider.onIsConnected(({ smartAccountDeployed, preferredAccountType }) => {
+      AccountController.setPreferredAccountType(
+        preferredAccountType,
+        ChainController.state.activeChain!
+      );
+      AccountController.setSmartAccountDeployed(
+        smartAccountDeployed,
+        ChainController.state.activeChain
+      );
+      ConnectorController.setAuthLoading(false);
+      this.setLoading(false);
     });
+
     provider.onConnect(async user => {
-      console.log('onConnect');
       const namespace = ChainController.state.activeChain as ChainNamespace;
       this.syncProvider({
         type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
@@ -1223,15 +1227,15 @@ export class AppKit {
       this.setLoading(false);
       ConnectorController.setAuthLoading(false);
     });
+
     provider.onGetSmartAccountEnabledNetworks(networks => {
-      console.log('onGetSmartAccountEnabledNetworks');
       this.setSmartAccountEnabledNetworks(
         networks.smartAccountEnabledNetworks,
         ChainController.state.activeChain as ChainNamespace
       );
     });
+
     provider.onSetPreferredAccount(({ address, type }) => {
-      console.log('onSetPreferredAccount');
       if (!address) {
         return;
       }
@@ -1242,16 +1246,18 @@ export class AppKit {
     });
 
     if (isConnected && this.connectionControllerClient?.connectExternal) {
-      await this.connectionControllerClient?.connectExternal({
+      const connector = {
         id: ConstantsUtil.CONNECTOR_ID.AUTH,
         info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
         type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
         //@ts-ignore
         provider,
-        chainId: ChainController.state.activeCaipNetwork?.id
-      });
+        chain: ChainController.state.activeChain as ChainNamespace
+      };
+      await this.connectionControllerClient?.connectExternal(connector);
       this.setLoading(false);
       this.setStatus('connected', ChainController.state.activeChain as ChainNamespace);
+      ChainController.setActiveConnector(connector);
     } else {
       this.setLoading(false);
       this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace);
@@ -1431,7 +1437,7 @@ export class AppKit {
           address = AccountController.state.address as string;
         }
 
-        if ((adapter as ChainAdapterx)?.adapterType === 'wagmi') {
+        if ((adapter as ChainAdapter)?.adapterType === 'wagmi') {
           try {
             await adapter?.connect({
               id: 'walletConnect',
@@ -1565,7 +1571,7 @@ export class AppKit {
   }
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
-    const connectorId = ConnectorController.state.connectedConnector;
+    const connectorId = ChainController.state.activeConnector?.id;
     const providerType = ProviderUtil.state.providerIds[chainNamespace];
 
     if (
@@ -1690,7 +1696,9 @@ export class AppKit {
 
   private async syncExistingConnection() {
     try {
+      console.log('syncExistingConnection');
       const connectorId = await StorageUtil.getConnectedConnectorId();
+      console.log('connectorId', connectorId);
       const activeNamespace = await StorageUtil.getActiveNamespace();
 
       if (connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT && activeNamespace) {
@@ -1960,23 +1968,4 @@ export class AppKit {
     await this.initRecentWallets(options);
     await this.initSocial();
   }
-
-  // private async initOrContinue() {
-  //   if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
-  //     isInitialized = true;
-  //     this.initPromise = new Promise<void>(async resolve => {
-  //       await Promise.all([
-  //         import('@reown/appkit-ui'),
-  //         import('@reown/appkit-scaffold-ui/w3m-modal')
-  //       ]);
-  //       const modal = document.createElement('w3m-modal');
-  //       if (!OptionsController.state.disableAppend) {
-  //         document.body.insertAdjacentElement('beforeend', modal);
-  //       }
-  //       resolve();
-  //     });
-  //   }
-
-  //   return this.initPromise;
-  // }
 }

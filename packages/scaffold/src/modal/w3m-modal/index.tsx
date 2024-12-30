@@ -18,7 +18,7 @@ import {
   WebviewController
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
-import type { CaipAddress } from '@reown/appkit-common-react-native';
+import { ConstantsUtil, type CaipAddress } from '@reown/appkit-common-react-native';
 
 import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
@@ -29,8 +29,8 @@ import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
 
 export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
-  const { connectedConnector } = useSnapshot(ConnectorController.state);
   const { caipAddress } = useSnapshot(AccountController.state);
+  const { activeConnector } = useSnapshot(ChainController.state);
   const { frameViewVisible, webviewVisible } = useSnapshot(WebviewController.state);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
@@ -39,7 +39,8 @@ export function AppKit() {
   const authProvider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
   const AuthView = authProvider?.AuthView;
   const SocialView = authProvider?.Webview;
-  const showAuth = !connectedConnector || connectedConnector === 'AUTH';
+  const showAuth =
+    (!activeConnector || activeConnector.id === ConstantsUtil.CONNECTOR_ID.AUTH) && !!authProvider;
 
   const onBackButtonPress = () => {
     if (RouterController.state.history.length > 1) {
@@ -48,11 +49,6 @@ export function AppKit() {
 
     return handleClose();
   };
-
-  //TODO: Check init event
-  // const prefetch = async () => {
-  //   await ApiController.prefetch();
-  // };
 
   const handleClose = async () => {
     if (OptionsController.state.isSiweEnabled) {

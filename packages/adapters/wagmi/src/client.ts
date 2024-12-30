@@ -433,10 +433,6 @@ export class WagmiAdapter extends AdapterBlueprint {
       name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
       imageId: PresetsUtil.ConnectorImageIds[connector.id],
       type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
-      info:
-        connector.id === CommonConstantsUtil.CONNECTOR_ID.INJECTED
-          ? undefined
-          : { rdns: connector.id },
       chain: this.namespace as ChainNamespace,
       chains: []
     });
@@ -502,17 +498,12 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async connect(
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    const { id, provider, type, info, chainId } = params;
+    const { id, provider, type, chainId } = params;
 
     const connector = this.getWagmiConnector(id);
 
     if (!connector) {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined');
-    }
-
-    if (provider && info && connector.id === CommonConstantsUtil.CONNECTOR_ID.EIP6963) {
-      // @ts-expect-error Exists on EIP6963Connector
-      connector.setEip6963Wallet?.({ provider, info });
     }
 
     const res = await connect(this.wagmiConfig, {

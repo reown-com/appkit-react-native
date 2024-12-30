@@ -1,10 +1,10 @@
 import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy, ref, snapshot } from 'valtio';
 import type { AuthConnector, Connector } from '../utils/TypeUtil';
-// import { StorageUtil } from '../utils/StorageUtil';
 import { OptionsController } from './OptionsController';
 import { ThemeController } from './ThemeController';
 import { ConstantsUtil } from '@reown/appkit-common-react-native';
+import { ChainController } from './ChainController';
 
 // -- Types --------------------------------------------- //
 export interface ConnectorWithProviders extends Connector {
@@ -13,7 +13,6 @@ export interface ConnectorWithProviders extends Connector {
 export interface ConnectorControllerState {
   allConnectors: Connector[];
   connectors: ConnectorWithProviders[];
-  // connectedConnector?: ConnectorType;
   authLoading?: boolean;
 }
 
@@ -53,6 +52,8 @@ export const ConnectorController = {
     newConnectors.forEach(connector => {
       state.allConnectors.push(ref(connector));
     });
+
+    state.connectors = this.mergeMultiChainConnectors(state.allConnectors);
   },
 
   getConnectors() {
@@ -63,24 +64,21 @@ export const ConnectorController = {
     return state.connectors.find(c => c.explorerId === id || c.info?.rdns === rdns);
   },
 
-  getAuthConnector() {
-    return state.allConnectors.find(c => c.type === 'AUTH');
+  getAuthConnector(): AuthConnector | undefined {
+    const activeNamespace = ChainController.state.activeChain;
+    const authConnector = state.connectors.find(c => c.id === ConstantsUtil.CONNECTOR_ID.AUTH);
+    if (!authConnector) {
+      return undefined;
+    }
+
+    if (authConnector?.connectors?.length) {
+      const connector = authConnector.connectors.find(c => c.chain === activeNamespace);
+
+      return connector as AuthConnector | undefined;
+    }
+
+    return authConnector as AuthConnector;
   },
-
-  // setConnectedConnector(
-  //   connectorType: ConnectorControllerState['connectedConnector'],
-  //   saveStorage = true
-  // ) {
-  //   state.connectedConnector = connectorType;
-
-  //   if (saveStorage) {
-  //     if (connectorType) {
-  //       StorageUtil.setConnectedConnector(connectorType);
-  //     } else {
-  //       StorageUtil.removeConnectedConnector();
-  //     }
-  //   }
-  // },
 
   setAuthLoading(loading: ConnectorControllerState['authLoading']) {
     state.authLoading = loading;
@@ -183,29 +181,5 @@ export const ConnectorController = {
     } else {
       this.setConnectors([connector]);
     }
-  },
-
-  syncIfAuthConnector(connector: Connector | AuthConnector) {
-    //TODO: Whats this ID
-    if (connector.id !== 'ID_AUTH') {
-      return;
-    }
-
-    const authConnector = connector as AuthConnector;
-
-    const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state;
-    const themeMode = ThemeController.getSnapshot().themeMode;
-    const themeVariables = ThemeController.getSnapshot().themeVariables;
-
-    authConnector?.provider?.syncDappData?.({
-      metadata: optionsState.metadata,
-      sdkVersion: optionsState.sdkVersion,
-      sdkType: optionsState.sdkType,
-      projectId: optionsState.projectId
-    });
-    authConnector.provider.syncTheme({
-      themeMode,
-      themeVariables
-    });
   }
 };

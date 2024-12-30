@@ -1,25 +1,13 @@
 import { useSnapshot } from 'valtio';
 import { memo, useEffect, useRef, useState } from 'react';
-import { Animated, Appearance, Linking, Platform, SafeAreaView, StyleSheet } from 'react-native';
+import { Animated, Linking, Platform, SafeAreaView, StyleSheet } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 
-import {
-  ConnectorController,
-  OptionsController,
-  ModalController,
-  RouterController,
-  WebviewController,
-  AccountController,
-  ConnectionController,
-  SnackController,
-  ChainController
-} from '@reown/appkit-core-react-native';
+import { ConnectorController, WebviewController } from '@reown/appkit-core-react-native';
 import { ErrorUtil } from '@reown/appkit-common-react-native';
 import { useTheme, BorderRadius } from '@reown/appkit-ui-react-native';
 import type { AppKitFrameProvider } from './AppKitFrameProvider';
 import { AppKitFrameConstants } from './AppKitFrameConstants';
-import { AppKitFrameHelpers } from './AppKitFrameHelpers';
-import type { AppKitFrameTypes } from './AppKitFrameTypes';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
@@ -27,14 +15,12 @@ function _AuthWebview() {
   const webviewRef = useRef<WebView>(null);
   const Theme = useTheme();
   const authConnector = ConnectorController.getAuthConnector();
-  const { projectId, sdkVersion, sdkType } = useSnapshot(OptionsController.state);
   const { frameViewVisible } = useSnapshot(WebviewController.state);
   const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   const animatedHeight = useRef(new Animated.Value(0));
   const backdropOpacity = useRef(new Animated.Value(0));
   const webviewOpacity = useRef(new Animated.Value(0));
   const provider = authConnector?.provider as unknown as AppKitFrameProvider;
-  console.log('provider', provider);
 
   const parseMessage = (event: WebViewMessageEvent) => {
     if (!event.nativeEvent.data) return;
@@ -93,67 +79,6 @@ function _AuthWebview() {
   useEffect(() => {
     if (provider) {
       provider.setWebviewRef(webviewRef);
-      // provider.onRpcRequest((request: AppKitFrameTypes.RPCRequest) => {
-      //   if (AppKitFrameHelpers.checkIfRequestExists(request)) {
-      //     if (!AppKitFrameHelpers.checkIfRequestIsAllowed(request)) {
-      //       WebviewController.setFrameViewVisible(true);
-      //     }
-      //   }
-      // });
-
-      // provider.onRpcSuccess((_, request) => {
-      //   const isSafeRequest = AppKitFrameHelpers.checkIfRequestIsSafe(request);
-      //   if (isSafeRequest) {
-      //     return;
-      //   }
-
-      //   if (RouterController.state.transactionStack.length === 0) {
-      //     ModalController.close();
-      //   } else {
-      //     RouterController?.popTransactionStack();
-      //   }
-      //   WebviewController.setFrameViewVisible(false);
-      // });
-
-      // provider.onRpcError(() => {
-      //   if (ModalController.state.open) {
-      //     if (RouterController.state.transactionStack.length === 0) {
-      //       ModalController.close();
-      //     } else {
-      //       RouterController?.popTransactionStack(true);
-      //     }
-      //   }
-      //   WebviewController.setFrameViewVisible(false);
-      // });
-
-      // provider.onIsConnected(({ smartAccountDeployed, preferredAccountType }) => {
-      //   provider.getSmartAccountEnabledNetworks();
-      //   AccountController.setPreferredAccountType(
-      //     preferredAccountType,
-      //     ChainController.state.activeChain!
-      //   );
-      //   AccountController.setSmartAccountDeployed(
-      //     smartAccountDeployed,
-      //     ChainController.state.activeChain
-      //   );
-      //   ConnectorController.setAuthLoading(false);
-      //   ModalController.setLoading(false);
-      // });
-
-      // provider.onNotConnected(() => {
-      //   ConnectorController.setAuthLoading(false);
-      //   ModalController.setLoading(false);
-      //   if (ConnectorController.state.connectedConnector === 'AUTH') {
-      //     ConnectionController.disconnect();
-      //   }
-      // });
-
-      // provider.onGetSmartAccountEnabledNetworks(({ smartAccountEnabledNetworks }) => {
-      //   return ChainController.setSmartAccountEnabledNetworks(
-      //     smartAccountEnabledNetworks,
-      //     ChainController.state.activeChain!
-      //   );
-      // });
     }
   }, [provider, webviewRef]);
 
@@ -196,28 +121,19 @@ function _AuthWebview() {
               if (Platform.OS === 'android') {
                 webviewRef.current?.injectJavaScript(AppKitFrameConstants.FRAME_MESSAGES_HANDLER);
               }
-              // const themeMode = Appearance.getColorScheme() ?? undefined;
 
               setTimeout(() => {
-                // provider?.syncTheme({
-                //   themeMode,
-                //   w3mThemeVariables: {
-                //     '--w3m-accent': Theme['accent-100'],
-                //     '--w3m-background': Theme['bg-100']
-                //   }
-                // });
-                // provider?.syncDappData?.({ projectId, sdkVersion, sdkType });
                 provider?.onWebviewLoaded();
                 provider?.isConnected();
-                console.log('Webview loaded');
-              }, 1500);
+              }, 2000);
             }
           }}
           onError={({ nativeEvent }) => {
             provider?.onWebviewLoadError(nativeEvent.description);
           }}
           onHttpError={() => {
-            SnackController.showInternalError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
+            provider?.onWebviewLoadError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT.shortMessage);
+            // SnackController.showInternalError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
           }}
         />
       </AnimatedSafeAreaView>

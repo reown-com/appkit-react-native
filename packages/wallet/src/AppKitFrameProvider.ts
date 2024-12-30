@@ -330,7 +330,6 @@ export class AppKitFrameProvider {
 
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: AppKitFrameTypes.Requests['AppGetUserRequest']) {
-    console.log('AppKitFrameProvider.connect');
     const lastUsedChain = await this.getLastUsedChainId();
     const chainId = payload?.chainId ?? lastUsedChain ?? 1;
     await this.webviewLoadPromise;
@@ -619,7 +618,7 @@ export class AppKitFrameProvider {
       ) {
         return;
       }
-      console.log('💻 received', event); // eslint-disable-line no-console
+      // console.log('💻 received', event); // eslint-disable-line no-console
       callback(event);
     };
 
@@ -633,7 +632,7 @@ export class AppKitFrameProvider {
 
     AppKitFrameSchema.appEvent.parse(event);
     const strEvent = JSON.stringify(event);
-    console.log('📡 sending', strEvent); // eslint-disable-line no-console
+    // console.log('📡 sending', strEvent); // eslint-disable-line no-console
     const send = `
       (function() {
         let iframe = document.getElementById('frame-mobile-sdk');

@@ -8,10 +8,6 @@ export const PresetsUtil = {
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]:
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
-    [CommonConstantsUtil.CONNECTOR_ID.SAFE]:
-      '225affb176778569276e484e1b92637ad061b01e13a048b35a9d280c3b58970f',
-    [CommonConstantsUtil.CONNECTOR_ID.LEDGER]:
-      '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927',
 
     /* Connector names */
     [ConstantsUtil.METMASK_CONNECTOR_NAME]:
@@ -87,25 +83,17 @@ export const PresetsUtil = {
   ConnectorImageIds: {
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
-    [CommonConstantsUtil.CONNECTOR_ID.SAFE]: '461db637-8616-43ce-035a-d89b8a1d5800',
-    [CommonConstantsUtil.CONNECTOR_ID.LEDGER]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300',
-    [CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
-    [CommonConstantsUtil.CONNECTOR_ID.INJECTED]: '07ba87ed-43aa-4adf-4540-9e6a2b9cae00'
+    [CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400'
   } as Record<string, string>,
 
   ConnectorNamesMap: {
-    [CommonConstantsUtil.CONNECTOR_ID.INJECTED]: 'Browser Wallet',
     [CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'WalletConnect',
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE]: 'Coinbase',
-    [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]: 'Coinbase',
-    [CommonConstantsUtil.CONNECTOR_ID.LEDGER]: 'Ledger',
-    [CommonConstantsUtil.CONNECTOR_ID.SAFE]: 'Safe'
+    [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]: 'Coinbase'
   } as Record<string, string>,
 
   ConnectorTypesMap: {
-    [CommonConstantsUtil.CONNECTOR_ID.INJECTED]: 'INJECTED',
     [CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'WALLET_CONNECT',
-    [CommonConstantsUtil.CONNECTOR_ID.EIP6963]: 'ANNOUNCED',
     [CommonConstantsUtil.CONNECTOR_ID.AUTH]: 'AUTH'
   } as Record<string, ConnectorType>,
 

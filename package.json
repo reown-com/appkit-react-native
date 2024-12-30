@@ -10,7 +10,6 @@
     "packages/scaffold-utils",
     "packages/scaffold",
     "packages/siwe",
-    "packages/auth-wagmi",
     "packages/appkit",
     "packages/appkit-utils",
     "packages/adapters/*",

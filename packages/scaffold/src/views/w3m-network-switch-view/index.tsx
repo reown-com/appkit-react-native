@@ -5,7 +5,6 @@ import {
   ApiController,
   AssetUtil,
   ConnectionController,
-  ConnectorController,
   EventsController,
   ChainController,
   RouterController,
@@ -20,12 +19,14 @@ import {
   Text
 } from '@reown/appkit-ui-react-native';
 import styles from './styles';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
 
 export function NetworkSwitchView() {
   const { data } = useSnapshot(RouterController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const { activeCaipNetwork } = useSnapshot(ChainController.state);
-  const isAuthConnected = ConnectorController.state.connectedConnector === 'AUTH';
+  const { activeConnector } = useSnapshot(ChainController.state);
+  const isAuthConnected = activeConnector?.id === ConstantsUtil.CONNECTOR_ID.AUTH;
   const [error, setError] = useState<boolean>(false);
   const [showRetry, setShowRetry] = useState<boolean>(false);
   const network = data?.network!;

@@ -10,7 +10,8 @@ import {
   type Platform,
   OptionsController,
   ApiController,
-  EventsController
+  EventsController,
+  ChainController
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -48,6 +49,10 @@ export function ConnectingView() {
         ConnectionController.setWcError(false);
         ConnectionController.connectWalletConnect(routeData?.wallet?.link_mode ?? undefined);
         await ConnectionController.state.wcPromise;
+
+        if (data?.connector) {
+          ChainController.setActiveConnector(data.connector);
+        }
 
         if (OptionsController.state.isSiweEnabled) {
           if (SIWEController.state.status === 'success') {

@@ -31,6 +31,7 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 import { AuthButtons } from './components/auth-buttons';
 import type { AppKitFrameProvider } from '@reown/appkit-wallet-react-native';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
 
 export function AccountDefaultView() {
   const {
@@ -45,12 +46,12 @@ export function AccountDefaultView() {
   const { loading } = useSnapshot(ModalController.state);
   const [disconnecting, setDisconnecting] = useState(false);
   const { activeCaipNetwork } = useSnapshot(ChainController.state);
-  const { connectedConnector } = useSnapshot(ConnectorController.state);
+  const { activeConnector } = useSnapshot(ChainController.state);
   const { connectedSocialProvider } = useSnapshot(ConnectionController.state);
   const { history } = useSnapshot(RouterController.state);
   const networkImage = AssetUtil.getNetworkImage(activeCaipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
-  const isAuth = connectedConnector === 'AUTH';
+  const isAuth = activeConnector?.id === ConstantsUtil.CONNECTOR_ID.AUTH;
   const showBalance = balance && !isAuth;
   const showExplorer = addressExplorerUrl && !isAuth;
   const showBack = history.length > 1;

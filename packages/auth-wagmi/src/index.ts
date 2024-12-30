@@ -127,8 +127,7 @@ export function authConnector(parameters: AuthConnectorOptions) {
     },
     async isAuthorized() {
       try {
-        //TODO: get connector id
-        const connectedConnector = await StorageUtil.getConnectedConnector();
+        const connectedConnector = await StorageUtil.getConnectedConnectorId();
         if (connectedConnector && connectedConnector !== 'AUTH') {
           return false;
         }

@@ -1,11 +1,13 @@
 import { proxy } from 'valtio';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
 import type { RouterControllerState } from './RouterController';
 import { RouterController } from './RouterController';
 import { PublicStateController } from './PublicStateController';
 import { EventsController } from './EventsController';
 import { ApiController } from './ApiController';
-import { ConnectorController } from './ConnectorController';
 import { ChainController } from './ChainController';
+import { StorageUtil } from '../utils/StorageUtil';
+import { ConnectorController } from './ConnectorController';
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
@@ -36,7 +38,11 @@ export const ModalController = {
     if (options?.view) {
       RouterController.reset(options.view);
     } else if (caipAddress) {
-      const isUniversalWallet = ConnectorController.state.connectedConnector === 'AUTH';
+      const authConnector = ConnectorController.getAuthConnector();
+      const isUniversalWallet =
+        !!authConnector &&
+        (await StorageUtil.getConnectedConnectorId()) === ConstantsUtil.CONNECTOR_ID.AUTH;
+
       RouterController.reset(isUniversalWallet ? 'Account' : 'AccountDefault');
     } else {
       RouterController.reset('Connect');

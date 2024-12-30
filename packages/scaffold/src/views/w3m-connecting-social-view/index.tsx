@@ -2,6 +2,7 @@ import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import {
+  ChainController,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -79,6 +80,7 @@ export function ConnectingSocialView() {
             ConnectionController.state.selectedSocialProvider
           );
           WebviewController.setConnecting(false);
+          ChainController.setActiveConnector(authConnector);
 
           EventsController.sendEvent({
             type: 'track',

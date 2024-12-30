@@ -10,7 +10,6 @@ import { SwapCalculationUtil } from '../utils/SwapCalculationUtil';
 import { SnackController } from './SnackController';
 import { RouterController } from './RouterController';
 import type { SwapInputTarget, SwapTokenWithBalance } from '../utils/TypeUtil';
-import { ConnectorController } from './ConnectorController';
 import { AccountController } from './AccountController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { ConnectionController } from './ConnectionController';
@@ -161,7 +160,7 @@ export const SwapController = {
     const caipAddress = AccountController.state.caipAddress;
     const address = CoreHelperUtil.getPlainAddress(caipAddress);
     const networkAddress = ChainController.getActiveNetworkTokenAddress();
-    const type = ConnectorController.state.connectedConnector;
+    const type = ChainController.state.activeConnector?.type;
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.');

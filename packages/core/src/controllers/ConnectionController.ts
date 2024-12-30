@@ -104,7 +104,6 @@ export const ConnectionController = {
   async connectExternal(options: ConnectExternalOptions) {
     await this._getClient().connectExternal?.(options);
     StorageUtil.setConnectedConnectorId(options.id);
-    // ConnectorController.setConnectedConnector(options.type);
   },
 
   async signMessage(message: string) {

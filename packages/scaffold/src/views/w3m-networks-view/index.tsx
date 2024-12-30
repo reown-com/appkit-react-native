@@ -46,7 +46,7 @@ export function NetworksView() {
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds();
     const supportsAllNetworks =
       ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false;
-    const connectorId = ConnectorController.state.connectedConnector;
+    const connectorId = ChainController.state.activeConnector?.id;
     const authConnector = ConnectorController.getAuthConnector();
     const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH && authConnector;
 
