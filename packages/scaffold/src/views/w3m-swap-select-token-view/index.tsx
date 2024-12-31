@@ -35,7 +35,9 @@ export function SwapSelectTokenView() {
   const isSourceToken = RouterController.state.data?.swapTarget === 'sourceToken';
 
   const [filteredTokens, setFilteredTokens] = useState(createSections(isSourceToken, tokenSearch));
-  const suggestedList = suggestedTokens?.slice(0, 8);
+  const suggestedList = suggestedTokens
+    ?.filter(token => token.address !== SwapController.state.sourceToken?.address)
+    .slice(0, 8);
 
   const onSearchChange = (value: string) => {
     setTokenSearch(value);
