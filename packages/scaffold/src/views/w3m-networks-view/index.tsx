@@ -17,8 +17,7 @@ import {
   EventsController,
   CoreHelperUtil,
   AccountController,
-  ConnectorController,
-  StorageUtil
+  ConnectorController
 } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
@@ -72,8 +71,7 @@ export function NetworksView() {
       network.chainNamespace
     );
     const isCurrentNetworkConnected = AccountController.state.caipAddress;
-    const isAuthConnected =
-      (await StorageUtil.getConnectedConnectorId()) === ConstantsUtil.CONNECTOR_ID.AUTH;
+    const isAuthConnected = Boolean(ConnectorController.getAuthConnector());
 
     if (
       isDifferentNamespace &&

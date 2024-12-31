@@ -55,7 +55,7 @@ export function ConnectingExternalView() {
   const onConnect = useCallback(async () => {
     try {
       if (connector) {
-        await ConnectionController.connectExternal(connector);
+        await ConnectionController.connectExternal(connector, connector.chain);
         storeConnectedWallet(data?.wallet);
         ModalController.close();
         EventsController.sendEvent({

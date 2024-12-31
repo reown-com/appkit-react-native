@@ -1,22 +1,12 @@
 /* eslint-disable no-console */
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { ConnectionStatus, WcWallet } from './TypeUtil';
-import type {
-  CaipNetworkId,
-  ChainNamespace,
-  SocialProvider
+import {
+  SafeLocalStorage,
+  type CaipNetworkId,
+  type ChainNamespace,
+  type SocialProvider
 } from '@reown/appkit-common-react-native';
-
-// -- Helpers -----------------------------------------------------------------
-const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE';
-const RECENT_WALLET = '@w3m/recent';
-const CONNECTED_WALLET_IMAGE_URL = '@w3m/connected_wallet_image_url';
-// const CONNECTED_CONNECTOR = '@w3m/connected_connector';
-const CONNECTED_SOCIAL = '@appkit/connected_social';
-const ACTIVE_NAMESPACE = '@appkit/active_namespace';
-const CONNECTED_CONNECTOR_ID = '@appkit/connected_connector_id';
-const ACTIVE_CAIP_NETWORK_ID = '@appkit/active_caip_network_id';
-const CONNECTION_STATUS = '@appkit/connection_status';
+import { getSafeConnectorIdKey, SafeLocalStorageKeys } from '@reown/appkit-common-react-native';
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -35,7 +25,10 @@ export const StorageUtil = {
   },
   setWalletConnectDeepLink({ href, name }: { href: string; name: string }) {
     try {
-      AsyncStorage.setItem(WC_DEEPLINK, JSON.stringify({ href, name }));
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.DEEPLINK_CHOICE,
+        JSON.stringify({ href, name })
+      );
     } catch {
       console.info('Unable to set WalletConnect deep link');
     }
@@ -43,7 +36,7 @@ export const StorageUtil = {
 
   async getWalletConnectDeepLink() {
     try {
-      const deepLink = await AsyncStorage.getItem(WC_DEEPLINK);
+      const deepLink = await SafeLocalStorage.getItem<string>(SafeLocalStorageKeys.DEEPLINK_CHOICE);
       if (deepLink) {
         return JSON.parse(deepLink);
       }
@@ -56,7 +49,7 @@ export const StorageUtil = {
 
   async removeWalletConnectDeepLink() {
     try {
-      await AsyncStorage.removeItem(WC_DEEPLINK);
+      await SafeLocalStorage.removeItem(SafeLocalStorageKeys.DEEPLINK_CHOICE);
     } catch {
       console.info('Unable to delete WalletConnect deep link');
     }
@@ -64,7 +57,7 @@ export const StorageUtil = {
 
   async addRecentWallet(wallet: WcWallet) {
     try {
-      const recentWallets = await StorageUtil.getRecentWallets();
+      const recentWallets = await this.getRecentWallets();
       const recentIndex = recentWallets.findIndex(w => w.id === wallet.id);
 
       if (recentIndex > -1) {
@@ -75,7 +68,7 @@ export const StorageUtil = {
       if (recentWallets.length > 2) {
         recentWallets.pop();
       }
-      AsyncStorage.setItem(RECENT_WALLET, JSON.stringify(recentWallets));
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.RECENT_WALLETS, JSON.stringify(recentWallets));
 
       return recentWallets;
     } catch {
@@ -87,7 +80,7 @@ export const StorageUtil = {
 
   async setRecentWallets(wallets: WcWallet[]) {
     try {
-      await AsyncStorage.setItem(RECENT_WALLET, JSON.stringify(wallets));
+      await SafeLocalStorage.setItem(SafeLocalStorageKeys.RECENT_WALLETS, JSON.stringify(wallets));
     } catch {
       console.info('Unable to set recent wallets');
     }
@@ -95,9 +88,11 @@ export const StorageUtil = {
 
   async getRecentWallets(): Promise<WcWallet[]> {
     try {
-      const recent = await AsyncStorage.getItem(RECENT_WALLET);
+      const recent = await SafeLocalStorage.getItem<WcWallet[]>(
+        SafeLocalStorageKeys.RECENT_WALLETS
+      );
 
-      return recent ? JSON.parse(recent) : [];
+      return recent ?? [];
     } catch {
       console.info('Unable to get recent wallets');
     }
@@ -105,37 +100,9 @@ export const StorageUtil = {
     return [];
   },
 
-  // async setConnectedConnector(connectorType: ConnectorType) {
-  //   try {
-  //     await AsyncStorage.setItem(CONNECTED_CONNECTOR, JSON.stringify(connectorType));
-  //   } catch {
-  //     console.info('Unable to set Connected Connector');
-  //   }
-  // },
-
-  // async getConnectedConnector(): Promise<ConnectorType | undefined> {
-  //   try {
-  //     const connector = (await AsyncStorage.getItem(CONNECTED_CONNECTOR)) as ConnectorType;
-
-  //     return connector ? JSON.parse(connector) : undefined;
-  //   } catch {
-  //     console.info('Unable to get Connected Connector');
-  //   }
-
-  //   return undefined;
-  // },
-
-  // async removeConnectedConnector() {
-  //   try {
-  //     await AsyncStorage.removeItem(CONNECTED_CONNECTOR);
-  //   } catch {
-  //     console.info('Unable to remove Connected Connector');
-  //   }
-  // },
-
   async setConnectedWalletImageUrl(url: string) {
     try {
-      await AsyncStorage.setItem(CONNECTED_WALLET_IMAGE_URL, url);
+      await SafeLocalStorage.setItem(SafeLocalStorageKeys.WALLET_IMAGE, url);
     } catch {
       console.info('Unable to set Connected Wallet Image URL');
     }
@@ -143,7 +110,7 @@ export const StorageUtil = {
 
   async getConnectedWalletImageUrl() {
     try {
-      return await AsyncStorage.getItem(CONNECTED_WALLET_IMAGE_URL);
+      return await SafeLocalStorage.getItem<string>(SafeLocalStorageKeys.WALLET_IMAGE);
     } catch {
       console.info('Unable to get Connected Wallet Image URL');
     }
@@ -153,7 +120,7 @@ export const StorageUtil = {
 
   async removeConnectedWalletImageUrl() {
     try {
-      await AsyncStorage.removeItem(CONNECTED_WALLET_IMAGE_URL);
+      await SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_IMAGE);
     } catch {
       console.info('Unable to remove Connected Wallet Image URL');
     }
@@ -161,7 +128,10 @@ export const StorageUtil = {
 
   async setConnectedSocialProvider(provider: SocialProvider) {
     try {
-      await AsyncStorage.setItem(CONNECTED_SOCIAL, JSON.stringify(provider));
+      await SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.CONNECTED_SOCIAL,
+        JSON.stringify(provider)
+      );
     } catch {
       console.info('Unable to set Connected Social Provider');
     }
@@ -169,7 +139,9 @@ export const StorageUtil = {
 
   async getConnectedSocialProvider() {
     try {
-      const provider = (await AsyncStorage.getItem(CONNECTED_SOCIAL)) as SocialProvider;
+      const provider = (await SafeLocalStorage.getItem(
+        SafeLocalStorageKeys.CONNECTED_SOCIAL
+      )) as SocialProvider;
 
       return provider ? JSON.parse(provider) : undefined;
     } catch {
@@ -181,7 +153,7 @@ export const StorageUtil = {
 
   async removeConnectedSocialProvider() {
     try {
-      await AsyncStorage.removeItem(CONNECTED_SOCIAL);
+      await SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_SOCIAL);
     } catch {
       console.info('Unable to remove Connected Social Provider');
     }
@@ -189,7 +161,7 @@ export const StorageUtil = {
 
   setActiveCaipNetworkId(caipNetworkId: CaipNetworkId) {
     try {
-      AsyncStorage.setItem(ACTIVE_CAIP_NETWORK_ID, caipNetworkId);
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetworkId);
       StorageUtil.setActiveNamespace(caipNetworkId.split(':')[0] as ChainNamespace);
     } catch {
       console.info('Unable to set active caip network id');
@@ -198,7 +170,7 @@ export const StorageUtil = {
 
   async getActiveCaipNetworkId() {
     try {
-      return await AsyncStorage.getItem(ACTIVE_CAIP_NETWORK_ID);
+      return await SafeLocalStorage.getItem<string>(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID);
     } catch {
       console.info('Unable to get active caip network id');
 
@@ -208,7 +180,7 @@ export const StorageUtil = {
 
   deleteActiveCaipNetworkId() {
     try {
-      AsyncStorage.removeItem(ACTIVE_CAIP_NETWORK_ID);
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID);
     } catch {
       console.info('Unable to delete active caip network id');
     }
@@ -216,7 +188,7 @@ export const StorageUtil = {
 
   setActiveNamespace(namespace: ChainNamespace) {
     try {
-      AsyncStorage.setItem(ACTIVE_NAMESPACE, namespace);
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_NAMESPACE, namespace);
     } catch {
       console.info('Unable to set active namespace');
     }
@@ -224,7 +196,9 @@ export const StorageUtil = {
 
   async getActiveNamespace() {
     try {
-      const activeNamespace = await AsyncStorage.getItem(ACTIVE_NAMESPACE);
+      const activeNamespace = await SafeLocalStorage.getItem<string>(
+        SafeLocalStorageKeys.ACTIVE_NAMESPACE
+      );
 
       return activeNamespace as ChainNamespace | undefined;
     } catch {
@@ -234,35 +208,39 @@ export const StorageUtil = {
     return undefined;
   },
 
-  setConnectedConnectorId(connectorId: string) {
+  setConnectedConnectorId(namespace: ChainNamespace, connectorId: string) {
     try {
-      AsyncStorage.setItem(CONNECTED_CONNECTOR_ID, connectorId);
+      const key = getSafeConnectorIdKey(namespace);
+      SafeLocalStorage.setItem(key, connectorId);
     } catch {
       console.info('Unable to set Connected Connector Id');
     }
   },
 
-  async getConnectedConnectorId() {
+  deleteConnectedConnectorId(namespace: ChainNamespace) {
     try {
-      return await AsyncStorage.getItem(CONNECTED_CONNECTOR_ID);
-    } catch {
-      console.info('Unable to get connected connector id');
-    }
-
-    return undefined;
-  },
-
-  deleteConnectedConnectorId() {
-    try {
-      AsyncStorage.removeItem(CONNECTED_CONNECTOR_ID);
+      const key = getSafeConnectorIdKey(namespace);
+      SafeLocalStorage.removeItem(key);
     } catch {
       console.info('Unable to delete connected connector id');
     }
   },
 
+  async getConnectedConnectorId(namespace: ChainNamespace) {
+    try {
+      const key = getSafeConnectorIdKey(namespace);
+
+      return await SafeLocalStorage.getItem<string>(key);
+    } catch (e) {
+      console.info('Unable to get connected connector id in namespace ', namespace);
+    }
+
+    return undefined;
+  },
+
   setConnectionStatus(status: ConnectionStatus) {
     try {
-      AsyncStorage.setItem(CONNECTION_STATUS, status);
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTION_STATUS, status);
     } catch {
       console.info('Unable to set connection status');
     }
@@ -270,16 +248,73 @@ export const StorageUtil = {
 
   async getConnectionStatus() {
     try {
-      return (await AsyncStorage.getItem(CONNECTION_STATUS)) as ConnectionStatus;
+      return (await SafeLocalStorage.getItem<string>(
+        SafeLocalStorageKeys.CONNECTION_STATUS
+      )) as ConnectionStatus;
     } catch {
       return undefined;
     }
   },
 
   async getStoredActiveCaipNetworkId() {
-    const storedCaipNetworkId = await AsyncStorage.getItem(ACTIVE_CAIP_NETWORK_ID);
+    const storedCaipNetworkId = await SafeLocalStorage.getItem<string>(
+      SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID
+    );
     const networkId = storedCaipNetworkId?.split(':')?.[1];
 
     return networkId;
+  },
+
+  async getConnectedNamespaces() {
+    try {
+      const namespaces = await SafeLocalStorage.getItem<string>(
+        SafeLocalStorageKeys.CONNECTED_NAMESPACES
+      );
+
+      if (!namespaces?.length) {
+        return [];
+      }
+
+      return namespaces.split(',') as ChainNamespace[];
+    } catch {
+      return [];
+    }
+  },
+
+  setConnectedNamespaces(namespaces: ChainNamespace[]) {
+    try {
+      const uniqueNamespaces = Array.from(new Set(namespaces));
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.CONNECTED_NAMESPACES,
+        uniqueNamespaces.join(',')
+      );
+    } catch {
+      console.info('Unable to set namespaces in storage');
+    }
+  },
+
+  async addConnectedNamespace(namespace: ChainNamespace) {
+    try {
+      const namespaces = await StorageUtil.getConnectedNamespaces();
+      if (!namespaces.includes(namespace)) {
+        namespaces.push(namespace);
+        StorageUtil.setConnectedNamespaces(namespaces);
+      }
+    } catch {
+      console.info('Unable to add connected namespace');
+    }
+  },
+
+  async removeConnectedNamespace(namespace: ChainNamespace) {
+    try {
+      const namespaces = await StorageUtil.getConnectedNamespaces();
+      const index = namespaces.indexOf(namespace);
+      if (index > -1) {
+        namespaces.splice(index, 1);
+        StorageUtil.setConnectedNamespaces(namespaces);
+      }
+    } catch {
+      console.info('Unable to remove connected namespace');
+    }
   }
 };

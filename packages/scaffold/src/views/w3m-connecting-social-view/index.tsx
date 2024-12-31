@@ -75,7 +75,7 @@ export function ConnectingSocialView() {
           });
 
           await provider?.connectSocial(parsedUrl.search);
-          await ConnectionController.connectExternal(authConnector);
+          await ConnectionController.connectExternal(authConnector, authConnector.chain);
           ConnectionController.setConnectedSocialProvider(
             ConnectionController.state.selectedSocialProvider
           );

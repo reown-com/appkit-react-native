@@ -1,6 +1,11 @@
 import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy, subscribe as sub } from 'valtio';
-import { NumberUtil, type CaipAddress } from '@reown/appkit-common-react-native';
+import {
+  NumberUtil,
+  type CaipAddress,
+  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil
+} from '@reown/appkit-common-react-native';
 
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 import { SwapApiUtil } from '../utils/SwapApiUtil';
@@ -16,6 +21,7 @@ import { ConnectionController } from './ConnectionController';
 import { TransactionsController } from './TransactionsController';
 import { EventsController } from './EventsController';
 import { ChainController } from './ChainController';
+import { StorageUtil } from '../utils/StorageUtil';
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000;
@@ -156,11 +162,12 @@ export const SwapController = {
     return subKey(state, key, callback);
   },
 
-  getParams() {
-    const caipAddress = AccountController.state.caipAddress;
+  async getParams() {
+    const caipAddress = ChainController.state.activeCaipAddress;
+    const namespace = ChainController.state.activeChain as ChainNamespace;
     const address = CoreHelperUtil.getPlainAddress(caipAddress);
     const networkAddress = ChainController.getActiveNetworkTokenAddress();
-    const type = ChainController.state.activeConnector?.type;
+    const connectorId = await StorageUtil.getConnectedConnectorId(namespace);
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.');
@@ -188,7 +195,7 @@ export const SwapController = {
       invalidSourceTokenAmount,
       availableToSwap:
         caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
-      isAuthConnector: type === 'AUTH'
+      isAuthConnector: connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
     };
   },
 
@@ -235,7 +242,7 @@ export const SwapController = {
   },
 
   async fetchTokens() {
-    const { networkAddress } = this.getParams();
+    const { networkAddress } = await this.getParams();
 
     await this.getTokenList();
     await this.getNetworkTokenPrice();
@@ -358,7 +365,7 @@ export const SwapController = {
   },
 
   async getNetworkTokenPrice() {
-    const { networkAddress } = this.getParams();
+    const { networkAddress } = await this.getParams();
 
     const response = await BlockchainApiController.fetchTokenPrice({
       projectId: OptionsController.state.projectId,
@@ -397,8 +404,8 @@ export const SwapController = {
     );
   },
 
-  setBalances(balances: SwapTokenWithBalance[]) {
-    const { networkAddress } = this.getParams();
+  async setBalances(balances: SwapTokenWithBalance[]) {
+    const { networkAddress } = await this.getParams();
     const caipNetwork = ChainController.state.activeCaipNetwork;
 
     if (!caipNetwork) {
@@ -441,6 +448,7 @@ export const SwapController = {
 
   async setTokenPrice(address: string, target: SwapInputTarget) {
     let price = state.tokensPriceMap[address] || 0;
+    const { availableToSwap } = await this.getParams();
 
     if (!price) {
       state.loadingPrices = true;
@@ -457,7 +465,7 @@ export const SwapController = {
       state.loadingPrices = false;
     }
 
-    if (this.getParams().availableToSwap) {
+    if (availableToSwap) {
       this.swapTokens();
     }
   },
@@ -517,7 +525,7 @@ export const SwapController = {
 
   // -- Create Transactions -------------------------------------- //
   async getTransaction() {
-    const { fromCaipAddress, availableToSwap } = this.getParams();
+    const { fromCaipAddress, availableToSwap } = await this.getParams();
     const sourceToken = state.sourceToken;
     const toToken = state.toToken;
 
@@ -559,7 +567,8 @@ export const SwapController = {
   },
 
   async createAllowanceTransaction() {
-    const { fromCaipAddress, fromAddress, sourceTokenAddress, toTokenAddress } = this.getParams();
+    const { fromCaipAddress, fromAddress, sourceTokenAddress, toTokenAddress } =
+      await this.getParams();
 
     if (!fromCaipAddress || !toTokenAddress) {
       return undefined;
@@ -625,7 +634,7 @@ export const SwapController = {
   },
 
   async createSwapTransaction() {
-    const { networkAddress, fromCaipAddress, sourceTokenAmount } = this.getParams();
+    const { networkAddress, fromCaipAddress, sourceTokenAmount } = await this.getParams();
     const sourceToken = state.sourceToken;
     const toToken = state.toToken;
 
@@ -683,7 +692,7 @@ export const SwapController = {
   },
 
   async sendTransactionForApproval(data: TransactionParams) {
-    const { fromAddress, isAuthConnector } = this.getParams();
+    const { fromAddress, isAuthConnector } = await this.getParams();
 
     state.loadingApprovalTransaction = true;
     const approveLimitMessage = `Approve limit increase in your wallet`;
@@ -727,7 +736,7 @@ export const SwapController = {
       return undefined;
     }
 
-    const { fromAddress, toTokenAmount, isAuthConnector } = this.getParams();
+    const { fromAddress, toTokenAmount, isAuthConnector } = await this.getParams();
 
     state.loadingTransaction = true;
 
@@ -832,8 +841,8 @@ export const SwapController = {
   },
 
   // -- Calculations -------------------------------------- //
-  setTransactionDetails() {
-    const { toTokenAddress, toTokenDecimals } = this.getParams();
+  async setTransactionDetails() {
+    const { toTokenAddress, toTokenDecimals } = await this.getParams();
 
     if (!toTokenAddress || !toTokenDecimals) {
       return;

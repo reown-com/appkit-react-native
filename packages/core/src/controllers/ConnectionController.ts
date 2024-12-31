@@ -15,6 +15,7 @@ import type {
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil';
+import { ChainController } from './ChainController';
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -93,7 +94,11 @@ export const ConnectionController = {
   },
 
   connectWalletConnect(walletUniversalLink?: string) {
-    StorageUtil.setConnectedConnectorId(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT);
+    // Connect all namespaces to WalletConnect
+    const namespaces = [...ChainController.state.chains.keys()];
+    namespaces.forEach(namespace => {
+      StorageUtil.setConnectedConnectorId(namespace, ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT);
+    });
 
     state.wcPromise = this._getClient().connectWalletConnect(uri => {
       state.wcUri = uri;
@@ -101,9 +106,23 @@ export const ConnectionController = {
     }, walletUniversalLink);
   },
 
-  async connectExternal(options: ConnectExternalOptions) {
+  async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
     await this._getClient().connectExternal?.(options);
-    StorageUtil.setConnectedConnectorId(options.id);
+
+    if (setChain) {
+      ChainController.setActiveNamespace(chain);
+    }
+
+    const namespace = options.chain || ChainController.state.activeChain;
+    if (namespace) StorageUtil.setConnectedConnectorId(namespace, options.id);
+  },
+
+  async reconnectExternal(options: ConnectExternalOptions) {
+    await this._getClient()?.reconnectExternal?.(options);
+    const namespace = options.chain || ChainController.state.activeChain;
+    if (namespace) {
+      StorageUtil.setConnectedConnectorId(namespace, options.id);
+    }
   },
 
   async signMessage(message: string) {

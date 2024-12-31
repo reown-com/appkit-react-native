@@ -7,7 +7,7 @@ import type {
 } from '@reown/appkit-common-react-native';
 import { AdapterBlueprint } from '@reown/appkit-react-native';
 import { CoreHelperUtil } from '@reown/appkit-core-react-native';
-import { StorageUtil } from '@reown/appkit-scaffold-utils-react-native';
+import { SafeLocalStorage } from '@reown/appkit-common-react-native';
 import {
   connect,
   disconnect as wagmiDisconnect,
@@ -183,7 +183,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     const transports = Object.fromEntries(transportsArr);
     const connectors: CreateConnectorFn[] = [...(configParams.connectors ?? [])];
-    const storage = createStorage({ storage: StorageUtil });
+    const storage = createStorage({ storage: SafeLocalStorage });
 
     this.wagmiConfig = createConfig({
       ...configParams,

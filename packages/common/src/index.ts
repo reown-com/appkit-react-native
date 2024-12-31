@@ -7,5 +7,10 @@ export { NumberUtil } from './utils/NumberUtil';
 export { StringUtil } from './utils/StringUtil';
 export { ParseUtil } from './utils/ParseUtil';
 export { ErrorUtil } from './utils/ErrorUtil';
+export {
+  SafeLocalStorage,
+  getSafeConnectorIdKey,
+  SafeLocalStorageKeys
+} from './utils/SafeLocalStorage';
 export { erc20ABI } from './contracts/erc20';
 export * from './utils/TypeUtil';

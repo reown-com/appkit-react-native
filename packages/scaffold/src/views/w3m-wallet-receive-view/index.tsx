@@ -38,12 +38,18 @@ export function WalletReceiveView() {
     if (!activeCaipNetwork) {
       return null;
     }
-    sortedNetworks = [activeCaipNetwork];
+
+    const smartAccountEnabledNetworkIds = ChainController.getSmartAccountEnabledNetworks(
+      activeCaipNetwork?.chainNamespace
+    );
+
+    sortedNetworks = requestedCaipNetworks.filter(
+      network => smartAccountEnabledNetworkIds?.includes(Number(network.id))
+    );
   }
 
   const imagesArray = sortedNetworks
-    // @ts-expect-error TODO: fix this
-    .filter(network => network?.imageId)
+    .filter(network => network?.assets?.imageId)
     .slice(0, 5)
     .map(AssetUtil.getNetworkImage)
     .filter(Boolean) as string[];

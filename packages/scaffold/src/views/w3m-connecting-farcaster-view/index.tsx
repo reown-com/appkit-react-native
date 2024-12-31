@@ -45,7 +45,7 @@ export function ConnectingFarcasterView() {
           properties: { provider: 'farcaster' }
         });
         setProcessing(true);
-        await ConnectionController.connectExternal(authConnector);
+        await ConnectionController.connectExternal(authConnector, authConnector.chain);
         ConnectionController.setConnectedSocialProvider('farcaster');
         EventsController.sendEvent({
           type: 'track',

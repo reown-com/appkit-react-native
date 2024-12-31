@@ -113,6 +113,10 @@ export class AppKitFrameProvider {
     return { 'X-Bundle-Id': CoreHelperUtil.getBundleId() };
   }
 
+  public async getLoginEmailUsed() {
+    return Boolean(await AppKitFrameStorage.get(AppKitFrameConstants.EMAIL_LOGIN_USED_KEY));
+  }
+
   public getEmail() {
     return this.email;
   }

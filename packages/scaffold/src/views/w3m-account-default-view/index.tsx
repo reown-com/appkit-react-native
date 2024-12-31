@@ -64,19 +64,27 @@ export function AccountDefaultView() {
     setDisconnecting(false);
   }
 
-  const onSwitchAccountType = async () => {
+  const changePreferredAccountType = async () => {
     try {
       if (isAuth) {
         ModalController.setLoading(true);
-        const accountType =
-          AccountController.state.preferredAccountType === 'eoa' ? 'smartAccount' : 'eoa';
+        const isSmartAccountEnabled = ChainController.checkIfSmartAccountEnabled();
+
+        const accountTypeTarget =
+          AccountController.state.preferredAccountType === 'smartAccount' || !isSmartAccountEnabled
+            ? 'eoa'
+            : 'smartAccount';
+
         const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
-        await provider?.setPreferredAccount(accountType);
+
+        await provider?.setPreferredAccount(accountTypeTarget);
+        await ConnectionController.reconnectExternal(ChainController.state.activeConnector!);
+
         EventsController.sendEvent({
           type: 'track',
           event: 'SET_PREFERRED_ACCOUNT_TYPE',
           properties: {
-            accountType,
+            accountType: accountTypeTarget,
             network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
           }
         });
@@ -245,7 +253,7 @@ export function AccountDefaultView() {
               <ListItem
                 chevron
                 icon="swapHorizontal"
-                onPress={onSwitchAccountType}
+                onPress={changePreferredAccountType}
                 testID="account-button-type"
                 style={styles.actionButton}
                 loading={loading}

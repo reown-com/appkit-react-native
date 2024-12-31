@@ -1,5 +1,5 @@
 import { proxy } from 'valtio';
-import { ConstantsUtil } from '@reown/appkit-common-react-native';
+import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common-react-native';
 import type { RouterControllerState } from './RouterController';
 import { RouterController } from './RouterController';
 import { PublicStateController } from './PublicStateController';
@@ -34,6 +34,7 @@ export const ModalController = {
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise;
     const caipAddress = ChainController.state.activeCaipAddress;
+    const activeNamespace = ChainController.state.activeChain;
 
     if (options?.view) {
       RouterController.reset(options.view);
@@ -41,7 +42,8 @@ export const ModalController = {
       const authConnector = ConnectorController.getAuthConnector();
       const isUniversalWallet =
         !!authConnector &&
-        (await StorageUtil.getConnectedConnectorId()) === ConstantsUtil.CONNECTOR_ID.AUTH;
+        (await StorageUtil.getConnectedConnectorId(activeNamespace as ChainNamespace)) ===
+          ConstantsUtil.CONNECTOR_ID.AUTH;
 
       RouterController.reset(isUniversalWallet ? 'Account' : 'AccountDefault');
     } else {

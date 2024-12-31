@@ -16,18 +16,23 @@ export function WalletCompatibleNetworks() {
   const { preferredAccountType } = useSnapshot(AccountController.state);
   const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks();
   const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds();
-  const caipNetwork = ChainController.state.activeCaipNetwork;
   const isNetworkEnabledForSmartAccounts = ChainController.checkIfSmartAccountEnabled();
 
   let sortedNetworks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
   const imageHeaders = ApiController._getApiHeaders();
 
-  // For now, each network has a unique account
   if (isNetworkEnabledForSmartAccounts && preferredAccountType === 'smartAccount') {
-    if (!caipNetwork) {
+    if (!ChainController.state.activeCaipNetwork) {
       return null;
     }
-    sortedNetworks = [caipNetwork];
+
+    const smartAccountEnabledNetworkIds = ChainController.getSmartAccountEnabledNetworks(
+      ChainController.state.activeCaipNetwork?.chainNamespace
+    );
+
+    sortedNetworks = requestedCaipNetworks.filter(
+      network => smartAccountEnabledNetworkIds?.includes(Number(network.id))
+    );
   }
 
   return (

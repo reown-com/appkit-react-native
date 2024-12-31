@@ -43,7 +43,7 @@ export function EmailVerifyOtpView() {
       const provider = authConnector?.provider as AppKitFrameProvider;
       await provider.connectOtp({ otp });
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' });
-      await ConnectionController.connectExternal(authConnector);
+      await ConnectionController.connectExternal(authConnector, authConnector.chain);
       ModalController.close();
       EventsController.sendEvent({
         type: 'track',
