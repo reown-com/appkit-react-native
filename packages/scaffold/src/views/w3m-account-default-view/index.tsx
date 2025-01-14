@@ -15,7 +15,9 @@ import {
   OptionsController,
   RouterController,
   SnackController,
-  type AppKitFrameProvider
+  type AppKitFrameProvider,
+  ConstantsUtil,
+  SwapController
 } from '@reown/appkit-core-react-native';
 import {
   Avatar,
@@ -47,6 +49,7 @@ export function AccountDefaultView() {
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { connectedConnector } = useSnapshot(ConnectorController.state);
   const { connectedSocialProvider } = useSnapshot(ConnectionController.state);
+  const { features } = useSnapshot(OptionsController.state);
   const { history } = useSnapshot(RouterController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
@@ -115,6 +118,26 @@ export function AccountDefaultView() {
         AccountController.state.profileName ?? AccountController.state.address
       );
       SnackController.showSuccess('Address copied');
+    }
+  };
+
+  const onSwapPress = () => {
+    if (
+      NetworkController.state.caipNetwork?.id &&
+      !ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(`${NetworkController.state.caipNetwork.id}`)
+    ) {
+      RouterController.push('UnsupportedChain');
+    } else {
+      SwapController.resetState();
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'OPEN_SWAP',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          isSmartAccount: false
+        }
+      });
+      RouterController.push('Swap');
     }
   };
 
@@ -227,10 +250,24 @@ export function AccountDefaultView() {
                 {caipNetwork?.name}
               </Text>
             </ListItem>
+
+            {!isAuth && features?.swaps && (
+              <ListItem
+                chevron
+                icon="recycleHorizontal"
+                iconColor="accent-100"
+                iconBackgroundColor="accent-glass-015"
+                onPress={onSwapPress}
+                testID="button-activity"
+                style={styles.actionButton}
+              >
+                <Text color="fg-100">Swap</Text>
+              </ListItem>
+            )}
             {!isAuth && (
               <ListItem
                 chevron
-                icon="swapHorizontal"
+                icon="clock"
                 iconColor="accent-100"
                 iconBackgroundColor="accent-glass-015"
                 onPress={onActivityPress}

@@ -777,12 +777,17 @@ export const SwapController = {
         }
       });
       SwapController.resetState();
+
       if (!isAuthConnector) {
-        RouterController.replace('Account');
+        RouterController.replace('AccountDefault');
       }
+
       SwapController.getMyTokensWithBalance(forceUpdateAddresses);
       AccountController.fetchTokenBalance();
-      TransactionsController.fetchTransactions(AccountController.state.address, true);
+
+      setTimeout(() => {
+        TransactionsController.fetchTransactions(AccountController.state.address, true);
+      }, 3000);
 
       return transactionHash;
     } catch (err) {
