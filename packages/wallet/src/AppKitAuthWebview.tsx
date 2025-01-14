@@ -139,6 +139,7 @@ function _AuthWebview() {
       provider.onNotConnected(() => {
         ConnectorController.setAuthLoading(false);
         ModalController.setLoading(false);
+        ConnectionController.setConnectedSocialProvider(undefined);
         if (ConnectorController.state.connectedConnector === 'AUTH') {
           ConnectionController.disconnect();
         }
