@@ -171,6 +171,7 @@ export const SwapController = {
     const invalidSourceToken =
       !state.sourceToken?.address ||
       !state.sourceToken?.decimals ||
+      state.sourceToken.address === state.toToken?.address ||
       !NumberUtil.bigNumber(state.sourceTokenAmount).isGreaterThan(0);
     const invalidSourceTokenAmount = !state.sourceTokenAmount;
 
