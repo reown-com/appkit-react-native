@@ -49,10 +49,6 @@ export function SwapView() {
   });
 
   const getActionButtonState = () => {
-    // if (fetchError) {
-    //   return 'Swap'
-    // }
-
     if (!SwapController.state.sourceToken || !SwapController.state.toToken) {
       return { text: 'Select token', disabled: true };
     }

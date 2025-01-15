@@ -17,7 +17,6 @@ export const ConnectionUtil = {
         type: 'track',
         event: 'DISCONNECT_SUCCESS'
       });
-      throw new Error('ERROR PA');
     } catch (error) {
       EventsController.sendEvent({
         type: 'track',

@@ -30,6 +30,16 @@ import { ConstantsUtil } from '../utils/ConstantsUtil';
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getBlockchainApiUrl();
 
+const getHeaders = () => {
+  const { sdkType, sdkVersion } = OptionsController.state;
+
+  return {
+    'Content-Type': 'application/json',
+    'x-sdk-type': sdkType,
+    'x-sdk-version': sdkVersion
+  };
+};
+
 // -- Types --------------------------------------------- //
 export interface BlockchainApiControllerState {
   clientId: string | null;
@@ -47,18 +57,12 @@ export const BlockchainApiController = {
   state,
 
   fetchIdentity({ address }: BlockchainApiIdentityRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state;
-
     return state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
         projectId: OptionsController.state.projectId
       },
-      headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
-      }
+      headers: getHeaders()
     });
   },
 
@@ -70,15 +74,9 @@ export const BlockchainApiController = {
     signal,
     cache
   }: BlockchainApiTransactionsRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state;
-
     return state.api.get<BlockchainApiTransactionsResponse>({
       path: `/v1/account/${account}/history`,
-      headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
-      },
+      headers: getHeaders(),
       params: {
         projectId,
         cursor,
@@ -90,8 +88,6 @@ export const BlockchainApiController = {
   },
 
   fetchTokenPrice({ projectId, addresses }: BlockchainApiTokenPriceRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state;
-
     return state.api.post<BlockchainApiTokenPriceResponse>({
       path: '/v1/fungible/price',
       body: {
@@ -99,17 +95,11 @@ export const BlockchainApiController = {
         currency: 'usd',
         addresses
       },
-      headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
-      }
+      headers: getHeaders()
     });
   },
 
   fetchSwapAllowance({ projectId, tokenAddress, userAddress }: BlockchainApiSwapAllowanceRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state;
-
     return state.api.get<BlockchainApiSwapAllowanceResponse>({
       path: `/v1/convert/allowance`,
       params: {
@@ -117,24 +107,14 @@ export const BlockchainApiController = {
         tokenAddress,
         userAddress
       },
-      headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
-      }
+      headers: getHeaders()
     });
   },
 
   fetchGasPrice({ projectId, chainId }: BlockchainApiGasPriceRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state;
-
     return state.api.get<BlockchainApiGasPriceResponse>({
       path: `/v1/convert/gas-price`,
-      headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
-      },
+      headers: getHeaders(),
       params: {
         projectId,
         chainId
@@ -150,15 +130,9 @@ export const BlockchainApiController = {
     to,
     gasPrice
   }: BlockchainApiSwapQuoteRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state;
-
     return state.api.get<BlockchainApiSwapQuoteResponse>({
       path: `/v1/convert/quotes`,
-      headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
-      },
+      headers: getHeaders(),
       params: {
         projectId,
         amount,
@@ -171,15 +145,9 @@ export const BlockchainApiController = {
   },
 
   fetchSwapTokens({ projectId, chainId }: BlockchainApiSwapTokensRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state;
-
     return state.api.get<BlockchainApiSwapTokensResponse>({
       path: `/v1/convert/tokens`,
-      headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
-      },
+      headers: getHeaders(),
       params: {
         projectId,
         chainId
@@ -194,15 +162,9 @@ export const BlockchainApiController = {
     to,
     userAddress
   }: BlockchainApiGenerateSwapCalldataRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state;
-
     return state.api.post<BlockchainApiGenerateSwapCalldataResponse>({
       path: '/v1/convert/build-transaction',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
-      },
+      headers: getHeaders(),
       body: {
         amount,
         eip155: {
@@ -222,15 +184,9 @@ export const BlockchainApiController = {
     to,
     userAddress
   }: BlockchainApiGenerateApproveCalldataRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state;
-
     return state.api.get<BlockchainApiGenerateApproveCalldataResponse>({
       path: `/v1/convert/build-approve`,
-      headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
-      },
+      headers: getHeaders(),
       params: {
         projectId,
         userAddress,
@@ -241,14 +197,9 @@ export const BlockchainApiController = {
   },
 
   async getBalance(address: string, chainId?: string, forceUpdate?: string) {
-    const { sdkType, sdkVersion } = OptionsController.state;
-
     return state.api.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
-      headers: {
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
-      },
+      headers: getHeaders(),
       params: {
         currency: 'usd',
         projectId: OptionsController.state.projectId,
@@ -259,15 +210,9 @@ export const BlockchainApiController = {
   },
 
   async lookupEnsName(name: string) {
-    const { sdkType, sdkVersion } = OptionsController.state;
-
     return state.api.get<BlockchainApiLookupEnsName>({
       path: `/v1/profile/account/${name}`,
-      headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
-      },
+      headers: getHeaders(),
       params: {
         projectId: OptionsController.state.projectId,
         apiVersion: '2'
