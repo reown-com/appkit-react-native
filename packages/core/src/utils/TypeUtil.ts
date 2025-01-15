@@ -654,7 +654,7 @@ export type Event =
 
 // -- Send Controller Types -------------------------------------
 export type EstimateGasTransactionArgs = {
-  chainNamespace?: undefined | 'eip155';
+  chainNamespace?: 'eip155';
   address: `0x${string}`;
   to: `0x${string}`;
   data: `0x${string}`;

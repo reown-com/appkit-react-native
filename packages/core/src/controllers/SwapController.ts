@@ -718,7 +718,7 @@ export const SwapController = {
       const error = err as TransactionError;
       state.transactionError = error?.shortMessage as unknown as string;
       state.loadingApprovalTransaction = false;
-      SnackController.showError(error?.shortMessage || 'Transaction error');
+      SnackController.showError(error?.shortMessage ?? 'Transaction error');
     }
   },
 
@@ -795,12 +795,12 @@ export const SwapController = {
       const error = err as TransactionError;
       state.transactionError = error?.shortMessage;
       state.loadingTransaction = false;
-      SnackController.showError(error?.shortMessage || 'Transaction error');
+      SnackController.showError(error?.shortMessage ?? 'Transaction error');
       EventsController.sendEvent({
         type: 'track',
         event: 'SWAP_ERROR',
         properties: {
-          message: error?.shortMessage || error?.message || 'Unknown',
+          message: error?.shortMessage ?? error?.message ?? 'Unknown',
           network: NetworkController.state.caipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',

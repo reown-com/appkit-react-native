@@ -63,7 +63,7 @@ export const SwapCalculationUtil = {
   },
 
   isInsufficientNetworkTokenForGas(networkBalanceInUSD: string, gasPriceInUSD: number | undefined) {
-    const gasPrice = gasPriceInUSD || '0';
+    const gasPrice = gasPriceInUSD ?? '0';
 
     if (NumberUtil.bigNumber(networkBalanceInUSD).isZero()) {
       return true;
@@ -80,7 +80,7 @@ export const SwapCalculationUtil = {
     const sourceTokenBalance = balance?.find(token => token.address === sourceTokenAddress)
       ?.quantity?.numeric;
 
-    const isInSufficientBalance = NumberUtil.bigNumber(sourceTokenBalance || '0').isLessThan(
+    const isInSufficientBalance = NumberUtil.bigNumber(sourceTokenBalance ?? '0').isLessThan(
       sourceTokenAmount
     );
 
