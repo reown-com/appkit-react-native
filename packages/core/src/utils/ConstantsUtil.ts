@@ -4,7 +4,7 @@ const defaultFeatures: Features = {
   swaps: true,
   email: true,
   emailShowWallets: true,
-  socials: ['x', 'discord', 'apple', 'farcaster']
+  socials: ['x', 'discord', 'apple']
 };
 
 export const ConstantsUtil = {

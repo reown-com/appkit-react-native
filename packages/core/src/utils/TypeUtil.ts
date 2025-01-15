@@ -63,6 +63,8 @@ export type SdkVersion =
   | `react-native-ethers5-${string}`
   | `react-native-ethers-${string}`;
 
+type EnabledSocials = Exclude<SocialProvider, 'farcaster'>;
+
 export type Features = {
   /**
    * @description Enable or disable the swaps feature. Enabled by default.
@@ -81,9 +83,9 @@ export type Features = {
   emailShowWallets?: boolean;
   /**
    * @description Enable or disable the socials feature. Enabled by default.
-   * @type {FeaturesSocials[]}
+   * @type {EnabledSocials[]}
    */
-  socials?: SocialProvider[] | false;
+  socials?: EnabledSocials[] | false;
 };
 
 // -- ApiController Types -------------------------------------------------------
