@@ -713,7 +713,6 @@ export interface AppKitFrameProvider {
   getSecureSiteURL(): string;
   getSecureSiteDashboardURL(): string;
   getSecureSiteIconURL(): string;
-  getSecureSiteHeaders(): Record<string, string>;
   getEmail(): string | undefined;
   getUsername(): string | undefined;
   getLastUsedChainId(): Promise<number | undefined>;

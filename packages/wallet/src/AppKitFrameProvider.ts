@@ -89,7 +89,9 @@ export class AppKitFrameProvider {
 
   // -- Extended Methods ------------------------------------------------
   public getSecureSiteURL() {
-    return `${AppKitFrameConstants.SECURE_SITE_SDK}?projectId=${this.projectId}`;
+    return `${AppKitFrameConstants.SECURE_SITE_SDK}?projectId=${
+      this.projectId
+    }&bundleId=${CoreHelperUtil.getBundleId()}`;
   }
 
   public getSecureSiteDashboardURL() {
@@ -98,10 +100,6 @@ export class AppKitFrameProvider {
 
   public getSecureSiteIconURL() {
     return AppKitFrameConstants.SECURE_SITE_ICON;
-  }
-
-  public getSecureSiteHeaders() {
-    return { 'X-Bundle-Id': CoreHelperUtil.getBundleId() };
   }
 
   public getEmail() {

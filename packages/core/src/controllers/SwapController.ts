@@ -788,7 +788,7 @@ export const SwapController = {
 
       setTimeout(() => {
         TransactionsController.fetchTransactions(AccountController.state.address, true);
-      }, 3000);
+      }, 5000);
 
       return transactionHash;
     } catch (err) {

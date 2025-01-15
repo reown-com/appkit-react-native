@@ -624,6 +624,7 @@ export class AppKit extends AppKitScaffold {
 
     provider.setOnTimeout(async () => {
       this.handleAlertError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
+      this.setLoading(false);
     });
   }
 }

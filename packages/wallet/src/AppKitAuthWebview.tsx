@@ -167,10 +167,7 @@ function _AuthWebview() {
         ]}
       >
         <WebView
-          source={{
-            uri: provider.getSecureSiteURL(),
-            headers: provider.getSecureSiteHeaders()
-          }}
+          source={{ uri: provider.getSecureSiteURL() }}
           bounces={false}
           scalesPageToFit
           onMessage={handleMessage}
