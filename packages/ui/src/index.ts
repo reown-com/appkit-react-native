@@ -85,4 +85,5 @@ export { TransactionUtil } from './utils/TransactionUtil';
 export { Spacing, BorderRadius } from './utils/ThemeUtil';
 
 export { useTheme } from './hooks/useTheme';
+export { ThemeProvider } from './context/ThemeContext';
 export { useAnimatedValue } from './hooks/useAnimatedValue';

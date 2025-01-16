@@ -6823,6 +6823,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@reown/appkit-ui-react-native@workspace:packages/ui"
   dependencies:
+    polished: "npm:4.3.1"
     qrcode: "npm:1.5.3"
   peerDependencies:
     react: ">=17"
@@ -19217,6 +19218,15 @@ __metadata:
   version: 5.0.0
   resolution: "pngjs@npm:5.0.0"
   checksum: c074d8a94fb75e2defa8021e85356bf7849688af7d8ce9995b7394d57cd1a777b272cfb7c4bce08b8d10e71e708e7717c81fd553a413f21840c548ec9d4893c6
+  languageName: node
+  linkType: hard
+
+"polished@npm:4.3.1":
+  version: 4.3.1
+  resolution: "polished@npm:4.3.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.17.8"
+  checksum: 45480d4c7281a134281cef092f6ecc202a868475ff66a390fee6e9261386e16f3047b4de46a2f2e1cf7fb7aa8f52d30b4ed631a1e3bcd6f303ca31161d4f07fe
   languageName: node
   linkType: hard
 

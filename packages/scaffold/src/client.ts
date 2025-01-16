@@ -10,7 +10,6 @@ import type {
   EventsControllerState,
   PublicStateControllerState,
   ThemeControllerState,
-  ThemeMode,
   ThemeVariables,
   Connector,
   ConnectedWalletInfo,
@@ -33,7 +32,7 @@ import {
   ThemeController,
   TransactionsController
 } from '@reown/appkit-core-react-native';
-import { ConstantsUtil, ErrorUtil } from '@reown/appkit-common-react-native';
+import { ConstantsUtil, ErrorUtil, type ThemeMode } from '@reown/appkit-common-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {

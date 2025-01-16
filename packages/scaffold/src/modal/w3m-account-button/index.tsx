@@ -4,10 +4,11 @@ import {
   CoreHelperUtil,
   NetworkController,
   ModalController,
-  AssetUtil
+  AssetUtil,
+  ThemeController
 } from '@reown/appkit-core-react-native';
 
-import { AccountButton as AccountButtonUI } from '@reown/appkit-ui-react-native';
+import { AccountButton as AccountButtonUI, ThemeProvider } from '@reown/appkit-ui-react-native';
 import { ApiController } from '@reown/appkit-core-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 
@@ -27,22 +28,25 @@ export function AccountButton({ balance, disabled, style, testID }: AccountButto
     profileName
   } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
 
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showBalance = balance === 'show';
 
   return (
-    <AccountButtonUI
-      onPress={() => ModalController.open()}
-      address={address}
-      profileName={profileName}
-      networkSrc={networkImage}
-      imageHeaders={ApiController._getApiHeaders()}
-      avatarSrc={profileImage}
-      disabled={disabled}
-      style={style}
-      balance={showBalance ? CoreHelperUtil.formatBalance(balanceVal, balanceSymbol) : ''}
-      testID={testID}
-    />
+    <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
+      <AccountButtonUI
+        onPress={() => ModalController.open()}
+        address={address}
+        profileName={profileName}
+        networkSrc={networkImage}
+        imageHeaders={ApiController._getApiHeaders()}
+        avatarSrc={profileImage}
+        disabled={disabled}
+        style={style}
+        balance={showBalance ? CoreHelperUtil.formatBalance(balanceVal, balanceSymbol) : ''}
+        testID={testID}
+      />
+    </ThemeProvider>
   );
 }
