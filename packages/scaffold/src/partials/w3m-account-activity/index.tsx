@@ -107,24 +107,23 @@ export function AccountActivity({ style }: Props) {
                       getTransactionListItemProps(transaction);
                     const hasMultipleTransfers = transfers?.length > 2;
 
+                    // Show only the first transfer
                     if (hasMultipleTransfers) {
-                      return transfers.map((transfer, index) => {
-                        const description = TransactionUtil.getTransferDescription(transfer);
+                      const description = TransactionUtil.getTransferDescription(transfers[0]);
 
-                        return (
-                          <ListTransaction
-                            key={`${transaction.id}@${description}`}
-                            date={date}
-                            type={type}
-                            descriptions={[description]}
-                            status={status}
-                            images={[images[index]] as TransactionImage[]}
-                            networkSrc={networkImage}
-                            style={styles.transactionItem}
-                            isAllNFT={isAllNFT}
-                          />
-                        );
-                      });
+                      return (
+                        <ListTransaction
+                          key={`${transaction.id}@${description}`}
+                          date={date}
+                          type={type}
+                          descriptions={[description]}
+                          status={status}
+                          images={[images[0]] as TransactionImage[]}
+                          networkSrc={networkImage}
+                          style={styles.transactionItem}
+                          isAllNFT={isAllNFT}
+                        />
+                      );
                     }
 
                     return (

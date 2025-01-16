@@ -25,7 +25,8 @@ import {
   type Token,
   AppKitScaffold,
   type WriteContractArgs,
-  type AppKitFrameAccountType
+  type AppKitFrameAccountType,
+  type EstimateGasTransactionArgs
 } from '@reown/appkit-scaffold-react-native';
 import { erc20ABI, ErrorUtil, NamesUtil, NetworkUtil } from '@reown/appkit-common-react-native';
 import {
@@ -285,6 +286,45 @@ export class AppKit extends AppKitScaffold {
         });
 
         return signature as `0x${string}`;
+      },
+
+      estimateGas: async ({
+        address,
+        to,
+        data,
+        chainNamespace
+      }: EstimateGasTransactionArgs): Promise<bigint> => {
+        const caipNetwork = this.getCaipNetwork();
+        const provider = EthersStoreUtil.state.provider;
+
+        if (!provider) {
+          throw new Error('Provider is undefined');
+        }
+
+        try {
+          if (!provider) {
+            throw new Error('estimateGas - provider is undefined');
+          }
+          if (!address) {
+            throw new Error('estimateGas - address is undefined');
+          }
+          if (chainNamespace && chainNamespace !== 'eip155') {
+            throw new Error('estimateGas - chainNamespace is not eip155');
+          }
+
+          const txParams = {
+            from: address,
+            to,
+            data,
+            type: 0
+          };
+          const browserProvider = new BrowserProvider(provider, Number(caipNetwork?.id));
+          const signer = new JsonRpcSigner(browserProvider, address);
+
+          return await signer.estimateGas(txParams);
+        } catch (error) {
+          throw new Error('Ethers: estimateGas - Estimate gas failed');
+        }
       },
 
       parseUnits: (value: string, decimals: number) => parseUnits(value, decimals),
@@ -972,6 +1012,7 @@ export class AppKit extends AppKitScaffold {
 
     authProvider.setOnTimeout(async () => {
       this.handleAlertError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
+      this.setLoading(false);
     });
   }
 

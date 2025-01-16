@@ -85,6 +85,7 @@ export function AccountTokens({ style }: Props) {
           value={token.value}
           amount={token.quantity.numeric}
           currency={token.symbol}
+          pressable={false}
         />
       ))}
     </ScrollView>

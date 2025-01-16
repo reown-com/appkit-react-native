@@ -1,10 +1,16 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useMemo } from 'react';
 import { Animated } from 'react-native';
-import { SnackController } from '@reown/appkit-core-react-native';
+import { SnackController, type SnackControllerState } from '@reown/appkit-core-react-native';
 import { Snackbar as SnackbarComponent } from '@reown/appkit-ui-react-native';
 
 import styles from './styles';
+
+const getIcon = (variant: SnackControllerState['variant']) => {
+  if (variant === 'loading') return 'loading';
+
+  return variant === 'success' ? 'checkmark' : 'close';
+};
 
 export function Snackbar() {
   const { open, message, variant, long } = useSnapshot(SnackController.state);
@@ -35,7 +41,7 @@ export function Snackbar() {
   return (
     <SnackbarComponent
       message={message}
-      icon={variant === 'success' ? 'checkmark' : 'close'}
+      icon={getIcon(variant)}
       iconColor={variant === 'success' ? 'success-100' : 'error-100'}
       style={[styles.container, { opacity: componentOpacity }]}
     />

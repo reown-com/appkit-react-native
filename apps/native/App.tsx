@@ -15,6 +15,7 @@ import {
 } from '@reown/appkit-wagmi-react-native';
 
 import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
+import { Text } from '@reown/appkit-ui-react-native';
 
 import { siweConfig } from './src/utils/SiweUtils';
 
@@ -75,8 +76,9 @@ createAppKit({
   debug: true,
   features: {
     email: true,
-    socials: ['x', 'discord', 'apple'],
-    emailShowWallets: true
+    socials: ['x', 'farcaster', 'discord', 'apple'],
+    emailShowWallets: true,
+    swaps: true
   }
 });
 
@@ -88,6 +90,9 @@ export default function Native() {
       <QueryClientProvider client={queryClient}>
         <SafeAreaView style={[styles.container, isDarkMode && styles.dark]}>
           <StatusBar style="auto" />
+          <Text variant="medium-title-600" style={styles.title}>
+            AppKit for React Native
+          </Text>
           <AppKitButton
             connectStyle={styles.button}
             accountStyle={styles.button}
@@ -120,6 +125,9 @@ const styles = StyleSheet.create({
   },
   text: {
     marginBottom: 20
+  },
+  title: {
+    marginBottom: 30
   },
   button: {
     marginVertical: 6

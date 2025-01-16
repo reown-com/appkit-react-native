@@ -2,7 +2,8 @@ import { DateUtil } from '@reown/appkit-common-react-native';
 import type {
   TransactionTransfer,
   Transaction,
-  TransactionImage
+  TransactionImage,
+  TransactionMetadata
 } from '@reown/appkit-common-react-native';
 import type { TransactionType } from './TypesUtil';
 import { UiUtil } from './UiUtil';
@@ -24,20 +25,22 @@ export const TransactionUtil = {
   },
 
   getTransactionImages(transfers: TransactionTransfer[]): TransactionImage[] {
-    const [transfer, secondTransfer] = transfers;
-    const isAllNFT = Boolean(transfer) && transfers?.every(item => Boolean(item.nft_info));
+    const isAllNFT = Boolean(transfers[0]) && transfers?.every(item => Boolean(item.nft_info));
     const haveMultipleTransfers = transfers?.length > 1;
     const haveTwoTransfers = transfers?.length === 2;
 
     if (haveTwoTransfers && !isAllNFT) {
-      return [this.getTransactionImage(transfer), this.getTransactionImage(secondTransfer)];
+      const first = transfers.find(t => t?.direction === 'out');
+      const second = transfers.find(t => t?.direction === 'in');
+
+      return [this.getTransactionImage(first), this.getTransactionImage(second)];
     }
 
     if (haveMultipleTransfers) {
       return transfers.map(item => this.getTransactionImage(item));
     }
 
-    return [this.getTransactionImage(transfer)];
+    return [this.getTransactionImage(transfers[0])];
   },
 
   getTransactionImage(transfer?: TransactionTransfer): TransactionImage {
@@ -72,66 +75,83 @@ export const TransactionUtil = {
   },
 
   getTransactionDescriptions(transaction: Transaction) {
+    if (!transaction.metadata) {
+      return ['Unknown transaction'];
+    }
+
     const type = transaction?.metadata?.operationType as TransactionType;
-
     const transfers = transaction?.transfers;
-    const haveTransfer = transaction?.transfers?.length > 0;
-    const haveMultipleTransfers = transaction?.transfers?.length > 1;
-    const isSendOrReceive = type === 'send' || type === 'receive';
-    const isFungible =
-      haveTransfer && transfers?.every(transfer => Boolean(transfer?.fungible_info));
-    const [firstTransfer, secondTransfer] = transfers;
 
-    let firstDescription = this.getTransferDescription(firstTransfer);
-    let secondDescription = this.getTransferDescription(secondTransfer);
-
-    if (!haveTransfer) {
-      if (isSendOrReceive && isFungible) {
-        firstDescription = UiUtil.getTruncateString({
-          string: transaction?.metadata.sentFrom,
-          charsStart: 4,
-          charsEnd: 6,
-          truncate: 'middle'
-        });
-        secondDescription = UiUtil.getTruncateString({
-          string: transaction?.metadata.sentTo,
-          charsStart: 4,
-          charsEnd: 6,
-          truncate: 'middle'
-        });
-
-        return [firstDescription, secondDescription];
-      }
-
-      return [transaction.metadata.status];
+    // Early return for trade transactions
+    if (type === 'trade') {
+      return this.getTradeDescriptions(transfers);
     }
 
-    if (haveMultipleTransfers) {
-      return transfers.map(item => this.getTransferDescription(item));
+    // Handle multiple transfers
+    if (transfers.length > 1) {
+      return transfers.map(transfer => this.getTransferDescription(transfer));
     }
 
-    let prefix = '';
-    if (plusTypes.includes(type)) {
-      prefix = '+';
-    } else if (minusTypes.includes(type)) {
-      prefix = '-';
+    // Handle single transfer
+    if (transfers.length === 1) {
+      return [this.formatSingleTransfer(transfers[0]!, type, transaction.metadata)];
     }
 
-    firstDescription = prefix.concat(firstDescription);
+    return [transaction.metadata.status];
+  },
 
-    if (isSendOrReceive) {
+  isSendReceiveTransaction(type: TransactionType): boolean {
+    return type === 'send' || type === 'receive';
+  },
+
+  hasFungibleTransfers(transfers: TransactionTransfer[]): boolean {
+    return transfers.every(transfer => Boolean(transfer?.fungible_info));
+  },
+
+  getSendReceiveDescriptions(metadata: TransactionMetadata): string[] {
+    return [this.truncateAddress(metadata.sentFrom), this.truncateAddress(metadata.sentTo)];
+  },
+
+  truncateAddress(address: string): string {
+    return UiUtil.getTruncateString({
+      string: address,
+      charsStart: 4,
+      charsEnd: 6,
+      truncate: 'middle'
+    });
+  },
+
+  formatSingleTransfer(
+    transfer: TransactionTransfer,
+    type: TransactionType,
+    metadata: TransactionMetadata
+  ): string {
+    const prefix = this.getPrefix(type);
+    let description = prefix.concat(this.getTransferDescription(transfer));
+
+    if (this.isSendReceiveTransaction(type)) {
       const isSend = type === 'send';
-      const address = UiUtil.getTruncateString({
-        string: isSend ? transaction.metadata.sentTo : transaction.metadata.sentFrom,
-        charsStart: 4,
-        charsEnd: 4,
-        truncate: 'middle'
-      });
+
+      const address = this.truncateAddress(isSend ? metadata.sentTo : metadata.sentFrom);
       const arrow = isSend ? '→' : '←';
-      firstDescription = firstDescription.concat(` ${arrow} ${address}`);
+      description = description.concat(` ${arrow} ${address}`);
     }
 
-    return [firstDescription];
+    return description;
+  },
+
+  getPrefix(type: TransactionType): string {
+    if (plusTypes.includes(type)) return '+';
+    if (minusTypes.includes(type)) return '-';
+
+    return '';
+  },
+
+  getTradeDescriptions(transfers: TransactionTransfer[]): string[] {
+    const outTransfer = transfers.find(transfer => transfer?.direction === 'out');
+    const inTransfer = transfers.find(transfer => transfer?.direction === 'in');
+
+    return [this.getTransferDescription(outTransfer), this.getTransferDescription(inTransfer)];
   },
 
   getTransferDescription(transfer?: TransactionTransfer) {

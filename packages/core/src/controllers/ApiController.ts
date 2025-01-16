@@ -72,7 +72,7 @@ export const ApiController = {
       'x-sdk-type': sdkType,
       'x-sdk-version': sdkVersion,
       'User-Agent': ApiUtil.getUserAgent(),
-      'Origin': ApiUtil.getOrigin()
+      'origin': ApiUtil.getOrigin()
     };
   },
 

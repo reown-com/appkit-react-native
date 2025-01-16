@@ -95,7 +95,7 @@ export function Button({
             style={[styles.iconLeft, iconStyle]}
           />
         )}
-        {loading && <LoadingSpinner color={iconColor} />}
+        {loading && <LoadingSpinner color={iconColor} size="md" />}
         {!loading &&
           (typeof children === 'string' ? (
             <Text
