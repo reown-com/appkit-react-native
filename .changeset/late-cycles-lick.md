@@ -15,4 +15,4 @@
 '@reown/appkit-siwe-react-native': minor
 ---
 
-feat: added themeMode prop
+feat: added ability to change themeMode and override accent color
