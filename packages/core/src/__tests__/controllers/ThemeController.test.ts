@@ -4,7 +4,7 @@ import { ThemeController } from '../../index';
 describe('ThemeController', () => {
   it('should have valid default state', () => {
     expect(ThemeController.state).toEqual({
-      themeMode: 'undefined',
+      themeMode: undefined,
       themeVariables: {}
     });
   });
