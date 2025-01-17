@@ -239,7 +239,8 @@ export function AccountDefaultView() {
             <ListItem
               chevron
               icon="networkPlaceholder"
-              iconBackgroundColor="gray-glass-010"
+              iconColor="accent-100"
+              iconBackgroundColor="accent-glass-015"
               imageSrc={networkImage}
               imageHeaders={ApiController._getApiHeaders()}
               onPress={onNetworkPress}
@@ -283,6 +284,8 @@ export function AccountDefaultView() {
                 icon="swapHorizontal"
                 onPress={onSwitchAccountType}
                 testID="account-button-type"
+                iconColor="accent-100"
+                iconBackgroundColor="accent-glass-015"
                 style={styles.actionButton}
                 loading={loading}
               >
