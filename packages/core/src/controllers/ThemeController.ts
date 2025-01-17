@@ -1,15 +1,15 @@
 import { proxy, subscribe as sub } from 'valtio';
-import type { ThemeMode, ThemeVariables } from '../utils/TypeUtil';
+import type { ThemeMode, ThemeVariables } from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 export interface ThemeControllerState {
-  themeMode: ThemeMode;
+  themeMode?: ThemeMode;
   themeVariables: ThemeVariables;
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<ThemeControllerState>({
-  themeMode: 'dark',
+  themeMode: undefined,
   themeVariables: {}
 });
 

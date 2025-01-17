@@ -1,5 +1,10 @@
 import { type EventEmitter } from 'events';
-import type { Balance, SocialProvider, Transaction } from '@reown/appkit-common-react-native';
+import type {
+  Balance,
+  SocialProvider,
+  ThemeMode,
+  Transaction
+} from '@reown/appkit-common-react-native';
 
 export interface BaseError {
   message?: string;
@@ -139,14 +144,6 @@ export type RequestCache =
   | 'no-store'
   | 'only-if-cached'
   | 'reload';
-
-// -- ThemeController Types ---------------------------------------------------
-
-export type ThemeMode = 'dark' | 'light';
-
-export interface ThemeVariables {
-  accent?: string;
-}
 
 // -- BlockchainApiController Types ---------------------------------------------
 export interface BlockchainApiIdentityRequest {

@@ -431,7 +431,7 @@ export class AppKit extends AppKitScaffold {
     'address' | 'isConnected' | 'chainId' | 'connector' | 'isConnecting' | 'isReconnecting'
   >) {
     this.syncNetwork(address, chainId, isConnected);
-    this.setLoading(!!connector && (isConnecting || isReconnecting));
+    this.setLoading(isConnecting || isReconnecting);
 
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
