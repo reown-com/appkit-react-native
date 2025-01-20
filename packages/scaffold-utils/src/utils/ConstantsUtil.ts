@@ -1,5 +1,5 @@
 export const ConstantsUtil = {
-  VERSION: '1.1.1',
+  VERSION: '1.2.0',
   WALLET_CONNECT_CONNECTOR_ID: 'walletConnect',
   COINBASE_CONNECTOR_ID: 'coinbaseWallet',
   AUTH_CONNECTOR_ID: 'appKitAuth',
