@@ -33,7 +33,14 @@ export function AuthButtons({
           </Text>
         </ListSocial>
       ) : (
-        <ListItem icon={'mail'} onPress={onPress} chevron testID="button-email" style={style}>
+        <ListItem
+          icon="mail"
+          onPress={onPress}
+          chevron
+          testID="button-email"
+          iconColor="fg-100"
+          style={style}
+        >
           <Text color="fg-100" numberOfLines={1} ellipsizeMode="tail">
             {text}
           </Text>

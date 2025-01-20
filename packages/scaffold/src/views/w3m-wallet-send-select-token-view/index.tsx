@@ -19,20 +19,21 @@ export function WalletSendSelectTokenView() {
   const { padding } = useCustomDimensions();
   const { tokenBalance } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { token } = useSnapshot(SendController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const [filteredTokens, setFilteredTokens] = useState(tokenBalance ?? []);
 
   const onSearchChange = (value: string) => {
     setTokenSearch(value);
-    const filtered = AccountController.state.tokenBalance?.filter(token =>
-      token.name.toLowerCase().includes(value.toLowerCase())
+    const filtered = AccountController.state.tokenBalance?.filter(_token =>
+      _token.name.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredTokens(filtered ?? []);
   };
 
-  const onTokenPress = (token: Balance) => {
-    SendController.setToken(token);
+  const onTokenPress = (_token: Balance) => {
+    SendController.setToken(_token);
     SendController.setTokenAmount(undefined);
     RouterController.goBack();
   };
@@ -56,16 +57,17 @@ export function WalletSendSelectTokenView() {
           Your tokens
         </Text>
         {filteredTokens.length ? (
-          filteredTokens.map((token, index) => (
+          filteredTokens.map((_token, index) => (
             <ListToken
-              key={`${token.name}${index}`}
-              name={token.name}
-              imageSrc={token.iconUrl}
+              key={`${_token.name}${index}`}
+              name={_token.name}
+              imageSrc={_token.iconUrl}
               networkSrc={networkImage}
-              value={token.value}
-              amount={token.quantity.numeric}
-              currency={token.symbol}
-              onPress={() => onTokenPress(token)}
+              value={_token.value}
+              amount={_token.quantity.numeric}
+              currency={_token.symbol}
+              onPress={() => onTokenPress(_token)}
+              disabled={_token.address === token?.address}
             />
           ))
         ) : (

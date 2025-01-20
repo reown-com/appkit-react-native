@@ -2,7 +2,7 @@ import { useSnapshot } from 'valtio';
 import { useCallback, useEffect } from 'react';
 import { useWindowDimensions, StatusBar } from 'react-native';
 import Modal from 'react-native-modal';
-import { Card } from '@reown/appkit-ui-react-native';
+import { Card, ThemeProvider } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
   ApiController,
@@ -16,7 +16,8 @@ import {
   TransactionsController,
   type CaipAddress,
   type AppKitFrameProvider,
-  WebviewController
+  WebviewController,
+  ThemeController
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -31,6 +32,7 @@ export function AppKit() {
   const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
   const { frameViewVisible, webviewVisible } = useSnapshot(WebviewController.state);
+  const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
   const portraitHeight = height - 120;
@@ -117,27 +119,32 @@ export function AppKit() {
 
   return (
     <>
-      <Modal
-        style={styles.modal}
-        coverScreen={!frameViewVisible && !webviewVisible}
-        isVisible={open}
-        useNativeDriver
-        statusBarTranslucent
-        hideModalContentWhileAnimating
-        propagateSwipe
-        onModalHide={handleClose}
-        onBackdropPress={ModalController.close}
-        onBackButtonPress={onBackButtonPress}
-        testID="w3m-modal"
-      >
-        <Card style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}>
-          <Header />
-          <AppKitRouter />
-          <Snackbar />
-        </Card>
-      </Modal>
-      {!!showAuth && AuthView && <AuthView />}
-      {!!showAuth && SocialView && <SocialView />}
+      <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
+        <Modal
+          style={styles.modal}
+          coverScreen={!frameViewVisible && !webviewVisible}
+          isVisible={open}
+          useNativeDriver
+          useNativeDriverForBackdrop
+          statusBarTranslucent
+          hideModalContentWhileAnimating
+          propagateSwipe
+          onModalHide={handleClose}
+          onBackdropPress={ModalController.close}
+          onBackButtonPress={onBackButtonPress}
+          testID="w3m-modal"
+        >
+          <Card
+            style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}
+          >
+            <Header />
+            <AppKitRouter />
+            <Snackbar />
+          </Card>
+        </Modal>
+        {!!showAuth && AuthView && <AuthView />}
+        {!!showAuth && SocialView && <SocialView />}
+      </ThemeProvider>
     </>
   );
 }

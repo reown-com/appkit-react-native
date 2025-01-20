@@ -10,8 +10,6 @@ import type {
   EventsControllerState,
   PublicStateControllerState,
   ThemeControllerState,
-  ThemeMode,
-  ThemeVariables,
   Connector,
   ConnectedWalletInfo,
   Features
@@ -33,7 +31,12 @@ import {
   ThemeController,
   TransactionsController
 } from '@reown/appkit-core-react-native';
-import { ConstantsUtil, ErrorUtil } from '@reown/appkit-common-react-native';
+import {
+  ConstantsUtil,
+  ErrorUtil,
+  type ThemeMode,
+  type ThemeVariables
+} from '@reown/appkit-common-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {
@@ -61,7 +64,7 @@ export interface ScaffoldOptions extends LibraryOptions {
 }
 
 export interface OpenOptions {
-  view: 'Account' | 'Connect' | 'Networks';
+  view: 'Account' | 'Connect' | 'Networks' | 'Swap';
 }
 
 // -- Client --------------------------------------------------------------------

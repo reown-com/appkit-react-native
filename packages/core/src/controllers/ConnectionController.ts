@@ -5,11 +5,11 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type {
   Connector,
+  EstimateGasTransactionArgs,
   SendTransactionArgs,
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil';
-import { RouterController } from './RouterController';
 import { ConnectorController } from './ConnectorController';
 
 // -- Types --------------------------------------------- //
@@ -31,6 +31,7 @@ export interface ConnectionControllerClient {
   parseUnits: (value: string, decimals: number) => bigint;
   formatUnits: (value: bigint, decimals: number) => string;
   writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>;
+  estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>;
   disconnect: () => Promise<void>;
   getEnsAddress: (value: string) => Promise<false | string>;
   getEnsAvatar: (value: string) => Promise<false | string>;
@@ -159,6 +160,9 @@ export const ConnectionController = {
     return this._getClient().sendTransaction(args);
   },
 
+  async estimateGas(args: EstimateGasTransactionArgs) {
+    return this._getClient()?.estimateGas(args);
+  },
   async writeContract(args: WriteContractArgs) {
     return this._getClient().writeContract(args);
   },
@@ -191,6 +195,6 @@ export const ConnectionController = {
     await this._getClient().disconnect();
     this.resetWcConnection();
     // remove transactions
-    RouterController.reset('Connect');
+    // RouterController.reset('Connect');
   }
 };

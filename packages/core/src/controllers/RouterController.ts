@@ -1,5 +1,5 @@
 import { proxy } from 'valtio';
-import type { WcWallet, CaipNetwork, Connector } from '../utils/TypeUtil';
+import type { WcWallet, CaipNetwork, Connector, SwapInputTarget } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -29,7 +29,11 @@ export interface RouterControllerState {
     | 'GetWallet'
     | 'Networks'
     | 'SwitchNetwork'
+    | 'Swap'
+    | 'SwapSelectToken'
+    | 'SwapPreview'
     | 'Transactions'
+    | 'UnsupportedChain'
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
     | 'UpdateEmailWallet'
@@ -49,6 +53,7 @@ export interface RouterControllerState {
     network?: CaipNetwork;
     email?: string;
     newEmail?: string;
+    swapTarget?: SwapInputTarget;
   };
   transactionStack: TransactionAction[];
 }

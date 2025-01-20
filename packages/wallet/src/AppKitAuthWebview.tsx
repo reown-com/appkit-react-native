@@ -139,6 +139,7 @@ function _AuthWebview() {
       provider.onNotConnected(() => {
         ConnectorController.setAuthLoading(false);
         ModalController.setLoading(false);
+        ConnectionController.setConnectedSocialProvider(undefined);
         if (ConnectorController.state.connectedConnector === 'AUTH') {
           ConnectionController.disconnect();
         }
@@ -166,10 +167,7 @@ function _AuthWebview() {
         ]}
       >
         <WebView
-          source={{
-            uri: provider.getSecureSiteURL(),
-            headers: provider.getSecureSiteHeaders()
-          }}
+          source={{ uri: provider.getSecureSiteURL() }}
           bounces={false}
           scalesPageToFit
           onMessage={handleMessage}

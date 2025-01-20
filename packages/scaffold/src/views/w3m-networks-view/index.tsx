@@ -14,10 +14,9 @@ import {
   NetworkController,
   RouterController,
   type CaipNetwork,
-  AccountController,
   EventsController,
-  RouterUtil,
-  ConnectorController
+  CoreHelperUtil,
+  NetworkUtil
 } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
@@ -33,7 +32,6 @@ export function NetworksView() {
   const itemGap = Math.abs(
     Math.trunc((usableWidth - numColumns * CardSelectWidth) / numColumns) / 2
   );
-  const isAuthConnected = ConnectorController.state.connectedConnector === 'AUTH';
 
   const onHelpPress = () => {
     RouterController.push('WhatIsANetwork');
@@ -41,43 +39,22 @@ export function NetworksView() {
   };
 
   const networksTemplate = () => {
-    if (!requestedCaipNetworks?.length) return undefined;
-
-    const approvedIds = approvedCaipNetworkIds;
-    const requested = [...requestedCaipNetworks];
-
-    if (approvedIds?.length) {
-      requested?.sort((a, b) => {
-        if (approvedIds.includes(a.id) && !approvedIds.includes(b.id)) return -1;
-        if (approvedIds.includes(b.id) && !approvedIds.includes(a.id)) return 1;
-
-        return 0;
-      });
-    }
+    const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
 
     const onNetworkPress = async (network: CaipNetwork) => {
-      if (AccountController.state.isConnected && caipNetwork?.id !== network.id) {
-        if (approvedCaipNetworkIds?.includes(network.id) && !isAuthConnected) {
-          await NetworkController.switchActiveNetwork(network);
-          RouterUtil.navigateAfterNetworkSwitch(['ConnectingSiwe']);
-
-          EventsController.sendEvent({
-            type: 'track',
-            event: 'SWITCH_NETWORK',
-            properties: {
-              network: network.id
-            }
-          });
-        } else if (supportsAllNetworks || isAuthConnected) {
-          RouterController.push('SwitchNetwork', { network });
-        }
-      } else if (!AccountController.state.isConnected) {
-        NetworkController.setCaipNetwork(network);
-        RouterController.push('Connect');
+      const result = await NetworkUtil.handleNetworkSwitch(network);
+      if (result?.type === 'SWITCH_NETWORK') {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SWITCH_NETWORK',
+          properties: {
+            network: network.id
+          }
+        });
       }
     };
 
-    return requested.map(network => (
+    return networks.map(network => (
       <View
         key={network.id}
         style={[
