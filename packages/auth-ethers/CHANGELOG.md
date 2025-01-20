@@ -1,5 +1,20 @@
 # @reown/appkit-auth-ethers-react-native
 
+## 1.2.0
+
+### Minor Changes
+
+- [#299](https://github.com/reown-com/appkit-react-native/pull/299) [`278023f`](https://github.com/reown-com/appkit-react-native/commit/278023fa03c4a09be4c2b2b0d2b65e86d05e589b) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - feat: swaps feature
+
+- [#300](https://github.com/reown-com/appkit-react-native/pull/300) [`db1e2a8`](https://github.com/reown-com/appkit-react-native/commit/db1e2a88d2c263fca438a99e0020aa1b2c55e360) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - feat: added ability to change themeMode and override accent color
+
+### Patch Changes
+
+- fix: set loading when account data is being synced in appkit-wagmi
+
+- Updated dependencies [[`278023f`](https://github.com/reown-com/appkit-react-native/commit/278023fa03c4a09be4c2b2b0d2b65e86d05e589b), [`db1e2a8`](https://github.com/reown-com/appkit-react-native/commit/db1e2a88d2c263fca438a99e0020aa1b2c55e360)]:
+  - @reown/appkit-wallet-react-native@1.2.0
+
 ## 1.1.1
 
 ### Patch Changes

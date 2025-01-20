@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-scaffold-utils-react-native",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -35,7 +35,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@reown/appkit-scaffold-react-native": "1.1.1"
+    "@reown/appkit-scaffold-react-native": "1.2.0"
   },
   "react-native": "src/index.ts",
   "react-native-builder-bob": {
