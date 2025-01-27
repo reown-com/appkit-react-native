@@ -377,8 +377,12 @@ export class AppKit extends AppKitScaffold {
     });
 
     watchAccount(wagmiConfig, {
-      onChange: accountData => {
+      onChange: (accountData, prevAccountData) => {
         this.syncAccount({ ...accountData });
+
+        if (accountData.status === 'disconnected' && prevAccountData.status === 'connected') {
+          this.close();
+        }
       }
     });
   }
