@@ -6,6 +6,7 @@ export {
   NetworkButton,
   AppKit
 } from '@reown/appkit-scaffold-react-native';
+import type { EventName } from '@reown/appkit-scaffold-react-native';
 import { ConstantsUtil } from '@reown/appkit-scaffold-utils-react-native';
 export { defaultWagmiConfig } from './utils/defaultWagmiConfig';
 import { useEffect, useState, useSyncExternalStore } from 'react';
@@ -98,6 +99,22 @@ export function useAppKitEvents() {
       unsubscribe?.();
     };
   }, []);
+
+  return event;
+}
+
+export function useAppKitEventSubscription(event: EventName, callback: () => void) {
+  if (!modal) {
+    throw new Error('Please call "createAppKit" before using "useAppKitEventSubscription" hook');
+  }
+
+  useEffect(() => {
+    const unsubscribe = modal?.subscribeEvent(event, callback);
+
+    return () => {
+      unsubscribe?.();
+    };
+  }, [callback, event]);
 
   return event;
 }
