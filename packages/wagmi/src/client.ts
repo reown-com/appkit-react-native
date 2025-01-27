@@ -622,8 +622,6 @@ export class AppKit extends AppKitScaffold {
 
     provider.onSetPreferredAccount(async () => {
       await reconnect(this.wagmiConfig, { connectors: [connector] });
-      // this.setLoading(false);
-      // console.log('setLoading', false);
     });
 
     provider.setOnTimeout(async () => {
