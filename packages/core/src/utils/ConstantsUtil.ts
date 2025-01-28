@@ -2,6 +2,7 @@ import type { Features } from './TypeUtil';
 
 const defaultFeatures: Features = {
   swaps: true,
+  onramp: true,
   email: true,
   emailShowWallets: true,
   socials: ['x', 'discord', 'apple']

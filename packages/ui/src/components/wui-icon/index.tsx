@@ -10,6 +10,7 @@ import ArrowLeftSvg from '../../assets/svg/ArrowLeft';
 import ArrowRightSvg from '../../assets/svg/ArrowRight';
 import ArrowTopSvg from '../../assets/svg/ArrowTop';
 import BrowserSvg from '../../assets/svg/Browser';
+import CardSvg from '../../assets/svg/Card';
 import CheckmarkSvg from '../../assets/svg/Checkmark';
 import ChevronBottomSvg from '../../assets/svg/ChevronBottom';
 import ChevronLeftSvg from '../../assets/svg/ChevronLeft';
@@ -71,6 +72,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   arrowRight: ArrowRightSvg,
   arrowTop: ArrowTopSvg,
   browser: BrowserSvg,
+  card: CardSvg,
   checkmark: CheckmarkSvg,
   chevronBottom: ChevronBottomSvg,
   chevronLeft: ChevronLeftSvg,

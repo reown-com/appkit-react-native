@@ -140,6 +140,7 @@ export type IconType =
   | 'arrowRight'
   | 'arrowTop'
   | 'browser'
+  | 'card'
   | 'checkmark'
   | 'chevronBottom'
   | 'chevronLeft'

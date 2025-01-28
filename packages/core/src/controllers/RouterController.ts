@@ -28,6 +28,8 @@ export interface RouterControllerState {
     | 'EmailVerifyOtp'
     | 'GetWallet'
     | 'Networks'
+    | 'OnRamp'
+    | 'OnRampQuotes'
     | 'SwitchNetwork'
     | 'Swap'
     | 'SwapSelectToken'

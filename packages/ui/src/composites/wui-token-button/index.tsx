@@ -11,6 +11,7 @@ export interface TokenButtonProps {
   inverse?: boolean;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
+  placeholder?: string;
 }
 
 export function TokenButton({
@@ -19,7 +20,8 @@ export function TokenButton({
   inverse,
   onPress,
   style,
-  disabled = false
+  disabled = false,
+  placeholder = 'Select token'
 }: TokenButtonProps) {
   if (!text) {
     return (
@@ -31,7 +33,7 @@ export function TokenButton({
         disabled={disabled}
       >
         <Text variant="small-600" color="accent-100">
-          Select token
+          {placeholder}
         </Text>
       </Button>
     );

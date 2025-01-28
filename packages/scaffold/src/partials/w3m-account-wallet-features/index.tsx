@@ -26,7 +26,7 @@ export function AccountWalletFeatures() {
   const { features } = useSnapshot(OptionsController.state);
   const balance = CoreHelperUtil.calculateAndFormatBalance(tokenBalance as BalanceType[]);
   const isSwapsEnabled = features?.swaps;
-
+  const isOnrampEnabled = features?.onramp;
   const onTabChange = (index: number) => {
     setActiveTab(index);
     if (index === 2) {
@@ -80,6 +80,10 @@ export function AccountWalletFeatures() {
     RouterController.push('WalletReceive');
   };
 
+  const onCardPress = () => {
+    RouterController.push('OnRamp');
+  };
+
   return (
     <FlexView style={styles.container} alignItems="center">
       <Balance integer={balance.dollars} decimal={balance.pennies} />
@@ -89,6 +93,18 @@ export function AccountWalletFeatures() {
         justifyContent="space-around"
         padding={['0', 's', '0', 's']}
       >
+        {isOnrampEnabled && (
+          <IconLink
+            icon="card"
+            size="lg"
+            iconColor="accent-100"
+            background
+            backgroundColor="accent-glass-010"
+            pressedColor="accent-glass-020"
+            style={[styles.action, isSwapsEnabled ? styles.actionCenter : styles.actionLeft]}
+            onPress={onCardPress}
+          />
+        )}
         {isSwapsEnabled && (
           <IconLink
             icon="recycleHorizontal"

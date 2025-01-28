@@ -44,6 +44,8 @@ export function Header() {
       EmailVerifyOtp: 'Confirm email',
       GetWallet: 'Get a wallet',
       Networks: 'Select network',
+      OnRamp: 'Buy',
+      OnRampQuotes: 'Select a provider',
       SwitchNetwork: networkName ?? 'Switch network',
       Swap: 'Swap',
       SwapSelectToken: 'Select token',

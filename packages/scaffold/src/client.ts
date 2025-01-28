@@ -29,7 +29,8 @@ import {
   SnackController,
   StorageUtil,
   ThemeController,
-  TransactionsController
+  TransactionsController,
+  OnRampController
 } from '@reown/appkit-core-react-native';
 import {
   ConstantsUtil,
@@ -41,6 +42,7 @@ import {
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {
   projectId: OptionsControllerState['projectId'];
+  metadata: OptionsControllerState['metadata'];
   themeMode?: ThemeMode;
   themeVariables?: ThemeVariables;
   includeWalletIds?: OptionsControllerState['includeWalletIds'];
@@ -52,7 +54,6 @@ export interface LibraryOptions {
   clipboardClient?: OptionsControllerState['_clipboardClient'];
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
   _sdkVersion: OptionsControllerState['sdkVersion'];
-  metadata?: OptionsControllerState['metadata'];
   debug?: OptionsControllerState['debug'];
   features?: Features;
 }
@@ -307,6 +308,14 @@ export class AppKitScaffold {
 
     if (options.features) {
       OptionsController.setFeatures(options.features);
+    }
+
+    if (
+      (options.features?.onramp === true || options.features?.onramp === undefined) &&
+      (options.metadata?.redirect?.universal || options.metadata?.redirect?.native)
+    ) {
+      OptionsController.setIsOnRampEnabled(true);
+      OnRampController.loadOnRampData();
     }
   }
 

@@ -176,6 +176,22 @@ export const CoreHelperUtil = {
     return CommonConstants.PULSE_API_URL;
   },
 
+  getMeldApiUrl() {
+    if (__DEV__) {
+      return CommonConstants.MELD_DEV_API_URL;
+    }
+
+    return CommonConstants.MELD_API_URL;
+  },
+
+  getMeldToken() {
+    if (__DEV__) {
+      return CommonConstants.MELD_DEV_TOKEN;
+    }
+
+    return CommonConstants.MELD_TOKEN;
+  },
+
   getUUID() {
     if ((global as any)?.crypto.getRandomValues) {
       const buffer = new Uint8Array(16);
