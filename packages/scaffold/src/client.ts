@@ -12,7 +12,8 @@ import type {
   ThemeControllerState,
   Connector,
   ConnectedWalletInfo,
-  Features
+  Features,
+  EventName
 } from '@reown/appkit-core-react-native';
 import { SIWEController, type SIWEControllerClient } from '@reown/appkit-siwe-react-native';
 import {
@@ -143,6 +144,10 @@ export class AppKitScaffold {
 
   public subscribeEvents(callback: (newEvent: EventsControllerState) => void) {
     return EventsController.subscribe(callback);
+  }
+
+  public subscribeEvent(event: EventName, callback: (newEvent: EventsControllerState) => void) {
+    return EventsController.subscribeEvent(event, callback);
   }
 
   public resolveReownName = async (name: string) => {
