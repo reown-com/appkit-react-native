@@ -1,5 +1,13 @@
 # @reown/appkit-coinbase-ethers-react-native
 
+## 1.2.1
+
+### Patch Changes
+
+- [#308](https://github.com/reown-com/appkit-react-native/pull/308) [`cdc1af3`](https://github.com/reown-com/appkit-react-native/commit/cdc1af3878a9193b34c530d2a867397941ed0bbf) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: added event subscription hook
+
+- [#307](https://github.com/reown-com/appkit-react-native/pull/307) [`bec3342`](https://github.com/reown-com/appkit-react-native/commit/bec3342e41d80a93e6eb5fca4883d97dd7dc64c2) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: changed condition for initial modal loading
+
 ## 1.2.0
 
 ### Minor Changes
