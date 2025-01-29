@@ -377,8 +377,12 @@ export class AppKit extends AppKitScaffold {
     });
 
     watchAccount(wagmiConfig, {
-      onChange: accountData => {
+      onChange: (accountData, prevAccountData) => {
         this.syncAccount({ ...accountData });
+
+        if (accountData.status === 'disconnected' && prevAccountData.status === 'connected') {
+          this.close();
+        }
       }
     });
   }
@@ -431,7 +435,7 @@ export class AppKit extends AppKitScaffold {
     'address' | 'isConnected' | 'chainId' | 'connector' | 'isConnecting' | 'isReconnecting'
   >) {
     this.syncNetwork(address, chainId, isConnected);
-    this.setLoading(isConnecting || isReconnecting);
+    this.setLoading(!!connector && (isConnecting || isReconnecting));
 
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
@@ -444,8 +448,7 @@ export class AppKit extends AppKitScaffold {
         this.getApprovedCaipNetworksData()
       ]);
       this.hasSyncedConnectedAccount = true;
-    } else if (!isConnected && this.hasSyncedConnectedAccount) {
-      this.close();
+    } else if (!isConnected && !isConnecting && !isReconnecting && this.hasSyncedConnectedAccount) {
       this.resetAccount();
       this.resetWcConnection();
       this.resetNetwork();
@@ -619,7 +622,6 @@ export class AppKit extends AppKitScaffold {
 
     provider.onSetPreferredAccount(async () => {
       await reconnect(this.wagmiConfig, { connectors: [connector] });
-      this.setLoading(false);
     });
 
     provider.setOnTimeout(async () => {
