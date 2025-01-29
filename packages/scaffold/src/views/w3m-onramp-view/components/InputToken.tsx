@@ -21,6 +21,9 @@ export interface InputTokenProps {
   placeholder?: string;
   editable?: boolean;
   value?: string;
+  loading?: boolean;
+  error?: string;
+  containerHeight?: number;
 }
 
 const debounce = (func: Function, wait: number) => {
@@ -36,6 +39,7 @@ export function InputToken({
   tokenImage,
   tokenSymbol,
   style,
+  containerHeight = 100,
   title,
   onTokenPress,
   initialValue,
@@ -43,7 +47,8 @@ export function InputToken({
   onInputChange,
   placeholder = 'Select currency',
   editable = true,
-  loading
+  loading,
+  error
 }: InputTokenProps) {
   const Theme = useTheme();
   const valueInputRef = useRef<TextInput | null>(null);
@@ -66,7 +71,7 @@ export function InputToken({
 
   return loading ? (
     <Shimmer
-      height={100}
+      height={containerHeight}
       width="100%"
       borderRadius={BorderRadius.xs}
       style={[styles.container, style]}
@@ -75,7 +80,11 @@ export function InputToken({
     <FlexView
       style={[
         styles.container,
-        { backgroundColor: Theme['gray-glass-005'], borderColor: Theme['gray-glass-005'] },
+        {
+          backgroundColor: Theme['gray-glass-005'],
+          borderColor: Theme['gray-glass-005'],
+          height: containerHeight
+        },
         style
       ]}
       justifyContent="center"
@@ -115,12 +124,16 @@ export function InputToken({
           onPress={onTokenPress}
         />
       </FlexView>
+      {error && (
+        <Text variant="small-500" color="error-100" numberOfLines={1} style={styles.error}>
+          {error}
+        </Text>
+      )}
     </FlexView>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    height: 100,
     width: '100%',
     borderRadius: BorderRadius.s,
     borderWidth: StyleSheet.hairlineWidth
@@ -133,5 +146,8 @@ const styles = StyleSheet.create({
   sendValue: {
     flex: 1,
     marginRight: Spacing.xs
+  },
+  error: {
+    marginTop: Spacing['3xs']
   }
 });

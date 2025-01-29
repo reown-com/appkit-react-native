@@ -29,7 +29,8 @@ export const getThemedColors = (variant?: TagType) =>
 export default StyleSheet.create({
   container: {
     borderRadius: BorderRadius['5xs'],
-    padding: Spacing['2xs']
+    padding: Spacing['2xs'],
+    alignSelf: 'flex-start'
   },
   text: {
     textTransform: 'uppercase'

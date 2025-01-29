@@ -39,7 +39,7 @@ export interface OnRampControllerState {
   paymentCurrenciesLimits?: OnRampFiatLimit[];
   purchaseAmount?: number;
   paymentAmount?: number;
-  error: string | null;
+  error?: string;
   quotesLoading: boolean;
   quotes?: OnRampQuote[];
   selectedQuote?: OnRampQuote;
@@ -50,7 +50,6 @@ export interface OnRampControllerState {
 type StateKey = keyof OnRampControllerState;
 
 const defaultState = {
-  error: null,
   quotesLoading: false,
   countries: [],
   paymentMethods: [],
@@ -200,7 +199,7 @@ export const OnRampController = {
   },
 
   async getQuotes() {
-    //TODO: add try catch
+    state.error = undefined;
     state.quotesLoading = true;
 
     try {
@@ -229,8 +228,7 @@ export const OnRampController = {
       state.selectedQuote = undefined;
       state.selectedServiceProvider = undefined;
       state.quotesLoading = false;
-      state.error = error?.message || 'Failed to get quotes';
-      // console.log('error', error);
+      state.error = error?.code || 'UNKNOWN_ERROR';
     }
   },
 
@@ -276,6 +274,10 @@ export const OnRampController = {
     return widget;
   },
 
+  clearError() {
+    state.error = undefined;
+  },
+
   async loadOnRampData() {
     await this.getAvailableCountries();
     await this.getAvailableServiceProviders();
@@ -286,7 +288,7 @@ export const OnRampController = {
   },
 
   resetState() {
-    state.error = null; //TODO: add error message
+    state.error = undefined;
     state.quotesLoading = false;
     state.quotes = [];
     state.widgetUrl = undefined;

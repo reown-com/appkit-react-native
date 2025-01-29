@@ -1,5 +1,29 @@
 import { OnRampController, NetworkController } from '@reown/appkit-core-react-native';
 
+export const getErrorMessage = (error?: string) => {
+  if (!error) {
+    return undefined;
+  }
+
+  if (error === 'INVALID_AMOUNT_TOO_LOW') {
+    return 'Amount is too low';
+  }
+
+  if (error === 'INVALID_AMOUNT_TOO_HIGH') {
+    return 'Amount is too high';
+  }
+
+  if (error === 'INVALID_AMOUNT') {
+    return 'No provider found for this amount';
+  }
+
+  if (error === 'UNKNOWN_ERROR') {
+    return 'Failed to load. Please try again';
+  }
+
+  return error;
+};
+
 export const getModalTitle = (
   modalType?: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | 'quotes'
 ) => {

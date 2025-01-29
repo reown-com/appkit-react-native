@@ -14,7 +14,7 @@ import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Country } from './components/Country';
 import { Currency } from './components/Currency';
 import { PaymentMethod } from './components/PaymentMethod';
-import { getModalItems, getModalTitle } from './utils';
+import { getErrorMessage, getModalItems, getModalTitle } from './utils';
 import { SelectButton } from './components/SelectButton';
 import { InputToken } from './components/InputToken';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
@@ -29,11 +29,11 @@ export function OnRampView() {
     paymentAmount,
     quotesLoading,
     selectedQuote,
-    selectedServiceProvider
+    error
   } = useSnapshot(OnRampController.state);
   const [loading, setLoading] = useState(false);
   const [modalType, setModalType] = useState<
-    'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | 'quotes' | undefined
+    'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | undefined
   >();
 
   const paymentLogo =
@@ -45,6 +45,7 @@ export function OnRampView() {
     if (Number(formattedValue) >= 0 || formattedValue === '') {
       // setInputValue(formattedValue);
       OnRampController.setPaymentAmount(Number(formattedValue));
+      OnRampController.clearError();
     }
   };
 
@@ -164,6 +165,7 @@ export function OnRampView() {
         tokenSymbol={paymentCurrency?.currencyCode}
         onTokenPress={() => setModalType('paymentCurrency')}
         style={{ marginBottom: Spacing.s }}
+        error={getErrorMessage(error)}
       />
       <InputToken
         title="You receive"
@@ -173,6 +175,7 @@ export function OnRampView() {
         tokenSymbol={purchaseCurrency?.currencyCode}
         onTokenPress={() => setModalType('purchaseCurrency')}
         loading={quotesLoading}
+        containerHeight={80}
       />
       <SelectButton
         style={styles.paymentMethodButton}

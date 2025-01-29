@@ -84,8 +84,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing['3xs']
   },
   kycTag: {
-    padding: Spacing['3xs'],
-    alignItems: 'center'
+    padding: Spacing['3xs']
   },
   amountText: {
     textAlign: 'right'
