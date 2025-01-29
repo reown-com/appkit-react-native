@@ -3,7 +3,7 @@ import { ApiController } from './ApiController';
 import { OptionsController } from './OptionsController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { FetchUtil } from '../utils/FetchUtil';
-import type { Event } from '../utils/TypeUtil';
+import type { Event, EventName } from '../utils/TypeUtil';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getAnalyticsUrl();
@@ -31,6 +31,14 @@ export const EventsController = {
 
   subscribe(callback: (newState: EventsControllerState) => void) {
     return sub(state, () => callback(state));
+  },
+
+  subscribeEvent(event: EventName, callback: (newEvent: EventsControllerState) => void) {
+    return sub(state, () => {
+      if (state.data.event === event) {
+        callback(state);
+      }
+    });
   },
 
   async _sendAnalyticsEvent(data: EventsControllerState['data'], timestamp: number) {
