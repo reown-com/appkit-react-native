@@ -54,7 +54,8 @@ const defaultState = {
   quotesLoading: false,
   countries: [],
   paymentMethods: [],
-  serviceProviders: []
+  serviceProviders: [],
+  paymentAmount: 100
 };
 
 // -- State --------------------------------------------- //
@@ -80,6 +81,10 @@ export const OnRampController = {
 
   setSelectedPaymentMethod(paymentMethod: OnRampPaymentMethod) {
     state.selectedPaymentMethod = paymentMethod;
+
+    // Reset quotes
+    state.selectedQuote = undefined;
+    state.quotes = [];
     // TODO: save to storage as preferred payment method
   },
 
@@ -103,6 +108,12 @@ export const OnRampController = {
 
   setSelectedQuote(quote: OnRampQuote) {
     state.selectedQuote = quote;
+  },
+
+  getServiceProviderImage(serviceProvider: string) {
+    const provider = state.serviceProviders.find(p => p.serviceProvider === serviceProvider);
+
+    return provider?.logos?.lightShort;
   },
 
   async getAvailableCountries() {
@@ -144,7 +155,10 @@ export const OnRampController = {
       }
     });
     state.paymentMethods = paymentMethods || [];
-    state.selectedPaymentMethod = paymentMethods?.[0] || undefined;
+    state.selectedPaymentMethod =
+      paymentMethods?.find(p => p.paymentMethod === 'CREDIT_DEBIT_CARD') ||
+      paymentMethods?.[0] ||
+      undefined;
   },
 
   async getAvailableCryptoCurrencies() {
@@ -204,19 +218,19 @@ export const OnRampController = {
         body
       });
 
-      state.quotesLoading = false;
       state.quotes = response?.quotes;
       state.selectedQuote = response?.quotes?.[0];
       state.selectedServiceProvider = state.serviceProviders.find(
         sp => sp.serviceProvider === response?.quotes?.[0]?.serviceProvider
       );
-    } catch (error) {
       state.quotesLoading = false;
+    } catch (error: any) {
       state.quotes = [];
       state.selectedQuote = undefined;
       state.selectedServiceProvider = undefined;
+      state.quotesLoading = false;
       state.error = error?.message || 'Failed to get quotes';
-      console.log('error', error);
+      // console.log('error', error);
     }
   },
 
@@ -251,7 +265,7 @@ export const OnRampController = {
           sourceAmount: quote?.sourceAmount,
           sourceCurrencyCode: quote?.sourceCurrencyCode,
           walletAddress: AccountController.state.address,
-          redirectUrl: metadata?.redirect?.universal ?? metadata?.redirect?.native
+          redirectUrl: metadata?.redirect?.universal ?? `${metadata?.redirect?.native}/onramp`
         },
         sessionType: 'BUY'
       }

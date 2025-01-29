@@ -7,9 +7,9 @@ import {
   type OnRampPaymentMethod,
   type OnRampFiatCurrency,
   type OnRampCryptoCurrency,
-  type OnRampQuote
+  ThemeController
 } from '@reown/appkit-core-react-native';
-import { BorderRadius, Button, FlexView, Spacing, useTheme } from '@reown/appkit-ui-react-native';
+import { BorderRadius, Button, FlexView, Spacing } from '@reown/appkit-ui-react-native';
 import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Country } from './components/Country';
 import { Currency } from './components/Currency';
@@ -17,10 +17,10 @@ import { PaymentMethod } from './components/PaymentMethod';
 import { getModalItems, getModalTitle } from './utils';
 import { SelectButton } from './components/SelectButton';
 import { InputToken } from './components/InputToken';
-import { Quote } from './components/Quote';
+import { SelectPaymentModal } from './components/SelectPaymentModal';
 
 export function OnRampView() {
-  const Theme = useTheme();
+  const { themeMode } = useSnapshot(ThemeController.state);
   const {
     purchaseCurrency,
     selectedCountry,
@@ -28,21 +28,22 @@ export function OnRampView() {
     selectedPaymentMethod,
     paymentAmount,
     quotesLoading,
-    quotes,
     selectedQuote,
     selectedServiceProvider
   } = useSnapshot(OnRampController.state);
-  const [inputValue, setInputValue] = useState<string | undefined>(paymentAmount?.toString());
   const [loading, setLoading] = useState(false);
   const [modalType, setModalType] = useState<
     'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | 'quotes' | undefined
   >();
 
+  const paymentLogo =
+    themeMode === 'dark' ? selectedPaymentMethod?.logos.light : selectedPaymentMethod?.logos.dark;
+
   const onInputChange = (value: string) => {
     const formattedValue = value.replace(/,/g, '.');
 
     if (Number(formattedValue) >= 0 || formattedValue === '') {
-      setInputValue(formattedValue);
+      // setInputValue(formattedValue);
       OnRampController.setPaymentAmount(Number(formattedValue));
     }
   };
@@ -105,20 +106,6 @@ export function OnRampView() {
         />
       );
     }
-    if (modalType === 'quotes') {
-      const parsedItem = item as OnRampQuote;
-      const serviceProvider = OnRampController.state.serviceProviders.find(
-        sp => sp.serviceProvider === parsedItem.serviceProvider
-      );
-
-      return (
-        <Quote
-          item={parsedItem}
-          serviceProvider={serviceProvider}
-          onQuotePress={onPressModalItem}
-        />
-      );
-    }
 
     return <View />;
   };
@@ -135,9 +122,6 @@ export function OnRampView() {
     }
     if (modalType === 'purchaseCurrency') {
       OnRampController.setPurchaseCurrency(item as OnRampCryptoCurrency);
-    }
-    if (modalType === 'quotes') {
-      OnRampController.setSelectedQuote(item as OnRampQuote);
     }
 
     setModalType(undefined);
@@ -174,7 +158,7 @@ export function OnRampView() {
       />
       <InputToken
         title="You pay"
-        initialValue="100"
+        initialValue={paymentAmount?.toString()}
         onInputChange={onInputChange}
         tokenImage={paymentCurrency?.symbolImageUrl}
         tokenSymbol={paymentCurrency?.currencyCode}
@@ -188,47 +172,43 @@ export function OnRampView() {
         tokenImage={purchaseCurrency?.symbolImageUrl}
         tokenSymbol={purchaseCurrency?.currencyCode}
         onTokenPress={() => setModalType('purchaseCurrency')}
+        loading={quotesLoading}
       />
-      <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
-        <SelectButton
-          style={styles.paymentMethodButton}
-          onPress={() => setModalType('paymentMethod')}
-          imageURL={selectedPaymentMethod?.logos.dark}
-          text={selectedPaymentMethod?.name}
-          description={`via ${selectedQuote?.serviceProvider}`}
-        />
-      </FlexView>
-      {/* {selectedQuote && (
-        <SelectButton
-          style={styles.providerButton}
-          onPress={() => setModalType('quotes')}
-          text={selectedQuote?.serviceProvider}
-          imageURL={selectedServiceProvider?.logos?.darkShort}
-          imageStyle={[styles.providerImage, { borderColor: Theme['gray-glass-010'] }]}
-          tagText="recommended"
-          pressable={quotes?.length > 1}
-        />
-      )} */}
+      <SelectButton
+        style={styles.paymentMethodButton}
+        onPress={() => setModalType('paymentMethod')}
+        imageURL={paymentLogo}
+        text={selectedPaymentMethod?.name}
+        description={selectedQuote ? `via ${selectedQuote?.serviceProvider}` : 'Select a provider'}
+        isError={!selectedQuote}
+        loading={quotesLoading}
+        loadingHeight={60}
+      />
       <Button
         style={styles.quotesButton}
         onPress={handleContinue}
-        loading={quotesLoading}
-        disabled={quotesLoading || !selectedQuote}
+        loading={quotesLoading || loading}
+        disabled={quotesLoading || loading || !selectedQuote}
       >
         Continue
       </Button>
       <SelectorModal
-        visible={!!modalType}
+        visible={!!modalType && modalType !== 'paymentMethod'}
         onClose={onModalClose}
         items={getModalItems(modalType)}
         renderItem={renderModalItem}
         title={getModalTitle(modalType)}
       />
+      <SelectPaymentModal
+        visible={modalType === 'paymentMethod'}
+        onClose={onModalClose}
+        title="Payment"
+      />
     </FlexView>
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   input: {
     fontSize: 20,
     flex: 1,
@@ -250,9 +230,10 @@ const styles = StyleSheet.create({
     height: 16
   },
   paymentMethodButton: {
-    flex: 4,
-    height: 50,
-    justifyContent: 'space-between'
+    width: '100%',
+    height: 60,
+    justifyContent: 'space-between',
+    marginTop: Spacing.s
   },
   purchaseCurrencyButton: {
     height: 50,
@@ -271,6 +252,7 @@ const styles = StyleSheet.create({
   },
   providerImage: {
     height: 20,
-    width: 20
+    width: 20,
+    borderRadius: BorderRadius.full
   }
 });

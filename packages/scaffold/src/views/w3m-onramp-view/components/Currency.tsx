@@ -34,19 +34,19 @@ export function Currency({ onPress, item, selected, isToken }: Props) {
       style={[
         styles.container,
         {
-          backgroundColor: selected ? Theme['accent-glass-015'] : Theme['gray-glass-005'],
+          backgroundColor: Theme['gray-glass-005'],
           borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010']
         }
       ]}
     >
-      <FlexView flexDirection="row" alignItems="center" justifyContent="space-between" padding="s">
+      <FlexView flexDirection="row" alignItems="center" justifyContent="space-between" padding="xs">
         <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start">
           <Image
             source={item.symbolImageUrl}
             style={[styles.logo, { backgroundColor: Theme['fg-100'] }]}
           />
           <FlexView>
-            <Text variant="medium-400" color="fg-100">
+            <Text variant="paragraph-500" color="fg-100">
               {isToken ? item.currencyCode : item.name}
             </Text>
             <Text variant="small-400" color="fg-150">

@@ -4,6 +4,7 @@ import {
   Icon,
   Image,
   Pressable,
+  Shimmer,
   Spacing,
   Text,
   useTheme,
@@ -17,6 +18,8 @@ import { SvgUri } from 'react-native-svg';
 interface Props {
   text?: string;
   description?: string;
+  isError?: boolean;
+  loading?: boolean;
   tagText?: string;
   onPress: () => void;
   imageURL?: string;
@@ -30,6 +33,9 @@ interface Props {
 export function SelectButton({
   text,
   description,
+  isError,
+  loading,
+  loadingHeight,
   onPress,
   imageURL,
   isSVG,
@@ -40,7 +46,14 @@ export function SelectButton({
 }: Props) {
   const Theme = useTheme();
 
-  return (
+  return loading ? (
+    <Shimmer
+      height={loadingHeight}
+      width="100%"
+      borderRadius={BorderRadius.xs}
+      style={[styles.container, style]}
+    />
+  ) : (
     <Pressable
       onPress={pressable ? onPress : undefined}
       style={[
@@ -66,7 +79,11 @@ export function SelectButton({
           <FlexView flexDirection="column" alignItems="flex-start" style={styles.textContainer}>
             {text && <Text>{text}</Text>}
             {description && (
-              <Text variant="small-400" color="fg-100" style={styles.description}>
+              <Text
+                variant="small-400"
+                color={isError ? 'error-100' : 'fg-100'}
+                style={styles.description}
+              >
                 {description}
               </Text>
             )}

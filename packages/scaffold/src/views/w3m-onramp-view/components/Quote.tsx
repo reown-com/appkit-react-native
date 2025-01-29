@@ -1,4 +1,9 @@
-import type { OnRampQuote, OnRampServiceProvider } from '@reown/appkit-core-react-native';
+import { useSnapshot } from 'valtio';
+import {
+  ThemeController,
+  type OnRampQuote,
+  type OnRampServiceProvider
+} from '@reown/appkit-core-react-native';
 import {
   Pressable,
   FlexView,
@@ -13,13 +18,14 @@ import { StyleSheet } from 'react-native';
 
 interface Props {
   item: OnRampQuote;
-  serviceProvider: OnRampServiceProvider;
+  logoURL: string;
   onQuotePress: (item: OnRampQuote) => void;
+  selected?: boolean;
 }
 
 export const ITEM_HEIGHT = 60;
 
-export function Quote({ item, serviceProvider, onQuotePress }: Props) {
+export function Quote({ item, logoURL, onQuotePress, selected }: Props) {
   const Theme = useTheme();
 
   return (
@@ -28,16 +34,16 @@ export function Quote({ item, serviceProvider, onQuotePress }: Props) {
         styles.container,
         {
           backgroundColor: Theme['gray-glass-005'],
-          borderColor: Theme['gray-glass-010']
+          borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010']
         }
       ]}
       onPress={() => onQuotePress(item)}
     >
       <FlexView justifyContent="space-between" alignItems="center" flexDirection="row" padding="m">
         <FlexView flexDirection="row" alignItems="center">
-          <Image source={serviceProvider?.logos?.darkShort} style={styles.logo} />
+          <Image source={logoURL} style={styles.logo} />
           <FlexView>
-            <Text variant="medium-600" style={styles.providerText}>
+            <Text variant="paragraph-600" style={styles.providerText}>
               {item.serviceProvider?.toLowerCase()}
             </Text>
             {item.lowKyc && (
@@ -48,7 +54,7 @@ export function Quote({ item, serviceProvider, onQuotePress }: Props) {
           </FlexView>
         </FlexView>
         <FlexView justifyContent="center">
-          <Text variant="medium-600" style={styles.amountText}>
+          <Text variant="paragraph-500" style={styles.amountText}>
             {item.destinationAmount} {item.destinationCurrencyCode}
           </Text>
           <Text variant="small-500" color="fg-175" style={styles.amountText}>
@@ -62,7 +68,7 @@ export function Quote({ item, serviceProvider, onQuotePress }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: 1,
     borderRadius: BorderRadius['3xs'],
     height: ITEM_HEIGHT,
     justifyContent: 'center'

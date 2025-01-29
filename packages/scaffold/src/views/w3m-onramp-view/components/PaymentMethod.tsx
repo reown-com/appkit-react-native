@@ -1,4 +1,5 @@
-import { type OnRampPaymentMethod } from '@reown/appkit-core-react-native';
+import { useSnapshot } from 'valtio';
+import { ThemeController, type OnRampPaymentMethod } from '@reown/appkit-core-react-native';
 import {
   Pressable,
   FlexView,
@@ -19,7 +20,8 @@ interface Props {
 
 export function PaymentMethod({ onPress, item, selected }: Props) {
   const Theme = useTheme();
-  const logoURL = item.logos.dark;
+  const { themeMode } = useSnapshot(ThemeController.state);
+  const logoURL = themeMode === 'dark' ? item.logos.light : item.logos.dark;
 
   const handlePress = () => {
     onPress(item);
@@ -31,15 +33,15 @@ export function PaymentMethod({ onPress, item, selected }: Props) {
       style={[
         styles.container,
         {
-          backgroundColor: selected ? Theme['accent-glass-015'] : Theme['gray-glass-005'],
+          backgroundColor: Theme['gray-glass-005'],
           borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010']
         }
       ]}
     >
-      <FlexView flexDirection="row" alignItems="center" justifyContent="space-between" padding="s">
+      <FlexView flexDirection="row" alignItems="center" justifyContent="space-between" padding="xs">
         <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start" padding="2xs">
           <Image source={logoURL} style={styles.logo} resizeMethod="resize" resizeMode="center" />
-          <Text variant="medium-400" color="fg-100">
+          <Text variant="paragraph-500" color="fg-100">
             {item.name}
           </Text>
         </FlexView>

@@ -30,7 +30,7 @@ export function Country({ onPress, item, selected }: Props) {
       style={[
         styles.container,
         {
-          backgroundColor: selected ? Theme['accent-glass-015'] : Theme['gray-glass-005'],
+          backgroundColor: Theme['gray-glass-005'],
           borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010']
         }
       ]}
@@ -45,7 +45,7 @@ export function Country({ onPress, item, selected }: Props) {
               marginRight: Spacing.s
             }}
           />
-          <Text variant="medium-400" color="fg-100">
+          <Text variant="paragraph-500" color="fg-100">
             {item.name}
           </Text>
         </FlexView>

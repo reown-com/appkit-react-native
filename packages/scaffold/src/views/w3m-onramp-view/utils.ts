@@ -7,7 +7,7 @@ export const getModalTitle = (
     return 'Select your country';
   }
   if (modalType === 'paymentMethod') {
-    return 'Select payment method';
+    return 'Payment method';
   }
   if (modalType === 'paymentCurrency') {
     return 'Select a currency';

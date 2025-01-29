@@ -6,7 +6,8 @@ import {
   TokenButton,
   BorderRadius,
   Spacing,
-  Text
+  Text,
+  Shimmer
 } from '@reown/appkit-ui-react-native';
 
 export interface InputTokenProps {
@@ -41,7 +42,8 @@ export function InputToken({
   value,
   onInputChange,
   placeholder = 'Select currency',
-  editable = true
+  editable = true,
+  loading
 }: InputTokenProps) {
   const Theme = useTheme();
   const valueInputRef = useRef<TextInput | null>(null);
@@ -62,7 +64,14 @@ export function InputToken({
     }
   };
 
-  return (
+  return loading ? (
+    <Shimmer
+      height={100}
+      width="100%"
+      borderRadius={BorderRadius.xs}
+      style={[styles.container, style]}
+    />
+  ) : (
     <FlexView
       style={[
         styles.container,

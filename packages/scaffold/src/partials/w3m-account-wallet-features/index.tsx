@@ -23,10 +23,9 @@ export interface AccountWalletFeaturesProps {
 export function AccountWalletFeatures() {
   const [activeTab, setActiveTab] = useState(0);
   const { tokenBalance } = useSnapshot(AccountController.state);
-  const { features } = useSnapshot(OptionsController.state);
+  const { features, isOnrampEnabled } = useSnapshot(OptionsController.state);
   const balance = CoreHelperUtil.calculateAndFormatBalance(tokenBalance as BalanceType[]);
   const isSwapsEnabled = features?.swaps;
-  const isOnrampEnabled = features?.onramp;
   const onTabChange = (index: number) => {
     setActiveTab(index);
     if (index === 2) {
