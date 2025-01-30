@@ -29,7 +29,6 @@ export interface RouterControllerState {
     | 'GetWallet'
     | 'Networks'
     | 'OnRamp'
-    | 'OnRampQuotes'
     | 'SwitchNetwork'
     | 'Swap'
     | 'SwapSelectToken'
