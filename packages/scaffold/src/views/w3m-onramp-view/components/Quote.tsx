@@ -1,9 +1,4 @@
-import { useSnapshot } from 'valtio';
-import {
-  ThemeController,
-  type OnRampQuote,
-  type OnRampServiceProvider
-} from '@reown/appkit-core-react-native';
+import { type OnRampQuote } from '@reown/appkit-core-react-native';
 import {
   Pressable,
   FlexView,
@@ -18,7 +13,7 @@ import { StyleSheet } from 'react-native';
 
 interface Props {
   item: OnRampQuote;
-  logoURL: string;
+  logoURL?: string;
   onQuotePress: (item: OnRampQuote) => void;
   selected?: boolean;
 }
@@ -27,6 +22,7 @@ export const ITEM_HEIGHT = 60;
 
 export function Quote({ item, logoURL, onQuotePress, selected }: Props) {
   const Theme = useTheme();
+  //TODO: Add logo placeholder
 
   return (
     <Pressable
@@ -41,7 +37,7 @@ export function Quote({ item, logoURL, onQuotePress, selected }: Props) {
     >
       <FlexView justifyContent="space-between" alignItems="center" flexDirection="row" padding="m">
         <FlexView flexDirection="row" alignItems="center">
-          <Image source={logoURL} style={styles.logo} />
+          {logoURL && <Image source={logoURL} style={styles.logo} />}
           <FlexView>
             <Text variant="paragraph-600" style={styles.providerText}>
               {item.serviceProvider?.toLowerCase()}
@@ -84,7 +80,8 @@ const styles = StyleSheet.create({
     marginBottom: Spacing['3xs']
   },
   kycTag: {
-    padding: Spacing['3xs']
+    padding: Spacing['3xs'],
+    alignSelf: 'flex-start'
   },
   amountText: {
     textAlign: 'right'

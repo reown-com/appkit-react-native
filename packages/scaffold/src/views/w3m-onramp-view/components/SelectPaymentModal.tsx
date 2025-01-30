@@ -38,7 +38,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
   );
 
   const paymentLogo =
-    themeMode === 'dark' ? selectedPaymentMethod?.logos.light : selectedPaymentMethod?.logos.dark;
+    themeMode === 'dark' ? selectedPaymentMethod?.logos.dark : selectedPaymentMethod?.logos.light;
 
   const renderSeparator = () => {
     return <View style={styles.separator} />;
@@ -154,7 +154,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
       <SelectorModal
         visible={paymentVisible}
         onClose={() => setPaymentVisible(false)}
-        items={paymentMethods}
+        items={paymentMethods as OnRampPaymentMethod[]}
         renderItem={renderPaymentMethod}
         title={getModalTitle('paymentMethod')}
       />

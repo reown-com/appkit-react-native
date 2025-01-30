@@ -21,7 +21,7 @@ interface Props {
 export function PaymentMethod({ onPress, item, selected }: Props) {
   const Theme = useTheme();
   const { themeMode } = useSnapshot(ThemeController.state);
-  const logoURL = themeMode === 'dark' ? item.logos.light : item.logos.dark;
+  const logoURL = themeMode === 'dark' ? item.logos.dark : item.logos.light;
 
   const handlePress = () => {
     onPress(item);

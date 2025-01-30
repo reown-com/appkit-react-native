@@ -7,7 +7,11 @@ import {
   type OnRampPaymentMethod,
   type OnRampFiatCurrency,
   type OnRampCryptoCurrency,
-  ThemeController
+  ThemeController,
+  OptionsController,
+  ConnectorController,
+  SnackController,
+  RouterController
 } from '@reown/appkit-core-react-native';
 import { BorderRadius, Button, FlexView, Spacing } from '@reown/appkit-ui-react-native';
 import { SelectorModal } from '../../partials/w3m-selector-modal';
@@ -37,27 +41,28 @@ export function OnRampView() {
   >();
 
   const paymentLogo =
-    themeMode === 'dark' ? selectedPaymentMethod?.logos.light : selectedPaymentMethod?.logos.dark;
+    themeMode === 'dark' ? selectedPaymentMethod?.logos.dark : selectedPaymentMethod?.logos.light;
 
   const onInputChange = (value: string) => {
     const formattedValue = value.replace(/,/g, '.');
 
     if (Number(formattedValue) >= 0 || formattedValue === '') {
-      // setInputValue(formattedValue);
       OnRampController.setPaymentAmount(Number(formattedValue));
       OnRampController.clearError();
     }
   };
 
   const handleContinue = async () => {
-    setLoading(true);
-    const response = await OnRampController.getWidget({
-      quote: OnRampController.state.selectedQuote
-    });
-    if (response?.widgetUrl) {
-      Linking.openURL(response?.widgetUrl);
+    if (OnRampController.state.selectedQuote) {
+      setLoading(true);
+      const response = await OnRampController.getWidget({
+        quote: OnRampController.state.selectedQuote
+      });
+      if (response?.widgetUrl) {
+        Linking.openURL(response?.widgetUrl);
+      }
+      // GO TO LOADING SCREEN
     }
-    // GO TO LOADING SCREEN
   };
 
   const renderModalItem = ({ item }: { item: any }) => {
@@ -137,6 +142,24 @@ export function OnRampView() {
   }, []);
 
   useEffect(() => {
+    const unsubscribe = Linking.addEventListener('url', ({ url }) => {
+      const metadata = OptionsController.state.metadata;
+      const isAuth = ConnectorController.state.connectedConnector === 'AUTH';
+      if (
+        url.startsWith(metadata?.redirect?.universal ?? '') ||
+        url.startsWith(metadata?.redirect?.native ?? '')
+      ) {
+        SnackController.showSuccess('Onramp started');
+        RouterController.replace(isAuth ? 'Account' : 'AccountDefault');
+        OnRampController.resetState();
+        //TODO: Reload balance / activity
+      }
+    });
+
+    return () => unsubscribe.remove();
+  }, []);
+
+  useEffect(() => {
     if (
       purchaseCurrency &&
       selectedCountry &&
@@ -149,7 +172,7 @@ export function OnRampView() {
   }, [purchaseCurrency, selectedCountry, paymentCurrency, selectedPaymentMethod, paymentAmount]);
 
   return (
-    <FlexView padding={['s', 's', '2xl', 's']}>
+    <FlexView padding={['s', 's', '4xl', 's']}>
       <SelectButton
         style={styles.countryButton}
         onPress={() => setModalType('country')}

@@ -28,6 +28,7 @@ interface Props {
   imageStyle?: StyleProp<ImageStyle>;
   iconPlaceholder?: IconType;
   pressable?: boolean;
+  loadingHeight?: number; //TODO: review this
 }
 
 export function SelectButton({

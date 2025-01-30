@@ -23,7 +23,7 @@ export interface AccountWalletFeaturesProps {
 export function AccountWalletFeatures() {
   const [activeTab, setActiveTab] = useState(0);
   const { tokenBalance } = useSnapshot(AccountController.state);
-  const { features, isOnrampEnabled } = useSnapshot(OptionsController.state);
+  const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
   const balance = CoreHelperUtil.calculateAndFormatBalance(tokenBalance as BalanceType[]);
   const isSwapsEnabled = features?.swaps;
   const onTabChange = (index: number) => {
@@ -92,7 +92,7 @@ export function AccountWalletFeatures() {
         justifyContent="space-around"
         padding={['0', 's', '0', 's']}
       >
-        {isOnrampEnabled && (
+        {isOnRampEnabled && (
           <IconLink
             icon="card"
             size="lg"

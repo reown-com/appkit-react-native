@@ -13,7 +13,7 @@ import { StyleSheet } from 'react-native';
 
 interface Props {
   item: OnRampQuote;
-  serviceProvider: OnRampServiceProvider;
+  serviceProvider?: OnRampServiceProvider;
   loading: boolean;
   onQuotePress: (item: OnRampQuote) => void;
 }
@@ -22,6 +22,7 @@ export const ITEM_HEIGHT = 60;
 
 export function Quote({ item, loading, serviceProvider, onQuotePress }: Props) {
   const Theme = useTheme();
+  const providerLogo = serviceProvider?.logos?.darkShort; //TODO: Add placeholder icon
 
   return (
     <Pressable
@@ -37,7 +38,7 @@ export function Quote({ item, loading, serviceProvider, onQuotePress }: Props) {
     >
       <FlexView justifyContent="space-between" alignItems="center" flexDirection="row" padding="m">
         <FlexView flexDirection="row" alignItems="center">
-          <Image source={serviceProvider?.logos?.darkShort} style={styles.logo} />
+          {providerLogo && <Image source={serviceProvider?.logos?.darkShort} style={styles.logo} />}
           <FlexView>
             <Text variant="medium-600" style={styles.providerText}>
               {item.serviceProvider?.toLowerCase()}

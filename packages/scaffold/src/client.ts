@@ -39,6 +39,7 @@ import {
   type ThemeMode,
   type ThemeVariables
 } from '@reown/appkit-common-react-native';
+import { Appearance } from 'react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {
@@ -299,7 +300,10 @@ export class AppKitScaffold {
 
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode);
+    } else {
+      ThemeController.setThemeMode(Appearance.getColorScheme() as ThemeMode);
     }
+
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables);
     }
