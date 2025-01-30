@@ -14,6 +14,7 @@ import {
   RouterController
 } from '@reown/appkit-core-react-native';
 import { BorderRadius, Button, FlexView, Spacing } from '@reown/appkit-ui-react-native';
+import { NumberUtil } from '@reown/appkit-common-react-native';
 import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Country } from './components/Country';
 import { Currency } from './components/Currency';
@@ -49,6 +50,10 @@ export function OnRampView() {
     if (Number(formattedValue) >= 0 || formattedValue === '') {
       OnRampController.setPaymentAmount(Number(formattedValue));
       OnRampController.clearError();
+    }
+
+    if (formattedValue === '') {
+      OnRampController.setSelectedQuote(undefined);
     }
   };
 
@@ -138,7 +143,8 @@ export function OnRampView() {
   };
 
   useEffect(() => {
-    OnRampController.getAvailableCryptoCurrencies();
+    // update selected purchase currency based on active network
+    OnRampController.updateSelectedPurchaseCurrency();
   }, []);
 
   useEffect(() => {
@@ -153,6 +159,7 @@ export function OnRampView() {
         RouterController.replace(isAuth ? 'Account' : 'AccountDefault');
         OnRampController.resetState();
         //TODO: Reload balance / activity
+        // clear onramp state
       }
     });
 
@@ -192,7 +199,7 @@ export function OnRampView() {
       />
       <InputToken
         title="You receive"
-        value={selectedQuote?.destinationAmount?.toString()}
+        value={NumberUtil.roundNumber(selectedQuote?.destinationAmount ?? 0, 6, 5)?.toString()}
         editable={false}
         tokenImage={purchaseCurrency?.symbolImageUrl}
         tokenSymbol={purchaseCurrency?.currencyCode}

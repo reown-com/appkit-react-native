@@ -105,8 +105,20 @@ export const OnRampController = {
     state.paymentAmount = Number(amount);
   },
 
-  setSelectedQuote(quote: OnRampQuote) {
+  setSelectedQuote(quote?: OnRampQuote) {
     state.selectedQuote = quote;
+  },
+
+  updateSelectedPurchaseCurrency() {
+    //TODO: improve this. Change only if preferred currency is not setted
+    let selectedCurrency;
+    if (NetworkController.state.caipNetwork?.id === 'eip155:137') {
+      selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === 'POL');
+    } else {
+      selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === 'ETH');
+    }
+
+    state.purchaseCurrency = selectedCurrency || state.purchaseCurrencies?.[0] || undefined;
   },
 
   getServiceProviderImage(serviceProvider: string) {
@@ -199,8 +211,8 @@ export const OnRampController = {
   },
 
   async getQuotes() {
-    state.error = undefined;
     state.quotesLoading = true;
+    state.error = undefined;
 
     try {
       const body = {
@@ -217,18 +229,19 @@ export const OnRampController = {
         body
       });
 
-      state.quotes = response?.quotes;
-      state.selectedQuote = response?.quotes?.[0];
+      const quotes = response?.quotes.sort((a, b) => b.destinationAmount - a.destinationAmount);
+      state.quotes = quotes;
+      state.selectedQuote = quotes?.[0];
       state.selectedServiceProvider = state.serviceProviders.find(
-        sp => sp.serviceProvider === response?.quotes?.[0]?.serviceProvider
+        sp => sp.serviceProvider === quotes?.[0]?.serviceProvider
       );
       state.quotesLoading = false;
     } catch (error: any) {
       state.quotes = [];
       state.selectedQuote = undefined;
       state.selectedServiceProvider = undefined;
-      state.quotesLoading = false;
       state.error = error?.code || 'UNKNOWN_ERROR';
+      state.quotesLoading = false;
     }
   },
 
@@ -291,6 +304,10 @@ export const OnRampController = {
     state.error = undefined;
     state.quotesLoading = false;
     state.quotes = [];
+    state.selectedQuote = undefined;
+    state.selectedServiceProvider = undefined;
+    state.purchaseAmount = undefined;
+    state.paymentAmount = defaultState.paymentAmount;
     state.widgetUrl = undefined;
   }
 };

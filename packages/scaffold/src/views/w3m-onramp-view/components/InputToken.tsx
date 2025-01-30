@@ -96,27 +96,33 @@ export function InputToken({
         </Text>
       )}
       <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
-        <TextInput
-          ref={valueInputRef}
-          placeholder={editable ? '0' : ''}
-          editable={editable}
-          placeholderTextColor={Theme['fg-275']}
-          returnKeyType="done"
-          style={[styles.input, { color: Theme['fg-100'] }]}
-          autoCapitalize="none"
-          autoCorrect={false}
-          value={value || inputValue}
-          onChangeText={handleInputChange}
-          keyboardType="decimal-pad"
-          inputMode="decimal"
-          autoComplete="off"
-          spellCheck={false}
-          selectionColor={Theme['accent-100']}
-          underlineColorAndroid="transparent"
-          selectTextOnFocus={false}
-          numberOfLines={1}
-          autoFocus
-        />
+        {editable ? (
+          <TextInput
+            ref={valueInputRef}
+            placeholder={editable ? '0' : ''}
+            editable={editable}
+            placeholderTextColor={Theme['fg-275']}
+            returnKeyType="done"
+            style={[styles.input, { color: Theme['fg-100'] }]}
+            autoCapitalize="none"
+            autoCorrect={false}
+            value={value || inputValue}
+            onChangeText={handleInputChange}
+            keyboardType="decimal-pad"
+            inputMode="decimal"
+            autoComplete="off"
+            spellCheck={false}
+            selectionColor={Theme['accent-100']}
+            underlineColorAndroid="transparent"
+            selectTextOnFocus={false}
+            numberOfLines={1}
+            autoFocus
+          />
+        ) : (
+          <Text numberOfLines={1} variant="medium-title-500" color="fg-100">
+            {value || inputValue}
+          </Text>
+        )}
         <TokenButton
           placeholder={placeholder}
           imageUrl={tokenImage}
