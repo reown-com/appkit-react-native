@@ -21,7 +21,6 @@ interface Props {
 export function PaymentMethod({ onPress, item, selected }: Props) {
   const Theme = useTheme();
   const { themeMode } = useSnapshot(ThemeController.state);
-  const logoURL = themeMode === 'dark' ? item.logos.dark : item.logos.light;
 
   const handlePress = () => {
     onPress(item);
@@ -40,7 +39,12 @@ export function PaymentMethod({ onPress, item, selected }: Props) {
     >
       <FlexView flexDirection="row" alignItems="center" justifyContent="space-between" padding="xs">
         <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start" padding="2xs">
-          <Image source={logoURL} style={styles.logo} resizeMethod="resize" resizeMode="center" />
+          <Image
+            source={item.logos[themeMode ?? 'light']}
+            style={styles.logo}
+            resizeMethod="resize"
+            resizeMode="center"
+          />
           <Text variant="paragraph-500" color="fg-100">
             {item.name}
           </Text>

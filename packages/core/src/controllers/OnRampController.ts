@@ -131,19 +131,23 @@ export const OnRampController = {
 
   async getAvailableCountries() {
     //TODO: Cache this for a week
-    // const chainId = NetworkController.getApprovedCaipNetworks()?.[0]?.id;
     const countries = await api.get<OnRampCountry[]>({
       path: '/service-providers/properties/countries',
       headers,
       params: {
         categories: 'CRYPTO_ONRAMP'
-        // cryptoChains: chainId //TODO: ask for chain name list
       }
     });
     state.countries = countries || [];
-    //TODO: change this to the user's country
+
+    const timezone = CoreHelperUtil.getTimezone()?.toLowerCase()?.split('/');
+
+    //TODO: check if user already has a preferred country
     state.selectedCountry =
-      countries?.find(c => c.countryCode === 'US') || countries?.[0] || undefined;
+      countries?.find(c => timezone?.includes(c.name.toLowerCase())) ||
+      countries?.find(c => c.countryCode === 'US') ||
+      countries?.[0] ||
+      undefined;
   },
 
   async getAvailableServiceProviders() {

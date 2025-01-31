@@ -192,6 +192,17 @@ export const CoreHelperUtil = {
     return CommonConstants.MELD_TOKEN;
   },
 
+  getTimezone() {
+    try {
+      const { timeZone } = new Intl.DateTimeFormat().resolvedOptions();
+      const capTimeZone = timeZone.toUpperCase();
+
+      return capTimeZone;
+    } catch {
+      return undefined;
+    }
+  },
+
   getUUID() {
     if ((global as any)?.crypto.getRandomValues) {
       const buffer = new Uint8Array(16);

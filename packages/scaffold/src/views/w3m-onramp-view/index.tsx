@@ -4,7 +4,6 @@ import { StyleSheet, View } from 'react-native';
 import {
   OnRampController,
   type OnRampCountry,
-  type OnRampPaymentMethod,
   type OnRampFiatCurrency,
   type OnRampCryptoCurrency,
   ThemeController,
@@ -15,13 +14,14 @@ import { NumberUtil } from '@reown/appkit-common-react-native';
 import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Country } from './components/Country';
 import { Currency } from './components/Currency';
-import { getErrorMessage, getModalItems, getModalTitle } from './utils';
+import { getErrorMessage, getModalItems, getModalTitle, onModalItemPress } from './utils';
 import { SelectButton } from './components/SelectButton';
 import { InputToken } from './components/InputToken';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
 
 export function OnRampView() {
   const { themeMode } = useSnapshot(ThemeController.state);
+
   const {
     purchaseCurrency,
     selectedCountry,
@@ -36,9 +36,6 @@ export function OnRampView() {
   const [modalType, setModalType] = useState<
     'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | undefined
   >();
-
-  const paymentLogo =
-    themeMode === 'dark' ? selectedPaymentMethod?.logos.dark : selectedPaymentMethod?.logos.light;
 
   const onInputChange = (value: string) => {
     const formattedValue = value.replace(/,/g, '.');
@@ -106,19 +103,7 @@ export function OnRampView() {
   };
 
   const onPressModalItem = (item: any) => {
-    if (modalType === 'country') {
-      OnRampController.setSelectedCountry(item as OnRampCountry);
-    }
-    if (modalType === 'paymentMethod') {
-      OnRampController.setSelectedPaymentMethod(item as OnRampPaymentMethod);
-    }
-    if (modalType === 'paymentCurrency') {
-      OnRampController.setPaymentCurrency(item as OnRampFiatCurrency);
-    }
-    if (modalType === 'purchaseCurrency') {
-      OnRampController.setPurchaseCurrency(item as OnRampCryptoCurrency);
-    }
-
+    onModalItemPress(item, modalType);
     setModalType(undefined);
   };
 
@@ -175,7 +160,7 @@ export function OnRampView() {
       <SelectButton
         style={styles.paymentMethodButton}
         onPress={() => setModalType('paymentMethod')}
-        imageURL={paymentLogo}
+        imageURL={selectedPaymentMethod?.logos[themeMode ?? 'light']}
         text={selectedPaymentMethod?.name}
         description={selectedQuote ? `via ${selectedQuote?.serviceProvider}` : 'Select a provider'}
         isError={!selectedQuote}

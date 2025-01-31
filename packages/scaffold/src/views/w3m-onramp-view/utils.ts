@@ -1,4 +1,11 @@
-import { OnRampController, NetworkController } from '@reown/appkit-core-react-native';
+import {
+  OnRampController,
+  NetworkController,
+  type OnRampCryptoCurrency,
+  type OnRampFiatCurrency,
+  type OnRampPaymentMethod,
+  type OnRampCountry
+} from '@reown/appkit-core-react-native';
 
 export const getErrorMessage = (error?: string) => {
   if (!error) {
@@ -17,29 +24,26 @@ export const getErrorMessage = (error?: string) => {
     return 'No provider found for this amount';
   }
 
-  if (error === 'UNKNOWN_ERROR') {
-    return 'Failed to load. Please try again';
-  }
-
-  return error;
+  //TODO: check other errors
+  return 'Failed to load. Please try again';
 };
 
 export const getModalTitle = (
-  modalType?: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | 'quotes'
+  type?: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | 'quotes'
 ) => {
-  if (modalType === 'country') {
+  if (type === 'country') {
     return 'Select your country';
   }
-  if (modalType === 'paymentMethod') {
+  if (type === 'paymentMethod') {
     return 'Payment method';
   }
-  if (modalType === 'paymentCurrency') {
+  if (type === 'paymentCurrency') {
     return 'Select a currency';
   }
-  if (modalType === 'purchaseCurrency') {
+  if (type === 'purchaseCurrency') {
     return 'Select a token';
   }
-  if (modalType === 'quotes') {
+  if (type === 'quotes') {
     return 'Select a provider';
   }
 
@@ -47,10 +51,10 @@ export const getModalTitle = (
 };
 
 export const getModalItems = (
-  modalType?: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency',
+  type?: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency',
   searchValue?: string
 ) => {
-  if (modalType === 'country') {
+  if (type === 'country') {
     if (searchValue) {
       return (
         OnRampController.state.countries?.filter(
@@ -63,7 +67,7 @@ export const getModalItems = (
 
     return OnRampController.state.countries || [];
   }
-  if (modalType === 'paymentMethod') {
+  if (type === 'paymentMethod') {
     if (searchValue) {
       return (
         OnRampController.state.paymentMethods?.filter(paymentMethod =>
@@ -74,7 +78,7 @@ export const getModalItems = (
 
     return OnRampController.state.paymentMethods || [];
   }
-  if (modalType === 'paymentCurrency') {
+  if (type === 'paymentCurrency') {
     if (searchValue) {
       return (
         OnRampController.state.paymentCurrencies?.filter(
@@ -87,7 +91,7 @@ export const getModalItems = (
 
     return OnRampController.state.paymentCurrencies || [];
   }
-  if (modalType === 'purchaseCurrency') {
+  if (type === 'purchaseCurrency') {
     const networkId = NetworkController.state.caipNetwork?.id?.split(':')[1];
     let filteredCurrencies =
       OnRampController.state.purchaseCurrencies?.filter(c => c.chainId === networkId) || [];
@@ -104,4 +108,22 @@ export const getModalItems = (
   }
 
   return [];
+};
+
+export const onModalItemPress = (
+  item: any,
+  type?: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency'
+) => {
+  if (type === 'country') {
+    OnRampController.setSelectedCountry(item as OnRampCountry);
+  }
+  if (type === 'paymentMethod') {
+    OnRampController.setSelectedPaymentMethod(item as OnRampPaymentMethod);
+  }
+  if (type === 'paymentCurrency') {
+    OnRampController.setPaymentCurrency(item as OnRampFiatCurrency);
+  }
+  if (type === 'purchaseCurrency') {
+    OnRampController.setPurchaseCurrency(item as OnRampCryptoCurrency);
+  }
 };
