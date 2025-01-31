@@ -62,7 +62,11 @@ export function AllWalletsView() {
           { backgroundColor: Theme['bg-100'], shadowColor: Theme['bg-100'], width: maxWidth }
         ]}
       >
-        <SearchBar onChangeText={onInputChange} />
+        <SearchBar
+          onChangeText={onInputChange}
+          placeholder="Search wallet"
+          style={styles.searchBar}
+        />
         <IconLink
           icon="qrCode"
           iconColor="accent-100"

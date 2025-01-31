@@ -1,6 +1,6 @@
 import Modal from 'react-native-modal';
 import { FlatList, View } from 'react-native';
-import { FlexView, IconLink, Text, useTheme } from '@reown/appkit-ui-react-native';
+import { FlexView, IconLink, SearchBar, Text, useTheme } from '@reown/appkit-ui-react-native';
 import styles from './styles';
 
 interface SelectorModalProps {
@@ -9,9 +9,17 @@ interface SelectorModalProps {
   onClose: () => void;
   items: any[];
   renderItem: ({ item }: { item: any }) => React.ReactElement;
+  onSearch: (value: string) => void;
 }
 
-export function SelectorModal({ title, visible, onClose, items, renderItem }: SelectorModalProps) {
+export function SelectorModal({
+  title,
+  visible,
+  onClose,
+  items,
+  renderItem,
+  onSearch
+}: SelectorModalProps) {
   const Theme = useTheme();
 
   const renderSeparator = () => {
@@ -39,16 +47,19 @@ export function SelectorModal({ title, visible, onClose, items, renderItem }: Se
         contentContainerStyle={styles.content}
         ItemSeparatorComponent={renderSeparator}
         ListHeaderComponent={
-          <FlexView
-            alignItems="center"
-            justifyContent="space-between"
-            flexDirection="row"
-            style={styles.header}
-          >
-            <IconLink icon="arrowLeft" onPress={onClose} />
-            {!!title && <Text variant="medium-600">{title}</Text>}
-            <View style={styles.iconPlaceholder} />
-          </FlexView>
+          <>
+            <FlexView
+              alignItems="center"
+              justifyContent="space-between"
+              flexDirection="row"
+              style={styles.header}
+            >
+              <IconLink icon="arrowLeft" onPress={onClose} />
+              {!!title && <Text variant="medium-600">{title}</Text>}
+              <View style={styles.iconPlaceholder} />
+            </FlexView>
+            <SearchBar onChangeText={onSearch} style={styles.searchBar} />
+          </>
         }
       />
     </Modal>

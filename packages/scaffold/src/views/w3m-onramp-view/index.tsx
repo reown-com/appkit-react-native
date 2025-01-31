@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
-import { Linking, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import {
   OnRampController,
   type OnRampCountry,
@@ -8,9 +8,6 @@ import {
   type OnRampFiatCurrency,
   type OnRampCryptoCurrency,
   ThemeController,
-  OptionsController,
-  ConnectorController,
-  SnackController,
   RouterController
 } from '@reown/appkit-core-react-native';
 import { BorderRadius, Button, FlexView, Spacing } from '@reown/appkit-ui-react-native';
@@ -18,7 +15,6 @@ import { NumberUtil } from '@reown/appkit-common-react-native';
 import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Country } from './components/Country';
 import { Currency } from './components/Currency';
-import { PaymentMethod } from './components/PaymentMethod';
 import { getErrorMessage, getModalItems, getModalTitle } from './utils';
 import { SelectButton } from './components/SelectButton';
 import { InputToken } from './components/InputToken';
@@ -36,7 +32,7 @@ export function OnRampView() {
     selectedQuote,
     error
   } = useSnapshot(OnRampController.state);
-  const [loading, setLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const [modalType, setModalType] = useState<
     'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | undefined
   >();
@@ -57,16 +53,13 @@ export function OnRampView() {
     }
   };
 
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+  };
+
   const handleContinue = async () => {
     if (OnRampController.state.selectedQuote) {
-      setLoading(true);
-      const response = await OnRampController.getWidget({
-        quote: OnRampController.state.selectedQuote
-      });
-      if (response?.widgetUrl) {
-        Linking.openURL(response?.widgetUrl);
-      }
-      // GO TO LOADING SCREEN
+      RouterController.push('OnRampLoading');
     }
   };
 
@@ -82,17 +75,7 @@ export function OnRampView() {
         />
       );
     }
-    if (modalType === 'paymentMethod') {
-      const parsedItem = item as OnRampPaymentMethod;
 
-      return (
-        <PaymentMethod
-          item={parsedItem}
-          onPress={onPressModalItem}
-          selected={parsedItem.name === selectedPaymentMethod?.name}
-        />
-      );
-    }
     if (modalType === 'paymentCurrency') {
       const parsedItem = item as OnRampFiatCurrency;
 
@@ -105,6 +88,7 @@ export function OnRampView() {
         />
       );
     }
+
     if (modalType === 'purchaseCurrency') {
       const parsedItem = item as OnRampCryptoCurrency;
 
@@ -145,25 +129,6 @@ export function OnRampView() {
   useEffect(() => {
     // update selected purchase currency based on active network
     OnRampController.updateSelectedPurchaseCurrency();
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = Linking.addEventListener('url', ({ url }) => {
-      const metadata = OptionsController.state.metadata;
-      const isAuth = ConnectorController.state.connectedConnector === 'AUTH';
-      if (
-        url.startsWith(metadata?.redirect?.universal ?? '') ||
-        url.startsWith(metadata?.redirect?.native ?? '')
-      ) {
-        SnackController.showSuccess('Onramp started');
-        RouterController.replace(isAuth ? 'Account' : 'AccountDefault');
-        OnRampController.resetState();
-        //TODO: Reload balance / activity
-        // clear onramp state
-      }
-    });
-
-    return () => unsubscribe.remove();
   }, []);
 
   useEffect(() => {
@@ -220,15 +185,16 @@ export function OnRampView() {
       <Button
         style={styles.quotesButton}
         onPress={handleContinue}
-        loading={quotesLoading || loading}
-        disabled={quotesLoading || loading || !selectedQuote}
+        loading={quotesLoading}
+        disabled={quotesLoading || !selectedQuote}
       >
         Continue
       </Button>
       <SelectorModal
         visible={!!modalType && modalType !== 'paymentMethod'}
         onClose={onModalClose}
-        items={getModalItems(modalType)}
+        items={getModalItems(modalType, searchValue)}
+        onSearch={handleSearch}
         renderItem={renderModalItem}
         title={getModalTitle(modalType)}
       />

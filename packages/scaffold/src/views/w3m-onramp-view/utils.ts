@@ -47,26 +47,60 @@ export const getModalTitle = (
 };
 
 export const getModalItems = (
-  modalType?: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | 'quotes'
+  modalType?: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency',
+  searchValue?: string
 ) => {
   if (modalType === 'country') {
+    if (searchValue) {
+      return (
+        OnRampController.state.countries?.filter(
+          country =>
+            country.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+            country.countryCode.toLowerCase().includes(searchValue.toLowerCase())
+        ) || []
+      );
+    }
+
     return OnRampController.state.countries || [];
   }
   if (modalType === 'paymentMethod') {
+    if (searchValue) {
+      return (
+        OnRampController.state.paymentMethods?.filter(paymentMethod =>
+          paymentMethod.name.toLowerCase().includes(searchValue.toLowerCase())
+        ) || []
+      );
+    }
+
     return OnRampController.state.paymentMethods || [];
   }
   if (modalType === 'paymentCurrency') {
+    if (searchValue) {
+      return (
+        OnRampController.state.paymentCurrencies?.filter(
+          paymentCurrency =>
+            paymentCurrency.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+            paymentCurrency.currencyCode.toLowerCase().includes(searchValue.toLowerCase())
+        ) || []
+      );
+    }
+
     return OnRampController.state.paymentCurrencies || [];
   }
   if (modalType === 'purchaseCurrency') {
-    return (
-      OnRampController.state.purchaseCurrencies?.filter(
-        currency => currency.chainId === NetworkController.state.caipNetwork?.id.split(':')[1]
-      ) || []
-    );
-  }
-  if (modalType === 'quotes') {
-    return OnRampController.state.quotes || [];
+    const networkId = NetworkController.state.caipNetwork?.id?.split(':')[1];
+    let filteredCurrencies =
+      OnRampController.state.purchaseCurrencies?.filter(c => c.chainId === networkId) || [];
+
+    if (searchValue) {
+      return filteredCurrencies.filter(
+        currency =>
+          currency.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+          currency.currencyCode.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    }
+
+    return filteredCurrencies;
   }
 
   return [];

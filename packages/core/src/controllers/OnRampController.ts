@@ -28,23 +28,23 @@ const headers = {
 // -- Types --------------------------------------------- //
 export interface OnRampControllerState {
   countries: OnRampCountry[];
-  serviceProviders: OnRampServiceProvider[];
   selectedCountry?: OnRampCountry;
+  serviceProviders: OnRampServiceProvider[];
+  selectedServiceProvider?: OnRampServiceProvider;
   paymentMethods: OnRampPaymentMethod[];
   selectedPaymentMethod?: OnRampPaymentMethod;
+  purchaseAmount?: number;
   purchaseCurrency?: OnRampCryptoCurrency;
-  paymentCurrency?: OnRampFiatCurrency;
   purchaseCurrencies?: OnRampCryptoCurrency[];
+  paymentAmount?: number;
+  paymentCurrency?: OnRampFiatCurrency;
   paymentCurrencies?: OnRampFiatCurrency[];
   paymentCurrenciesLimits?: OnRampFiatLimit[];
-  purchaseAmount?: number;
-  paymentAmount?: number;
-  error?: string;
-  quotesLoading: boolean;
   quotes?: OnRampQuote[];
   selectedQuote?: OnRampQuote;
-  selectedServiceProvider?: OnRampServiceProvider;
+  quotesLoading: boolean;
   widgetUrl?: string;
+  error?: string;
 }
 
 type StateKey = keyof OnRampControllerState;
@@ -113,7 +113,9 @@ export const OnRampController = {
     //TODO: improve this. Change only if preferred currency is not setted
     let selectedCurrency;
     if (NetworkController.state.caipNetwork?.id === 'eip155:137') {
-      selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === 'POL');
+      selectedCurrency = state.purchaseCurrencies?.find(
+        c => c.currencyCode === 'POL' || c.currencyCode === 'MATIC'
+      );
     } else {
       selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === 'ETH');
     }
@@ -182,12 +184,15 @@ export const OnRampController = {
         countries: state.selectedCountry?.countryCode
       }
     });
+
     state.purchaseCurrencies = cryptoCurrencies || [];
 
     //TODO: remove this mock data
     let selectedCurrency;
     if (NetworkController.state.caipNetwork?.id === 'eip155:137') {
-      selectedCurrency = cryptoCurrencies?.find(c => c.currencyCode === 'POL');
+      selectedCurrency = cryptoCurrencies?.find(
+        c => c.currencyCode === 'POL' || c.currencyCode === 'MATIC'
+      );
     } else {
       selectedCurrency = cryptoCurrencies?.find(c => c.currencyCode === 'ETH');
     }
@@ -242,6 +247,7 @@ export const OnRampController = {
       state.selectedServiceProvider = undefined;
       state.error = error?.code || 'UNKNOWN_ERROR';
       state.quotesLoading = false;
+      console.error(error);
     }
   },
 

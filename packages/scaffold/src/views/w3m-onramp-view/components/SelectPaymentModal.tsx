@@ -19,7 +19,7 @@ import {
 import { Quote } from './Quote';
 import { SelectButton } from './SelectButton';
 import { SelectorModal } from '../../../partials/w3m-selector-modal';
-import { getModalTitle } from '../utils';
+import { getModalItems, getModalTitle } from '../utils';
 import { useState } from 'react';
 import { PaymentMethod } from './PaymentMethod';
 
@@ -33,9 +33,10 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
   const Theme = useTheme();
   const { themeMode } = useSnapshot(ThemeController.state);
   const [paymentVisible, setPaymentVisible] = useState(false);
-  const { paymentMethods, selectedPaymentMethod, quotes, quotesLoading } = useSnapshot(
-    OnRampController.state
-  );
+  const [searchCountryValue, setSearchCountryValue] = useState('');
+  const { selectedPaymentMethod, quotes, quotesLoading } = useSnapshot(OnRampController.state);
+
+  const modalPaymentMethods = getModalItems('paymentMethod', searchCountryValue);
 
   const paymentLogo =
     themeMode === 'dark' ? selectedPaymentMethod?.logos.dark : selectedPaymentMethod?.logos.light;
@@ -154,7 +155,8 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
       <SelectorModal
         visible={paymentVisible}
         onClose={() => setPaymentVisible(false)}
-        items={paymentMethods as OnRampPaymentMethod[]}
+        items={modalPaymentMethods}
+        onSearch={setSearchCountryValue}
         renderItem={renderPaymentMethod}
         title={getModalTitle('paymentMethod')}
       />

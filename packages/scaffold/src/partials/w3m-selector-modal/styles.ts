@@ -24,5 +24,8 @@ export default StyleSheet.create({
   iconPlaceholder: {
     height: 32,
     width: 32
+  },
+  searchBar: {
+    marginBottom: Spacing.s
   }
 });
