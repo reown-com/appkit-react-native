@@ -1,4 +1,3 @@
-import { useRef, useState } from 'react';
 import { StyleSheet, TextInput, type StyleProp, type ViewStyle } from 'react-native';
 import {
   FlexView,
@@ -16,7 +15,6 @@ export interface InputTokenProps {
   tokenSymbol?: string;
   style?: StyleProp<ViewStyle>;
   onTokenPress?: () => void;
-  initialValue?: string;
   onInputChange?: (value: string) => void;
   placeholder?: string;
   editable?: boolean;
@@ -26,15 +24,6 @@ export interface InputTokenProps {
   containerHeight?: number;
 }
 
-const debounce = (func: Function, wait: number) => {
-  let timeout: NodeJS.Timeout;
-
-  return (...args: any[]) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-};
-
 export function InputToken({
   tokenImage,
   tokenSymbol,
@@ -42,7 +31,6 @@ export function InputToken({
   containerHeight = 100,
   title,
   onTokenPress,
-  initialValue,
   value,
   onInputChange,
   placeholder = 'Select currency',
@@ -51,21 +39,12 @@ export function InputToken({
   error
 }: InputTokenProps) {
   const Theme = useTheme();
-  const valueInputRef = useRef<TextInput | null>(null);
-  const [inputValue, setInputValue] = useState<string | undefined>(initialValue);
-
-  const debouncedOnChange = useRef(
-    debounce((_value: string) => {
-      onInputChange?.(_value);
-    }, 500)
-  ).current;
 
   const handleInputChange = (_value: string) => {
     const formattedValue = _value.replace(/,/g, '.');
 
     if (Number(formattedValue) >= 0 || formattedValue === '') {
-      setInputValue(formattedValue);
-      debouncedOnChange(formattedValue);
+      onInputChange?.(formattedValue);
     }
   };
 
@@ -98,7 +77,6 @@ export function InputToken({
       <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
         {editable ? (
           <TextInput
-            ref={valueInputRef}
             placeholder={editable ? '0' : ''}
             editable={editable}
             placeholderTextColor={Theme['fg-275']}
@@ -106,7 +84,7 @@ export function InputToken({
             style={[styles.input, { color: Theme['fg-100'] }]}
             autoCapitalize="none"
             autoCorrect={false}
-            value={value || inputValue}
+            value={value}
             onChangeText={handleInputChange}
             keyboardType="decimal-pad"
             inputMode="decimal"
@@ -120,7 +98,7 @@ export function InputToken({
           />
         ) : (
           <Text numberOfLines={1} variant="medium-title-500" color="fg-100">
-            {value || inputValue}
+            {value}
           </Text>
         )}
         <TokenButton

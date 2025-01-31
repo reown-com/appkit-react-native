@@ -18,10 +18,12 @@ import { getErrorMessage, getModalItems, getModalTitle, onModalItemPress } from 
 import { SelectButton } from './components/SelectButton';
 import { InputToken } from './components/InputToken';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
+import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 
 export function OnRampView() {
   const { themeMode } = useSnapshot(ThemeController.state);
 
+  //TODO: add loading state for countries, payment methods, etc
   const {
     purchaseCurrency,
     selectedCountry,
@@ -37,12 +39,18 @@ export function OnRampView() {
     'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | undefined
   >();
 
+  const debouncedGetQuotes = useDebounceCallback({
+    callback: OnRampController.getQuotes,
+    delay: 500
+  });
+
   const onInputChange = (value: string) => {
     const formattedValue = value.replace(/,/g, '.');
 
     if (Number(formattedValue) >= 0 || formattedValue === '') {
       OnRampController.setPaymentAmount(Number(formattedValue));
       OnRampController.clearError();
+      debouncedGetQuotes();
     }
 
     if (formattedValue === '') {
@@ -105,10 +113,12 @@ export function OnRampView() {
   const onPressModalItem = (item: any) => {
     onModalItemPress(item, modalType);
     setModalType(undefined);
+    setSearchValue('');
   };
 
   const onModalClose = () => {
     setModalType(undefined);
+    setSearchValue('');
   };
 
   useEffect(() => {
@@ -122,11 +132,11 @@ export function OnRampView() {
       selectedCountry &&
       paymentCurrency &&
       selectedPaymentMethod &&
-      paymentAmount
+      OnRampController.state.paymentAmount
     ) {
       OnRampController.getQuotes();
     }
-  }, [purchaseCurrency, selectedCountry, paymentCurrency, selectedPaymentMethod, paymentAmount]);
+  }, [purchaseCurrency, selectedCountry, paymentCurrency, selectedPaymentMethod]);
 
   return (
     <FlexView padding={['s', 's', '4xl', 's']}>
@@ -139,8 +149,8 @@ export function OnRampView() {
       />
       <InputToken
         title="You pay"
-        initialValue={paymentAmount?.toString()}
         onInputChange={onInputChange}
+        value={paymentAmount?.toString()}
         tokenImage={paymentCurrency?.symbolImageUrl}
         tokenSymbol={paymentCurrency?.currencyCode}
         onTokenPress={() => setModalType('paymentCurrency')}

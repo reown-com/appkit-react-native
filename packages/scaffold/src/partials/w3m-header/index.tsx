@@ -45,7 +45,7 @@ export function Header() {
       GetWallet: 'Get a wallet',
       Networks: 'Select network',
       OnRamp: 'Buy',
-      OnRampLoading: 'Continue on browser',
+      OnRampLoading: undefined,
       SwitchNetwork: networkName ?? 'Switch network',
       Swap: 'Swap',
       SwapSelectToken: 'Select token',

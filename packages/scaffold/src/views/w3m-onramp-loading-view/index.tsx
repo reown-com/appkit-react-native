@@ -8,14 +8,26 @@ import {
   OptionsController,
   AccountController
 } from '@reown/appkit-core-react-native';
-import { FlexView, Icon, LoadingThumbnail } from '@reown/appkit-ui-react-native';
+import { FlexView, DoubleImageLoader, IconLink } from '@reown/appkit-ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectingBody } from '../../partials/w3m-connecting-body';
 import styles from './styles';
+import { StringUtil } from '@reown/appkit-common-react-native';
 
 export function OnRampLoadingView() {
   const { maxWidth: width } = useCustomDimensions();
+  const providerName = StringUtil.capitalize(
+    OnRampController.state.selectedQuote?.serviceProvider.toLowerCase()
+  );
+
+  const serviceProvideLogo = OnRampController.getServiceProviderImage(
+    OnRampController.state.selectedQuote?.serviceProvider ?? ''
+  );
+
+  const handleGoBack = () => {
+    RouterController.goBack();
+  };
 
   useEffect(() => {
     const unsubscribe = Linking.addEventListener('url', ({ url }) => {
@@ -60,12 +72,21 @@ export function OnRampLoadingView() {
         padding={['2xl', 'l', '0', 'l']}
         style={{ width }}
       >
-        <LoadingThumbnail>
-          <Icon name="browser" size="xl" height={50} width={50} color="accent-100" />
-        </LoadingThumbnail>
+        <IconLink
+          icon="chevronLeft"
+          size="md"
+          onPress={handleGoBack}
+          testID="button-back"
+          style={styles.backButton}
+        />
+        <DoubleImageLoader
+          leftImage={OptionsController.state.metadata?.icons[0]}
+          rightImage={serviceProvideLogo}
+          style={styles.imageContainer}
+        />
         <ConnectingBody
-          title="Complete the payment on your browser"
-          description="Please wait while we redirect you to the payment page."
+          title={`Connecting with ${providerName}`}
+          description="Please wait while we redirect you to finalize your purchase."
         />
       </FlexView>
     </ScrollView>

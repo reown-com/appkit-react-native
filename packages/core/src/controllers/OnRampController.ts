@@ -54,7 +54,7 @@ const defaultState = {
   countries: [],
   paymentMethods: [],
   serviceProviders: [],
-  paymentAmount: 100
+  paymentAmount: undefined
 };
 
 // -- State --------------------------------------------- //
@@ -92,8 +92,17 @@ export const OnRampController = {
     // TODO: save to storage as preferred purchase currency
   },
 
-  setPaymentCurrency(currency: OnRampFiatCurrency) {
+  setPaymentCurrency(currency: OnRampFiatCurrency, updateAmount = true) {
     state.paymentCurrency = currency;
+
+    if (updateAmount) {
+      const limits = state.paymentCurrenciesLimits?.find(
+        l => l.currencyCode === currency.currencyCode
+      );
+
+      state.paymentAmount = limits?.defaultAmount || 150;
+    }
+
     // TODO: save to storage as preferred payment currency
   },
 
@@ -103,6 +112,12 @@ export const OnRampController = {
 
   setPaymentAmount(amount: number | string) {
     state.paymentAmount = Number(amount);
+  },
+
+  setDefaultPaymentAmount(currency: OnRampFiatCurrency) {
+    const limits = this.getCurrencyLimits(currency);
+
+    state.paymentAmount = limits?.defaultAmount || defaultState.paymentAmount;
   },
 
   setSelectedQuote(quote?: OnRampQuote) {
@@ -123,10 +138,14 @@ export const OnRampController = {
     state.purchaseCurrency = selectedCurrency || state.purchaseCurrencies?.[0] || undefined;
   },
 
-  getServiceProviderImage(serviceProvider: string) {
-    const provider = state.serviceProviders.find(p => p.serviceProvider === serviceProvider);
+  getServiceProviderImage(serviceProviderName: string) {
+    const provider = state.serviceProviders.find(p => p.serviceProvider === serviceProviderName);
 
     return provider?.logos?.lightShort;
+  },
+
+  getCurrencyLimits(currency: OnRampFiatCurrency) {
+    return state.paymentCurrenciesLimits?.find(l => l.currencyCode === currency.currencyCode);
   },
 
   async getAvailableCountries() {
@@ -215,8 +234,15 @@ export const OnRampController = {
       }
     });
     state.paymentCurrencies = fiatCurrencies || [];
-    state.paymentCurrency =
+
+    const defaultCurrency =
       fiatCurrencies?.find(c => c.currencyCode === 'USD') || fiatCurrencies?.[0] || undefined;
+
+    if (defaultCurrency) {
+      this.setPaymentCurrency(defaultCurrency);
+    }
+
+    // state.paymentCurrency = defaultCurrency;
   },
 
   async getQuotes() {
