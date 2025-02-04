@@ -4,7 +4,8 @@ import {
   type OnRampCryptoCurrency,
   type OnRampFiatCurrency,
   type OnRampPaymentMethod,
-  type OnRampCountry
+  type OnRampCountry,
+  type OnRampQuote
 } from '@reown/appkit-core-react-native';
 
 export const getErrorMessage = (error?: string) => {
@@ -108,6 +109,34 @@ export const getModalItems = (
   }
 
   return [];
+};
+
+export const getModalItemKey = (
+  type: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | 'quote' | undefined,
+  index: number,
+  item: any
+) => {
+  if (type === 'country') {
+    return (item as OnRampCountry).countryCode;
+  }
+  if (type === 'paymentMethod') {
+    const paymentMethod = item as OnRampPaymentMethod;
+
+    return `${paymentMethod.name}-${paymentMethod.paymentMethod}`;
+  }
+  if (type === 'paymentCurrency') {
+    return (item as OnRampFiatCurrency).currencyCode;
+  }
+  if (type === 'purchaseCurrency') {
+    return (item as OnRampCryptoCurrency).currencyCode;
+  }
+  if (type === 'quote') {
+    const quote = item as OnRampQuote;
+
+    return `${quote.serviceProvider}-${quote.paymentMethodType}`;
+  }
+
+  return index.toString();
 };
 
 export const onModalItemPress = (

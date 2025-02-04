@@ -14,7 +14,13 @@ import { NumberUtil } from '@reown/appkit-common-react-native';
 import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Country } from './components/Country';
 import { Currency } from './components/Currency';
-import { getErrorMessage, getModalItems, getModalTitle, onModalItemPress } from './utils';
+import {
+  getErrorMessage,
+  getModalItemKey,
+  getModalItems,
+  getModalTitle,
+  onModalItemPress
+} from './utils';
 import { SelectButton } from './components/SelectButton';
 import { InputToken } from './components/InputToken';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
@@ -32,7 +38,8 @@ export function OnRampView() {
     paymentAmount,
     quotesLoading,
     selectedQuote,
-    error
+    error,
+    loading
   } = useSnapshot(OnRampController.state);
   const [searchValue, setSearchValue] = useState('');
   const [modalType, setModalType] = useState<
@@ -132,7 +139,8 @@ export function OnRampView() {
       selectedCountry &&
       paymentCurrency &&
       selectedPaymentMethod &&
-      OnRampController.state.paymentAmount
+      OnRampController.state.paymentAmount &&
+      !OnRampController.state.loading
     ) {
       OnRampController.getQuotes();
     }
@@ -156,6 +164,7 @@ export function OnRampView() {
         onTokenPress={() => setModalType('paymentCurrency')}
         style={{ marginBottom: Spacing.s }}
         error={getErrorMessage(error)}
+        loading={loading}
       />
       <InputToken
         title="You receive"
@@ -164,7 +173,7 @@ export function OnRampView() {
         tokenImage={purchaseCurrency?.symbolImageUrl}
         tokenSymbol={purchaseCurrency?.currencyCode}
         onTokenPress={() => setModalType('purchaseCurrency')}
-        loading={quotesLoading}
+        loading={quotesLoading || loading}
         containerHeight={80}
       />
       <SelectButton
@@ -174,14 +183,14 @@ export function OnRampView() {
         text={selectedPaymentMethod?.name}
         description={selectedQuote ? `via ${selectedQuote?.serviceProvider}` : 'Select a provider'}
         isError={!selectedQuote}
-        loading={quotesLoading}
+        loading={quotesLoading || loading}
         loadingHeight={60}
       />
       <Button
         style={styles.quotesButton}
         onPress={handleContinue}
-        loading={quotesLoading}
-        disabled={quotesLoading || !selectedQuote}
+        loading={quotesLoading || loading}
+        disabled={quotesLoading || loading || !selectedQuote}
       >
         Continue
       </Button>
@@ -191,6 +200,7 @@ export function OnRampView() {
         items={getModalItems(modalType, searchValue)}
         onSearch={handleSearch}
         renderItem={renderModalItem}
+        keyExtractor={(item: any, index: number) => getModalItemKey(modalType, index, item)}
         title={getModalTitle(modalType)}
       />
       <SelectPaymentModal

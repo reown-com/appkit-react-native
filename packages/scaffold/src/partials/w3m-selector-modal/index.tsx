@@ -9,6 +9,7 @@ interface SelectorModalProps {
   onClose: () => void;
   items: any[];
   renderItem: ({ item }: { item: any }) => React.ReactElement;
+  keyExtractor: (item: any, index: number) => string;
   onSearch: (value: string) => void;
 }
 
@@ -18,7 +19,8 @@ export function SelectorModal({
   onClose,
   items,
   renderItem,
-  onSearch
+  onSearch,
+  keyExtractor
 }: SelectorModalProps) {
   const Theme = useTheme();
 
@@ -46,6 +48,7 @@ export function SelectorModal({
         ]}
         contentContainerStyle={styles.content}
         ItemSeparatorComponent={renderSeparator}
+        keyExtractor={keyExtractor}
         ListHeaderComponent={
           <>
             <FlexView

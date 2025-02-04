@@ -16,7 +16,8 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { NetworkController } from './NetworkController';
 import { AccountController } from './AccountController';
 import { OptionsController } from './OptionsController';
-
+import { ConstantsUtil } from '../utils/ConstantsUtil';
+import { StorageUtil } from '../utils/StorageUtil';
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getMeldApiUrl();
 const api = new FetchUtil({ baseUrl });
@@ -24,6 +25,8 @@ const headers = {
   'Authorization': `Basic ${CoreHelperUtil.getMeldToken()}`,
   'Content-Type': 'application/json'
 };
+
+const defaultPaymentAmount = 150;
 
 // -- Types --------------------------------------------- //
 export interface OnRampControllerState {
@@ -45,6 +48,7 @@ export interface OnRampControllerState {
   quotesLoading: boolean;
   widgetUrl?: string;
   error?: string;
+  loading?: boolean;
 }
 
 type StateKey = keyof OnRampControllerState;
@@ -72,10 +76,26 @@ export const OnRampController = {
     return subKey(state, key, callback);
   },
 
-  async setSelectedCountry(country: OnRampCountry) {
+  async setSelectedCountry(country: OnRampCountry, updateCurrency = true) {
     state.selectedCountry = country;
-    await Promise.all([this.getAvailablePaymentMethods(), this.getAvailableCryptoCurrencies()]);
-    // TODO: save to storage as preferred country
+    state.loading = true;
+    await Promise.all([this.fetchPaymentMethods(), this.fetchCryptoCurrencies()]);
+
+    if (updateCurrency) {
+      const currencyCode =
+        ConstantsUtil.COUNTRY_CURRENCIES[
+          country.countryCode as keyof typeof ConstantsUtil.COUNTRY_CURRENCIES
+        ] || 'USD';
+
+      const currency = state.paymentCurrencies?.find(c => c.currencyCode === currencyCode);
+
+      if (currency) {
+        this.setPaymentCurrency(currency);
+      }
+    }
+    state.loading = false;
+
+    StorageUtil.setOnRampPreferredCountry(country);
   },
 
   setSelectedPaymentMethod(paymentMethod: OnRampPaymentMethod) {
@@ -84,12 +104,10 @@ export const OnRampController = {
     // Reset quotes
     state.selectedQuote = undefined;
     state.quotes = [];
-    // TODO: save to storage as preferred payment method
   },
 
   setPurchaseCurrency(currency: OnRampCryptoCurrency) {
     state.purchaseCurrency = currency;
-    // TODO: save to storage as preferred purchase currency
   },
 
   setPaymentCurrency(currency: OnRampFiatCurrency, updateAmount = true) {
@@ -99,11 +117,8 @@ export const OnRampController = {
       const limits = state.paymentCurrenciesLimits?.find(
         l => l.currencyCode === currency.currencyCode
       );
-
-      state.paymentAmount = limits?.defaultAmount || 150;
+      state.paymentAmount = limits?.defaultAmount || defaultPaymentAmount;
     }
-
-    // TODO: save to storage as preferred payment currency
   },
 
   setPurchaseAmount(amount: number) {
@@ -115,9 +130,9 @@ export const OnRampController = {
   },
 
   setDefaultPaymentAmount(currency: OnRampFiatCurrency) {
-    const limits = this.getCurrencyLimits(currency);
+    const limits = this.getCurrencyLimit(currency);
 
-    state.paymentAmount = limits?.defaultAmount || defaultState.paymentAmount;
+    state.paymentAmount = limits?.defaultAmount || defaultPaymentAmount;
   },
 
   setSelectedQuote(quote?: OnRampQuote) {
@@ -125,14 +140,14 @@ export const OnRampController = {
   },
 
   updateSelectedPurchaseCurrency() {
-    //TODO: improve this. Change only if preferred currency is not setted
     let selectedCurrency;
-    if (NetworkController.state.caipNetwork?.id === 'eip155:137') {
-      selectedCurrency = state.purchaseCurrencies?.find(
-        c => c.currencyCode === 'POL' || c.currencyCode === 'MATIC'
-      );
-    } else {
-      selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === 'ETH');
+    if (NetworkController.state.caipNetwork?.id) {
+      const defaultCurrency =
+        ConstantsUtil.NETWORK_DEFAULT_CURRENCIES[
+          NetworkController.state.caipNetwork
+            ?.id as keyof typeof ConstantsUtil.NETWORK_DEFAULT_CURRENCIES
+        ] || 'ETH';
+      selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === defaultCurrency);
     }
 
     state.purchaseCurrency = selectedCurrency || state.purchaseCurrencies?.[0] || undefined;
@@ -144,50 +159,69 @@ export const OnRampController = {
     return provider?.logos?.lightShort;
   },
 
-  getCurrencyLimits(currency: OnRampFiatCurrency) {
+  getCurrencyLimit(currency: OnRampFiatCurrency) {
     return state.paymentCurrenciesLimits?.find(l => l.currencyCode === currency.currencyCode);
   },
 
-  async getAvailableCountries() {
-    //TODO: Cache this for a week
-    const countries = await api.get<OnRampCountry[]>({
-      path: '/service-providers/properties/countries',
-      headers,
-      params: {
-        categories: 'CRYPTO_ONRAMP'
-      }
-    });
+  async fetchCountries() {
+    let countries = await StorageUtil.getOnRampCountries();
+
+    if (!countries.length) {
+      countries =
+        (await api.get<OnRampCountry[]>({
+          path: '/service-providers/properties/countries',
+          headers,
+          params: {
+            categories: 'CRYPTO_ONRAMP'
+          }
+        })) ?? [];
+
+      StorageUtil.setOnRampCountries(countries);
+    }
+
     state.countries = countries || [];
 
-    const timezone = CoreHelperUtil.getTimezone()?.toLowerCase()?.split('/');
+    const preferredCountry = await StorageUtil.getOnRampPreferredCountry();
 
-    //TODO: check if user already has a preferred country
-    state.selectedCountry =
-      countries?.find(c => timezone?.includes(c.name.toLowerCase())) ||
-      countries?.find(c => c.countryCode === 'US') ||
-      countries?.[0] ||
-      undefined;
+    if (preferredCountry) {
+      state.selectedCountry = preferredCountry;
+    } else {
+      const timezone = CoreHelperUtil.getTimezone()?.toLowerCase()?.split('/');
+
+      state.selectedCountry =
+        countries?.find(c => timezone?.includes(c.name.toLowerCase())) ||
+        countries?.find(c => c.countryCode === 'US') ||
+        countries?.[0] ||
+        undefined;
+    }
   },
 
-  async getAvailableServiceProviders() {
-    const serviceProviders = await api.get<OnRampServiceProvider[]>({
-      path: '/service-providers',
-      headers,
-      params: {
-        categories: 'CRYPTO_ONRAMP'
-      }
-    });
+  async fetchServiceProviders() {
+    let serviceProviders = await StorageUtil.getOnRampServiceProviders();
+
+    if (!serviceProviders.length) {
+      serviceProviders =
+        (await api.get<OnRampServiceProvider[]>({
+          path: '/service-providers',
+          headers,
+          params: {
+            categories: 'CRYPTO_ONRAMP'
+          }
+        })) ?? [];
+
+      StorageUtil.setOnRampServiceProviders(serviceProviders);
+    }
+
     state.serviceProviders = serviceProviders || [];
   },
 
-  async getAvailablePaymentMethods() {
+  async fetchPaymentMethods() {
     const paymentMethods = await api.get<OnRampPaymentMethod[]>({
       path: '/service-providers/properties/payment-methods',
       headers,
       params: {
         categories: 'CRYPTO_ONRAMP',
-        countries: state.selectedCountry?.countryCode,
-        includeServiceProviderDetails: 'true'
+        countries: state.selectedCountry?.countryCode
       }
     });
     state.paymentMethods = paymentMethods || [];
@@ -197,8 +231,7 @@ export const OnRampController = {
       undefined;
   },
 
-  async getAvailableCryptoCurrencies() {
-    //TODO: Cache this for a week
+  async fetchCryptoCurrencies() {
     const cryptoCurrencies = await api.get<OnRampCryptoCurrency[]>({
       path: '/service-providers/properties/crypto-currencies',
       headers,
@@ -210,39 +243,54 @@ export const OnRampController = {
 
     state.purchaseCurrencies = cryptoCurrencies || [];
 
-    //TODO: remove this mock data
     let selectedCurrency;
-    if (NetworkController.state.caipNetwork?.id === 'eip155:137') {
-      selectedCurrency = cryptoCurrencies?.find(
-        c => c.currencyCode === 'POL' || c.currencyCode === 'MATIC'
-      );
-    } else {
-      selectedCurrency = cryptoCurrencies?.find(c => c.currencyCode === 'ETH');
+    if (NetworkController.state.caipNetwork?.id) {
+      const defaultCurrency =
+        ConstantsUtil.NETWORK_DEFAULT_CURRENCIES[
+          NetworkController.state.caipNetwork
+            ?.id as keyof typeof ConstantsUtil.NETWORK_DEFAULT_CURRENCIES
+        ] || 'ETH';
+      selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === defaultCurrency);
     }
 
     state.purchaseCurrency = selectedCurrency || cryptoCurrencies?.[0] || undefined;
   },
 
-  async getAvailableFiatCurrencies() {
-    //TODO: Cache this for a week
-    const fiatCurrencies = await api.get<OnRampFiatCurrency[]>({
-      path: '/service-providers/properties/fiat-currencies',
-      headers,
-      params: {
-        categories: 'CRYPTO_ONRAMP',
-        countries: state.selectedCountry?.countryCode
-      }
-    });
+  async fetchFiatCurrencies() {
+    let fiatCurrencies = await StorageUtil.getOnRampFiatCurrencies();
+    let currencyCode = 'USD';
+    const countryCode = state.selectedCountry?.countryCode;
+
+    if (!fiatCurrencies.length) {
+      fiatCurrencies =
+        (await api.get<OnRampFiatCurrency[]>({
+          path: '/service-providers/properties/fiat-currencies',
+          headers,
+          params: {
+            categories: 'CRYPTO_ONRAMP'
+          }
+        })) ?? [];
+
+      StorageUtil.setOnRampFiatCurrencies(fiatCurrencies);
+    }
+
     state.paymentCurrencies = fiatCurrencies || [];
 
+    if (countryCode) {
+      currencyCode =
+        ConstantsUtil.COUNTRY_CURRENCIES[
+          countryCode as keyof typeof ConstantsUtil.COUNTRY_CURRENCIES
+        ];
+    }
+
     const defaultCurrency =
-      fiatCurrencies?.find(c => c.currencyCode === 'USD') || fiatCurrencies?.[0] || undefined;
+      fiatCurrencies?.find(c => c.currencyCode === currencyCode) ||
+      fiatCurrencies?.[0] ||
+      undefined;
 
     if (defaultCurrency) {
       this.setPaymentCurrency(defaultCurrency);
     }
-
-    // state.paymentCurrency = defaultCurrency;
   },
 
   async getQuotes() {
@@ -281,23 +329,26 @@ export const OnRampController = {
     }
   },
 
-  async getFiatLimits() {
-    //TODO: Check if this can be cached
-    const limits = await api.get<OnRampFiatLimit[]>({
-      path: 'service-providers/limits/fiat-currency-purchases',
-      headers,
-      params: {
-        categories: 'CRYPTO_ONRAMP',
-        countries: state.selectedCountry?.countryCode,
-        paymentMethodTypes: state.selectedPaymentMethod?.paymentMethod
-        // cryptoChains: NetworkController.getApprovedCaipNetworks()?.[0]?.id //TODO: ask for chain name list
-      }
-    });
+  async fetchFiatLimits() {
+    let limits = await StorageUtil.getOnRampFiatLimits();
+
+    if (!limits.length) {
+      limits =
+        (await api.get<OnRampFiatLimit[]>({
+          path: 'service-providers/limits/fiat-currency-purchases',
+          headers,
+          params: {
+            categories: 'CRYPTO_ONRAMP'
+          }
+        })) ?? [];
+
+      StorageUtil.setOnRampFiatLimits(limits);
+    }
 
     state.paymentCurrenciesLimits = limits;
   },
 
-  async getWidget({ quote }: { quote: OnRampQuote }) {
+  async generateWidget({ quote }: { quote: OnRampQuote }) {
     const metadata = OptionsController.state.metadata;
 
     const widget = await api.post<OnRampWidgetResponse>({
@@ -328,12 +379,12 @@ export const OnRampController = {
   },
 
   async loadOnRampData() {
-    await this.getAvailableCountries();
-    await this.getAvailableServiceProviders();
-    await this.getAvailablePaymentMethods();
-    await this.getAvailableCryptoCurrencies();
-    await this.getAvailableFiatCurrencies();
-    await this.getFiatLimits();
+    await this.fetchCountries();
+    await this.fetchServiceProviders();
+    await this.fetchPaymentMethods();
+    await this.fetchFiatLimits();
+    await this.fetchCryptoCurrencies();
+    await this.fetchFiatCurrencies();
   },
 
   resetState() {
@@ -343,7 +394,10 @@ export const OnRampController = {
     state.selectedQuote = undefined;
     state.selectedServiceProvider = undefined;
     state.purchaseAmount = undefined;
-    state.paymentAmount = defaultState.paymentAmount;
     state.widgetUrl = undefined;
+
+    if (state.paymentCurrency) {
+      this.setDefaultPaymentAmount(state.paymentCurrency);
+    }
   }
 };

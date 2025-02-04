@@ -19,7 +19,7 @@ import {
 import { Quote } from './Quote';
 import { SelectButton } from './SelectButton';
 import { SelectorModal } from '../../../partials/w3m-selector-modal';
-import { getModalItems, getModalTitle } from '../utils';
+import { getModalItemKey, getModalItems, getModalTitle } from '../utils';
 import { useState } from 'react';
 import { PaymentMethod } from './PaymentMethod';
 
@@ -36,7 +36,10 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
   const [searchCountryValue, setSearchCountryValue] = useState('');
   const { selectedPaymentMethod, quotes, quotesLoading } = useSnapshot(OnRampController.state);
 
-  const modalPaymentMethods = getModalItems('paymentMethod', searchCountryValue);
+  const modalPaymentMethods = getModalItems(
+    'paymentMethod',
+    searchCountryValue
+  ) as OnRampPaymentMethod[];
 
   const paymentLogo =
     themeMode === 'dark' ? selectedPaymentMethod?.logos.dark : selectedPaymentMethod?.logos.light;
@@ -77,7 +80,12 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
 
   const renderEmpty = () => {
     return (
-      <FlexView alignItems="center" justifyContent="center" padding="xl" style={{ height: 150 }}>
+      <FlexView
+        alignItems="center"
+        justifyContent="center"
+        padding="xl"
+        style={styles.emptyContainer}
+      >
         {quotesLoading ? (
           <LoadingSpinner />
         ) : (
@@ -125,6 +133,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
         contentContainerStyle={styles.content}
         ItemSeparatorComponent={renderSeparator}
         ListEmptyComponent={renderEmpty}
+        keyExtractor={(item, index) => getModalItemKey('quote', index, item)}
         ListHeaderComponent={
           <FlexView>
             <FlexView
@@ -159,6 +168,9 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
         onSearch={setSearchCountryValue}
         renderItem={renderPaymentMethod}
         title={getModalTitle('paymentMethod')}
+        keyExtractor={(item: OnRampPaymentMethod, index: number) =>
+          getModalItemKey('paymentMethod', index, item)
+        }
       />
     </Modal>
   );
@@ -195,5 +207,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: Spacing.xl,
     borderRadius: BorderRadius['3xs']
+  },
+  emptyContainer: {
+    height: 150
   }
 });

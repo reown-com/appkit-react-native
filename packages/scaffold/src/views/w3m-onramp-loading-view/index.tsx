@@ -37,7 +37,7 @@ export function OnRampLoadingView() {
         url.startsWith(metadata?.redirect?.universal ?? '') ||
         url.startsWith(metadata?.redirect?.native ?? '')
       ) {
-        SnackController.showSuccess('Onramp started');
+        SnackController.showLoading('Transaction started');
         RouterController.replace(isAuth ? 'Account' : 'AccountDefault');
         OnRampController.resetState();
         AccountController.fetchTokenBalance();
@@ -50,7 +50,7 @@ export function OnRampLoadingView() {
   useEffect(() => {
     const onConnect = async () => {
       if (OnRampController.state.selectedQuote) {
-        const response = await OnRampController.getWidget({
+        const response = await OnRampController.generateWidget({
           quote: OnRampController.state.selectedQuote
         });
         if (response?.widgetUrl) {
