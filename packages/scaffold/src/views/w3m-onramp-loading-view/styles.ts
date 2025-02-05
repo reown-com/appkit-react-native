@@ -10,5 +10,14 @@ export default StyleSheet.create({
   },
   imageContainer: {
     marginBottom: Spacing.s
+  },
+  retryButton: {
+    marginTop: Spacing.m
+  },
+  retryIcon: {
+    transform: [{ rotateY: '180deg' }]
+  },
+  errorText: {
+    marginHorizontal: Spacing['4xl']
   }
 });

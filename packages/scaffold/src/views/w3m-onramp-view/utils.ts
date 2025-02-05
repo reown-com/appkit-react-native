@@ -22,11 +22,20 @@ export const getErrorMessage = (error?: string) => {
   }
 
   if (error === 'INVALID_AMOUNT') {
-    return 'No provider found for this amount';
+    return 'No options available. Please try a different amount';
+  }
+
+  if (
+    error === 'INCOMPATIBLE_REQUEST' ||
+    error === 'BAD_REQUEST' ||
+    error === 'TRANSACTION_FAILED_GETTING_CRYPTO_QUOTE_FROM_PROVIDER' ||
+    error === 'TRANSACTION_EXCEPTION'
+  ) {
+    return 'No options available. Please try a different combination';
   }
 
   //TODO: check other errors
-  return 'Failed to load. Please try again';
+  return 'Failed to load options. Please try again';
 };
 
 export const getModalTitle = (

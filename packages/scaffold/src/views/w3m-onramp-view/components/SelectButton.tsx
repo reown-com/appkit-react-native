@@ -83,7 +83,7 @@ export function SelectButton({
               <Text
                 variant="small-400"
                 color={isError ? 'error-100' : 'fg-100'}
-                style={styles.description}
+                style={!!text && styles.description}
               >
                 {description}
               </Text>

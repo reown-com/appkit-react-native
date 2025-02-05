@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import {
   OnRampController,
   type OnRampCountry,
@@ -25,9 +25,17 @@ import { SelectButton } from './components/SelectButton';
 import { InputToken } from './components/InputToken';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
+import { useKeyboard } from '../../hooks/useKeyboard';
 
 export function OnRampView() {
   const { themeMode } = useSnapshot(ThemeController.state);
+
+  const { keyboardShown, keyboardHeight } = useKeyboard();
+
+  const paddingBottom = Platform.select({
+    android: keyboardShown ? keyboardHeight + Spacing.l : Spacing.l,
+    default: Spacing.l
+  });
 
   //TODO: add loading state for countries, payment methods, etc
   const {
@@ -147,68 +155,72 @@ export function OnRampView() {
   }, [purchaseCurrency, selectedCountry, paymentCurrency, selectedPaymentMethod]);
 
   return (
-    <FlexView padding={['s', 's', '4xl', 's']}>
-      <SelectButton
-        style={styles.countryButton}
-        onPress={() => setModalType('country')}
-        imageURL={selectedCountry?.flagImageUrl}
-        imageStyle={styles.flagImage}
-        isSVG
-      />
-      <InputToken
-        title="You pay"
-        onInputChange={onInputChange}
-        value={paymentAmount?.toString()}
-        tokenImage={paymentCurrency?.symbolImageUrl}
-        tokenSymbol={paymentCurrency?.currencyCode}
-        onTokenPress={() => setModalType('paymentCurrency')}
-        style={{ marginBottom: Spacing.s }}
-        error={getErrorMessage(error)}
-        loading={loading}
-      />
-      <InputToken
-        title="You receive"
-        value={NumberUtil.roundNumber(selectedQuote?.destinationAmount ?? 0, 6, 5)?.toString()}
-        editable={false}
-        tokenImage={purchaseCurrency?.symbolImageUrl}
-        tokenSymbol={purchaseCurrency?.currencyCode}
-        onTokenPress={() => setModalType('purchaseCurrency')}
-        loading={quotesLoading || loading}
-        containerHeight={80}
-      />
-      <SelectButton
-        style={styles.paymentMethodButton}
-        onPress={() => setModalType('paymentMethod')}
-        imageURL={selectedPaymentMethod?.logos[themeMode ?? 'light']}
-        text={selectedPaymentMethod?.name}
-        description={selectedQuote ? `via ${selectedQuote?.serviceProvider}` : 'Select a provider'}
-        isError={!selectedQuote}
-        loading={quotesLoading || loading}
-        loadingHeight={60}
-      />
-      <Button
-        style={styles.quotesButton}
-        onPress={handleContinue}
-        loading={quotesLoading || loading}
-        disabled={quotesLoading || loading || !selectedQuote}
-      >
-        Continue
-      </Button>
-      <SelectorModal
-        visible={!!modalType && modalType !== 'paymentMethod'}
-        onClose={onModalClose}
-        items={getModalItems(modalType, searchValue)}
-        onSearch={handleSearch}
-        renderItem={renderModalItem}
-        keyExtractor={(item: any, index: number) => getModalItemKey(modalType, index, item)}
-        title={getModalTitle(modalType)}
-      />
-      <SelectPaymentModal
-        visible={modalType === 'paymentMethod'}
-        onClose={onModalClose}
-        title="Payment"
-      />
-    </FlexView>
+    <ScrollView bounces={false} style={{ paddingBottom }}>
+      <FlexView padding={['s', 's', '4xl', 's']}>
+        <SelectButton
+          style={styles.countryButton}
+          onPress={() => setModalType('country')}
+          imageURL={selectedCountry?.flagImageUrl}
+          imageStyle={styles.flagImage}
+          isSVG
+        />
+        <InputToken
+          title="You pay"
+          onInputChange={onInputChange}
+          value={paymentAmount?.toString()}
+          tokenImage={paymentCurrency?.symbolImageUrl}
+          tokenSymbol={paymentCurrency?.currencyCode}
+          onTokenPress={() => setModalType('paymentCurrency')}
+          style={{ marginBottom: Spacing.s }}
+          error={getErrorMessage(error)}
+          loading={loading}
+        />
+        <InputToken
+          title="You receive"
+          value={NumberUtil.roundNumber(selectedQuote?.destinationAmount ?? 0, 6, 5)?.toString()}
+          editable={false}
+          tokenImage={purchaseCurrency?.symbolImageUrl}
+          tokenSymbol={purchaseCurrency?.currencyCode}
+          onTokenPress={() => setModalType('purchaseCurrency')}
+          loading={quotesLoading || loading}
+          containerHeight={80}
+        />
+        <SelectButton
+          style={styles.paymentMethodButton}
+          onPress={() => setModalType('paymentMethod')}
+          imageURL={selectedPaymentMethod?.logos[themeMode ?? 'light']}
+          text={selectedPaymentMethod?.name}
+          description={
+            selectedQuote ? `via ${selectedQuote?.serviceProvider}` : 'Select a provider'
+          }
+          isError={!selectedQuote}
+          loading={quotesLoading || loading}
+          loadingHeight={60}
+        />
+        <Button
+          style={styles.quotesButton}
+          onPress={handleContinue}
+          loading={quotesLoading || loading}
+          disabled={quotesLoading || loading || !selectedQuote}
+        >
+          Continue
+        </Button>
+        <SelectorModal
+          visible={!!modalType && modalType !== 'paymentMethod'}
+          onClose={onModalClose}
+          items={getModalItems(modalType, searchValue)}
+          onSearch={handleSearch}
+          renderItem={renderModalItem}
+          keyExtractor={(item: any, index: number) => getModalItemKey(modalType, index, item)}
+          title={getModalTitle(modalType)}
+        />
+        <SelectPaymentModal
+          visible={modalType === 'paymentMethod'}
+          onClose={onModalClose}
+          title="Payment"
+        />
+      </FlexView>
+    </ScrollView>
   );
 }
 

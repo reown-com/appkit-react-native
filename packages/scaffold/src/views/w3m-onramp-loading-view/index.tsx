@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import { useSnapshot } from 'valtio';
 import { Linking, ScrollView } from 'react-native';
 import {
   RouterController,
@@ -8,7 +9,7 @@ import {
   OptionsController,
   AccountController
 } from '@reown/appkit-core-react-native';
-import { FlexView, DoubleImageLoader, IconLink } from '@reown/appkit-ui-react-native';
+import { FlexView, DoubleImageLoader, IconLink, Button, Text } from '@reown/appkit-ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectingBody } from '../../partials/w3m-connecting-body';
@@ -17,6 +18,7 @@ import { StringUtil } from '@reown/appkit-common-react-native';
 
 export function OnRampLoadingView() {
   const { maxWidth: width } = useCustomDimensions();
+  const { error } = useSnapshot(OnRampController.state);
   const providerName = StringUtil.capitalize(
     OnRampController.state.selectedQuote?.serviceProvider.toLowerCase()
   );
@@ -28,6 +30,18 @@ export function OnRampLoadingView() {
   const handleGoBack = () => {
     RouterController.goBack();
   };
+
+  const onConnect = useCallback(async () => {
+    if (OnRampController.state.selectedQuote) {
+      OnRampController.clearError();
+      const response = await OnRampController.generateWidget({
+        quote: OnRampController.state.selectedQuote
+      });
+      if (response?.widgetUrl) {
+        Linking.openURL(response?.widgetUrl);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const unsubscribe = Linking.addEventListener('url', ({ url }) => {
@@ -48,21 +62,8 @@ export function OnRampLoadingView() {
   }, []);
 
   useEffect(() => {
-    const onConnect = async () => {
-      if (OnRampController.state.selectedQuote) {
-        const response = await OnRampController.generateWidget({
-          quote: OnRampController.state.selectedQuote
-        });
-        if (response?.widgetUrl) {
-          Linking.openURL(response?.widgetUrl);
-        }
-      }
-    };
-
     onConnect();
-  }, []);
-
-  //TODO: idea -> show retry after 2mins
+  }, [onConnect]);
 
   return (
     <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.container}>
@@ -84,10 +85,32 @@ export function OnRampLoadingView() {
           rightImage={serviceProvideLogo}
           style={styles.imageContainer}
         />
-        <ConnectingBody
-          title={`Connecting with ${providerName}`}
-          description="Please wait while we redirect you to finalize your purchase."
-        />
+        {error ? (
+          <FlexView
+            alignItems="center"
+            justifyContent="center"
+            padding={['3xs', '2xl', '0', '2xl']}
+          >
+            <Text center color="error-100" variant="paragraph-500" style={styles.errorText}>
+              There was an error while connecting with {providerName}
+            </Text>
+            <Button
+              size="sm"
+              variant="accent"
+              iconLeft="refresh"
+              style={styles.retryButton}
+              iconStyle={styles.retryIcon}
+              onPress={onConnect}
+            >
+              Try again
+            </Button>
+          </FlexView>
+        ) : (
+          <ConnectingBody
+            title={`Connecting with ${providerName}`}
+            description="Please wait while we redirect you to finalize your purchase."
+          />
+        )}
       </FlexView>
     </ScrollView>
   );

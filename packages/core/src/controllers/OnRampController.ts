@@ -18,6 +18,8 @@ import { AccountController } from './AccountController';
 import { OptionsController } from './OptionsController';
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 import { StorageUtil } from '../utils/StorageUtil';
+import { SnackController } from './SnackController';
+
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getMeldApiUrl();
 const api = new FetchUtil({ baseUrl });
@@ -25,8 +27,6 @@ const headers = {
   'Authorization': `Basic ${CoreHelperUtil.getMeldToken()}`,
   'Content-Type': 'application/json'
 };
-
-const defaultPaymentAmount = 150;
 
 // -- Types --------------------------------------------- //
 export interface OnRampControllerState {
@@ -42,6 +42,7 @@ export interface OnRampControllerState {
   paymentAmount?: number;
   paymentCurrency?: OnRampFiatCurrency;
   paymentCurrencies?: OnRampFiatCurrency[];
+  paymentCurrencyLimit?: OnRampFiatLimit;
   paymentCurrenciesLimits?: OnRampFiatLimit[];
   quotes?: OnRampQuote[];
   selectedQuote?: OnRampQuote;
@@ -101,24 +102,32 @@ export const OnRampController = {
   setSelectedPaymentMethod(paymentMethod: OnRampPaymentMethod) {
     state.selectedPaymentMethod = paymentMethod;
 
-    // Reset quotes
-    state.selectedQuote = undefined;
-    state.quotes = [];
+    this.clearQuotes();
   },
 
   setPurchaseCurrency(currency: OnRampCryptoCurrency) {
     state.purchaseCurrency = currency;
+
+    this.clearQuotes();
   },
 
   setPaymentCurrency(currency: OnRampFiatCurrency, updateAmount = true) {
     state.paymentCurrency = currency;
 
     if (updateAmount) {
-      const limits = state.paymentCurrenciesLimits?.find(
+      const limit = state.paymentCurrenciesLimits?.find(
         l => l.currencyCode === currency.currencyCode
       );
-      state.paymentAmount = limits?.defaultAmount || defaultPaymentAmount;
+
+      const amount = limit?.defaultAmount ?? limit?.minimumAmount ?? 0;
+      state.paymentAmount = Math.round(amount);
+
+      if (limit) {
+        state.paymentCurrencyLimit = limit;
+      }
     }
+
+    this.clearQuotes();
   },
 
   setPurchaseAmount(amount: number) {
@@ -132,7 +141,9 @@ export const OnRampController = {
   setDefaultPaymentAmount(currency: OnRampFiatCurrency) {
     const limits = this.getCurrencyLimit(currency);
 
-    state.paymentAmount = limits?.defaultAmount || defaultPaymentAmount;
+    const amount = limits?.defaultAmount ?? limits?.minimumAmount ?? 0;
+
+    state.paymentAmount = Math.round(amount);
   },
 
   setSelectedQuote(quote?: OnRampQuote) {
@@ -229,6 +240,8 @@ export const OnRampController = {
       paymentMethods?.find(p => p.paymentMethod === 'CREDIT_DEBIT_CARD') ||
       paymentMethods?.[0] ||
       undefined;
+
+    this.clearQuotes();
   },
 
   async fetchCryptoCurrencies() {
@@ -351,31 +364,49 @@ export const OnRampController = {
   async generateWidget({ quote }: { quote: OnRampQuote }) {
     const metadata = OptionsController.state.metadata;
 
-    const widget = await api.post<OnRampWidgetResponse>({
-      path: '/crypto/session/widget',
-      headers,
-      body: {
-        sessionData: {
-          countryCode: quote?.countryCode,
-          destinationCurrencyCode: quote?.destinationCurrencyCode,
-          paymentMethodType: quote?.paymentMethodType,
-          serviceProvider: quote?.serviceProvider,
-          sourceAmount: quote?.sourceAmount,
-          sourceCurrencyCode: quote?.sourceCurrencyCode,
-          walletAddress: AccountController.state.address,
-          redirectUrl: metadata?.redirect?.universal ?? `${metadata?.redirect?.native}/onramp`
-        },
-        sessionType: 'BUY'
-      }
-    });
+    try {
+      const widget = await api.post<OnRampWidgetResponse>({
+        path: '/crypto/session/widget',
+        headers,
+        body: {
+          sessionData: {
+            countryCode: quote?.countryCode,
+            destinationCurrencyCode: quote?.destinationCurrencyCode,
+            paymentMethodType: quote?.paymentMethodType,
+            serviceProvider: quote?.serviceProvider,
+            sourceAmount: quote?.sourceAmount,
+            sourceCurrencyCode: quote?.sourceCurrencyCode,
+            walletAddress: AccountController.state.address,
+            redirectUrl: metadata?.redirect?.universal ?? `${metadata?.redirect?.native}/onramp`
+          },
+          sessionType: 'BUY'
+        }
+      });
 
-    state.widgetUrl = widget?.widgetUrl;
+      state.widgetUrl = widget?.widgetUrl;
 
-    return widget;
+      return widget;
+    } catch (e: any) {
+      //TODO: send event
+      console.log('error', e);
+      state.error = e?.code || 'UNKNOWN_ERROR';
+      SnackController.showInternalError({
+        shortMessage: 'Error creating purchase URL',
+        longMessage: e?.message ?? e?.code
+      });
+
+      return undefined;
+    }
   },
 
   clearError() {
     state.error = undefined;
+  },
+
+  clearQuotes() {
+    state.quotes = [];
+    state.selectedQuote = undefined;
+    state.selectedServiceProvider = undefined;
   },
 
   async loadOnRampData() {

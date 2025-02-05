@@ -80,7 +80,7 @@ export function InputToken({
             placeholder={editable ? '0' : ''}
             editable={editable}
             placeholderTextColor={Theme['fg-275']}
-            returnKeyType="done"
+            returnKeyType="default"
             style={[styles.input, { color: Theme['fg-100'] }]}
             autoCapitalize="none"
             autoCorrect={false}
