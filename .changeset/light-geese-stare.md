@@ -15,4 +15,4 @@
 '@reown/appkit-wallet-react-native': patch
 ---
 
-fix: show wallet info in ethers hook
+fix: show wallet info in useWalletInfo hook for ethers and ethers5
