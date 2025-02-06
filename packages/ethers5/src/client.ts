@@ -432,6 +432,10 @@ export class AppKit extends AppKitScaffold {
       this.syncNetwork(chainImages);
     });
 
+    EthersStoreUtil.subscribeKey('provider', provider => {
+      this.syncConnectedWalletInfo(provider);
+    });
+
     this.syncRequestedNetworks(chains, chainImages);
     this.syncConnectors(config);
     this.syncAuthConnector(config);
@@ -977,6 +981,35 @@ export class AppKit extends AppKitScaffold {
     }
 
     this.addAuthListeners(this.authProvider);
+  }
+
+  private async syncConnectedWalletInfo(provider?: Provider) {
+    if (!provider) {
+      this.setConnectedWalletInfo(undefined);
+
+      return;
+    }
+
+    if ((provider as any)?.session?.peer?.metadata) {
+      const metadata = (provider as unknown as EthereumProvider)?.session?.peer.metadata;
+      if (metadata) {
+        this.setConnectedWalletInfo({
+          ...metadata,
+          name: metadata.name,
+          icon: metadata.icons?.[0]
+        });
+      }
+    } else if (provider?.id === ConstantsUtil.COINBASE_CONNECTOR_ID) {
+      this.setConnectedWalletInfo({
+        name: 'Coinbase Wallet'
+      });
+    } else if (provider?.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+      this.setConnectedWalletInfo({
+        name: 'AppKit Universal Wallet'
+      });
+    } else {
+      this.setConnectedWalletInfo(undefined);
+    }
   }
 
   private async addAuthListeners(authProvider: AppKitFrameProvider) {
