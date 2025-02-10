@@ -548,7 +548,11 @@ export class AppKit extends AppKitScaffold {
         });
       }
     } else {
-      this.setConnectedWalletInfo({ name: connector.name, icon: connector.icon });
+      this.setConnectedWalletInfo({
+        id: connector.id,
+        name: connector.name,
+        icon: this.options?.connectorImages?.[connector.id] ?? connector.icon
+      });
     }
   }
 

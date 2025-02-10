@@ -1022,13 +1022,11 @@ export class AppKit extends AppKitScaffold {
           icon: metadata.icons?.[0]
         });
       }
-    } else if (provider?.id === ConstantsUtil.COINBASE_CONNECTOR_ID) {
+    } else if (provider?.id) {
       this.setConnectedWalletInfo({
-        name: 'Coinbase Wallet'
-      });
-    } else if (provider?.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
-      this.setConnectedWalletInfo({
-        name: 'AppKit Universal Wallet'
+        id: provider.id,
+        name: provider?.name ?? PresetsUtil.ConnectorNamesMap[provider.id],
+        icon: this.options?.connectorImages?.[provider.id]
       });
     } else {
       this.setConnectedWalletInfo(undefined);

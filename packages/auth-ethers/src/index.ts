@@ -7,7 +7,7 @@ interface AuthProviderProps {
 
 export class AuthProvider extends AppKitFrameProvider {
   readonly id = 'appKitAuth';
-  readonly name = 'AppKit Auth';
+  readonly name = 'AppKit Universal Wallet';
 
   constructor(props: AuthProviderProps) {
     super(props.projectId, props.metadata);

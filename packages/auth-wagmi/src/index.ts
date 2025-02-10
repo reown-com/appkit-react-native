@@ -35,7 +35,7 @@ export function authConnector(parameters: AuthConnectorOptions) {
 
   return createConnector<Provider, {}, StorageItemMap>(config => ({
     id: authConnector.id,
-    name: 'AppKit Auth',
+    name: 'AppKit Universal Wallet',
     type: authConnector.type,
     async setup() {
       _provider = new AppKitFrameProvider(parameters.projectId, parameters.metadata);
