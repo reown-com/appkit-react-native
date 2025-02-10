@@ -22,7 +22,7 @@ export function AllWalletsView() {
   const usableWidth = maxWidth - Spacing.xs * 2;
   const itemWidth = Math.abs(Math.trunc(usableWidth / numColumns));
 
-  const onInputChange = useDebounceCallback({ callback: setSearchQuery });
+  const { debouncedCallback: onInputChange } = useDebounceCallback({ callback: setSearchQuery });
 
   const onWalletPress = (wallet: WcWallet) => {
     const connector = ConnectorController.state.connectors.find(c => c.explorerId === wallet.id);

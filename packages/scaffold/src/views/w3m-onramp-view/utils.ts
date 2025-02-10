@@ -148,12 +148,12 @@ export const getModalItemKey = (
   return index.toString();
 };
 
-export const onModalItemPress = (
+export const onModalItemPress = async (
   item: any,
   type?: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency'
 ) => {
   if (type === 'country') {
-    OnRampController.setSelectedCountry(item as OnRampCountry);
+    await OnRampController.setSelectedCountry(item as OnRampCountry);
   }
   if (type === 'paymentMethod') {
     OnRampController.setSelectedPaymentMethod(item as OnRampPaymentMethod);

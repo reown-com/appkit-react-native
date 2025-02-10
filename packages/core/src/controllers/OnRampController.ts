@@ -46,10 +46,10 @@ export interface OnRampControllerState {
   paymentCurrenciesLimits?: OnRampFiatLimit[];
   quotes?: OnRampQuote[];
   selectedQuote?: OnRampQuote;
-  quotesLoading: boolean;
   widgetUrl?: string;
   error?: string;
   loading?: boolean;
+  quotesLoading: boolean;
 }
 
 type StateKey = keyof OnRampControllerState;
@@ -80,7 +80,6 @@ export const OnRampController = {
   async setSelectedCountry(country: OnRampCountry, updateCurrency = true) {
     state.selectedCountry = country;
     state.loading = true;
-    await Promise.all([this.fetchPaymentMethods(), this.fetchCryptoCurrencies()]);
 
     if (updateCurrency) {
       const currencyCode =
@@ -94,6 +93,9 @@ export const OnRampController = {
         this.setPaymentCurrency(currency);
       }
     }
+
+    await Promise.all([this.fetchPaymentMethods(), this.fetchCryptoCurrencies()]);
+
     state.loading = false;
 
     StorageUtil.setOnRampPreferredCountry(country);
@@ -134,8 +136,8 @@ export const OnRampController = {
     state.purchaseAmount = amount;
   },
 
-  setPaymentAmount(amount: number | string) {
-    state.paymentAmount = Number(amount);
+  setPaymentAmount(amount?: number | string) {
+    state.paymentAmount = amount ? Number(amount) : undefined;
   },
 
   setDefaultPaymentAmount(currency: OnRampFiatCurrency) {
@@ -326,11 +328,18 @@ export const OnRampController = {
       });
 
       const quotes = response?.quotes.sort((a, b) => b.destinationAmount - a.destinationAmount);
-      state.quotes = quotes;
-      state.selectedQuote = quotes?.[0];
-      state.selectedServiceProvider = state.serviceProviders.find(
-        sp => sp.serviceProvider === quotes?.[0]?.serviceProvider
-      );
+
+      // Update quotes if payment amount is set (user could change the amount while the request is pending)
+      if (state.paymentAmount && state.paymentAmount > 0) {
+        state.quotes = quotes;
+        state.selectedQuote = quotes?.[0];
+        state.selectedServiceProvider = state.serviceProviders.find(
+          sp => sp.serviceProvider === quotes?.[0]?.serviceProvider
+        );
+      } else {
+        this.clearQuotes();
+      }
+
       state.quotesLoading = false;
     } catch (error: any) {
       state.quotes = [];

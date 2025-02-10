@@ -2,6 +2,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { Image } from '../../components/wui-image';
 import { Text } from '../../components/wui-text';
 import { Button } from '../wui-button';
+import { Icon } from '../../components/wui-icon';
 import styles from './styles';
 
 export interface TokenButtonProps {
@@ -55,6 +56,7 @@ export function TokenButton({
       disabled={disabled}
     >
       {inverse ? content.reverse() : content}
+      <Icon name="chevronBottom" size="xxs" color="fg-150" style={styles.chevron} />
     </Button>
   );
 }

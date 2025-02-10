@@ -1,15 +1,23 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useState } from 'react';
-import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   OnRampController,
   type OnRampCountry,
   type OnRampFiatCurrency,
   type OnRampCryptoCurrency,
   ThemeController,
-  RouterController
+  RouterController,
+  type OnRampControllerState
 } from '@reown/appkit-core-react-native';
-import { BorderRadius, Button, FlexView, Spacing } from '@reown/appkit-ui-react-native';
+import {
+  Button,
+  FlexView,
+  Separator,
+  Spacing,
+  Text,
+  TokenButton
+} from '@reown/appkit-ui-react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
 import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Country } from './components/Country';
@@ -22,55 +30,62 @@ import {
   onModalItemPress
 } from './utils';
 import { SelectButton } from './components/SelectButton';
-import { InputToken } from './components/InputToken';
+import { CurrencyInput } from './components/CurrencyInput';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
-import { useKeyboard } from '../../hooks/useKeyboard';
+import { Header } from './components/Header';
 
 export function OnRampView() {
   const { themeMode } = useSnapshot(ThemeController.state);
 
-  const { keyboardShown, keyboardHeight } = useKeyboard();
-
-  const paddingBottom = Platform.select({
-    android: keyboardShown ? keyboardHeight + Spacing.l : Spacing.l,
-    default: Spacing.l
-  });
-
-  //TODO: add loading state for countries, payment methods, etc
   const {
     purchaseCurrency,
     selectedCountry,
     paymentCurrency,
+    paymentMethods,
     selectedPaymentMethod,
     paymentAmount,
     quotesLoading,
     selectedQuote,
     error,
     loading
-  } = useSnapshot(OnRampController.state);
+  } = useSnapshot(OnRampController.state) as OnRampControllerState;
   const [searchValue, setSearchValue] = useState('');
   const [modalType, setModalType] = useState<
     'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | undefined
   >();
 
-  const debouncedGetQuotes = useDebounceCallback({
-    callback: OnRampController.getQuotes,
+  const getQuotes = useCallback(() => {
+    if (
+      OnRampController.state.purchaseCurrency &&
+      OnRampController.state.selectedCountry &&
+      OnRampController.state.paymentCurrency &&
+      OnRampController.state.selectedPaymentMethod &&
+      OnRampController.state.paymentAmount &&
+      OnRampController.state.paymentAmount > 0 &&
+      !OnRampController.state.loading
+    ) {
+      OnRampController.getQuotes();
+    }
+  }, []);
+
+  const { debouncedCallback: debouncedGetQuotes, abort: abortGetQuotes } = useDebounceCallback({
+    callback: getQuotes,
     delay: 500
   });
 
-  const onInputChange = (value: string) => {
-    const formattedValue = value.replace(/,/g, '.');
-
-    if (Number(formattedValue) >= 0 || formattedValue === '') {
-      OnRampController.setPaymentAmount(Number(formattedValue));
-      OnRampController.clearError();
-      debouncedGetQuotes();
-    }
-
-    if (formattedValue === '') {
+  const onValueChange = (value: number) => {
+    if (!value) {
+      abortGetQuotes();
+      OnRampController.setPaymentAmount(0);
       OnRampController.setSelectedQuote(undefined);
+      OnRampController.clearError();
+
+      return;
     }
+
+    OnRampController.setPaymentAmount(value);
+    debouncedGetQuotes();
   };
 
   const handleSearch = (value: string) => {
@@ -125,10 +140,11 @@ export function OnRampView() {
     return <View />;
   };
 
-  const onPressModalItem = (item: any) => {
-    onModalItemPress(item, modalType);
+  const onPressModalItem = async (item: any) => {
     setModalType(undefined);
     setSearchValue('');
+    await onModalItemPress(item, modalType);
+    getQuotes();
   };
 
   const onModalClose = () => {
@@ -142,105 +158,100 @@ export function OnRampView() {
   }, []);
 
   useEffect(() => {
-    if (
-      purchaseCurrency &&
-      selectedCountry &&
-      paymentCurrency &&
-      selectedPaymentMethod &&
-      OnRampController.state.paymentAmount &&
-      !OnRampController.state.loading
-    ) {
-      OnRampController.getQuotes();
-    }
-  }, [purchaseCurrency, selectedCountry, paymentCurrency, selectedPaymentMethod]);
+    getQuotes();
+  }, [selectedPaymentMethod, getQuotes]);
 
   return (
-    <ScrollView bounces={false} style={{ paddingBottom }}>
-      <FlexView padding={['s', 's', '4xl', 's']}>
-        <SelectButton
-          style={styles.countryButton}
-          onPress={() => setModalType('country')}
-          imageURL={selectedCountry?.flagImageUrl}
-          imageStyle={styles.flagImage}
-          isSVG
-        />
-        <InputToken
-          title="You pay"
-          onInputChange={onInputChange}
-          value={paymentAmount?.toString()}
-          tokenImage={paymentCurrency?.symbolImageUrl}
-          tokenSymbol={paymentCurrency?.currencyCode}
-          onTokenPress={() => setModalType('paymentCurrency')}
-          style={{ marginBottom: Spacing.s }}
-          error={getErrorMessage(error)}
-          loading={loading}
-        />
-        <InputToken
-          title="You receive"
-          value={NumberUtil.roundNumber(selectedQuote?.destinationAmount ?? 0, 6, 5)?.toString()}
-          editable={false}
-          tokenImage={purchaseCurrency?.symbolImageUrl}
-          tokenSymbol={purchaseCurrency?.currencyCode}
-          onTokenPress={() => setModalType('purchaseCurrency')}
-          loading={quotesLoading || loading}
-          containerHeight={80}
-        />
-        <SelectButton
-          style={styles.paymentMethodButton}
-          onPress={() => setModalType('paymentMethod')}
-          imageURL={selectedPaymentMethod?.logos[themeMode ?? 'light']}
-          text={selectedPaymentMethod?.name}
-          description={
-            selectedQuote ? `via ${selectedQuote?.serviceProvider}` : 'Select a provider'
-          }
-          isError={!selectedQuote}
-          loading={quotesLoading || loading}
-          loadingHeight={60}
-        />
-        <Button
-          style={styles.quotesButton}
-          onPress={handleContinue}
-          loading={quotesLoading || loading}
-          disabled={quotesLoading || loading || !selectedQuote}
-        >
-          Continue
-        </Button>
-        <SelectorModal
-          visible={!!modalType && modalType !== 'paymentMethod'}
-          onClose={onModalClose}
-          items={getModalItems(modalType, searchValue)}
-          onSearch={handleSearch}
-          renderItem={renderModalItem}
-          keyExtractor={(item: any, index: number) => getModalItemKey(modalType, index, item)}
-          title={getModalTitle(modalType)}
-        />
-        <SelectPaymentModal
-          visible={modalType === 'paymentMethod'}
-          onClose={onModalClose}
-          title="Payment"
-        />
-      </FlexView>
-    </ScrollView>
+    <>
+      <Header selectedCountry={selectedCountry} onCountryPress={() => setModalType('country')} />
+      <ScrollView bounces={false}>
+        <FlexView padding={['s', 's', '4xl', 's']}>
+          <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
+            <Text variant="small-400" color="fg-150">
+              Pay in
+            </Text>
+            <TokenButton
+              placeholder={'Select currency'}
+              imageUrl={paymentCurrency?.symbolImageUrl}
+              text={paymentCurrency?.currencyCode}
+              onPress={() => setModalType('paymentCurrency')}
+            />
+          </FlexView>
+          <Separator color="bg-200" style={{ marginVertical: Spacing.m }} />
+          <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
+            <Text variant="small-400" color="fg-150">
+              You buy
+            </Text>
+            <TokenButton
+              placeholder={'Select currency'}
+              imageUrl={purchaseCurrency?.symbolImageUrl}
+              text={purchaseCurrency?.currencyCode}
+              onPress={() => setModalType('purchaseCurrency')}
+            />
+          </FlexView>
+          <CurrencyInput
+            value={paymentAmount?.toString()}
+            error={getErrorMessage(error)}
+            loading={loading || quotesLoading}
+            purchaseValue={`≈ ${
+              selectedQuote?.destinationAmount
+                ? NumberUtil.roundNumber(selectedQuote.destinationAmount, 6, 5)?.toString()
+                : '0.00'
+            } ${purchaseCurrency?.currencyCode}`}
+            onValueChange={onValueChange}
+          />
+          <SelectButton
+            style={styles.paymentMethodButton}
+            onPress={() => setModalType('paymentMethod')}
+            imageURL={selectedPaymentMethod?.logos[themeMode ?? 'light']}
+            text={selectedPaymentMethod?.name}
+            description={
+              selectedQuote
+                ? `via ${selectedQuote?.serviceProvider}`
+                : !paymentMethods?.length
+                ? 'No payment methods available'
+                : 'Select a provider'
+            }
+            isError={!selectedQuote || !paymentMethods?.length}
+            loading={quotesLoading || loading}
+            loadingHeight={60}
+            pressable={paymentMethods?.length > 0}
+          />
+          <Button
+            style={styles.quotesButton}
+            onPress={handleContinue}
+            disabled={quotesLoading || loading || !selectedQuote}
+          >
+            Continue
+          </Button>
+          <SelectorModal
+            visible={!!modalType && modalType !== 'paymentMethod'}
+            onClose={onModalClose}
+            items={getModalItems(modalType, searchValue)}
+            onSearch={handleSearch}
+            renderItem={renderModalItem}
+            keyExtractor={(item: any, index: number) => getModalItemKey(modalType, index, item)}
+            title={getModalTitle(modalType)}
+          />
+          <SelectPaymentModal
+            visible={modalType === 'paymentMethod'}
+            onClose={onModalClose}
+            title="Payment"
+          />
+        </FlexView>
+      </ScrollView>
+    </>
   );
 }
 
 export const styles = StyleSheet.create({
-  input: {
-    fontSize: 20,
-    flex: 1,
-    marginRight: Spacing.xs
-  },
-  container: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: BorderRadius['3xs']
-  },
   quotesButton: {
     marginTop: Spacing.m
   },
   countryButton: {
     width: 60,
     alignSelf: 'flex-end',
-    marginBottom: Spacing.s
+    marginBottom: Spacing['2xl']
   },
   flagImage: {
     height: 16
@@ -251,24 +262,10 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: Spacing.s
   },
-  purchaseCurrencyButton: {
-    height: 50,
-    width: 110
-  },
-  purchaseCurrencyImage: {
-    borderRadius: BorderRadius.full,
-    borderWidth: StyleSheet.hairlineWidth
-  },
-  providerButton: {
-    marginTop: Spacing.s,
-    height: 60,
-    width: '100%',
-    justifyContent: 'space-between',
-    paddingRight: Spacing.l
-  },
-  providerImage: {
-    height: 20,
-    width: 20,
-    borderRadius: BorderRadius.full
+  input: {
+    flex: 1,
+    marginHorizontal: Spacing['4xs'],
+    fontSize: 38,
+    fontWeight: '400'
   }
 });

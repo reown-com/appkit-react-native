@@ -18,5 +18,8 @@ export default StyleSheet.create({
   imageInverse: {
     marginRight: 0,
     marginLeft: Spacing['2xs']
+  },
+  chevron: {
+    marginLeft: Spacing['2xs']
   }
 });

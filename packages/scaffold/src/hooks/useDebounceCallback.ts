@@ -13,6 +13,13 @@ export function useDebounceCallback({ callback, delay = 250 }: Props) {
     callbackRef.current = callback;
   }, [callback]);
 
+  const abort = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }, []);
+
   const debouncedCallback = useCallback(
     (args?: any) => {
       if (timeoutRef.current) {
@@ -34,5 +41,5 @@ export function useDebounceCallback({ callback, delay = 250 }: Props) {
     };
   }, []);
 
-  return debouncedCallback;
+  return { debouncedCallback, abort };
 }
