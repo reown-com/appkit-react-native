@@ -16,8 +16,6 @@ import {
   AppKitScaffold
 } from '@reown/appkit-scaffold-react-native';
 import {
-  ConstantsUtil,
-  PresetsUtil,
   StorageUtil,
   HelpersUtil,
   EthersConstantsUtil,
@@ -38,7 +36,14 @@ import {
   getDidAddress,
   type AppKitSIWEClient
 } from '@reown/appkit-siwe-react-native';
-import { erc20ABI, ErrorUtil, NamesUtil, NetworkUtil } from '@reown/appkit-common-react-native';
+import {
+  erc20ABI,
+  ErrorUtil,
+  NamesUtil,
+  NetworkUtil,
+  ConstantsUtil,
+  PresetsUtil
+} from '@reown/appkit-common-react-native';
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 import { type JsonRpcError } from '@walletconnect/jsonrpc-types';
@@ -941,7 +946,7 @@ export class AppKit extends AppKitScaffold {
         } else {
           _connectors.push({
             id: connector.id,
-            name: connector.name,
+            name: connector.name ?? PresetsUtil.ConnectorNamesMap[connector.id],
             type: 'EXTERNAL'
           });
         }

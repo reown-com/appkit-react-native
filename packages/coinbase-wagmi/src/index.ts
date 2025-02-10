@@ -8,6 +8,7 @@ import {
 } from 'viem';
 import { WalletMobileSDKEVMProvider, configure } from '@coinbase/wallet-mobile-sdk';
 import type { WalletMobileSDKProviderOptions } from '@coinbase/wallet-mobile-sdk/build/WalletMobileSDKEVMProvider';
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-common-react-native';
 
 type CoinbaseConnectorParameters = WalletMobileSDKProviderOptions & {
   redirect: string;
@@ -15,13 +16,13 @@ type CoinbaseConnectorParameters = WalletMobileSDKProviderOptions & {
 
 type Provider = WalletMobileSDKEVMProvider;
 
-coinbaseConnector.type = 'coinbaseWallet' as const;
+coinbaseConnector.type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.COINBASE_CONNECTOR_ID]!;
 export function coinbaseConnector(parameters: CoinbaseConnectorParameters) {
   let _provider: Provider;
 
   return createConnector<Provider>(config => ({
-    id: 'coinbaseWallet',
-    name: 'Coinbase Wallet',
+    id: ConstantsUtil.COINBASE_CONNECTOR_ID,
+    name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID]!,
     type: coinbaseConnector.type,
     async connect({ chainId } = {}) {
       try {

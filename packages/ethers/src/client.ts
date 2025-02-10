@@ -28,10 +28,15 @@ import {
   type AppKitFrameAccountType,
   type EstimateGasTransactionArgs
 } from '@reown/appkit-scaffold-react-native';
-import { erc20ABI, ErrorUtil, NamesUtil, NetworkUtil } from '@reown/appkit-common-react-native';
 import {
-  ConstantsUtil,
+  erc20ABI,
+  ErrorUtil,
+  NamesUtil,
+  NetworkUtil,
   PresetsUtil,
+  ConstantsUtil
+} from '@reown/appkit-common-react-native';
+import {
   HelpersUtil,
   StorageUtil,
   EthersConstantsUtil,
@@ -957,14 +962,15 @@ export class AppKit extends AppKitScaffold {
             explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
             imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
             imageUrl: this.options?.connectorImages?.[ConstantsUtil.COINBASE_CONNECTOR_ID],
-            name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID],
+            name:
+              connector?.name ?? PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID],
             type: PresetsUtil.ConnectorTypesMap[ConstantsUtil.COINBASE_CONNECTOR_ID]!
           });
           this.checkActiveCoinbaseProvider(connector as Provider);
         } else {
           _connectors.push({
             id: connector.id,
-            name: connector.name,
+            name: connector.name ?? PresetsUtil.ConnectorNamesMap[connector.id],
             type: 'EXTERNAL'
           });
         }

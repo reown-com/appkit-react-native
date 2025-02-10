@@ -3,7 +3,8 @@ import type {
   Balance,
   SocialProvider,
   ThemeMode,
-  Transaction
+  Transaction,
+  ConnectorType
 } from '@reown/appkit-common-react-native';
 
 export interface BaseError {
@@ -37,8 +38,6 @@ export interface LinkingRecord {
 export type ProjectId = string;
 
 export type Platform = 'mobile' | 'web' | 'qrcode' | 'email' | 'unsupported';
-
-export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
 
 export type Connector = {
   id: string;
