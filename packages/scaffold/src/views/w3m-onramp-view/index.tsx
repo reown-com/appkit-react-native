@@ -27,7 +27,8 @@ import {
   getModalItemKey,
   getModalItems,
   getModalTitle,
-  onModalItemPress
+  onModalItemPress,
+  getItemHeight
 } from './utils';
 import { SelectButton } from './components/SelectButton';
 import { CurrencyInput } from './components/CurrencyInput';
@@ -177,7 +178,7 @@ export function OnRampView() {
               onPress={() => setModalType('paymentCurrency')}
             />
           </FlexView>
-          <Separator color="bg-200" style={{ marginVertical: Spacing.m }} />
+          <Separator color="bg-200" style={styles.separator} />
           <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
             <Text variant="small-400" color="fg-150">
               You buy
@@ -232,6 +233,7 @@ export function OnRampView() {
             renderItem={renderModalItem}
             keyExtractor={(item: any, index: number) => getModalItemKey(modalType, index, item)}
             title={getModalTitle(modalType)}
+            itemHeight={getItemHeight(modalType)}
           />
           <SelectPaymentModal
             visible={modalType === 'paymentMethod'}
@@ -248,24 +250,13 @@ export const styles = StyleSheet.create({
   quotesButton: {
     marginTop: Spacing.m
   },
-  countryButton: {
-    width: 60,
-    alignSelf: 'flex-end',
-    marginBottom: Spacing['2xl']
-  },
-  flagImage: {
-    height: 16
-  },
   paymentMethodButton: {
     width: '100%',
     height: 60,
     justifyContent: 'space-between',
     marginTop: Spacing.s
   },
-  input: {
-    flex: 1,
-    marginHorizontal: Spacing['4xs'],
-    fontSize: 38,
-    fontWeight: '400'
+  separator: {
+    marginVertical: Spacing['2xs']
   }
 });

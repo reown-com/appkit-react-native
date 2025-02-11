@@ -14,6 +14,8 @@ import {
 } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
+export const ITEM_HEIGHT = 60;
+
 interface Props {
   onPress: (item: OnRampFiatCurrency | OnRampCryptoCurrency) => void;
   item: OnRampFiatCurrency | OnRampCryptoCurrency;
@@ -35,7 +37,8 @@ export function Currency({ onPress, item, selected, isToken }: Props) {
         styles.container,
         {
           backgroundColor: Theme['gray-glass-005'],
-          borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010']
+          borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010'],
+          ...(selected && styles.selected)
         }
       ]}
     >
@@ -46,7 +49,7 @@ export function Currency({ onPress, item, selected, isToken }: Props) {
             style={[styles.logo, { backgroundColor: Theme['fg-100'] }]}
           />
           <FlexView>
-            <Text variant="paragraph-500" color="fg-100">
+            <Text variant="paragraph-500" color="fg-100" numberOfLines={1} ellipsizeMode="tail">
               {isToken ? item.currencyCode : item.name}
             </Text>
             <Text variant="small-400" color="fg-150">
@@ -65,7 +68,9 @@ export function Currency({ onPress, item, selected, isToken }: Props) {
 const styles = StyleSheet.create({
   container: {
     borderRadius: BorderRadius['3xs'],
-    borderWidth: StyleSheet.hairlineWidth
+    borderWidth: StyleSheet.hairlineWidth,
+    justifyContent: 'center',
+    height: ITEM_HEIGHT
   },
   logo: {
     width: 30,
@@ -75,5 +80,11 @@ const styles = StyleSheet.create({
   },
   checkmark: {
     marginRight: Spacing['2xs']
+  },
+  selected: {
+    borderWidth: 1
+  },
+  text: {
+    flex: 1
   }
 });

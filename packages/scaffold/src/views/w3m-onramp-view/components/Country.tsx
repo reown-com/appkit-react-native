@@ -17,6 +17,8 @@ interface Props {
   selected: boolean;
 }
 
+export const ITEM_HEIGHT = 45;
+
 export function Country({ onPress, item, selected }: Props) {
   const Theme = useTheme();
 
@@ -31,24 +33,29 @@ export function Country({ onPress, item, selected }: Props) {
         styles.container,
         {
           backgroundColor: Theme['gray-glass-005'],
-          borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010']
+          borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010'],
+          ...(selected && styles.selected)
         }
       ]}
     >
-      <FlexView flexDirection="row" alignItems="center" justifyContent="space-between" padding="s">
-        <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start">
-          <SvgUri
-            uri={item.flagImageUrl}
-            width={30}
-            height={20}
-            style={{
-              marginRight: Spacing.s
-            }}
-          />
-          <Text variant="paragraph-500" color="fg-100">
-            {item.name}
-          </Text>
-        </FlexView>
+      <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start" padding="s">
+        <SvgUri
+          uri={item.flagImageUrl}
+          width={30}
+          height={20}
+          style={{
+            marginRight: Spacing.s
+          }}
+        />
+        <Text
+          variant="paragraph-500"
+          color="fg-100"
+          style={styles.text}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          {item.name}
+        </Text>
         {selected && (
           <Icon name="checkmark" size="md" color="accent-100" style={styles.checkmark} />
         )}
@@ -60,7 +67,15 @@ export function Country({ onPress, item, selected }: Props) {
 const styles = StyleSheet.create({
   container: {
     borderRadius: BorderRadius['3xs'],
-    borderWidth: StyleSheet.hairlineWidth
+    borderWidth: StyleSheet.hairlineWidth,
+    height: ITEM_HEIGHT,
+    justifyContent: 'center'
+  },
+  selected: {
+    borderWidth: 1
+  },
+  text: {
+    flex: 1
   },
   checkmark: {
     marginRight: Spacing['2xs']

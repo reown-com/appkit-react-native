@@ -12,6 +12,8 @@ import {
 } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
+export const ITEM_HEIGHT = 50;
+
 interface Props {
   onPress: (item: OnRampPaymentMethod) => void;
   item: OnRampPaymentMethod;
@@ -33,7 +35,8 @@ export function PaymentMethod({ onPress, item, selected }: Props) {
         styles.container,
         {
           backgroundColor: Theme['gray-glass-005'],
-          borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010']
+          borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010'],
+          ...(selected && styles.selected)
         }
       ]}
     >
@@ -60,7 +63,9 @@ export function PaymentMethod({ onPress, item, selected }: Props) {
 const styles = StyleSheet.create({
   container: {
     borderRadius: BorderRadius['3xs'],
-    borderWidth: StyleSheet.hairlineWidth
+    borderWidth: StyleSheet.hairlineWidth,
+    height: ITEM_HEIGHT,
+    justifyContent: 'center'
   },
   logo: {
     width: 22,
@@ -69,5 +74,8 @@ const styles = StyleSheet.create({
   },
   checkmark: {
     marginRight: Spacing['2xs']
+  },
+  selected: {
+    borderWidth: 1
   }
 });

@@ -7,25 +7,25 @@ export default StyleSheet.create({
     justifyContent: 'flex-end'
   },
   header: {
-    marginBottom: Spacing.l
+    marginBottom: Spacing.s,
+    paddingHorizontal: Spacing.m
   },
   container: {
     maxHeight: '80%',
     borderTopLeftRadius: 16,
-    borderTopRightRadius: 16
+    borderTopRightRadius: 16,
+    paddingTop: Spacing.m
   },
   content: {
-    paddingVertical: Spacing.s,
+    paddingBottom: Spacing.s,
     paddingHorizontal: Spacing.m
-  },
-  separator: {
-    height: Spacing.s
   },
   iconPlaceholder: {
     height: 32,
     width: 32
   },
   searchBar: {
-    marginBottom: Spacing.s
+    marginBottom: Spacing.s,
+    marginHorizontal: Spacing.s
   }
 });

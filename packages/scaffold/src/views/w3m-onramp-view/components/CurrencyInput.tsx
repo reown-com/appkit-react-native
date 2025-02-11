@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     fontSize: 38
   },
   bottomContainer: {
-    height: 16
+    height: 20
   },
   separator: {
     marginTop: 16

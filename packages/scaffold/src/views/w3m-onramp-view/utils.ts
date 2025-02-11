@@ -7,6 +7,9 @@ import {
   type OnRampCountry,
   type OnRampQuote
 } from '@reown/appkit-core-react-native';
+import { ITEM_HEIGHT as COUNTRY_ITEM_HEIGHT } from './components/Country';
+import { ITEM_HEIGHT as PAYMENT_METHOD_ITEM_HEIGHT } from './components/PaymentMethod';
+import { ITEM_HEIGHT as CURRENCY_ITEM_HEIGHT } from './components/Currency';
 
 export const getErrorMessage = (error?: string) => {
   if (!error) {
@@ -164,4 +167,23 @@ export const onModalItemPress = async (
   if (type === 'purchaseCurrency') {
     OnRampController.setPurchaseCurrency(item as OnRampCryptoCurrency);
   }
+};
+
+export const getItemHeight = (
+  type: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency'
+) => {
+  if (type === 'country') {
+    return COUNTRY_ITEM_HEIGHT;
+  }
+  if (type === 'paymentMethod') {
+    return PAYMENT_METHOD_ITEM_HEIGHT;
+  }
+  if (type === 'paymentCurrency') {
+    return CURRENCY_ITEM_HEIGHT;
+  }
+  if (type === 'purchaseCurrency') {
+    return CURRENCY_ITEM_HEIGHT;
+  }
+
+  return 0;
 };
