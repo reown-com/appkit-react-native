@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   OnRampController,
@@ -28,13 +28,17 @@ import {
   getModalItems,
   getModalTitle,
   onModalItemPress,
-  getItemHeight
+  getItemHeight,
+  type ModalType
 } from './utils';
 import { SelectButton } from './components/SelectButton';
 import { CurrencyInput } from './components/CurrencyInput';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { Header } from './components/Header';
+
+const MemoizedCountry = memo(Country);
+const MemoizedCurrency = memo(Currency);
 
 export function OnRampView() {
   const { themeMode } = useSnapshot(ThemeController.state);
@@ -52,9 +56,7 @@ export function OnRampView() {
     loading
   } = useSnapshot(OnRampController.state) as OnRampControllerState;
   const [searchValue, setSearchValue] = useState('');
-  const [modalType, setModalType] = useState<
-    'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | undefined
-  >();
+  const [modalType, setModalType] = useState<ModalType>();
 
   const getQuotes = useCallback(() => {
     if (
@@ -104,7 +106,7 @@ export function OnRampView() {
       const parsedItem = item as OnRampCountry;
 
       return (
-        <Country
+        <MemoizedCountry
           item={parsedItem}
           onPress={onPressModalItem}
           selected={parsedItem.countryCode === selectedCountry?.countryCode}
@@ -116,7 +118,7 @@ export function OnRampView() {
       const parsedItem = item as OnRampFiatCurrency;
 
       return (
-        <Currency
+        <MemoizedCurrency
           item={parsedItem}
           onPress={onPressModalItem}
           selected={parsedItem.currencyCode === paymentCurrency?.currencyCode}
@@ -129,7 +131,7 @@ export function OnRampView() {
       const parsedItem = item as OnRampCryptoCurrency;
 
       return (
-        <Currency
+        <MemoizedCurrency
           item={parsedItem}
           onPress={onPressModalItem}
           selected={parsedItem.currencyCode === purchaseCurrency?.currencyCode}
@@ -228,7 +230,7 @@ export function OnRampView() {
           <SelectorModal
             visible={!!modalType && modalType !== 'paymentMethod'}
             onClose={onModalClose}
-            items={getModalItems(modalType, searchValue)}
+            items={getModalItems(modalType as Exclude<ModalType, 'quotes'>, searchValue)}
             onSearch={handleSearch}
             renderItem={renderModalItem}
             keyExtractor={(item: any, index: number) => getModalItemKey(modalType, index, item)}

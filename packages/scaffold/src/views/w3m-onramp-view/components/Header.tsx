@@ -1,9 +1,9 @@
+import { StyleSheet } from 'react-native';
 import { RouterController, type OnRampCountry } from '@reown/appkit-core-react-native';
-import { IconLink, Spacing, Text } from '@reown/appkit-ui-react-native';
-
+import { IconLink, Spacing, Text, BorderRadius } from '@reown/appkit-ui-react-native';
 import { FlexView } from '@reown/appkit-ui-react-native';
+
 import { SelectButton } from './SelectButton';
-import { StyleSheet, View } from 'react-native';
 
 export interface HeaderProps {
   selectedCountry?: OnRampCountry;
@@ -32,15 +32,14 @@ export function Header({ selectedCountry, onCountryPress }: HeaderProps) {
       <Text variant="paragraph-600" numberOfLines={1} testID="header-text">
         Buy crypto
       </Text>
-      <View style={styles.countryContainer}>
-        <SelectButton
-          style={styles.countryButton}
-          onPress={onCountryPress}
-          imageURL={selectedCountry?.flagImageUrl}
-          imageStyle={styles.flagImage}
-          isSVG
-        />
-      </View>
+      <SelectButton
+        style={styles.countryButton}
+        onPress={onCountryPress}
+        imageURL={selectedCountry?.flagImageUrl}
+        imageStyle={styles.flagImage}
+        imageContainerStyle={styles.flagImageContainer}
+        isSVG
+      />
     </FlexView>
   );
 }
@@ -54,9 +53,14 @@ const styles = StyleSheet.create({
     width: 70
   },
   countryButton: {
-    marginLeft: Spacing.xs
+    padding: Spacing.xs
   },
   flagImage: {
-    height: 16
+    height: 20,
+    width: 20
+  },
+  flagImageContainer: {
+    borderRadius: BorderRadius.full,
+    overflow: 'hidden'
   }
 });

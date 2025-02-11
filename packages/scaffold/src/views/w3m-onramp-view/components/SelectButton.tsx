@@ -26,6 +26,7 @@ interface Props {
   isSVG?: boolean;
   style?: StyleProp<ViewStyle>;
   imageStyle?: StyleProp<ImageStyle>;
+  imageContainerStyle?: StyleProp<ViewStyle>;
   iconPlaceholder?: IconType;
   pressable?: boolean;
   loadingHeight?: number; //TODO: review this
@@ -42,6 +43,7 @@ export function SelectButton({
   isSVG,
   style,
   imageStyle,
+  imageContainerStyle,
   iconPlaceholder = 'coinPlaceholder',
   pressable = true
 }: Props) {
@@ -67,15 +69,17 @@ export function SelectButton({
       ]}
     >
       <FlexView flexDirection="row" alignItems="center">
-        {imageURL ? (
-          isSVG ? (
-            <SvgUri uri={imageURL} style={[styles.image, imageStyle]} />
+        <FlexView style={imageContainerStyle}>
+          {imageURL ? (
+            isSVG ? (
+              <SvgUri uri={imageURL} style={[styles.image, imageStyle]} />
+            ) : (
+              <Image source={imageURL} style={[styles.image, imageStyle]} />
+            )
           ) : (
-            <Image source={imageURL} style={[styles.image, imageStyle]} />
-          )
-        ) : (
-          !text && <Icon name={iconPlaceholder} size="sm" color="fg-150" style={styles.image} />
-        )}
+            !text && <Icon name={iconPlaceholder} size="sm" color="fg-150" style={styles.image} />
+          )}
+        </FlexView>
         {(text || description) && (
           <FlexView flexDirection="column" alignItems="flex-start" style={styles.textContainer}>
             {text && <Text>{text}</Text>}
@@ -91,7 +95,7 @@ export function SelectButton({
           </FlexView>
         )}
       </FlexView>
-      {pressable && <Icon name="chevronBottom" size="xxs" color="fg-150" />}
+      {pressable && <Icon name="chevronBottom" style={styles.chevron} size="xxs" color="fg-150" />}
     </Pressable>
   );
 }
@@ -107,13 +111,15 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 20,
-    height: 20,
-    marginRight: Spacing.xs
+    height: 20
   },
   textContainer: {
-    marginLeft: Spacing.xs
+    marginLeft: Spacing.s
   },
   description: {
     marginTop: Spacing['3xs']
+  },
+  chevron: {
+    marginLeft: Spacing.xs
   }
 });

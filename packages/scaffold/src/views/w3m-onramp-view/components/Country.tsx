@@ -39,14 +39,9 @@ export function Country({ onPress, item, selected }: Props) {
       ]}
     >
       <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start" padding="s">
-        <SvgUri
-          uri={item.flagImageUrl}
-          width={30}
-          height={20}
-          style={{
-            marginRight: Spacing.s
-          }}
-        />
+        <FlexView style={styles.imageContainer}>
+          <SvgUri uri={item.flagImageUrl} width={32} height={32} />
+        </FlexView>
         <Text
           variant="paragraph-500"
           color="fg-100"
@@ -70,6 +65,11 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     height: ITEM_HEIGHT,
     justifyContent: 'center'
+  },
+  imageContainer: {
+    borderRadius: BorderRadius.full,
+    overflow: 'hidden',
+    marginRight: Spacing.s
   },
   selected: {
     borderWidth: 1

@@ -1,5 +1,6 @@
-import Modal from 'react-native-modal';
+import { useState } from 'react';
 import { useSnapshot } from 'valtio';
+import Modal from 'react-native-modal';
 import { FlatList, StyleSheet, View } from 'react-native';
 import {
   BorderRadius,
@@ -16,11 +17,10 @@ import {
   type OnRampPaymentMethod,
   type OnRampQuote
 } from '@reown/appkit-core-react-native';
-import { Quote } from './Quote';
+import { ITEM_HEIGHT, Quote } from './Quote';
 import { SelectButton } from './SelectButton';
 import { SelectorModal } from '../../../partials/w3m-selector-modal';
 import { getModalItemKey, getModalItems, getModalTitle } from '../utils';
-import { useState } from 'react';
 import { PaymentMethod } from './PaymentMethod';
 
 interface SelectPaymentModalProps {
@@ -28,6 +28,8 @@ interface SelectPaymentModalProps {
   visible: boolean;
   onClose: () => void;
 }
+
+const SEPARATOR_HEIGHT = Spacing.s;
 
 export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentModalProps) {
   const Theme = useTheme();
@@ -45,7 +47,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
     themeMode === 'dark' ? selectedPaymentMethod?.logos.dark : selectedPaymentMethod?.logos.light;
 
   const renderSeparator = () => {
-    return <View style={styles.separator} />;
+    return <View style={{ height: SEPARATOR_HEIGHT }} />;
   };
 
   const handleQuotePress = (quote: OnRampQuote) => {
@@ -133,7 +135,12 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
         contentContainerStyle={styles.content}
         ItemSeparatorComponent={renderSeparator}
         ListEmptyComponent={renderEmpty}
-        keyExtractor={(item, index) => getModalItemKey('quote', index, item)}
+        keyExtractor={(item, index) => getModalItemKey('quotes', index, item)}
+        getItemLayout={(_, index) => ({
+          length: ITEM_HEIGHT + SEPARATOR_HEIGHT,
+          offset: (ITEM_HEIGHT + SEPARATOR_HEIGHT) * index,
+          index
+        })}
         ListHeaderComponent={
           <FlexView>
             <FlexView
@@ -191,9 +198,6 @@ const styles = StyleSheet.create({
   content: {
     paddingVertical: Spacing.s,
     paddingHorizontal: Spacing.m
-  },
-  separator: {
-    height: Spacing.s
   },
   iconPlaceholder: {
     height: 32,

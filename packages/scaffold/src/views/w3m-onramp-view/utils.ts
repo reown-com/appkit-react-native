@@ -10,180 +10,124 @@ import {
 import { ITEM_HEIGHT as COUNTRY_ITEM_HEIGHT } from './components/Country';
 import { ITEM_HEIGHT as PAYMENT_METHOD_ITEM_HEIGHT } from './components/PaymentMethod';
 import { ITEM_HEIGHT as CURRENCY_ITEM_HEIGHT } from './components/Currency';
+import { ITEM_HEIGHT as QUOTE_ITEM_HEIGHT } from './components/Quote';
+
+// -------------------------- Types --------------------------
+export type ModalType =
+  | 'country'
+  | 'paymentMethod'
+  | 'paymentCurrency'
+  | 'purchaseCurrency'
+  | 'quotes';
+
+export type OnRampError =
+  | 'INVALID_AMOUNT_TOO_LOW'
+  | 'INVALID_AMOUNT_TOO_HIGH'
+  | 'INVALID_AMOUNT'
+  | 'INCOMPATIBLE_REQUEST'
+  | 'BAD_REQUEST'
+  | 'TRANSACTION_FAILED_GETTING_CRYPTO_QUOTE_FROM_PROVIDER'
+  | 'TRANSACTION_EXCEPTION';
+
+// -------------------------- Constants --------------------------
+const ERROR_MESSAGES: Record<OnRampError, string> = {
+  INVALID_AMOUNT_TOO_LOW: 'Amount is too low',
+  INVALID_AMOUNT_TOO_HIGH: 'Amount is too high',
+  INVALID_AMOUNT: 'No options available. Please try a different amount',
+  INCOMPATIBLE_REQUEST: 'No options available. Please try a different combination',
+  BAD_REQUEST: 'No options available. Please try a different combination',
+  TRANSACTION_FAILED_GETTING_CRYPTO_QUOTE_FROM_PROVIDER:
+    'No options available. Please try a different combination',
+  TRANSACTION_EXCEPTION: 'No options available. Please try a different combination'
+};
+
+const MODAL_TITLES: Record<ModalType, string> = {
+  country: 'Select your country',
+  paymentMethod: 'Payment method',
+  paymentCurrency: 'Select a currency',
+  purchaseCurrency: 'Select a token',
+  quotes: ''
+};
+
+const ITEM_HEIGHTS: Record<ModalType, number> = {
+  country: COUNTRY_ITEM_HEIGHT,
+  paymentMethod: PAYMENT_METHOD_ITEM_HEIGHT,
+  paymentCurrency: CURRENCY_ITEM_HEIGHT,
+  purchaseCurrency: CURRENCY_ITEM_HEIGHT,
+  quotes: QUOTE_ITEM_HEIGHT
+};
+
+const KEY_EXTRACTORS: Record<ModalType, (item: any) => string> = {
+  country: (item: OnRampCountry) => item.countryCode,
+  paymentMethod: (item: OnRampPaymentMethod) => `${item.name}-${item.paymentMethod}`,
+  paymentCurrency: (item: OnRampFiatCurrency) => item.currencyCode,
+  purchaseCurrency: (item: OnRampCryptoCurrency) => item.currencyCode,
+  quotes: (item: OnRampQuote) => `${item.serviceProvider}-${item.paymentMethodType}`
+};
+
+// -------------------------- Utils --------------------------
 
 export const getErrorMessage = (error?: string) => {
-  if (!error) {
-    return undefined;
-  }
+  if (!error) return undefined;
 
-  if (error === 'INVALID_AMOUNT_TOO_LOW') {
-    return 'Amount is too low';
-  }
-
-  if (error === 'INVALID_AMOUNT_TOO_HIGH') {
-    return 'Amount is too high';
-  }
-
-  if (error === 'INVALID_AMOUNT') {
-    return 'No options available. Please try a different amount';
-  }
-
-  if (
-    error === 'INCOMPATIBLE_REQUEST' ||
-    error === 'BAD_REQUEST' ||
-    error === 'TRANSACTION_FAILED_GETTING_CRYPTO_QUOTE_FROM_PROVIDER' ||
-    error === 'TRANSACTION_EXCEPTION'
-  ) {
-    return 'No options available. Please try a different combination';
-  }
-
-  //TODO: check other errors
-  return 'Failed to load options. Please try again';
+  return ERROR_MESSAGES[error as OnRampError] ?? 'Failed to load options. Please try again';
 };
 
-export const getModalTitle = (
-  type?: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | 'quotes'
-) => {
-  if (type === 'country') {
-    return 'Select your country';
-  }
-  if (type === 'paymentMethod') {
-    return 'Payment method';
-  }
-  if (type === 'paymentCurrency') {
-    return 'Select a currency';
-  }
-  if (type === 'purchaseCurrency') {
-    return 'Select a token';
-  }
-  if (type === 'quotes') {
-    return 'Select a provider';
-  }
-
-  return undefined;
+export const getModalTitle = (type?: ModalType) => {
+  return type ? MODAL_TITLES[type] : undefined;
 };
 
-export const getModalItems = (
-  type?: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency',
-  searchValue?: string
-) => {
-  if (type === 'country') {
-    if (searchValue) {
-      return (
-        OnRampController.state.countries?.filter(
-          country =>
-            country.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-            country.countryCode.toLowerCase().includes(searchValue.toLowerCase())
-        ) || []
-      );
+const searchFilter = (item: { name: string; currencyCode?: string }, searchValue: string) => {
+  const search = searchValue.toLowerCase();
+
+  return (
+    item.name.toLowerCase().includes(search) ||
+    (item.currencyCode?.toLowerCase().includes(search) ?? false)
+  );
+};
+
+export const getModalItems = (type?: Exclude<ModalType, 'quotes'>, searchValue?: string) => {
+  const items = {
+    country: () => OnRampController.state.countries,
+    paymentMethod: () => OnRampController.state.paymentMethods,
+    paymentCurrency: () => OnRampController.state.paymentCurrencies,
+    purchaseCurrency: () => {
+      const networkId = NetworkController.state.caipNetwork?.id?.split(':')[1];
+
+      return OnRampController.state.purchaseCurrencies?.filter(c => c.chainId === networkId);
     }
+  };
 
-    return OnRampController.state.countries || [];
-  }
-  if (type === 'paymentMethod') {
-    if (searchValue) {
-      return (
-        OnRampController.state.paymentMethods?.filter(paymentMethod =>
-          paymentMethod.name.toLowerCase().includes(searchValue.toLowerCase())
-        ) || []
-      );
-    }
+  const result = items[type!]?.() || [];
 
-    return OnRampController.state.paymentMethods || [];
-  }
-  if (type === 'paymentCurrency') {
-    if (searchValue) {
-      return (
-        OnRampController.state.paymentCurrencies?.filter(
-          paymentCurrency =>
-            paymentCurrency.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-            paymentCurrency.currencyCode.toLowerCase().includes(searchValue.toLowerCase())
-        ) || []
-      );
-    }
-
-    return OnRampController.state.paymentCurrencies || [];
-  }
-  if (type === 'purchaseCurrency') {
-    const networkId = NetworkController.state.caipNetwork?.id?.split(':')[1];
-    let filteredCurrencies =
-      OnRampController.state.purchaseCurrencies?.filter(c => c.chainId === networkId) || [];
-
-    if (searchValue) {
-      return filteredCurrencies.filter(
-        currency =>
-          currency.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-          currency.currencyCode.toLowerCase().includes(searchValue.toLowerCase())
-      );
-    }
-
-    return filteredCurrencies;
-  }
-
-  return [];
+  return searchValue
+    ? result.filter((item: { name: string; currencyCode?: string }) =>
+        searchFilter(item, searchValue)
+      )
+    : result;
 };
 
-export const getModalItemKey = (
-  type: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency' | 'quote' | undefined,
-  index: number,
-  item: any
-) => {
-  if (type === 'country') {
-    return (item as OnRampCountry).countryCode;
-  }
-  if (type === 'paymentMethod') {
-    const paymentMethod = item as OnRampPaymentMethod;
-
-    return `${paymentMethod.name}-${paymentMethod.paymentMethod}`;
-  }
-  if (type === 'paymentCurrency') {
-    return (item as OnRampFiatCurrency).currencyCode;
-  }
-  if (type === 'purchaseCurrency') {
-    return (item as OnRampCryptoCurrency).currencyCode;
-  }
-  if (type === 'quote') {
-    const quote = item as OnRampQuote;
-
-    return `${quote.serviceProvider}-${quote.paymentMethodType}`;
-  }
-
-  return index.toString();
+export const getModalItemKey = (type: ModalType | undefined, index: number, item: any) => {
+  return type ? KEY_EXTRACTORS[type](item) : index.toString();
 };
 
-export const onModalItemPress = async (
-  item: any,
-  type?: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency'
-) => {
-  if (type === 'country') {
-    await OnRampController.setSelectedCountry(item as OnRampCountry);
-  }
-  if (type === 'paymentMethod') {
-    OnRampController.setSelectedPaymentMethod(item as OnRampPaymentMethod);
-  }
-  if (type === 'paymentCurrency') {
-    OnRampController.setPaymentCurrency(item as OnRampFiatCurrency);
-  }
-  if (type === 'purchaseCurrency') {
-    OnRampController.setPurchaseCurrency(item as OnRampCryptoCurrency);
-  }
+export const onModalItemPress = async (item: any, type?: ModalType) => {
+  if (!type) return;
+
+  const onPress = {
+    country: (country: OnRampCountry) => OnRampController.setSelectedCountry(country),
+    paymentMethod: (paymentMethod: OnRampPaymentMethod) =>
+      OnRampController.setSelectedPaymentMethod(paymentMethod),
+    paymentCurrency: (paymentCurrency: OnRampFiatCurrency) =>
+      OnRampController.setPaymentCurrency(paymentCurrency),
+    purchaseCurrency: (purchaseCurrency: OnRampCryptoCurrency) =>
+      OnRampController.setPurchaseCurrency(purchaseCurrency),
+    quotes: (quote: OnRampQuote) => OnRampController.setSelectedQuote(quote)
+  };
+
+  await onPress[type](item);
 };
 
-export const getItemHeight = (
-  type: 'country' | 'paymentMethod' | 'paymentCurrency' | 'purchaseCurrency'
-) => {
-  if (type === 'country') {
-    return COUNTRY_ITEM_HEIGHT;
-  }
-  if (type === 'paymentMethod') {
-    return PAYMENT_METHOD_ITEM_HEIGHT;
-  }
-  if (type === 'paymentCurrency') {
-    return CURRENCY_ITEM_HEIGHT;
-  }
-  if (type === 'purchaseCurrency') {
-    return CURRENCY_ITEM_HEIGHT;
-  }
-
-  return 0;
+export const getItemHeight = (type?: ModalType) => {
+  return type ? ITEM_HEIGHTS[type] : 0;
 };
