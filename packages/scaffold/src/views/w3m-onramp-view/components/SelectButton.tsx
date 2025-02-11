@@ -30,6 +30,7 @@ interface Props {
   iconPlaceholder?: IconType;
   pressable?: boolean;
   loadingHeight?: number; //TODO: review this
+  pressableIcon?: IconType;
 }
 
 export function SelectButton({
@@ -45,7 +46,8 @@ export function SelectButton({
   imageStyle,
   imageContainerStyle,
   iconPlaceholder = 'coinPlaceholder',
-  pressable = true
+  pressable = true,
+  pressableIcon = 'chevronBottom'
 }: Props) {
   const Theme = useTheme();
 
@@ -95,7 +97,7 @@ export function SelectButton({
           </FlexView>
         )}
       </FlexView>
-      {pressable && <Icon name="chevronBottom" style={styles.chevron} size="xxs" color="fg-150" />}
+      {pressable && <Icon name={pressableIcon} style={styles.chevron} size="xxs" color="fg-150" />}
     </Pressable>
   );
 }

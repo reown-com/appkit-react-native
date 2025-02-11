@@ -123,62 +123,58 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
       onDismiss={onClose}
       style={styles.modal}
     >
-      <FlatList
-        data={quotes}
-        renderItem={renderQuote}
-        style={[
-          styles.container,
-          {
-            backgroundColor: Theme['bg-200']
+      <FlexView style={[styles.container, { backgroundColor: Theme['bg-100'] }]}>
+        <FlexView
+          alignItems="center"
+          justifyContent="space-between"
+          flexDirection="row"
+          style={styles.header}
+        >
+          <IconLink icon="arrowLeft" onPress={onClose} />
+          {!!title && <Text variant="medium-600">{title}</Text>}
+          <View style={styles.iconPlaceholder} />
+        </FlexView>
+        <FlexView style={styles.topContent}>
+          <Text variant="small-500" color="fg-150" style={styles.subtitle}>
+            Pay with
+          </Text>
+          <SelectButton
+            style={styles.paymentMethodButton}
+            onPress={() => setPaymentVisible(true)}
+            imageURL={paymentLogo}
+            text={selectedPaymentMethod?.name}
+            pressableIcon="chevronRight"
+          />
+          <Text variant="small-500" color="fg-150" style={styles.subtitle}>
+            Providers
+          </Text>
+        </FlexView>
+        <FlatList
+          data={quotes}
+          bounces={false}
+          renderItem={renderQuote}
+          contentContainerStyle={styles.listContent}
+          ItemSeparatorComponent={renderSeparator}
+          ListEmptyComponent={renderEmpty}
+          keyExtractor={(item, index) => getModalItemKey('quotes', index, item)}
+          getItemLayout={(_, index) => ({
+            length: ITEM_HEIGHT + SEPARATOR_HEIGHT,
+            offset: (ITEM_HEIGHT + SEPARATOR_HEIGHT) * index,
+            index
+          })}
+        />
+        <SelectorModal
+          visible={paymentVisible}
+          onClose={() => setPaymentVisible(false)}
+          items={modalPaymentMethods}
+          onSearch={setSearchCountryValue}
+          renderItem={renderPaymentMethod}
+          title={getModalTitle('paymentMethod')}
+          keyExtractor={(item: OnRampPaymentMethod, index: number) =>
+            getModalItemKey('paymentMethod', index, item)
           }
-        ]}
-        contentContainerStyle={styles.content}
-        ItemSeparatorComponent={renderSeparator}
-        ListEmptyComponent={renderEmpty}
-        keyExtractor={(item, index) => getModalItemKey('quotes', index, item)}
-        getItemLayout={(_, index) => ({
-          length: ITEM_HEIGHT + SEPARATOR_HEIGHT,
-          offset: (ITEM_HEIGHT + SEPARATOR_HEIGHT) * index,
-          index
-        })}
-        ListHeaderComponent={
-          <FlexView>
-            <FlexView
-              alignItems="center"
-              justifyContent="space-between"
-              flexDirection="row"
-              style={styles.header}
-            >
-              <IconLink icon="arrowLeft" onPress={onClose} />
-              {!!title && <Text variant="medium-600">{title}</Text>}
-              <View style={styles.iconPlaceholder} />
-            </FlexView>
-            <Text variant="small-500" color="fg-150" style={styles.subtitle}>
-              Pay with
-            </Text>
-            <SelectButton
-              style={styles.paymentMethodButton}
-              onPress={() => setPaymentVisible(true)}
-              imageURL={paymentLogo}
-              text={selectedPaymentMethod?.name}
-            />
-            <Text variant="small-500" color="fg-150" style={styles.subtitle}>
-              Providers
-            </Text>
-          </FlexView>
-        }
-      />
-      <SelectorModal
-        visible={paymentVisible}
-        onClose={() => setPaymentVisible(false)}
-        items={modalPaymentMethods}
-        onSearch={setSearchCountryValue}
-        renderItem={renderPaymentMethod}
-        title={getModalTitle('paymentMethod')}
-        keyExtractor={(item: OnRampPaymentMethod, index: number) =>
-          getModalItemKey('paymentMethod', index, item)
-        }
-      />
+        />
+      </FlexView>
     </Modal>
   );
 }
@@ -188,15 +184,20 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   header: {
-    marginBottom: Spacing.l
+    marginBottom: Spacing.l,
+    paddingHorizontal: Spacing.m,
+    paddingTop: Spacing.m
   },
   container: {
-    maxHeight: '80%',
+    height: '80%',
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16
   },
-  content: {
-    paddingVertical: Spacing.s,
+  topContent: {
+    paddingHorizontal: Spacing.m
+  },
+  listContent: {
+    paddingBottom: Spacing.s,
     paddingHorizontal: Spacing.m
   },
   iconPlaceholder: {

@@ -48,7 +48,7 @@ export function SelectorModal({
       onDismiss={onClose}
       style={styles.modal}
     >
-      <FlexView style={[styles.container, { backgroundColor: Theme['bg-200'] }]}>
+      <FlexView style={[styles.container, { backgroundColor: Theme['bg-100'] }]}>
         <FlexView
           alignItems="center"
           justifyContent="space-between"

@@ -72,14 +72,14 @@ export function OnRampView() {
     }
   }, []);
 
-  const { debouncedCallback: debouncedGetQuotes, abort: abortGetQuotes } = useDebounceCallback({
+  const { debouncedCallback: debouncedGetQuotes } = useDebounceCallback({
     callback: getQuotes,
     delay: 500
   });
 
   const onValueChange = (value: number) => {
     if (!value) {
-      abortGetQuotes();
+      OnRampController.abortGetQuotes();
       OnRampController.setPaymentAmount(0);
       OnRampController.setSelectedQuote(undefined);
       OnRampController.clearError();
@@ -219,6 +219,7 @@ export function OnRampView() {
             loading={quotesLoading || loading}
             loadingHeight={60}
             pressable={paymentMethods?.length > 0}
+            pressableIcon="chevronRight"
           />
           <Button
             style={styles.quotesButton}

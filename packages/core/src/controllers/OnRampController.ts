@@ -27,6 +27,7 @@ const headers = {
   'Authorization': `Basic ${CoreHelperUtil.getMeldToken()}`,
   'Content-Type': 'application/json'
 };
+let quotesAbortController: AbortController | null = null;
 
 // -- Types --------------------------------------------- //
 export interface OnRampControllerState {
@@ -308,9 +309,26 @@ export const OnRampController = {
     }
   },
 
+  abortGetQuotes(clearState = true) {
+    if (quotesAbortController) {
+      quotesAbortController.abort();
+      quotesAbortController = null;
+    }
+
+    if (clearState) {
+      this.clearQuotes();
+      state.quotesLoading = false;
+      state.error = undefined;
+    }
+  },
+
   async getQuotes() {
     state.quotesLoading = true;
     state.error = undefined;
+
+    this.abortGetQuotes(false);
+
+    quotesAbortController = new AbortController();
 
     try {
       const body = {
@@ -324,7 +342,8 @@ export const OnRampController = {
       const response = await api.post<OnRampQuoteResponse>({
         path: '/payments/crypto/quote',
         headers,
-        body
+        body,
+        signal: quotesAbortController.signal
       });
 
       const quotes = response?.quotes.sort((a, b) => b.destinationAmount - a.destinationAmount);
@@ -342,6 +361,11 @@ export const OnRampController = {
 
       state.quotesLoading = false;
     } catch (error: any) {
+      if (error.name === 'AbortError') {
+        // Do nothing, another request was made
+        return;
+      }
+
       state.quotes = [];
       state.selectedQuote = undefined;
       state.selectedServiceProvider = undefined;

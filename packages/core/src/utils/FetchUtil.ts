@@ -28,41 +28,44 @@ export class FetchUtil {
     this.clientId = clientId;
   }
 
-  public async get<T>({ headers, ...args }: RequestArguments) {
+  public async get<T>({ headers, signal, ...args }: RequestArguments) {
     const url = this.createUrl(args);
-    const response = await fetch(url, { method: 'GET', headers });
+    const response = await fetch(url, { method: 'GET', headers, signal });
 
     return this.processResponse<T>(response);
   }
 
-  public async post<T>({ body, headers, ...args }: PostArguments) {
+  public async post<T>({ body, headers, signal, ...args }: PostArguments) {
     const url = this.createUrl(args);
     const response = await fetch(url, {
       method: 'POST',
       headers,
-      body: body ? JSON.stringify(body) : undefined
+      body: body ? JSON.stringify(body) : undefined,
+      signal
     });
 
     return this.processResponse<T>(response);
   }
 
-  public async put<T>({ body, headers, ...args }: PostArguments) {
+  public async put<T>({ body, headers, signal, ...args }: PostArguments) {
     const url = this.createUrl(args);
     const response = await fetch(url, {
       method: 'PUT',
       headers,
-      body: body ? JSON.stringify(body) : undefined
+      body: body ? JSON.stringify(body) : undefined,
+      signal
     });
 
     return this.processResponse<T>(response);
   }
 
-  public async delete<T>({ body, headers, ...args }: PostArguments) {
+  public async delete<T>({ body, headers, signal, ...args }: PostArguments) {
     const url = this.createUrl(args);
     const response = await fetch(url, {
       method: 'DELETE',
       headers,
-      body: body ? JSON.stringify(body) : undefined
+      body: body ? JSON.stringify(body) : undefined,
+      signal
     });
 
     return this.processResponse<T>(response);
