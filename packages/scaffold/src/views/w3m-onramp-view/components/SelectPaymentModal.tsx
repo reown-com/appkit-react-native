@@ -163,7 +163,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
               text={selectedPaymentMethod?.name}
             />
             <Text variant="small-500" color="fg-150" style={styles.subtitle}>
-              Provider
+              Providers
             </Text>
           </FlexView>
         }

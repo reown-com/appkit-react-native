@@ -697,6 +697,10 @@ export type Event =
         accountType: AppKitFrameAccountType;
         network: string;
       };
+    }
+  | {
+      type: 'track';
+      event: 'SELECT_BUY_CRYPTO';
     };
 
 // -- Send Controller Types -------------------------------------

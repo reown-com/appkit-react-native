@@ -1,3 +1,4 @@
+import { NumberUtil } from '@reown/appkit-common-react-native';
 import { type OnRampQuote } from '@reown/appkit-core-react-native';
 import {
   Pressable,
@@ -51,10 +52,10 @@ export function Quote({ item, logoURL, onQuotePress, selected }: Props) {
         </FlexView>
         <FlexView justifyContent="center">
           <Text variant="paragraph-500" style={styles.amountText}>
-            {item.destinationAmount} {item.destinationCurrencyCode}
+            {NumberUtil.roundNumber(item.destinationAmount, 6, 5)} {item.destinationCurrencyCode}
           </Text>
           <Text variant="small-500" color="fg-175" style={styles.amountText}>
-            ≈ {item.sourceAmountWithoutFees} {item.sourceCurrencyCode}
+            ≈ {NumberUtil.roundNumber(item.sourceAmountWithoutFees, 2, 2)} {item.sourceCurrencyCode}
           </Text>
         </FlexView>
       </FlexView>

@@ -80,6 +80,10 @@ export function AccountWalletFeatures() {
   };
 
   const onCardPress = () => {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_BUY_CRYPTO'
+    });
     RouterController.push('OnRamp');
   };
 

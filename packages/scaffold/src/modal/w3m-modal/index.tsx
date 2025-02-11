@@ -35,7 +35,7 @@ export function AppKit() {
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
-  const portraitHeight = height - 120;
+  const portraitHeight = height - 80;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
   const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
   const AuthView = authProvider?.AuthView;

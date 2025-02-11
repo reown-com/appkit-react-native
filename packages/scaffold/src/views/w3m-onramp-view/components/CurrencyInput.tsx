@@ -93,6 +93,23 @@ export function CurrencyInput({
           )}
         </FlexView>
       </FlexView>
+      {/* <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
+        <Button
+          style={{ flex: 1, borderRadius: BorderRadius.xs, marginRight: Spacing.xs }}
+          variant="shade"
+        >
+          $10
+        </Button>
+        <Button style={{ flex: 1, borderRadius: BorderRadius.xs }} variant="shade">
+          $50
+        </Button>
+        <Button
+          style={{ flex: 1, borderRadius: BorderRadius.xs, marginLeft: Spacing.xs }}
+          variant="shade"
+        >
+          $100
+        </Button>
+      </FlexView> */}
       <Separator color="bg-200" style={styles.separator} />
       <NumericKeyboard onKeyPress={handleKeyPress} />
     </>

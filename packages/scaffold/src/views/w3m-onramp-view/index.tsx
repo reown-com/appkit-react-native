@@ -200,7 +200,7 @@ export function OnRampView() {
               selectedQuote?.destinationAmount
                 ? NumberUtil.roundNumber(selectedQuote.destinationAmount, 6, 5)?.toString()
                 : '0.00'
-            } ${purchaseCurrency?.currencyCode}`}
+            } ${purchaseCurrency?.currencyCode ?? ''}`}
             onValueChange={onValueChange}
           />
           <SelectButton
@@ -215,7 +215,7 @@ export function OnRampView() {
                 ? 'No payment methods available'
                 : 'Select a provider'
             }
-            isError={!selectedQuote || !paymentMethods?.length}
+            // isError={!selectedQuote || !paymentMethods?.length}
             loading={quotesLoading || loading}
             loadingHeight={60}
             pressable={paymentMethods?.length > 0}

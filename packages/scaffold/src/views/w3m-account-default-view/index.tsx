@@ -142,7 +142,10 @@ export function AccountDefaultView() {
   };
 
   const onBuyPress = () => {
-    //TODO: add metrics
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_BUY_CRYPTO'
+    });
     RouterController.push('OnRamp');
   };
 

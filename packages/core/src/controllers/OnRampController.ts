@@ -386,7 +386,7 @@ export const OnRampController = {
             sourceAmount: quote?.sourceAmount,
             sourceCurrencyCode: quote?.sourceCurrencyCode,
             walletAddress: AccountController.state.address,
-            redirectUrl: metadata?.redirect?.universal ?? `${metadata?.redirect?.native}/onramp`
+            redirectUrl: metadata?.redirect?.universal ?? metadata?.redirect?.native
           },
           sessionType: 'BUY'
         }
