@@ -72,13 +72,13 @@ export const RouterController = {
   push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     if (view !== state.view) {
       state.view = view;
-      state.history.push(view);
+      state.history = [...state.history, view];
       state.data = data;
     }
   },
 
   pushTransactionStack(action: TransactionAction) {
-    state.transactionStack.push(action);
+    state.transactionStack = [...state.transactionStack, action];
   },
 
   popTransactionStack(cancel?: boolean) {
