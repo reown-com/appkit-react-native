@@ -93,6 +93,7 @@ export function SwapPreviewView() {
             text={` ${sourceTokenAmount} ${sourceToken?.symbol}`}
             imageUrl={sourceToken?.logoUri}
             inverse
+            showIcon={false}
             disabled
           />
         </FlexView>
@@ -110,6 +111,7 @@ export function SwapPreviewView() {
             text={` ${toTokenAmount} ${toToken?.symbol}`}
             imageUrl={toToken?.logoUri}
             inverse
+            showIcon={false}
             disabled
           />
         </FlexView>

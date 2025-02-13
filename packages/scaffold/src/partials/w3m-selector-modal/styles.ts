@@ -16,8 +16,11 @@ export default StyleSheet.create({
     borderTopRightRadius: 16,
     paddingTop: Spacing.m
   },
-  content: {
-    paddingBottom: Spacing.s,
+  selectedContainer: {
+    paddingHorizontal: Spacing.m
+  },
+  listContent: {
+    paddingTop: Spacing.s,
     paddingHorizontal: Spacing.m
   },
   iconPlaceholder: {
@@ -27,5 +30,8 @@ export default StyleSheet.create({
   searchBar: {
     marginBottom: Spacing.s,
     marginHorizontal: Spacing.s
+  },
+  separator: {
+    marginTop: Spacing.m
   }
 });

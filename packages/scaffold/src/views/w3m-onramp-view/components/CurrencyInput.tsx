@@ -5,7 +5,8 @@ import {
   Text,
   LoadingSpinner,
   NumericKeyboard,
-  Separator
+  Separator,
+  Spacing
 } from '@reown/appkit-ui-react-native';
 import { useEffect, useState } from 'react';
 import { useRef } from 'react';
@@ -13,6 +14,7 @@ import { useRef } from 'react';
 export interface InputTokenProps {
   style?: StyleProp<ViewStyle>;
   value?: string;
+  symbol?: string;
   loading?: boolean;
   error?: string;
   purchaseValue?: string;
@@ -24,7 +26,8 @@ export function CurrencyInput({
   loading,
   error,
   purchaseValue,
-  onValueChange
+  onValueChange,
+  symbol
 }: InputTokenProps) {
   const Theme = useTheme();
   const [displayValue, setDisplayValue] = useState(value?.toString() || '0');
@@ -76,9 +79,14 @@ export function CurrencyInput({
   return (
     <>
       <FlexView alignItems="center" margin={['m', '0', '0', '0']}>
-        <Text style={[styles.input, { color: value ? Theme['fg-100'] : Theme['fg-275'] }]}>
-          ${displayValue}
-        </Text>
+        <FlexView flexDirection="row" alignItems="center">
+          <Text style={[styles.input, { color: value ? Theme['fg-100'] : Theme['fg-200'] }]}>
+            {displayValue}
+          </Text>
+          <Text variant="large-400" color="fg-200">
+            {symbol ?? ''}
+          </Text>
+        </FlexView>
         <FlexView alignItems="center" justifyContent="center" style={styles.bottomContainer}>
           {loading ? (
             <LoadingSpinner size="sm" color="fg-150" />
@@ -117,7 +125,8 @@ export function CurrencyInput({
 }
 const styles = StyleSheet.create({
   input: {
-    fontSize: 38
+    fontSize: 38,
+    marginRight: Spacing['3xs']
   },
   bottomContainer: {
     height: 20

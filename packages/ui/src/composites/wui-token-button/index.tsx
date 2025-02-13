@@ -4,6 +4,7 @@ import { Text } from '../../components/wui-text';
 import { Button } from '../wui-button';
 import { Icon } from '../../components/wui-icon';
 import styles from './styles';
+import { useTheme } from '../../context/ThemeContext';
 
 export interface TokenButtonProps {
   onPress?: () => void;
@@ -13,6 +14,7 @@ export interface TokenButtonProps {
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
   placeholder?: string;
+  showIcon?: boolean;
 }
 
 export function TokenButton({
@@ -22,8 +24,11 @@ export function TokenButton({
   onPress,
   style,
   disabled = false,
-  placeholder = 'Select token'
+  placeholder = 'Select token',
+  showIcon = true
 }: TokenButtonProps) {
+  const Theme = useTheme();
+
   if (!text) {
     return (
       <Button
@@ -42,7 +47,11 @@ export function TokenButton({
 
   const content = [
     imageUrl && (
-      <Image key="image" source={imageUrl} style={[styles.image, inverse && styles.imageInverse]} />
+      <Image
+        key="image"
+        source={imageUrl}
+        style={[styles.image, inverse && styles.imageInverse, { backgroundColor: Theme['fg-100'] }]}
+      />
     ),
     <Text key="text">{text}</Text>
   ];
@@ -56,7 +65,7 @@ export function TokenButton({
       disabled={disabled}
     >
       {inverse ? content.reverse() : content}
-      <Icon name="chevronBottom" size="xxs" color="fg-150" style={styles.chevron} />
+      {showIcon && <Icon name="chevronBottom" size="xxs" color="fg-150" style={styles.chevron} />}
     </Button>
   );
 }

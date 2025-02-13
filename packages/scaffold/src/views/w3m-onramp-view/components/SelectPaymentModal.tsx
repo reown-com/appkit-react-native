@@ -1,27 +1,25 @@
-import { useState } from 'react';
 import { useSnapshot } from 'valtio';
 import Modal from 'react-native-modal';
 import { FlatList, StyleSheet, View } from 'react-native';
 import {
-  BorderRadius,
   FlexView,
   IconLink,
   LoadingSpinner,
   Spacing,
   Text,
-  useTheme
+  useTheme,
+  ExpandableList,
+  Separator
 } from '@reown/appkit-ui-react-native';
 import {
   OnRampController,
-  ThemeController,
   type OnRampPaymentMethod,
   type OnRampQuote
 } from '@reown/appkit-core-react-native';
-import { ITEM_HEIGHT, Quote } from './Quote';
-import { SelectButton } from './SelectButton';
-import { SelectorModal } from '../../../partials/w3m-selector-modal';
-import { getModalItemKey, getModalItems, getModalTitle } from '../utils';
-import { PaymentMethod } from './PaymentMethod';
+import { Quote } from './Quote';
+import { getModalItemKey, getModalItems } from '../utils';
+import { PaymentMethod, ITEM_SIZE } from './PaymentMethod';
+import { ToggleButton } from './ToggleButton';
 
 interface SelectPaymentModalProps {
   title?: string;
@@ -33,18 +31,9 @@ const SEPARATOR_HEIGHT = Spacing.s;
 
 export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentModalProps) {
   const Theme = useTheme();
-  const { themeMode } = useSnapshot(ThemeController.state);
-  const [paymentVisible, setPaymentVisible] = useState(false);
-  const [searchCountryValue, setSearchCountryValue] = useState('');
-  const { selectedPaymentMethod, quotes, quotesLoading } = useSnapshot(OnRampController.state);
+  const { quotes, quotesLoading } = useSnapshot(OnRampController.state);
 
-  const modalPaymentMethods = getModalItems(
-    'paymentMethod',
-    searchCountryValue
-  ) as OnRampPaymentMethod[];
-
-  const paymentLogo =
-    themeMode === 'dark' ? selectedPaymentMethod?.logos.dark : selectedPaymentMethod?.logos.light;
+  const modalPaymentMethods = getModalItems('paymentMethod') as OnRampPaymentMethod[];
 
   const renderSeparator = () => {
     return <View style={{ height: SEPARATOR_HEIGHT }} />;
@@ -63,10 +52,9 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
     ) {
       OnRampController.setSelectedPaymentMethod(paymentMethod);
     }
-    setPaymentVisible(false);
   };
 
-  const renderQuote = ({ item }: { item: OnRampQuote }) => {
+  const renderQuote = ({ item, index }: { item: OnRampQuote; index: number }) => {
     const logoURL = OnRampController.getServiceProviderImage(item.serviceProvider);
     const selected = item.serviceProvider === OnRampController.state.selectedQuote?.serviceProvider;
 
@@ -76,6 +64,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
         selected={selected}
         logoURL={logoURL}
         onQuotePress={() => handleQuotePress(item)}
+        isBestDeal={index === 0}
       />
     );
   };
@@ -102,14 +91,15 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
     );
   };
 
-  const renderPaymentMethod = ({ item }: { item: OnRampPaymentMethod }) => {
+  const renderPaymentMethod = (item: OnRampPaymentMethod) => {
     const parsedItem = item as OnRampPaymentMethod;
+    const selected = parsedItem.name === OnRampController.state.selectedPaymentMethod?.name;
 
     return (
       <PaymentMethod
         item={parsedItem}
         onPress={() => handlePaymentMethodPress(parsedItem)}
-        selected={parsedItem.name === selectedPaymentMethod?.name}
+        selected={selected}
       />
     );
   };
@@ -119,6 +109,8 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
       isVisible={visible}
       useNativeDriver
       useNativeDriverForBackdrop
+      statusBarTranslucent
+      hideModalContentWhileAnimating
       onBackdropPress={onClose}
       onDismiss={onClose}
       style={styles.modal}
@@ -131,20 +123,24 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
           style={styles.header}
         >
           <IconLink icon="arrowLeft" onPress={onClose} />
-          {!!title && <Text variant="medium-600">{title}</Text>}
+          {!!title && <Text variant="paragraph-600">{title}</Text>}
           <View style={styles.iconPlaceholder} />
         </FlexView>
         <FlexView style={styles.topContent}>
           <Text variant="small-500" color="fg-150" style={styles.subtitle}>
             Pay with
           </Text>
-          <SelectButton
-            style={styles.paymentMethodButton}
-            onPress={() => setPaymentVisible(true)}
-            imageURL={paymentLogo}
-            text={selectedPaymentMethod?.name}
-            pressableIcon="chevronRight"
+          <ExpandableList
+            items={modalPaymentMethods}
+            renderItem={renderPaymentMethod}
+            style={styles.paymentMethodList}
+            containerPadding={Spacing.l}
+            itemWidth={ITEM_SIZE}
+            renderToggle={(isExpanded, onPress) => (
+              <ToggleButton onPress={onPress} isExpanded={isExpanded} />
+            )}
           />
+          <Separator style={styles.separator} color="bg-200" />
           <Text variant="small-500" color="fg-150" style={styles.subtitle}>
             Providers
           </Text>
@@ -158,21 +154,10 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
           ListEmptyComponent={renderEmpty}
           keyExtractor={(item, index) => getModalItemKey('quotes', index, item)}
           getItemLayout={(_, index) => ({
-            length: ITEM_HEIGHT + SEPARATOR_HEIGHT,
-            offset: (ITEM_HEIGHT + SEPARATOR_HEIGHT) * index,
+            length: ITEM_SIZE + SEPARATOR_HEIGHT,
+            offset: (ITEM_SIZE + SEPARATOR_HEIGHT) * index,
             index
           })}
-        />
-        <SelectorModal
-          visible={paymentVisible}
-          onClose={() => setPaymentVisible(false)}
-          items={modalPaymentMethods}
-          onSearch={setSearchCountryValue}
-          renderItem={renderPaymentMethod}
-          title={getModalTitle('paymentMethod')}
-          keyExtractor={(item: OnRampPaymentMethod, index: number) =>
-            getModalItemKey('paymentMethod', index, item)
-          }
         />
       </FlexView>
     </Modal>
@@ -196,6 +181,9 @@ const styles = StyleSheet.create({
   topContent: {
     paddingHorizontal: Spacing.m
   },
+  separator: {
+    marginVertical: Spacing.m
+  },
   listContent: {
     paddingBottom: Spacing.s,
     paddingHorizontal: Spacing.m
@@ -207,13 +195,11 @@ const styles = StyleSheet.create({
   subtitle: {
     marginBottom: Spacing.xs
   },
-  paymentMethodButton: {
-    height: 50,
-    justifyContent: 'space-between',
-    marginBottom: Spacing.xl,
-    borderRadius: BorderRadius['3xs']
-  },
   emptyContainer: {
     height: 150
+  },
+  paymentMethodList: {
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });

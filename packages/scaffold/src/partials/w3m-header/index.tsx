@@ -45,6 +45,7 @@ export function Header() {
       GetWallet: 'Get a wallet',
       Networks: 'Select network',
       OnRamp: undefined,
+      OnRampSettings: 'Preferences',
       OnRampLoading: undefined,
       SwitchNetwork: networkName ?? 'Switch network',
       Swap: 'Swap',
@@ -67,6 +68,8 @@ export function Header() {
     }[_view];
   };
 
+  const noCloseViews = ['OnRampSettings'];
+  const showClose = !noCloseViews.includes(view);
   const header = headings(data, view);
 
   const checkSocial = () => {
@@ -132,7 +135,11 @@ export function Header() {
       <Text variant="paragraph-600" numberOfLines={1} testID="header-text">
         {header}
       </Text>
-      <IconLink icon="close" size="md" onPress={handleClose} testID="header-close" />
+      {showClose ? (
+        <IconLink icon="close" size="md" onPress={handleClose} testID="header-close" />
+      ) : (
+        <FlexView style={styles.iconPlaceholder} />
+      )}
     </FlexView>
   );
 }

@@ -14,6 +14,7 @@ import { StyleSheet } from 'react-native';
 
 interface Props {
   item: OnRampQuote;
+  isBestDeal?: boolean;
   logoURL?: string;
   onQuotePress: (item: OnRampQuote) => void;
   selected?: boolean;
@@ -21,20 +22,16 @@ interface Props {
 
 export const ITEM_HEIGHT = 60;
 
-export function Quote({ item, logoURL, onQuotePress, selected }: Props) {
+export function Quote({ item, logoURL, onQuotePress, selected, isBestDeal }: Props) {
   const Theme = useTheme();
   //TODO: Add logo placeholder
 
   return (
     <Pressable
-      style={[
-        styles.container,
-        {
-          backgroundColor: Theme['gray-glass-005'],
-          borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010']
-        }
-      ]}
+      style={[styles.container, selected && { borderColor: Theme['accent-100'] }]}
       onPress={() => onQuotePress(item)}
+      backgroundColor="transparent"
+      pressable={!selected}
     >
       <FlexView justifyContent="space-between" alignItems="center" flexDirection="row" padding="m">
         <FlexView flexDirection="row" alignItems="center">
@@ -43,21 +40,24 @@ export function Quote({ item, logoURL, onQuotePress, selected }: Props) {
             <Text variant="paragraph-600" style={styles.providerText}>
               {item.serviceProvider?.toLowerCase()}
             </Text>
-            {item.lowKyc && (
-              <Tag variant="main" style={styles.kycTag}>
-                Low KYC
-              </Tag>
-            )}
+            <FlexView flexDirection="row" alignItems="center" justifyContent="center">
+              <Text variant="small-400" style={styles.amountText}>
+                {NumberUtil.roundNumber(item.destinationAmount, 6, 5)}{' '}
+                {item.destinationCurrencyCode}
+              </Text>
+              <Text variant="small-400" color="fg-175" style={styles.amountText}>
+                {' ≈ '}
+                {NumberUtil.roundNumber(item.sourceAmountWithoutFees, 2, 2)}{' '}
+                {item.sourceCurrencyCode}
+              </Text>
+            </FlexView>
           </FlexView>
         </FlexView>
-        <FlexView justifyContent="center">
-          <Text variant="paragraph-500" style={styles.amountText}>
-            {NumberUtil.roundNumber(item.destinationAmount, 6, 5)} {item.destinationCurrencyCode}
-          </Text>
-          <Text variant="small-500" color="fg-175" style={styles.amountText}>
-            ≈ {NumberUtil.roundNumber(item.sourceAmountWithoutFees, 2, 2)} {item.sourceCurrencyCode}
-          </Text>
-        </FlexView>
+        {isBestDeal && (
+          <Tag variant="main" style={styles.dealTag}>
+            Best Deal
+          </Tag>
+        )}
       </FlexView>
     </Pressable>
   );
@@ -65,24 +65,24 @@ export function Quote({ item, logoURL, onQuotePress, selected }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderRadius: BorderRadius['3xs'],
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: BorderRadius.s,
     height: ITEM_HEIGHT,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    borderColor: 'transparent'
   },
   logo: {
-    height: 25,
-    width: 25,
-    borderRadius: BorderRadius.full,
-    marginRight: Spacing.s
+    height: 40,
+    width: 40,
+    borderRadius: BorderRadius['3xs'],
+    marginRight: Spacing.xs
   },
   providerText: {
     textTransform: 'capitalize',
     marginBottom: Spacing['3xs']
   },
-  kycTag: {
-    padding: Spacing['3xs'],
-    alignSelf: 'flex-start'
+  dealTag: {
+    padding: Spacing['3xs']
   },
   amountText: {
     textAlign: 'right'

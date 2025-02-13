@@ -20,6 +20,7 @@ import { NetworksView } from '../../views/w3m-networks-view';
 import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
 import { OnRampLoadingView } from '../../views/w3m-onramp-loading-view';
 import { OnRampView } from '../../views/w3m-onramp-view';
+import { OnRampSettingsView } from '../../views/w3m-onramp-settings-view';
 import { SwapView } from '../../views/w3m-swap-view';
 import { SwapPreviewView } from '../../views/w3m-swap-preview-view';
 import { SwapSelectTokenView } from '../../views/w3m-swap-select-token-view';
@@ -80,6 +81,8 @@ export function AppKitRouter() {
         return NetworksView;
       case 'OnRamp':
         return OnRampView;
+      case 'OnRampSettings':
+        return OnRampSettingsView;
       case 'OnRampLoading':
         return OnRampLoadingView;
       case 'SwitchNetwork':

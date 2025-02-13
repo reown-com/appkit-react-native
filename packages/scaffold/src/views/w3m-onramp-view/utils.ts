@@ -7,8 +7,8 @@ import {
   type OnRampCountry,
   type OnRampQuote
 } from '@reown/appkit-core-react-native';
-import { ITEM_HEIGHT as COUNTRY_ITEM_HEIGHT } from './components/Country';
-import { ITEM_HEIGHT as PAYMENT_METHOD_ITEM_HEIGHT } from './components/PaymentMethod';
+import { ITEM_HEIGHT as COUNTRY_ITEM_HEIGHT } from '../w3m-onramp-settings-view/components/Country';
+import { ITEM_SIZE as PAYMENT_METHOD_ITEM_HEIGHT } from './components/PaymentMethod';
 import { ITEM_HEIGHT as CURRENCY_ITEM_HEIGHT } from './components/Currency';
 import { ITEM_HEIGHT as QUOTE_ITEM_HEIGHT } from './components/Quote';
 
@@ -42,9 +42,9 @@ const ERROR_MESSAGES: Record<OnRampError, string> = {
 };
 
 const MODAL_TITLES: Record<ModalType, string> = {
-  country: 'Select your country',
+  country: 'Choose Country',
   paymentMethod: 'Payment method',
-  paymentCurrency: 'Select a currency',
+  paymentCurrency: 'Choose Currency',
   purchaseCurrency: 'Select a token',
   quotes: ''
 };
@@ -70,7 +70,7 @@ const KEY_EXTRACTORS: Record<ModalType, (item: any) => string> = {
 export const getErrorMessage = (error?: string) => {
   if (!error) return undefined;
 
-  return ERROR_MESSAGES[error as OnRampError] ?? 'Failed to load options. Please try again';
+  return ERROR_MESSAGES[error as OnRampError] ?? 'No options available';
 };
 
 export const getModalTitle = (type?: ModalType) => {
@@ -86,15 +86,41 @@ const searchFilter = (item: { name: string; currencyCode?: string }, searchValue
   );
 };
 
-export const getModalItems = (type?: Exclude<ModalType, 'quotes'>, searchValue?: string) => {
+export const getModalItems = (
+  type?: Exclude<ModalType, 'quotes'>,
+  searchValue?: string,
+  filterSelected?: boolean
+) => {
   const items = {
-    country: () => OnRampController.state.countries,
-    paymentMethod: () => OnRampController.state.paymentMethods,
-    paymentCurrency: () => OnRampController.state.paymentCurrencies,
+    country: () =>
+      filterSelected
+        ? OnRampController.state.countries.filter(
+            c => c.countryCode !== OnRampController.state.selectedCountry?.countryCode
+          )
+        : OnRampController.state.countries,
+    paymentMethod: () =>
+      filterSelected
+        ? OnRampController.state.paymentMethods.filter(
+            pm => pm.paymentMethod !== OnRampController.state.selectedPaymentMethod?.paymentMethod
+          )
+        : OnRampController.state.paymentMethods,
+    paymentCurrency: () =>
+      filterSelected
+        ? OnRampController.state.paymentCurrencies?.filter(
+            pc => pc.currencyCode !== OnRampController.state.paymentCurrency?.currencyCode
+          )
+        : OnRampController.state.paymentCurrencies,
     purchaseCurrency: () => {
       const networkId = NetworkController.state.caipNetwork?.id?.split(':')[1];
+      const networkTokens = OnRampController.state.purchaseCurrencies?.filter(
+        c => c.chainId === networkId
+      );
 
-      return OnRampController.state.purchaseCurrencies?.filter(c => c.chainId === networkId);
+      return filterSelected
+        ? networkTokens?.filter(
+            c => c.currencyCode !== OnRampController.state.purchaseCurrency?.currencyCode
+          )
+        : networkTokens;
     }
   };
 

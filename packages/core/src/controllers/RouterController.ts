@@ -30,6 +30,7 @@ export interface RouterControllerState {
     | 'Networks'
     | 'OnRamp'
     | 'OnRampLoading'
+    | 'OnRampSettings'
     | 'SwitchNetwork'
     | 'Swap'
     | 'SwapSelectToken'

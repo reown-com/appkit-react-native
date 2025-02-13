@@ -31,17 +31,7 @@ export function Currency({ onPress, item, selected, isToken }: Props) {
   };
 
   return (
-    <Pressable
-      onPress={handlePress}
-      style={[
-        styles.container,
-        {
-          backgroundColor: Theme['gray-glass-005'],
-          borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010'],
-          ...(selected && styles.selected)
-        }
-      ]}
-    >
+    <Pressable onPress={handlePress} style={styles.container} backgroundColor="transparent">
       <FlexView flexDirection="row" alignItems="center" justifyContent="space-between" padding="xs">
         <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start">
           <Image
@@ -67,16 +57,15 @@ export function Currency({ onPress, item, selected, isToken }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: BorderRadius['3xs'],
-    borderWidth: StyleSheet.hairlineWidth,
     justifyContent: 'center',
-    height: ITEM_HEIGHT
+    height: ITEM_HEIGHT,
+    borderRadius: BorderRadius.s
   },
   logo: {
-    width: 30,
-    height: 30,
+    width: 36,
+    height: 36,
     borderRadius: BorderRadius.full,
-    marginRight: Spacing.s
+    marginRight: Spacing.xs
   },
   checkmark: {
     marginRight: Spacing['2xs']

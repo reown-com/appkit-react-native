@@ -4,7 +4,6 @@ import {
   FlexView,
   Spacing,
   Text,
-  useTheme,
   Icon,
   BorderRadius
 } from '@reown/appkit-ui-react-native';
@@ -17,33 +16,21 @@ interface Props {
   selected: boolean;
 }
 
-export const ITEM_HEIGHT = 45;
+export const ITEM_HEIGHT = 60;
 
 export function Country({ onPress, item, selected }: Props) {
-  const Theme = useTheme();
-
   const handlePress = () => {
     onPress(item);
   };
 
   return (
-    <Pressable
-      onPress={handlePress}
-      style={[
-        styles.container,
-        {
-          backgroundColor: Theme['gray-glass-005'],
-          borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010'],
-          ...(selected && styles.selected)
-        }
-      ]}
-    >
+    <Pressable onPress={handlePress} style={styles.container} backgroundColor="transparent">
       <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start" padding="s">
         <FlexView style={styles.imageContainer}>
-          <SvgUri uri={item.flagImageUrl} width={32} height={32} />
+          <SvgUri uri={item.flagImageUrl} width={36} height={36} />
         </FlexView>
         <Text
-          variant="paragraph-500"
+          variant="paragraph-400"
           color="fg-100"
           style={styles.text}
           numberOfLines={1}
@@ -61,19 +48,16 @@ export function Country({ onPress, item, selected }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: BorderRadius['3xs'],
-    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: BorderRadius.s,
     height: ITEM_HEIGHT,
     justifyContent: 'center'
   },
   imageContainer: {
     borderRadius: BorderRadius.full,
     overflow: 'hidden',
-    marginRight: Spacing.s
+    marginRight: Spacing.xs
   },
-  selected: {
-    borderWidth: 1
-  },
+
   text: {
     flex: 1
   },

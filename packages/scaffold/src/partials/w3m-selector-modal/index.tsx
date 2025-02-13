@@ -4,6 +4,7 @@ import {
   FlexView,
   IconLink,
   SearchBar,
+  Separator,
   Spacing,
   Text,
   useTheme
@@ -15,6 +16,7 @@ interface SelectorModalProps {
   visible: boolean;
   onClose: () => void;
   items: any[];
+  selectedItem?: any;
   renderItem: ({ item }: { item: any }) => React.ReactElement;
   keyExtractor: (item: any, index: number) => string;
   onSearch: (value: string) => void;
@@ -28,6 +30,7 @@ export function SelectorModal({
   visible,
   onClose,
   items,
+  selectedItem,
   renderItem,
   onSearch,
   keyExtractor,
@@ -44,6 +47,8 @@ export function SelectorModal({
       isVisible={visible}
       useNativeDriver
       useNativeDriverForBackdrop
+      statusBarTranslucent
+      hideModalContentWhileAnimating
       onBackdropPress={onClose}
       onDismiss={onClose}
       style={styles.modal}
@@ -55,15 +60,21 @@ export function SelectorModal({
           flexDirection="row"
           style={styles.header}
         >
-          <IconLink icon="arrowLeft" onPress={onClose} />
-          {!!title && <Text variant="medium-600">{title}</Text>}
+          <IconLink icon="chevronLeft" onPress={onClose} />
+          {!!title && <Text variant="paragraph-600">{title}</Text>}
           <View style={styles.iconPlaceholder} />
         </FlexView>
         <SearchBar onChangeText={onSearch} style={styles.searchBar} />
+        {selectedItem && (
+          <FlexView style={styles.selectedContainer}>
+            {renderItem({ item: selectedItem })}
+            <Separator style={styles.separator} />
+          </FlexView>
+        )}
         <FlatList
           data={items}
           renderItem={renderItem}
-          contentContainerStyle={styles.content}
+          contentContainerStyle={styles.listContent}
           ItemSeparatorComponent={renderSeparator}
           keyExtractor={keyExtractor}
           getItemLayout={

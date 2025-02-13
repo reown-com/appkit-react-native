@@ -6,13 +6,13 @@ import {
   Spacing,
   Text,
   useTheme,
-  Icon,
   Image,
-  BorderRadius
+  BorderRadius,
+  IconBox
 } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
-export const ITEM_HEIGHT = 50;
+export const ITEM_SIZE = 80;
 
 interface Props {
   onPress: (item: OnRampPaymentMethod) => void;
@@ -31,51 +31,61 @@ export function PaymentMethod({ onPress, item, selected }: Props) {
   return (
     <Pressable
       onPress={handlePress}
-      style={[
-        styles.container,
-        {
-          backgroundColor: Theme['gray-glass-005'],
-          borderColor: selected ? Theme['accent-100'] : Theme['gray-glass-010'],
-          ...(selected && styles.selected)
-        }
-      ]}
+      bounceScale={0.96}
+      style={styles.container}
+      transparent
+      pressable={!selected}
     >
-      <FlexView flexDirection="row" alignItems="center" justifyContent="space-between" padding="xs">
-        <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start" padding="2xs">
-          <Image
-            source={item.logos[themeMode ?? 'light']}
-            style={styles.logo}
-            resizeMethod="resize"
-            resizeMode="center"
-          />
-          <Text variant="paragraph-500" color="fg-100">
-            {item.name}
-          </Text>
-        </FlexView>
+      <FlexView
+        style={[styles.logoContainer, { backgroundColor: Theme['gray-glass-005'] }]}
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Image
+          source={item.logos[themeMode ?? 'light']}
+          style={styles.logo}
+          resizeMethod="resize"
+          resizeMode="center"
+        />
         {selected && (
-          <Icon name="checkmark" size="md" color="accent-100" style={styles.checkmark} />
+          <IconBox
+            icon="checkmark"
+            size="sm"
+            background
+            backgroundColor="accent-100"
+            style={styles.checkmark}
+          />
         )}
       </FlexView>
+      <Text variant="tiny-400" color="fg-100" numberOfLines={1}>
+        {item.name}
+      </Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: BorderRadius['3xs'],
-    borderWidth: StyleSheet.hairlineWidth,
-    height: ITEM_HEIGHT,
-    justifyContent: 'center'
+    height: ITEM_SIZE,
+    width: ITEM_SIZE,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent'
+  },
+  logoContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: BorderRadius.full,
+    marginBottom: Spacing['4xs']
   },
   logo: {
-    width: 22,
-    height: 22,
-    marginRight: Spacing.s
+    width: 16,
+    height: 16
   },
   checkmark: {
-    marginRight: Spacing['2xs']
-  },
-  selected: {
-    borderWidth: 1
+    borderRadius: BorderRadius.full,
+    position: 'absolute',
+    bottom: 0,
+    right: -10
   }
 });
