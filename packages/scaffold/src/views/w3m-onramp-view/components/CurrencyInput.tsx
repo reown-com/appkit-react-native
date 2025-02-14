@@ -134,7 +134,7 @@ export function CurrencyInput({
           );
         })}
       </FlexView>
-      <Separator color="bg-200" style={styles.separator} />
+      <Separator color="gray-glass-020" style={styles.separator} />
       <NumericKeyboard onKeyPress={handleKeyPress} />
     </FlexView>
   );

@@ -61,7 +61,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
     }
     expandableListRef.current?.toggle(false);
 
-    const itemsPerRow = expandableListRef.current?.getItemsPerRow();
+    const itemsPerRow = expandableListRef.current?.getItemsPerRow() ?? 4;
 
     // Switch payment method to the top if there are more than itemsPerRow payment methods
     if (OnRampController.state.paymentMethods.length > itemsPerRow) {
@@ -170,7 +170,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
               <ToggleButton onPress={handleToggle} isExpanded={isExpanded} />
             )}
           />
-          <Separator style={styles.separator} color="bg-200" />
+          <Separator style={styles.separator} color="gray-glass-020" />
           <Text variant="small-500" color="fg-150" style={styles.subtitle}>
             Providers
           </Text>

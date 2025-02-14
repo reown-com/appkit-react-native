@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { memo, useCallback, useEffect, useState } from 'react';
-import { LayoutAnimation, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import {
   OnRampController,
   type OnRampCryptoCurrency,
@@ -106,7 +106,7 @@ export function OnRampView() {
 
   const handleContinue = async () => {
     if (OnRampController.state.selectedQuote) {
-      RouterController.push('OnRampLoading');
+      RouterController.push('OnRampCheckout');
     }
   };
 

@@ -29,6 +29,7 @@ export interface RouterControllerState {
     | 'GetWallet'
     | 'Networks'
     | 'OnRamp'
+    | 'OnRampCheckout'
     | 'OnRampLoading'
     | 'OnRampSettings'
     | 'SwitchNetwork'

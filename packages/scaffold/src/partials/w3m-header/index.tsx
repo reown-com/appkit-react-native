@@ -45,6 +45,7 @@ export function Header() {
       GetWallet: 'Get a wallet',
       Networks: 'Select network',
       OnRamp: undefined,
+      OnRampCheckout: 'Checkout',
       OnRampSettings: 'Preferences',
       OnRampLoading: undefined,
       SwitchNetwork: networkName ?? 'Switch network',

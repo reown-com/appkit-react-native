@@ -68,7 +68,7 @@ export function SelectorModal({
         {selectedItem && (
           <FlexView style={styles.selectedContainer}>
             {renderItem({ item: selectedItem })}
-            <Separator style={styles.separator} />
+            <Separator style={styles.separator} color="gray-glass-020" />
           </FlexView>
         )}
         <FlatList

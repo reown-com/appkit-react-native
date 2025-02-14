@@ -37,13 +37,11 @@ export interface OnRampControllerState {
   selectedServiceProvider?: OnRampServiceProvider;
   paymentMethods: OnRampPaymentMethod[];
   selectedPaymentMethod?: OnRampPaymentMethod;
-  purchaseAmount?: number;
   purchaseCurrency?: OnRampCryptoCurrency;
   purchaseCurrencies?: OnRampCryptoCurrency[];
   paymentAmount?: number;
   paymentCurrency?: OnRampFiatCurrency;
   paymentCurrencies?: OnRampFiatCurrency[];
-  paymentCurrencyLimit?: OnRampFiatLimit;
   paymentCurrenciesLimits?: OnRampFiatLimit[];
   quotes?: OnRampQuote[];
   selectedQuote?: OnRampQuote;
@@ -124,17 +122,9 @@ export const OnRampController = {
 
       const amount = limit?.defaultAmount ?? limit?.minimumAmount ?? 0;
       state.paymentAmount = Math.round(amount);
-
-      if (limit) {
-        state.paymentCurrencyLimit = limit;
-      }
     }
 
     this.clearQuotes();
-  },
-
-  setPurchaseAmount(amount: number) {
-    state.purchaseAmount = amount;
   },
 
   setPaymentAmount(amount?: number | string) {
@@ -459,7 +449,6 @@ export const OnRampController = {
     state.quotes = [];
     state.selectedQuote = undefined;
     state.selectedServiceProvider = undefined;
-    state.purchaseAmount = undefined;
     state.widgetUrl = undefined;
 
     if (state.paymentCurrency) {

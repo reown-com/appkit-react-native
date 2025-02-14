@@ -92,7 +92,7 @@ export function SwapSelectTokenView() {
           </ScrollView>
         )}
       </FlexView>
-      <Separator style={styles.suggestedSeparator} />
+      <Separator style={styles.suggestedSeparator} color="gray-glass-020" />
       <SectionList
         sections={filteredTokens as SectionListData<SwapTokenWithBalance>[]}
         bounces={false}
