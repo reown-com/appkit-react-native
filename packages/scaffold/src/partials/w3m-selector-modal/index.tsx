@@ -74,6 +74,7 @@ export function SelectorModal({
         <FlatList
           data={items}
           renderItem={renderItem}
+          fadingEdgeLength={20}
           contentContainerStyle={styles.listContent}
           ItemSeparatorComponent={renderSeparator}
           keyExtractor={keyExtractor}

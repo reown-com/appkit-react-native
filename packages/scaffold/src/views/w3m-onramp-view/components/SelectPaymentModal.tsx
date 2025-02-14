@@ -181,6 +181,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
           renderItem={renderQuote}
           contentContainerStyle={styles.listContent}
           ItemSeparatorComponent={renderSeparator}
+          fadingEdgeLength={20}
           ListEmptyComponent={renderEmpty}
           keyExtractor={item => `${item.serviceProvider}-${item.paymentMethodType}`}
           getItemLayout={(_, index) => ({
@@ -215,7 +216,7 @@ const styles = StyleSheet.create({
     marginVertical: Spacing.m
   },
   listContent: {
-    paddingBottom: Spacing.s,
+    paddingBottom: Spacing['4xl'],
     paddingHorizontal: Spacing.m
   },
   iconPlaceholder: {

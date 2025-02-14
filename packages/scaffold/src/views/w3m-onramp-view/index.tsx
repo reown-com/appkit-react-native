@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { memo, useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { LayoutAnimation, ScrollView, StyleSheet } from 'react-native';
 import {
   OnRampController,
   type OnRampCryptoCurrency,
@@ -28,13 +28,15 @@ import {
   getModalItems,
   getModalTitle,
   getItemHeight,
-  isAmountError
+  isAmountError,
+  getCurrencySuggestedValues
 } from './utils';
 
 import { CurrencyInput } from './components/CurrencyInput';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { Header } from './components/Header';
+import { UiUtil } from '../../utils/UiUtil';
 
 const MemoizedCurrency = memo(Currency);
 
@@ -78,6 +80,7 @@ export function OnRampView() {
   });
 
   const onValueChange = (value: number) => {
+    UiUtil.animateChange();
     if (!value) {
       OnRampController.abortGetQuotes();
       OnRampController.setPaymentAmount(0);
@@ -89,6 +92,12 @@ export function OnRampView() {
 
     OnRampController.setPaymentAmount(value);
     debouncedGetQuotes();
+  };
+
+  const onSuggestedValuePress = (value: number) => {
+    UiUtil.animateChange();
+    OnRampController.setPaymentAmount(value);
+    getQuotes();
   };
 
   const handleSearch = (value: string) => {
@@ -155,6 +164,8 @@ export function OnRampView() {
             value={paymentAmount?.toString()}
             symbol={paymentCurrency?.currencyCode}
             error={getErrorMessage(error)}
+            suggestedValues={getCurrencySuggestedValues(paymentCurrency)}
+            onSuggestedValuePress={onSuggestedValuePress}
             isAmountError={isAmountError(error)}
             loading={loading || quotesLoading}
             purchaseValue={`${

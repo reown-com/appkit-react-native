@@ -1,12 +1,14 @@
 import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import {
+  Button,
   FlexView,
   useTheme,
   Text,
   LoadingSpinner,
   NumericKeyboard,
   Separator,
-  Spacing
+  Spacing,
+  BorderRadius
 } from '@reown/appkit-ui-react-native';
 import { useEffect, useState } from 'react';
 import { useRef } from 'react';
@@ -20,6 +22,8 @@ export interface InputTokenProps {
   isAmountError?: boolean;
   purchaseValue?: string;
   onValueChange?: (value: number) => void;
+  onSuggestedValuePress?: (value: number) => void;
+  suggestedValues?: number[];
 }
 
 export function CurrencyInput({
@@ -29,8 +33,10 @@ export function CurrencyInput({
   isAmountError,
   purchaseValue,
   onValueChange,
+  onSuggestedValuePress,
   symbol,
-  style
+  style,
+  suggestedValues
 }: InputTokenProps) {
   const Theme = useTheme();
   const [displayValue, setDisplayValue] = useState(value?.toString() || '0');
@@ -103,23 +109,31 @@ export function CurrencyInput({
           )}
         </FlexView>
       </FlexView>
-      {/* <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
-        <Button
-          style={{ flex: 1, borderRadius: BorderRadius.xs, marginRight: Spacing.xs }}
-          variant="shade"
-        >
-          $10
-        </Button>
-        <Button style={{ flex: 1, borderRadius: BorderRadius.xs }} variant="shade">
-          $50
-        </Button>
-        <Button
-          style={{ flex: 1, borderRadius: BorderRadius.xs, marginLeft: Spacing.xs }}
-          variant="shade"
-        >
-          $100
-        </Button>
-      </FlexView> */}
+      <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
+        {suggestedValues?.map((suggestion: number) => {
+          const isSelected = suggestion.toString() === value;
+
+          return (
+            <Button
+              key={suggestion}
+              style={[
+                styles.suggestedValue,
+                isSelected && {
+                  ...styles.selectedValue,
+                  backgroundColor: Theme['accent-glass-020'],
+                  borderColor: Theme['accent-100']
+                }
+              ]}
+              variant="shade"
+              onPress={() => onSuggestedValuePress?.(suggestion)}
+            >
+              <Text variant="small-400" color="fg-100">
+                {`$${suggestion}`}
+              </Text>
+            </Button>
+          );
+        })}
+      </FlexView>
       <Separator color="bg-200" style={styles.separator} />
       <NumericKeyboard onKeyPress={handleKeyPress} />
     </FlexView>
@@ -136,5 +150,14 @@ const styles = StyleSheet.create({
   },
   separator: {
     marginTop: 16
+  },
+  suggestedValue: {
+    flex: 1,
+    borderRadius: BorderRadius.xxs,
+    marginRight: Spacing.xs,
+    height: 40
+  },
+  selectedValue: {
+    borderWidth: StyleSheet.hairlineWidth
   }
 });
