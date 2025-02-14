@@ -9,6 +9,7 @@ import {
   Text,
   useTheme,
   ExpandableList,
+  type ExpandableListRef,
   Separator
 } from '@reown/appkit-ui-react-native';
 import {
@@ -17,9 +18,9 @@ import {
   type OnRampQuote
 } from '@reown/appkit-core-react-native';
 import { Quote } from './Quote';
-import { getModalItemKey, getModalItems } from '../utils';
 import { PaymentMethod, ITEM_SIZE } from './PaymentMethod';
 import { ToggleButton } from './ToggleButton';
+import { useRef, useState } from 'react';
 
 interface SelectPaymentModalProps {
   title?: string;
@@ -32,8 +33,10 @@ const SEPARATOR_HEIGHT = Spacing.s;
 export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentModalProps) {
   const Theme = useTheme();
   const { quotes, quotesLoading } = useSnapshot(OnRampController.state);
-
-  const modalPaymentMethods = getModalItems('paymentMethod') as OnRampPaymentMethod[];
+  const expandableListRef = useRef<ExpandableListRef>(null);
+  const [paymentMethods, setPaymentMethods] = useState<OnRampPaymentMethod[]>(
+    OnRampController.state.paymentMethods
+  );
 
   const renderSeparator = () => {
     return <View style={{ height: SEPARATOR_HEIGHT }} />;
@@ -46,11 +49,37 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
     onClose();
   };
 
+  const handleToggle = () => {
+    expandableListRef.current?.toggle();
+  };
+
   const handlePaymentMethodPress = (paymentMethod: OnRampPaymentMethod) => {
     if (
       paymentMethod.paymentMethod !== OnRampController.state.selectedPaymentMethod?.paymentMethod
     ) {
       OnRampController.setSelectedPaymentMethod(paymentMethod);
+    }
+    expandableListRef.current?.toggle(false);
+
+    const itemsPerRow = expandableListRef.current?.getItemsPerRow();
+
+    // Switch payment method to the top if there are more than itemsPerRow payment methods
+    if (OnRampController.state.paymentMethods.length > itemsPerRow) {
+      const paymentIndex = paymentMethods.findIndex(method => method.name === paymentMethod.name);
+
+      // Switch payment if its not vivis
+      if (paymentIndex + 1 > itemsPerRow - 1) {
+        const realIndex = OnRampController.state.paymentMethods.findIndex(
+          method => method.name === paymentMethod.name
+        );
+
+        const newPaymentMethods = [
+          paymentMethod,
+          ...OnRampController.state.paymentMethods.slice(0, realIndex),
+          ...OnRampController.state.paymentMethods.slice(realIndex + 1)
+        ];
+        setPaymentMethods(newPaymentMethods);
+      }
     }
   };
 
@@ -131,13 +160,14 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
             Pay with
           </Text>
           <ExpandableList
-            items={modalPaymentMethods}
+            items={paymentMethods}
             renderItem={renderPaymentMethod}
             style={styles.paymentMethodList}
-            containerPadding={Spacing.l}
+            containerPadding={Spacing.m}
             itemWidth={ITEM_SIZE}
-            renderToggle={(isExpanded, onPress) => (
-              <ToggleButton onPress={onPress} isExpanded={isExpanded} />
+            ref={expandableListRef}
+            renderToggle={isExpanded => (
+              <ToggleButton onPress={handleToggle} isExpanded={isExpanded} />
             )}
           />
           <Separator style={styles.separator} color="bg-200" />
@@ -152,7 +182,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
           contentContainerStyle={styles.listContent}
           ItemSeparatorComponent={renderSeparator}
           ListEmptyComponent={renderEmpty}
-          keyExtractor={(item, index) => getModalItemKey('quotes', index, item)}
+          keyExtractor={item => `${item.serviceProvider}-${item.paymentMethodType}`}
           getItemLayout={(_, index) => ({
             length: ITEM_SIZE + SEPARATOR_HEIGHT,
             offset: (ITEM_SIZE + SEPARATOR_HEIGHT) * index,

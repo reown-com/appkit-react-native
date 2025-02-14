@@ -12,6 +12,7 @@ import {
   BorderRadius,
   Button,
   FlexView,
+  Image,
   ListItem,
   Spacing,
   Text,
@@ -26,7 +27,8 @@ import {
   getModalItemKey,
   getModalItems,
   getModalTitle,
-  getItemHeight
+  getItemHeight,
+  isAmountError
 } from './utils';
 
 import { CurrencyInput } from './components/CurrencyInput';
@@ -54,6 +56,7 @@ export function OnRampView() {
   const [searchValue, setSearchValue] = useState('');
   const [isCurrencyModalVisible, setIsCurrencyModalVisible] = useState(false);
   const [isPaymentMethodModalVisible, setIsPaymentMethodModalVisible] = useState(false);
+  const providerImage = OnRampController.getServiceProviderImage(selectedQuote?.serviceProvider);
 
   const getQuotes = useCallback(() => {
     if (
@@ -152,6 +155,7 @@ export function OnRampView() {
             value={paymentAmount?.toString()}
             symbol={paymentCurrency?.currencyCode}
             error={getErrorMessage(error)}
+            isAmountError={isAmountError(error)}
             loading={loading || quotesLoading}
             purchaseValue={`${
               selectedQuote?.destinationAmount
@@ -159,6 +163,7 @@ export function OnRampView() {
                 : '0.00'
             }${purchaseCurrency?.currencyCode ?? ''}`}
             onValueChange={onValueChange}
+            style={styles.currencyInput}
           />
           <ListItem
             chevron
@@ -177,13 +182,23 @@ export function OnRampView() {
               <Text variant="paragraph-400" color="fg-100">
                 {selectedPaymentMethod?.name}
               </Text>
-              <Text variant="small-400" color="fg-150">
-                {selectedQuote
-                  ? `via ${StringUtil.capitalize(selectedQuote?.serviceProvider)}`
-                  : !paymentMethods?.length
-                  ? 'No payment methods available'
-                  : 'Select a provider'}
-              </Text>
+              <FlexView flexDirection="row" alignItems="center" margin={['3xs', '0', '0', '0']}>
+                <Text variant="small-400" color="fg-150">
+                  {selectedQuote
+                    ? 'via '
+                    : !paymentMethods?.length
+                    ? 'No payment methods available'
+                    : 'Select a provider'}
+                </Text>
+                {selectedQuote && (
+                  <>
+                    {providerImage && <Image source={providerImage} style={styles.providerImage} />}
+                    <Text variant="small-400" color="fg-150">
+                      {StringUtil.capitalize(selectedQuote?.serviceProvider)}
+                    </Text>
+                  </>
+                )}
+              </FlexView>
             </FlexView>
           </ListItem>
           <FlexView
@@ -249,5 +264,13 @@ export const styles = StyleSheet.create({
     height: 40,
     borderWidth: 0,
     borderRadius: BorderRadius['3xs']
+  },
+  currencyInput: {
+    marginBottom: Spacing.m
+  },
+  providerImage: {
+    height: 16,
+    width: 16,
+    marginRight: 2
   }
 });

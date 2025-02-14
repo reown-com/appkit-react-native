@@ -31,7 +31,6 @@ export function Quote({ item, logoURL, onQuotePress, selected, isBestDeal }: Pro
       style={[styles.container, selected && { borderColor: Theme['accent-100'] }]}
       onPress={() => onQuotePress(item)}
       backgroundColor="transparent"
-      pressable={!selected}
     >
       <FlexView justifyContent="space-between" alignItems="center" flexDirection="row" padding="m">
         <FlexView flexDirection="row" alignItems="center">
@@ -66,7 +65,7 @@ export function Quote({ item, logoURL, onQuotePress, selected, isBestDeal }: Pro
 const styles = StyleSheet.create({
   container: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: BorderRadius.s,
+    borderRadius: BorderRadius.xs,
     height: ITEM_HEIGHT,
     justifyContent: 'center',
     borderColor: 'transparent'

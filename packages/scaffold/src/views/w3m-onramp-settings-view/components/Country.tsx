@@ -57,7 +57,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginRight: Spacing.xs
   },
-
   text: {
     flex: 1
   },

@@ -66,6 +66,13 @@ const KEY_EXTRACTORS: Record<ModalType, (item: any) => string> = {
 };
 
 // -------------------------- Utils --------------------------
+export const isAmountError = (error?: string) => {
+  return (
+    error === 'INVALID_AMOUNT_TOO_LOW' ||
+    error === 'INVALID_AMOUNT_TOO_HIGH' ||
+    error === 'INVALID_AMOUNT'
+  );
+};
 
 export const getErrorMessage = (error?: string) => {
   if (!error) return undefined;
@@ -91,6 +98,7 @@ export const getModalItems = (
   searchValue?: string,
   filterSelected?: boolean
 ) => {
+  //TODO: review this
   const items = {
     country: () =>
       filterSelected

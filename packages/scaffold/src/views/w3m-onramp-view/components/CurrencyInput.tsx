@@ -17,6 +17,7 @@ export interface InputTokenProps {
   symbol?: string;
   loading?: boolean;
   error?: string;
+  isAmountError?: boolean;
   purchaseValue?: string;
   onValueChange?: (value: number) => void;
 }
@@ -25,13 +26,16 @@ export function CurrencyInput({
   value,
   loading,
   error,
+  isAmountError,
   purchaseValue,
   onValueChange,
-  symbol
+  symbol,
+  style
 }: InputTokenProps) {
   const Theme = useTheme();
   const [displayValue, setDisplayValue] = useState(value?.toString() || '0');
   const isInternalChange = useRef(false);
+  const amountColor = isAmountError ? 'error-100' : value ? 'fg-100' : 'fg-200';
 
   const handleKeyPress = (key: string) => {
     isInternalChange.current = true;
@@ -77,13 +81,11 @@ export function CurrencyInput({
   }, [value]);
 
   return (
-    <>
+    <FlexView style={style}>
       <FlexView alignItems="center" margin={['m', '0', '0', '0']}>
         <FlexView flexDirection="row" alignItems="center">
-          <Text style={[styles.input, { color: value ? Theme['fg-100'] : Theme['fg-200'] }]}>
-            {displayValue}
-          </Text>
-          <Text variant="large-400" color="fg-200">
+          <Text style={[styles.input, { color: Theme[amountColor] }]}>{displayValue}</Text>
+          <Text variant="large-400" color={isAmountError ? 'error-100' : 'fg-200'}>
             {symbol ?? ''}
           </Text>
         </FlexView>
@@ -120,9 +122,10 @@ export function CurrencyInput({
       </FlexView> */}
       <Separator color="bg-200" style={styles.separator} />
       <NumericKeyboard onKeyPress={handleKeyPress} />
-    </>
+    </FlexView>
   );
 }
+
 const styles = StyleSheet.create({
   input: {
     fontSize: 38,

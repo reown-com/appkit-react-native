@@ -167,7 +167,9 @@ export const OnRampController = {
     state.purchaseCurrency = selectedCurrency || state.purchaseCurrencies?.[0] || undefined;
   },
 
-  getServiceProviderImage(serviceProviderName: string) {
+  getServiceProviderImage(serviceProviderName?: string) {
+    if (!serviceProviderName) return undefined;
+
     const provider = state.serviceProviders.find(p => p.serviceProvider === serviceProviderName);
 
     return provider?.logos?.lightShort;
