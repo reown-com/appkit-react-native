@@ -1,4 +1,4 @@
-import { Spacing } from '@reown/appkit-ui-react-native';
+import { BorderRadius, Spacing } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
@@ -12,8 +12,8 @@ export default StyleSheet.create({
   },
   container: {
     height: '80%',
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    borderTopLeftRadius: BorderRadius.l,
+    borderTopRightRadius: BorderRadius.l,
     paddingTop: Spacing.m
   },
   selectedContainer: {

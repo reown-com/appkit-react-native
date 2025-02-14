@@ -1,5 +1,4 @@
 import { View } from 'react-native';
-
 import {
   OnRampController,
   RouterController,
@@ -17,7 +16,7 @@ import {
 } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 import { useSnapshot } from 'valtio';
-import { NumberUtil } from '@reown/appkit-common-react-native';
+import { NumberUtil, StringUtil } from '@reown/appkit-common-react-native';
 
 export function OnRampCheckoutView() {
   const Theme = useTheme();
@@ -27,6 +26,9 @@ export function OnRampCheckoutView() {
   const value = NumberUtil.roundNumber(selectedQuote?.destinationAmount ?? 0, 6, 5);
   const symbol = selectedQuote?.destinationCurrencyCode;
   const paymentLogo = selectedPaymentMethod?.logos[themeMode ?? 'light'];
+  const providerImage = OnRampController.getServiceProviderImage(
+    selectedQuote?.serviceProvider ?? ''
+  );
 
   const onConfirm = () => {
     RouterController.push('OnRampLoading');
@@ -42,8 +44,10 @@ export function OnRampCheckoutView() {
             {symbol ?? ''}
           </Text>
         </FlexView>
-        <FlexView alignItems="center" justifyContent="center">
-          <Text>via transak</Text>
+        <FlexView flexDirection="row" alignItems="center" justifyContent="center">
+          <Text color="fg-200">via </Text>
+          {providerImage && <Image source={providerImage} style={styles.providerImage} />}
+          <Text color="fg-200">{StringUtil.capitalize(selectedQuote?.serviceProvider)}</Text>
         </FlexView>
       </FlexView>
       <Separator style={styles.separator} color="gray-glass-010" />
@@ -81,7 +85,7 @@ export function OnRampCheckoutView() {
             {selectedQuote?.networkFee} {selectedQuote?.sourceCurrencyCode}
           </Text>
         </FlexView>
-        <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', 'xl', '0']}>
+        <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', 's', '0']}>
           <Text color="fg-200">Transaction Fees</Text>
           <Text>
             {selectedQuote?.transactionFee} {selectedQuote?.sourceCurrencyCode}
@@ -103,10 +107,10 @@ export function OnRampCheckoutView() {
           style={styles.cancelButton}
           onPress={RouterController.goBack}
         >
-          <Text>Back</Text>
+          Back
         </Button>
         <Button variant="fill" size="md" style={styles.confirmButton} onPress={onConfirm}>
-          <Text>Confirm</Text>
+          Confirm
         </Button>
       </FlexView>
     </FlexView>
@@ -139,5 +143,10 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     flex: 1
+  },
+  providerImage: {
+    height: 16,
+    width: 16,
+    marginRight: 2
   }
 });
