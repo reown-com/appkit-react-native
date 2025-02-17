@@ -1,13 +1,14 @@
 import { useSnapshot } from 'valtio';
+import type { StyleProp, ViewStyle } from 'react-native';
 import {
   ConnectorController,
   AssetUtil,
   RouterController,
-  type ConnectorType,
   ApiController
 } from '@reown/appkit-core-react-native';
+
 import { ListWallet } from '@reown/appkit-ui-react-native';
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { ConnectorType } from '@reown/appkit-common-react-native';
 
 interface Props {
   itemStyle: StyleProp<ViewStyle>;

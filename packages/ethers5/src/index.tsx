@@ -7,11 +7,9 @@ export {
   AppKit
 } from '@reown/appkit-scaffold-react-native';
 import type { EventName, EventsControllerState } from '@reown/appkit-scaffold-react-native';
-import {
-  ConstantsUtil,
-  EthersStoreUtil,
-  type Provider
-} from '@reown/appkit-scaffold-utils-react-native';
+import { EthersStoreUtil, type Provider } from '@reown/appkit-scaffold-utils-react-native';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
+
 export { defaultConfig } from './utils/defaultConfig';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AppKitOptions } from './client';

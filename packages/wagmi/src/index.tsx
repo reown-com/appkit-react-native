@@ -1,4 +1,5 @@
 import '@walletconnect/react-native-compat';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 export {
   AccountButton,
   AppKitButton,
@@ -7,9 +8,9 @@ export {
   AppKit
 } from '@reown/appkit-scaffold-react-native';
 import type { EventName, EventsControllerState } from '@reown/appkit-scaffold-react-native';
-import { ConstantsUtil } from '@reown/appkit-scaffold-utils-react-native';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
+
 export { defaultWagmiConfig } from './utils/defaultWagmiConfig';
-import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AppKitOptions } from './client';
 import { AppKit } from './client';
 

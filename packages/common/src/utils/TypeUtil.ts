@@ -93,3 +93,5 @@ export type ThemeMode = 'dark' | 'light';
 export interface ThemeVariables {
   accent?: string;
 }
+
+export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';

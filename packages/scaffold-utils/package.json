@@ -35,6 +35,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@reown/appkit-common-react-native": "1.2.1",
     "@reown/appkit-scaffold-react-native": "1.2.1"
   },
   "react-native": "src/index.ts",

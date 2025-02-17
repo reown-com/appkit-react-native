@@ -1,6 +1,6 @@
 import type { CaipNetwork } from '@reown/appkit-scaffold-react-native';
-import { ConstantsUtil } from './ConstantsUtil';
-import { PresetsUtil } from './PresetsUtil';
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-common-react-native';
+
 import type { Chain, Provider } from './EthersTypesUtil';
 
 export const EthersHelpersUtil = {

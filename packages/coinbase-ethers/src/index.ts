@@ -1,5 +1,6 @@
 import { configure, WalletMobileSDKEVMProvider } from '@coinbase/wallet-mobile-sdk';
 import type { WalletMobileSDKProviderOptions } from '@coinbase/wallet-mobile-sdk/build/WalletMobileSDKEVMProvider';
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-common-react-native';
 
 interface RequestArguments {
   readonly method: string;
@@ -12,8 +13,8 @@ type CoinbaseProviderOptions = WalletMobileSDKProviderOptions & {
 };
 
 export class CoinbaseProvider {
-  readonly id = 'coinbaseWallet';
-  readonly name = 'Coinbase Wallet';
+  readonly id = ConstantsUtil.COINBASE_CONNECTOR_ID;
+  readonly name = PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID]!;
 
   private _provider?: WalletMobileSDKEVMProvider;
   private _initProviderPromise?: Promise<void>;

@@ -6683,6 +6683,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@reown/appkit-auth-ethers-react-native@workspace:packages/auth-ethers"
   dependencies:
+    "@reown/appkit-common-react-native": "npm:1.2.1"
     "@reown/appkit-wallet-react-native": "npm:1.2.1"
   peerDependencies:
     ethers: ">=5"
@@ -6693,6 +6694,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@reown/appkit-auth-wagmi-react-native@workspace:packages/auth-wagmi"
   dependencies:
+    "@reown/appkit-common-react-native": "npm:1.2.1"
     "@reown/appkit-core-react-native": "npm:1.2.1"
     "@reown/appkit-wallet-react-native": "npm:1.2.1"
   peerDependencies:
@@ -6703,6 +6705,8 @@ __metadata:
 "@reown/appkit-coinbase-ethers-react-native@workspace:packages/coinbase-ethers":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-coinbase-ethers-react-native@workspace:packages/coinbase-ethers"
+  dependencies:
+    "@reown/appkit-common-react-native": "npm:1.2.1"
   peerDependencies:
     "@coinbase/wallet-mobile-sdk": ">=1.0.10"
     ethers: ">=5"
@@ -6712,6 +6716,8 @@ __metadata:
 "@reown/appkit-coinbase-wagmi-react-native@workspace:packages/coinbase-wagmi":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-coinbase-wagmi-react-native@workspace:packages/coinbase-wagmi"
+  dependencies:
+    "@reown/appkit-common-react-native": "npm:1.2.1"
   peerDependencies:
     "@coinbase/wallet-mobile-sdk": ">=1.0.10"
     wagmi: ">=2"
@@ -6802,6 +6808,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@reown/appkit-scaffold-utils-react-native@workspace:packages/scaffold-utils"
   dependencies:
+    "@reown/appkit-common-react-native": "npm:1.2.1"
     "@reown/appkit-scaffold-react-native": "npm:1.2.1"
   languageName: unknown
   linkType: soft

@@ -41,13 +41,15 @@ import {
   type AppKitFrameProvider,
   type EstimateGasTransactionArgs
 } from '@reown/appkit-scaffold-react-native';
+import { HelpersUtil, StorageUtil } from '@reown/appkit-scaffold-utils-react-native';
 import {
+  NetworkUtil,
+  NamesUtil,
+  ErrorUtil,
   ConstantsUtil,
-  HelpersUtil,
   PresetsUtil,
-  StorageUtil
-} from '@reown/appkit-scaffold-utils-react-native';
-import { NetworkUtil, NamesUtil, ErrorUtil } from '@reown/appkit-common-react-native';
+  type ConnectorType
+} from '@reown/appkit-common-react-native';
 import {
   SIWEController,
   getDidChainId,
@@ -548,7 +550,11 @@ export class AppKit extends AppKitScaffold {
         });
       }
     } else {
-      this.setConnectedWalletInfo({ name: connector.name, icon: connector.icon });
+      this.setConnectedWalletInfo({
+        id: connector.id,
+        name: connector.name,
+        icon: this.options?.connectorImages?.[connector.id] ?? connector.icon
+      });
     }
   }
 
@@ -602,8 +608,8 @@ export class AppKit extends AppKitScaffold {
       const provider = await authConnector.getProvider();
       this.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,
-        type: 'AUTH',
-        name: 'Auth',
+        type: PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID]!,
+        name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.AUTH_CONNECTOR_ID],
         provider
       });
       this.addAuthListeners(authConnector);
@@ -611,7 +617,9 @@ export class AppKit extends AppKitScaffold {
   }
 
   private async addAuthListeners(connector: WagmiConnector) {
-    const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
+    const connectedConnector: ConnectorType | undefined = await StorageUtil.getItem(
+      '@w3m/connected_connector'
+    );
 
     if (connectedConnector === 'AUTH') {
       // Set loader until it reconnects

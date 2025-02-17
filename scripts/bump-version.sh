@@ -4,7 +4,7 @@
 version=$(awk -F: '/"version":/ {print $2}' packages/core/package.json | tr -d ' ",')
 
 
-utils="packages/scaffold-utils/src/utils/ConstantsUtil.ts"
+utils="packages/common/src/utils/ConstantsUtil.ts"
 rootjson="package.json"
 
 # Replace version in ConstantsUtil.ts
