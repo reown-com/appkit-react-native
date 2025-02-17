@@ -30,7 +30,7 @@ export const ConnectorController = {
   },
 
   addConnector(connector: Connector) {
-    state.connectors.push(ref(connector));
+    state.connectors = [...state.connectors, ref(connector)];
   },
 
   getConnectors() {
