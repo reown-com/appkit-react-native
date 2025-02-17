@@ -21,7 +21,9 @@ import { NumberUtil, StringUtil } from '@reown/appkit-common-react-native';
 export function OnRampCheckoutView() {
   const Theme = useTheme();
   const { themeMode } = useSnapshot(ThemeController.state);
-  const { selectedQuote, selectedPaymentMethod } = useSnapshot(OnRampController.state);
+  const { selectedQuote, selectedPaymentMethod, purchaseCurrency } = useSnapshot(
+    OnRampController.state
+  );
 
   const value = NumberUtil.roundNumber(selectedQuote?.destinationAmount ?? 0, 6, 5);
   const symbol = selectedQuote?.destinationCurrencyCode;
@@ -75,28 +77,52 @@ export function OnRampCheckoutView() {
           <Text>{selectedPaymentMethod?.name}</Text>
         </FlexView>
       </FlexView>
+      {purchaseCurrency?.chainName && (
+        <FlexView
+          padding={['xs', 's', 'm', 's']}
+          flexDirection="row"
+          justifyContent="space-between"
+        >
+          <Text color="fg-200">Network</Text>
+          <FlexView flexDirection="row" alignItems="center">
+            <Text>{purchaseCurrency.chainName}</Text>
+          </FlexView>
+        </FlexView>
+      )}
       <FlexView
         padding={['m', 'l', 's', 'l']}
         style={[styles.feesContainer, { backgroundColor: Theme['gray-glass-005'] }]}
       >
         <FlexView flexDirection="row" justifyContent="space-between">
           <Text color="fg-200">Network Fees</Text>
-          <Text>
-            {selectedQuote?.networkFee} {selectedQuote?.sourceCurrencyCode}
-          </Text>
+          {selectedQuote?.networkFee ? (
+            <Text>
+              {selectedQuote?.networkFee} {selectedQuote?.sourceCurrencyCode}
+            </Text>
+          ) : (
+            <Text>unknown</Text>
+          )}
         </FlexView>
         <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', 's', '0']}>
           <Text color="fg-200">Transaction Fees</Text>
-          <Text>
-            {selectedQuote?.transactionFee} {selectedQuote?.sourceCurrencyCode}
-          </Text>
+          {selectedQuote?.transactionFee ? (
+            <Text>
+              {selectedQuote.transactionFee} {selectedQuote?.sourceCurrencyCode}
+            </Text>
+          ) : (
+            <Text>unknown</Text>
+          )}
         </FlexView>
         <FlexView flexDirection="row" justifyContent="space-between">
           <Text color="fg-200">Total</Text>
           <View style={[styles.totalFee, { backgroundColor: Theme['accent-glass-010'] }]}>
-            <Text color="accent-100">
-              {selectedQuote?.totalFee} {selectedQuote?.sourceCurrencyCode}
-            </Text>
+            {selectedQuote?.totalFee ? (
+              <Text color="accent-100">
+                {selectedQuote.totalFee} {selectedQuote?.sourceCurrencyCode}
+              </Text>
+            ) : (
+              <Text>unknown</Text>
+            )}
           </View>
         </FlexView>
       </FlexView>
