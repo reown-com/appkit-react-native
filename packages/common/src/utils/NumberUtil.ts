@@ -33,6 +33,12 @@ export const NumberUtil = {
     return roundedNumber;
   },
 
+  nextMultipleOfTen(amount?: number) {
+    if (!amount) return 10;
+
+    return Math.max(Math.ceil(amount / 10) * 10, 10);
+  },
+
   /**
    * Format the given number or string to human readable numbers with the given number of decimals
    * @param value - The value to format. It could be a number or string. If it's a string, it will be parsed to a float then formatted.

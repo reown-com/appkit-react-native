@@ -61,6 +61,14 @@ export function AppKit() {
         await ConnectionController.disconnect();
       }
     }
+
+    if (
+      RouterController.state.view === 'OnRampLoading' &&
+      EventsController.state.data.event === 'BUY_SUBMITTED'
+    ) {
+      // Send event only if the onramp url was already created
+      EventsController.sendEvent({ type: 'track', event: 'BUY_CANCEL' });
+    }
   };
 
   const onNewAddress = useCallback(

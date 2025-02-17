@@ -701,6 +701,59 @@ export type Event =
   | {
       type: 'track';
       event: 'SELECT_BUY_CRYPTO';
+    }
+  | {
+      type: 'track';
+      event: 'SELECT_BUY_ASSET';
+      properties: {
+        asset: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'BUY_SUBMITTED';
+      properties: {
+        asset?: string;
+        network?: string;
+        amount?: string;
+        currency?: string;
+        provider?: string;
+        serviceProvider?: string;
+        paymentMethod?: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'BUY_SUCCESS';
+      properties: {
+        asset?: string | null;
+        network?: string | null;
+        amount?: string | null;
+        currency?: string | null;
+        provider?: string | null;
+        orderId?: string | null;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'BUY_FAIL';
+      properties: {
+        asset?: string;
+        network?: string;
+        amount?: string;
+        currency?: string;
+        provider?: string;
+        serviceProvider?: string;
+        paymentMethod?: string;
+        message?: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'BUY_CANCEL';
+      properties?: {
+        message?: string;
+      };
     };
 
 // -- Send Controller Types -------------------------------------

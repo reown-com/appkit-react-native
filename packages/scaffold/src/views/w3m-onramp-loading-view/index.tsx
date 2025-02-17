@@ -7,7 +7,8 @@ import {
   SnackController,
   ConnectorController,
   OptionsController,
-  AccountController
+  AccountController,
+  EventsController
 } from '@reown/appkit-core-react-native';
 import { FlexView, DoubleImageLoader, IconLink, Button, Text } from '@reown/appkit-ui-react-native';
 
@@ -28,6 +29,14 @@ export function OnRampLoadingView() {
   );
 
   const handleGoBack = () => {
+    if (EventsController.state.data.event === 'BUY_SUBMITTED') {
+      // Send event only if the onramp url was already created
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'BUY_CANCEL'
+      });
+    }
+
     RouterController.goBack();
   };
 
@@ -51,6 +60,26 @@ export function OnRampLoadingView() {
         url.startsWith(metadata?.redirect?.universal ?? '') ||
         url.startsWith(metadata?.redirect?.native ?? '')
       ) {
+        const parsedUrl = new URL(url);
+        const searchParams = new URLSearchParams(parsedUrl.search);
+        const asset = searchParams.get('cryptoCurrency');
+        const network = searchParams.get('network');
+        const amount = searchParams.get('fiatAmount');
+        const currency = searchParams.get('fiatCurrency');
+        const orderId = searchParams.get('orderId');
+
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'BUY_SUCCESS',
+          properties: {
+            asset,
+            network,
+            amount,
+            currency,
+            orderId
+          }
+        });
+
         SnackController.showLoading('Transaction started');
         RouterController.replace(isAuth ? 'Account' : 'AccountDefault');
         OnRampController.resetState();

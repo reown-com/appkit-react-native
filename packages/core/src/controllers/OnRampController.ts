@@ -19,6 +19,8 @@ import { OptionsController } from './OptionsController';
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import { SnackController } from './SnackController';
+import { NumberUtil } from '@reown/appkit-common-react-native';
+import { EventsController } from './EventsController';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getMeldApiUrl();
@@ -109,6 +111,14 @@ export const OnRampController = {
   setPurchaseCurrency(currency: OnRampCryptoCurrency) {
     state.purchaseCurrency = currency;
 
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_BUY_ASSET',
+      properties: {
+        asset: currency.currencyCode
+      }
+    });
+
     this.clearQuotes();
   },
 
@@ -120,8 +130,7 @@ export const OnRampController = {
         l => l.currencyCode === currency.currencyCode
       );
 
-      const amount = limit?.defaultAmount ?? limit?.minimumAmount ?? 0;
-      state.paymentAmount = Math.round(amount);
+      state.paymentAmount = NumberUtil.nextMultipleOfTen(limit?.minimumAmount) * 2;
     }
 
     this.clearQuotes();
@@ -358,12 +367,19 @@ export const OnRampController = {
         return;
       }
 
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'BUY_FAIL',
+        properties: {
+          message: error?.message ?? error?.code ?? 'Error getting quotes'
+        }
+      });
+
       state.quotes = [];
       state.selectedQuote = undefined;
       state.selectedServiceProvider = undefined;
       state.error = error?.code || 'UNKNOWN_ERROR';
       state.quotesLoading = false;
-      console.error(error);
     }
   },
 
@@ -388,6 +404,15 @@ export const OnRampController = {
 
   async generateWidget({ quote }: { quote: OnRampQuote }) {
     const metadata = OptionsController.state.metadata;
+    const eventProperties = {
+      asset: quote.destinationCurrencyCode,
+      network: state.purchaseCurrency?.chainName ?? '',
+      amount: quote.destinationAmount.toString(),
+      currency: quote.destinationCurrencyCode,
+      paymentMethod: quote.paymentMethodType,
+      provider: 'MELD',
+      serviceProvider: quote.serviceProvider
+    };
 
     try {
       const widget = await api.post<OnRampWidgetResponse>({
@@ -408,12 +433,25 @@ export const OnRampController = {
         }
       });
 
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'BUY_SUBMITTED',
+        properties: eventProperties
+      });
+
       state.widgetUrl = widget?.widgetUrl;
 
       return widget;
     } catch (e: any) {
-      //TODO: send event
-      console.log('error', e);
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'BUY_FAIL',
+        properties: {
+          ...eventProperties,
+          message: e?.message ?? e?.code ?? 'Error generating widget url'
+        }
+      });
+
       state.error = e?.code || 'UNKNOWN_ERROR';
       SnackController.showInternalError({
         shortMessage: 'Error creating purchase URL',
