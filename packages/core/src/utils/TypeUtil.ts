@@ -26,6 +26,14 @@ export type ConnectedWalletInfo =
   | {
       name?: string;
       icon?: string;
+      description?: string;
+      url?: string;
+      icons?: string[];
+      redirect?: {
+        native?: string;
+        universal?: string;
+        linkMode?: boolean;
+      };
       [key: string]: unknown;
     }
   | undefined;
