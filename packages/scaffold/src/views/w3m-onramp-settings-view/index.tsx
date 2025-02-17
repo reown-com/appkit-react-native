@@ -1,6 +1,7 @@
 import { useSnapshot } from 'valtio';
-import { FlexView, ListItem, Text, useTheme, Icon } from '@reown/appkit-ui-react-native';
 import { memo, useState } from 'react';
+import { SvgUri } from 'react-native-svg';
+import { FlexView, ListItem, Text, useTheme, Icon } from '@reown/appkit-ui-react-native';
 import {
   OnRampController,
   type OnRampCountry,
@@ -8,17 +9,12 @@ import {
 } from '@reown/appkit-core-react-native';
 
 import { SelectorModal } from '../../partials/w3m-selector-modal';
-import {
-  getItemHeight,
-  getModalItemKey,
-  getModalItems,
-  getModalTitle,
-  onModalItemPress
-} from '../w3m-onramp-view/utils';
 import { Country } from './components/Country';
 import { Currency } from '../w3m-onramp-view/components/Currency';
+import { getModalTitle, getItemHeight, getModalItems, getModalItemKey } from './utils';
 import { styles } from './styles';
-import { SvgUri } from 'react-native-svg';
+
+type ModalType = 'country' | 'paymentCurrency';
 
 const MemoizedCountry = memo(Country);
 const MemoizedCurrency = memo(Currency);
@@ -26,7 +22,7 @@ const MemoizedCurrency = memo(Currency);
 export function OnRampSettingsView() {
   const { paymentCurrency, selectedCountry } = useSnapshot(OnRampController.state);
   const Theme = useTheme();
-  const [modalType, setModalType] = useState<'country' | 'paymentCurrency'>();
+  const [modalType, setModalType] = useState<ModalType>();
   const [searchValue, setSearchValue] = useState('');
 
   const onCountryPress = () => {
@@ -40,7 +36,11 @@ export function OnRampSettingsView() {
   const onPressModalItem = async (item: any) => {
     setModalType(undefined);
     setSearchValue('');
-    await onModalItemPress(item, modalType);
+    if (modalType === 'country') {
+      await OnRampController.setSelectedCountry(item as OnRampCountry);
+    } else if (modalType === 'paymentCurrency') {
+      OnRampController.setPaymentCurrency(item as OnRampFiatCurrency);
+    }
   };
 
   const renderModalItem = ({ item }: { item: any }) => {

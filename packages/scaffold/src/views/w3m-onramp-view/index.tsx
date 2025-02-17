@@ -24,16 +24,14 @@ import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Currency } from './components/Currency';
 import {
   getErrorMessage,
-  getModalItemKey,
-  getModalItems,
-  getModalTitle,
-  getItemHeight,
+  getPurchaseCurrencies,
   isAmountError,
   getCurrencySuggestedValues
 } from './utils';
 
 import { CurrencyInput } from './components/CurrencyInput';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
+import { ITEM_HEIGHT as CURRENCY_ITEM_HEIGHT } from './components/Currency';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { Header } from './components/Header';
 import { UiUtil } from '../../utils/UiUtil';
@@ -238,14 +236,12 @@ export function OnRampView() {
             selectedItem={purchaseCurrency}
             visible={isCurrencyModalVisible}
             onClose={onModalClose}
-            items={getModalItems('purchaseCurrency', searchValue, true)}
+            items={getPurchaseCurrencies(searchValue, true)}
             onSearch={handleSearch}
             renderItem={renderCurrencyItem}
-            keyExtractor={(item: any, index: number) =>
-              getModalItemKey('purchaseCurrency', index, item)
-            }
-            title={getModalTitle('purchaseCurrency')}
-            itemHeight={getItemHeight('purchaseCurrency')}
+            keyExtractor={item => item.currencyCode}
+            title="Select a token"
+            itemHeight={CURRENCY_ITEM_HEIGHT}
           />
         </FlexView>
       </ScrollView>
