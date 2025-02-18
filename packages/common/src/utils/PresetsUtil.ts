@@ -1,4 +1,4 @@
-import type { ConnectorType } from '@reown/appkit-scaffold-react-native';
+import type { ConnectorType } from './TypeUtil';
 import { ConstantsUtil } from './ConstantsUtil';
 
 export const PresetsUtil = {
@@ -48,15 +48,15 @@ export const PresetsUtil = {
     1313161554: '3ff73439-a619-4894-9262-4470c773a100'
   } as Record<string, string>,
 
+  ConnectorNamesMap: {
+    [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WalletConnect',
+    [ConstantsUtil.COINBASE_CONNECTOR_ID]: 'Coinbase Wallet',
+    [ConstantsUtil.AUTH_CONNECTOR_ID]: 'AppKit Universal Wallet'
+  } as Record<string, string>,
+
   ConnectorImageIds: {
     [ConstantsUtil.COINBASE_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
     [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400'
-  } as Record<string, string>,
-
-  ConnectorNamesMap: {
-    [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WalletConnect',
-    [ConstantsUtil.COINBASE_CONNECTOR_ID]: 'Coinbase',
-    [ConstantsUtil.AUTH_CONNECTOR_ID]: 'Auth'
   } as Record<string, string>,
 
   ConnectorTypesMap: {

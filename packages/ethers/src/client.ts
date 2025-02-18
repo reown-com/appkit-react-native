@@ -28,10 +28,15 @@ import {
   type AppKitFrameAccountType,
   type EstimateGasTransactionArgs
 } from '@reown/appkit-scaffold-react-native';
-import { erc20ABI, ErrorUtil, NamesUtil, NetworkUtil } from '@reown/appkit-common-react-native';
 import {
-  ConstantsUtil,
+  erc20ABI,
+  ErrorUtil,
+  NamesUtil,
+  NetworkUtil,
   PresetsUtil,
+  ConstantsUtil
+} from '@reown/appkit-common-react-native';
+import {
   HelpersUtil,
   StorageUtil,
   EthersConstantsUtil,
@@ -448,6 +453,10 @@ export class AppKit extends AppKitScaffold {
 
     EthersStoreUtil.subscribeKey('chainId', () => {
       this.syncNetwork(chainImages);
+    });
+
+    EthersStoreUtil.subscribeKey('provider', provider => {
+      this.syncConnectedWalletInfo(provider);
     });
 
     this.syncRequestedNetworks(chains, chainImages);
@@ -953,14 +962,15 @@ export class AppKit extends AppKitScaffold {
             explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
             imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
             imageUrl: this.options?.connectorImages?.[ConstantsUtil.COINBASE_CONNECTOR_ID],
-            name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID],
+            name:
+              connector?.name ?? PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID],
             type: PresetsUtil.ConnectorTypesMap[ConstantsUtil.COINBASE_CONNECTOR_ID]!
           });
           this.checkActiveCoinbaseProvider(connector as Provider);
         } else {
           _connectors.push({
             id: connector.id,
-            name: connector.name,
+            name: connector.name ?? PresetsUtil.ConnectorNamesMap[connector.id],
             type: 'EXTERNAL'
           });
         }
@@ -1000,6 +1010,33 @@ export class AppKit extends AppKitScaffold {
     }
 
     this.addAuthListeners(this.authProvider);
+  }
+
+  private async syncConnectedWalletInfo(provider?: Provider) {
+    if (!provider) {
+      this.setConnectedWalletInfo(undefined);
+
+      return;
+    }
+
+    if ((provider as any)?.session?.peer?.metadata) {
+      const metadata = (provider as unknown as EthereumProvider)?.session?.peer.metadata;
+      if (metadata) {
+        this.setConnectedWalletInfo({
+          ...metadata,
+          name: metadata.name,
+          icon: metadata.icons?.[0]
+        });
+      }
+    } else if (provider?.id) {
+      this.setConnectedWalletInfo({
+        id: provider.id,
+        name: provider?.name ?? PresetsUtil.ConnectorNamesMap[provider.id],
+        icon: this.options?.connectorImages?.[provider.id]
+      });
+    } else {
+      this.setConnectedWalletInfo(undefined);
+    }
   }
 
   private async addAuthListeners(authProvider: AppKitFrameProvider) {
