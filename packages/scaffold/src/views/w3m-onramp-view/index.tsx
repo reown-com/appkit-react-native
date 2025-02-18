@@ -221,7 +221,7 @@ export function OnRampView() {
             justifyContent="center"
             margin={['m', '0', '0', '0']}
           >
-            <Button variant="shade" style={styles.cancelButton}>
+            <Button variant="shade" style={styles.cancelButton} onPress={RouterController.goBack}>
               Cancel
             </Button>
             <Button
