@@ -1,14 +1,17 @@
 /* eslint-disable no-console */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {
-  ConnectorType,
   OnRampCountry,
   OnRampFiatCurrency,
   OnRampFiatLimit,
   OnRampServiceProvider,
   WcWallet
 } from './TypeUtil';
-import { type SocialProvider, DateUtil } from '@reown/appkit-common-react-native';
+import {
+  DateUtil,
+  type SocialProvider,
+  type ConnectorType
+} from '@reown/appkit-common-react-native';
 
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE';

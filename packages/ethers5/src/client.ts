@@ -16,8 +16,6 @@ import {
   AppKitScaffold
 } from '@reown/appkit-scaffold-react-native';
 import {
-  ConstantsUtil,
-  PresetsUtil,
   StorageUtil,
   HelpersUtil,
   EthersConstantsUtil,
@@ -38,7 +36,14 @@ import {
   getDidAddress,
   type AppKitSIWEClient
 } from '@reown/appkit-siwe-react-native';
-import { erc20ABI, ErrorUtil, NamesUtil, NetworkUtil } from '@reown/appkit-common-react-native';
+import {
+  erc20ABI,
+  ErrorUtil,
+  NamesUtil,
+  NetworkUtil,
+  ConstantsUtil,
+  PresetsUtil
+} from '@reown/appkit-common-react-native';
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 import { type JsonRpcError } from '@walletconnect/jsonrpc-types';
@@ -430,6 +435,10 @@ export class AppKit extends AppKitScaffold {
 
     EthersStoreUtil.subscribeKey('chainId', () => {
       this.syncNetwork(chainImages);
+    });
+
+    EthersStoreUtil.subscribeKey('provider', provider => {
+      this.syncConnectedWalletInfo(provider);
     });
 
     this.syncRequestedNetworks(chains, chainImages);
@@ -937,7 +946,7 @@ export class AppKit extends AppKitScaffold {
         } else {
           _connectors.push({
             id: connector.id,
-            name: connector.name,
+            name: connector.name ?? PresetsUtil.ConnectorNamesMap[connector.id],
             type: 'EXTERNAL'
           });
         }
@@ -977,6 +986,33 @@ export class AppKit extends AppKitScaffold {
     }
 
     this.addAuthListeners(this.authProvider);
+  }
+
+  private async syncConnectedWalletInfo(provider?: Provider) {
+    if (!provider) {
+      this.setConnectedWalletInfo(undefined);
+
+      return;
+    }
+
+    if ((provider as any)?.session?.peer?.metadata) {
+      const metadata = (provider as unknown as EthereumProvider)?.session?.peer.metadata;
+      if (metadata) {
+        this.setConnectedWalletInfo({
+          ...metadata,
+          name: metadata.name,
+          icon: metadata.icons?.[0]
+        });
+      }
+    } else if (provider?.id) {
+      this.setConnectedWalletInfo({
+        id: provider.id,
+        name: provider?.name ?? PresetsUtil.ConnectorNamesMap[provider.id],
+        icon: this.options?.connectorImages?.[provider.id]
+      });
+    } else {
+      this.setConnectedWalletInfo(undefined);
+    }
   }
 
   private async addAuthListeners(authProvider: AppKitFrameProvider) {

@@ -1,6 +1,7 @@
+import type { ConnectorType } from '@reown/appkit-common-react-native';
 import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy, ref } from 'valtio';
-import type { Connector, ConnectorType } from '../utils/TypeUtil';
+import type { Connector } from '../utils/TypeUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 
 // -- Types --------------------------------------------- //
@@ -30,7 +31,7 @@ export const ConnectorController = {
   },
 
   addConnector(connector: Connector) {
-    state.connectors.push(ref(connector));
+    state.connectors = [...state.connectors, ref(connector)];
   },
 
   getConnectors() {
