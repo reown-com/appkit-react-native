@@ -19,7 +19,6 @@ import { OptionsController } from './OptionsController';
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import { SnackController } from './SnackController';
-import { NumberUtil } from '@reown/appkit-common-react-native';
 import { EventsController } from './EventsController';
 
 // -- Helpers ------------------------------------------- //
