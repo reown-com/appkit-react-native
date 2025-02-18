@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import Modal from 'react-native-modal';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import {
   FlexView,
   IconLink,
@@ -8,8 +8,6 @@ import {
   Spacing,
   Text,
   useTheme,
-  ExpandableList,
-  type ExpandableListRef,
   Separator
 } from '@reown/appkit-ui-react-native';
 import {
@@ -19,7 +17,6 @@ import {
 } from '@reown/appkit-core-react-native';
 import { Quote } from './Quote';
 import { PaymentMethod, ITEM_SIZE } from './PaymentMethod';
-import { ToggleButton } from './ToggleButton';
 import { useRef, useState } from 'react';
 
 interface SelectPaymentModalProps {
@@ -33,7 +30,7 @@ const SEPARATOR_HEIGHT = Spacing.s;
 export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentModalProps) {
   const Theme = useTheme();
   const { quotes, quotesLoading } = useSnapshot(OnRampController.state);
-  const expandableListRef = useRef<ExpandableListRef>(null);
+  const paymentMethodsRef = useRef<FlatList>(null);
   const [paymentMethods, setPaymentMethods] = useState<OnRampPaymentMethod[]>(
     OnRampController.state.paymentMethods
   );
@@ -49,26 +46,21 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
     onClose();
   };
 
-  const handleToggle = () => {
-    expandableListRef.current?.toggle();
-  };
-
   const handlePaymentMethodPress = (paymentMethod: OnRampPaymentMethod) => {
     if (
       paymentMethod.paymentMethod !== OnRampController.state.selectedPaymentMethod?.paymentMethod
     ) {
       OnRampController.setSelectedPaymentMethod(paymentMethod);
     }
-    expandableListRef.current?.toggle(false);
 
-    const itemsPerRow = expandableListRef.current?.getItemsPerRow() ?? 4;
+    const visibleItemsCount = Math.round(Dimensions.get('window').width / ITEM_SIZE);
 
-    // Switch payment method to the top if there are more than itemsPerRow payment methods
-    if (OnRampController.state.paymentMethods.length > itemsPerRow) {
+    // Switch payment method to the top if there are more than visibleItemsCount payment methods
+    if (OnRampController.state.paymentMethods.length > visibleItemsCount) {
       const paymentIndex = paymentMethods.findIndex(method => method.name === paymentMethod.name);
 
-      // Switch payment if its not vivis
-      if (paymentIndex + 1 > itemsPerRow - 1) {
+      // Switch payment if its not visible
+      if (paymentIndex + 1 > visibleItemsCount - 1) {
         const realIndex = OnRampController.state.paymentMethods.findIndex(
           method => method.name === paymentMethod.name
         );
@@ -81,6 +73,10 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
         setPaymentMethods(newPaymentMethods);
       }
     }
+    paymentMethodsRef.current?.scrollToIndex({
+      index: 0,
+      animated: true
+    });
   };
 
   const renderQuote = ({ item, index }: { item: OnRampQuote; index: number }) => {
@@ -120,7 +116,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
     );
   };
 
-  const renderPaymentMethod = (item: OnRampPaymentMethod) => {
+  const renderPaymentMethod = ({ item }: { item: OnRampPaymentMethod }) => {
     const parsedItem = item as OnRampPaymentMethod;
     const selected = parsedItem.name === OnRampController.state.selectedPaymentMethod?.name;
 
@@ -159,16 +155,14 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
           <Text variant="small-500" color="fg-150" style={styles.subtitle}>
             Pay with
           </Text>
-          <ExpandableList
-            items={paymentMethods}
+          <FlatList
+            data={paymentMethods}
             renderItem={renderPaymentMethod}
-            style={styles.paymentMethodList}
-            containerPadding={Spacing.m}
-            itemWidth={ITEM_SIZE}
-            ref={expandableListRef}
-            renderToggle={isExpanded => (
-              <ToggleButton onPress={handleToggle} isExpanded={isExpanded} />
-            )}
+            ref={paymentMethodsRef}
+            ItemSeparatorComponent={renderSeparator}
+            keyExtractor={item => item.name}
+            horizontal
+            showsHorizontalScrollIndicator={false}
           />
           <Separator style={styles.separator} color="gray-glass-020" />
           <Text variant="small-500" color="fg-150" style={styles.subtitle}>
@@ -228,9 +222,5 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     height: 150
-  },
-  paymentMethodList: {
-    justifyContent: 'center',
-    alignItems: 'center'
   }
 });

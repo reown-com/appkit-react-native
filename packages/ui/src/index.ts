@@ -34,11 +34,6 @@ export {
 export { ConnectButton, type ConnectButtonProps } from './composites/wui-connect-button';
 export { DoubleImageLoader } from './composites/wui-double-image-loader';
 export { EmailInput, type EmailInputProps } from './composites/wui-email-input';
-export {
-  ExpandableList,
-  type ExpandableListProps,
-  type ExpandableListRef
-} from './composites/wui-expandable-list';
 export { IconBox, type IconBoxProps } from './composites/wui-icon-box';
 export { IconLink, type IconLinkProps } from './composites/wui-icon-link';
 export { InputElement, type InputElementProps } from './composites/wui-input-element';

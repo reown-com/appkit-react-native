@@ -66,58 +66,17 @@ export const getCurrencySuggestedValues = (currency?: OnRampFiatCurrency) => {
   if (!currency) return [];
 
   const limit = OnRampController.getCurrencyLimit(currency);
-  const values = [];
+  let minAmount = limit?.minimumAmount ?? 0;
 
-  if (limit?.minimumAmount) {
-    values.push(NumberUtil.nextMultipleOfTen(limit.minimumAmount) * 2);
-  }
+  if (minAmount < 10) minAmount = 10;
 
-  if (limit?.defaultAmount) {
-    const value = NumberUtil.nextMultipleOfTen(limit.defaultAmount);
-    values.push(value);
+  // Find the nearest power of 10 above the minimum amount
+  const magnitude = Math.pow(10, Math.floor(Math.log10(minAmount)));
 
-    // If we have a maximum and room to add another value, add double the default
-    if (limit?.maximumAmount) {
-      const doubleDefault = value * 2;
-      if (doubleDefault < limit.maximumAmount) {
-        values.push(NumberUtil.nextMultipleOfTen(doubleDefault));
-      }
-    }
-  }
-
-  // If we don't have enough values, generate them based on what we have
-  if (values.length < 3) {
-    const sortedValues = [...new Set(values)].sort((a, b) => a - b);
-    const result = [...sortedValues];
-
-    if (sortedValues.length > 0) {
-      while (result.length < 3) {
-        const lastValue = result[result.length - 1];
-        if (!lastValue) break; // Safety check for undefined
-
-        const nextValue = lastValue * 2;
-
-        // Check if we can add this value (respect maximum if it exists)
-        if (!limit?.maximumAmount || nextValue < limit.maximumAmount) {
-          result.push(NumberUtil.nextMultipleOfTen(nextValue));
-        } else {
-          // If we can't double the last value, try adding intermediate values
-          const availableGap = result.length === 1;
-          if (availableGap && sortedValues[0]) {
-            const middleValue = NumberUtil.nextMultipleOfTen((lastValue + sortedValues[0]) / 2);
-            if (middleValue !== sortedValues[0] && middleValue !== lastValue) {
-              result.splice(1, 0, middleValue);
-              continue;
-            }
-          }
-          break;
-        }
-      }
-    }
-
-    return result;
-  }
-
-  // Remove duplicates and sort
-  return [...new Set(values)].sort((a, b) => a - b);
+  // Calculate suggested values based on the magnitude
+  return [
+    Math.ceil(minAmount / magnitude) * magnitude,
+    Math.ceil(minAmount / magnitude) * magnitude * 2,
+    Math.ceil(minAmount / magnitude) * magnitude * 4
+  ].map(Math.round);
 };
