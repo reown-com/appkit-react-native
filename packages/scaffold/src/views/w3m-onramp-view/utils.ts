@@ -3,7 +3,6 @@ import {
   NetworkController,
   type OnRampFiatCurrency
 } from '@reown/appkit-core-react-native';
-import { NumberUtil } from '@reown/appkit-common-react-native';
 
 // -------------------------- Types --------------------------
 export type OnRampError =
@@ -75,8 +74,8 @@ export const getCurrencySuggestedValues = (currency?: OnRampFiatCurrency) => {
 
   // Calculate suggested values based on the magnitude
   return [
-    Math.ceil(minAmount / magnitude) * magnitude,
     Math.ceil(minAmount / magnitude) * magnitude * 2,
+    Math.ceil(minAmount / magnitude) * magnitude * 3,
     Math.ceil(minAmount / magnitude) * magnitude * 4
   ].map(Math.round);
 };

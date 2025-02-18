@@ -126,26 +126,15 @@ export const OnRampController = {
     state.paymentCurrency = currency;
 
     if (updateAmount) {
-      const limit = state.paymentCurrenciesLimits?.find(
-        l => l.currencyCode === currency.currencyCode
-      );
-
-      state.paymentAmount = NumberUtil.nextMultipleOfTen(limit?.minimumAmount) * 2;
+      state.paymentAmount = undefined;
     }
 
     this.clearQuotes();
+    this.clearError();
   },
 
   setPaymentAmount(amount?: number | string) {
     state.paymentAmount = amount ? Number(amount) : undefined;
-  },
-
-  setDefaultPaymentAmount(currency: OnRampFiatCurrency) {
-    const limits = this.getCurrencyLimit(currency);
-
-    const amount = limits?.defaultAmount ?? limits?.minimumAmount ?? 0;
-
-    state.paymentAmount = Math.round(amount);
   },
 
   setSelectedQuote(quote?: OnRampQuote) {
@@ -488,9 +477,6 @@ export const OnRampController = {
     state.selectedQuote = undefined;
     state.selectedServiceProvider = undefined;
     state.widgetUrl = undefined;
-
-    if (state.paymentCurrency) {
-      this.setDefaultPaymentAmount(state.paymentCurrency);
-    }
+    state.paymentAmount = undefined;
   }
 };

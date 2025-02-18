@@ -57,6 +57,7 @@ export function OnRampView() {
   const [isCurrencyModalVisible, setIsCurrencyModalVisible] = useState(false);
   const [isPaymentMethodModalVisible, setIsPaymentMethodModalVisible] = useState(false);
   const providerImage = OnRampController.getServiceProviderImage(selectedQuote?.serviceProvider);
+  const suggestedValues = getCurrencySuggestedValues(paymentCurrency);
 
   const getQuotes = useCallback(() => {
     if (
@@ -136,6 +137,10 @@ export function OnRampView() {
   useEffect(() => {
     // update selected purchase currency based on active network
     OnRampController.updateSelectedPurchaseCurrency();
+
+    // set default payment amount
+    const suggested = getCurrencySuggestedValues(OnRampController.state.paymentCurrency);
+    OnRampController.setPaymentAmount(suggested[1]);
   }, []);
 
   useEffect(() => {
@@ -162,7 +167,7 @@ export function OnRampView() {
             value={paymentAmount?.toString()}
             symbol={paymentCurrency?.currencyCode}
             error={getErrorMessage(error)}
-            suggestedValues={getCurrencySuggestedValues(paymentCurrency)}
+            suggestedValues={suggestedValues}
             onSuggestedValuePress={onSuggestedValuePress}
             isAmountError={isAmountError(error)}
             loading={loading || quotesLoading}

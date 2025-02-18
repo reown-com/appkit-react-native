@@ -53,6 +53,7 @@ export function PaymentMethod({ onPress, item, selected }: Props) {
             size="sm"
             background
             backgroundColor="accent-100"
+            iconColor="inverse-100"
             style={styles.checkmark}
           />
         )}

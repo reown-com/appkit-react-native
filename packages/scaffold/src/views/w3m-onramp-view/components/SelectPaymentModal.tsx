@@ -1,4 +1,5 @@
 import { useSnapshot } from 'valtio';
+import { useRef, useState } from 'react';
 import Modal from 'react-native-modal';
 import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import {
@@ -15,9 +16,8 @@ import {
   type OnRampPaymentMethod,
   type OnRampQuote
 } from '@reown/appkit-core-react-native';
-import { Quote } from './Quote';
+import { Quote, ITEM_HEIGHT as QUOTE_ITEM_HEIGHT } from './Quote';
 import { PaymentMethod, ITEM_SIZE } from './PaymentMethod';
-import { useRef, useState } from 'react';
 
 interface SelectPaymentModalProps {
   title?: string;
@@ -151,24 +151,25 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
           {!!title && <Text variant="paragraph-600">{title}</Text>}
           <View style={styles.iconPlaceholder} />
         </FlexView>
-        <FlexView style={styles.topContent}>
-          <Text variant="small-500" color="fg-150" style={styles.subtitle}>
-            Pay with
-          </Text>
+        <Text variant="small-500" color="fg-150" style={styles.subtitle}>
+          Pay with
+        </Text>
+        <FlexView>
           <FlatList
             data={paymentMethods}
             renderItem={renderPaymentMethod}
             ref={paymentMethodsRef}
-            ItemSeparatorComponent={renderSeparator}
+            style={styles.paymentMethodsContainer}
+            fadingEdgeLength={20}
             keyExtractor={item => item.name}
             horizontal
             showsHorizontalScrollIndicator={false}
           />
-          <Separator style={styles.separator} color="gray-glass-020" />
-          <Text variant="small-500" color="fg-150" style={styles.subtitle}>
-            Providers
-          </Text>
         </FlexView>
+        <Separator style={styles.separator} color="gray-glass-020" />
+        <Text variant="small-500" color="fg-150" style={styles.subtitle}>
+          Providers
+        </Text>
         <FlatList
           data={quotes}
           bounces={false}
@@ -179,8 +180,8 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
           ListEmptyComponent={renderEmpty}
           keyExtractor={item => `${item.serviceProvider}-${item.paymentMethodType}`}
           getItemLayout={(_, index) => ({
-            length: ITEM_SIZE + SEPARATOR_HEIGHT,
-            offset: (ITEM_SIZE + SEPARATOR_HEIGHT) * index,
+            length: QUOTE_ITEM_HEIGHT + SEPARATOR_HEIGHT,
+            offset: (QUOTE_ITEM_HEIGHT + SEPARATOR_HEIGHT) * index,
             index
           })}
         />
@@ -203,13 +204,13 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16
   },
-  topContent: {
-    paddingHorizontal: Spacing.m
-  },
   separator: {
-    marginVertical: Spacing.m
+    width: undefined,
+    marginVertical: Spacing.m,
+    marginHorizontal: Spacing.m
   },
   listContent: {
+    paddingTop: Spacing['3xs'],
     paddingBottom: Spacing['4xl'],
     paddingHorizontal: Spacing.m
   },
@@ -218,9 +219,13 @@ const styles = StyleSheet.create({
     width: 32
   },
   subtitle: {
-    marginBottom: Spacing.xs
+    marginBottom: Spacing.xs,
+    marginHorizontal: Spacing.m
   },
   emptyContainer: {
     height: 150
+  },
+  paymentMethodsContainer: {
+    paddingHorizontal: Spacing['3xs']
   }
 });
