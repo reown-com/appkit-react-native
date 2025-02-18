@@ -89,45 +89,51 @@ export function OnRampCheckoutView() {
           </FlexView>
         </FlexView>
       )}
-      {selectedQuote?.networkFee ||
-        selectedQuote?.transactionFee ||
-        (selectedQuote?.totalFee && (
-          <FlexView
-            padding={['m', 'l', 's', 'l']}
-            style={[styles.feesContainer, { backgroundColor: Theme['gray-glass-005'] }]}
-          >
-            {selectedQuote?.networkFee && (
-              <FlexView flexDirection="row" justifyContent="space-between">
-                <Text color="fg-200">Network Fees</Text>
-                <Text>
-                  {selectedQuote?.networkFee} {selectedQuote?.sourceCurrencyCode}
+      {(selectedQuote?.networkFee || selectedQuote?.transactionFee || selectedQuote?.totalFee) && (
+        <FlexView
+          padding={['m', 'l', '0', 'l']}
+          style={[styles.feesContainer, { backgroundColor: Theme['gray-glass-005'] }]}
+        >
+          {selectedQuote?.networkFee && (
+            <FlexView
+              flexDirection="row"
+              justifyContent="space-between"
+              margin={['0', '0', 's', '0']}
+            >
+              <Text color="fg-200">Network Fees</Text>
+              <Text>
+                {selectedQuote?.networkFee} {selectedQuote?.sourceCurrencyCode}
+              </Text>
+            </FlexView>
+          )}
+          {selectedQuote?.transactionFee && (
+            <FlexView
+              flexDirection="row"
+              justifyContent="space-between"
+              margin={['0', '0', 's', '0']}
+            >
+              <Text color="fg-200">Transaction Fees</Text>
+              <Text>
+                {selectedQuote.transactionFee} {selectedQuote?.sourceCurrencyCode}
+              </Text>
+            </FlexView>
+          )}
+          {selectedQuote?.totalFee && (
+            <FlexView
+              flexDirection="row"
+              justifyContent="space-between"
+              margin={['0', '0', 's', '0']}
+            >
+              <Text color="fg-200">Total</Text>
+              <View style={[styles.totalFee, { backgroundColor: Theme['accent-glass-010'] }]}>
+                <Text color="accent-100">
+                  {selectedQuote.totalFee} {selectedQuote?.sourceCurrencyCode}
                 </Text>
-              </FlexView>
-            )}
-            {selectedQuote?.transactionFee && (
-              <FlexView
-                flexDirection="row"
-                justifyContent="space-between"
-                margin={['s', '0', 's', '0']}
-              >
-                <Text color="fg-200">Transaction Fees</Text>
-                <Text>
-                  {selectedQuote.transactionFee} {selectedQuote?.sourceCurrencyCode}
-                </Text>
-              </FlexView>
-            )}
-            {selectedQuote?.totalFee && (
-              <FlexView flexDirection="row" justifyContent="space-between">
-                <Text color="fg-200">Total</Text>
-                <View style={[styles.totalFee, { backgroundColor: Theme['accent-glass-010'] }]}>
-                  <Text color="accent-100">
-                    {selectedQuote.totalFee} {selectedQuote?.sourceCurrencyCode}
-                  </Text>
-                </View>
-              </FlexView>
-            )}
-          </FlexView>
-        ))}
+              </View>
+            </FlexView>
+          )}
+        </FlexView>
+      )}
       <FlexView flexDirection="row" justifyContent="space-between" margin={['xl', '0', '0', '0']}>
         <Button
           variant="shade"
