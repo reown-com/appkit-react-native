@@ -6,6 +6,7 @@ import {
   type CaipNetworkId,
   type ConnectionControllerClient,
   type Connector,
+  type EstimateGasTransactionArgs,
   type LibraryOptions,
   type NetworkControllerClient,
   type PublicStateControllerState,
@@ -15,8 +16,6 @@ import {
   AppKitScaffold
 } from '@reown/appkit-scaffold-react-native';
 import {
-  ConstantsUtil,
-  PresetsUtil,
   StorageUtil,
   HelpersUtil,
   EthersConstantsUtil,
@@ -31,12 +30,25 @@ import {
   type CombinedProviderType,
   type AppKitFrameProvider
 } from '@reown/appkit-scaffold-utils-react-native';
-import { NamesUtil, NetworkUtil } from '@reown/appkit-common-react-native';
+import {
+  SIWEController,
+  getDidChainId,
+  getDidAddress,
+  type AppKitSIWEClient
+} from '@reown/appkit-siwe-react-native';
+import {
+  erc20ABI,
+  ErrorUtil,
+  NamesUtil,
+  NetworkUtil,
+  ConstantsUtil,
+  PresetsUtil
+} from '@reown/appkit-common-react-native';
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
+import { type JsonRpcError } from '@walletconnect/jsonrpc-types';
 
 import { getAuthCaipNetworks, getWalletConnectCaipNetworks } from './utils/helpers';
-import type { AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface AppKitClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -95,7 +107,7 @@ export class AppKit extends AppKitScaffold {
     }
 
     if (!appKitOptions.projectId) {
-      throw new Error('appkit:constructor - projectId is undefined');
+      throw new Error(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED.shortMessage);
     }
 
     const networkControllerClient: NetworkControllerClient = {
@@ -156,9 +168,6 @@ export class AppKit extends AppKitScaffold {
         // SIWE
         const params = await siweConfig?.getMessageParams?.();
         if (siweConfig?.options?.enabled && params && Object.keys(params).length > 0) {
-          const { SIWEController, getDidChainId, getDidAddress } = await import(
-            '@reown/appkit-siwe-react-native'
-          );
           const result = await WalletConnectProvider.authenticate({
             nonce: await siweConfig.getNonce(),
             methods: OPTIONAL_METHODS,
@@ -240,7 +249,6 @@ export class AppKit extends AppKitScaffold {
         const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID];
 
         if (siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@reown/appkit-siwe-react-native');
           await SIWEController.signOut();
         }
 
@@ -271,6 +279,45 @@ export class AppKit extends AppKitScaffold {
         });
 
         return signature as `0x${string}`;
+      },
+
+      estimateGas: async ({
+        address,
+        to,
+        data,
+        chainNamespace
+      }: EstimateGasTransactionArgs): Promise<bigint> => {
+        const networkId = EthersStoreUtil.state.chainId;
+        const provider = EthersStoreUtil.state.provider;
+
+        if (!provider) {
+          throw new Error('Provider is undefined');
+        }
+
+        try {
+          if (!provider) {
+            throw new Error('estimateGas - provider is undefined');
+          }
+          if (!address) {
+            throw new Error('estimateGas - address is undefined');
+          }
+          if (chainNamespace && chainNamespace !== 'eip155') {
+            throw new Error('estimateGas - chainNamespace is not eip155');
+          }
+
+          const txParams = {
+            from: address,
+            to,
+            data,
+            type: 0
+          };
+          const browserProvider = new ethers.providers.Web3Provider(provider, networkId);
+          const signer = browserProvider.getSigner(address);
+
+          return (await signer.estimateGas(txParams)).toBigInt();
+        } catch (error) {
+          throw new Error('Ethers: estimateGas - Estimate gas failed');
+        }
       },
 
       parseUnits: (value: string, decimals: number) =>
@@ -390,6 +437,10 @@ export class AppKit extends AppKitScaffold {
       this.syncNetwork(chainImages);
     });
 
+    EthersStoreUtil.subscribeKey('provider', provider => {
+      this.syncConnectedWalletInfo(provider);
+    });
+
     this.syncRequestedNetworks(chains, chainImages);
     this.syncConnectors(config);
     this.syncAuthConnector(config);
@@ -486,6 +537,7 @@ export class AppKit extends AppKitScaffold {
     };
 
     this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions);
+    this.addWalletConnectListeners(this.walletConnectProvider);
 
     await this.checkActiveWalletConnectProvider();
   }
@@ -680,6 +732,7 @@ export class AppKit extends AppKitScaffold {
       ]);
       this.hasSyncedConnectedAccount = true;
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
+      this.close();
       this.resetAccount();
       this.resetWcConnection();
       this.resetNetwork();
@@ -755,6 +808,7 @@ export class AppKit extends AppKitScaffold {
     const chainId = EthersStoreUtil.state.chainId;
     if (chainId && this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId);
+      const token = this.options?.tokens?.[chainId];
 
       if (chain) {
         const jsonRpcProvider = new ethers.providers.JsonRpcProvider(chain.rpcUrl, {
@@ -762,9 +816,21 @@ export class AppKit extends AppKitScaffold {
           name: chain.name
         });
         if (jsonRpcProvider) {
-          const balance = await jsonRpcProvider.getBalance(address);
-          const formattedBalance = utils.formatEther(balance);
-          this.setBalance(formattedBalance, chain.currency);
+          if (token) {
+            // Get balance from custom token address
+            const erc20 = new Contract(token.address, erc20ABI, jsonRpcProvider);
+            // @ts-expect-error
+            const decimals = await erc20.decimals();
+            // @ts-expect-error
+            const symbol = await erc20.symbol();
+            // @ts-expect-error
+            const balanceOf = await erc20.balanceOf(address);
+            this.setBalance(utils.formatUnits(balanceOf, decimals), symbol);
+          } else {
+            const balance = await jsonRpcProvider.getBalance(address);
+            const formattedBalance = utils.formatEther(balance);
+            this.setBalance(formattedBalance, chain.currency);
+          }
         }
       }
     }
@@ -880,7 +946,7 @@ export class AppKit extends AppKitScaffold {
         } else {
           _connectors.push({
             id: connector.id,
-            name: connector.name,
+            name: connector.name ?? PresetsUtil.ConnectorNamesMap[connector.id],
             type: 'EXTERNAL'
           });
         }
@@ -910,6 +976,7 @@ export class AppKit extends AppKitScaffold {
 
     const connectedConnector = await StorageUtil.getItem('@w3m/connected_connector');
     if (connectedConnector === 'AUTH') {
+      // Set loader until it reconnects
       this.setLoading(true);
     }
 
@@ -921,6 +988,33 @@ export class AppKit extends AppKitScaffold {
     this.addAuthListeners(this.authProvider);
   }
 
+  private async syncConnectedWalletInfo(provider?: Provider) {
+    if (!provider) {
+      this.setConnectedWalletInfo(undefined);
+
+      return;
+    }
+
+    if ((provider as any)?.session?.peer?.metadata) {
+      const metadata = (provider as unknown as EthereumProvider)?.session?.peer.metadata;
+      if (metadata) {
+        this.setConnectedWalletInfo({
+          ...metadata,
+          name: metadata.name,
+          icon: metadata.icons?.[0]
+        });
+      }
+    } else if (provider?.id) {
+      this.setConnectedWalletInfo({
+        id: provider.id,
+        name: provider?.name ?? PresetsUtil.ConnectorNamesMap[provider.id],
+        icon: this.options?.connectorImages?.[provider.id]
+      });
+    } else {
+      this.setConnectedWalletInfo(undefined);
+    }
+  }
+
   private async addAuthListeners(authProvider: AppKitFrameProvider) {
     authProvider.onSetPreferredAccount(async ({ address, type }) => {
       if (address) {
@@ -928,5 +1022,22 @@ export class AppKit extends AppKitScaffold {
       }
       this.setLoading(false);
     });
+
+    authProvider.setOnTimeout(async () => {
+      this.handleAlertError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
+      this.setLoading(false);
+    });
+  }
+
+  private async addWalletConnectListeners(provider: EthereumProvider) {
+    if (provider) {
+      provider.signer.client.core.relayer.on('relayer_connect', () => {
+        provider.signer.client.core.relayer?.provider?.on('payload', (payload: JsonRpcError) => {
+          if (payload?.error) {
+            this.handleAlertError(payload?.error.message);
+          }
+        });
+      });
+    }
   }
 }

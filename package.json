@@ -1,6 +1,6 @@
 {
   "name": "appkit-react-native",
-  "version": "1.0.2",
+  "version": "1.2.1",
   "private": true,
   "workspaces": [
     "packages/core",
@@ -23,6 +23,7 @@
     "gallery": "turbo run dev:gallery",
     "android": "cd apps/native && yarn android",
     "ios": "cd apps/native && yarn ios",
+    "web": "cd apps/native && yarn web",
     "build": "turbo build",
     "build:gallery": "turbo run build:gallery",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
@@ -30,7 +31,8 @@
     "test": "turbo run test --parallel",
     "clean": "turbo clean && rm -rf node_modules && watchman watch-del-all",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
-    "changeset:prepublish": "yarn run clean; yarn install; yarn version:update; yarn run lint && yarn run prettier; yarn run build; yarn run test;",
+    "playwright:test": "cd apps/native && yarn playwright:test",
+    "changeset:prepublish": "yarn run clean; yarn install; yarn version:update; yarn run lint && yarn run prettier; yarn run build; yarn run test",
     "changeset:publish": "yarn run changeset:prepublish; yarn run changeset publish",
     "changeset:version": "changeset version; yarn run version:update; yarn install --refresh-lockfile",
     "version:update": "./scripts/bump-version.sh"
@@ -50,7 +52,7 @@
     "@types/jest": "29.5.7",
     "@types/qrcode": "1.5.5",
     "@types/react": "^18.2.6",
-    "@walletconnect/react-native-compat": "2.16.1",
+    "@walletconnect/react-native-compat": "2.17.2",
     "babel-jest": "^29.7.0",
     "eslint": "^8.46.0",
     "eslint-plugin-ft-flow": "2.0.3",
@@ -71,8 +73,8 @@
     "tsconfig": "*",
     "turbo": "2.1.1",
     "typescript": "5.2.2",
-    "viem": "2.21.37",
-    "wagmi": "2.12.25"
+    "viem": "2.21.48",
+    "wagmi": "2.12.33"
   },
   "packageManager": "yarn@4.0.2"
 }

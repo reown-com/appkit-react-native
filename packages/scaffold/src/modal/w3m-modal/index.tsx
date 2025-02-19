@@ -1,7 +1,8 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useRef } from 'react';
-import BottomSheet, {
+import {
   BottomSheetBackdrop,
+  BottomSheetModal,
   type BottomSheetBackdropProps
 } from '@gorhom/bottom-sheet';
 import {
@@ -16,9 +17,11 @@ import {
   RouterController,
   TransactionsController,
   type CaipAddress,
-  type AppKitFrameProvider
+  type AppKitFrameProvider,
+  ThemeController
 } from '@reown/appkit-core-react-native';
-import { useTheme } from '@reown/appkit-ui-react-native';
+import { ThemeProvider, useTheme } from '@reown/appkit-ui-react-native';
+import { SIWEController } from '@reown/appkit-siwe-react-native';
 
 import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
@@ -29,12 +32,12 @@ export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
   const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
-  const { isSiweEnabled } = OptionsController.state;
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
+  const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const { isLandscape } = useCustomDimensions();
   const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
   const AuthView = authProvider?.AuthView;
   const SocialView = authProvider?.Webview;
-  const bottomSheetRef = useRef<BottomSheet>(null);
   const showAuth = !connectedConnector || connectedConnector === 'AUTH';
 
   const prefetch = async () => {
@@ -44,14 +47,20 @@ export function AppKit() {
 
   const handleClose = useCallback(async () => {
     ModalController.close();
-    if (isSiweEnabled) {
-      const { SIWEController } = await import('@reown/appkit-siwe-react-native');
-
+    if (OptionsController.state.isSiweEnabled) {
       if (SIWEController.state.status !== 'success' && AccountController.state.isConnected) {
         await ConnectionController.disconnect();
       }
     }
-  }, [isSiweEnabled]);
+
+    if (
+      RouterController.state.view === 'OnRampLoading' &&
+      EventsController.state.data.event === 'BUY_SUBMITTED'
+    ) {
+      // Send event only if the onramp url was already created
+      EventsController.sendEvent({ type: 'track', event: 'BUY_CANCEL' });
+    }
+  }, []);
 
   const onNewAddress = useCallback(
     async (address?: CaipAddress) => {
@@ -63,9 +72,9 @@ export function AppKit() {
       TransactionsController.resetTransactions();
       TransactionsController.fetchTransactions(newAddress, true);
 
-      if (isSiweEnabled) {
+      if (OptionsController.state.isSiweEnabled) {
         const newNetworkId = CoreHelperUtil.getNetworkId(address);
-        const { SIWEController } = await import('@reown/appkit-siwe-react-native');
+
         const { signOutOnAccountChange, signOutOnNetworkChange } =
           SIWEController.state._client?.options ?? {};
         const session = await SIWEController.getSession();
@@ -88,7 +97,7 @@ export function AppKit() {
         }
       }
     },
-    [isSiweEnabled, isConnected, loading]
+    [isConnected, loading]
   );
 
   const onSiweNavigation = () => {
@@ -112,9 +121,9 @@ export function AppKit() {
 
   useEffect(() => {
     if (open) {
-      bottomSheetRef.current?.expand();
+      bottomSheetRef.current?.present();
     } else {
-      bottomSheetRef.current?.close();
+      bottomSheetRef.current?.dismiss();
     }
   }, [open]);
 
@@ -123,22 +132,23 @@ export function AppKit() {
   }, [caipAddress, onNewAddress]);
 
   return (
-    <>
-      <BottomSheet
-        index={-1}
+    <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
+      <BottomSheetModal
         ref={bottomSheetRef}
         enableDynamicSizing
         backdropComponent={renderBackdrop}
         keyboardBlurBehavior="restore"
         handleComponent={Header}
+        stackBehavior="push"
+        onDismiss={handleClose}
         topInset={isLandscape ? 70 : 100}
         backgroundStyle={{ backgroundColor: Theme['bg-100'] }}
       >
         <AppKitRouter />
-      </BottomSheet>
+      </BottomSheetModal>
 
       {!!showAuth && AuthView && <AuthView />}
       {!!showAuth && SocialView && <SocialView />}
-    </>
+    </ThemeProvider>
   );
 }

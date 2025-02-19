@@ -8,9 +8,13 @@ export default StyleSheet.create({
   contentContainer: {
     paddingBottom: Spacing['2xl']
   },
+  placeholderContainer: {
+    flex: 0,
+    height: '90%'
+  },
   emptyContainer: {
-    height: '100%',
-    paddingTop: '50%'
+    flex: 0,
+    height: '90%'
   },
   emptyLandscape: {
     paddingTop: '10%'

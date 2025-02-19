@@ -9,7 +9,8 @@ import {
   ConnectorController,
   EventsController,
   NetworkController,
-  RouterController
+  RouterController,
+  RouterUtil
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -56,7 +57,7 @@ export function NetworkSwitchView() {
   useEffect(() => {
     // Go back if network is already switched
     if (caipNetwork?.id === network?.id) {
-      RouterController.goBack();
+      RouterUtil.navigateAfterNetworkSwitch();
     }
   }, [caipNetwork?.id, network?.id]);
 

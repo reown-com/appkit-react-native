@@ -1,15 +1,14 @@
 import { Animated, Pressable, type StyleProp, type ViewStyle } from 'react-native';
 import { Avatar } from '../wui-avatar';
 import { UiUtil } from '../../utils/UiUtil';
-import { IconLink } from '../wui-icon-link';
 import { Text } from '../../components/wui-text';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
 import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
+import { Icon } from '../../components/wui-icon';
 
 export interface AccountPillProps {
   onPress: () => void;
-  onCopy: (address: string) => void;
   address?: string;
   profileName?: string;
   profileImage?: string;
@@ -20,7 +19,6 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function AccountPill({
   onPress,
-  onCopy,
   address,
   profileName,
   profileImage,
@@ -35,12 +33,6 @@ export function AccountPill({
 
   const backgroundColor = animatedValue;
   const borderColor = Theme['gray-glass-005'];
-
-  const handleCopyAddress = () => {
-    if (address) {
-      onCopy(address);
-    }
-  };
 
   return (
     <AnimatedPressable
@@ -66,13 +58,7 @@ export function AccountPill({
               truncate: 'middle'
             })}
       </Text>
-      <IconLink
-        icon="copy"
-        size="sm"
-        iconColor="fg-200"
-        onPress={handleCopyAddress}
-        style={styles.copyButton}
-      />
+      <Icon name="chevronBottom" size="sm" color="fg-200" style={styles.copyButton} />
     </AnimatedPressable>
   );
 }

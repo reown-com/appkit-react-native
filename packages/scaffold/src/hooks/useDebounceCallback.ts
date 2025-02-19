@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 
 interface Props {
-  callback: ((args: any) => any) | ((args: any) => Promise<any>);
+  callback: ((args?: any) => any) | ((args?: any) => Promise<any>);
   delay?: number;
 }
 
@@ -13,8 +13,15 @@ export function useDebounceCallback({ callback, delay = 250 }: Props) {
     callbackRef.current = callback;
   }, [callback]);
 
+  const abort = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }, []);
+
   const debouncedCallback = useCallback(
-    (args: any) => {
+    (args?: any) => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
@@ -34,5 +41,5 @@ export function useDebounceCallback({ callback, delay = 250 }: Props) {
     };
   }, []);
 
-  return debouncedCallback;
+  return { debouncedCallback, abort };
 }

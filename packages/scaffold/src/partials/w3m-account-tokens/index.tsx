@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { type StyleProp, type ViewStyle, StyleSheet } from 'react-native';
+import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { useSnapshot } from 'valtio';
 import { ScrollView, RefreshControl } from 'react-native-gesture-handler';
 import {
@@ -81,6 +81,7 @@ export function AccountTokens({ style }: Props) {
           value={token.value}
           amount={token.quantity.numeric}
           currency={token.symbol}
+          pressable={false}
         />
       ))}
     </ScrollView>

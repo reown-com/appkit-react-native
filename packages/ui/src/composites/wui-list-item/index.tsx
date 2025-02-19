@@ -1,5 +1,12 @@
 import type { ReactNode } from 'react';
-import { View, Pressable, Animated, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  View,
+  Pressable,
+  Animated,
+  type StyleProp,
+  type ViewStyle,
+  type ImageStyle
+} from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import { Image } from '../../components/wui-image';
 import { LoadingSpinner } from '../../components/wui-loading-spinner';
@@ -16,8 +23,11 @@ export interface ListItemProps {
   iconColor?: ColorType;
   iconBackgroundColor?: ColorType;
   iconBorderColor?: ColorType;
+  backgroundColor?: ColorType;
   imageSrc?: string;
   imageHeaders?: Record<string, string>;
+  imageStyle?: StyleProp<ImageStyle>;
+  imageContainerStyle?: StyleProp<ViewStyle>;
   chevron?: boolean;
   disabled?: boolean;
   loading?: boolean;
@@ -33,6 +43,8 @@ export function ListItem({
   icon,
   imageSrc,
   imageHeaders,
+  imageStyle,
+  imageContainerStyle,
   iconColor = 'fg-200',
   iconBackgroundColor,
   iconBorderColor = 'gray-glass-005',
@@ -42,28 +54,41 @@ export function ListItem({
   onPress,
   style,
   contentStyle,
-  testID
+  testID,
+  backgroundColor = 'gray-glass-002'
 }: ListItemProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
-    Theme['gray-glass-002'],
+    Theme[backgroundColor],
     Theme['gray-glass-010']
   );
 
   function visualTemplate() {
     if (imageSrc) {
       return (
-        <View style={[styles.imageContainer, { borderColor: Theme['gray-glass-005'] }]}>
+        <View
+          style={[
+            styles.imageContainer,
+            { borderColor: Theme['gray-glass-005'] },
+            imageContainerStyle
+          ]}
+        >
           <Image
             source={imageSrc}
             headers={imageHeaders}
-            style={[styles.image, (disabled || loading) && styles.disabledImage]}
+            style={[styles.image, (disabled || loading) && styles.disabledImage, imageStyle]}
           />
         </View>
       );
     } else if (icon) {
       return (
-        <View style={[styles.imageContainer, { borderColor: Theme[iconBorderColor] }]}>
+        <View
+          style={[
+            styles.imageContainer,
+            { borderColor: Theme[iconBorderColor] },
+            imageContainerStyle
+          ]}
+        >
           <IconBox
             icon={icon}
             iconColor={iconColor}

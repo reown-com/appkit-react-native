@@ -10,6 +10,9 @@ import { AppKitFrameSchema } from './AppKitFrameSchema';
 import { AuthWebview } from './AppKitAuthWebview';
 import { AppKitWebview } from './AppKitWebview';
 
+// -- Types -----------------------------------------------------------
+type AppEventType = Omit<AppKitFrameTypes.AppEvent, 'id'>;
+
 // -- Provider --------------------------------------------------------
 export class AppKitFrameProvider {
   private webviewRef: RefObject<WebView> | undefined;
@@ -23,11 +26,15 @@ export class AppKitFrameProvider {
   private username: string | undefined;
 
   private rpcRequestHandler?: (request: AppKitFrameTypes.RPCRequest) => void;
+
   private rpcSuccessHandler?: (
     response: AppKitFrameTypes.RPCResponse,
     request: AppKitFrameTypes.RPCRequest
   ) => void;
+
   private rpcErrorHandler?: (error: Error, request: AppKitFrameTypes.RPCRequest) => void;
+
+  private onTimeout?: () => void;
 
   public webviewLoadPromise: Promise<void>;
 
@@ -76,9 +83,15 @@ export class AppKitFrameProvider {
     this.webviewLoadPromiseResolver?.reject(error);
   }
 
+  public setOnTimeout(callback: () => void) {
+    this.onTimeout = callback;
+  }
+
   // -- Extended Methods ------------------------------------------------
   public getSecureSiteURL() {
-    return `${AppKitFrameConstants.SECURE_SITE_SDK}?projectId=${this.projectId}`;
+    return `${AppKitFrameConstants.SECURE_SITE_SDK}?projectId=${
+      this.projectId
+    }&bundleId=${CoreHelperUtil.getBundleId()}`;
   }
 
   public getSecureSiteDashboardURL() {
@@ -87,10 +100,6 @@ export class AppKitFrameProvider {
 
   public getSecureSiteIconURL() {
     return AppKitFrameConstants.SECURE_SITE_ICON;
-  }
-
-  public getSecureSiteHeaders() {
-    return { 'X-Bundle-Id': CoreHelperUtil.getBundleId() };
   }
 
   public getEmail() {
@@ -502,10 +511,34 @@ export class AppKitFrameProvider {
   }
 
   private async appEvent<T extends AppKitFrameTypes.ProviderRequestType>(
-    event: Omit<AppKitFrameTypes.AppEvent, 'id'>
+    event: AppEventType
   ): Promise<AppKitFrameTypes.Responses[`Frame${T}Response`]> {
     await this.webviewLoadPromise;
-    const type = event.type.replace('@w3m-app/', '');
+    let timer: NodeJS.Timeout;
+
+    function replaceEventType(type: AppEventType['type']) {
+      return type.replace('@w3m-app/', '');
+    }
+
+    const type = replaceEventType(event.type);
+
+    const shouldCheckForTimeout = [
+      AppKitFrameConstants.APP_IS_CONNECTED,
+      AppKitFrameConstants.APP_GET_USER,
+      AppKitFrameConstants.APP_CONNECT_EMAIL,
+      AppKitFrameConstants.APP_CONNECT_DEVICE,
+      AppKitFrameConstants.APP_CONNECT_OTP,
+      AppKitFrameConstants.APP_CONNECT_SOCIAL,
+      AppKitFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
+      AppKitFrameConstants.APP_GET_FARCASTER_URI
+    ]
+      .map(replaceEventType)
+      .includes(type);
+
+    if (shouldCheckForTimeout && this.onTimeout) {
+      // 15 seconds timeout
+      timer = setTimeout(this.onTimeout, 30000);
+    }
 
     return new Promise((resolve, reject) => {
       const id = Math.random().toString(36).substring(7);
@@ -527,6 +560,9 @@ export class AppKitFrameProvider {
 
       function handler(frameEvent: AppKitFrameTypes.FrameEvent) {
         if (frameEvent.type === `@w3m-frame/${type}_SUCCESS`) {
+          if (timer) {
+            clearTimeout(timer);
+          }
           if ('payload' in frameEvent) {
             resolve(frameEvent.payload);
           }

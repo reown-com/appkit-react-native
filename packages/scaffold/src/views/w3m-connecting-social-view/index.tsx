@@ -1,6 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useCallback, useEffect, useState } from 'react';
+import { Platform } from 'react-native';
 import {
   ConnectionController,
   ConnectorController,
@@ -18,24 +19,31 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function ConnectingSocialView() {
-  const { data } = RouterController.state;
   const { maxWidth: width } = useCustomDimensions();
-  const { connecting } = useSnapshot(WebviewController.state);
+  const { processingAuth } = useSnapshot(WebviewController.state);
+  const { selectedSocialProvider } = useSnapshot(ConnectionController.state);
   const authConnector = ConnectorController.getAuthConnector();
   const [error, setError] = useState(false);
-  const socialProvider = data?.socialProvider;
   const provider = authConnector?.provider as AppKitFrameProvider;
 
   const onConnect = useCallback(async () => {
     try {
-      if (!WebviewController.state.connecting && provider && socialProvider) {
+      if (
+        !WebviewController.state.connecting &&
+        provider &&
+        ConnectionController.state.selectedSocialProvider
+      ) {
         const { uri } = await provider.getSocialRedirectUri({
-          provider: socialProvider
+          provider: ConnectionController.state.selectedSocialProvider
         });
         WebviewController.setWebviewUrl(uri);
-        WebviewController.setWebviewVisible(true);
+
+        const isNativeApple =
+          ConnectionController.state.selectedSocialProvider === 'apple' && Platform.OS === 'ios';
+
+        WebviewController.setWebviewVisible(!isNativeApple);
         WebviewController.setConnecting(true);
-        WebviewController.setConnectingProvider(socialProvider);
+        WebviewController.setConnectingProvider(ConnectionController.state.selectedSocialProvider);
       }
     } catch (e) {
       WebviewController.setWebviewVisible(false);
@@ -45,42 +53,55 @@ export function ConnectingSocialView() {
       SnackController.showError('Something went wrong');
       setError(true);
     }
-  }, [provider, socialProvider]);
+  }, [provider]);
 
   const socialMessageHandler = useCallback(
     async (url: string) => {
       try {
-        if (url.includes('/sdk/oauth') && socialProvider && authConnector) {
+        if (
+          url.includes('/sdk/oauth') &&
+          ConnectionController.state.selectedSocialProvider &&
+          authConnector &&
+          !WebviewController.state.processingAuth
+        ) {
+          WebviewController.setProcessingAuth(true);
           WebviewController.setWebviewVisible(false);
           const parsedUrl = new URL(url);
+
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'SOCIAL_LOGIN_REQUEST_USER_DATA',
+            properties: { provider: ConnectionController.state.selectedSocialProvider }
+          });
+
           await provider?.connectSocial(parsedUrl.search);
           await ConnectionController.connectExternal(authConnector);
-          ConnectorController.setConnectedConnector('AUTH');
-          ConnectionController.setConnectedSocialProvider(socialProvider);
+          ConnectionController.setConnectedSocialProvider(
+            ConnectionController.state.selectedSocialProvider
+          );
           WebviewController.setConnecting(false);
 
           EventsController.sendEvent({
             type: 'track',
             event: 'SOCIAL_LOGIN_SUCCESS',
-            properties: { provider: socialProvider }
+            properties: { provider: ConnectionController.state.selectedSocialProvider }
           });
 
           ModalController.close();
+          WebviewController.reset();
         }
       } catch (e) {
         EventsController.sendEvent({
           type: 'track',
           event: 'SOCIAL_LOGIN_ERROR',
-          properties: { provider: socialProvider! }
+          properties: { provider: ConnectionController.state.selectedSocialProvider! }
         });
-        WebviewController.setWebviewVisible(false);
-        WebviewController.setConnecting(false);
-        WebviewController.setConnectingProvider(undefined);
+        WebviewController.reset();
         RouterController.goBack();
         SnackController.showError('Something went wrong');
       }
     },
-    [socialProvider, authConnector, provider]
+    [authConnector, provider]
   );
 
   useEffect(() => {
@@ -106,7 +127,7 @@ export function ConnectingSocialView() {
         style={{ width }}
       >
         <LoadingThumbnail paused={!!error}>
-          <Logo logo={socialProvider ?? 'more'} height={72} width={72} />
+          <Logo logo={selectedSocialProvider ?? 'more'} height={72} width={72} />
           {error && (
             <IconBox
               icon={'close'}
@@ -120,10 +141,14 @@ export function ConnectingSocialView() {
           )}
         </LoadingThumbnail>
         <Text style={styles.continueText} variant="paragraph-500">
-          {`Continue with ${StringUtil.capitalize(socialProvider)}`}
+          {processingAuth
+            ? 'Loading user data'
+            : `Continue with ${StringUtil.capitalize(selectedSocialProvider)}`}
         </Text>
         <Text variant="small-400" color="fg-200">
-          {connecting ? 'Retrieving user data' : 'Connect in the provider window'}
+          {processingAuth
+            ? 'Please wait a moment while we load your data'
+            : 'Connect in the provider window'}
         </Text>
       </FlexView>
     </BottomSheetView>

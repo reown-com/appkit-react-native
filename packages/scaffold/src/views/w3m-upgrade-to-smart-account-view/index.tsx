@@ -70,7 +70,7 @@ export function UpgradeToSmartAccountView() {
         icon="close"
         size="md"
         onPress={onClose}
-        testID="button-close"
+        testID="header-close"
         style={styles.closeButton}
       />
       <BottomSheetView>
@@ -91,6 +91,7 @@ export function UpgradeToSmartAccountView() {
             <Button
               variant="accent"
               onPress={onGoBack}
+              disabled={loading}
               style={[styles.button, styles.cancelButton]}
             >
               Do it later

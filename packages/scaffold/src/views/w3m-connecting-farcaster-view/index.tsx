@@ -7,9 +7,7 @@ import {
   EventsController,
   ModalController,
   OptionsController,
-  RouterController,
   SnackController,
-  WebviewController,
   type AppKitFrameProvider
 } from '@reown/appkit-core-react-native';
 import {
@@ -25,43 +23,53 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function ConnectingFarcasterView() {
-  const { data } = RouterController.state;
   const { maxWidth: width } = useCustomDimensions();
   const authConnector = ConnectorController.getAuthConnector();
   const [error, setError] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const [url, setUrl] = useState<string | undefined>();
   const showCopy = OptionsController.isClipboardAvailable();
-  const socialProvider = data?.socialProvider;
   const provider = authConnector?.provider as AppKitFrameProvider;
 
   const onConnect = useCallback(async () => {
     try {
-      if (!WebviewController.state.connecting && provider && socialProvider && authConnector) {
+      if (provider && authConnector) {
         setError(false);
         const { url: farcasterUrl } = await provider.getFarcasterUri();
         setUrl(farcasterUrl);
         Linking.openURL(farcasterUrl);
         await provider.connectFarcaster();
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SOCIAL_LOGIN_REQUEST_USER_DATA',
+          properties: { provider: 'farcaster' }
+        });
+        setProcessing(true);
         await ConnectionController.connectExternal(authConnector);
-        ConnectionController.setConnectedSocialProvider(socialProvider);
+        ConnectionController.setConnectedSocialProvider('farcaster');
         EventsController.sendEvent({
           type: 'track',
           event: 'SOCIAL_LOGIN_SUCCESS',
-          properties: { provider: socialProvider }
+          properties: { provider: 'farcaster' }
         });
-        WebviewController.setConnecting(false);
+
+        setProcessing(false);
         ModalController.close();
       }
     } catch (e) {
       EventsController.sendEvent({
         type: 'track',
         event: 'SOCIAL_LOGIN_ERROR',
-        properties: { provider: socialProvider! }
+        properties: { provider: 'farcaster' }
       });
+      // TODO: remove this once Farcaster session refresh is implemented
+      // @ts-expect-error
+      provider?.webviewRef?.current?.reload();
       SnackController.showError('Something went wrong');
       setError(true);
+      setProcessing(false);
     }
-  }, [provider, socialProvider, authConnector]);
+  }, [provider, authConnector]);
 
   const onCopyUrl = () => {
     if (url) {
@@ -69,6 +77,17 @@ export function ConnectingFarcasterView() {
       SnackController.showSuccess('Link copied');
     }
   };
+
+  useEffect(() => {
+    return () => {
+      // TODO: remove this once Farcaster session refresh is implemented
+      if (!ModalController.state.open) {
+        // @ts-expect-error
+        provider.webviewRef?.current?.reload();
+      }
+    };
+    // @ts-expect-error
+  }, [provider.webviewRef]);
 
   useEffect(() => {
     onConnect();
@@ -107,6 +126,25 @@ export function ConnectingFarcasterView() {
               style={styles.copyButton}
               onPress={onCopyUrl}
               testID="button-copy-uri"
+            >
+              Copy link
+            </Link>
+          )}
+          <Text style={styles.continueText} variant="paragraph-500">
+            {processing ? 'Loading user data' : 'Continue in Farcaster'}
+          </Text>
+          <Text variant="small-400" color="fg-200">
+            {processing
+              ? 'Please wait a moment while we load your data'
+              : 'Connect in the Farcaster app'}
+          </Text>
+          {showCopy && (
+            <Link
+              iconLeft="copySmall"
+              color="fg-200"
+              style={styles.copyButton}
+              onPress={onCopyUrl}
+              testID="copy-link"
             >
               Copy link
             </Link>

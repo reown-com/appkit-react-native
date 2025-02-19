@@ -12,14 +12,19 @@
     "dev:android": "expo start --android",
     "eas:build": "eas build --platform all",
     "eas:build:local": "eas build --local --platform all",
-    "eas:update": "eas update --branch preview"
+    "eas:update": "eas update --branch preview",
+    "playwright:test": "playwright test",
+    "playwright:install": "playwright install chromium",
+    "deploy": "gh-pages --nojekyll -d dist",
+    "build:web": "expo export -p web"
   },
   "dependencies": {
+    "@expo/metro-runtime": "~3.2.3",
     "@gorhom/bottom-sheet": "4.6.4",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/netinfo": "11.3.1",
-    "@reown/appkit-auth-wagmi-react-native": "1.0.2",
-    "@reown/appkit-wagmi-react-native": "1.0.2",
+    "@reown/appkit-auth-wagmi-react-native": "1.2.1",
+    "@reown/appkit-wagmi-react-native": "1.2.1",
     "@tanstack/query-async-storage-persister": "^5.40.0",
     "@tanstack/react-query": "5.56.2",
     "@tanstack/react-query-persist-client": "5.56.2",
@@ -36,17 +41,22 @@
     "react-native-get-random-values": "~1.11.0",
     "react-native-reanimated": "~3.10.1",
     "react-native-svg": "15.2.0",
+    "react-native-toast-message": "2.2.1",
     "react-native-web": "~0.19.10",
     "react-native-webview": "13.8.6",
     "uuid": "3.4.0",
-    "viem": "2.21.37",
-    "wagmi": "2.12.25"
+    "viem": "2.21.48",
+    "wagmi": "2.12.33"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
+    "@playwright/test": "^1.49.1",
+    "@types/gh-pages": "^6",
+    "@types/node": "^22.10.1",
     "@types/react": "~18.2.79",
     "@types/react-native": "0.72.2",
     "babel-plugin-module-resolver": "^5.0.0",
+    "gh-pages": "^6.2.0",
     "typescript": "~5.3.3"
   }
 }

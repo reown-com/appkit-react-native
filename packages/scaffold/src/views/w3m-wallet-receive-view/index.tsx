@@ -27,13 +27,17 @@ export function WalletReceiveView() {
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const { padding } = useCustomDimensions();
   const canCopy = OptionsController.isClipboardAvailable();
-  const slicedNetworks =
-    NetworkController.getApprovedCaipNetworks()
-      .filter(network => network?.imageId)
-      ?.slice(0, 5) || [];
-  const imagesArray = slicedNetworks.map(AssetUtil.getNetworkImage).filter(Boolean) as string[];
   const isSmartAccount =
     preferredAccountType === 'smartAccount' && NetworkController.checkIfSmartAccountEnabled();
+  const networks = isSmartAccount
+    ? NetworkController.getSmartAccountEnabledNetworks()
+    : NetworkController.getApprovedCaipNetworks();
+
+  const imagesArray = networks
+    .filter(network => network?.imageId)
+    .slice(0, 5)
+    .map(AssetUtil.getNetworkImage)
+    .filter(Boolean) as string[];
 
   const label = UiUtil.getTruncateString({
     string: profileName ?? address ?? '',

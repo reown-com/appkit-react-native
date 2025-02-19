@@ -10,13 +10,12 @@ import type {
   EventsControllerState,
   PublicStateControllerState,
   ThemeControllerState,
-  ThemeMode,
-  ThemeVariables,
   Connector,
   ConnectedWalletInfo,
-  Features
+  Features,
+  EventName
 } from '@reown/appkit-core-react-native';
-import type { SIWEControllerClient } from '@reown/appkit-siwe-react-native';
+import { SIWEController, type SIWEControllerClient } from '@reown/appkit-siwe-react-native';
 import {
   AccountController,
   BlockchainApiController,
@@ -28,15 +27,24 @@ import {
   NetworkController,
   OptionsController,
   PublicStateController,
+  SnackController,
   StorageUtil,
   ThemeController,
-  TransactionsController
+  TransactionsController,
+  OnRampController
 } from '@reown/appkit-core-react-native';
-import { ConstantsUtil } from '@reown/appkit-common-react-native';
+import {
+  ConstantsUtil,
+  ErrorUtil,
+  type ThemeMode,
+  type ThemeVariables
+} from '@reown/appkit-common-react-native';
+import { Appearance } from 'react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {
   projectId: OptionsControllerState['projectId'];
+  metadata: OptionsControllerState['metadata'];
   themeMode?: ThemeMode;
   themeVariables?: ThemeVariables;
   includeWalletIds?: OptionsControllerState['includeWalletIds'];
@@ -48,7 +56,7 @@ export interface LibraryOptions {
   clipboardClient?: OptionsControllerState['_clipboardClient'];
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
   _sdkVersion: OptionsControllerState['sdkVersion'];
-  metadata?: OptionsControllerState['metadata'];
+  debug?: OptionsControllerState['debug'];
   features?: Features;
 }
 
@@ -59,11 +67,13 @@ export interface ScaffoldOptions extends LibraryOptions {
 }
 
 export interface OpenOptions {
-  view: 'Account' | 'Connect' | 'Networks';
+  view: 'Account' | 'Connect' | 'Networks' | 'Swap';
 }
 
 // -- Client --------------------------------------------------------------------
 export class AppKitScaffold {
+  public reportedAlertErrors: Record<string, boolean> = {};
+
   public constructor(options: ScaffoldOptions) {
     this.initControllers(options);
   }
@@ -136,6 +146,10 @@ export class AppKitScaffold {
 
   public subscribeEvents(callback: (newEvent: EventsControllerState) => void) {
     return EventsController.subscribe(callback);
+  }
+
+  public subscribeEvent(event: EventName, callback: (newEvent: EventsControllerState) => void) {
+    return EventsController.subscribeEvent(event, callback);
   }
 
   public resolveReownName = async (name: string) => {
@@ -233,6 +247,35 @@ export class AppKitScaffold {
       AccountController.setPreferredAccountType(preferredAccountType);
     };
 
+  protected handleAlertError(error?: string | { shortMessage: string; longMessage: string }) {
+    if (!error) return;
+
+    if (typeof error === 'object') {
+      SnackController.showInternalError(error);
+
+      return;
+    }
+
+    // Check if the error is a universal provider error
+    const matchedUniversalProviderError = Object.entries(ErrorUtil.UniversalProviderErrors).find(
+      ([, { message }]) => error?.includes(message)
+    );
+
+    const [errorKey, errorValue] = matchedUniversalProviderError ?? [];
+
+    const { message, alertErrorKey } = errorValue ?? {};
+
+    if (errorKey && message && !this.reportedAlertErrors[errorKey]) {
+      const alertError =
+        ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS];
+
+      if (alertError) {
+        SnackController.showInternalError(alertError);
+        this.reportedAlertErrors[errorKey] = true;
+      }
+    }
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     this.initAsyncValues(options);
@@ -247,6 +290,7 @@ export class AppKitScaffold {
     OptionsController.setCustomWallets(options.customWallets);
     OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setSdkVersion(options._sdkVersion);
+    OptionsController.setDebug(options.debug);
 
     if (options.clipboardClient) {
       OptionsController.setClipboardClient(options.clipboardClient);
@@ -256,7 +300,10 @@ export class AppKitScaffold {
 
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode);
+    } else {
+      ThemeController.setThemeMode(Appearance.getColorScheme() as ThemeMode);
     }
+
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables);
     }
@@ -265,13 +312,19 @@ export class AppKitScaffold {
     }
 
     if (options.siweControllerClient) {
-      const { SIWEController } = await import('@reown/appkit-siwe-react-native');
-
       SIWEController.setSIWEClient(options.siweControllerClient);
     }
 
     if (options.features) {
       OptionsController.setFeatures(options.features);
+    }
+
+    if (
+      (options.features?.onramp === true || options.features?.onramp === undefined) &&
+      (options.metadata?.redirect?.universal || options.metadata?.redirect?.native)
+    ) {
+      OptionsController.setIsOnRampEnabled(true);
+      OnRampController.loadOnRampData();
     }
   }
 

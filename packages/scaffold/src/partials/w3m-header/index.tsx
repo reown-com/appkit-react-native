@@ -3,7 +3,10 @@ import {
   RouterController,
   ModalController,
   EventsController,
-  type RouterControllerState
+  type RouterControllerState,
+  ConnectionController,
+  ConnectorController,
+  type AppKitFrameProvider
 } from '@reown/appkit-core-react-native';
 import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
 import { StringUtil } from '@reown/appkit-common-react-native';
@@ -22,8 +25,8 @@ export function Header() {
     const connectorName = _data?.connector?.name;
     const walletName = _data?.wallet?.name;
     const networkName = _data?.network?.name;
-    const socialName = _data?.socialProvider
-      ? StringUtil.capitalize(_data?.socialProvider)
+    const socialName = ConnectionController.state.selectedSocialProvider
+      ? StringUtil.capitalize(ConnectionController.state.selectedSocialProvider)
       : undefined;
 
     return {
@@ -42,8 +45,16 @@ export function Header() {
       EmailVerifyOtp: 'Confirm email',
       GetWallet: 'Get a wallet',
       Networks: 'Select network',
+      OnRamp: undefined,
+      OnRampCheckout: 'Checkout',
+      OnRampSettings: 'Preferences',
+      OnRampLoading: undefined,
       SwitchNetwork: networkName ?? 'Switch network',
+      Swap: 'Swap',
+      SwapSelectToken: 'Select token',
+      SwapPreview: 'Review swap',
       Transactions: 'Activity',
+      UnsupportedChain: 'Switch network',
       UpdateEmailPrimaryOtp: 'Confirm current email',
       UpdateEmailSecondaryOtp: 'Confirm new email',
       UpdateEmailWallet: 'Edit email',
@@ -59,7 +70,41 @@ export function Header() {
     }[_view];
   };
 
+  const noCloseViews = ['OnRampSettings'];
+  const showClose = !noCloseViews.includes(view);
   const header = headings(data, view);
+
+  const checkSocial = () => {
+    if (
+      RouterController.state.view === 'ConnectingFarcaster' ||
+      RouterController.state.view === 'ConnectingSocial'
+    ) {
+      const socialProvider = ConnectionController.state.selectedSocialProvider;
+      const authProvider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
+
+      if (authProvider && socialProvider === 'farcaster') {
+        // TODO: remove this once Farcaster session refresh is implemented
+        // @ts-expect-error
+        authProvider.webviewRef?.current?.reload();
+      }
+
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SOCIAL_LOGIN_CANCELED',
+        properties: { provider: ConnectionController.state.selectedSocialProvider! }
+      });
+    }
+  };
+
+  const handleGoBack = () => {
+    checkSocial();
+    RouterController.goBack();
+  };
+
+  const handleClose = () => {
+    checkSocial();
+    ModalController.close();
+  };
 
   const dynamicButtonTemplate = () => {
     const noButtonViews = ['ConnectingSiwe'];
@@ -71,14 +116,9 @@ export function Header() {
     const showBack = RouterController.state.history.length > 1;
 
     return showBack ? (
-      <IconLink
-        icon="chevronLeft"
-        size="md"
-        onPress={RouterController.goBack}
-        testID="button-back"
-      />
+      <IconLink icon="chevronLeft" size="md" onPress={handleGoBack} testID="button-back" />
     ) : (
-      <IconLink icon="helpCircle" size="md" onPress={onHelpPress} testID="button-help" />
+      <IconLink icon="helpCircle" size="md" onPress={onHelpPress} testID="help-button" />
     );
   };
 
@@ -95,10 +135,14 @@ export function Header() {
         padding={['l', 'xl', bottomPadding, 'xl']}
       >
         {dynamicButtonTemplate()}
-        <Text variant="paragraph-600" numberOfLines={1}>
+        <Text variant="paragraph-600" numberOfLines={1} testID="header-text">
           {header}
         </Text>
-        <IconLink icon="close" size="md" onPress={ModalController.close} testID="button-close" />
+        {showClose ? (
+          <IconLink icon="close" size="md" onPress={handleClose} testID="header-close" />
+        ) : (
+          <FlexView style={styles.iconPlaceholder} />
+        )}
       </FlexView>
       <Snackbar />
     </>

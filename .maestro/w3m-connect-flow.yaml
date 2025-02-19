@@ -9,7 +9,7 @@ appId: com.walletconnect.web3modal.rnclisdk
 - tapOn: 'Connect'
 
 - tapOn:
-    id: 'button-all-wallets'
+    id: 'all-wallets'
 
 - tapOn:
     id: 'button-qr-code'
@@ -18,7 +18,7 @@ appId: com.walletconnect.web3modal.rnclisdk
     id: 'qr-code'
 
 - tapOn:
-    id: 'button-copy-uri'
+    id: 'copy-link'
 
 - openLink:
     link: https://react-wallet.walletconnect.com/walletconnect
@@ -54,10 +54,10 @@ appId: com.walletconnect.web3modal.rnclisdk
 - back
 
 - tapOn:
-    id: 'button-account'
+    id: 'account-button'
 
 - tapOn:
-    id: 'button-network'
+    id: 'w3m-account-select-network'
 
 - tapOn:
     text: 'Polygon'
@@ -68,7 +68,7 @@ appId: com.walletconnect.web3modal.rnclisdk
     text: 'Polygon'
 
 - tapOn:
-    id: 'button-disconnect'
+    id: 'disconnect-button'
 
 - assertVisible:
-    id: 'button-connect'
+    id: 'connect-button'

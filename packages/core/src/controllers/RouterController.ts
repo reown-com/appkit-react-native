@@ -1,6 +1,5 @@
 import { proxy } from 'valtio';
-import type { WcWallet, CaipNetwork, Connector } from '../utils/TypeUtil';
-import type { SocialProvider } from '@reown/appkit-common-react-native';
+import type { WcWallet, CaipNetwork, Connector, SwapInputTarget } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -29,8 +28,16 @@ export interface RouterControllerState {
     | 'EmailVerifyOtp'
     | 'GetWallet'
     | 'Networks'
+    | 'OnRamp'
+    | 'OnRampCheckout'
+    | 'OnRampLoading'
+    | 'OnRampSettings'
     | 'SwitchNetwork'
+    | 'Swap'
+    | 'SwapSelectToken'
+    | 'SwapPreview'
     | 'Transactions'
+    | 'UnsupportedChain'
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
     | 'UpdateEmailWallet'
@@ -50,7 +57,7 @@ export interface RouterControllerState {
     network?: CaipNetwork;
     email?: string;
     newEmail?: string;
-    socialProvider?: SocialProvider;
+    swapTarget?: SwapInputTarget;
   };
   transactionStack: TransactionAction[];
 }
@@ -69,13 +76,13 @@ export const RouterController = {
   push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     if (view !== state.view) {
       state.view = view;
-      state.history.push(view);
+      state.history = [...state.history, view];
       state.data = data;
     }
   },
 
   pushTransactionStack(action: TransactionAction) {
-    state.transactionStack.push(action);
+    state.transactionStack = [...state.transactionStack, action];
   },
 
   popTransactionStack(cancel?: boolean) {

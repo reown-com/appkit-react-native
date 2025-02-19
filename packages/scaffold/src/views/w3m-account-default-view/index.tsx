@@ -9,13 +9,16 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  ConnectionUtil,
   EventsController,
   ModalController,
   NetworkController,
   OptionsController,
   RouterController,
   SnackController,
-  type AppKitFrameProvider
+  type AppKitFrameProvider,
+  ConstantsUtil,
+  SwapController
 } from '@reown/appkit-core-react-native';
 import {
   Avatar,
@@ -48,6 +51,7 @@ export function AccountDefaultView() {
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { connectedConnector } = useSnapshot(ConnectorController.state);
   const { connectedSocialProvider } = useSnapshot(ConnectionController.state);
+  const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
   const { history } = useSnapshot(RouterController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
@@ -59,22 +63,9 @@ export function AccountDefaultView() {
   const { padding } = useCustomDimensions();
 
   async function onDisconnect() {
-    try {
-      setDisconnecting(true);
-      await ConnectionController.disconnect();
-      AccountController.setIsConnected(false);
-      ModalController.close();
-      setDisconnecting(false);
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'DISCONNECT_SUCCESS'
-      });
-    } catch (error) {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'DISCONNECT_ERROR'
-      });
-    }
+    setDisconnecting(true);
+    await ConnectionUtil.disconnect();
+    setDisconnecting(false);
   }
 
   const onSwitchAccountType = async () => {
@@ -132,6 +123,34 @@ export function AccountDefaultView() {
     }
   };
 
+  const onSwapPress = () => {
+    if (
+      NetworkController.state.caipNetwork?.id &&
+      !ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(`${NetworkController.state.caipNetwork.id}`)
+    ) {
+      RouterController.push('UnsupportedChain');
+    } else {
+      SwapController.resetState();
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'OPEN_SWAP',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          isSmartAccount: false
+        }
+      });
+      RouterController.push('Swap');
+    }
+  };
+
+  const onBuyPress = () => {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_BUY_CRYPTO'
+    });
+    RouterController.push('OnRamp');
+  };
+
   const onActivityPress = () => {
     RouterController.push('Transactions');
   };
@@ -160,7 +179,12 @@ export function AccountDefaultView() {
       {showBack && (
         <IconLink icon="chevronLeft" style={styles.backIcon} onPress={RouterController.goBack} />
       )}
-      <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
+      <IconLink
+        icon="close"
+        style={styles.closeIcon}
+        onPress={ModalController.close}
+        testID="header-close"
+      />
       <BottomSheetScrollView
         bounces={false}
         fadingEdgeLength={20}
@@ -229,21 +253,48 @@ export function AccountDefaultView() {
             <ListItem
               chevron
               icon="networkPlaceholder"
-              iconBackgroundColor="gray-glass-010"
+              iconColor="accent-100"
+              iconBackgroundColor="accent-glass-015"
               imageSrc={networkImage}
               imageHeaders={ApiController._getApiHeaders()}
               onPress={onNetworkPress}
-              testID="button-network"
+              testID="w3m-account-select-network"
               style={styles.actionButton}
             >
-              <Text numberOfLines={1} color="fg-100">
+              <Text numberOfLines={1} color="fg-100" testID="w3m-account-select-network-text">
                 {caipNetwork?.name}
               </Text>
             </ListItem>
+            {!isAuth && isOnRampEnabled && (
+              <ListItem
+                chevron
+                icon="card"
+                iconColor="accent-100"
+                iconBackgroundColor="accent-glass-015"
+                onPress={onBuyPress}
+                testID="button-onramp"
+                style={styles.actionButton}
+              >
+                <Text color="fg-100">Buy crypto</Text>
+              </ListItem>
+            )}
+            {!isAuth && features?.swaps && (
+              <ListItem
+                chevron
+                icon="recycleHorizontal"
+                iconColor="accent-100"
+                iconBackgroundColor="accent-glass-015"
+                onPress={onSwapPress}
+                testID="button-swaps"
+                style={styles.actionButton}
+              >
+                <Text color="fg-100">Swap</Text>
+              </ListItem>
+            )}
             {!isAuth && (
               <ListItem
                 chevron
-                icon="swapHorizontal"
+                icon="clock"
                 iconColor="accent-100"
                 iconBackgroundColor="accent-glass-015"
                 onPress={onActivityPress}
@@ -258,7 +309,9 @@ export function AccountDefaultView() {
                 chevron
                 icon="swapHorizontal"
                 onPress={onSwitchAccountType}
-                testID="button-account-type"
+                testID="account-button-type"
+                iconColor="accent-100"
+                iconBackgroundColor="accent-glass-015"
                 style={styles.actionButton}
                 loading={loading}
               >
@@ -272,7 +325,7 @@ export function AccountDefaultView() {
               onPress={onDisconnect}
               loading={disconnecting}
               iconBackgroundColor="gray-glass-010"
-              testID="button-disconnect"
+              testID="disconnect-button"
             >
               <Text color="fg-200">Disconnect</Text>
             </ListItem>

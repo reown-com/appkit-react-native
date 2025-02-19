@@ -12,8 +12,10 @@ import {
   WebviewController,
   AccountController,
   NetworkController,
-  ConnectionController
+  ConnectionController,
+  SnackController
 } from '@reown/appkit-core-react-native';
+import { ErrorUtil } from '@reown/appkit-common-react-native';
 import { useTheme, BorderRadius } from '@reown/appkit-ui-react-native';
 import type { AppKitFrameProvider } from './AppKitFrameProvider';
 import { AppKitFrameConstants } from './AppKitFrameConstants';
@@ -137,6 +139,7 @@ function _AuthWebview() {
       provider.onNotConnected(() => {
         ConnectorController.setAuthLoading(false);
         ModalController.setLoading(false);
+        ConnectionController.setConnectedSocialProvider(undefined);
         if (ConnectorController.state.connectedConnector === 'AUTH') {
           ConnectionController.disconnect();
         }
@@ -164,10 +167,7 @@ function _AuthWebview() {
         ]}
       >
         <WebView
-          source={{
-            uri: provider.getSecureSiteURL(),
-            headers: provider.getSecureSiteHeaders()
-          }}
+          source={{ uri: provider.getSecureSiteURL() }}
           bounces={false}
           scalesPageToFit
           onMessage={handleMessage}
@@ -206,13 +206,16 @@ function _AuthWebview() {
           onError={({ nativeEvent }) => {
             provider?.onWebviewLoadError(nativeEvent.description);
           }}
+          onHttpError={() => {
+            SnackController.showInternalError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
+          }}
         />
       </AnimatedSafeAreaView>
     </>
   ) : null;
 }
 
-export const AuthWebview = memo(_AuthWebview);
+export const AuthWebview = memo(_AuthWebview) as unknown as typeof _AuthWebview;
 
 const styles = StyleSheet.create({
   backdrop: {

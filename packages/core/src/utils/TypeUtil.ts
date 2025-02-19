@@ -1,5 +1,11 @@
 import { type EventEmitter } from 'events';
-import type { Balance, SocialProvider, Transaction } from '@reown/appkit-common-react-native';
+import type {
+  Balance,
+  SocialProvider,
+  ThemeMode,
+  Transaction,
+  ConnectorType
+} from '@reown/appkit-common-react-native';
 
 export interface BaseError {
   message?: string;
@@ -20,6 +26,14 @@ export type ConnectedWalletInfo =
   | {
       name?: string;
       icon?: string;
+      description?: string;
+      url?: string;
+      icons?: string[];
+      redirect?: {
+        native?: string;
+        universal?: string;
+        linkMode?: boolean;
+      };
       [key: string]: unknown;
     }
   | undefined;
@@ -32,8 +46,6 @@ export interface LinkingRecord {
 export type ProjectId = string;
 
 export type Platform = 'mobile' | 'web' | 'qrcode' | 'email' | 'unsupported';
-
-export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
 
 export type Connector = {
   id: string;
@@ -63,7 +75,19 @@ export type SdkVersion =
   | `react-native-ethers5-${string}`
   | `react-native-ethers-${string}`;
 
+type EnabledSocials = Exclude<SocialProvider, 'farcaster'>;
+
 export type Features = {
+  /**
+   * @description Enable or disable the swaps feature. Enabled by default.
+   * @type {boolean}
+   */
+  swaps?: boolean;
+  /**
+   * @description Enable or disable the onramp feature. Enabled by default.
+   * @type {boolean}
+   */
+  onramp?: boolean;
   /**
    * @description Enable or disable the email feature. Enabled by default.
    * @type {boolean}
@@ -76,9 +100,9 @@ export type Features = {
   emailShowWallets?: boolean;
   /**
    * @description Enable or disable the socials feature. Enabled by default.
-   * @type {FeaturesSocials[]}
+   * @type {EnabledSocials[]}
    */
-  socials?: SocialProvider[] | false;
+  socials?: EnabledSocials[] | false;
 };
 
 // -- ApiController Types -------------------------------------------------------
@@ -133,14 +157,6 @@ export type RequestCache =
   | 'only-if-cached'
   | 'reload';
 
-// -- ThemeController Types ---------------------------------------------------
-
-export type ThemeMode = 'dark' | 'light';
-
-export interface ThemeVariables {
-  accent?: string;
-}
-
 // -- BlockchainApiController Types ---------------------------------------------
 export interface BlockchainApiIdentityRequest {
   address: string;
@@ -169,6 +185,56 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null;
 }
 
+export interface BlockchainApiSwapAllowanceResponse {
+  allowance: string;
+}
+
+export interface BlockchainApiGenerateSwapCalldataRequest {
+  projectId: string;
+  userAddress: string;
+  from: string;
+  to: string;
+  amount: string;
+  eip155?: {
+    slippage: string;
+    permit?: string;
+  };
+}
+
+export interface BlockchainApiGenerateSwapCalldataResponse {
+  tx: {
+    from: CaipAddress;
+    to: CaipAddress;
+    data: `0x${string}`;
+    amount: string;
+    eip155: {
+      gas: string;
+      gasPrice: string;
+    };
+  };
+}
+
+export interface BlockchainApiGenerateApproveCalldataRequest {
+  projectId: string;
+  userAddress: string;
+  from: string;
+  to: string;
+  amount?: number;
+}
+
+export interface BlockchainApiGenerateApproveCalldataResponse {
+  tx: {
+    from: CaipAddress;
+    to: CaipAddress;
+    data: `0x${string}`;
+    value: string;
+    eip155: {
+      gas: number;
+      gasPrice: string;
+    };
+  };
+}
+
 export interface BlockchainApiTokenPriceRequest {
   projectId: string;
   currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth';
@@ -182,6 +248,12 @@ export interface BlockchainApiTokenPriceResponse {
     iconUrl: string;
     price: number;
   }[];
+}
+
+export interface BlockchainApiSwapAllowanceRequest {
+  projectId: string;
+  tokenAddress: string;
+  userAddress: string;
 }
 
 export interface BlockchainApiGasPriceRequest {
@@ -219,6 +291,35 @@ export interface BlockchainApiLookupEnsName {
   }[];
 }
 
+export interface BlockchainApiSwapQuoteRequest {
+  projectId: string;
+  chainId?: string;
+  amount: string;
+  userAddress: string;
+  from: string;
+  to: string;
+  gasPrice: string;
+}
+
+export interface BlockchainApiSwapQuoteResponse {
+  quotes: {
+    id: string | null;
+    fromAmount: string;
+    fromAccount: string;
+    toAmount: string;
+    toAccount: string;
+  }[];
+}
+
+export interface BlockchainApiSwapTokensRequest {
+  projectId: string;
+  chainId?: string;
+}
+
+export interface BlockchainApiSwapTokensResponse {
+  tokens: SwapToken[];
+}
+
 // -- OptionsController Types ---------------------------------------------------
 export interface Token {
   address: string;
@@ -254,6 +355,51 @@ export type CustomWallet = Pick<
 >;
 
 // -- EventsController Types ----------------------------------------------------
+export type EventName =
+  | 'MODAL_LOADED'
+  | 'MODAL_OPEN'
+  | 'MODAL_CLOSE'
+  | 'CLICK_ALL_WALLETS'
+  | 'CLICK_NETWORKS'
+  | 'SWITCH_NETWORK'
+  | 'SELECT_WALLET'
+  | 'CONNECT_SUCCESS'
+  | 'CONNECT_ERROR'
+  | 'DISCONNECT_SUCCESS'
+  | 'DISCONNECT_ERROR'
+  | 'CLICK_WALLET_HELP'
+  | 'CLICK_NETWORK_HELP'
+  | 'CLICK_GET_WALLET'
+  | 'EMAIL_LOGIN_SELECTED'
+  | 'EMAIL_SUBMITTED'
+  | 'DEVICE_REGISTERED_FOR_EMAIL'
+  | 'EMAIL_VERIFICATION_CODE_SENT'
+  | 'EMAIL_VERIFICATION_CODE_PASS'
+  | 'EMAIL_VERIFICATION_CODE_FAIL'
+  | 'EMAIL_EDIT'
+  | 'EMAIL_EDIT_COMPLETE'
+  | 'EMAIL_UPGRADE_FROM_MODAL'
+  | 'CLICK_SIGN_SIWE_MESSAGE'
+  | 'CLICK_CANCEL_SIWE'
+  | 'SIWE_AUTH_SUCCESS'
+  | 'SIWE_AUTH_ERROR'
+  | 'CLICK_TRANSACTIONS'
+  | 'ERROR_FETCH_TRANSACTIONS'
+  | 'LOAD_MORE_TRANSACTIONS'
+  | 'OPEN_SEND'
+  | 'OPEN_SWAP'
+  | 'INITIATE_SWAP'
+  | 'SWAP_SUCCESS'
+  | 'SWAP_ERROR'
+  | 'SEND_INITIATED'
+  | 'SEND_SUCCESS'
+  | 'SEND_ERROR'
+  | 'SOCIAL_LOGIN_STARTED'
+  | 'SOCIAL_LOGIN_SUCCESS'
+  | 'SOCIAL_LOGIN_REQUEST_USER_DATA'
+  | 'SOCIAL_LOGIN_CANCELED'
+  | 'SOCIAL_LOGIN_ERROR'
+  | 'SET_PREFERRED_ACCOUNT_TYPE';
 
 export type Event =
   | {
@@ -443,6 +589,51 @@ export type Event =
     }
   | {
       type: 'track';
+      event: 'OPEN_SWAP';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'INITIATE_SWAP';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        swapFromToken: string;
+        swapToToken: string;
+        swapFromAmount: string;
+        swapToAmount: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SWAP_SUCCESS';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        swapFromToken: string;
+        swapToToken: string;
+        swapFromAmount: string;
+        swapToAmount: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SWAP_ERROR';
+      properties: {
+        isSmartAccount: boolean;
+        network: string;
+        swapFromToken: string;
+        swapToToken: string;
+        swapFromAmount: string;
+        swapToAmount: string;
+        message: string;
+      };
+    }
+  | {
+      type: 'track';
       event: 'SEND_INITIATED';
       properties: {
         isSmartAccount: boolean;
@@ -487,6 +678,20 @@ export type Event =
     }
   | {
       type: 'track';
+      event: 'SOCIAL_LOGIN_REQUEST_USER_DATA';
+      properties: {
+        provider: SocialProvider;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SOCIAL_LOGIN_CANCELED';
+      properties: {
+        provider: SocialProvider;
+      };
+    }
+  | {
+      type: 'track';
       event: 'SOCIAL_LOGIN_ERROR';
       properties: {
         provider: SocialProvider;
@@ -499,9 +704,72 @@ export type Event =
         accountType: AppKitFrameAccountType;
         network: string;
       };
+    }
+  | {
+      type: 'track';
+      event: 'SELECT_BUY_CRYPTO';
+    }
+  | {
+      type: 'track';
+      event: 'SELECT_BUY_ASSET';
+      properties: {
+        asset: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'BUY_SUBMITTED';
+      properties: {
+        asset?: string;
+        network?: string;
+        amount?: string;
+        currency?: string;
+        provider?: string;
+        serviceProvider?: string;
+        paymentMethod?: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'BUY_SUCCESS';
+      properties: {
+        asset?: string | null;
+        network?: string | null;
+        amount?: string | null;
+        currency?: string | null;
+        provider?: string | null;
+        orderId?: string | null;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'BUY_FAIL';
+      properties: {
+        asset?: string;
+        network?: string;
+        amount?: string;
+        currency?: string;
+        provider?: string;
+        serviceProvider?: string;
+        paymentMethod?: string;
+        message?: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'BUY_CANCEL';
+      properties?: {
+        message?: string;
+      };
     };
 
 // -- Send Controller Types -------------------------------------
+export type EstimateGasTransactionArgs = {
+  chainNamespace?: 'eip155';
+  address: `0x${string}`;
+  to: `0x${string}`;
+  data: `0x${string}`;
+};
 
 export interface SendTransactionArgs {
   to: `0x${string}`;
@@ -510,6 +778,7 @@ export interface SendTransactionArgs {
   gas?: bigint;
   gasPrice: bigint;
   address: `0x${string}`;
+  chainNamespace?: 'eip155';
 }
 
 export interface WriteContractArgs {
@@ -520,6 +789,133 @@ export interface WriteContractArgs {
   method: 'send' | 'transfer' | 'call';
   abi: any;
 }
+
+// -- Swap Controller Types -------------------------------------
+export type SwapToken = {
+  name: string;
+  symbol: string;
+  address: CaipAddress;
+  decimals: number;
+  logoUri: string;
+  eip2612?: boolean;
+};
+
+export type SwapTokenWithBalance = SwapToken & {
+  quantity: {
+    decimals: string;
+    numeric: string;
+  };
+  price: number;
+  value: number;
+};
+
+export type SwapInputTarget = 'sourceToken' | 'toToken';
+
+// -- OnRamp Controller Types ------------------------------------------------
+export type OnRampPaymentMethod = {
+  logos: {
+    dark: string;
+    light: string;
+  };
+  name: string;
+  paymentMethod: string;
+  paymentType: string;
+  serviceProviderDetails: {
+    [key: string]: {
+      paymentMethod: string;
+    };
+  };
+};
+
+export type OnRampCountry = {
+  countryCode: string;
+  flagImageUrl: string;
+  name: string;
+  regions: [
+    {
+      name: string;
+      regionCode: string;
+    }
+  ];
+  serviceProviderDetails: {
+    additionalProp: {
+      countryCode: string;
+    };
+  };
+};
+
+export type OnRampFiatCurrency = {
+  currencyCode: string;
+  name: string;
+  symbolImageUrl: string;
+};
+
+export type OnRampCryptoCurrency = {
+  currencyCode: string;
+  name: string;
+  chainCode: string;
+  chainName: string;
+  chainId: string;
+  contractAddress: string | null;
+  symbolImageUrl: string;
+};
+
+export type OnRampQuote = {
+  countryCode: string;
+  customerScore: number;
+  destinationAmount: number;
+  destinationAmountWithoutFees: number;
+  destinationCurrencyCode: string;
+  exchangeRate: number;
+  fiatAmountWithoutFees: number;
+  lowKyc: boolean;
+  networkFee: number;
+  paymentMethodType: string;
+  serviceProvider: string;
+  sourceAmount: number;
+  sourceAmountWithoutFees: number;
+  sourceCurrencyCode: string;
+  totalFee: number;
+  transactionFee: number;
+  transactionType: string;
+};
+
+export type OnRampServiceProvider = {
+  categories: string[];
+  categoryStatuses: {
+    additionalProp: string;
+  };
+  logos: {
+    dark: string;
+    darkShort: string;
+    light: string;
+    lightShort: string;
+  };
+  name: string;
+  serviceProvider: string;
+  status: string;
+  websiteUrl: string;
+};
+
+export type OnRampQuoteResponse = {
+  quotes: OnRampQuote[];
+};
+
+export type OnRampWidgetResponse = {
+  customerId: string;
+  externalCustomerId: string;
+  externalSessionId: string;
+  id: string;
+  token: string;
+  widgetUrl: string;
+};
+
+export type OnRampFiatLimit = {
+  currencyCode: string;
+  defaultAmount: number | null;
+  minimumAmount: number;
+  maximumAmount: number;
+};
 
 // -- Email Types ------------------------------------------------
 /**
@@ -536,7 +932,6 @@ export interface AppKitFrameProvider {
   getSecureSiteURL(): string;
   getSecureSiteDashboardURL(): string;
   getSecureSiteIconURL(): string;
-  getSecureSiteHeaders(): Record<string, string>;
   getEmail(): string | undefined;
   getUsername(): string | undefined;
   getLastUsedChainId(): Promise<number | undefined>;
@@ -598,13 +993,14 @@ export interface AppKitFrameProvider {
     type: AppKitFrameAccountType;
     address: string;
   }>;
+  setOnTimeout(callback: () => void): void;
   getSmartAccountEnabledNetworks(): Promise<{
     smartAccountEnabledNetworks: number[];
   }>;
   disconnect(): Promise<unknown>;
   request(req: any): Promise<any>;
-  AuthView: () => JSX.Element | null;
-  Webview: () => JSX.Element | null;
+  AuthView: () => React.JSX.Element | null;
+  Webview: () => React.JSX.Element | null;
   onSetPreferredAccount: (
     callback: (values: { type: AppKitFrameAccountType; address: string }) => void
   ) => void;

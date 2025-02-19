@@ -32,18 +32,17 @@ jobs:
           commit: 'chore: version packages'
           publish: yarn run changeset:publish
           version: yarn run changeset:version
-          createGithubReleases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create Github Release
-        if: steps.changesets.outputs.published == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION=$(node -pe "require('./package.json').version")
-          gh release create "v$VERSION" --generate-notes --target main
+      # - name: Create Github Release
+      #   if: steps.changesets.outputs.published == 'true'
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     VERSION=$(node -pe "require('./package.json').version")
+      #     gh release create "v$VERSION" --generate-notes --target main
 
       - name: Publish NPM pre-release
         if: steps.changesets.outputs.published != 'true'

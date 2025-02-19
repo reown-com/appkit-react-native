@@ -1,4 +1,5 @@
 import '@walletconnect/react-native-compat';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 export {
   AccountButton,
   AppKitButton,
@@ -6,9 +7,10 @@ export {
   NetworkButton,
   AppKit
 } from '@reown/appkit-scaffold-react-native';
-import { ConstantsUtil } from '@reown/appkit-scaffold-utils-react-native';
+import type { EventName, EventsControllerState } from '@reown/appkit-scaffold-react-native';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
+
 export { defaultWagmiConfig } from './utils/defaultWagmiConfig';
-import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AppKitOptions } from './client';
 import { AppKit } from './client';
 
@@ -82,7 +84,7 @@ export function useWalletInfo() {
   return { walletInfo };
 }
 
-export function useAppKitEvents() {
+export function useAppKitEvents(callback?: (newEvent: EventsControllerState) => void) {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useAppKitEvents" hook');
   }
@@ -92,12 +94,30 @@ export function useAppKitEvents() {
   useEffect(() => {
     const unsubscribe = modal?.subscribeEvents(newEvent => {
       setEvents({ ...newEvent });
+      callback?.(newEvent);
     });
 
     return () => {
       unsubscribe?.();
     };
-  }, []);
+  }, [callback]);
 
   return event;
+}
+
+export function useAppKitEventSubscription(
+  event: EventName,
+  callback: (newEvent: EventsControllerState) => void
+) {
+  if (!modal) {
+    throw new Error('Please call "createAppKit" before using "useAppKitEventSubscription" hook');
+  }
+
+  useEffect(() => {
+    const unsubscribe = modal?.subscribeEvent(event, callback);
+
+    return () => {
+      unsubscribe?.();
+    };
+  }, [callback, event]);
 }

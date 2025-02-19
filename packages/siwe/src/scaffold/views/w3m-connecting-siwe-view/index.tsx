@@ -1,8 +1,16 @@
 import { useSnapshot } from 'valtio';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
-import { Button, FlexView, IconLink, Text } from '@reown/appkit-ui-react-native';
+import {
+  Avatar,
+  Button,
+  DoubleImageLoader,
+  FlexView,
+  IconLink,
+  Text
+} from '@reown/appkit-ui-react-native';
 import {
   AccountController,
+  AssetUtil,
   ConnectionController,
   EventsController,
   ModalController,
@@ -12,17 +20,20 @@ import {
   SnackController
 } from '@reown/appkit-core-react-native';
 
-import { ConnectingSiwe } from '../../partials/w3m-connecting-siwe';
 import { useState } from 'react';
 import { SIWEController } from '../../../controller/SIWEController';
 import styles from './styles';
 
 export function ConnectingSiweView() {
   const { metadata } = useSnapshot(OptionsController.state);
+  const { connectedWalletImageUrl, pressedWallet } = useSnapshot(ConnectionController.state);
+  const { address, profileImage } = useSnapshot(AccountController.state);
   const [isSigning, setIsSigning] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
 
   const dappName = metadata?.name || 'Dapp';
+  const dappIcon = metadata?.icons[0] || '';
+  const walletIcon = AssetUtil.getWalletImage(pressedWallet) || connectedWalletImageUrl;
 
   const onSign = async () => {
     setIsSigning(true);
@@ -92,13 +103,21 @@ export function ConnectingSiweView() {
           icon="close"
           size="md"
           onPress={onCancel}
-          testID="button-close"
+          testID="header-close"
           style={styles.closeButton}
         />
         <Text variant="paragraph-600" numberOfLines={1} center>
           Sign in
         </Text>
-        <ConnectingSiwe style={styles.logoContainer} />
+        <DoubleImageLoader
+          style={styles.logoContainer}
+          leftImage={dappIcon}
+          rightImage={walletIcon}
+          renderRightPlaceholder={() => (
+            <Avatar imageSrc={profileImage} address={address} size={60} borderWidth={0} />
+          )}
+          rightItemStyle={!walletIcon && styles.walletAvatar}
+        />
         <Text center variant="medium-600" color="fg-100" style={styles.title}>
           {dappName} needs to connect to your wallet
         </Text>

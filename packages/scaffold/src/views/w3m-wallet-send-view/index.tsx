@@ -9,11 +9,10 @@ import {
   SendController,
   SwapController
 } from '@reown/appkit-core-react-native';
-import { Button, FlexView, IconBox, LoadingSpinner, Text } from '@reown/appkit-ui-react-native';
-import { InputToken } from '../../partials/w3m-input-token/intex';
+import { Button, FlexView, IconBox } from '@reown/appkit-ui-react-native';
+import { SendInputToken } from '../../partials/w3m-send-input-token';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-
-import { InputAddress } from '../../partials/w3m-input-address';
+import { SendInputAddress } from '../../partials/w3m-send-input-address';
 import styles from './styles';
 
 export function WalletSendView() {
@@ -89,7 +88,7 @@ export function WalletSendView() {
       keyboardShouldPersistTaps="always"
     >
       <FlexView padding="l" alignItems="center" justifyContent="center">
-        <InputToken
+        <SendInputToken
           token={token}
           sendTokenAmount={sendTokenAmount}
           gasPrice={Number(gasPrice)}
@@ -97,7 +96,7 @@ export function WalletSendView() {
           onTokenPress={() => RouterController.push('WalletSendSelectToken')}
         />
         <FlexView alignItems="center" justifyContent="center" style={styles.addressContainer}>
-          <InputAddress value={receiverProfileName || receiverAddress} />
+          <SendInputAddress value={receiverProfileName || receiverAddress} />
           <IconBox
             icon="arrowBottom"
             size="lg"
@@ -114,14 +113,9 @@ export function WalletSendView() {
           style={styles.sendButton}
           onPress={onSendPress}
           disabled={!actionText.includes('Preview send')}
+          loading={loading}
         >
-          {loading ? (
-            <LoadingSpinner color="inverse-100" size="md" />
-          ) : (
-            <Text variant="paragraph-600" color="inverse-100">
-              {getActionText()}
-            </Text>
-          )}
+          {actionText}
         </Button>
       </FlexView>
     </BottomSheetScrollView>

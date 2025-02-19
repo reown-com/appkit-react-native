@@ -1,4 +1,22 @@
+import { transparentize, darken, lighten } from 'polished';
+
 import type { SpacingType, ThemeKeys } from './TypesUtil';
+
+export const getAccentColors = (baseAccentColor: string) => {
+  return {
+    'accent-100': baseAccentColor,
+    'accent-090': lighten(0.05, baseAccentColor),
+    'accent-080': lighten(0.1, baseAccentColor),
+    'accent-020': darken(0.1, baseAccentColor),
+    'accent-glass-090': transparentize(0.1, baseAccentColor),
+    'accent-glass-080': transparentize(0.2, baseAccentColor),
+    'accent-glass-020': transparentize(0.8, baseAccentColor),
+    'accent-glass-015': transparentize(0.85, baseAccentColor),
+    'accent-glass-010': transparentize(0.9, baseAccentColor),
+    'accent-glass-005': transparentize(0.95, baseAccentColor),
+    'accent-glass-002': transparentize(0.98, baseAccentColor)
+  };
+};
 
 export const DarkTheme: { [key in ThemeKeys]: string } = {
   'accent-100': '#667DFF',
@@ -164,7 +182,8 @@ export const IconSize = {
   xs: 12,
   sm: 14,
   md: 16,
-  lg: 20
+  lg: 20,
+  xl: 24
 };
 
 export const SpinnerSize = {

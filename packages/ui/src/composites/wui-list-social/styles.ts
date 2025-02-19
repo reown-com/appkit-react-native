@@ -14,7 +14,7 @@ export default StyleSheet.create({
   rightPlaceholder: {
     width: 40,
     height: 40,
-    borderRadius: 100
+    borderRadius: BorderRadius.full
   },
   disabledLogo: {
     opacity: 0.4

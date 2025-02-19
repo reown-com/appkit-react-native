@@ -22,7 +22,7 @@ export function AllWalletsView() {
   const usableWidth = maxWidth - Spacing.xs * 2;
   const itemWidth = Math.abs(Math.trunc(usableWidth / numColumns));
 
-  const onInputChange = useDebounceCallback({ callback: setSearchQuery });
+  const { debouncedCallback: onInputChange } = useDebounceCallback({ callback: setSearchQuery });
 
   const onWalletPress = (wallet: WcWallet) => {
     const connector = ConnectorController.state.connectors.find(c => c.explorerId === wallet.id);
@@ -59,10 +59,14 @@ export function AllWalletsView() {
         alignItems="center"
         style={[
           styles.header,
-          { backgroundColor: Theme['bg-125'], shadowColor: Theme['bg-125'], width: maxWidth }
+          { backgroundColor: Theme['bg-100'], shadowColor: Theme['bg-100'], width: maxWidth }
         ]}
       >
-        <SearchBar onChangeText={onInputChange} testID="input-search" />
+        <SearchBar
+          onChangeText={onInputChange}
+          placeholder="Search wallet"
+          style={styles.searchBar}
+        />
         <IconLink
           icon="qrCode"
           iconColor="accent-100"

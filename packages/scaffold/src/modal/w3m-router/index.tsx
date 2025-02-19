@@ -18,12 +18,20 @@ import { EmailVerifyDeviceView } from '../../views/w3m-email-verify-device-view'
 import { GetWalletView } from '../../views/w3m-get-wallet-view';
 import { NetworksView } from '../../views/w3m-networks-view';
 import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
+import { OnRampLoadingView } from '../../views/w3m-onramp-loading-view';
+import { OnRampView } from '../../views/w3m-onramp-view';
+import { OnRampCheckoutView } from '../../views/w3m-onramp-checkout-view';
+import { OnRampSettingsView } from '../../views/w3m-onramp-settings-view';
+import { SwapView } from '../../views/w3m-swap-view';
+import { SwapPreviewView } from '../../views/w3m-swap-preview-view';
+import { SwapSelectTokenView } from '../../views/w3m-swap-select-token-view';
+import { TransactionsView } from '../../views/w3m-transactions-view';
+import { UnsupportedChainView } from '../../views/w3m-unsupported-chain-view';
 import { UpdateEmailWalletView } from '../../views/w3m-update-email-wallet-view';
 import { UpdateEmailPrimaryOtpView } from '../../views/w3m-update-email-primary-otp-view';
 import { UpdateEmailSecondaryOtpView } from '../../views/w3m-update-email-secondary-otp-view';
 import { UpgradeEmailWalletView } from '../../views/w3m-upgrade-email-wallet-view';
 import { UpgradeToSmartAccountView } from '../../views/w3m-upgrade-to-smart-account-view';
-import { TransactionsView } from '../../views/w3m-transactions-view';
 import { WalletCompatibleNetworks } from '../../views/w3m-wallet-compatible-networks-view';
 import { WalletReceiveView } from '../../views/w3m-wallet-receive-view';
 import { WalletSendView } from '../../views/w3m-wallet-send-view';
@@ -31,7 +39,6 @@ import { WalletSendPreviewView } from '../../views/w3m-wallet-send-preview-view'
 import { WalletSendSelectTokenView } from '../../views/w3m-wallet-send-select-token-view';
 import { WhatIsANetworkView } from '../../views/w3m-what-is-a-network-view';
 import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
-
 import { UiUtil } from '../../utils/UiUtil';
 
 export function AppKitRouter() {
@@ -73,10 +80,26 @@ export function AppKitRouter() {
         return GetWalletView;
       case 'Networks':
         return NetworksView;
+      case 'OnRamp':
+        return OnRampView;
+      case 'OnRampCheckout':
+        return OnRampCheckoutView;
+      case 'OnRampSettings':
+        return OnRampSettingsView;
+      case 'OnRampLoading':
+        return OnRampLoadingView;
       case 'SwitchNetwork':
         return NetworkSwitchView;
+      case 'Swap':
+        return SwapView;
+      case 'SwapPreview':
+        return SwapPreviewView;
+      case 'SwapSelectToken':
+        return SwapSelectTokenView;
       case 'Transactions':
         return TransactionsView;
+      case 'UnsupportedChain':
+        return UnsupportedChainView;
       case 'UpdateEmailPrimaryOtp':
         return UpdateEmailPrimaryOtpView;
       case 'UpdateEmailSecondaryOtp':

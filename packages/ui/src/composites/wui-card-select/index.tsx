@@ -25,6 +25,7 @@ export interface CardSelectProps {
   type?: CardSelectType;
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
 function _CardSelect({
@@ -36,7 +37,8 @@ function _CardSelect({
   disabled,
   installed,
   selected,
-  style
+  style,
+  testID
 }: CardSelectProps) {
   const Theme = useTheme();
   const normalbackgroundColor = getBackgroundColor({ selected, disabled, pressed: false });
@@ -77,6 +79,7 @@ function _CardSelect({
       onPressOut={setStartValue}
       disabled={disabled}
       style={[styles.container, { backgroundColor: animatedValue }, style]}
+      testID={testID}
     >
       <View>
         <Image

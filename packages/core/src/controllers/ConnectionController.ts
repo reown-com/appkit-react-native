@@ -5,11 +5,11 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type {
   Connector,
+  EstimateGasTransactionArgs,
   SendTransactionArgs,
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil';
-import { RouterController } from './RouterController';
 import { ConnectorController } from './ConnectorController';
 
 // -- Types --------------------------------------------- //
@@ -31,6 +31,7 @@ export interface ConnectionControllerClient {
   parseUnits: (value: string, decimals: number) => bigint;
   formatUnits: (value: bigint, decimals: number) => string;
   writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>;
+  estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>;
   disconnect: () => Promise<void>;
   getEnsAddress: (value: string) => Promise<false | string>;
   getEnsAvatar: (value: string) => Promise<false | string>;
@@ -48,6 +49,7 @@ export interface ConnectionControllerState {
   wcError?: boolean;
   pressedWallet?: WcWallet;
   recentWallets?: WcWallet[];
+  selectedSocialProvider?: SocialProvider;
   connectedWalletImageUrl?: string;
   connectedSocialProvider?: SocialProvider;
 }
@@ -91,6 +93,7 @@ export const ConnectionController = {
 
   async connectExternal(options: ConnectExternalOptions) {
     await this._getClient().connectExternal?.(options);
+    ConnectorController.setConnectedConnector(options.type);
   },
 
   async signMessage(message: string) {
@@ -119,6 +122,10 @@ export const ConnectionController = {
 
   setRecentWallets(wallets: ConnectionControllerState['recentWallets']) {
     state.recentWallets = wallets;
+  },
+
+  setSelectedSocialProvider(provider: ConnectionControllerState['selectedSocialProvider']) {
+    state.selectedSocialProvider = provider;
   },
 
   async setConnectedWalletImageUrl(url: ConnectionControllerState['connectedWalletImageUrl']) {
@@ -153,6 +160,9 @@ export const ConnectionController = {
     return this._getClient().sendTransaction(args);
   },
 
+  async estimateGas(args: EstimateGasTransactionArgs) {
+    return this._getClient()?.estimateGas(args);
+  },
   async writeContract(args: WriteContractArgs) {
     return this._getClient().writeContract(args);
   },
@@ -175,7 +185,7 @@ export const ConnectionController = {
   resetWcConnection() {
     this.clearUri();
     state.pressedWallet = undefined;
-    ConnectionController.setConnectedSocialProvider(undefined);
+    state.selectedSocialProvider = undefined;
     ConnectionController.setConnectedWalletImageUrl(undefined);
     ConnectorController.setConnectedConnector(undefined);
     StorageUtil.removeWalletConnectDeepLink();
@@ -185,6 +195,6 @@ export const ConnectionController = {
     await this._getClient().disconnect();
     this.resetWcConnection();
     // remove transactions
-    RouterController.reset('Connect');
+    // RouterController.reset('Connect');
   }
 };

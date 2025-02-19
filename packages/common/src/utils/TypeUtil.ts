@@ -95,3 +95,11 @@ export interface TransactionQuantity {
 }
 
 export type SocialProvider = 'apple' | 'x' | 'discord' | 'farcaster';
+
+export type ThemeMode = 'dark' | 'light';
+
+export interface ThemeVariables {
+  accent?: string;
+}
+
+export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';

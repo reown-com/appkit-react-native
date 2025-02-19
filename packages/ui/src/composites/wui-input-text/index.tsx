@@ -4,8 +4,10 @@ import {
   Pressable,
   TextInput,
   type NativeSyntheticEvent,
+  type StyleProp,
   type TextInputFocusEventData,
-  type TextInputProps
+  type TextInputProps,
+  type ViewStyle
 } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import useAnimatedValue from '../../hooks/useAnimatedValue';
@@ -27,6 +29,7 @@ export type InputTextProps = TextInputProps & {
   disabled?: boolean;
   size?: Exclude<SizeType, 'xl' | 'lg' | 'xxs'>;
   inputComponent?: typeof TextInput;
+  style?: StyleProp<ViewStyle>;
 };
 
 export const InputText = forwardRef<InputRef, InputTextProps>(
@@ -42,6 +45,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
       onBlur,
       onFocus,
       inputComponent,
+      style,
       ...rest
     }: InputTextProps,
     ref
@@ -97,10 +101,13 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
     return (
       <>
         <AnimatedPressable
-          style={[styles.outerBorder, { borderColor: outerBorder, borderRadius: outerRadius }]}
+          style={[
+            styles.outerBorder,
+            { borderColor: outerBorder, borderRadius: outerRadius },
+            style
+          ]}
           disabled={disabled}
           onPress={() => inputRef.current?.focus()}
-          testID={rest.testID}
         >
           <Animated.View
             style={[
@@ -126,6 +133,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
               underlineColorAndroid="transparent"
               selectTextOnFocus={false}
               editable={!disabled}
+              testID="wui-input-text"
               {...rest}
             />
             {children}

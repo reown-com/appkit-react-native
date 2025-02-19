@@ -4,7 +4,7 @@ import { Linking, Platform } from 'react-native';
 import { ConstantsUtil as CommonConstants, type Balance } from '@reown/appkit-common-react-native';
 
 import { ConstantsUtil } from './ConstantsUtil';
-import type { CaipAddress, DataWallet, LinkingRecord } from './TypeUtil';
+import type { CaipAddress, CaipNetwork, DataWallet, LinkingRecord } from './TypeUtil';
 
 // -- Helpers -----------------------------------------------------------------
 async function isAppInstalledIos(deepLink?: string): Promise<boolean> {
@@ -55,20 +55,6 @@ export const CoreHelperUtil = {
     return new Promise(resolve => {
       setTimeout(resolve, milliseconds);
     });
-  },
-
-  debounce(func: (...args: any[]) => unknown, timeout = 500) {
-    let timer: ReturnType<typeof setTimeout> | undefined;
-
-    return (...args: unknown[]) => {
-      function next() {
-        func(...args);
-      }
-      if (timer) {
-        clearTimeout(timer);
-      }
-      timer = setTimeout(next, timeout);
-    };
   },
 
   isHttpUrl(url: string) {
@@ -190,6 +176,33 @@ export const CoreHelperUtil = {
     return CommonConstants.PULSE_API_URL;
   },
 
+  getMeldApiUrl() {
+    if (__DEV__) {
+      return CommonConstants.MELD_DEV_API_URL;
+    }
+
+    return CommonConstants.MELD_API_URL;
+  },
+
+  getMeldToken() {
+    if (__DEV__) {
+      return CommonConstants.MELD_DEV_TOKEN;
+    }
+
+    return CommonConstants.MELD_TOKEN;
+  },
+
+  getTimezone() {
+    try {
+      const { timeZone } = new Intl.DateTimeFormat().resolvedOptions();
+      const capTimeZone = timeZone.toUpperCase();
+
+      return capTimeZone;
+    } catch {
+      return undefined;
+    }
+  },
+
   getUUID() {
     if ((global as any)?.crypto.getRandomValues) {
       const buffer = new Uint8Array(16);
@@ -282,5 +295,24 @@ export const CoreHelperUtil = {
     const [dollars, pennies] = roundedNumber.split('.');
 
     return { dollars, pennies };
+  },
+
+  sortNetworks(
+    approvedCaipNetworkIds: `${string}:${string}`[] | undefined,
+    requestedCaipNetworks: CaipNetwork[] = []
+  ) {
+    const approvedIds = approvedCaipNetworkIds;
+    const requested = [...requestedCaipNetworks];
+
+    if (approvedIds?.length) {
+      requested?.sort((a, b) => {
+        if (approvedIds.includes(a.id) && !approvedIds.includes(b.id)) return -1;
+        if (approvedIds.includes(b.id) && !approvedIds.includes(a.id)) return 1;
+
+        return 0;
+      });
+    }
+
+    return requested;
   }
 };

@@ -1,16 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
-import { ApiController, AssetUtil, type WcWallet } from '@reown/appkit-core-react-native';
+import {
+  ApiController,
+  AssetUtil,
+  SnackController,
+  type WcWallet
+} from '@reown/appkit-core-react-native';
 import {
   CardSelect,
   CardSelectHeight,
   CardSelectLoader,
   FlexView,
-  IconBox,
-  Spacing,
-  Text
+  Spacing
 } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { Placeholder } from '../w3m-placeholder';
 import styles from './styles';
 
 export interface AllWalletsSearchProps {
@@ -27,6 +31,7 @@ export function AllWalletsSearch({
   onItemPress
 }: AllWalletsSearchProps) {
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingError, setLoadingError] = useState<boolean>(false);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const imageHeaders = ApiController._getApiHeaders();
   const { maxWidth, padding, isLandscape } = useCustomDimensions();
@@ -44,6 +49,7 @@ export function AllWalletsSearch({
           name={item?.name ?? 'Unknown'}
           onPress={() => onItemPress(item)}
           installed={!!isInstalled}
+          testID={`wallet-search-item-${item?.id}`}
         />
       </View>
     );
@@ -69,28 +75,25 @@ export function AllWalletsSearch({
 
   const emptyTemplate = () => {
     return (
-      <FlexView
-        alignItems="center"
+      <Placeholder
+        icon="walletPlaceholder"
+        description="No results found"
         style={[styles.emptyContainer, isLandscape && styles.emptyLandscape]}
-      >
-        <IconBox
-          icon="walletPlaceholder"
-          background
-          size="lg"
-          iconColor="fg-200"
-          backgroundColor="gray-glass-005"
-        />
-        <Text variant="paragraph-500" color="fg-200" style={styles.text}>
-          No wallet found
-        </Text>
-      </FlexView>
+      />
     );
   };
 
   const searchFetch = useCallback(async () => {
-    setLoading(true);
-    await ApiController.searchWallet({ search: searchQuery });
-    setLoading(false);
+    try {
+      setLoading(true);
+      setLoadingError(false);
+      await ApiController.searchWallet({ search: searchQuery });
+      setLoading(false);
+    } catch (error) {
+      SnackController.showError('Failed to load wallets');
+      setLoading(false);
+      setLoadingError(true);
+    }
   }, [searchQuery]);
 
   useEffect(() => {
@@ -102,6 +105,21 @@ export function AllWalletsSearch({
 
   if (loading) {
     return loadingTemplate(20);
+  }
+
+  if (loadingError) {
+    return (
+      <Placeholder
+        icon="warningCircle"
+        iconColor="error-100"
+        title="Oops, we couldn’t load the wallets at the moment"
+        description={`This might be due to a temporary network issue.\nPlease try reloading to see if that helps.`}
+        actionIcon="refresh"
+        actionPress={searchFetch}
+        style={styles.placeholderContainer}
+        actionTitle="Retry"
+      />
+    );
   }
 
   if (ApiController.state.search.length === 0) {
@@ -119,7 +137,7 @@ export function AllWalletsSearch({
       style={styles.container}
       contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding + Spacing.xs }]}
       ListEmptyComponent={emptyTemplate()}
-      keyExtractor={(item: WcWallet) => item.id}
+      keyExtractor={item => item.id}
       getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT,
         offset: ITEM_HEIGHT * index,

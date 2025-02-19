@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import type { TextInput } from 'react-native';
 import { BottomSheetScrollView, BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { FlexView, InputText, ListToken, Text } from '@reown/appkit-ui-react-native';
 import {
@@ -13,38 +12,40 @@ import {
 import type { Balance } from '@reown/appkit-common-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import { AccountPlaceholder } from '../../partials/w3m-account-placeholder';
+import { Placeholder } from '../../partials/w3m-placeholder';
 import styles from './styles';
+import type { TextInput } from 'react-native';
 
 export function WalletSendSelectTokenView() {
   const { padding } = useCustomDimensions();
   const { tokenBalance } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { token } = useSnapshot(SendController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const [filteredTokens, setFilteredTokens] = useState(tokenBalance ?? []);
 
   const onSearchChange = (value: string) => {
     setTokenSearch(value);
-    const filtered = AccountController.state.tokenBalance?.filter(token =>
-      token.name.toLowerCase().includes(value.toLowerCase())
+    const filtered = AccountController.state.tokenBalance?.filter(_token =>
+      _token.name.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredTokens(filtered ?? []);
   };
 
-  const onTokenPress = (token: Balance) => {
-    SendController.setToken(token);
+  const onTokenPress = (_token: Balance) => {
+    SendController.setToken(_token);
     SendController.setTokenAmount(undefined);
     RouterController.goBack();
   };
 
+  //TODO: Check this view
   return (
-    <BottomSheetScrollView
-      bounces={false}
-      fadingEdgeLength={20}
-      contentContainerStyle={[styles.container, { paddingHorizontal: padding }]}
+    <FlexView
+      margin={['l', '0', '2xl', '0']}
+      style={[styles.container, { paddingHorizontal: padding }]}
     >
-      <FlexView margin={['0', '0', 'm', '0']}>
+      <FlexView margin={['0', 'm', 'm', 'm']}>
         <InputText
           value={tokenSearch}
           icon="search"
@@ -54,29 +55,36 @@ export function WalletSendSelectTokenView() {
           inputComponent={BottomSheetTextInput as unknown as typeof TextInput}
         />
       </FlexView>
-      <Text variant="paragraph-500" color="fg-200" style={styles.title}>
-        Your tokens
-      </Text>
-      {filteredTokens.length ? (
-        filteredTokens.map((token, index) => (
-          <ListToken
-            key={`${token.name}${index}`}
-            name={token.name}
-            imageSrc={token.iconUrl}
-            networkSrc={networkImage}
-            value={token.value}
-            amount={token.quantity.numeric}
-            currency={token.symbol}
-            onPress={() => onTokenPress(token)}
+      <BottomSheetScrollView
+        bounces={false}
+        fadingEdgeLength={20}
+        // contentContainerStyle={styles.tokenList}
+      >
+        <Text variant="paragraph-500" color="fg-200" style={styles.title}>
+          Your tokens
+        </Text>
+        {filteredTokens.length ? (
+          filteredTokens.map((_token, index) => (
+            <ListToken
+              key={`${_token.name}${index}`}
+              name={_token.name}
+              imageSrc={_token.iconUrl}
+              networkSrc={networkImage}
+              value={_token.value}
+              amount={_token.quantity.numeric}
+              currency={_token.symbol}
+              onPress={() => onTokenPress(_token)}
+              disabled={_token.address === token?.address}
+            />
+          ))
+        ) : (
+          <Placeholder
+            icon="coinPlaceholder"
+            title="No tokens found"
+            description="Your tokens will appear here"
           />
-        ))
-      ) : (
-        <AccountPlaceholder
-          icon="coinPlaceholder"
-          title="No tokens found"
-          description="Your tokens will appear here"
-        />
-      )}
-    </BottomSheetScrollView>
+        )}
+      </BottomSheetScrollView>
+    </FlexView>
   );
 }

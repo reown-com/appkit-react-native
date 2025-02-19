@@ -56,15 +56,18 @@ export {
 
 export { SendController, type SendControllerState } from './controllers/SendController';
 
+export { OnRampController, type OnRampControllerState } from './controllers/OnRampController';
 export { WebviewController, type WebviewControllerState } from './controllers/WebviewController';
 
 // -- Utils -------------------------------------------------------------------
 export { ApiUtil } from './utils/ApiUtil';
 export { AssetUtil } from './utils/AssetUtil';
+export { ConnectionUtil } from './utils/ConnectionUtil';
 export { ConstantsUtil } from './utils/ConstantsUtil';
 export { CoreHelperUtil } from './utils/CoreHelperUtil';
 export { StorageUtil } from './utils/StorageUtil';
 export { EventUtil } from './utils/EventUtil';
 export { RouterUtil } from './utils/RouterUtil';
+export { NetworkUtil } from './utils/NetworkUtil';
 
 export type * from './utils/TypeUtil';

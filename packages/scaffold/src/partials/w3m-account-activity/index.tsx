@@ -20,7 +20,7 @@ import {
   OptionsController,
   TransactionsController
 } from '@reown/appkit-core-react-native';
-import { AccountPlaceholder } from '../w3m-account-placeholder';
+import { Placeholder } from '../w3m-placeholder';
 import { getTransactionListItemProps } from './utils';
 import styles from './styles';
 
@@ -69,7 +69,7 @@ export function AccountActivity({ style }: Props) {
 
   if (!Object.keys(transactionsByYear).length) {
     return (
-      <AccountPlaceholder
+      <Placeholder
         icon="swapHorizontal"
         title="No activity yet"
         description="Your next transactions will appear here"
@@ -109,24 +109,23 @@ export function AccountActivity({ style }: Props) {
                       getTransactionListItemProps(transaction);
                     const hasMultipleTransfers = transfers?.length > 2;
 
+                    // Show only the first transfer
                     if (hasMultipleTransfers) {
-                      return transfers.map((transfer, index) => {
-                        const description = TransactionUtil.getTransferDescription(transfer);
+                      const description = TransactionUtil.getTransferDescription(transfers[0]);
 
-                        return (
-                          <ListTransaction
-                            key={`${transaction.id}@${description}`}
-                            date={date}
-                            type={type}
-                            descriptions={[description]}
-                            status={status}
-                            images={[images[index]] as TransactionImage[]}
-                            networkSrc={networkImage}
-                            style={styles.transactionItem}
-                            isAllNFT={isAllNFT}
-                          />
-                        );
-                      });
+                      return (
+                        <ListTransaction
+                          key={`${transaction.id}@${description}`}
+                          date={date}
+                          type={type}
+                          descriptions={[description]}
+                          status={status}
+                          images={[images[0]] as TransactionImage[]}
+                          networkSrc={networkImage}
+                          style={styles.transactionItem}
+                          isAllNFT={isAllNFT}
+                        />
+                      );
                     }
 
                     return (

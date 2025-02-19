@@ -13,11 +13,10 @@ import styles from './styles';
 export function WalletCompatibleNetworks() {
   const { padding } = useCustomDimensions();
   const { preferredAccountType } = useSnapshot(AccountController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
   const isSmartAccount =
     preferredAccountType === 'smartAccount' && NetworkController.checkIfSmartAccountEnabled();
   const approvedNetworks = isSmartAccount
-    ? [caipNetwork]
+    ? NetworkController.getSmartAccountEnabledNetworks()
     : NetworkController.getApprovedCaipNetworks();
   const imageHeaders = ApiController._getApiHeaders();
 

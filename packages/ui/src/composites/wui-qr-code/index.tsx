@@ -21,6 +21,8 @@ export interface QrCodeProps {
   style?: StyleProp<ViewStyle>;
 }
 
+const LABEL_HEIGHT = 18;
+
 export function QrCode({ size, uri, imageSrc, testID, arenaClear, icon, style }: QrCodeProps) {
   const Theme = LightTheme;
   const containerPadding = Spacing.l;
@@ -75,7 +77,7 @@ export function QrCode({ size, uri, imageSrc, testID, arenaClear, icon, style }:
         </Svg>
         {logoTemplate()}
       </FlexView>
-      <Text variant="small-500" color="fg-150" style={styles.label}>
+      <Text variant="small-500" color="fg-150" style={[styles.label, { height: LABEL_HEIGHT }]}>
         UX by{' '}
         <Text variant="small-500" color="inverse-000">
           Reown
@@ -83,6 +85,6 @@ export function QrCode({ size, uri, imageSrc, testID, arenaClear, icon, style }:
       </Text>
     </View>
   ) : (
-    <Shimmer width={size} height={size} borderRadius={BorderRadius.l} />
+    <Shimmer width={size} height={size + LABEL_HEIGHT} borderRadius={BorderRadius.l} />
   );
 }

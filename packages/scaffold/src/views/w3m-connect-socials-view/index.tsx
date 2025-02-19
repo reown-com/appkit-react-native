@@ -3,6 +3,7 @@ import { useSnapshot } from 'valtio';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { StringUtil, type SocialProvider } from '@reown/appkit-common-react-native';
 import {
+  ConnectionController,
   EventsController,
   OptionsController,
   RouterController,
@@ -19,15 +20,16 @@ export function ConnectSocialsView() {
   const socialProviders = (features?.socials ?? []) as SocialProvider[];
 
   const onItemPress = (provider: SocialProvider) => {
+    ConnectionController.setSelectedSocialProvider(provider);
     EventsController.sendEvent({
       type: 'track',
       event: 'SOCIAL_LOGIN_STARTED',
       properties: { provider }
     });
     if (provider === 'farcaster') {
-      RouterController.push('ConnectingFarcaster', { socialProvider: provider });
+      RouterController.push('ConnectingFarcaster');
     } else {
-      RouterController.push('ConnectingSocial', { socialProvider: provider });
+      RouterController.push('ConnectingSocial');
     }
   };
 

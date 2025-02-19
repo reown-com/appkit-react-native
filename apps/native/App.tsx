@@ -1,10 +1,11 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { StyleSheet, View, useColorScheme } from 'react-native';
+import { Platform, SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
 import '@walletconnect/react-native-compat';
 import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Toast from 'react-native-toast-message';
 
 import {
   AppKit,
@@ -15,6 +16,7 @@ import {
 } from '@reown/appkit-wagmi-react-native';
 
 import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
+import { Text } from '@reown/appkit-ui-react-native';
 
 import { siweConfig } from './src/utils/SiweUtils';
 
@@ -22,6 +24,9 @@ import { AccountView } from './src/views/AccountView';
 import { ActionsView } from './src/views/ActionsView';
 import { getCustomWallets } from './src/utils/misc';
 import { chains } from './src/utils/WagmiUtils';
+import { OpenButton } from './src/components/OpenButton';
+import { DisconnectButton } from './src/components/DisconnectButton';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -31,9 +36,8 @@ const metadata = {
   url: 'https://reown.com/appkit',
   icons: ['https://avatars.githubusercontent.com/u/179229932'],
   redirect: {
-    native: 'redirect://',
-    universal: 'https://appkit-lab.reown.com/rn_appkit',
-    linkMode: true
+    native: 'host.exp.exponent://',
+    universal: 'https://appkit-lab.reown.com/rn_appkit'
   }
 };
 
@@ -45,11 +49,17 @@ const clipboardClient = {
 
 const auth = authConnector({ projectId, metadata });
 
+const extraConnectors = Platform.select({
+  ios: [auth],
+  android: [auth],
+  default: []
+});
+
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
   metadata,
-  extraConnectors: [auth]
+  extraConnectors
 });
 
 const queryClient = new QueryClient();
@@ -64,10 +74,13 @@ createAppKit({
   customWallets,
   enableAnalytics: true,
   metadata,
+  debug: true,
   features: {
     email: true,
-    socials: ['x', 'farcaster', 'discord', 'apple'],
-    emailShowWallets: false
+    socials: ['x', 'discord', 'apple'],
+    emailShowWallets: true,
+    swaps: true
+    // onramp: true
   }
 });
 
@@ -76,24 +89,32 @@ export default function Native() {
 
   return (
     <GestureHandlerRootView style={styles.gestureContainer}>
-      <WagmiProvider config={wagmiConfig}>
-        <QueryClientProvider client={queryClient}>
-          <View style={[styles.container, isDarkMode && styles.dark]}>
-            <StatusBar style="auto" />
-            <AppKitButton
-              connectStyle={styles.button}
-              accountStyle={styles.button}
-              label="Connect"
-              loadingLabel="Connecting..."
-              balance="show"
-            />
-            <NetworkButton />
-            <AccountView />
-            <ActionsView />
-            <AppKit />
-          </View>
-        </QueryClientProvider>
-      </WagmiProvider>
+      <BottomSheetModalProvider>
+        <WagmiProvider config={wagmiConfig}>
+          <QueryClientProvider client={queryClient}>
+            <SafeAreaView style={[styles.container, isDarkMode && styles.dark]}>
+              <StatusBar style="auto" />
+              <Text variant="medium-title-600" style={styles.title}>
+                AppKit for React Native
+              </Text>
+              <AppKitButton
+                connectStyle={styles.button}
+                accountStyle={styles.button}
+                label="Connect"
+                loadingLabel="Connecting..."
+                balance="show"
+              />
+              <NetworkButton />
+              <ActionsView />
+              <AccountView />
+              <OpenButton />
+              <DisconnectButton />
+              <AppKit />
+            </SafeAreaView>
+            <Toast />
+          </QueryClientProvider>
+        </WagmiProvider>
+      </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
 }
@@ -113,6 +134,9 @@ const styles = StyleSheet.create({
   },
   text: {
     marginBottom: 20
+  },
+  title: {
+    marginBottom: 30
   },
   button: {
     marginVertical: 6

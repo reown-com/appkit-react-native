@@ -14,6 +14,7 @@ import {
   EventsController,
   ConnectorController
 } from '@reown/appkit-core-react-native';
+import { SIWEController } from '@reown/appkit-siwe-react-native';
 
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
 import { ConnectingMobile } from '../../partials/w3m-connecting-mobile';
@@ -53,7 +54,6 @@ export function ConnectingView() {
         AccountController.setIsConnected(true);
 
         if (OptionsController.state.isSiweEnabled) {
-          const { SIWEController } = await import('@reown/appkit-siwe-react-native');
           if (SIWEController.state.status === 'success') {
             ModalController.close();
           } else {

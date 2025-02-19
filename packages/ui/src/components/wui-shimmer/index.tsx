@@ -1,12 +1,12 @@
 import { Svg, Rect } from 'react-native-svg';
-import { Animated, type StyleProp, type ViewStyle } from 'react-native';
+import { Animated, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
 export interface ShimmerProps {
-  width?: number;
-  height?: number;
+  width?: number | string;
+  height?: number | string;
   duration?: number;
   borderRadius?: number;
   backgroundColor?: string;
@@ -52,7 +52,14 @@ export const Shimmer = ({
   ).start();
 
   return (
-    <Svg width={width} height={height} style={style}>
+    <Svg
+      width={width}
+      height={height}
+      style={[
+        { borderWidth: StyleSheet.hairlineWidth, borderColor: Theme['bg-300'], borderRadius },
+        style
+      ]}
+    >
       <AnimatedRect {...animatedProps} />
     </Svg>
   );

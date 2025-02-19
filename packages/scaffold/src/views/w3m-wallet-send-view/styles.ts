@@ -13,7 +13,7 @@ export default StyleSheet.create({
   arrowIcon: {
     position: 'absolute',
     top: -30,
-    borderRadius: 20
+    borderRadius: BorderRadius.s
   },
   addressContainer: {
     width: '100%'

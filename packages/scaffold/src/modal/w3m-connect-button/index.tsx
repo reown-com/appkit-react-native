@@ -1,7 +1,8 @@
 import { useSnapshot } from 'valtio';
-import { ModalController } from '@reown/appkit-core-react-native';
+import { ModalController, ThemeController } from '@reown/appkit-core-react-native';
 import {
   ConnectButton as ConnectButtonUI,
+  ThemeProvider,
   type ConnectButtonProps as ConnectButtonUIProps
 } from '@reown/appkit-ui-react-native';
 
@@ -23,17 +24,20 @@ export function ConnectButton({
   testID
 }: ConnectButtonProps) {
   const { open, loading } = useSnapshot(ModalController.state);
+  const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
 
   return (
-    <ConnectButtonUI
-      onPress={() => ModalController.open()}
-      size={size}
-      loading={loading || open}
-      style={style}
-      testID={testID}
-      disabled={disabled}
-    >
-      {loading || open ? loadingLabel : label}
-    </ConnectButtonUI>
+    <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
+      <ConnectButtonUI
+        onPress={() => ModalController.open()}
+        size={size}
+        loading={loading || open}
+        style={style}
+        testID={testID}
+        disabled={disabled}
+      >
+        {loading || open ? loadingLabel : label}
+      </ConnectButtonUI>
+    </ThemeProvider>
   );
 }
