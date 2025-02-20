@@ -160,6 +160,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
             renderItem={renderPaymentMethod}
             ref={paymentMethodsRef}
             style={styles.paymentMethodsContainer}
+            contentContainerStyle={styles.paymentMethodsContent}
             fadingEdgeLength={20}
             keyExtractor={item => item.name}
             horizontal
@@ -227,5 +228,8 @@ const styles = StyleSheet.create({
   },
   paymentMethodsContainer: {
     paddingHorizontal: Spacing['3xs']
+  },
+  paymentMethodsContent: {
+    paddingLeft: Spacing.xs
   }
 });

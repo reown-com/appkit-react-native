@@ -175,7 +175,7 @@ export function OnRampView() {
               selectedQuote?.destinationAmount
                 ? NumberUtil.roundNumber(selectedQuote.destinationAmount, 6, 5)?.toString()
                 : '0.00'
-            }${purchaseCurrency?.currencyCode ?? ''}`}
+            } ${purchaseCurrency?.currencyCode ?? ''}`}
             onValueChange={onValueChange}
             style={styles.currencyInput}
           />

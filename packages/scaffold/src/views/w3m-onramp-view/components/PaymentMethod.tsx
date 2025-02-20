@@ -12,7 +12,7 @@ import {
 } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
-export const ITEM_SIZE = 80;
+export const ITEM_SIZE = 85;
 
 interface Props {
   onPress: (item: OnRampPaymentMethod) => void;
@@ -58,7 +58,7 @@ export function PaymentMethod({ onPress, item, selected }: Props) {
           />
         )}
       </FlexView>
-      <Text variant="tiny-400" color="fg-100" numberOfLines={1}>
+      <Text variant="tiny-400" color="fg-100" numberOfLines={1} style={styles.text}>
         {item.name}
       </Text>
     </Pressable>
@@ -73,19 +73,22 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   logoContainer: {
-    width: 56,
-    height: 56,
+    width: 60,
+    height: 60,
     borderRadius: BorderRadius.full,
     marginBottom: Spacing['4xs']
   },
   logo: {
-    width: 20,
-    height: 20
+    width: 22,
+    height: 22
   },
   checkmark: {
     borderRadius: BorderRadius.full,
     position: 'absolute',
     bottom: 0,
     right: -10
+  },
+  text: {
+    marginTop: Spacing.xs
   }
 });
