@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { ScrollView, View, type StyleProp, type ViewStyle, RefreshControl } from 'react-native';
 import {
@@ -57,6 +57,12 @@ export function AccountActivity({ style }: Props) {
   const transactionsByYear = useMemo(() => {
     return TransactionsController.getTransactionsByYearAndMonth(transactions as Transaction[]);
   }, [transactions]);
+
+  useEffect(() => {
+    if (!TransactionsController.state.transactions.length) {
+      TransactionsController.fetchTransactions(AccountController.state.address, true);
+    }
+  }, []);
 
   if (loading && !transactions.length) {
     return (

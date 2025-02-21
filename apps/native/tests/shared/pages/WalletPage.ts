@@ -117,9 +117,23 @@ export class WalletPage {
     await this.page.waitForLoadState();
     const sessionsButton = this.page.getByTestId('sessions');
     await sessionsButton.click();
-    const sessionCard = this.page.getByTestId(`session-card`);
-    await sessionCard.click();
-    const disconnectButton = this.page.getByText('Delete');
-    await disconnectButton.click();
+
+    // Try to disconnect all visible session cards
+    while (true) {
+      const sessionCards = this.page.getByTestId('session-card');
+      const count = await sessionCards.count();
+
+      if (count === 0) {
+        break;
+      }
+
+      // Click the first card and disconnect it
+      await sessionCards.first().click();
+      const disconnectButton = this.page.getByText('Delete');
+      await disconnectButton.click();
+
+      // Wait a bit for the disconnection to complete
+      await this.page.waitForTimeout(500);
+    }
   }
 }

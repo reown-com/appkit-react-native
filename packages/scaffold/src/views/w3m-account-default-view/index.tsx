@@ -244,10 +244,10 @@ export function AccountDefaultView() {
               imageSrc={networkImage}
               imageHeaders={ApiController._getApiHeaders()}
               onPress={onNetworkPress}
-              testID="w3m-account-select-network"
+              testID="button-network"
               style={styles.actionButton}
             >
-              <Text numberOfLines={1} color="fg-100" testID="w3m-account-select-network-text">
+              <Text numberOfLines={1} color="fg-100" testID="account-select-network-text">
                 {caipNetwork?.name}
               </Text>
             </ListItem>
@@ -259,7 +259,7 @@ export function AccountDefaultView() {
                 iconColor="accent-100"
                 iconBackgroundColor="accent-glass-015"
                 onPress={onSwapPress}
-                testID="button-activity"
+                testID="button-swap"
                 style={styles.actionButton}
               >
                 <Text color="fg-100">Swap</Text>
@@ -299,7 +299,7 @@ export function AccountDefaultView() {
               onPress={onDisconnect}
               loading={disconnecting}
               iconBackgroundColor="gray-glass-010"
-              testID="disconnect-button"
+              testID="button-disconnect"
             >
               <Text color="fg-200">Disconnect</Text>
             </ListItem>

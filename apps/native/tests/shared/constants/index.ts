@@ -8,4 +8,20 @@ export const DEFAULT_SESSION_PARAMS: SessionParams = {
   optAccounts: ['1', '2'],
   accept: true
 };
-export const DEFAULT_CHAIN_NAME = process.env.DEFAULT_CHAIN_NAME || 'Ethereum';
+
+export const TEST_CHAINS = {
+  POLYGON: 'Polygon',
+  ETHEREUM: 'Ethereum',
+  GNOSIS: 'Gnosis'
+} as const;
+
+export type SupportedChain = (typeof TEST_CHAINS)[keyof typeof TEST_CHAINS];
+
+export const TIMEOUTS = {
+  ANIMATION: 300,
+  NETWORK_SWITCH: 500,
+  CONNECTION: 5000,
+  SESSION_PROPOSAL: 30000
+} as const;
+
+export const DEFAULT_CHAIN_NAME = process.env.DEFAULT_CHAIN_NAME || TEST_CHAINS.ETHEREUM;
