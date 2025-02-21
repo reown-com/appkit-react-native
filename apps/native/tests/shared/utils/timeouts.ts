@@ -1,9 +1,9 @@
-import { MAXIMUM_WAIT_CONNECTIONS } from '../constants/timeouts';
+import { TIMEOUTS } from '../constants';
 
 export function getMaximumWaitConnections(): number {
   if (process.env.CI) {
-    return MAXIMUM_WAIT_CONNECTIONS;
+    return TIMEOUTS.SESSION_PROPOSAL;
   }
 
-  return MAXIMUM_WAIT_CONNECTIONS * 2;
+  return TIMEOUTS.SESSION_PROPOSAL * 2;
 }

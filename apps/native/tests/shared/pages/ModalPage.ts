@@ -1,9 +1,9 @@
 import type { Locator, Page } from '@playwright/test';
 import { expect } from '@playwright/test';
-import { BASE_URL, DEFAULT_SESSION_PARAMS } from '../constants';
+import { BASE_URL, DEFAULT_SESSION_PARAMS, TIMEOUTS } from '../constants';
 import { WalletValidator } from '../validators/WalletValidator';
 import { WalletPage } from './WalletPage';
-import { TimingRecords } from '../types';
+import { SupportedChain, TimingRecords } from '../types';
 import { ModalValidator } from '../validators/ModalValidator';
 
 export class ModalPage {
@@ -125,10 +125,10 @@ export class ModalPage {
   //   await this.page.getByTestId('w3m-connecting-siwe-cancel').click();
   // }
 
-  async switchNetwork(network: string) {
+  async switchNetwork(network: SupportedChain) {
     await this.page.getByTestId(`w3m-network-switch-${network}`).click();
-    // The state is chaing too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
-    await this.page.waitForTimeout(300);
+    // The state is changing too fast and test runner doesn't wait for the loading page
+    await this.page.waitForTimeout(TIMEOUTS.NETWORK_SWITCH);
   }
 
   async openAccountModal() {
@@ -146,7 +146,7 @@ export class ModalPage {
   async closeModal() {
     await this.page.getByTestId('header-close')?.click?.();
     // Wait for the modal fade out animation
-    await this.page.waitForTimeout(300);
+    await this.page.waitForTimeout(TIMEOUTS.ANIMATION);
   }
 
   async openAllWallets() {
@@ -209,10 +209,16 @@ export class ModalPage {
   }
 
   async expectLoaderVisible() {
-    await expect(this.page.getByTestId('loading-spinner')).toBeVisible();
+    await expect(
+      this.page.getByTestId('loading-spinner'),
+      'Loading spinner should be visible'
+    ).toBeVisible();
   }
 
   async expectLoaderHidden() {
-    await expect(this.page.getByTestId('loading-spinner')).toBeHidden();
+    await expect(
+      this.page.getByTestId('loading-spinner'),
+      'Loading spinner should be hidden'
+    ).toBeHidden();
   }
 }
