@@ -135,15 +135,6 @@ export function OnRampView() {
   };
 
   useEffect(() => {
-    // update selected purchase currency based on active network
-    OnRampController.updateSelectedPurchaseCurrency();
-
-    // set default payment amount
-    const suggested = getCurrencySuggestedValues(OnRampController.state.paymentCurrency);
-    OnRampController.setPaymentAmount(suggested[1]);
-  }, []);
-
-  useEffect(() => {
     getQuotes();
   }, [selectedPaymentMethod, getQuotes]);
 

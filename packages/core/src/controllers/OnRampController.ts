@@ -477,5 +477,6 @@ export const OnRampController = {
     state.selectedServiceProvider = undefined;
     state.widgetUrl = undefined;
     state.paymentAmount = undefined;
+    this.updateSelectedPurchaseCurrency();
   }
 };

@@ -17,7 +17,8 @@ import {
   SnackController,
   type AppKitFrameProvider,
   ConstantsUtil,
-  SwapController
+  SwapController,
+  OnRampController
 } from '@reown/appkit-core-react-native';
 import {
   Avatar,
@@ -146,6 +147,8 @@ export function AccountDefaultView() {
       type: 'track',
       event: 'SELECT_BUY_CRYPTO'
     });
+
+    OnRampController.resetState();
     RouterController.push('OnRamp');
   };
 

@@ -77,7 +77,7 @@ export function OnRampCheckoutView() {
           <Text>{selectedPaymentMethod?.name}</Text>
         </FlexView>
       </FlexView>
-      {purchaseCurrency?.chainName && (
+      {purchaseCurrency?.chainName !== undefined && (
         <FlexView
           padding={['xs', 's', 'm', 's']}
           flexDirection="row"
@@ -94,7 +94,7 @@ export function OnRampCheckoutView() {
           padding={['m', 'l', '0', 'l']}
           style={[styles.feesContainer, { backgroundColor: Theme['gray-glass-005'] }]}
         >
-          {selectedQuote?.networkFee && (
+          {selectedQuote?.networkFee !== undefined && (
             <FlexView
               flexDirection="row"
               justifyContent="space-between"
@@ -106,7 +106,7 @@ export function OnRampCheckoutView() {
               </Text>
             </FlexView>
           )}
-          {selectedQuote?.transactionFee && (
+          {selectedQuote?.transactionFee !== undefined && (
             <FlexView
               flexDirection="row"
               justifyContent="space-between"
@@ -118,7 +118,7 @@ export function OnRampCheckoutView() {
               </Text>
             </FlexView>
           )}
-          {selectedQuote?.totalFee && (
+          {selectedQuote?.totalFee !== undefined && (
             <FlexView
               flexDirection="row"
               justifyContent="space-between"

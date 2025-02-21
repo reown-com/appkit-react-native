@@ -7,6 +7,7 @@ import {
   CoreHelperUtil,
   EventsController,
   NetworkController,
+  OnRampController,
   OptionsController,
   RouterController,
   SwapController
@@ -84,6 +85,7 @@ export function AccountWalletFeatures() {
       type: 'track',
       event: 'SELECT_BUY_CRYPTO'
     });
+    OnRampController.resetState();
     RouterController.push('OnRamp');
   };
 
