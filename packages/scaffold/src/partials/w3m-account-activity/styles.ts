@@ -18,7 +18,8 @@ export default StyleSheet.create({
     height: 40
   },
   placeholder: {
-    minHeight: 200
+    minHeight: 200,
+    flex: 0
   },
   loadMoreButton: {
     alignSelf: 'center',
