@@ -82,16 +82,6 @@ export class ModalValidator {
     await expect(address, 'Correct address should be present').toHaveText(expectedAddress);
   }
 
-  // async expectNetwork(network: string) {
-  //   const networkButton = this.page.getByTestId('w3m-account-select-network');
-  //   await expect(networkButton, `Network button should contain text ${network}`).toHaveText(
-  //     network,
-  //     {
-  //       timeout: 5000
-  //     }
-  //   );
-  // }
-
   async expectAcceptedSign() {
     await expect(this.page.getByText('Signature successful')).toBeVisible({
       timeout: 30 * 1000
@@ -103,7 +93,7 @@ export class ModalValidator {
   }
 
   async expectSwitchedNetwork(network: string) {
-    const switchNetworkButton = this.page.getByTestId(`w3m-account-select-network-text`);
+    const switchNetworkButton = this.page.getByTestId(`account-select-network-text`);
     await expect(switchNetworkButton).toContainText(network);
   }
 
@@ -131,11 +121,6 @@ export class ModalValidator {
     const getAWalletView = this.page.getByTestId('get-a-wallet-view');
     await expect(getAWalletView).toBeVisible();
   }
-
-  // async expectHeaderText(text: string) {
-  //   const headerText = this.page.getByTestId('header-text');
-  //   await expect(headerText).toHaveText(text);
-  // }
 
   async expectNetworksDisabled(name: string) {
     const disabledNetworkButton = this.page.getByTestId(`w3m-network-switch-${name}`);

@@ -57,7 +57,7 @@ appId: com.walletconnect.web3modal.rnclisdk
     id: 'account-button'
 
 - tapOn:
-    id: 'w3m-account-select-network'
+    id: 'button-network'
 
 - tapOn:
     text: 'Polygon'
@@ -68,7 +68,7 @@ appId: com.walletconnect.web3modal.rnclisdk
     text: 'Polygon'
 
 - tapOn:
-    id: 'disconnect-button'
+    id: 'button-disconnect'
 
 - assertVisible:
     id: 'connect-button'

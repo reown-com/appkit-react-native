@@ -45,7 +45,7 @@ sampleWalletTest('it should be connected instantly after page refresh', async ()
 sampleWalletTest('it should show disabled networks', async () => {
   const disabledNetworks = 'Gnosis';
   await modalPage.openAccountModal();
-  await modalPage.openNetworks();
+  await modalPage.goToNetworks();
   await modalValidator.expectNetworksDisabled(disabledNetworks);
   await modalPage.closeModal();
 });
@@ -62,6 +62,8 @@ sampleWalletTest('it should switch networks and sign', async () => {
 
     // -- Switch network --------------------------------------------------------
     const chainNameOnWalletPage = chainName;
+    await modalPage.openAccountModal();
+    await modalPage.goToNetworks();
     await modalPage.switchNetwork(chainName);
     await modalValidator.expectSwitchedNetwork(chainName);
     await modalPage.closeModal();
@@ -82,6 +84,8 @@ sampleWalletTest('it should switch networks and sign', async () => {
 sampleWalletTest('it should show last connected network after refreshing', async () => {
   const chainName = 'Polygon';
 
+  await modalPage.openAccountModal();
+  await modalPage.goToNetworks();
   await modalPage.switchNetwork(chainName);
   await modalValidator.expectSwitchedNetwork(chainName);
   await modalPage.closeModal();
@@ -123,4 +127,47 @@ sampleWalletTest('it should disconnect as expected', async () => {
   await modalValidator.expectConnected();
   await modalPage.disconnect();
   await modalValidator.expectDisconnected();
+});
+
+sampleWalletTest('shows loader behavior on first visit to Activity screen', async () => {
+  // Connect to wallet
+  await modalPage.qrCodeFlow(modalPage, walletPage);
+  await modalValidator.expectConnected();
+
+  // First visit to Activity screen
+  await modalPage.openAccountModal();
+  await modalPage.goToActivity();
+  await modalPage.expectLoaderVisible();
+  await modalPage.expectLoaderHidden();
+
+  // Second visit to Activity screen
+  await modalPage.goBack();
+  await modalPage.goToActivity();
+  await modalPage.expectLoaderHidden();
+
+  // Third visit after closing the modal
+  await modalPage.closeModal();
+  await modalPage.openAccountModal();
+  await modalPage.goToActivity();
+  await modalPage.expectLoaderHidden();
+  await modalPage.closeModal();
+});
+
+sampleWalletTest('shows loader behavior after network change in Activity screen', async () => {
+  await modalPage.openAccountModal();
+
+  // Change network
+  await modalPage.goToNetworks();
+  await modalPage.switchNetwork('Polygon');
+  await modalValidator.expectSwitchedNetwork('Polygon');
+
+  // Visit Activity screen after network change
+  await modalPage.goToActivity();
+  await modalPage.expectLoaderVisible();
+  await modalPage.expectLoaderHidden();
+
+  // Second visit after network change
+  await modalPage.goBack();
+  await modalPage.goToActivity();
+  await modalPage.expectLoaderHidden();
 });
