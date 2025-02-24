@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from 'react';
 import { useSnapshot } from 'valtio';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, View, type StyleProp, type ViewStyle, RefreshControl } from 'react-native';
 import {
   FlexView,
@@ -30,6 +30,7 @@ interface Props {
 export function AccountActivity({ style }: Props) {
   const Theme = useTheme();
   const [refreshing, setRefreshing] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
   const { loading, transactions, next } = useSnapshot(TransactionsController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
@@ -58,7 +59,18 @@ export function AccountActivity({ style }: Props) {
     return TransactionsController.getTransactionsByYearAndMonth(transactions as Transaction[]);
   }, [transactions]);
 
-  if (loading && !transactions.length) {
+  useEffect(() => {
+    if (!TransactionsController.state.transactions.length) {
+      TransactionsController.fetchTransactions(AccountController.state.address, true);
+    }
+    // Set initial load to false after first fetch
+    const timer = setTimeout(() => setInitialLoad(false), 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Show loading spinner during initial load or when loading with no transactions
+  if ((initialLoad || loading) && !transactions.length) {
     return (
       <FlexView style={[styles.placeholder, style]} alignItems="center" justifyContent="center">
         <LoadingSpinner />
@@ -66,13 +78,14 @@ export function AccountActivity({ style }: Props) {
     );
   }
 
-  if (!Object.keys(transactionsByYear).length) {
+  // Only show placeholder when we're not in initial load or loading state
+  if (!Object.keys(transactionsByYear).length && !loading && !initialLoad) {
     return (
       <Placeholder
         icon="swapHorizontal"
         title="No activity yet"
         description="Your next transactions will appear here"
-        style={style}
+        style={[styles.placeholder, style]}
       />
     );
   }
@@ -144,14 +157,14 @@ export function AccountActivity({ style }: Props) {
               ))}
           </View>
         ))}
-      {(next || loading) && (
+      {(next || loading) && !refreshing && (
         <FlexView style={styles.footer} alignItems="center" justifyContent="center">
           {next && !loading && (
             <Link size="md" style={styles.loadMoreButton} onPress={handleLoadMore}>
               Load more
             </Link>
           )}
-          {loading && !refreshing && <LoadingSpinner color="accent-100" />}
+          {loading && <LoadingSpinner color="accent-100" />}
         </FlexView>
       )}
     </ScrollView>

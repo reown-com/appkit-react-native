@@ -36,6 +36,9 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
+  "dependencies": {
+    "@reown/appkit-common-react-native": "1.2.1"
+  },
   "peerDependencies": {
     "@coinbase/wallet-mobile-sdk": ">=1.0.10",
     "wagmi": ">=2"
