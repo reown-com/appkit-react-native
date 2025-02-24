@@ -519,18 +519,22 @@ export class AppKit extends AppKitScaffold {
 
   private async syncBalance(address: Hex, chainId: number) {
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId);
-    if (chain) {
-      const balance = await getBalance(this.wagmiConfig, {
-        address,
-        chainId: chain.id,
-        token: this.options?.tokens?.[chainId]?.address as Hex
-      });
-      const formattedBalance = formatUnits(balance.value, balance.decimals);
-      this.setBalance(formattedBalance, balance.symbol);
+    try {
+      if (chain) {
+        const balance = await getBalance(this.wagmiConfig, {
+          address,
+          chainId: chain.id,
+          token: this.options?.tokens?.[chainId]?.address as Hex
+        });
+        const formattedBalance = formatUnits(balance.value, balance.decimals);
+        this.setBalance(formattedBalance, balance.symbol);
 
-      return;
+        return;
+      }
+      this.setBalance(undefined, undefined);
+    } catch {
+      this.setBalance(undefined, undefined);
     }
-    this.setBalance(undefined, undefined);
   }
 
   private async syncConnectedWalletInfo(connector: GetAccountReturnType['connector']) {
