@@ -26,6 +26,7 @@ import type {
 } from '../utils/TypeUtil';
 import { OptionsController } from './OptionsController';
 import { ConstantsUtil } from '../utils/ConstantsUtil';
+import { ApiUtil } from '../utils/ApiUtil';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getBlockchainApiUrl();
@@ -36,7 +37,9 @@ const getHeaders = () => {
   return {
     'Content-Type': 'application/json',
     'x-sdk-type': sdkType,
-    'x-sdk-version': sdkVersion
+    'x-sdk-version': sdkVersion,
+    'User-Agent': ApiUtil.getUserAgent(),
+    'origin': ApiUtil.getOrigin()
   };
 };
 

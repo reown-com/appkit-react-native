@@ -12,9 +12,15 @@ export interface LoadingSpinnerProps {
   size?: Exclude<SizeType, 'xs' | 'xxs'>;
   color?: Exclude<ColorType, 'error-100' | 'fg-300' | 'success-100'>;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
-export function LoadingSpinner({ color, style, size = 'lg' }: LoadingSpinnerProps) {
+export function LoadingSpinner({
+  color,
+  style,
+  size = 'lg',
+  testID = 'loading-spinner'
+}: LoadingSpinnerProps) {
   const Theme = useTheme();
   const spinValue = useRef(new Animated.Value(0));
   const stroke = color ? Theme[color] : Theme['accent-100'];
@@ -41,7 +47,7 @@ export function LoadingSpinner({ color, style, size = 'lg' }: LoadingSpinnerProp
   });
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, style]} testID={testID}>
       <AnimatedSvg
         width={SpinnerSize[size]}
         height={SpinnerSize[size]}

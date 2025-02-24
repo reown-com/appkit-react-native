@@ -79,7 +79,6 @@ export function AppKit() {
 
       const newAddress = CoreHelperUtil.getPlainAddress(address);
       TransactionsController.resetTransactions();
-      TransactionsController.fetchTransactions(newAddress, true);
 
       if (OptionsController.state.isSiweEnabled) {
         const newNetworkId = CoreHelperUtil.getNetworkId(address);

@@ -1,5 +1,20 @@
 # @reown/appkit-core-react-native
 
+## 1.2.2
+
+### Patch Changes
+
+- [#316](https://github.com/reown-com/appkit-react-native/pull/316) [`f3f4f37`](https://github.com/reown-com/appkit-react-native/commit/f3f4f3754673e0e85c110f41d9c77e27e30caa68) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: load transactions when needed
+
+- [#312](https://github.com/reown-com/appkit-react-native/pull/312) [`52484c4`](https://github.com/reown-com/appkit-react-native/commit/52484c4ee17d7651c966d7fe939c51a7af516c14) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: show wallet info in useWalletInfo hook for ethers and ethers5
+
+- [#314](https://github.com/reown-com/appkit-react-native/pull/314) [`d3a9604`](https://github.com/reown-com/appkit-react-native/commit/d3a9604b59fd177465fbf5b04ee3c26200e40384) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: improved state array updates in connection and router controllers
+
+- [#315](https://github.com/reown-com/appkit-react-native/pull/315) [`19e17ef`](https://github.com/reown-com/appkit-react-native/commit/19e17ef9b85e4d81f424438d83c3f3c89dd80c92) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: send expo info in useragent
+
+- Updated dependencies [[`f3f4f37`](https://github.com/reown-com/appkit-react-native/commit/f3f4f3754673e0e85c110f41d9c77e27e30caa68), [`52484c4`](https://github.com/reown-com/appkit-react-native/commit/52484c4ee17d7651c966d7fe939c51a7af516c14), [`d3a9604`](https://github.com/reown-com/appkit-react-native/commit/d3a9604b59fd177465fbf5b04ee3c26200e40384), [`19e17ef`](https://github.com/reown-com/appkit-react-native/commit/19e17ef9b85e4d81f424438d83c3f3c89dd80c92)]:
+  - @reown/appkit-common-react-native@1.2.2
+
 ## 1.2.1
 
 ### Patch Changes
