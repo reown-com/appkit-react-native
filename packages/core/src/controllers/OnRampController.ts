@@ -227,11 +227,26 @@ export const OnRampController = {
         countries: state.selectedCountry?.countryCode
       }
     });
-    state.paymentMethods = paymentMethods || [];
-    state.selectedPaymentMethod =
-      paymentMethods?.find(p => p.paymentMethod === 'CREDIT_DEBIT_CARD') ||
-      paymentMethods?.[0] ||
-      undefined;
+
+    const defaultCountryPaymentMethods =
+      ConstantsUtil.COUNTRY_DEFAULT_PAYMENT_METHOD[
+        state.selectedCountry
+          ?.countryCode as keyof typeof ConstantsUtil.COUNTRY_DEFAULT_PAYMENT_METHOD
+      ];
+
+    state.paymentMethods =
+      paymentMethods?.sort((a, b) => {
+        const aIndex = defaultCountryPaymentMethods?.indexOf(a.paymentMethod);
+        const bIndex = defaultCountryPaymentMethods?.indexOf(b.paymentMethod);
+
+        if (aIndex === -1 && bIndex === -1) return 0;
+        if (aIndex === -1) return 1;
+        if (bIndex === -1) return -1;
+
+        return aIndex - bIndex;
+      }) || [];
+
+    state.selectedPaymentMethod = paymentMethods?.[0] || undefined;
 
     this.clearQuotes();
   },

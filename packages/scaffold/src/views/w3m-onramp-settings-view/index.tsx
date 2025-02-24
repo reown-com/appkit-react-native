@@ -63,7 +63,8 @@ export function OnRampSettingsView() {
         item={parsedItem}
         onPress={onPressModalItem}
         selected={parsedItem.currencyCode === paymentCurrency?.currencyCode}
-        isToken={false}
+        title={parsedItem.name}
+        subtitle={parsedItem.currencyCode}
       />
     );
   };

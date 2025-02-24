@@ -57,12 +57,14 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
 
     // Switch payment method to the top if there are more than visibleItemsCount payment methods
     if (OnRampController.state.paymentMethods.length > visibleItemsCount) {
-      const paymentIndex = paymentMethods.findIndex(method => method.name === paymentMethod.name);
+      const paymentIndex = paymentMethods.findIndex(
+        method => method.paymentMethod === paymentMethod.paymentMethod
+      );
 
       // Switch payment if its not visible
       if (paymentIndex + 1 > visibleItemsCount - 1) {
         const realIndex = OnRampController.state.paymentMethods.findIndex(
-          method => method.name === paymentMethod.name
+          method => method.paymentMethod === paymentMethod.paymentMethod
         );
 
         const newPaymentMethods = [
@@ -118,7 +120,8 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
 
   const renderPaymentMethod = ({ item }: { item: OnRampPaymentMethod }) => {
     const parsedItem = item as OnRampPaymentMethod;
-    const selected = parsedItem.name === OnRampController.state.selectedPaymentMethod?.name;
+    const selected =
+      parsedItem.paymentMethod === OnRampController.state.selectedPaymentMethod?.paymentMethod;
 
     return (
       <PaymentMethod
@@ -162,7 +165,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
             style={styles.paymentMethodsContainer}
             contentContainerStyle={styles.paymentMethodsContent}
             fadingEdgeLength={20}
-            keyExtractor={item => item.name}
+            keyExtractor={item => item.paymentMethod}
             horizontal
             showsHorizontalScrollIndicator={false}
           />

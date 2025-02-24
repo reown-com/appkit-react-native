@@ -58,6 +58,8 @@ export function OnRampView() {
   const [isPaymentMethodModalVisible, setIsPaymentMethodModalVisible] = useState(false);
   const providerImage = OnRampController.getServiceProviderImage(selectedQuote?.serviceProvider);
   const suggestedValues = getCurrencySuggestedValues(paymentCurrency);
+  const purchaseCurrencyCode =
+    purchaseCurrency?.currencyCode?.split('_')[0] ?? purchaseCurrency?.currencyCode;
 
   const getQuotes = useCallback(() => {
     if (
@@ -115,7 +117,9 @@ export function OnRampView() {
         item={item}
         onPress={onPressPurchaseCurrency}
         selected={item.currencyCode === purchaseCurrency?.currencyCode}
-        isToken={true}
+        title={item.name}
+        subtitle={item.currencyCode.split('_')[0] ?? item.currencyCode}
+        chainName={item.chainName}
       />
     );
   };
@@ -150,7 +154,7 @@ export function OnRampView() {
             <TokenButton
               placeholder={'Select currency'}
               imageUrl={purchaseCurrency?.symbolImageUrl}
-              text={purchaseCurrency?.currencyCode}
+              text={purchaseCurrencyCode}
               onPress={() => setIsCurrencyModalVisible(true)}
             />
           </FlexView>
@@ -166,7 +170,7 @@ export function OnRampView() {
               selectedQuote?.destinationAmount
                 ? NumberUtil.roundNumber(selectedQuote.destinationAmount, 6, 5)?.toString()
                 : '0.00'
-            } ${purchaseCurrency?.currencyCode ?? ''}`}
+            } ${purchaseCurrencyCode}`}
             onValueChange={onValueChange}
             style={styles.currencyInput}
           />

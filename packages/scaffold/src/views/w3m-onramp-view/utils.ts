@@ -18,12 +18,12 @@ export type OnRampError =
 const ERROR_MESSAGES: Record<OnRampError, string> = {
   INVALID_AMOUNT_TOO_LOW: 'Amount is too low',
   INVALID_AMOUNT_TOO_HIGH: 'Amount is too high',
-  INVALID_AMOUNT: 'No options available. Please try a different amount',
-  INCOMPATIBLE_REQUEST: 'No options available. Please try a different combination',
-  BAD_REQUEST: 'No options available. Please try a different combination',
+  INVALID_AMOUNT: 'No quotes found. Change amount',
+  INCOMPATIBLE_REQUEST: 'No quotes found. Change amount or payment method',
+  BAD_REQUEST: 'No quotes found. Change amount or payment method',
   TRANSACTION_FAILED_GETTING_CRYPTO_QUOTE_FROM_PROVIDER:
-    'No options available. Please try a different combination',
-  TRANSACTION_EXCEPTION: 'No options available. Please try a different combination'
+    'No quotes found. Change amount or payment method',
+  TRANSACTION_EXCEPTION: 'No quotes found. Change amount or payment method'
 };
 
 // -------------------------- Utils --------------------------
@@ -38,7 +38,7 @@ export const isAmountError = (error?: string) => {
 export const getErrorMessage = (error?: string) => {
   if (!error) return undefined;
 
-  return ERROR_MESSAGES[error as OnRampError] ?? 'No options available';
+  return ERROR_MESSAGES[error as OnRampError] ?? 'No quotes found. Change amount or payment method';
 };
 
 export const getPurchaseCurrencies = (searchValue?: string, filterSelected?: boolean) => {
@@ -65,6 +65,8 @@ export const getCurrencySuggestedValues = (currency?: OnRampFiatCurrency) => {
   if (!currency) return [];
 
   const limit = OnRampController.getCurrencyLimit(currency);
+  if (!limit) return [];
+
   let minAmount = limit?.minimumAmount ?? 0;
 
   if (minAmount < 10) minAmount = 10;

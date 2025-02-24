@@ -20,10 +20,12 @@ interface Props {
   onPress: (item: OnRampFiatCurrency | OnRampCryptoCurrency) => void;
   item: OnRampFiatCurrency | OnRampCryptoCurrency;
   selected: boolean;
-  isToken: boolean;
+  title: string;
+  subtitle: string;
+  chainName?: string;
 }
 
-export function Currency({ onPress, item, selected, isToken }: Props) {
+export function Currency({ onPress, item, selected, title, subtitle, chainName }: Props) {
   const Theme = useTheme();
 
   const handlePress = () => {
@@ -40,15 +42,21 @@ export function Currency({ onPress, item, selected, isToken }: Props) {
           />
           <FlexView>
             <Text variant="paragraph-500" color="fg-100" numberOfLines={1} ellipsizeMode="tail">
-              {isToken ? item.currencyCode : item.name}
+              {title}
             </Text>
             <Text variant="small-400" color="fg-150">
-              {isToken ? item.name : item.currencyCode}
+              {subtitle}
             </Text>
           </FlexView>
         </FlexView>
-        {selected && (
+        {selected ? (
           <Icon name="checkmark" size="md" color="accent-100" style={styles.checkmark} />
+        ) : (
+          chainName && (
+            <Text variant="tiny-400" color="fg-150">
+              {chainName}
+            </Text>
+          )
         )}
       </FlexView>
     </Pressable>
