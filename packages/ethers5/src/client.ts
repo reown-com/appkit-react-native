@@ -809,29 +809,32 @@ export class AppKit extends AppKitScaffold {
     if (chainId && this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId);
       const token = this.options?.tokens?.[chainId];
-
-      if (chain) {
-        const jsonRpcProvider = new ethers.providers.JsonRpcProvider(chain.rpcUrl, {
-          chainId,
-          name: chain.name
-        });
-        if (jsonRpcProvider) {
-          if (token) {
-            // Get balance from custom token address
-            const erc20 = new Contract(token.address, erc20ABI, jsonRpcProvider);
-            // @ts-expect-error
-            const decimals = await erc20.decimals();
-            // @ts-expect-error
-            const symbol = await erc20.symbol();
-            // @ts-expect-error
-            const balanceOf = await erc20.balanceOf(address);
-            this.setBalance(utils.formatUnits(balanceOf, decimals), symbol);
-          } else {
-            const balance = await jsonRpcProvider.getBalance(address);
-            const formattedBalance = utils.formatEther(balance);
-            this.setBalance(formattedBalance, chain.currency);
+      try {
+        if (chain) {
+          const jsonRpcProvider = new ethers.providers.JsonRpcProvider(chain.rpcUrl, {
+            chainId,
+            name: chain.name
+          });
+          if (jsonRpcProvider) {
+            if (token) {
+              // Get balance from custom token address
+              const erc20 = new Contract(token.address, erc20ABI, jsonRpcProvider);
+              // @ts-expect-error
+              const decimals = await erc20.decimals();
+              // @ts-expect-error
+              const symbol = await erc20.symbol();
+              // @ts-expect-error
+              const balanceOf = await erc20.balanceOf(address);
+              this.setBalance(utils.formatUnits(balanceOf, decimals), symbol);
+            } else {
+              const balance = await jsonRpcProvider.getBalance(address);
+              const formattedBalance = utils.formatEther(balance);
+              this.setBalance(formattedBalance, chain.currency);
+            }
           }
         }
+      } catch {
+        this.setBalance(undefined, undefined);
       }
     }
   }
