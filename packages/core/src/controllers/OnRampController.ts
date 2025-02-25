@@ -340,7 +340,8 @@ export const OnRampController = {
         paymentMethodType: state.selectedPaymentMethod?.paymentMethod,
         destinationCurrencyCode: state.purchaseCurrency?.currencyCode,
         sourceAmount: state.paymentAmount?.toString() || '0',
-        sourceCurrencyCode: state.paymentCurrency?.currencyCode
+        sourceCurrencyCode: state.paymentCurrency?.currencyCode,
+        walletAddress: AccountController.state.address
       };
 
       const response = await api.post<OnRampQuoteResponse>({
