@@ -1,8 +1,11 @@
+import { useSnapshot } from 'valtio';
 import Modal from 'react-native-modal';
 import { FlatList, View } from 'react-native';
 import {
   FlexView,
+  IconBox,
   IconLink,
+  Image,
   SearchBar,
   Separator,
   Spacing,
@@ -10,6 +13,7 @@ import {
   useTheme
 } from '@reown/appkit-ui-react-native';
 import styles from './styles';
+import { AssetUtil, NetworkController } from '@reown/appkit-core-react-native';
 
 interface SelectorModalProps {
   title?: string;
@@ -21,6 +25,7 @@ interface SelectorModalProps {
   keyExtractor: (item: any, index: number) => string;
   onSearch: (value: string) => void;
   itemHeight?: number;
+  showNetwork?: boolean;
 }
 
 const SEPARATOR_HEIGHT = Spacing.s;
@@ -34,9 +39,12 @@ export function SelectorModal({
   renderItem,
   onSearch,
   keyExtractor,
-  itemHeight
+  itemHeight,
+  showNetwork
 }: SelectorModalProps) {
   const Theme = useTheme();
+  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
 
   const renderSeparator = () => {
     return <View style={{ height: SEPARATOR_HEIGHT }} />;
@@ -62,7 +70,23 @@ export function SelectorModal({
         >
           <IconLink icon="chevronLeft" onPress={onClose} />
           {!!title && <Text variant="paragraph-600">{title}</Text>}
-          <View style={styles.iconPlaceholder} />
+          {showNetwork ? (
+            networkImage ? (
+              <FlexView alignItems="center" justifyContent="center" style={styles.iconPlaceholder}>
+                <Image source={networkImage} style={styles.networkImage} />
+              </FlexView>
+            ) : (
+              <IconBox
+                style={styles.iconPlaceholder}
+                icon="networkPlaceholder"
+                background
+                iconColor="fg-200"
+                size="sm"
+              />
+            )
+          ) : (
+            <View style={styles.iconPlaceholder} />
+          )}
         </FlexView>
         <SearchBar onChangeText={onSearch} style={styles.searchBar} />
         {selectedItem && (

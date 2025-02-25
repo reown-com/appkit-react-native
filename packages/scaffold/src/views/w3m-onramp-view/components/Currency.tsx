@@ -22,10 +22,9 @@ interface Props {
   selected: boolean;
   title: string;
   subtitle: string;
-  chainName?: string;
 }
 
-export function Currency({ onPress, item, selected, title, subtitle, chainName }: Props) {
+export function Currency({ onPress, item, selected, title, subtitle }: Props) {
   const Theme = useTheme();
 
   const handlePress = () => {
@@ -49,14 +48,8 @@ export function Currency({ onPress, item, selected, title, subtitle, chainName }
             </Text>
           </FlexView>
         </FlexView>
-        {selected ? (
+        {selected && (
           <Icon name="checkmark" size="md" color="accent-100" style={styles.checkmark} />
-        ) : (
-          chainName && (
-            <Text variant="tiny-400" color="fg-150">
-              {chainName}
-            </Text>
-          )
         )}
       </FlexView>
     </Pressable>

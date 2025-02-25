@@ -119,7 +119,6 @@ export function OnRampView() {
         selected={item.currencyCode === purchaseCurrency?.currencyCode}
         title={item.name}
         subtitle={item.currencyCode.split('_')[0] ?? item.currencyCode}
-        chainName={item.chainName}
       />
     );
   };
@@ -240,8 +239,9 @@ export function OnRampView() {
             onSearch={handleSearch}
             renderItem={renderCurrencyItem}
             keyExtractor={item => item.currencyCode}
-            title="Select a token"
+            title="Choose Asset"
             itemHeight={CURRENCY_ITEM_HEIGHT}
+            showNetwork
           />
         </FlexView>
       </ScrollView>

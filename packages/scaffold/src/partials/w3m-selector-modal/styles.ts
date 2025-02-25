@@ -27,6 +27,11 @@ export default StyleSheet.create({
     height: 32,
     width: 32
   },
+  networkImage: {
+    height: 20,
+    width: 20,
+    borderRadius: BorderRadius.full
+  },
   searchBar: {
     marginBottom: Spacing.s,
     marginHorizontal: Spacing.s
