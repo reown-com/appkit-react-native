@@ -9,14 +9,16 @@ import type {
   OnRampQuote,
   OnRampFiatLimit,
   OnRampCryptoCurrency,
-  OnRampServiceProvider
+  OnRampServiceProvider,
+  OnRampError,
+  OnRampErrorTypeValues
 } from '../utils/TypeUtil';
 import { FetchUtil } from '../utils/FetchUtil';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { NetworkController } from './NetworkController';
 import { AccountController } from './AccountController';
 import { OptionsController } from './OptionsController';
-import { ConstantsUtil } from '../utils/ConstantsUtil';
+import { ConstantsUtil, OnRampErrorType } from '../utils/ConstantsUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import { SnackController } from './SnackController';
 import { EventsController } from './EventsController';
@@ -29,6 +31,40 @@ const headers = {
   'Content-Type': 'application/json'
 };
 let quotesAbortController: AbortController | null = null;
+
+// -- Utils --------------------------------------------- //
+
+const mapErrorMessage = (errorCode: string): OnRampError => {
+  const errorMap: Record<string, { type: OnRampErrorTypeValues; message: string }> = {
+    [OnRampErrorType.AMOUNT_TOO_LOW]: {
+      type: OnRampErrorType.AMOUNT_TOO_LOW,
+      message: 'Amount is too low'
+    },
+    [OnRampErrorType.AMOUNT_TOO_HIGH]: {
+      type: OnRampErrorType.AMOUNT_TOO_HIGH,
+      message: 'Amount is too high'
+    },
+    [OnRampErrorType.INVALID_AMOUNT]: {
+      type: OnRampErrorType.INVALID_AMOUNT,
+      message: 'Please adjust amount'
+    },
+    [OnRampErrorType.INCOMPATIBLE_REQUEST]: {
+      type: OnRampErrorType.INCOMPATIBLE_REQUEST,
+      message: 'Try different amount or payment method'
+    },
+    [OnRampErrorType.BAD_REQUEST]: {
+      type: OnRampErrorType.BAD_REQUEST,
+      message: 'Try different amount or payment method'
+    }
+  };
+
+  return (
+    errorMap[errorCode] || {
+      type: OnRampErrorType.UNKNOWN,
+      message: 'Something went wrong. Please try again'
+    }
+  );
+};
 
 // -- Types --------------------------------------------- //
 export interface OnRampControllerState {
@@ -47,7 +83,7 @@ export interface OnRampControllerState {
   quotes?: OnRampQuote[];
   selectedQuote?: OnRampQuote;
   widgetUrl?: string;
-  error?: string;
+  error?: OnRampError;
   initialLoading?: boolean;
   loading?: boolean;
   quotesLoading: boolean;
@@ -202,7 +238,10 @@ export const OnRampController = {
           undefined;
       }
     } catch (error) {
-      state.error = 'Failed to load countries';
+      state.error = {
+        type: OnRampErrorType.FAILED_TO_LOAD_COUNTRIES,
+        message: 'Failed to load countries'
+      };
     }
   },
 
@@ -227,7 +266,10 @@ export const OnRampController = {
 
       state.serviceProviders = serviceProviders || [];
     } catch (error) {
-      state.error = 'Failed to load service providers';
+      state.error = {
+        type: OnRampErrorType.FAILED_TO_LOAD_PROVIDERS,
+        message: 'Failed to load service providers'
+      };
     }
   },
 
@@ -264,7 +306,10 @@ export const OnRampController = {
 
       this.clearQuotes();
     } catch (error) {
-      state.error = 'Failed to load payment methods';
+      state.error = {
+        type: OnRampErrorType.FAILED_TO_LOAD_METHODS,
+        message: 'Failed to load payment methods'
+      };
       state.paymentMethods = [];
       state.selectedPaymentMethod = undefined;
     }
@@ -295,7 +340,10 @@ export const OnRampController = {
 
       state.purchaseCurrency = selectedCurrency || cryptoCurrencies?.[0] || undefined;
     } catch (error) {
-      state.error = 'Failed to load crypto currencies';
+      state.error = {
+        type: OnRampErrorType.FAILED_TO_LOAD_CURRENCIES,
+        message: 'Failed to load crypto currencies'
+      };
       state.purchaseCurrencies = [];
       state.purchaseCurrency = undefined;
     }
@@ -340,7 +388,10 @@ export const OnRampController = {
         this.setPaymentCurrency(defaultCurrency);
       }
     } catch (error) {
-      state.error = 'Failed to load fiat currencies';
+      state.error = {
+        type: OnRampErrorType.FAILED_TO_LOAD_CURRENCIES,
+        message: 'Failed to load fiat currencies'
+      };
       state.paymentCurrencies = [];
       state.paymentCurrency = undefined;
     }
@@ -423,23 +474,10 @@ export const OnRampController = {
       });
 
       this.clearQuotes();
-      state.error = this.mapErrorMessage(error?.code || 'UNKNOWN_ERROR');
+      state.error = mapErrorMessage(error?.code || 'UNKNOWN_ERROR');
     } finally {
       state.quotesLoading = false;
     }
-  },
-
-  mapErrorMessage(errorCode: string): string {
-    const errorMap: Record<string, string> = {
-      INVALID_AMOUNT_TOO_LOW: 'Amount is too low',
-      INVALID_AMOUNT_TOO_HIGH: 'Amount is too high',
-      INVALID_AMOUNT: 'Please adjust amount',
-      INCOMPATIBLE_REQUEST: 'Try different amount or payment method',
-      BAD_REQUEST: 'Try different amount or payment method',
-      UNKNOWN_ERROR: 'Something went wrong. Please try again'
-    };
-
-    return errorMap[errorCode] || errorCode;
   },
 
   canGenerateQuote(): boolean {
@@ -477,7 +515,10 @@ export const OnRampController = {
 
       state.paymentCurrenciesLimits = limits;
     } catch (error) {
-      state.error = 'Failed to load fiat limits';
+      state.error = {
+        type: OnRampErrorType.FAILED_TO_LOAD_LIMITS,
+        message: 'Failed to load fiat limits'
+      };
       state.paymentCurrenciesLimits = [];
     }
   },
@@ -536,7 +577,7 @@ export const OnRampController = {
         }
       });
 
-      state.error = this.mapErrorMessage(e?.code || 'UNKNOWN_ERROR');
+      state.error = mapErrorMessage(e?.code || 'UNKNOWN_ERROR');
       SnackController.showInternalError({
         shortMessage: 'Error creating purchase URL',
         longMessage: e?.message ?? e?.code
@@ -562,7 +603,6 @@ export const OnRampController = {
       await this.fetchCountries();
       await this.fetchServiceProviders();
 
-      // Load these in parallel
       await Promise.all([
         this.fetchPaymentMethods(),
         this.fetchFiatLimits(),
@@ -570,7 +610,10 @@ export const OnRampController = {
         this.fetchFiatCurrencies()
       ]);
     } catch (error) {
-      state.error = 'Failed to load data';
+      state.error = {
+        type: OnRampErrorType.FAILED_TO_LOAD,
+        message: 'Failed to load data'
+      };
     } finally {
       state.initialLoading = false;
     }

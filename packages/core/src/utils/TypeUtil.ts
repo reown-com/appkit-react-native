@@ -6,6 +6,7 @@ import type {
   Transaction,
   ConnectorType
 } from '@reown/appkit-common-react-native';
+import { OnRampErrorType } from './ConstantsUtil';
 
 export interface BaseError {
   message?: string;
@@ -812,6 +813,13 @@ export type SwapTokenWithBalance = SwapToken & {
 export type SwapInputTarget = 'sourceToken' | 'toToken';
 
 // -- OnRamp Controller Types ------------------------------------------------
+export type OnRampErrorTypeValues = (typeof OnRampErrorType)[keyof typeof OnRampErrorType];
+
+export interface OnRampError {
+  type: OnRampErrorTypeValues;
+  message: string;
+}
+
 export type OnRampPaymentMethod = {
   logos: {
     dark: string;

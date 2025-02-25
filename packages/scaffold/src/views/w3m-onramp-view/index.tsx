@@ -8,7 +8,9 @@ import {
   RouterController,
   type OnRampControllerState,
   NetworkController,
-  AssetUtil
+  AssetUtil,
+  SnackController,
+  ConstantsUtil
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -128,6 +130,16 @@ export function OnRampView() {
   }, [selectedPaymentMethod, getQuotes]);
 
   useEffect(() => {
+    if (error?.type === ConstantsUtil.ONRAMP_ERROR_TYPES.FAILED_TO_LOAD) {
+      SnackController.showInternalError({
+        shortMessage: 'Failed to load data. Please try again later.',
+        longMessage: error?.message
+      });
+      RouterController.goBack();
+    }
+  }, [error]);
+
+  useEffect(() => {
     if (OnRampController.state.countries.length === 0) {
       OnRampController.loadOnRampData();
     }
@@ -165,10 +177,14 @@ export function OnRampView() {
           <CurrencyInput
             value={paymentAmount?.toString()}
             symbol={paymentCurrency?.currencyCode}
-            error={error}
+            error={error?.message}
             suggestedValues={suggestedValues}
             onSuggestedValuePress={onSuggestedValuePress}
-            isAmountError={error?.toLowerCase().includes('amount')}
+            isAmountError={
+              error?.type === ConstantsUtil.ONRAMP_ERROR_TYPES.AMOUNT_TOO_LOW ||
+              error?.type === ConstantsUtil.ONRAMP_ERROR_TYPES.AMOUNT_TOO_HIGH ||
+              error?.type === ConstantsUtil.ONRAMP_ERROR_TYPES.INVALID_AMOUNT
+            }
             loading={loading || quotesLoading}
             purchaseValue={`${
               selectedQuote?.destinationAmount

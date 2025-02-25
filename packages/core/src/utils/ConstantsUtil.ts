@@ -8,6 +8,21 @@ const defaultFeatures: Features = {
   socials: ['x', 'discord', 'apple']
 };
 
+export const OnRampErrorType = {
+  AMOUNT_TOO_LOW: 'INVALID_AMOUNT_TOO_LOW',
+  AMOUNT_TOO_HIGH: 'INVALID_AMOUNT_TOO_HIGH',
+  INVALID_AMOUNT: 'INVALID_AMOUNT',
+  INCOMPATIBLE_REQUEST: 'INCOMPATIBLE_REQUEST',
+  BAD_REQUEST: 'BAD_REQUEST',
+  FAILED_TO_LOAD: 'FAILED_TO_LOAD',
+  FAILED_TO_LOAD_COUNTRIES: 'FAILED_TO_LOAD_COUNTRIES',
+  FAILED_TO_LOAD_PROVIDERS: 'FAILED_TO_LOAD_PROVIDERS',
+  FAILED_TO_LOAD_METHODS: 'FAILED_TO_LOAD_METHODS',
+  FAILED_TO_LOAD_CURRENCIES: 'FAILED_TO_LOAD_CURRENCIES',
+  FAILED_TO_LOAD_LIMITS: 'FAILED_TO_LOAD_LIMITS',
+  UNKNOWN: 'UNKNOWN_ERROR'
+} as const;
+
 export const ConstantsUtil = {
   FOUR_MINUTES_MS: 240000,
 
@@ -15,11 +30,13 @@ export const ConstantsUtil = {
 
   ONE_SEC_MS: 1000,
 
-  EMAIL_REGEX: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/,
+  EMAIL_REGEX: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/,
 
   LINKING_ERROR: 'LINKING_ERROR',
 
   NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+
+  ONRAMP_ERROR_TYPES: OnRampErrorType,
 
   SWAP_SUGGESTED_TOKENS: [
     'ETH',
