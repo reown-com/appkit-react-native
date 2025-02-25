@@ -48,6 +48,7 @@ export interface OnRampControllerState {
   selectedQuote?: OnRampQuote;
   widgetUrl?: string;
   error?: string;
+  initialLoading?: boolean;
   loading?: boolean;
   quotesLoading: boolean;
 }
@@ -167,149 +168,181 @@ export const OnRampController = {
   },
 
   async fetchCountries() {
-    let countries = await StorageUtil.getOnRampCountries();
+    try {
+      let countries = await StorageUtil.getOnRampCountries();
 
-    if (!countries.length) {
-      countries =
-        (await api.get<OnRampCountry[]>({
-          path: '/service-providers/properties/countries',
-          headers,
-          params: {
-            categories: 'CRYPTO_ONRAMP'
-          }
-        })) ?? [];
+      if (!countries.length) {
+        countries =
+          (await api.get<OnRampCountry[]>({
+            path: '/service-providers/properties/countries',
+            headers,
+            params: {
+              categories: 'CRYPTO_ONRAMP'
+            }
+          })) ?? [];
 
-      StorageUtil.setOnRampCountries(countries);
-    }
+        if (countries.length) {
+          StorageUtil.setOnRampCountries(countries);
+        }
+      }
 
-    state.countries = countries || [];
+      state.countries = countries;
 
-    const preferredCountry = await StorageUtil.getOnRampPreferredCountry();
+      const preferredCountry = await StorageUtil.getOnRampPreferredCountry();
 
-    if (preferredCountry) {
-      state.selectedCountry = preferredCountry;
-    } else {
-      const timezone = CoreHelperUtil.getTimezone()?.toLowerCase()?.split('/');
+      if (preferredCountry) {
+        state.selectedCountry = preferredCountry;
+      } else {
+        const timezone = CoreHelperUtil.getTimezone()?.toLowerCase()?.split('/');
 
-      state.selectedCountry =
-        countries?.find(c => timezone?.includes(c.name.toLowerCase())) ||
-        countries?.find(c => c.countryCode === 'US') ||
-        countries?.[0] ||
-        undefined;
+        state.selectedCountry =
+          countries.find(c => timezone?.includes(c.name.toLowerCase())) ||
+          countries.find(c => c.countryCode === 'US') ||
+          countries[0] ||
+          undefined;
+      }
+    } catch (error) {
+      state.error = 'Failed to load countries';
     }
   },
 
   async fetchServiceProviders() {
-    let serviceProviders = await StorageUtil.getOnRampServiceProviders();
+    try {
+      let serviceProviders = await StorageUtil.getOnRampServiceProviders();
 
-    if (!serviceProviders.length) {
-      serviceProviders =
-        (await api.get<OnRampServiceProvider[]>({
-          path: '/service-providers',
-          headers,
-          params: {
-            categories: 'CRYPTO_ONRAMP'
-          }
-        })) ?? [];
+      if (!serviceProviders.length) {
+        serviceProviders =
+          (await api.get<OnRampServiceProvider[]>({
+            path: '/service-providers',
+            headers,
+            params: {
+              categories: 'CRYPTO_ONRAMP'
+            }
+          })) ?? [];
 
-      StorageUtil.setOnRampServiceProviders(serviceProviders);
+        if (serviceProviders.length) {
+          StorageUtil.setOnRampServiceProviders(serviceProviders);
+        }
+      }
+
+      state.serviceProviders = serviceProviders || [];
+    } catch (error) {
+      state.error = 'Failed to load service providers';
     }
-
-    state.serviceProviders = serviceProviders || [];
   },
 
   async fetchPaymentMethods() {
-    const paymentMethods = await api.get<OnRampPaymentMethod[]>({
-      path: '/service-providers/properties/payment-methods',
-      headers,
-      params: {
-        categories: 'CRYPTO_ONRAMP',
-        countries: state.selectedCountry?.countryCode
-      }
-    });
+    try {
+      const paymentMethods = await api.get<OnRampPaymentMethod[]>({
+        path: '/service-providers/properties/payment-methods',
+        headers,
+        params: {
+          categories: 'CRYPTO_ONRAMP',
+          countries: state.selectedCountry?.countryCode
+        }
+      });
 
-    const defaultCountryPaymentMethods =
-      ConstantsUtil.COUNTRY_DEFAULT_PAYMENT_METHOD[
-        state.selectedCountry
-          ?.countryCode as keyof typeof ConstantsUtil.COUNTRY_DEFAULT_PAYMENT_METHOD
-      ];
+      const defaultCountryPaymentMethods =
+        ConstantsUtil.COUNTRY_DEFAULT_PAYMENT_METHOD[
+          state.selectedCountry
+            ?.countryCode as keyof typeof ConstantsUtil.COUNTRY_DEFAULT_PAYMENT_METHOD
+        ];
 
-    state.paymentMethods =
-      paymentMethods?.sort((a, b) => {
-        const aIndex = defaultCountryPaymentMethods?.indexOf(a.paymentMethod);
-        const bIndex = defaultCountryPaymentMethods?.indexOf(b.paymentMethod);
+      state.paymentMethods =
+        paymentMethods?.sort((a, b) => {
+          const aIndex = defaultCountryPaymentMethods?.indexOf(a.paymentMethod);
+          const bIndex = defaultCountryPaymentMethods?.indexOf(b.paymentMethod);
 
-        if (aIndex === -1 && bIndex === -1) return 0;
-        if (aIndex === -1) return 1;
-        if (bIndex === -1) return -1;
+          if (aIndex === -1 && bIndex === -1) return 0;
+          if (aIndex === -1) return 1;
+          if (bIndex === -1) return -1;
 
-        return aIndex - bIndex;
-      }) || [];
+          return aIndex - bIndex;
+        }) || [];
 
-    state.selectedPaymentMethod = paymentMethods?.[0] || undefined;
+      state.selectedPaymentMethod = paymentMethods?.[0] || undefined;
 
-    this.clearQuotes();
+      this.clearQuotes();
+    } catch (error) {
+      state.error = 'Failed to load payment methods';
+      state.paymentMethods = [];
+      state.selectedPaymentMethod = undefined;
+    }
   },
 
   async fetchCryptoCurrencies() {
-    const cryptoCurrencies = await api.get<OnRampCryptoCurrency[]>({
-      path: '/service-providers/properties/crypto-currencies',
-      headers,
-      params: {
-        categories: 'CRYPTO_ONRAMP',
-        countries: state.selectedCountry?.countryCode
+    try {
+      const cryptoCurrencies = await api.get<OnRampCryptoCurrency[]>({
+        path: '/service-providers/properties/crypto-currencies',
+        headers,
+        params: {
+          categories: 'CRYPTO_ONRAMP',
+          countries: state.selectedCountry?.countryCode
+        }
+      });
+
+      state.purchaseCurrencies = cryptoCurrencies || [];
+
+      let selectedCurrency;
+      if (NetworkController.state.caipNetwork?.id) {
+        const defaultCurrency =
+          ConstantsUtil.NETWORK_DEFAULT_CURRENCIES[
+            NetworkController.state.caipNetwork
+              ?.id as keyof typeof ConstantsUtil.NETWORK_DEFAULT_CURRENCIES
+          ] || 'ETH';
+        selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === defaultCurrency);
       }
-    });
 
-    state.purchaseCurrencies = cryptoCurrencies || [];
-
-    let selectedCurrency;
-    if (NetworkController.state.caipNetwork?.id) {
-      const defaultCurrency =
-        ConstantsUtil.NETWORK_DEFAULT_CURRENCIES[
-          NetworkController.state.caipNetwork
-            ?.id as keyof typeof ConstantsUtil.NETWORK_DEFAULT_CURRENCIES
-        ] || 'ETH';
-      selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === defaultCurrency);
+      state.purchaseCurrency = selectedCurrency || cryptoCurrencies?.[0] || undefined;
+    } catch (error) {
+      state.error = 'Failed to load crypto currencies';
+      state.purchaseCurrencies = [];
+      state.purchaseCurrency = undefined;
     }
-
-    state.purchaseCurrency = selectedCurrency || cryptoCurrencies?.[0] || undefined;
   },
 
   async fetchFiatCurrencies() {
-    let fiatCurrencies = await StorageUtil.getOnRampFiatCurrencies();
-    let currencyCode = 'USD';
-    const countryCode = state.selectedCountry?.countryCode;
+    try {
+      let fiatCurrencies = await StorageUtil.getOnRampFiatCurrencies();
+      let currencyCode = 'USD';
+      const countryCode = state.selectedCountry?.countryCode;
 
-    if (!fiatCurrencies.length) {
-      fiatCurrencies =
-        (await api.get<OnRampFiatCurrency[]>({
-          path: '/service-providers/properties/fiat-currencies',
-          headers,
-          params: {
-            categories: 'CRYPTO_ONRAMP'
-          }
-        })) ?? [];
+      if (!fiatCurrencies.length) {
+        fiatCurrencies =
+          (await api.get<OnRampFiatCurrency[]>({
+            path: '/service-providers/properties/fiat-currencies',
+            headers,
+            params: {
+              categories: 'CRYPTO_ONRAMP'
+            }
+          })) ?? [];
 
-      StorageUtil.setOnRampFiatCurrencies(fiatCurrencies);
-    }
+        if (fiatCurrencies.length) {
+          StorageUtil.setOnRampFiatCurrencies(fiatCurrencies);
+        }
+      }
 
-    state.paymentCurrencies = fiatCurrencies || [];
+      state.paymentCurrencies = fiatCurrencies || [];
 
-    if (countryCode) {
-      currencyCode =
-        ConstantsUtil.COUNTRY_CURRENCIES[
-          countryCode as keyof typeof ConstantsUtil.COUNTRY_CURRENCIES
-        ];
-    }
+      if (countryCode) {
+        currencyCode =
+          ConstantsUtil.COUNTRY_CURRENCIES[
+            countryCode as keyof typeof ConstantsUtil.COUNTRY_CURRENCIES
+          ];
+      }
 
-    const defaultCurrency =
-      fiatCurrencies?.find(c => c.currencyCode === currencyCode) ||
-      fiatCurrencies?.[0] ||
-      undefined;
+      const defaultCurrency =
+        fiatCurrencies?.find(c => c.currencyCode === currencyCode) ||
+        fiatCurrencies?.[0] ||
+        undefined;
 
-    if (defaultCurrency) {
-      this.setPaymentCurrency(defaultCurrency);
+      if (defaultCurrency) {
+        this.setPaymentCurrency(defaultCurrency);
+      }
+    } catch (error) {
+      state.error = 'Failed to load fiat currencies';
+      state.paymentCurrencies = [];
+      state.paymentCurrency = undefined;
     }
   },
 
@@ -326,12 +359,21 @@ export const OnRampController = {
     }
   },
 
+  getQuotesDebounced: CoreHelperUtil.debounce(function () {
+    OnRampController.getQuotes();
+  }, 500),
+
   async getQuotes() {
+    if (!state.paymentAmount || state.paymentAmount <= 0) {
+      this.clearQuotes();
+
+      return;
+    }
+
     state.quotesLoading = true;
     state.error = undefined;
 
     this.abortGetQuotes(false);
-
     quotesAbortController = new AbortController();
 
     try {
@@ -339,7 +381,7 @@ export const OnRampController = {
         countryCode: state.selectedCountry?.countryCode,
         paymentMethodType: state.selectedPaymentMethod?.paymentMethod,
         destinationCurrencyCode: state.purchaseCurrency?.currencyCode,
-        sourceAmount: state.paymentAmount?.toString() || '0',
+        sourceAmount: state.paymentAmount.toString(),
         sourceCurrencyCode: state.paymentCurrency?.currencyCode,
         walletAddress: AccountController.state.address
       };
@@ -351,20 +393,21 @@ export const OnRampController = {
         signal: quotesAbortController.signal
       });
 
-      const quotes = response?.quotes.sort((a, b) => b.destinationAmount - a.destinationAmount);
+      if (!response || !response.quotes || !response.quotes.length) {
+        throw new Error('No quotes available');
+      }
 
-      // Update quotes if payment amount is set (user could change the amount while the request is pending)
+      const quotes = response.quotes.sort((a, b) => b.destinationAmount - a.destinationAmount);
+
       if (state.paymentAmount && state.paymentAmount > 0) {
         state.quotes = quotes;
-        state.selectedQuote = quotes?.[0];
+        state.selectedQuote = quotes[0];
         state.selectedServiceProvider = state.serviceProviders.find(
-          sp => sp.serviceProvider === quotes?.[0]?.serviceProvider
+          sp => sp.serviceProvider === quotes[0]?.serviceProvider
         );
       } else {
         this.clearQuotes();
       }
-
-      state.quotesLoading = false;
     } catch (error: any) {
       if (error.name === 'AbortError') {
         // Do nothing, another request was made
@@ -379,31 +422,64 @@ export const OnRampController = {
         }
       });
 
-      state.quotes = [];
-      state.selectedQuote = undefined;
-      state.selectedServiceProvider = undefined;
-      state.error = error?.code || 'UNKNOWN_ERROR';
+      this.clearQuotes();
+      state.error = this.mapErrorMessage(error?.code || 'UNKNOWN_ERROR');
+    } finally {
       state.quotesLoading = false;
     }
   },
 
+  mapErrorMessage(errorCode: string): string {
+    const errorMap: Record<string, string> = {
+      INVALID_AMOUNT_TOO_LOW: 'Amount is too low',
+      INVALID_AMOUNT_TOO_HIGH: 'Amount is too high',
+      INVALID_AMOUNT: 'Please adjust amount',
+      INCOMPATIBLE_REQUEST: 'Try different amount or payment method',
+      BAD_REQUEST: 'Try different amount or payment method',
+      UNKNOWN_ERROR: 'Something went wrong. Please try again'
+    };
+
+    return errorMap[errorCode] || errorCode;
+  },
+
+  canGenerateQuote(): boolean {
+    return !!(
+      state.selectedCountry?.countryCode &&
+      state.selectedPaymentMethod?.paymentMethod &&
+      state.purchaseCurrency?.currencyCode &&
+      state.paymentAmount &&
+      state.paymentAmount > 0 &&
+      state.paymentCurrency?.currencyCode &&
+      state.selectedCountry &&
+      !state.loading &&
+      AccountController.state.address
+    );
+  },
+
   async fetchFiatLimits() {
-    let limits = await StorageUtil.getOnRampFiatLimits();
+    try {
+      let limits = await StorageUtil.getOnRampFiatLimits();
 
-    if (!limits.length) {
-      limits =
-        (await api.get<OnRampFiatLimit[]>({
-          path: 'service-providers/limits/fiat-currency-purchases',
-          headers,
-          params: {
-            categories: 'CRYPTO_ONRAMP'
-          }
-        })) ?? [];
+      if (!limits.length) {
+        limits =
+          (await api.get<OnRampFiatLimit[]>({
+            path: 'service-providers/limits/fiat-currency-purchases',
+            headers,
+            params: {
+              categories: 'CRYPTO_ONRAMP'
+            }
+          })) ?? [];
 
-      StorageUtil.setOnRampFiatLimits(limits);
+        if (limits.length) {
+          StorageUtil.setOnRampFiatLimits(limits);
+        }
+      }
+
+      state.paymentCurrenciesLimits = limits;
+    } catch (error) {
+      state.error = 'Failed to load fiat limits';
+      state.paymentCurrenciesLimits = [];
     }
-
-    state.paymentCurrenciesLimits = limits;
   },
 
   async generateWidget({ quote }: { quote: OnRampQuote }) {
@@ -437,13 +513,17 @@ export const OnRampController = {
         }
       });
 
+      if (!widget || !widget.widgetUrl) {
+        throw new Error('Invalid widget response');
+      }
+
       EventsController.sendEvent({
         type: 'track',
         event: 'BUY_SUBMITTED',
         properties: eventProperties
       });
 
-      state.widgetUrl = widget?.widgetUrl;
+      state.widgetUrl = widget.widgetUrl;
 
       return widget;
     } catch (e: any) {
@@ -456,7 +536,7 @@ export const OnRampController = {
         }
       });
 
-      state.error = e?.code || 'UNKNOWN_ERROR';
+      state.error = this.mapErrorMessage(e?.code || 'UNKNOWN_ERROR');
       SnackController.showInternalError({
         shortMessage: 'Error creating purchase URL',
         longMessage: e?.message ?? e?.code
@@ -477,12 +557,23 @@ export const OnRampController = {
   },
 
   async loadOnRampData() {
-    await this.fetchCountries();
-    await this.fetchServiceProviders();
-    await this.fetchPaymentMethods();
-    await this.fetchFiatLimits();
-    await this.fetchCryptoCurrencies();
-    await this.fetchFiatCurrencies();
+    state.initialLoading = true;
+    try {
+      await this.fetchCountries();
+      await this.fetchServiceProviders();
+
+      // Load these in parallel
+      await Promise.all([
+        this.fetchPaymentMethods(),
+        this.fetchFiatLimits(),
+        this.fetchCryptoCurrencies(),
+        this.fetchFiatCurrencies()
+      ]);
+    } catch (error) {
+      state.error = 'Failed to load data';
+    } finally {
+      state.initialLoading = false;
+    }
   },
 
   resetState() {

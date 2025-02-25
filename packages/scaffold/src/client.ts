@@ -30,8 +30,7 @@ import {
   SnackController,
   StorageUtil,
   ThemeController,
-  TransactionsController,
-  OnRampController
+  TransactionsController
 } from '@reown/appkit-core-react-native';
 import {
   ConstantsUtil,
@@ -324,7 +323,6 @@ export class AppKitScaffold {
       (options.metadata?.redirect?.universal || options.metadata?.redirect?.native)
     ) {
       OptionsController.setIsOnRampEnabled(true);
-      OnRampController.loadOnRampData();
     }
   }
 

@@ -22,19 +22,14 @@ import {
 import { NumberUtil, StringUtil } from '@reown/appkit-common-react-native';
 import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Currency } from './components/Currency';
-import {
-  getErrorMessage,
-  getPurchaseCurrencies,
-  isAmountError,
-  getCurrencySuggestedValues
-} from './utils';
+import { getPurchaseCurrencies, getCurrencySuggestedValues } from './utils';
 
 import { CurrencyInput } from './components/CurrencyInput';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
 import { ITEM_HEIGHT as CURRENCY_ITEM_HEIGHT } from './components/Currency';
-import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { Header } from './components/Header';
 import { UiUtil } from '../../utils/UiUtil';
+import { LoadingView } from './components/LoadingView';
 import styles from './styles';
 
 const MemoizedCurrency = memo(Currency);
@@ -52,7 +47,8 @@ export function OnRampView() {
     quotesLoading,
     selectedQuote,
     error,
-    loading
+    loading,
+    initialLoading
   } = useSnapshot(OnRampController.state) as OnRampControllerState;
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const [searchValue, setSearchValue] = useState('');
@@ -65,23 +61,10 @@ export function OnRampView() {
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
 
   const getQuotes = useCallback(() => {
-    if (
-      OnRampController.state.purchaseCurrency &&
-      OnRampController.state.selectedCountry &&
-      OnRampController.state.paymentCurrency &&
-      OnRampController.state.selectedPaymentMethod &&
-      OnRampController.state.paymentAmount &&
-      OnRampController.state.paymentAmount > 0 &&
-      !OnRampController.state.loading
-    ) {
+    if (OnRampController.canGenerateQuote()) {
       OnRampController.getQuotes();
     }
   }, []);
-
-  const { debouncedCallback: debouncedGetQuotes } = useDebounceCallback({
-    callback: getQuotes,
-    delay: 500
-  });
 
   const onValueChange = (value: number) => {
     UiUtil.animateChange();
@@ -95,7 +78,7 @@ export function OnRampView() {
     }
 
     OnRampController.setPaymentAmount(value);
-    debouncedGetQuotes();
+    OnRampController.getQuotesDebounced();
   };
 
   const onSuggestedValuePress = (value: number) => {
@@ -144,6 +127,16 @@ export function OnRampView() {
     getQuotes();
   }, [selectedPaymentMethod, getQuotes]);
 
+  useEffect(() => {
+    if (OnRampController.state.countries.length === 0) {
+      OnRampController.loadOnRampData();
+    }
+  }, []);
+
+  if (initialLoading) {
+    return <LoadingView />;
+  }
+
   return (
     <>
       <Header onSettingsPress={() => RouterController.push('OnRampSettings')} />
@@ -172,16 +165,16 @@ export function OnRampView() {
           <CurrencyInput
             value={paymentAmount?.toString()}
             symbol={paymentCurrency?.currencyCode}
-            error={getErrorMessage(error)}
+            error={error}
             suggestedValues={suggestedValues}
             onSuggestedValuePress={onSuggestedValuePress}
-            isAmountError={isAmountError(error)}
+            isAmountError={error?.toLowerCase().includes('amount')}
             loading={loading || quotesLoading}
             purchaseValue={`${
               selectedQuote?.destinationAmount
                 ? NumberUtil.roundNumber(selectedQuote.destinationAmount, 6, 5)?.toString()
                 : '0.00'
-            } ${purchaseCurrencyCode}`}
+            } ${purchaseCurrencyCode ?? ''}`}
             onValueChange={onValueChange}
             style={styles.currencyInput}
           />
@@ -197,12 +190,15 @@ export function OnRampView() {
               styles.paymentMethodImageContainer,
               { backgroundColor: Theme['gray-glass-010'] }
             ]}
+            disabled={!selectedPaymentMethod}
           >
             <FlexView>
-              <Text variant="paragraph-400" color="fg-100">
-                {selectedPaymentMethod?.name}
-              </Text>
-              <FlexView flexDirection="row" alignItems="center" margin={['3xs', '0', '0', '0']}>
+              {selectedPaymentMethod?.name && (
+                <Text variant="paragraph-400" color="fg-100" style={styles.paymentMethodText}>
+                  {selectedPaymentMethod.name}
+                </Text>
+              )}
+              <FlexView flexDirection="row" alignItems="center">
                 <Text variant="small-400" color="fg-150">
                   {selectedQuote
                     ? 'via '

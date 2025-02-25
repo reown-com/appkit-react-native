@@ -37,5 +37,8 @@ export default StyleSheet.create({
     width: 14,
     borderRadius: BorderRadius.full,
     borderWidth: 1
+  },
+  paymentMethodText: {
+    marginBottom: Spacing['3xs']
   }
 });
