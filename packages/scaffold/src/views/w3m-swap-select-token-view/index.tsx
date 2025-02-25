@@ -82,7 +82,6 @@ export function SwapSelectTokenView() {
             {suggestedList?.map((token, index) => (
               <TokenButton
                 key={token.name}
-                showIcon={false}
                 text={token.symbol}
                 imageUrl={token.logoUri}
                 onPress={() => onTokenPress(token)}

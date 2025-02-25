@@ -5,6 +5,8 @@ import { Button } from '../wui-button';
 import { Icon } from '../../components/wui-icon';
 import styles from './styles';
 import { useTheme } from '../../context/ThemeContext';
+import { View } from 'react-native';
+import React from 'react';
 
 export interface TokenButtonProps {
   onPress?: () => void;
@@ -14,7 +16,8 @@ export interface TokenButtonProps {
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
   placeholder?: string;
-  showIcon?: boolean;
+  chevron?: boolean;
+  renderClip?: React.ReactNode;
 }
 
 export function TokenButton({
@@ -25,7 +28,8 @@ export function TokenButton({
   style,
   disabled = false,
   placeholder = 'Select token',
-  showIcon = true
+  chevron,
+  renderClip
 }: TokenButtonProps) {
   const Theme = useTheme();
 
@@ -47,11 +51,14 @@ export function TokenButton({
 
   const content = [
     imageUrl && (
-      <Image
-        key="image"
-        source={imageUrl}
-        style={[styles.image, inverse && styles.imageInverse, { backgroundColor: Theme['fg-100'] }]}
-      />
+      <View key="image-container" style={[styles.imageContainer, inverse && styles.imageInverse]}>
+        <Image
+          key="image"
+          source={imageUrl}
+          style={[styles.image, { backgroundColor: Theme['fg-100'] }]}
+        />
+        {renderClip && <View style={styles.clipContainer}>{renderClip}</View>}
+      </View>
     ),
     <Text key="text">{text}</Text>
   ];
@@ -65,7 +72,7 @@ export function TokenButton({
       disabled={disabled}
     >
       {inverse ? content.reverse() : content}
-      {showIcon && <Icon name="chevronBottom" size="xxs" color="fg-150" style={styles.chevron} />}
+      {chevron && <Icon name="chevronBottom" size="xxs" color="fg-150" style={styles.chevron} />}
     </Button>
   );
 }

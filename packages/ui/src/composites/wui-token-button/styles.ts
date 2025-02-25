@@ -9,15 +9,25 @@ export default StyleSheet.create({
   container: {
     height: 40
   },
+  imageContainer: {
+    position: 'relative',
+    marginRight: Spacing['2xs']
+  },
   image: {
     width: 24,
     height: 24,
     borderRadius: BorderRadius.full,
-    marginRight: Spacing['2xs']
+    marginRight: 0
   },
   imageInverse: {
     marginRight: 0,
     marginLeft: Spacing['2xs']
+  },
+  clipContainer: {
+    position: 'absolute',
+    right: -4,
+    bottom: -4,
+    zIndex: 1
   },
   chevron: {
     marginLeft: Spacing['2xs']

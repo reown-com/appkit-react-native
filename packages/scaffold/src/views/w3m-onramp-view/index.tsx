@@ -1,20 +1,20 @@
 import { useSnapshot } from 'valtio';
 import { memo, useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native';
 import {
   OnRampController,
   type OnRampCryptoCurrency,
   ThemeController,
   RouterController,
-  type OnRampControllerState
+  type OnRampControllerState,
+  NetworkController,
+  AssetUtil
 } from '@reown/appkit-core-react-native';
 import {
-  BorderRadius,
   Button,
   FlexView,
   Image,
   ListItem,
-  Spacing,
   Text,
   TokenButton,
   useTheme
@@ -35,6 +35,7 @@ import { ITEM_HEIGHT as CURRENCY_ITEM_HEIGHT } from './components/Currency';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { Header } from './components/Header';
 import { UiUtil } from '../../utils/UiUtil';
+import styles from './styles';
 
 const MemoizedCurrency = memo(Currency);
 
@@ -53,6 +54,7 @@ export function OnRampView() {
     error,
     loading
   } = useSnapshot(OnRampController.state) as OnRampControllerState;
+  const { caipNetwork } = useSnapshot(NetworkController.state);
   const [searchValue, setSearchValue] = useState('');
   const [isCurrencyModalVisible, setIsCurrencyModalVisible] = useState(false);
   const [isPaymentMethodModalVisible, setIsPaymentMethodModalVisible] = useState(false);
@@ -60,6 +62,7 @@ export function OnRampView() {
   const suggestedValues = getCurrencySuggestedValues(paymentCurrency);
   const purchaseCurrencyCode =
     purchaseCurrency?.currencyCode?.split('_')[0] ?? purchaseCurrency?.currencyCode;
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
 
   const getQuotes = useCallback(() => {
     if (
@@ -155,6 +158,15 @@ export function OnRampView() {
               imageUrl={purchaseCurrency?.symbolImageUrl}
               text={purchaseCurrencyCode}
               onPress={() => setIsCurrencyModalVisible(true)}
+              chevron
+              renderClip={
+                networkImage ? (
+                  <Image
+                    source={networkImage}
+                    style={[styles.networkImage, { borderColor: Theme['bg-300'] }]}
+                  />
+                ) : null
+              }
             />
           </FlexView>
           <CurrencyInput
@@ -239,7 +251,7 @@ export function OnRampView() {
             onSearch={handleSearch}
             renderItem={renderCurrencyItem}
             keyExtractor={item => item.currencyCode}
-            title="Choose Asset"
+            title="Select token"
             itemHeight={CURRENCY_ITEM_HEIGHT}
             showNetwork
           />
@@ -248,36 +260,3 @@ export function OnRampView() {
     </>
   );
 }
-
-export const styles = StyleSheet.create({
-  continueButton: {
-    marginLeft: Spacing.m,
-    flex: 3
-  },
-  cancelButton: {
-    flex: 1
-  },
-  paymentMethodButton: {
-    borderRadius: BorderRadius.s,
-    height: 64
-  },
-  paymentMethodImage: {
-    width: 20,
-    height: 20,
-    borderRadius: 0
-  },
-  paymentMethodImageContainer: {
-    width: 40,
-    height: 40,
-    borderWidth: 0,
-    borderRadius: BorderRadius['3xs']
-  },
-  currencyInput: {
-    marginBottom: Spacing.m
-  },
-  providerImage: {
-    height: 16,
-    width: 16,
-    marginRight: 2
-  }
-});
