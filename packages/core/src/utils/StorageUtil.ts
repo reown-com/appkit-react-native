@@ -24,7 +24,7 @@ const ONRAMP_COUNTRIES = '@appkit/onramp_countries';
 const ONRAMP_SERVICE_PROVIDERS = '@appkit/onramp_service_providers';
 const ONRAMP_FIAT_LIMITS = '@appkit/onramp_fiat_limits';
 const ONRAMP_FIAT_CURRENCIES = '@appkit/onramp_fiat_currencies';
-
+const ONRAMP_PREFERRED_FIAT_CURRENCY = '@appkit/onramp_preferred_fiat_currency';
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
   setWalletConnectDeepLink({ href, name }: { href: string; name: string }) {
@@ -196,6 +196,26 @@ export const StorageUtil = {
       return country ? (JSON.parse(country) as OnRampCountry) : undefined;
     } catch {
       console.info('Unable to get OnRamp Preferred Country');
+    }
+
+    return undefined;
+  },
+
+  async setOnRampPreferredFiatCurrency(currency: OnRampFiatCurrency) {
+    try {
+      await AsyncStorage.setItem(ONRAMP_PREFERRED_FIAT_CURRENCY, JSON.stringify(currency));
+    } catch {
+      console.info('Unable to set OnRamp Preferred Fiat Currency');
+    }
+  },
+
+  async getOnRampPreferredFiatCurrency() {
+    try {
+      const currency = await AsyncStorage.getItem(ONRAMP_PREFERRED_FIAT_CURRENCY);
+
+      return currency ? (JSON.parse(currency) as OnRampFiatCurrency) : undefined;
+    } catch {
+      console.info('Unable to get OnRamp Preferred Fiat Currency');
     }
 
     return undefined;

@@ -161,6 +161,8 @@ export const OnRampController = {
   setPaymentCurrency(currency: OnRampFiatCurrency, updateAmount = true) {
     state.paymentCurrency = currency;
 
+    StorageUtil.setOnRampPreferredFiatCurrency(currency);
+
     if (updateAmount) {
       state.paymentAmount = undefined;
     }
@@ -379,7 +381,10 @@ export const OnRampController = {
           ];
       }
 
+      const preferredCurrency = await StorageUtil.getOnRampPreferredFiatCurrency();
+
       const defaultCurrency =
+        preferredCurrency ||
         fiatCurrencies?.find(c => c.currencyCode === currencyCode) ||
         fiatCurrencies?.[0] ||
         undefined;
@@ -448,7 +453,7 @@ export const OnRampController = {
         throw new Error('No quotes available');
       }
 
-      const quotes = response.quotes.sort((a, b) => b.destinationAmount - a.destinationAmount);
+      const quotes = response.quotes.sort((a, b) => b.customerScore - a.customerScore);
 
       if (state.paymentAmount && state.paymentAmount > 0) {
         state.quotes = quotes;
