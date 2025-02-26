@@ -32,6 +32,11 @@ export function OnRampCheckoutView() {
     selectedQuote?.serviceProvider ?? ''
   );
 
+  const showNetworkFee = selectedQuote?.networkFee != null;
+  const showTransactionFee = selectedQuote?.transactionFee != null;
+  const showTotalFee = selectedQuote?.totalFee != null;
+  const showFees = showNetworkFee || showTransactionFee || showTotalFee;
+
   const onConfirm = () => {
     RouterController.push('OnRampLoading');
   };
@@ -89,12 +94,12 @@ export function OnRampCheckoutView() {
           </FlexView>
         </FlexView>
       )}
-      {(selectedQuote?.networkFee || selectedQuote?.transactionFee || selectedQuote?.totalFee) && (
+      {showFees && (
         <FlexView
           padding={['m', 'l', '0', 'l']}
           style={[styles.feesContainer, { backgroundColor: Theme['gray-glass-005'] }]}
         >
-          {selectedQuote?.networkFee !== undefined && (
+          {showNetworkFee && (
             <FlexView
               flexDirection="row"
               justifyContent="space-between"
@@ -106,7 +111,7 @@ export function OnRampCheckoutView() {
               </Text>
             </FlexView>
           )}
-          {selectedQuote?.transactionFee !== undefined && (
+          {showTransactionFee && (
             <FlexView
               flexDirection="row"
               justifyContent="space-between"
@@ -118,7 +123,7 @@ export function OnRampCheckoutView() {
               </Text>
             </FlexView>
           )}
-          {selectedQuote?.totalFee !== undefined && (
+          {showTotalFee && (
             <FlexView
               flexDirection="row"
               justifyContent="space-between"
