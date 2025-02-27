@@ -1,20 +1,21 @@
 import { NumberUtil } from '@reown/appkit-common-react-native';
 import { type OnRampQuote } from '@reown/appkit-core-react-native';
 import {
-  Pressable,
   FlexView,
   Image,
   Spacing,
   Text,
   Tag,
   useTheme,
-  BorderRadius
+  BorderRadius,
+  ListItem
 } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
 interface Props {
   item: OnRampQuote;
   isBestDeal?: boolean;
+  tagText?: string;
   logoURL?: string;
   onQuotePress: (item: OnRampQuote) => void;
   selected?: boolean;
@@ -22,53 +23,61 @@ interface Props {
 
 export const ITEM_HEIGHT = 60;
 
-export function Quote({ item, logoURL, onQuotePress, selected, isBestDeal }: Props) {
+export function Quote({ item, logoURL, onQuotePress, selected, tagText }: Props) {
   const Theme = useTheme();
-  //TODO: Add logo placeholder
 
   return (
-    <Pressable
+    <ListItem
       style={[styles.container, selected && { borderColor: Theme['accent-100'] }]}
       onPress={() => onQuotePress(item)}
-      backgroundColor="transparent"
+      chevron
     >
-      <FlexView justifyContent="space-between" alignItems="center" flexDirection="row" padding="m">
+      <FlexView justifyContent="space-between" alignItems="center" flexDirection="row">
         <FlexView flexDirection="row" alignItems="center">
-          {logoURL && <Image source={logoURL} style={styles.logo} />}
-          <FlexView>
-            <Text variant="paragraph-600" style={styles.providerText}>
-              {item.serviceProvider?.toLowerCase()}
-            </Text>
-            <FlexView flexDirection="row" alignItems="center" justifyContent="center">
-              <Text variant="small-400" style={styles.amountText}>
+          {logoURL ? (
+            <Image source={logoURL} style={styles.logo} />
+          ) : (
+            <FlexView
+              style={[styles.logo, { backgroundColor: Theme['gray-glass-005'] }]}
+              justifyContent="center"
+              alignItems="center"
+            />
+          )}
+          <FlexView flexDirection="column">
+            <FlexView flexDirection="row" alignItems="center" margin={['0', '0', '4xs', '0']}>
+              <Text variant="paragraph-500" style={styles.providerText}>
+                {item.serviceProvider?.toLowerCase()}
+              </Text>
+              {tagText && (
+                <Tag variant="main" style={styles.tag}>
+                  {tagText}
+                </Tag>
+              )}
+            </FlexView>
+            <FlexView flexDirection="row" alignItems="center">
+              <Text variant="tiny-500" style={styles.amountText}>
                 {NumberUtil.roundNumber(item.destinationAmount, 6, 5)}{' '}
                 {item.destinationCurrencyCode}
               </Text>
-              <Text variant="small-400" color="fg-175" style={styles.amountText}>
-                {' ≈ '}
+              <Text variant="tiny-500" color="fg-175" style={styles.amountText}>
+                {' '}
                 {NumberUtil.roundNumber(item.sourceAmountWithoutFees, 2, 2)}{' '}
                 {item.sourceCurrencyCode}
               </Text>
             </FlexView>
           </FlexView>
         </FlexView>
-        {isBestDeal && (
-          <Tag variant="main" style={styles.dealTag}>
-            Best Deal
-          </Tag>
-        )}
       </FlexView>
-    </Pressable>
+    </ListItem>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: BorderRadius.xs,
+    // borderWidth: StyleSheet.hairlineWidth,
+    // borderColor: 'transparent',
     height: ITEM_HEIGHT,
-    justifyContent: 'center',
-    borderColor: 'transparent'
+    paddingLeft: 0
   },
   logo: {
     height: 40,
@@ -77,11 +86,11 @@ const styles = StyleSheet.create({
     marginRight: Spacing.xs
   },
   providerText: {
-    textTransform: 'capitalize',
-    marginBottom: Spacing['3xs']
+    textTransform: 'capitalize'
   },
-  dealTag: {
-    padding: Spacing['3xs']
+  tag: {
+    padding: Spacing['3xs'],
+    marginLeft: Spacing['2xs']
   },
   amountText: {
     textAlign: 'right'

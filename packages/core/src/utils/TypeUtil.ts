@@ -317,9 +317,33 @@ export interface BlockchainApiSwapTokensRequest {
   chainId?: string;
 }
 
+export interface BlockchainApiOnRampQuotesRequest {
+  countryCode: string;
+  paymentMethodType: string;
+  destinationCurrencyCode: string;
+  sourceAmount: number;
+  sourceCurrencyCode: string;
+  walletAddress: string;
+}
+
 export interface BlockchainApiSwapTokensResponse {
   tokens: SwapToken[];
 }
+
+export interface BlockchainApiOnRampWidgetRequest {
+  countryCode: string;
+  destinationCurrencyCode: string;
+  paymentMethodType: string;
+  serviceProvider: string;
+  sourceAmount: number;
+  sourceCurrencyCode: string;
+  walletAddress: string;
+  redirectUrl?: string;
+}
+
+export type BlockchainApiOnRampWidgetResponse = {
+  widgetUrl: string;
+};
 
 // -- OptionsController Types ---------------------------------------------------
 export interface Token {
@@ -903,19 +927,6 @@ export type OnRampServiceProvider = {
   serviceProvider: string;
   status: string;
   websiteUrl: string;
-};
-
-export type OnRampQuoteResponse = {
-  quotes: OnRampQuote[];
-};
-
-export type OnRampWidgetResponse = {
-  customerId: string;
-  externalCustomerId: string;
-  externalSessionId: string;
-  id: string;
-  token: string;
-  widgetUrl: string;
 };
 
 export type OnRampFiatLimit = {

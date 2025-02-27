@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { memo, useState } from 'react';
 import { SvgUri } from 'react-native-svg';
-import { FlexView, ListItem, Text, useTheme, Icon } from '@reown/appkit-ui-react-native';
+import { FlexView, ListItem, Text, useTheme, Icon, Image } from '@reown/appkit-ui-react-native';
 import {
   OnRampController,
   type OnRampCountry,
@@ -11,7 +11,13 @@ import {
 import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Country } from './components/Country';
 import { Currency } from '../w3m-onramp-view/components/Currency';
-import { getModalTitle, getItemHeight, getModalItems, getModalItemKey } from './utils';
+import {
+  getModalTitle,
+  getItemHeight,
+  getModalItems,
+  getModalItemKey,
+  getModalSearchPlaceholder
+} from './utils';
 import { styles } from './styles';
 
 type ModalType = 'country' | 'paymentCurrency';
@@ -90,7 +96,7 @@ export function OnRampSettingsView() {
             </FlexView>
           </FlexView>
           <FlexView>
-            <Text color="fg-100">Choose Country</Text>
+            <Text color="fg-100">Select Country</Text>
             {selectedCountry?.name && (
               <Text variant="small-400" color="fg-200">
                 {selectedCountry?.name}
@@ -105,11 +111,15 @@ export function OnRampSettingsView() {
             style={[styles.imageContainer, { backgroundColor: Theme['gray-glass-005'] }]}
           >
             <FlexView style={styles.imageBorder}>
-              <Icon name="currencyDollar" size="md" color="fg-100" />
+              {paymentCurrency?.symbolImageUrl ? (
+                <Image source={paymentCurrency.symbolImageUrl} style={styles.image} />
+              ) : (
+                <Icon name="currencyDollar" size="md" color="fg-100" />
+              )}
             </FlexView>
           </FlexView>
           <FlexView>
-            <Text color="fg-100">Choose Currency</Text>
+            <Text color="fg-100">Select Currency</Text>
             {paymentCurrency?.name && (
               <Text variant="small-400" color="fg-200">
                 {paymentCurrency?.name}
@@ -128,6 +138,7 @@ export function OnRampSettingsView() {
         keyExtractor={(item: any, index: number) => getModalItemKey(modalType, index, item)}
         title={getModalTitle(modalType)}
         itemHeight={getItemHeight(modalType)}
+        searchPlaceholder={getModalSearchPlaceholder(modalType)}
       />
     </>
   );

@@ -18,6 +18,7 @@ export interface ToggleProps {
   style?: StyleProp<ViewStyle>;
   initialOpen?: boolean;
   canClose?: boolean;
+  contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
 export function Toggle({
@@ -25,7 +26,8 @@ export function Toggle({
   style,
   title = 'Details',
   initialOpen = false,
-  canClose = true
+  canClose = true,
+  contentContainerStyle
 }: ToggleProps) {
   const [isOpen, setIsOpen] = useState(initialOpen);
   const animatedHeight = useRef(new Animated.Value(0)).current;
@@ -72,7 +74,7 @@ export function Toggle({
       </Pressable>
 
       <Animated.View style={[styles.contentWrapper, { height: animatedHeight }]}>
-        <FlexView style={styles.content} onLayout={measureContent}>
+        <FlexView style={[styles.content, contentContainerStyle]} onLayout={measureContent}>
           {children}
         </FlexView>
       </Animated.View>

@@ -1,5 +1,6 @@
-import { View } from 'react-native';
 import {
+  AssetUtil,
+  NetworkController,
   OnRampController,
   RouterController,
   ThemeController
@@ -12,6 +13,7 @@ import {
   Separator,
   Spacing,
   Text,
+  Toggle,
   useTheme
 } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
@@ -24,6 +26,9 @@ export function OnRampCheckoutView() {
   const { selectedQuote, selectedPaymentMethod, purchaseCurrency } = useSnapshot(
     OnRampController.state
   );
+
+  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
 
   const value = NumberUtil.roundNumber(selectedQuote?.destinationAmount ?? 0, 6, 5);
   const symbol = selectedQuote?.destinationCurrencyCode;
@@ -47,7 +52,7 @@ export function OnRampCheckoutView() {
         <Text color="fg-200">You Buy</Text>
         <FlexView flexDirection="row" alignItems="center">
           <Text style={[styles.amount, { color: Theme['fg-100'] }]}>{value}</Text>
-          <Text variant="large-400" color="fg-200">
+          <Text variant="paragraph-400" color="fg-200">
             {symbol ?? ''}
           </Text>
         </FlexView>
@@ -58,86 +63,116 @@ export function OnRampCheckoutView() {
         </FlexView>
       </FlexView>
       <Separator style={styles.separator} color="gray-glass-010" />
-      <FlexView padding={['s', 's', 'xs', 's']} flexDirection="row" justifyContent="space-between">
+      <FlexView
+        padding={['s', 's', 'xs', 's']}
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+      >
         <Text color="fg-200">You Pay</Text>
         <Text>
           {selectedQuote?.sourceAmount} {selectedQuote?.sourceCurrencyCode}
         </Text>
       </FlexView>
-      <FlexView padding={['xs', 's', 'xs', 's']} flexDirection="row" justifyContent="space-between">
+      <FlexView
+        padding={['xs', 's', 'xs', 's']}
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+      >
         <Text color="fg-200">You Receive</Text>
-        <FlexView alignItems="flex-end">
+        <FlexView flexDirection="row" alignItems="center">
           <Text>
             {value} {symbol}
           </Text>
-          <Text variant="small-400" color="fg-200">
-            {selectedQuote?.fiatAmountWithoutFees} {selectedQuote?.sourceCurrencyCode}
+          {purchaseCurrency?.symbolImageUrl && (
+            <Image
+              source={purchaseCurrency?.symbolImageUrl}
+              style={[styles.tokenImage, { borderColor: Theme['gray-glass-010'] }]}
+            />
+          )}
+        </FlexView>
+      </FlexView>
+      <FlexView
+        padding={['xs', 's', 'm', 's']}
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Text color="fg-200">Pay with</Text>
+        <FlexView
+          flexDirection="row"
+          alignItems="center"
+          style={[styles.paymentMethodContainer, { borderColor: Theme['gray-glass-020'] }]}
+        >
+          {paymentLogo && (
+            <Image
+              source={paymentLogo}
+              style={styles.paymentMethodImage}
+              tintColor={Theme['fg-150']}
+            />
+          )}
+          <Text variant="small-600" color="fg-150">
+            {selectedPaymentMethod?.name}
           </Text>
         </FlexView>
       </FlexView>
-      <FlexView padding={['xs', 's', 'm', 's']} flexDirection="row" justifyContent="space-between">
-        <Text color="fg-200">Pay with</Text>
-        <FlexView flexDirection="row" alignItems="center">
-          {paymentLogo && <Image source={paymentLogo} style={styles.paymentMethodImage} />}
-          <Text>{selectedPaymentMethod?.name}</Text>
-        </FlexView>
-      </FlexView>
-      {purchaseCurrency?.chainName !== undefined && (
-        <FlexView
-          padding={['xs', 's', 'm', 's']}
-          flexDirection="row"
-          justifyContent="space-between"
-        >
-          <Text color="fg-200">Network</Text>
-          <FlexView flexDirection="row" alignItems="center">
-            <Text>{purchaseCurrency.chainName}</Text>
-          </FlexView>
-        </FlexView>
-      )}
+
       {showFees && (
-        <FlexView
-          padding={['m', 'l', '0', 'l']}
-          style={[styles.feesContainer, { backgroundColor: Theme['gray-glass-005'] }]}
+        <Toggle
+          title={
+            <>
+              <Text variant="paragraph-400" color="fg-200">
+                Fees{' '}
+                {showTotalFee && (
+                  <Text variant="paragraph-400">
+                    {selectedQuote?.totalFee} {selectedQuote?.sourceCurrencyCode}
+                  </Text>
+                )}
+              </Text>
+            </>
+          }
+          style={[styles.feesToggle, { backgroundColor: Theme['gray-glass-002'] }]}
+          contentContainerStyle={styles.feesToggleContent}
         >
           {showNetworkFee && (
             <FlexView
               flexDirection="row"
               justifyContent="space-between"
-              margin={['0', '0', 's', '0']}
+              style={[styles.toggleItem, { backgroundColor: Theme['gray-glass-002'] }]}
+              margin={['0', '0', 'xs', '0']}
             >
-              <Text color="fg-200">Network Fees</Text>
-              <Text>
-                {selectedQuote?.networkFee} {selectedQuote?.sourceCurrencyCode}
+              <Text variant="small-500" color="fg-150">
+                Network Fees
               </Text>
+              <FlexView flexDirection="row" alignItems="center">
+                {networkImage && (
+                  <Image
+                    source={networkImage}
+                    style={[styles.networkImage, { borderColor: Theme['gray-glass-010'] }]}
+                  />
+                )}
+                <Text variant="small-400">
+                  {selectedQuote?.networkFee} {selectedQuote?.sourceCurrencyCode}
+                </Text>
+              </FlexView>
             </FlexView>
           )}
           {showTransactionFee && (
             <FlexView
               flexDirection="row"
               justifyContent="space-between"
-              margin={['0', '0', 's', '0']}
+              style={[styles.toggleItem, { backgroundColor: Theme['gray-glass-002'] }]}
             >
-              <Text color="fg-200">Transaction Fees</Text>
-              <Text>
+              <Text variant="small-500" color="fg-150">
+                Transaction Fees
+              </Text>
+              <Text variant="small-400">
                 {selectedQuote.transactionFee} {selectedQuote?.sourceCurrencyCode}
               </Text>
             </FlexView>
           )}
-          {showTotalFee && (
-            <FlexView
-              flexDirection="row"
-              justifyContent="space-between"
-              margin={['0', '0', 's', '0']}
-            >
-              <Text color="fg-200">Total</Text>
-              <View style={[styles.totalFee, { backgroundColor: Theme['accent-glass-010'] }]}>
-                <Text color="accent-100">
-                  {selectedQuote.totalFee} {selectedQuote?.sourceCurrencyCode}
-                </Text>
-              </View>
-            </FlexView>
-          )}
-        </FlexView>
+        </Toggle>
       )}
       <FlexView flexDirection="row" justifyContent="space-between" margin={['xl', '0', '0', '0']}>
         <Button
@@ -164,16 +199,20 @@ const styles = StyleSheet.create({
   separator: {
     marginVertical: Spacing.m
   },
-  feesContainer: {
-    borderRadius: BorderRadius.s
+  feesToggle: {
+    borderRadius: BorderRadius.xs
   },
-  totalFee: {
-    padding: Spacing['3xs'],
-    borderRadius: BorderRadius['3xs']
+  feesToggleContent: {
+    paddingHorizontal: Spacing.xs,
+    paddingBottom: Spacing.xs
+  },
+  toggleItem: {
+    padding: Spacing.s,
+    borderRadius: BorderRadius.xxs
   },
   paymentMethodImage: {
-    width: 20,
-    height: 20,
+    width: 14,
+    height: 14,
     marginRight: Spacing['3xs']
   },
   confirmButton: {
@@ -187,5 +226,24 @@ const styles = StyleSheet.create({
     height: 16,
     width: 16,
     marginRight: 2
+  },
+  tokenImage: {
+    height: 20,
+    width: 20,
+    marginLeft: 4,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1
+  },
+  networkImage: {
+    height: 16,
+    width: 16,
+    marginRight: 4,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1
+  },
+  paymentMethodContainer: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: BorderRadius.full,
+    padding: Spacing.xs
   }
 });

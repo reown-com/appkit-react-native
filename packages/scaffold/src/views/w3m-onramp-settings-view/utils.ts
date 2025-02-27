@@ -11,8 +11,13 @@ type ModalType = 'country' | 'paymentCurrency';
 
 // -------------------------- Constants --------------------------
 const MODAL_TITLES: Record<ModalType, string> = {
-  country: 'Choose Country',
-  paymentCurrency: 'Choose Currency'
+  country: 'Select Country',
+  paymentCurrency: 'Select Currency'
+};
+
+const MODAL_SEARCH_PLACEHOLDERS: Record<ModalType, string> = {
+  country: 'Search country',
+  paymentCurrency: 'Search currency'
 };
 
 const ITEM_HEIGHTS: Record<ModalType, number> = {
@@ -32,6 +37,10 @@ export const getItemHeight = (type?: ModalType) => {
 
 export const getModalTitle = (type?: ModalType) => {
   return type ? MODAL_TITLES[type] : undefined;
+};
+
+export const getModalSearchPlaceholder = (type?: ModalType) => {
+  return type ? MODAL_SEARCH_PLACEHOLDERS[type] : undefined;
 };
 
 const searchFilter = (item: { name: string; currencyCode?: string }, searchValue: string) => {

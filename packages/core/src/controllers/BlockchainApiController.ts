@@ -19,10 +19,20 @@ import type {
   BlockchainApiSwapQuoteResponse,
   BlockchainApiSwapTokensRequest,
   BlockchainApiSwapTokensResponse,
+  BlockchainApiOnRampWidgetResponse,
   BlockchainApiTokenPriceRequest,
   BlockchainApiTokenPriceResponse,
   BlockchainApiTransactionsRequest,
-  BlockchainApiTransactionsResponse
+  BlockchainApiTransactionsResponse,
+  OnRampCountry,
+  OnRampServiceProvider,
+  OnRampPaymentMethod,
+  OnRampCryptoCurrency,
+  OnRampFiatCurrency,
+  OnRampQuote,
+  BlockchainApiOnRampWidgetRequest,
+  BlockchainApiOnRampQuotesRequest,
+  OnRampFiatLimit
 } from '../utils/TypeUtil';
 import { OptionsController } from './OptionsController';
 import { ConstantsUtil } from '../utils/ConstantsUtil';
@@ -220,6 +230,97 @@ export const BlockchainApiController = {
         projectId: OptionsController.state.projectId,
         apiVersion: '2'
       }
+    });
+  },
+
+  async fetchOnRampCountries() {
+    return await state.api.get<OnRampCountry[]>({
+      path: '/v1/onramp/providers/properties',
+      headers: getHeaders(),
+      params: {
+        projectId: OptionsController.state.projectId,
+        type: 'countries'
+      }
+    });
+  },
+
+  async fetchOnRampServiceProviders() {
+    return await state.api.get<OnRampServiceProvider[]>({
+      path: '/v1/onramp/providers',
+      headers: getHeaders(),
+      params: {
+        projectId: OptionsController.state.projectId
+      }
+    });
+  },
+
+  async fetchOnRampPaymentMethods(params: { countries?: string }) {
+    return await state.api.get<OnRampPaymentMethod[]>({
+      path: '/v1/onramp/providers/properties',
+      headers: getHeaders(),
+      params: {
+        projectId: OptionsController.state.projectId,
+        type: 'payment-methods',
+        ...params
+      }
+    });
+  },
+
+  async fetchOnRampCryptoCurrencies(params: { countries?: string }) {
+    return await state.api.get<OnRampCryptoCurrency[]>({
+      path: '/v1/onramp/providers/properties',
+      headers: getHeaders(),
+      params: {
+        projectId: OptionsController.state.projectId,
+        type: 'crypto-currencies',
+        ...params
+      }
+    });
+  },
+
+  async fetchOnRampFiatCurrencies() {
+    return await state.api.get<OnRampFiatCurrency[]>({
+      path: '/v1/onramp/providers/properties',
+      headers: getHeaders(),
+      params: {
+        projectId: OptionsController.state.projectId,
+        type: 'fiat-currencies'
+      }
+    });
+  },
+
+  async fetchOnRampFiatLimits() {
+    return await state.api.get<OnRampFiatLimit[]>({
+      path: '/v1/onramp/providers/properties',
+      headers: getHeaders(),
+      params: {
+        projectId: OptionsController.state.projectId,
+        type: 'fiat-purchases-limits'
+      }
+    });
+  },
+
+  async getOnRampQuotes(body: BlockchainApiOnRampQuotesRequest, signal?: AbortSignal) {
+    return await state.api.post<OnRampQuote[]>({
+      path: '/v1/onramp/multi/quotes',
+      headers: getHeaders(),
+      body: {
+        projectId: OptionsController.state.projectId,
+        ...body
+      },
+      signal
+    });
+  },
+
+  async getOnRampWidget(body: BlockchainApiOnRampWidgetRequest, signal?: AbortSignal) {
+    return await state.api.post<BlockchainApiOnRampWidgetResponse>({
+      path: '/v1/onramp/widget',
+      headers: getHeaders(),
+      body: {
+        projectId: OptionsController.state.projectId,
+        ...body
+      },
+      signal
     });
   },
 

@@ -26,6 +26,7 @@ interface SelectorModalProps {
   onSearch: (value: string) => void;
   itemHeight?: number;
   showNetwork?: boolean;
+  searchPlaceholder?: string;
 }
 
 const SEPARATOR_HEIGHT = Spacing.s;
@@ -38,6 +39,7 @@ export function SelectorModal({
   selectedItem,
   renderItem,
   onSearch,
+  searchPlaceholder,
   keyExtractor,
   itemHeight,
   showNetwork
@@ -88,7 +90,11 @@ export function SelectorModal({
             <View style={styles.iconPlaceholder} />
           )}
         </FlexView>
-        <SearchBar onChangeText={onSearch} style={styles.searchBar} />
+        <SearchBar
+          onChangeText={onSearch}
+          style={styles.searchBar}
+          placeholder={searchPlaceholder}
+        />
         {selectedItem && (
           <FlexView style={styles.selectedContainer}>
             {renderItem({ item: selectedItem })}

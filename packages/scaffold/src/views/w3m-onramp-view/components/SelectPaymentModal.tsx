@@ -84,6 +84,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
   const renderQuote = ({ item, index }: { item: OnRampQuote; index: number }) => {
     const logoURL = OnRampController.getServiceProviderImage(item.serviceProvider);
     const selected = item.serviceProvider === OnRampController.state.selectedQuote?.serviceProvider;
+    const tagText = index === 0 ? 'Best Deal' : item.lowKyc ? 'Low KYC' : undefined;
 
     return (
       <Quote
@@ -91,7 +92,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
         selected={selected}
         logoURL={logoURL}
         onQuotePress={() => handleQuotePress(item)}
-        isBestDeal={index === 0}
+        tagText={tagText}
       />
     );
   };
@@ -170,7 +171,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
             showsHorizontalScrollIndicator={false}
           />
         </FlexView>
-        <Separator style={styles.separator} color="gray-glass-020" />
+        <Separator style={styles.separator} color="gray-glass-010" />
         <Text variant="small-500" color="fg-150" style={styles.subtitle}>
           Providers
         </Text>

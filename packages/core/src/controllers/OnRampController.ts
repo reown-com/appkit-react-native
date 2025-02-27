@@ -4,8 +4,6 @@ import type {
   OnRampPaymentMethod,
   OnRampCountry,
   OnRampFiatCurrency,
-  OnRampQuoteResponse,
-  OnRampWidgetResponse,
   OnRampQuote,
   OnRampFiatLimit,
   OnRampCryptoCurrency,
@@ -13,7 +11,7 @@ import type {
   OnRampError,
   OnRampErrorTypeValues
 } from '../utils/TypeUtil';
-import { FetchUtil } from '../utils/FetchUtil';
+
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { NetworkController } from './NetworkController';
 import { AccountController } from './AccountController';
@@ -22,14 +20,10 @@ import { ConstantsUtil, OnRampErrorType } from '../utils/ConstantsUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import { SnackController } from './SnackController';
 import { EventsController } from './EventsController';
+import { BlockchainApiController } from './BlockchainApiController';
 
 // -- Helpers ------------------------------------------- //
-const baseUrl = CoreHelperUtil.getMeldApiUrl();
-const api = new FetchUtil({ baseUrl });
-const headers = {
-  'Authorization': `Basic ${CoreHelperUtil.getMeldToken()}`,
-  'Content-Type': 'application/json'
-};
+
 let quotesAbortController: AbortController | null = null;
 
 // -- Utils --------------------------------------------- //
@@ -210,14 +204,7 @@ export const OnRampController = {
       let countries = await StorageUtil.getOnRampCountries();
 
       if (!countries.length) {
-        countries =
-          (await api.get<OnRampCountry[]>({
-            path: '/service-providers/properties/countries',
-            headers,
-            params: {
-              categories: 'CRYPTO_ONRAMP'
-            }
-          })) ?? [];
+        countries = (await BlockchainApiController.fetchOnRampCountries()) ?? [];
 
         if (countries.length) {
           StorageUtil.setOnRampCountries(countries);
@@ -252,14 +239,7 @@ export const OnRampController = {
       let serviceProviders = await StorageUtil.getOnRampServiceProviders();
 
       if (!serviceProviders.length) {
-        serviceProviders =
-          (await api.get<OnRampServiceProvider[]>({
-            path: '/service-providers',
-            headers,
-            params: {
-              categories: 'CRYPTO_ONRAMP'
-            }
-          })) ?? [];
+        serviceProviders = (await BlockchainApiController.fetchOnRampServiceProviders()) ?? [];
 
         if (serviceProviders.length) {
           StorageUtil.setOnRampServiceProviders(serviceProviders);
@@ -277,13 +257,8 @@ export const OnRampController = {
 
   async fetchPaymentMethods() {
     try {
-      const paymentMethods = await api.get<OnRampPaymentMethod[]>({
-        path: '/service-providers/properties/payment-methods',
-        headers,
-        params: {
-          categories: 'CRYPTO_ONRAMP',
-          countries: state.selectedCountry?.countryCode
-        }
+      const paymentMethods = await BlockchainApiController.fetchOnRampPaymentMethods({
+        countries: state.selectedCountry?.countryCode
       });
 
       const defaultCountryPaymentMethods =
@@ -319,13 +294,8 @@ export const OnRampController = {
 
   async fetchCryptoCurrencies() {
     try {
-      const cryptoCurrencies = await api.get<OnRampCryptoCurrency[]>({
-        path: '/service-providers/properties/crypto-currencies',
-        headers,
-        params: {
-          categories: 'CRYPTO_ONRAMP',
-          countries: state.selectedCountry?.countryCode
-        }
+      const cryptoCurrencies = await BlockchainApiController.fetchOnRampCryptoCurrencies({
+        countries: state.selectedCountry?.countryCode
       });
 
       state.purchaseCurrencies = cryptoCurrencies || [];
@@ -358,14 +328,7 @@ export const OnRampController = {
       const countryCode = state.selectedCountry?.countryCode;
 
       if (!fiatCurrencies.length) {
-        fiatCurrencies =
-          (await api.get<OnRampFiatCurrency[]>({
-            path: '/service-providers/properties/fiat-currencies',
-            headers,
-            params: {
-              categories: 'CRYPTO_ONRAMP'
-            }
-          })) ?? [];
+        fiatCurrencies = (await BlockchainApiController.fetchOnRampFiatCurrencies()) ?? [];
 
         if (fiatCurrencies.length) {
           StorageUtil.setOnRampFiatCurrencies(fiatCurrencies);
@@ -434,26 +397,24 @@ export const OnRampController = {
 
     try {
       const body = {
-        countryCode: state.selectedCountry?.countryCode,
-        paymentMethodType: state.selectedPaymentMethod?.paymentMethod,
-        destinationCurrencyCode: state.purchaseCurrency?.currencyCode,
-        sourceAmount: state.paymentAmount.toString(),
-        sourceCurrencyCode: state.paymentCurrency?.currencyCode,
-        walletAddress: AccountController.state.address
+        countryCode: state.selectedCountry?.countryCode!,
+        paymentMethodType: state.selectedPaymentMethod?.paymentMethod!,
+        destinationCurrencyCode: state.purchaseCurrency?.currencyCode!,
+        sourceAmount: state.paymentAmount,
+        sourceCurrencyCode: state.paymentCurrency?.currencyCode!,
+        walletAddress: AccountController.state.address!
       };
 
-      const response = await api.post<OnRampQuoteResponse>({
-        path: '/payments/crypto/quote',
-        headers,
+      const response = await BlockchainApiController.getOnRampQuotes(
         body,
-        signal: quotesAbortController.signal
-      });
+        quotesAbortController.signal
+      );
 
-      if (!response || !response.quotes || !response.quotes.length) {
+      if (!response || !response.length) {
         throw new Error('No quotes available');
       }
 
-      const quotes = response.quotes.sort((a, b) => b.customerScore - a.customerScore);
+      const quotes = response.sort((a, b) => b.customerScore - a.customerScore);
 
       if (state.paymentAmount && state.paymentAmount > 0) {
         state.quotes = quotes;
@@ -504,14 +465,7 @@ export const OnRampController = {
       let limits = await StorageUtil.getOnRampFiatLimits();
 
       if (!limits.length) {
-        limits =
-          (await api.get<OnRampFiatLimit[]>({
-            path: 'service-providers/limits/fiat-currency-purchases',
-            headers,
-            params: {
-              categories: 'CRYPTO_ONRAMP'
-            }
-          })) ?? [];
+        limits = (await BlockchainApiController.fetchOnRampFiatLimits()) ?? [];
 
         if (limits.length) {
           StorageUtil.setOnRampFiatLimits(limits);
@@ -541,22 +495,19 @@ export const OnRampController = {
     };
 
     try {
-      const widget = await api.post<OnRampWidgetResponse>({
-        path: '/crypto/session/widget',
-        headers,
-        body: {
-          sessionData: {
-            countryCode: quote?.countryCode,
-            destinationCurrencyCode: quote?.destinationCurrencyCode,
-            paymentMethodType: quote?.paymentMethodType,
-            serviceProvider: quote?.serviceProvider,
-            sourceAmount: quote?.sourceAmount,
-            sourceCurrencyCode: quote?.sourceCurrencyCode,
-            walletAddress: AccountController.state.address,
-            redirectUrl: metadata?.redirect?.universal ?? metadata?.redirect?.native
-          },
-          sessionType: 'BUY'
-        }
+      if (!quote) {
+        throw new Error('Invalid quote');
+      }
+
+      const widget = await BlockchainApiController.getOnRampWidget({
+        countryCode: quote.countryCode,
+        destinationCurrencyCode: quote.destinationCurrencyCode,
+        paymentMethodType: quote.paymentMethodType,
+        serviceProvider: quote.serviceProvider,
+        sourceAmount: quote.sourceAmount,
+        sourceCurrencyCode: quote.sourceCurrencyCode,
+        walletAddress: AccountController.state.address!,
+        redirectUrl: metadata?.redirect?.universal ?? metadata?.redirect?.native
       });
 
       if (!widget || !widget.widgetUrl) {
