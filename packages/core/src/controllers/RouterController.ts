@@ -1,5 +1,11 @@
 import { proxy } from 'valtio';
-import type { WcWallet, CaipNetwork, Connector, SwapInputTarget } from '../utils/TypeUtil';
+import type {
+  WcWallet,
+  CaipNetwork,
+  Connector,
+  SwapInputTarget,
+  OnRampTransactionResult
+} from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -32,6 +38,7 @@ export interface RouterControllerState {
     | 'OnRampCheckout'
     | 'OnRampLoading'
     | 'OnRampSettings'
+    | 'OnRampTransaction'
     | 'SwitchNetwork'
     | 'Swap'
     | 'SwapSelectToken'
@@ -58,6 +65,7 @@ export interface RouterControllerState {
     email?: string;
     newEmail?: string;
     swapTarget?: SwapInputTarget;
+    onrampResult?: OnRampTransactionResult;
   };
   transactionStack: TransactionAction[];
 }
@@ -105,13 +113,14 @@ export const RouterController = {
     }
   },
 
-  reset(view: RouterControllerState['view']) {
+  reset(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     state.view = view;
     state.history = [view];
+    state.data = data;
   },
 
   replace(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
-    if (state.history.length > 1 && state.history.at(-1) !== view) {
+    if (state.history.length >= 1 && state.history.at(-1) !== view) {
       state.view = view;
       state.history[state.history.length - 1] = view;
       state.data = data;

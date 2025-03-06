@@ -4,10 +4,7 @@ import { Linking, ScrollView } from 'react-native';
 import {
   RouterController,
   OnRampController,
-  SnackController,
-  ConnectorController,
   OptionsController,
-  AccountController,
   EventsController
 } from '@reown/appkit-core-react-native';
 import { FlexView, DoubleImageLoader, IconLink, Button, Text } from '@reown/appkit-ui-react-native';
@@ -55,18 +52,20 @@ export function OnRampLoadingView() {
   useEffect(() => {
     const unsubscribe = Linking.addEventListener('url', ({ url }) => {
       const metadata = OptionsController.state.metadata;
-      const isAuth = ConnectorController.state.connectedConnector === 'AUTH';
+
       if (
-        url.startsWith(metadata?.redirect?.universal ?? '') ||
-        url.startsWith(metadata?.redirect?.native ?? '')
+        (metadata?.redirect?.universal && url.startsWith(metadata?.redirect?.universal)) ||
+        (metadata?.redirect?.native && url.startsWith(metadata?.redirect?.native))
       ) {
         const parsedUrl = new URL(url);
         const searchParams = new URLSearchParams(parsedUrl.search);
         const asset = searchParams.get('cryptoCurrency');
         const network = searchParams.get('network');
+        const purchaseAmount = searchParams.get('cryptoAmount');
         const amount = searchParams.get('fiatAmount');
         const currency = searchParams.get('fiatCurrency');
         const orderId = searchParams.get('orderId');
+        const status = searchParams.get('status');
 
         EventsController.sendEvent({
           type: 'track',
@@ -80,10 +79,17 @@ export function OnRampLoadingView() {
           }
         });
 
-        SnackController.showLoading('Transaction started');
-        RouterController.replace(isAuth ? 'Account' : 'AccountDefault');
-        OnRampController.resetState();
-        AccountController.fetchTokenBalance();
+        RouterController.reset('OnRampTransaction', {
+          onrampResult: {
+            purchaseCurrency: asset,
+            purchaseAmount,
+            purchaseImageUrl: OnRampController.state.purchaseCurrency?.symbolImageUrl ?? '',
+            paymentCurrency: currency,
+            paymentAmount: amount,
+            network: network,
+            status: status
+          }
+        });
       }
     });
 

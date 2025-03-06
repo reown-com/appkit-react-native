@@ -22,6 +22,7 @@ import { OnRampLoadingView } from '../../views/w3m-onramp-loading-view';
 import { OnRampView } from '../../views/w3m-onramp-view';
 import { OnRampCheckoutView } from '../../views/w3m-onramp-checkout-view';
 import { OnRampSettingsView } from '../../views/w3m-onramp-settings-view';
+import { OnRampTransactionView } from '../../views/w3m-onramp-transaction-view';
 import { SwapView } from '../../views/w3m-swap-view';
 import { SwapPreviewView } from '../../views/w3m-swap-preview-view';
 import { SwapSelectTokenView } from '../../views/w3m-swap-select-token-view';
@@ -90,6 +91,8 @@ export function AppKitRouter() {
         return OnRampLoadingView;
       case 'SwitchNetwork':
         return NetworkSwitchView;
+      case 'OnRampTransaction':
+        return OnRampTransactionView;
       case 'Swap':
         return SwapView;
       case 'SwapPreview':

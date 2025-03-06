@@ -8,7 +8,8 @@ import {
   Tag,
   useTheme,
   BorderRadius,
-  ListItem
+  Icon,
+  Pressable
 } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
@@ -21,18 +22,22 @@ interface Props {
   selected?: boolean;
 }
 
-export const ITEM_HEIGHT = 60;
+export const ITEM_HEIGHT = 64;
 
 export function Quote({ item, logoURL, onQuotePress, selected, tagText }: Props) {
   const Theme = useTheme();
 
   return (
-    <ListItem
+    <Pressable
       style={[styles.container, selected && { borderColor: Theme['accent-100'] }]}
       onPress={() => onQuotePress(item)}
-      chevron
     >
-      <FlexView justifyContent="space-between" alignItems="center" flexDirection="row">
+      <FlexView
+        justifyContent="space-between"
+        alignItems="center"
+        flexDirection="row"
+        padding={['s', 's', 's', 's']}
+      >
         <FlexView flexDirection="row" alignItems="center">
           {logoURL ? (
             <Image source={logoURL} style={styles.logo} />
@@ -54,30 +59,24 @@ export function Quote({ item, logoURL, onQuotePress, selected, tagText }: Props)
                 </Tag>
               )}
             </FlexView>
-            <FlexView flexDirection="row" alignItems="center">
-              <Text variant="tiny-500" style={styles.amountText}>
-                {NumberUtil.roundNumber(item.destinationAmount, 6, 5)}{' '}
-                {item.destinationCurrencyCode}
-              </Text>
-              <Text variant="tiny-500" color="fg-175" style={styles.amountText}>
-                {' '}
-                {NumberUtil.roundNumber(item.sourceAmountWithoutFees, 2, 2)}{' '}
-                {item.sourceCurrencyCode}
-              </Text>
-            </FlexView>
+            <Text variant="tiny-500">
+              {NumberUtil.roundNumber(item.destinationAmount, 6, 5)} {item.destinationCurrencyCode}
+            </Text>
           </FlexView>
         </FlexView>
+        {selected && <Icon name="checkmark" color="accent-100" />}
       </FlexView>
-    </ListItem>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    // borderWidth: StyleSheet.hairlineWidth,
-    // borderColor: 'transparent',
+    borderRadius: BorderRadius.xs,
+    borderWidth: 1,
+    borderColor: 'transparent',
     height: ITEM_HEIGHT,
-    paddingLeft: 0
+    justifyContent: 'center'
   },
   logo: {
     height: 40,
@@ -91,8 +90,5 @@ const styles = StyleSheet.create({
   tag: {
     padding: Spacing['3xs'],
     marginLeft: Spacing['2xs']
-  },
-  amountText: {
-    textAlign: 'right'
   }
 });

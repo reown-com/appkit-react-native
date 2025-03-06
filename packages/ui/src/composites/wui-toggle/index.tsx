@@ -13,11 +13,17 @@ import { Text } from '../../components/wui-text';
 import styles from './styles';
 
 export interface ToggleProps {
+  /** Content to be displayed inside the toggle when expanded */
   children?: React.ReactNode;
+  /** Title displayed in the toggle header. Can be a string or a custom React component */
   title?: string | React.ReactNode;
+  /** Custom styles for the toggle container */
   style?: StyleProp<ViewStyle>;
+  /** Whether the toggle should be open when first rendered */
   initialOpen?: boolean;
+  /** Whether the toggle can be closed after being opened. If false, toggle will remain open once expanded */
   canClose?: boolean;
+  /** Custom styles for the content container inside the toggle */
   contentContainerStyle?: StyleProp<ViewStyle>;
 }
 

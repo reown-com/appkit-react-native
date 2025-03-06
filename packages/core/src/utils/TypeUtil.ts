@@ -936,6 +936,16 @@ export type OnRampFiatLimit = {
   maximumAmount: number;
 };
 
+export type OnRampTransactionResult = {
+  purchaseCurrency: string | null;
+  purchaseAmount: string | null;
+  purchaseImageUrl: string | null;
+  paymentCurrency: string | null;
+  paymentAmount: string | null;
+  status: string | null;
+  network: string | null;
+};
+
 // -- Email Types ------------------------------------------------
 /**
  * Matches type defined for packages/wallet/src/AppKitFrameProvider.ts

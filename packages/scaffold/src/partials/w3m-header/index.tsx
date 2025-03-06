@@ -48,6 +48,7 @@ export function Header() {
       OnRampCheckout: 'Checkout',
       OnRampSettings: 'Preferences',
       OnRampLoading: undefined,
+      OnRampTransaction: ' ',
       SwitchNetwork: networkName ?? 'Switch network',
       Swap: 'Swap',
       SwapSelectToken: 'Select token',
@@ -106,19 +107,18 @@ export function Header() {
   };
 
   const dynamicButtonTemplate = () => {
-    const noButtonViews = ['ConnectingSiwe'];
+    const showBack = RouterController.state.history.length > 1;
+    const showHelp = RouterController.state.view === 'Connect';
 
-    if (noButtonViews.includes(RouterController.state.view)) {
-      return <FlexView style={styles.iconPlaceholder} />;
+    if (showHelp) {
+      return <IconLink icon="helpCircle" size="md" onPress={onHelpPress} testID="help-button" />;
     }
 
-    const showBack = RouterController.state.history.length > 1;
+    if (showBack) {
+      return <IconLink icon="chevronLeft" size="md" onPress={handleGoBack} testID="button-back" />;
+    }
 
-    return showBack ? (
-      <IconLink icon="chevronLeft" size="md" onPress={handleGoBack} testID="button-back" />
-    ) : (
-      <IconLink icon="helpCircle" size="md" onPress={onHelpPress} testID="help-button" />
-    );
+    return <FlexView style={styles.iconPlaceholder} />;
   };
 
   if (!header) return null;

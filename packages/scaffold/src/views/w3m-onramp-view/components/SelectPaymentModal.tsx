@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import Modal from 'react-native-modal';
 import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import {
@@ -29,11 +29,23 @@ const SEPARATOR_HEIGHT = Spacing.s;
 
 export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentModalProps) {
   const Theme = useTheme();
-  const { quotes, quotesLoading } = useSnapshot(OnRampController.state);
+  const { selectedQuote, quotes, quotesLoading } = useSnapshot(OnRampController.state);
   const paymentMethodsRef = useRef<FlatList>(null);
   const [paymentMethods, setPaymentMethods] = useState<OnRampPaymentMethod[]>(
     OnRampController.state.paymentMethods
   );
+
+  const sortedQuotes = useMemo(() => {
+    if (!selectedQuote) {
+      return quotes;
+    }
+
+    return [
+      selectedQuote,
+      // eslint-disable-next-line valtio/state-snapshot-rule
+      ...(quotes?.filter(quote => quote.serviceProvider !== selectedQuote.serviceProvider) ?? [])
+    ];
+  }, [quotes, selectedQuote]);
 
   const renderSeparator = () => {
     return <View style={{ height: SEPARATOR_HEIGHT }} />;
@@ -81,10 +93,14 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
     });
   };
 
-  const renderQuote = ({ item, index }: { item: OnRampQuote; index: number }) => {
+  const renderQuote = ({ item }: { item: OnRampQuote }) => {
     const logoURL = OnRampController.getServiceProviderImage(item.serviceProvider);
     const selected = item.serviceProvider === OnRampController.state.selectedQuote?.serviceProvider;
-    const tagText = index === 0 ? 'Best Deal' : item.lowKyc ? 'Low KYC' : undefined;
+    const isBestDeal =
+      OnRampController.state.quotes?.findIndex(
+        quote => quote.serviceProvider === item.serviceProvider
+      ) === 0;
+    const tagText = isBestDeal ? 'Best Deal' : item.lowKyc ? 'Low KYC' : undefined;
 
     return (
       <Quote
@@ -176,7 +192,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
           Providers
         </Text>
         <FlatList
-          data={quotes}
+          data={sortedQuotes}
           bounces={false}
           renderItem={renderQuote}
           contentContainerStyle={styles.listContent}
