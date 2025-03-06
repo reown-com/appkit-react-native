@@ -172,6 +172,10 @@ export const CoreHelperUtil = {
     return CommonConstants.BLOCKCHAIN_API_RPC_URL;
   },
 
+  getBlockchainStagingApiUrl() {
+    return CommonConstants.BLOCKCHAIN_API_RPC_URL_STAGING;
+  },
+
   getAnalyticsUrl() {
     return CommonConstants.PULSE_API_URL;
   },

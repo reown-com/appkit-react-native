@@ -8,6 +8,7 @@ export const ConstantsUtil = {
   WC_NAME_SUFFIX_LEGACY: '.wcn.id',
 
   BLOCKCHAIN_API_RPC_URL: 'https://rpc.walletconnect.org',
+  BLOCKCHAIN_API_RPC_URL_STAGING: 'https://staging.rpc.walletconnect.org',
   PULSE_API_URL: 'https://pulse.walletconnect.org',
   API_URL: 'https://api.web3modal.org',
 
