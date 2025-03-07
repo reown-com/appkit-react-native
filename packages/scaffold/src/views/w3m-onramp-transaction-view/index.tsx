@@ -57,7 +57,7 @@ export function OnRampTransactionView() {
             margin={['0', '0', 'xs', '0']}
           >
             <Text variant="paragraph-400" color="fg-150">
-              You Payed
+              You Paid
             </Text>
             <Text variant="paragraph-500">
               {data?.onrampResult?.paymentAmount} {data?.onrampResult?.paymentCurrency}
