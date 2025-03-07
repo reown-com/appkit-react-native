@@ -1,5 +1,6 @@
-import { type StyleProp, type ViewStyle } from 'react-native';
+import { Animated, useAnimatedValue, type StyleProp, type ViewStyle } from 'react-native';
 
+import { useEffect } from 'react';
 import { useTheme } from '../../hooks/useTheme';
 import { FlexView } from '../../layout/wui-flex';
 import { Image } from '../../components/wui-image';
@@ -29,14 +30,57 @@ export function DoubleImageLoader({
   rightItemStyle
 }: Props) {
   const Theme = useTheme();
+  const leftPosition = useAnimatedValue(10);
+  const rightPosition = useAnimatedValue(-10);
+
+  const animateLeft = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(leftPosition, {
+          toValue: -5,
+          duration: 1500,
+          useNativeDriver: true
+        }),
+        Animated.timing(leftPosition, {
+          toValue: 10,
+          duration: 1500,
+          useNativeDriver: true
+        })
+      ])
+    ).start();
+  };
+
+  const animateRight = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(rightPosition, {
+          toValue: 5,
+          duration: 1500,
+          useNativeDriver: true
+        }),
+        Animated.timing(rightPosition, {
+          toValue: -10,
+          duration: 1500,
+          useNativeDriver: true
+        })
+      ])
+    ).start();
+  };
+
+  useEffect(() => {
+    animateLeft();
+    animateRight();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <FlexView flexDirection="row" alignItems="center" justifyContent="center" style={style}>
-      <FlexView
+      <Animated.View
         style={[
           styles.itemBorder,
           styles.leftItemBorder,
           {
+            transform: [{ translateX: leftPosition }],
             backgroundColor: Theme['bg-200']
           },
           leftItemStyle
@@ -50,12 +94,13 @@ export function DoubleImageLoader({
         ) : (
           <Icon name={leftPlaceholderIcon} size="lg" color="fg-200" />
         )}
-      </FlexView>
-      <FlexView
+      </Animated.View>
+      <Animated.View
         style={[
           styles.itemBorder,
           styles.rightItemBorder,
           {
+            transform: [{ translateX: rightPosition }],
             backgroundColor: Theme['bg-200']
           },
           rightItemStyle
@@ -68,7 +113,7 @@ export function DoubleImageLoader({
             <Icon name={rightPlaceholderIcon} size="lg" color="fg-200" />
           )
         )}
-      </FlexView>
+      </Animated.View>
     </FlexView>
   );
 }

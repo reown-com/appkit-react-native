@@ -22,9 +22,10 @@ interface Props {
   selected: boolean;
   title: string;
   subtitle: string;
+  testID?: string;
 }
 
-export function Currency({ onPress, item, selected, title, subtitle }: Props) {
+export function Currency({ onPress, item, selected, title, subtitle, testID }: Props) {
   const Theme = useTheme();
 
   const handlePress = () => {
@@ -32,7 +33,12 @@ export function Currency({ onPress, item, selected, title, subtitle }: Props) {
   };
 
   return (
-    <Pressable onPress={handlePress} style={styles.container} backgroundColor="transparent">
+    <Pressable
+      onPress={handlePress}
+      style={styles.container}
+      backgroundColor="transparent"
+      testID={testID}
+    >
       <FlexView flexDirection="row" alignItems="center" justifyContent="space-between" padding="xs">
         <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start">
           <Image

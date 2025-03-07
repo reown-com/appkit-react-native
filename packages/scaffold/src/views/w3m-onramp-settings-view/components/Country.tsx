@@ -27,7 +27,7 @@ export function Country({ onPress, item, selected }: Props) {
     <Pressable onPress={handlePress} style={styles.container} backgroundColor="transparent">
       <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start" padding="s">
         <FlexView style={styles.imageContainer}>
-          <SvgUri uri={item.flagImageUrl} width={36} height={36} />
+          {item.flagImageUrl && SvgUri && <SvgUri uri={item.flagImageUrl} width={36} height={36} />}
         </FlexView>
         <Text
           variant="paragraph-400"

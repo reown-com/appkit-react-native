@@ -107,6 +107,7 @@ export function OnRampView() {
         selected={item.currencyCode === purchaseCurrency?.currencyCode}
         title={item.name}
         subtitle={item.currencyCode.split('_')[0] ?? item.currencyCode}
+        testID={`currency-item-${item.currencyCode}`}
       />
     );
   };
@@ -163,6 +164,7 @@ export function OnRampView() {
               imageUrl={purchaseCurrency?.symbolImageUrl}
               text={purchaseCurrencyCode}
               onPress={() => setIsCurrencyModalVisible(true)}
+              testID="currency-selector"
               chevron
               renderClip={
                 networkImage ? (
@@ -207,6 +209,7 @@ export function OnRampView() {
               { backgroundColor: Theme['gray-glass-010'] }
             ]}
             disabled={!selectedPaymentMethod}
+            testID="payment-method-button"
           >
             <FlexView>
               {selectedPaymentMethod?.name && (
@@ -246,6 +249,7 @@ export function OnRampView() {
               style={styles.continueButton}
               onPress={handleContinue}
               disabled={quotesLoading || loading || !selectedQuote}
+              testID="button-continue"
             >
               Continue
             </Button>

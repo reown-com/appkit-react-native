@@ -24,7 +24,13 @@ export function Header({ onSettingsPress }: HeaderProps) {
       <Text variant="paragraph-600" numberOfLines={1} testID="header-text">
         Buy crypto
       </Text>
-      <IconLink icon="settings" size="lg" onPress={onSettingsPress} style={styles.icon} />
+      <IconLink
+        icon="settings"
+        size="lg"
+        onPress={onSettingsPress}
+        style={styles.icon}
+        testID="button-onramp-settings"
+      />
     </FlexView>
   );
 }

@@ -32,9 +32,13 @@ export function NumericKeyboard({ onKeyPress }: NumericKeyboardProps) {
           {row.map(key => (
             <TouchableOpacity key={key} style={styles.key} onPress={() => handlePress(key)}>
               {key === 'erase' ? (
-                <Text style={[styles.keyText, { color: Theme['fg-100'] }]}>←</Text>
+                <Text testID="key-erase" style={[styles.keyText, { color: Theme['fg-100'] }]}>
+                  ←
+                </Text>
               ) : (
-                <Text style={[styles.keyText, { color: Theme['fg-100'] }]}>{key}</Text>
+                <Text testID={`key-${key}`} style={[styles.keyText, { color: Theme['fg-100'] }]}>
+                  {key}
+                </Text>
               )}
             </TouchableOpacity>
           ))}

@@ -18,9 +18,10 @@ interface Props {
   onPress: (item: OnRampPaymentMethod) => void;
   item: OnRampPaymentMethod;
   selected: boolean;
+  testID?: string;
 }
 
-export function PaymentMethod({ onPress, item, selected }: Props) {
+export function PaymentMethod({ onPress, item, selected, testID }: Props) {
   const Theme = useTheme();
   const { themeMode } = useSnapshot(ThemeController.state);
 
@@ -35,6 +36,7 @@ export function PaymentMethod({ onPress, item, selected }: Props) {
       style={styles.container}
       transparent
       pressable={!selected}
+      testID={testID}
     >
       <FlexView
         style={[styles.logoContainer, { backgroundColor: Theme['gray-glass-005'] }]}
@@ -55,6 +57,7 @@ export function PaymentMethod({ onPress, item, selected }: Props) {
             backgroundColor="accent-100"
             iconColor="inverse-100"
             style={styles.checkmark}
+            testID="payment-method-checkmark"
           />
         )}
       </FlexView>

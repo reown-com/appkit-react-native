@@ -27,6 +27,7 @@ export function AccountWalletFeatures() {
   const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
   const balance = CoreHelperUtil.calculateAndFormatBalance(tokenBalance as BalanceType[]);
   const isSwapsEnabled = features?.swaps;
+
   const onTabChange = (index: number) => {
     setActiveTab(index);
     if (index === 2) {
@@ -80,7 +81,7 @@ export function AccountWalletFeatures() {
     RouterController.push('WalletReceive');
   };
 
-  const onCardPress = () => {
+  const onBuyPress = () => {
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_BUY_CRYPTO'
@@ -107,7 +108,7 @@ export function AccountWalletFeatures() {
             backgroundColor="accent-glass-010"
             pressedColor="accent-glass-020"
             style={[styles.action, isSwapsEnabled ? styles.actionCenter : styles.actionLeft]}
-            onPress={onCardPress}
+            onPress={onBuyPress}
           />
         )}
         {isSwapsEnabled && (

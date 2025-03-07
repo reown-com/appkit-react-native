@@ -101,7 +101,12 @@ export function OnRampLoadingView() {
   }, [onConnect]);
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.container}>
+    <ScrollView
+      bounces={false}
+      fadingEdgeLength={20}
+      contentContainerStyle={styles.container}
+      testID="onramp-loading-widget-view"
+    >
       <FlexView
         alignItems="center"
         alignSelf="center"

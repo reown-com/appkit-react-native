@@ -18,6 +18,7 @@ export interface TokenButtonProps {
   placeholder?: string;
   chevron?: boolean;
   renderClip?: React.ReactNode;
+  testID?: string;
 }
 
 export function TokenButton({
@@ -29,7 +30,8 @@ export function TokenButton({
   disabled = false,
   placeholder = 'Select token',
   chevron,
-  renderClip
+  renderClip,
+  testID
 }: TokenButtonProps) {
   const Theme = useTheme();
 
@@ -70,6 +72,7 @@ export function TokenButton({
       size="sm"
       onPress={onPress}
       disabled={disabled}
+      testID={testID}
     >
       {inverse ? content.reverse() : content}
       {chevron && <Icon name="chevronBottom" size="xxs" color="fg-150" style={styles.chevron} />}

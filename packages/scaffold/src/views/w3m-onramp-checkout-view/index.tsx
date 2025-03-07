@@ -183,7 +183,13 @@ export function OnRampCheckoutView() {
         >
           Back
         </Button>
-        <Button variant="fill" size="md" style={styles.confirmButton} onPress={onConfirm}>
+        <Button
+          variant="fill"
+          size="md"
+          style={styles.confirmButton}
+          onPress={onConfirm}
+          testID="button-confirm"
+        >
           Confirm
         </Button>
       </FlexView>

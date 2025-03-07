@@ -145,6 +145,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
         item={parsedItem}
         onPress={() => handlePaymentMethodPress(parsedItem)}
         selected={selected}
+        testID={`payment-method-item-${parsedItem.paymentMethod}`}
       />
     );
   };
@@ -167,7 +168,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
           flexDirection="row"
           style={styles.header}
         >
-          <IconLink icon="arrowLeft" onPress={onClose} />
+          <IconLink icon="arrowLeft" onPress={onClose} testID="payment-modal-button-back" />
           {!!title && <Text variant="paragraph-600">{title}</Text>}
           <View style={styles.iconPlaceholder} />
         </FlexView>

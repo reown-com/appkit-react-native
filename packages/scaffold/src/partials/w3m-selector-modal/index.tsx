@@ -70,7 +70,7 @@ export function SelectorModal({
           flexDirection="row"
           style={styles.header}
         >
-          <IconLink icon="chevronLeft" onPress={onClose} />
+          <IconLink icon="chevronLeft" onPress={onClose} testID="selector-modal-button-back" />
           {!!title && <Text variant="paragraph-600">{title}</Text>}
           {showNetwork ? (
             networkImage ? (

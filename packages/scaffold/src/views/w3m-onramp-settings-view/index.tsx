@@ -90,7 +90,7 @@ export function OnRampSettingsView() {
             style={[styles.imageContainer, { backgroundColor: Theme['gray-glass-005'] }]}
           >
             <FlexView style={styles.imageBorder}>
-              {selectedCountry?.flagImageUrl ? (
+              {selectedCountry?.flagImageUrl && SvgUri ? (
                 <SvgUri uri={selectedCountry?.flagImageUrl} style={styles.image} />
               ) : undefined}
             </FlexView>

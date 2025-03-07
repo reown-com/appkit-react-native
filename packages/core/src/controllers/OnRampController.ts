@@ -416,6 +416,7 @@ export const OnRampController = {
 
       const quotes = response.sort((a, b) => b.customerScore - a.customerScore);
 
+      //TODO: Check this
       if (state.paymentAmount && state.paymentAmount > 0) {
         state.quotes = quotes;
         state.selectedQuote = quotes[0];
@@ -555,6 +556,8 @@ export const OnRampController = {
 
   async loadOnRampData() {
     state.initialLoading = true;
+    state.error = undefined;
+
     try {
       await this.fetchCountries();
       await this.fetchServiceProviders();
@@ -566,10 +569,12 @@ export const OnRampController = {
         this.fetchFiatCurrencies()
       ]);
     } catch (error) {
-      state.error = {
-        type: OnRampErrorType.FAILED_TO_LOAD,
-        message: 'Failed to load data'
-      };
+      if (!state.error) {
+        state.error = {
+          type: OnRampErrorType.FAILED_TO_LOAD,
+          message: 'Failed to load onramp data'
+        };
+      }
     } finally {
       state.initialLoading = false;
     }

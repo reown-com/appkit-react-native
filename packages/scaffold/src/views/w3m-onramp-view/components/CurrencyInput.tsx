@@ -87,7 +87,7 @@ export function CurrencyInput({
   }, [value]);
 
   return (
-    <FlexView style={style}>
+    <FlexView style={style} testID="currency-input">
       <FlexView alignItems="center" margin={['m', '0', '0', '0']}>
         <FlexView flexDirection="row" alignItems="center">
           <Text style={[styles.input, { color: Theme[amountColor] }]}>{displayValue}</Text>
@@ -99,7 +99,12 @@ export function CurrencyInput({
           {loading ? (
             <LoadingSpinner size="sm" color="fg-150" />
           ) : error ? (
-            <Text variant="small-500" color="error-100" numberOfLines={1}>
+            <Text
+              variant="small-500"
+              color="error-100"
+              numberOfLines={1}
+              testID="currency-input-error"
+            >
               {error}
             </Text>
           ) : (
@@ -116,6 +121,7 @@ export function CurrencyInput({
           return (
             <Button
               key={suggestion}
+              testID={`suggested-value-${suggestion}`}
               style={[
                 styles.suggestedValue,
                 isSelected && {
