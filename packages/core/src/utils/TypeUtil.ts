@@ -335,7 +335,7 @@ export interface BlockchainApiOnRampWidgetRequest {
   destinationCurrencyCode: string;
   paymentMethodType: string;
   serviceProvider: string;
-  sourceAmount: number;
+  sourceAmount: string;
   sourceCurrencyCode: string;
   walletAddress: string;
   redirectUrl?: string;
@@ -852,28 +852,12 @@ export type OnRampPaymentMethod = {
   name: string;
   paymentMethod: string;
   paymentType: string;
-  serviceProviderDetails: {
-    [key: string]: {
-      paymentMethod: string;
-    };
-  };
 };
 
 export type OnRampCountry = {
   countryCode: string;
   flagImageUrl: string;
   name: string;
-  regions: [
-    {
-      name: string;
-      regionCode: string;
-    }
-  ];
-  serviceProviderDetails: {
-    additionalProp: {
-      countryCode: string;
-    };
-  };
 };
 
 export type OnRampFiatCurrency = {
