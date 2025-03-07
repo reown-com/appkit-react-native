@@ -29,15 +29,14 @@ export function Country({ onPress, item, selected }: Props) {
         <FlexView style={styles.imageContainer}>
           {item.flagImageUrl && SvgUri && <SvgUri uri={item.flagImageUrl} width={36} height={36} />}
         </FlexView>
-        <Text
-          variant="paragraph-400"
-          color="fg-100"
-          style={styles.text}
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
-          {item.name}
-        </Text>
+        <FlexView style={styles.textContainer}>
+          <Text variant="paragraph-400" color="fg-100" numberOfLines={1} ellipsizeMode="tail">
+            {item.name}
+          </Text>
+          <Text variant="small-400" color="fg-150">
+            {item.countryCode}
+          </Text>
+        </FlexView>
         {selected && (
           <Icon name="checkmark" size="md" color="accent-100" style={styles.checkmark} />
         )}
@@ -57,7 +56,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginRight: Spacing.xs
   },
-  text: {
+  textContainer: {
     flex: 1
   },
   checkmark: {

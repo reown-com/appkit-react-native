@@ -180,7 +180,7 @@ export const OnRampController = {
         ConstantsUtil.NETWORK_DEFAULT_CURRENCIES[
           NetworkController.state.caipNetwork
             ?.id as keyof typeof ConstantsUtil.NETWORK_DEFAULT_CURRENCIES
-        ] || 'ETH';
+        ];
       selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === defaultCurrency);
     }
 

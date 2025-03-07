@@ -53,7 +53,7 @@ export function OnRampCheckoutView() {
         <FlexView flexDirection="row" alignItems="center">
           <Text style={[styles.amount, { color: Theme['fg-100'] }]}>{value}</Text>
           <Text variant="paragraph-400" color="fg-200">
-            {symbol ?? ''}
+            {symbol?.split('_')[0] ?? symbol ?? ''}
           </Text>
         </FlexView>
         <FlexView flexDirection="row" alignItems="center" justifyContent="center">
@@ -83,7 +83,7 @@ export function OnRampCheckoutView() {
         <Text color="fg-200">You Receive</Text>
         <FlexView flexDirection="row" alignItems="center">
           <Text>
-            {value} {symbol}
+            {value} {symbol?.split('_')[0] ?? ''}
           </Text>
           {purchaseCurrency?.symbolImageUrl && (
             <Image
@@ -91,6 +91,17 @@ export function OnRampCheckoutView() {
               style={[styles.tokenImage, { borderColor: Theme['gray-glass-010'] }]}
             />
           )}
+        </FlexView>
+      </FlexView>
+      <FlexView
+        padding={['xs', 's', 'xs', 's']}
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Text color="fg-200">Network</Text>
+        <FlexView flexDirection="row" alignItems="center">
+          <Text>{purchaseCurrency?.chainName}</Text>
         </FlexView>
       </FlexView>
       <FlexView

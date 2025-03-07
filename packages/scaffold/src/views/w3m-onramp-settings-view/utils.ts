@@ -43,12 +43,16 @@ export const getModalSearchPlaceholder = (type?: ModalType) => {
   return type ? MODAL_SEARCH_PLACEHOLDERS[type] : undefined;
 };
 
-const searchFilter = (item: { name: string; currencyCode?: string }, searchValue: string) => {
+const searchFilter = (
+  item: { name: string; currencyCode?: string; countryCode?: string },
+  searchValue: string
+) => {
   const search = searchValue.toLowerCase();
 
   return (
     item.name.toLowerCase().includes(search) ||
-    (item.currencyCode?.toLowerCase().includes(search) ?? false)
+    (item.currencyCode?.toLowerCase().includes(search) ?? false) ||
+    (item.countryCode?.toLowerCase().includes(search) ?? false)
   );
 };
 

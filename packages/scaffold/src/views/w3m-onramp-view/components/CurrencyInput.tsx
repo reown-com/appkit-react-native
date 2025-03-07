@@ -92,7 +92,7 @@ export function CurrencyInput({
         <FlexView flexDirection="row" alignItems="center">
           <Text style={[styles.input, { color: Theme[amountColor] }]}>{displayValue}</Text>
           <Text variant="large-400" color={isAmountError ? 'error-100' : 'fg-200'}>
-            {symbol ?? ''}
+            {symbol || ''}
           </Text>
         </FlexView>
         <FlexView alignItems="center" justifyContent="center" style={styles.bottomContainer}>
@@ -134,7 +134,7 @@ export function CurrencyInput({
               onPress={() => onSuggestedValuePress?.(suggestion)}
             >
               <Text variant="small-400" color="fg-100">
-                {`$${suggestion}`}
+                {`${suggestion} ${symbol ?? ''}`}
               </Text>
             </Button>
           );

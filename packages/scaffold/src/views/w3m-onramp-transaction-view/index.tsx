@@ -74,7 +74,8 @@ export function OnRampTransactionView() {
             </Text>
             <FlexView flexDirection="row" alignItems="center">
               <Text variant="paragraph-500">
-                {data?.onrampResult?.purchaseAmount} {data?.onrampResult?.purchaseCurrency}
+                {data?.onrampResult?.purchaseAmount}{' '}
+                {data?.onrampResult?.purchaseCurrency?.split('_')[0] ?? ''}
               </Text>
               {data?.onrampResult?.purchaseImageUrl && (
                 <Image

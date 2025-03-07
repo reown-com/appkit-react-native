@@ -5,17 +5,19 @@ import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import {
   FlexView,
   IconLink,
-  LoadingSpinner,
   Spacing,
   Text,
   useTheme,
-  Separator
+  Separator,
+  LoadingSpinner,
+  BorderRadius
 } from '@reown/appkit-ui-react-native';
 import {
   OnRampController,
   type OnRampPaymentMethod,
   type OnRampQuote
 } from '@reown/appkit-core-react-native';
+import { Placeholder } from '../../../partials/w3m-placeholder';
 import { Quote, ITEM_HEIGHT as QUOTE_ITEM_HEIGHT } from './Quote';
 import { PaymentMethod, ITEM_SIZE } from './PaymentMethod';
 
@@ -29,7 +31,7 @@ const SEPARATOR_HEIGHT = Spacing.s;
 
 export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentModalProps) {
   const Theme = useTheme();
-  const { selectedQuote, quotes, quotesLoading } = useSnapshot(OnRampController.state);
+  const { selectedQuote, quotes } = useSnapshot(OnRampController.state);
   const paymentMethodsRef = useRef<FlatList>(null);
   const [paymentMethods, setPaymentMethods] = useState<OnRampPaymentMethod[]>(
     OnRampController.state.paymentMethods
@@ -114,24 +116,21 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
   };
 
   const renderEmpty = () => {
-    return (
+    return OnRampController.state.quotesLoading ? (
       <FlexView
         alignItems="center"
         justifyContent="center"
-        padding="xl"
+        padding="2xl"
         style={styles.emptyContainer}
       >
-        {quotesLoading ? (
-          <LoadingSpinner />
-        ) : (
-          <>
-            <Text variant="paragraph-500">No providers available</Text>
-            <Text center variant="small-500" color="fg-150">
-              Please select a different payment method or increase the amount
-            </Text>
-          </>
-        )}
+        <LoadingSpinner />
       </FlexView>
+    ) : (
+      <Placeholder
+        title="No providers available"
+        description="Please select a different payment method or increase the amount"
+        icon="warningCircle"
+      />
     );
   };
 
@@ -223,8 +222,8 @@ const styles = StyleSheet.create({
   },
   container: {
     height: '80%',
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16
+    borderTopLeftRadius: BorderRadius.l,
+    borderTopRightRadius: BorderRadius.l
   },
   separator: {
     width: undefined,

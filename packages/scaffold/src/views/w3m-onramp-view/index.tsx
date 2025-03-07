@@ -68,6 +68,22 @@ export function OnRampView() {
     }
   }, []);
 
+  const getProviderButtonText = () => {
+    if (selectedQuote) {
+      return 'via ';
+    }
+
+    if (!paymentAmount) {
+      return 'Enter an amount';
+    }
+
+    if (!paymentMethods?.length) {
+      return 'No payment methods available';
+    }
+
+    return 'Select a provider';
+  };
+
   const onValueChange = (value: number) => {
     UiUtil.animateChange();
     if (!value) {
@@ -112,7 +128,7 @@ export function OnRampView() {
     );
   };
 
-  const onPressPurchaseCurrency = async (item: any) => {
+  const onPressPurchaseCurrency = (item: any) => {
     setIsCurrencyModalVisible(false);
     setIsPaymentMethodModalVisible(false);
     setSearchValue('');
@@ -208,32 +224,32 @@ export function OnRampView() {
               styles.paymentMethodImageContainer,
               { backgroundColor: Theme['gray-glass-010'] }
             ]}
-            disabled={!selectedPaymentMethod}
+            disabled={!selectedPaymentMethod || !paymentAmount}
             testID="payment-method-button"
           >
             <FlexView>
               {selectedPaymentMethod?.name && (
-                <Text variant="paragraph-400" color="fg-100" style={styles.paymentMethodText}>
+                <Text variant="paragraph-400" color="fg-100">
                   {selectedPaymentMethod.name}
                 </Text>
               )}
-              <FlexView flexDirection="row" alignItems="center">
-                <Text variant="small-400" color="fg-150">
-                  {selectedQuote
-                    ? 'via '
-                    : !paymentMethods?.length
-                    ? 'No payment methods available'
-                    : 'Select a provider'}
-                </Text>
-                {selectedQuote && (
-                  <>
-                    {providerImage && <Image source={providerImage} style={styles.providerImage} />}
-                    <Text variant="small-400" color="fg-150">
-                      {StringUtil.capitalize(selectedQuote?.serviceProvider)}
-                    </Text>
-                  </>
-                )}
-              </FlexView>
+              {getProviderButtonText() && (
+                <FlexView flexDirection="row" alignItems="center" margin={['3xs', '0', '0', '0']}>
+                  <Text variant="small-400" color="fg-150">
+                    {getProviderButtonText()}
+                  </Text>
+                  {selectedQuote && (
+                    <>
+                      {providerImage && (
+                        <Image source={providerImage} style={styles.providerImage} />
+                      )}
+                      <Text variant="small-400" color="fg-150">
+                        {StringUtil.capitalize(selectedQuote?.serviceProvider)}
+                      </Text>
+                    </>
+                  )}
+                </FlexView>
+              )}
             </FlexView>
           </ListItem>
           <FlexView

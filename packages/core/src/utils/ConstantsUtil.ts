@@ -415,32 +415,29 @@ export const ConstantsUtil = {
   },
 
   NETWORK_DEFAULT_CURRENCIES: {
-    'eip155:1': 'ETH',
-    'eip155:56': 'BNB',
-    'eip155:137': 'MATIC',
-    'eip155:42161': 'ETH',
-    'eip155:43114': 'AVAX',
-    'eip155:10': 'ETH',
-    'eip155:250': 'FTM',
-    'eip155:100': 'xDAI',
-    'eip155:8453': 'ETH',
-    'eip155:1284': 'GLMR',
-    'eip155:1285': 'MOVR',
-    'eip155:66': 'OKT',
-    'eip155:25': 'CRO',
-    'eip155:42220': 'CELO',
-    'eip155:8217': 'KLAY',
-    'eip155:1313161554': 'ETH',
-    'eip155:40': 'TLOS',
-    'eip155:1088': 'METIS',
-    'eip155:2222': 'KAVA',
-    'eip155:7777777': 'ZETA',
-    'eip155:7700': 'CANTO',
-    'eip155:59144': 'ETH',
-    'eip155:1101': 'ETH',
-    'eip155:196': 'XIN',
-    'eip155:777777': 'ETH',
-    'eip155:11155111': 'ETH'
+    'eip155:1': 'ETH', // Ethereum Mainnet
+    'eip155:56': 'BNB', // Binance Smart Chain
+    'eip155:137': 'MATIC', // Polygon
+    'eip155:42161': 'ETH_ARBITRUM', // Arbitrum One
+    'eip155:43114': 'AVAX', // Avalanche C-Chain
+    'eip155:10': 'ETH_OPTIMISM', // Optimism
+    'eip155:250': 'FTM', // Fantom
+    'eip155:100': 'xDAI', // Gnosis Chain (formerly xDai)
+    'eip155:8453': 'ETH_BASE', // Base
+    'eip155:1284': 'GLMR', // Moonbeam
+    'eip155:1285': 'MOVR', // Moonriver
+    'eip155:25': 'CRO', // Cronos
+    'eip155:42220': 'CELO', // Celo
+    'eip155:8217': 'KLAY', // Klaytn
+    'eip155:1313161554': 'AURORA_ETH', // Aurora
+    'eip155:40': 'TLOS', // Telos EVM
+    'eip155:1088': 'METIS', // Metis Andromeda
+    'eip155:2222': 'KAVA', // Kava EVM
+    'eip155:7777777': 'ZETA', // ZetaChain
+    'eip155:7700': 'CANTO', // Canto
+    'eip155:59144': 'ETH_LINEA', // Linea
+    'eip155:1101': 'ETH_POLYGONZKEVM', // Polygon zkEVM
+    'eip155:196': 'XIN' // Mixin
   },
   COUNTRY_DEFAULT_PAYMENT_METHOD: {
     AE: ['CREDIT_DEBIT_CARD', 'BINANCE_P2P', 'UAE_BANK_TRANSFER'],
