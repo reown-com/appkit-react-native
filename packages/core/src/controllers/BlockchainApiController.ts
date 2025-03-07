@@ -322,7 +322,9 @@ export const BlockchainApiController = {
       headers: getHeaders(),
       body: {
         projectId: OptionsController.state.projectId,
-        ...body
+        sessionData: {
+          ...body
+        }
       },
       signal
     });

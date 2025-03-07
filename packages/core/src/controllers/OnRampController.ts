@@ -504,7 +504,7 @@ export const OnRampController = {
         destinationCurrencyCode: quote.destinationCurrencyCode,
         paymentMethodType: quote.paymentMethodType,
         serviceProvider: quote.serviceProvider,
-        sourceAmount: quote.sourceAmount,
+        sourceAmount: quote.sourceAmount.toString(),
         sourceCurrencyCode: quote.sourceCurrencyCode,
         walletAddress: AccountController.state.address!,
         redirectUrl: metadata?.redirect?.universal ?? metadata?.redirect?.native
