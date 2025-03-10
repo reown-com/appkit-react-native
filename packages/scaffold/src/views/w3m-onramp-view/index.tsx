@@ -25,7 +25,6 @@ import { NumberUtil, StringUtil } from '@reown/appkit-common-react-native';
 import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Currency } from './components/Currency';
 import { getPurchaseCurrencies, getCurrencySuggestedValues } from './utils';
-
 import { CurrencyInput } from './components/CurrencyInput';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
 import { ITEM_HEIGHT as CURRENCY_ITEM_HEIGHT } from './components/Currency';
