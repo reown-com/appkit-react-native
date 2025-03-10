@@ -218,13 +218,10 @@ export const OnRampController = {
       if (preferredCountry) {
         state.selectedCountry = preferredCountry;
       } else {
-        const timezone = CoreHelperUtil.getTimezone()?.toLowerCase()?.split('/');
+        const countryCode = CoreHelperUtil.getCountryFromTimezone();
 
         state.selectedCountry =
-          countries.find(c => timezone?.includes(c.name.toLowerCase())) ||
-          countries.find(c => c.countryCode === 'US') ||
-          countries[0] ||
-          undefined;
+          countries.find(c => c.countryCode === countryCode) || countries[0] || undefined;
       }
     } catch (error) {
       state.error = {
@@ -416,16 +413,11 @@ export const OnRampController = {
 
       const quotes = response.sort((a, b) => b.customerScore - a.customerScore);
 
-      //TODO: Check this
-      if (state.paymentAmount && state.paymentAmount > 0) {
-        state.quotes = quotes;
-        state.selectedQuote = quotes[0];
-        state.selectedServiceProvider = state.serviceProviders.find(
-          sp => sp.serviceProvider === quotes[0]?.serviceProvider
-        );
-      } else {
-        this.clearQuotes();
-      }
+      state.quotes = quotes;
+      state.selectedQuote = quotes[0];
+      state.selectedServiceProvider = state.serviceProviders.find(
+        sp => sp.serviceProvider === quotes[0]?.serviceProvider
+      );
     } catch (error: any) {
       if (error.name === 'AbortError') {
         // Do nothing, another request was made

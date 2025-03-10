@@ -2,6 +2,7 @@
 
 import { Linking, Platform } from 'react-native';
 import { ConstantsUtil as CommonConstants, type Balance } from '@reown/appkit-common-react-native';
+import * as ct from 'countries-and-timezones';
 
 import { ConstantsUtil } from './ConstantsUtil';
 import type { CaipAddress, CaipNetwork, DataWallet, LinkingRecord } from './TypeUtil';
@@ -180,14 +181,14 @@ export const CoreHelperUtil = {
     return CommonConstants.PULSE_API_URL;
   },
 
-  getTimezone() {
+  getCountryFromTimezone() {
     try {
       const { timeZone } = new Intl.DateTimeFormat().resolvedOptions();
-      const capTimeZone = timeZone.toUpperCase();
+      const country = ct.getCountryForTimezone(timeZone);
 
-      return capTimeZone;
-    } catch {
-      return undefined;
+      return country ? country.id : 'US'; // 'id' is the ISO country code (e.g., "GB" for United Kingdom)
+    } catch (error) {
+      return 'US';
     }
   },
 
