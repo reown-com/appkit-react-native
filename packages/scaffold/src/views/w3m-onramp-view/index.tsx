@@ -161,7 +161,7 @@ export function OnRampView() {
     }
   }, []);
 
-  if (initialLoading) {
+  if (initialLoading || OnRampController.state.countries.length === 0) {
     return <LoadingView />;
   }
 

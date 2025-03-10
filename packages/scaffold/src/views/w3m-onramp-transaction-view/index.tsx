@@ -30,7 +30,7 @@ export function OnRampTransactionView() {
   }, []);
 
   return (
-    <FlexView padding={['xl', 'l', '4xl', 'l']}>
+    <FlexView padding={['3xs', 'l', '4xl', 'l']}>
       <FlexView>
         <FlexView alignItems="center">
           <IconBox
@@ -113,7 +113,7 @@ export function OnRampTransactionView() {
         </FlexView>
       </FlexView>
       <Button variant="fill" size="md" onPress={onClose}>
-        Close
+        Go back
       </Button>
     </FlexView>
   );
