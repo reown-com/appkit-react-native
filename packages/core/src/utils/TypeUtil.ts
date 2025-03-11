@@ -335,7 +335,7 @@ export interface BlockchainApiOnRampWidgetRequest {
   destinationCurrencyCode: string;
   paymentMethodType: string;
   serviceProvider: string;
-  sourceAmount: string;
+  sourceAmount: number;
   sourceCurrencyCode: string;
   walletAddress: string;
   redirectUrl?: string;
