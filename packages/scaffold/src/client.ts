@@ -66,7 +66,7 @@ export interface ScaffoldOptions extends LibraryOptions {
 }
 
 export interface OpenOptions {
-  view: 'Account' | 'Connect' | 'Networks' | 'Swap';
+  view: 'Account' | 'Connect' | 'Networks' | 'Swap' | 'OnRamp';
 }
 
 // -- Client --------------------------------------------------------------------

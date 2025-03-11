@@ -1,7 +1,7 @@
-import { RouterController } from '@reown/appkit-core-react-native';
+import { StyleSheet } from 'react-native';
+import { ModalController, RouterController } from '@reown/appkit-core-react-native';
 import { IconLink, Text } from '@reown/appkit-ui-react-native';
 import { FlexView } from '@reown/appkit-ui-react-native';
-import { StyleSheet } from 'react-native';
 
 interface HeaderProps {
   onSettingsPress: () => void;
@@ -9,7 +9,11 @@ interface HeaderProps {
 
 export function Header({ onSettingsPress }: HeaderProps) {
   const handleGoBack = () => {
-    RouterController.goBack();
+    if (RouterController.state.history.length > 1) {
+      RouterController.goBack();
+    } else {
+      ModalController.close();
+    }
   };
 
   return (
