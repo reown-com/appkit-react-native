@@ -82,6 +82,7 @@
   },
   "packageManager": "yarn@4.0.2",
   "resolutions": {
+    "@babel/helpers": "7.26.10",
     "elliptic": "^6.6.1",
     "path-to-regexp": "0.1.12",
     "ws": "^8.18.1",
