@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-scaffold-react-native",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -37,10 +37,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@reown/appkit-common-react-native": "1.2.1",
-    "@reown/appkit-core-react-native": "1.2.1",
-    "@reown/appkit-siwe-react-native": "1.2.1",
-    "@reown/appkit-ui-react-native": "1.2.1"
+    "@reown/appkit-common-react-native": "1.2.2",
+    "@reown/appkit-core-react-native": "1.2.2",
+    "@reown/appkit-siwe-react-native": "1.2.2",
+    "@reown/appkit-ui-react-native": "1.2.2"
   },
   "peerDependencies": {
     "react": ">=17",

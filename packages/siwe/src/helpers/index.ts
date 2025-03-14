@@ -24,7 +24,7 @@ export async function verifySignature({
   chainId: string;
   projectId: string;
 }) {
-  let isValid = isValidEip191Signature(address, message, signature);
+  let isValid = await isValidEip191Signature(address, message, signature);
   if (!isValid) {
     isValid = await isValidEip1271Signature(address, message, signature, chainId, projectId);
   }
