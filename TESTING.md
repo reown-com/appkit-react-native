@@ -111,7 +111,6 @@ npx playwright install
 Playwright tests are written using the Playwright Test framework. Here's a basic example:
 
 ```typescript
-// e2e/example.spec.ts
 import { test, expect } from '@playwright/test';
 
 test('basic test', async ({ page }) => {
@@ -134,29 +133,13 @@ test('basic test', async ({ page }) => {
 To run all Playwright tests:
 
 ```bash
-npx playwright test
+yarn playwright:test
 ```
 
 To run a specific test file:
 
 ```bash
-npx playwright test e2e/example.spec.ts
-```
-
-To run tests in headed mode (with browser visible):
-
-```bash
-npx playwright test --headed
-```
-
-To run tests in a specific browser:
-
-```bash
-npx playwright test --browser=chromium
-# or
-npx playwright test --browser=firefox
-# or
-npx playwright test --browser=webkit
+yarn playwright:test tests/basic-tests.spec.ts
 ```
 
 ### Debugging Playwright Tests
@@ -166,7 +149,7 @@ To debug tests:
 1. Run with the `--debug` flag:
 
 ```bash
-npx playwright test --debug
+yarn playwright:test --debug
 ```
 
 2. Use the Playwright Inspector to step through the test.
@@ -178,65 +161,13 @@ npx playwright test --debug
 To generate an HTML report:
 
 ```bash
-npx playwright test --reporter=html
+yarn playwright:test --reporter=html
 ```
 
 Then open the report:
 
 ```bash
-npx playwright show-report
-```
-
-### Testing Mobile Web Views
-
-For testing mobile web views:
-
-```typescript
-test('mobile view test', async ({ browser }) => {
-  // Create a new context with mobile device emulation
-  const context = await browser.newContext({
-    viewport: { width: 375, height: 667 },
-    userAgent:
-      'Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1'
-  });
-
-  const page = await context.newPage();
-  // Continue with your test...
-});
-```
-
-### CI Integration
-
-Playwright tests can be integrated into your CI pipeline. Here's an example GitHub Actions workflow:
-
-```yaml
-name: Playwright Tests
-on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
-jobs:
-  test:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Install dependencies
-        run: yarn install
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        run: npx playwright test
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+yarn playwright:test show-report
 ```
 
 For more information, refer to the [Playwright documentation](https://playwright.dev/docs/intro).
