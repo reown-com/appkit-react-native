@@ -23,11 +23,17 @@ export function AllWalletList({ itemStyle, onWalletPress, isWalletConnectEnabled
   const imageHeaders = ApiController._getApiHeaders();
   const RECENT_COUNT = recentWallets?.length && installed.length ? 1 : recentWallets?.length ?? 0;
 
-  const list = filterOutRecentWallets(
-    recentWallets,
-    [...installed, ...featured, ...recommended],
-    RECENT_COUNT
-  ).slice(0, UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT);
+  const combinedWallets = [...installed, ...featured, ...recommended];
+
+  // Deduplicate by wallet ID
+  const uniqueWallets = Array.from(
+    new Map(combinedWallets.map(wallet => [wallet.id, wallet])).values()
+  );
+
+  const list = filterOutRecentWallets(recentWallets, uniqueWallets, RECENT_COUNT).slice(
+    0,
+    UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT
+  );
 
   if (!isWalletConnectEnabled || !list?.length) {
     return null;
