@@ -38,12 +38,21 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
   const preloadedWallets = installed.length + featured.length + recommended.length;
   const loadingItems = columns - ((100 + preloadedWallets) % columns);
 
-  const walletList = [
+  const combinedWallets = [
     ...(customWallets ?? []),
     ...installed,
     ...featured,
     ...recommended,
-    ...wallets,
+    ...wallets
+  ];
+
+  // Deduplicate by wallet ID
+  const uniqueWallets = Array.from(
+    new Map(combinedWallets.map(wallet => [wallet?.id, wallet])).values()
+  ).filter(wallet => wallet?.id); // Filter out any undefined wallets
+
+  const walletList = [
+    ...uniqueWallets,
     ...(pageLoading ? (Array.from({ length: loadingItems }) as WcWallet[]) : [])
   ];
 
@@ -132,7 +141,7 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
       <Placeholder
         icon="warningCircle"
         iconColor="error-100"
-        title="Oops, we couldn’t load the wallets at the moment"
+        title="Oops, we couldn't load the wallets at the moment"
         description={`This might be due to a temporary network issue.\nPlease try reloading to see if that helps.`}
         actionIcon="refresh"
         actionPress={initialFetch}
