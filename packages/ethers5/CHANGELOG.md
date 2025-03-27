@@ -1,5 +1,21 @@
 # @reown/appkit-ethers5-react-native
 
+## 1.2.3
+
+### Patch Changes
+
+- [#322](https://github.com/reown-com/appkit-react-native/pull/322) [`e0b59fb`](https://github.com/reown-com/appkit-react-native/commit/e0b59fb217fab570efc876265d13647844bb79d2) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: clear balance if the sdk fails to get it
+
+- [#327](https://github.com/reown-com/appkit-react-native/pull/327) [`bdc0388`](https://github.com/reown-com/appkit-react-native/commit/bdc038847695f45ed2e5b88f70fdec4ae17abcf7) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: deduplicate wallets in all wallet list
+
+- [#331](https://github.com/reown-com/appkit-react-native/pull/331) [`c75e94a`](https://github.com/reown-com/appkit-react-native/commit/c75e94ae97d2e7b5017a2fa879a58fb1d3a03821) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: solved issue with wallet page loaders
+
+- Updated dependencies [[`e0b59fb`](https://github.com/reown-com/appkit-react-native/commit/e0b59fb217fab570efc876265d13647844bb79d2), [`bdc0388`](https://github.com/reown-com/appkit-react-native/commit/bdc038847695f45ed2e5b88f70fdec4ae17abcf7), [`c75e94a`](https://github.com/reown-com/appkit-react-native/commit/c75e94ae97d2e7b5017a2fa879a58fb1d3a03821)]:
+  - @reown/appkit-common-react-native@1.2.3
+  - @reown/appkit-scaffold-react-native@1.2.3
+  - @reown/appkit-scaffold-utils-react-native@1.2.3
+  - @reown/appkit-siwe-react-native@1.2.3
+
 ## 1.2.2
 
 ### Patch Changes
