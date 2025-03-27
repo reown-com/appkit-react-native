@@ -34,9 +34,8 @@ const metadata = {
   url: 'https://reown.com/appkit',
   icons: ['https://avatars.githubusercontent.com/u/179229932'],
   redirect: {
-    native: 'redirect://',
-    universal: 'https://appkit-lab.reown.com/rn_appkit',
-    linkMode: true
+    native: 'host.exp.exponent://',
+    universal: 'https://appkit-lab.reown.com/rn_appkit'
   }
 };
 
@@ -79,6 +78,7 @@ createAppKit({
     socials: ['x', 'discord', 'apple'],
     emailShowWallets: true,
     swaps: true
+    // onramp: true
   }
 });
 

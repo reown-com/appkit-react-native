@@ -20,6 +20,7 @@ export interface PressableProps extends RNPressableProps {
   animationDuration?: number;
   disabled?: boolean;
   pressable?: boolean;
+  transparent?: boolean;
 }
 
 export function Pressable({
@@ -28,6 +29,7 @@ export function Pressable({
   disabled = false,
   pressable = true,
   onPress,
+  transparent = false,
   backgroundColor = 'gray-glass-002',
   pressedBackgroundColor = 'gray-glass-010',
   bounceScale = 0.99, // Scale to 99% of original size
@@ -80,7 +82,14 @@ export function Pressable({
   return (
     <AnimatedPressable
       disabled={disabled || !pressable}
-      style={[{ backgroundColor: bgColor, transform: [{ scale: scaleAnimation.current }] }, style]}
+      style={[
+        // eslint-disable-next-line react-native/no-inline-styles
+        {
+          backgroundColor: transparent ? 'transparent' : bgColor,
+          transform: [{ scale: scaleAnimation.current }]
+        },
+        style
+      ]}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
       onPress={onPress}
