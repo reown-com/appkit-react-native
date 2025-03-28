@@ -1,6 +1,7 @@
 import { useLayoutEffect, useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import { RouterController } from '@reown/appkit-core-react-native';
+import { AnimatedModalContent } from '../w3m-modal/components/AnimatedModalContent';
 
 import { AccountDefaultView } from '../../views/w3m-account-default-view';
 import { AccountView } from '../../views/w3m-account-view';
@@ -57,22 +58,22 @@ export function AppKitRouter() {
         return ConnectView;
       case 'ConnectSocials':
         return ConnectSocialsView;
-      case 'ConnectingExternal':
-        return ConnectingExternalView;
-      case 'ConnectingSiwe':
-        return ConnectingSiweView;
-      case 'ConnectingSocial':
-        return ConnectingSocialView;
-      case 'ConnectingFarcaster':
-        return ConnectingFarcasterView;
       case 'ConnectingWalletConnect':
         return ConnectingView;
+      case 'ConnectingExternal':
+        return ConnectingExternalView;
+      case 'ConnectingFarcaster':
+        return ConnectingFarcasterView;
+      case 'ConnectingSocial':
+        return ConnectingSocialView;
+      case 'ConnectingSiwe':
+        return ConnectingSiweView;
       case 'Create':
         return CreateView;
-      case 'EmailVerifyDevice':
-        return EmailVerifyDeviceView;
       case 'EmailVerifyOtp':
         return EmailVerifyOtpView;
+      case 'EmailVerifyDevice':
+        return EmailVerifyDeviceView;
       case 'GetWallet':
         return GetWalletView;
       case 'Networks':
@@ -89,12 +90,12 @@ export function AppKitRouter() {
         return TransactionsView;
       case 'UnsupportedChain':
         return UnsupportedChainView;
+      case 'UpdateEmailWallet':
+        return UpdateEmailWalletView;
       case 'UpdateEmailPrimaryOtp':
         return UpdateEmailPrimaryOtpView;
       case 'UpdateEmailSecondaryOtp':
         return UpdateEmailSecondaryOtpView;
-      case 'UpdateEmailWallet':
-        return UpdateEmailWalletView;
       case 'UpgradeEmailWallet':
         return UpgradeEmailWalletView;
       case 'UpgradeToSmartAccount':
@@ -114,9 +115,15 @@ export function AppKitRouter() {
       case 'WhatIsAWallet':
         return WhatIsAWalletView;
       default:
-        return ConnectView;
+        return null;
     }
   }, [view]);
 
-  return <ViewComponent />;
+  if (!ViewComponent) return null;
+
+  return (
+    <AnimatedModalContent>
+      <ViewComponent />
+    </AnimatedModalContent>
+  );
 }
