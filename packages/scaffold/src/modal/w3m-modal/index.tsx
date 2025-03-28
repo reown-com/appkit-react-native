@@ -121,7 +121,7 @@ export function AppKit() {
       <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
         <Modal
           style={styles.modal}
-          coverScreen={!frameViewVisible && !webviewVisible}
+          coverScreen={false}
           isVisible={open}
           useNativeDriver
           useNativeDriverForBackdrop
