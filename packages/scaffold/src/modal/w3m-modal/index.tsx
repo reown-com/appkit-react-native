@@ -16,7 +16,6 @@ import {
   TransactionsController,
   type CaipAddress,
   type AppKitFrameProvider,
-  WebviewController,
   ThemeController
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
@@ -31,7 +30,6 @@ export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
   const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
-  const { frameViewVisible, webviewVisible } = useSnapshot(WebviewController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
