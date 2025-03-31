@@ -28,7 +28,7 @@ interface AllWalletsListProps {
 }
 
 export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsListProps) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(ApiController.state.wallets.length === 0);
   const [loadingError, setLoadingError] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const { maxWidth, padding } = useCustomDimensions();
@@ -115,7 +115,12 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
 
   const fetchNextPage = async () => {
     try {
-      if (walletList.length < ApiController.state.count && !pageLoading) {
+      if (
+        walletList.length < ApiController.state.count &&
+        !pageLoading &&
+        !loading &&
+        ApiController.state.page > 0
+      ) {
         setPageLoading(true);
         await ApiController.fetchWallets({ page: ApiController.state.page + 1 });
         setPageLoading(false);
