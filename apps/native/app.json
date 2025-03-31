@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "native",
-    "slug": "appkit-expo-sample",
+    "slug": "appkit",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -19,9 +19,13 @@
     "runtimeVersion": {
       "policy": "appVersion"
     },
-    "owner": "nacho.walletconnect",
-    "assetBundlePatterns": ["**/*"],
-    "plugins": ["./expo-plugins/installed-wallets.js"],
+    "owner": "nacho.reown",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "plugins": [
+      "./expo-plugins/installed-wallets.js"
+    ],
     "ios": {
       "buildNumber": "1",
       "bundleIdentifier": "com.walletconnect.web3modal.rnsdk",
@@ -68,7 +72,7 @@
     },
     "android": {
       "versionCode": 1,
-      "package": "com.walletconnect.web3modal.rnsdk",
+      "package": "com.reown.appkit.expo",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -84,7 +88,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "2d3ad657-c612-4f65-ba0f-62c277388fa6"
+        "projectId": "2325cd86-ac2f-4ecc-a094-6bb2276f2e8a"
       }
     }
   }
