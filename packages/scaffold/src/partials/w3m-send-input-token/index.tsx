@@ -30,12 +30,11 @@ export function SendInputToken({
   const maxError = token && sendTokenAmount && sendTokenAmount > Number(token.quantity.numeric);
 
   const onInputChange = (value: string) => {
-    // Use locale-aware parsing
-    const numericValue = NumberUtil.parseLocalStringToNumber(value);
-    // Allow empty input or valid numbers
-    if (value.trim() === '' || !isNaN(numericValue)) {
-      setInputValue(value); // Store raw input for display
-      SendController.setTokenAmount(numericValue); // Store parsed numeric value
+    const formattedValue = value.replace(/,/g, '.');
+
+    if (Number(formattedValue) >= 0 || formattedValue === '') {
+      setInputValue(formattedValue);
+      SendController.setTokenAmount(Number(formattedValue));
     }
   };
 
@@ -53,12 +52,8 @@ export function SendInputToken({
         ? NumberUtil.bigNumber(token.quantity.numeric).minus(numericGas)
         : NumberUtil.bigNumber(token.quantity.numeric);
 
-      const maxString = maxValue.isGreaterThan(0) ? maxValue.toString() : '0';
-
-      // Set controller state with the number
-      SendController.setTokenAmount(Number(maxString));
-      // Set input display value using locale formatting (high precision)
-      setInputValue(NumberUtil.formatNumberToLocalString(maxString, 20));
+      SendController.setTokenAmount(Number(maxValue.toFixed(20)));
+      setInputValue(maxValue.toFixed(20));
       valueInputRef.current?.blur();
     }
   };

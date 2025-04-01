@@ -1,4 +1,3 @@
-import { useEffect, useState, useMemo, useRef } from 'react';
 import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import {
   Button,
@@ -11,7 +10,8 @@ import {
   Spacing,
   BorderRadius
 } from '@reown/appkit-ui-react-native';
-import { NumberUtil } from '@reown/appkit-common-react-native';
+import { useEffect, useState } from 'react';
+import { useRef } from 'react';
 
 export interface InputTokenProps {
   style?: StyleProp<ViewStyle>;
@@ -43,10 +43,6 @@ export function CurrencyInput({
   const isInternalChange = useRef(false);
   const amountColor = isAmountError ? 'error-100' : value ? 'fg-100' : 'fg-200';
 
-  const decimalSeparator = useMemo(() => {
-    return NumberUtil.getLocaleDecimalSeparator();
-  }, []);
-
   const handleKeyPress = (key: string) => {
     isInternalChange.current = true;
 
@@ -54,18 +50,18 @@ export function CurrencyInput({
       setDisplayValue(prev => {
         const newDisplay = prev.slice(0, -1) || '0';
 
-        // If the previous value does not end with a decimal separator, convert to numeric value
-        if (!prev?.endsWith(decimalSeparator)) {
-          const numericValue = Number(newDisplay.replace(decimalSeparator, '.'));
+        // If the previous value does not end with a comma, convert to numeric value
+        if (!prev?.endsWith(',')) {
+          const numericValue = Number(newDisplay.replace(',', '.'));
           onValueChange?.(numericValue);
         }
 
         return newDisplay;
       });
-    } else if (key === decimalSeparator) {
+    } else if (key === ',') {
       setDisplayValue(prev => {
-        if (prev.includes(decimalSeparator)) return prev; // Don't add multiple decimal separators
-        const newDisplay = prev + decimalSeparator;
+        if (prev.includes(',')) return prev; // Don't add multiple commas
+        const newDisplay = prev + ',';
 
         return newDisplay;
       });
@@ -74,7 +70,7 @@ export function CurrencyInput({
         const newDisplay = prev === '0' ? key : prev + key;
 
         // Convert to numeric value
-        const numericValue = Number(newDisplay.replace(decimalSeparator, '.'));
+        const numericValue = Number(newDisplay.replace(',', '.'));
         onValueChange?.(numericValue);
 
         return newDisplay;

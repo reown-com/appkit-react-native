@@ -29,7 +29,7 @@ export function WalletSendPreviewView() {
       const price = SendController.state.token.price;
       const totalValue = price * SendController.state.sendTokenAmount;
 
-      return UiUtil.formatNumberToLocalString(totalValue, 2);
+      return totalValue.toFixed(2);
     }
 
     return null;
@@ -37,7 +37,7 @@ export function WalletSendPreviewView() {
 
   const getTokenAmount = () => {
     const value = SendController.state.sendTokenAmount
-      ? NumberUtil.formatNumberToLocalString(SendController.state.sendTokenAmount, 5)
+      ? NumberUtil.roundNumber(SendController.state.sendTokenAmount, 6, 5)
       : 'unknown';
 
     return `${value} ${SendController.state.token?.symbol}`;
@@ -45,17 +45,17 @@ export function WalletSendPreviewView() {
 
   const formattedAddress = receiverProfileName
     ? UiUtil.getTruncateString({
-      string: receiverProfileName,
-      charsStart: 20,
-      charsEnd: 0,
-      truncate: 'end'
-    })
+        string: receiverProfileName,
+        charsStart: 20,
+        charsEnd: 0,
+        truncate: 'end'
+      })
     : UiUtil.getTruncateString({
-      string: receiverAddress || '',
-      charsStart: 4,
-      charsEnd: 4,
-      truncate: 'middle'
-    });
+        string: receiverAddress || '',
+        charsStart: 4,
+        charsEnd: 4,
+        truncate: 'middle'
+      });
 
   const onSend = () => {
     SendController.sendToken();

@@ -1,7 +1,7 @@
 /* eslint-disable no-bitwise */
 
 import { Linking, Platform } from 'react-native';
-import { ConstantsUtil as CommonConstants, type Balance, NumberUtil } from '@reown/appkit-common-react-native';
+import { ConstantsUtil as CommonConstants, type Balance } from '@reown/appkit-common-react-native';
 import * as ct from 'countries-and-timezones';
 
 import { ConstantsUtil } from './ConstantsUtil';
@@ -129,10 +129,19 @@ export const CoreHelperUtil = {
   },
 
   formatBalance(balance: string | undefined, symbol: string | undefined, decimals = 3) {
-    // Use NumberUtil for locale-aware formatting and trailing zero removal
-    const formattedBalance = NumberUtil.formatNumberToLocalString(balance, decimals);
+    let formattedBalance;
 
-    return `${formattedBalance} ${symbol || ''}`;
+    if (balance === '0') {
+      formattedBalance = '0.000';
+    } else if (typeof balance === 'string') {
+      const number = Number(balance);
+      if (number) {
+        const regex = new RegExp(`^-?\\d+(?:\\.\\d{0,${decimals}})?`, 'u');
+        formattedBalance = number.toString().match(regex)?.[0];
+      }
+    }
+
+    return formattedBalance ? `${formattedBalance} ${symbol}` : `0.000 ${symbol || ''}`;
   },
 
   isAddress(address: string, chain = 'eip155'): boolean {
@@ -263,7 +272,6 @@ export const CoreHelperUtil = {
 
   calculateAndFormatBalance(array?: Balance[]) {
     if (!array?.length) {
-      // Return zero parts
       return { dollars: '0', pennies: '00' };
     }
 
@@ -272,24 +280,8 @@ export const CoreHelperUtil = {
       sum += item.value ?? 0;
     }
 
-    // Format the sum using locale-aware function (2 decimal places)
-    const formattedSum = NumberUtil.formatNumberToLocalString(sum, 2);
-
-    // Determine the locale's decimal separator
-    const decimalSeparator = NumberUtil.getLocaleDecimalSeparator();
-
-    // Split the formatted string by the locale's separator
-    const parts = formattedSum.split(decimalSeparator);
-
-    const dollars = parts[0] ?? '0';
-    // Ensure pennies are padded if necessary (e.g., if sum is whole number or ends in .1)
-    let pennies = parts[1] ?? '00';
-    if (pennies.length === 1) {
-      pennies += '0';
-    }
-    if (pennies.length === 0) {
-      pennies = '00';
-    }
+    const roundedNumber = sum.toFixed(2);
+    const [dollars, pennies] = roundedNumber.split('.');
 
     return { dollars, pennies };
   },

@@ -203,10 +203,11 @@ export function OnRampView() {
               error?.type === ConstantsUtil.ONRAMP_ERROR_TYPES.INVALID_AMOUNT
             }
             loading={loading || quotesLoading}
-            purchaseValue={`${selectedQuote?.destinationAmount
-              ? NumberUtil.formatNumberToLocalString(selectedQuote.destinationAmount, 5)
-              : NumberUtil.formatNumberToLocalString(0, 5)
-              } ${purchaseCurrencyCode ?? ''}`}
+            purchaseValue={`${
+              selectedQuote?.destinationAmount
+                ? NumberUtil.roundNumber(selectedQuote.destinationAmount, 6, 5)?.toString()
+                : '0.00'
+            } ${purchaseCurrencyCode ?? ''}`}
             onValueChange={onValueChange}
             style={styles.currencyInput}
           />
