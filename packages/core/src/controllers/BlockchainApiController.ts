@@ -40,7 +40,6 @@ import { ApiUtil } from '../utils/ApiUtil';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getBlockchainApiUrl();
-const stagingUrl = CoreHelperUtil.getBlockchainStagingApiUrl();
 
 const getHeaders = () => {
   const { sdkType, sdkVersion } = OptionsController.state;
@@ -58,15 +57,12 @@ const getHeaders = () => {
 export interface BlockchainApiControllerState {
   clientId: string | null;
   api: FetchUtil;
-  stageApi: FetchUtil;
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<BlockchainApiControllerState>({
   clientId: null,
   api: new FetchUtil({ baseUrl }),
-  //TODO: remove this before release
-  stageApi: new FetchUtil({ baseUrl: stagingUrl })
 });
 
 // -- Controller ---------------------------------------- //
@@ -238,7 +234,7 @@ export const BlockchainApiController = {
   },
 
   async fetchOnRampCountries() {
-    return await state.stageApi.get<OnRampCountry[]>({
+    return await state.api.get<OnRampCountry[]>({
       path: '/v1/onramp/providers/properties',
       headers: getHeaders(),
       params: {
@@ -249,7 +245,7 @@ export const BlockchainApiController = {
   },
 
   async fetchOnRampServiceProviders() {
-    return await state.stageApi.get<OnRampServiceProvider[]>({
+    return await state.api.get<OnRampServiceProvider[]>({
       path: '/v1/onramp/providers',
       headers: getHeaders(),
       params: {
@@ -259,7 +255,7 @@ export const BlockchainApiController = {
   },
 
   async fetchOnRampPaymentMethods(params: { countries?: string }) {
-    return await state.stageApi.get<OnRampPaymentMethod[]>({
+    return await state.api.get<OnRampPaymentMethod[]>({
       path: '/v1/onramp/providers/properties',
       headers: getHeaders(),
       params: {
@@ -271,7 +267,7 @@ export const BlockchainApiController = {
   },
 
   async fetchOnRampCryptoCurrencies(params: { countries?: string }) {
-    return await state.stageApi.get<OnRampCryptoCurrency[]>({
+    return await state.api.get<OnRampCryptoCurrency[]>({
       path: '/v1/onramp/providers/properties',
       headers: getHeaders(),
       params: {
@@ -283,7 +279,7 @@ export const BlockchainApiController = {
   },
 
   async fetchOnRampFiatCurrencies() {
-    return await state.stageApi.get<OnRampFiatCurrency[]>({
+    return await state.api.get<OnRampFiatCurrency[]>({
       path: '/v1/onramp/providers/properties',
       headers: getHeaders(),
       params: {
@@ -294,7 +290,7 @@ export const BlockchainApiController = {
   },
 
   async fetchOnRampFiatLimits() {
-    return await state.stageApi.get<OnRampFiatLimit[]>({
+    return await state.api.get<OnRampFiatLimit[]>({
       path: '/v1/onramp/providers/properties',
       headers: getHeaders(),
       params: {
@@ -305,7 +301,7 @@ export const BlockchainApiController = {
   },
 
   async getOnRampQuotes(body: BlockchainApiOnRampQuotesRequest, signal?: AbortSignal) {
-    return await state.stageApi.post<OnRampQuote[]>({
+    return await state.api.post<OnRampQuote[]>({
       path: '/v1/onramp/multi/quotes',
       headers: getHeaders(),
       body: {
@@ -317,7 +313,7 @@ export const BlockchainApiController = {
   },
 
   async getOnRampWidget(body: BlockchainApiOnRampWidgetRequest, signal?: AbortSignal) {
-    return await state.stageApi.post<BlockchainApiOnRampWidgetResponse>({
+    return await state.api.post<BlockchainApiOnRampWidgetResponse>({
       path: '/v1/onramp/widget',
       headers: getHeaders(),
       body: {
