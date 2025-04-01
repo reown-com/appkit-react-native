@@ -9,10 +9,9 @@ import {
   Text,
   useTheme,
   Icon,
-  Image,
   BorderRadius
 } from '@reown/appkit-ui-react-native';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 
 export const ITEM_HEIGHT = 60;
 
@@ -42,7 +41,7 @@ export function Currency({ onPress, item, selected, title, subtitle, testID }: P
       <FlexView flexDirection="row" alignItems="center" justifyContent="space-between" padding="xs">
         <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start">
           <Image
-            source={item.symbolImageUrl}
+            source={{ uri: item.symbolImageUrl }}
             style={[styles.logo, { backgroundColor: Theme['fg-100'] }]}
           />
           <FlexView>

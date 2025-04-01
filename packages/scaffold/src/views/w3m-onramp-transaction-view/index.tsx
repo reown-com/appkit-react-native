@@ -12,6 +12,7 @@ import styles from './styles';
 
 export function OnRampTransactionView() {
   const Theme = useTheme();
+  const { purchaseCurrency } = useSnapshot(OnRampController.state);
   const { data } = useSnapshot(RouterController.state);
 
   const onClose = () => {
@@ -19,8 +20,12 @@ export function OnRampTransactionView() {
     RouterController.replace(isAuth ? 'Account' : 'AccountDefault');
   };
 
+  const currency = data?.onrampResult?.purchaseCurrency ?? purchaseCurrency?.name;
+  const showPaid = !!data?.onrampResult?.paymentAmount && !!data?.onrampResult?.paymentCurrency;
+  const showBought = !!data?.onrampResult?.purchaseAmount && !!data?.onrampResult?.purchaseCurrency;
   const showNetwork = !!data?.onrampResult?.network;
   const showStatus = !!data?.onrampResult?.status;
+  const showDetails = showPaid || showBought || showNetwork || showStatus;
 
   useEffect(() => {
     return () => {
@@ -42,77 +47,79 @@ export function OnRampTransactionView() {
             style={styles.icon}
           />
           <Text variant="medium-600" color="fg-100">
-            You successfully bought {data?.onrampResult?.purchaseCurrency}
+            You successfully bought {currency}
           </Text>
         </FlexView>
-        <FlexView
-          style={[styles.card, { backgroundColor: Theme['gray-glass-005'] }]}
-          padding="m"
-          margin={['s', '0', '2xl', '0']}
-        >
+        {showDetails && (
           <FlexView
-            flexDirection="row"
-            justifyContent="space-between"
-            alignItems="center"
-            margin={['0', '0', 'xs', '0']}
+            style={[styles.card, { backgroundColor: Theme['gray-glass-005'] }]}
+            padding="m"
+            margin={['s', '0', '0', '0']}
           >
-            <Text variant="paragraph-400" color="fg-150">
-              You Paid
-            </Text>
-            <Text variant="paragraph-500">
-              {data?.onrampResult?.paymentAmount} {data?.onrampResult?.paymentCurrency}
-            </Text>
-          </FlexView>
-          <FlexView
-            flexDirection="row"
-            justifyContent="space-between"
-            alignItems="center"
-            margin={['0', '0', 'xs', '0']}
-          >
-            <Text variant="paragraph-400" color="fg-150">
-              You Bought
-            </Text>
-            <FlexView flexDirection="row" alignItems="center">
-              <Text variant="paragraph-500">
-                {data?.onrampResult?.purchaseAmount}{' '}
-                {data?.onrampResult?.purchaseCurrency?.split('_')[0] ?? ''}
-              </Text>
-              {data?.onrampResult?.purchaseImageUrl && (
-                <Image
-                  source={data?.onrampResult?.purchaseImageUrl}
-                  style={[styles.tokenImage, { borderColor: Theme['gray-glass-010'] }]}
-                />
-              )}
-            </FlexView>
-          </FlexView>
-          {showNetwork && (
-            <FlexView
+            {showPaid && (<FlexView
               flexDirection="row"
-              alignItems="center"
               justifyContent="space-between"
+              alignItems="center"
               margin={['0', '0', 'xs', '0']}
             >
               <Text variant="paragraph-400" color="fg-150">
-                Network
+                You Paid
               </Text>
               <Text variant="paragraph-500">
-                {StringUtil.capitalize(data?.onrampResult?.network)}
+                {data?.onrampResult?.paymentAmount} {data?.onrampResult?.paymentCurrency}
               </Text>
-            </FlexView>
-          )}
-          {showStatus && (
-            <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
+            </FlexView>)}
+            {showBought && (<FlexView
+              flexDirection="row"
+              justifyContent="space-between"
+              alignItems="center"
+              margin={['0', '0', 'xs', '0']}
+            >
               <Text variant="paragraph-400" color="fg-150">
-                Status
+                You Bought
               </Text>
-              <Text variant="paragraph-500">
-                {StringUtil.capitalize(data?.onrampResult?.status)}
-              </Text>
-            </FlexView>
-          )}
-        </FlexView>
+              <FlexView flexDirection="row" alignItems="center">
+                <Text variant="paragraph-500">
+                  {data?.onrampResult?.purchaseAmount}{' '}
+                  {data?.onrampResult?.purchaseCurrency?.split('_')[0] ?? ''}
+                </Text>
+                {data?.onrampResult?.purchaseImageUrl && (
+                  <Image
+                    source={data?.onrampResult?.purchaseImageUrl}
+                    style={[styles.tokenImage, { borderColor: Theme['gray-glass-010'] }]}
+                  />
+                )}
+              </FlexView>
+            </FlexView>)}
+            {showNetwork && (
+              <FlexView
+                flexDirection="row"
+                alignItems="center"
+                justifyContent="space-between"
+                margin={['0', '0', 'xs', '0']}
+              >
+                <Text variant="paragraph-400" color="fg-150">
+                  Network
+                </Text>
+                <Text variant="paragraph-500">
+                  {StringUtil.capitalize(data?.onrampResult?.network)}
+                </Text>
+              </FlexView>
+            )}
+            {showStatus && (
+              <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
+                <Text variant="paragraph-400" color="fg-150">
+                  Status
+                </Text>
+                <Text variant="paragraph-500">
+                  {StringUtil.capitalize(data?.onrampResult?.status)}
+                </Text>
+              </FlexView>
+            )}
+          </FlexView>
+        )}
       </FlexView>
-      <Button variant="fill" size="md" onPress={onClose}>
+      <Button variant="fill" size="md" onPress={onClose} style={styles.button}>
         Go back
       </Button>
     </FlexView>

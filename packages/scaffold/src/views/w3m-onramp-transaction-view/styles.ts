@@ -14,5 +14,8 @@ export default StyleSheet.create({
     marginLeft: 4,
     borderRadius: BorderRadius.full,
     borderWidth: 1
+  },
+  button: {
+    marginTop: Spacing['2xl']
   }
 });

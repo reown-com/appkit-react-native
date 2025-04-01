@@ -12,11 +12,19 @@ import { FlexView, DoubleImageLoader, IconLink, Button, Text } from '@reown/appk
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectingBody } from '../../partials/w3m-connecting-body';
 import styles from './styles';
-import { StringUtil } from '@reown/appkit-common-react-native';
+import { NumberUtil, StringUtil } from '@reown/appkit-common-react-native';
 
 export function OnRampLoadingView() {
   const { maxWidth: width } = useCustomDimensions();
   const { error } = useSnapshot(OnRampController.state);
+  const {
+    purchaseCurrency,
+    paymentCurrency,
+    paymentAmount,
+    selectedQuote
+  } = useSnapshot(OnRampController.state);
+
+
   const providerName = StringUtil.capitalize(
     OnRampController.state.selectedQuote?.serviceProvider.toLowerCase()
   );
@@ -59,11 +67,11 @@ export function OnRampLoadingView() {
       ) {
         const parsedUrl = new URL(url);
         const searchParams = new URLSearchParams(parsedUrl.search);
-        const asset = searchParams.get('cryptoCurrency');
-        const network = searchParams.get('network');
-        const purchaseAmount = searchParams.get('cryptoAmount');
-        const amount = searchParams.get('fiatAmount');
-        const currency = searchParams.get('fiatCurrency');
+        const asset = searchParams.get('cryptoCurrency') ?? purchaseCurrency?.currencyCode ?? null;
+        const network = searchParams.get('network') ?? purchaseCurrency?.chainName ?? null;
+        const purchaseAmount = searchParams.get('cryptoAmount') ?? selectedQuote?.destinationAmount ?? null;
+        const amount = searchParams.get('fiatAmount') ?? paymentAmount ?? null;
+        const currency = searchParams.get('fiatCurrency') ?? paymentCurrency?.currencyCode ?? null;
         const orderId = searchParams.get('orderId');
         const status = searchParams.get('status');
 
@@ -73,7 +81,7 @@ export function OnRampLoadingView() {
           properties: {
             asset,
             network,
-            amount,
+            amount: amount?.toString(),
             currency,
             orderId
           }
@@ -82,12 +90,12 @@ export function OnRampLoadingView() {
         RouterController.reset('OnRampTransaction', {
           onrampResult: {
             purchaseCurrency: asset,
-            purchaseAmount,
+            purchaseAmount: purchaseAmount ? NumberUtil.formatNumberToLocalString(purchaseAmount) : null,
             purchaseImageUrl: OnRampController.state.purchaseCurrency?.symbolImageUrl ?? '',
             paymentCurrency: currency,
-            paymentAmount: amount,
-            network: network,
-            status: status
+            paymentAmount: amount ? NumberUtil.formatNumberToLocalString(amount) : null,
+            network,
+            status
           }
         });
       }

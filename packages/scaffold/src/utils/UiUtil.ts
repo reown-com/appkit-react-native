@@ -5,9 +5,7 @@ import {
   type WcWallet
 } from '@reown/appkit-core-react-native';
 import {
-  LayoutAnimation,
-  type LayoutAnimationProperty,
-  type LayoutAnimationType
+  LayoutAnimation
 } from 'react-native';
 
 export const UiUtil = {
@@ -15,13 +13,6 @@ export const UiUtil = {
 
   createViewTransition: () => {
     LayoutAnimation.configureNext(LayoutAnimation.create(200, 'easeInEaseOut', 'opacity'));
-  },
-
-  animateChange: (
-    type: LayoutAnimationType = 'linear',
-    creationProp: LayoutAnimationProperty = 'scaleX'
-  ) => {
-    LayoutAnimation.configureNext(LayoutAnimation.create(150, type, creationProp));
   },
 
   storeConnectedWallet: async (

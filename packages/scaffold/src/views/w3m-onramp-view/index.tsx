@@ -29,7 +29,6 @@ import { CurrencyInput } from './components/CurrencyInput';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
 import { ITEM_HEIGHT as CURRENCY_ITEM_HEIGHT } from './components/Currency';
 import { Header } from './components/Header';
-import { UiUtil } from '../../utils/UiUtil';
 import { LoadingView } from './components/LoadingView';
 import styles from './styles';
 
@@ -84,7 +83,6 @@ export function OnRampView() {
   };
 
   const onValueChange = (value: number) => {
-    UiUtil.animateChange();
     if (!value) {
       OnRampController.abortGetQuotes();
       OnRampController.setPaymentAmount(0);
@@ -99,7 +97,6 @@ export function OnRampView() {
   };
 
   const onSuggestedValuePress = (value: number) => {
-    UiUtil.animateChange();
     OnRampController.setPaymentAmount(value);
     getQuotes();
   };
@@ -203,11 +200,10 @@ export function OnRampView() {
               error?.type === ConstantsUtil.ONRAMP_ERROR_TYPES.INVALID_AMOUNT
             }
             loading={loading || quotesLoading}
-            purchaseValue={`${
-              selectedQuote?.destinationAmount
-                ? NumberUtil.roundNumber(selectedQuote.destinationAmount, 6, 5)?.toString()
-                : '0.00'
-            } ${purchaseCurrencyCode ?? ''}`}
+            purchaseValue={`${selectedQuote?.destinationAmount
+              ? NumberUtil.roundNumber(selectedQuote.destinationAmount, 6, 5)?.toString()
+              : '0.00'
+              } ${purchaseCurrencyCode ?? ''}`}
             onValueChange={onValueChange}
             style={styles.currencyInput}
           />
