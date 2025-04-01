@@ -98,7 +98,7 @@ export function ListToken({
           </FlexView>
         </FlexView>
         <Text color={disabled ? 'fg-200' : 'fg-100'} variant="paragraph-500">
-          ${value?.toFixed(2) ?? '0.00'}
+          ${UiUtil.formatNumberToLocalString(value, 2)}
         </Text>
       </FlexView>
     </Pressable>

@@ -30,7 +30,7 @@ export function OnRampCheckoutView() {
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
 
-  const value = NumberUtil.roundNumber(selectedQuote?.destinationAmount ?? 0, 6, 5);
+  const formattedValue = NumberUtil.formatNumberToLocalString(selectedQuote?.destinationAmount ?? 0, 5);
   const symbol = selectedQuote?.destinationCurrencyCode;
   const paymentLogo = selectedPaymentMethod?.logos[themeMode ?? 'light'];
   const providerImage = OnRampController.getServiceProviderImage(
@@ -51,7 +51,7 @@ export function OnRampCheckoutView() {
       <FlexView alignItems="center">
         <Text color="fg-200">You Buy</Text>
         <FlexView flexDirection="row" alignItems="center">
-          <Text style={[styles.amount, { color: Theme['fg-100'] }]}>{value}</Text>
+          <Text style={[styles.amount, { color: Theme['fg-100'] }]}>{formattedValue}</Text>
           <Text variant="paragraph-400" color="fg-200">
             {symbol?.split('_')[0] ?? symbol ?? ''}
           </Text>
@@ -71,7 +71,7 @@ export function OnRampCheckoutView() {
       >
         <Text color="fg-200">You Pay</Text>
         <Text>
-          {selectedQuote?.sourceAmount} {selectedQuote?.sourceCurrencyCode}
+          {NumberUtil.formatNumberToLocalString(selectedQuote?.sourceAmount)} {selectedQuote?.sourceCurrencyCode}
         </Text>
       </FlexView>
       <FlexView
@@ -83,7 +83,7 @@ export function OnRampCheckoutView() {
         <Text color="fg-200">You Receive</Text>
         <FlexView flexDirection="row" alignItems="center">
           <Text>
-            {value} {symbol?.split('_')[0] ?? ''}
+            {formattedValue} {symbol?.split('_')[0] ?? ''}
           </Text>
           {purchaseCurrency?.symbolImageUrl && (
             <Image
@@ -137,7 +137,7 @@ export function OnRampCheckoutView() {
                 Fees{' '}
                 {showTotalFee && (
                   <Text variant="paragraph-400">
-                    {selectedQuote?.totalFee} {selectedQuote?.sourceCurrencyCode}
+                    {NumberUtil.formatNumberToLocalString(selectedQuote?.totalFee)} {selectedQuote?.sourceCurrencyCode}
                   </Text>
                 )}
               </Text>
@@ -164,7 +164,7 @@ export function OnRampCheckoutView() {
                   />
                 )}
                 <Text variant="small-400">
-                  {selectedQuote?.networkFee} {selectedQuote?.sourceCurrencyCode}
+                  {NumberUtil.formatNumberToLocalString(selectedQuote?.networkFee)} {selectedQuote?.sourceCurrencyCode}
                 </Text>
               </FlexView>
             </FlexView>
@@ -179,7 +179,7 @@ export function OnRampCheckoutView() {
                 Transaction Fees
               </Text>
               <Text variant="small-400">
-                {selectedQuote.transactionFee} {selectedQuote?.sourceCurrencyCode}
+                {NumberUtil.formatNumberToLocalString(selectedQuote?.transactionFee)} {selectedQuote?.sourceCurrencyCode}
               </Text>
             </FlexView>
           )}

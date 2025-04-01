@@ -187,7 +187,10 @@ export const TransactionUtil = {
     }
 
     const parsedValue = parseFloat(value);
+    // Determine the number of decimals based on the value
+    const decimals = parsedValue > 1 ? FLOAT_FIXED_VALUE : SMALL_FLOAT_FIXED_VALUE;
 
-    return parsedValue.toFixed(parsedValue > 1 ? FLOAT_FIXED_VALUE : SMALL_FLOAT_FIXED_VALUE);
+    // Use locale-aware formatting
+    return UiUtil.formatNumberToLocalString(parsedValue, decimals);
   }
 };

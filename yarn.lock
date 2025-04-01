@@ -7281,6 +7281,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@reown/appkit-ui-react-native@workspace:packages/ui"
   dependencies:
+    "@reown/appkit-common-react-native": "npm:1.2.3"
     polished: "npm:4.3.1"
     qrcode: "npm:1.5.3"
   peerDependencies:

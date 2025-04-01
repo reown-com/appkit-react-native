@@ -1,4 +1,6 @@
+import { useMemo } from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
+import { NumberUtil } from '@reown/appkit-common-react-native';
 import { Text } from '../../components/wui-text';
 import { FlexView } from '../../layout/wui-flex';
 import { useTheme } from '../../hooks/useTheme';
@@ -9,11 +11,16 @@ export interface NumericKeyboardProps {
 
 export function NumericKeyboard({ onKeyPress }: NumericKeyboardProps) {
   const Theme = useTheme();
+
+  const decimalSeparator = useMemo(() => {
+    return NumberUtil.getLocaleDecimalSeparator();
+  }, []);
+
   const keys = [
     ['1', '2', '3'],
     ['4', '5', '6'],
     ['7', '8', '9'],
-    [',', '0', 'erase']
+    [decimalSeparator, '0', 'erase']
   ];
 
   const handlePress = (key: string) => {

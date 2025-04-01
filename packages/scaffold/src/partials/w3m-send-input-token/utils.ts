@@ -14,7 +14,8 @@ export function getSendValue(token?: Balance, sendTokenAmount?: number) {
 
 export function getMaxAmount(token?: Balance) {
   if (token) {
-    return NumberUtil.roundNumber(Number(token.quantity.numeric), 6, 5);
+    // Format using locale-aware function, 5 decimals
+    return NumberUtil.formatNumberToLocalString(token.quantity.numeric, 5);
   }
 
   return null;

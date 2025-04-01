@@ -6,7 +6,7 @@ import {
   OnRampController,
   RouterController
 } from '@reown/appkit-core-react-native';
-import { StringUtil } from '@reown/appkit-common-react-native';
+import { StringUtil, NumberUtil } from '@reown/appkit-common-react-native';
 import { Button, FlexView, IconBox, Image, Text, useTheme } from '@reown/appkit-ui-react-native';
 import styles from './styles';
 
@@ -60,7 +60,7 @@ export function OnRampTransactionView() {
               You Paid
             </Text>
             <Text variant="paragraph-500">
-              {data?.onrampResult?.paymentAmount} {data?.onrampResult?.paymentCurrency}
+              {NumberUtil.formatNumberToLocalString(data?.onrampResult?.paymentAmount ?? 0)} {data?.onrampResult?.paymentCurrency}
             </Text>
           </FlexView>
           <FlexView
@@ -74,7 +74,7 @@ export function OnRampTransactionView() {
             </Text>
             <FlexView flexDirection="row" alignItems="center">
               <Text variant="paragraph-500">
-                {data?.onrampResult?.purchaseAmount}{' '}
+                {NumberUtil.formatNumberToLocalString(data?.onrampResult?.purchaseAmount ?? 0)}{' '}
                 {data?.onrampResult?.purchaseCurrency?.split('_')[0] ?? ''}
               </Text>
               {data?.onrampResult?.purchaseImageUrl && (

@@ -46,33 +46,72 @@ export const NumberUtil = {
    * @returns
    */
   formatNumberToLocalString(value: string | number | undefined, decimals = 2) {
+    const options: Intl.NumberFormatOptions = {
+      maximumFractionDigits: decimals
+      // Omit minimumFractionDigits to remove trailing zeros
+    };
+
     if (value === undefined) {
-      return '0.00';
+      // Use undefined locale to get system default
+      return (0).toLocaleString(undefined, options);
     }
 
-    if (typeof value === 'number') {
-      return value.toLocaleString('en-US', {
-        maximumFractionDigits: decimals,
-        minimumFractionDigits: decimals
-      });
+    let numberValue: number;
+    if (typeof value === 'string') {
+      // Attempt to parse the string, handling potential locale-specific formats might be complex here,
+      // assuming parseFloat works for common cases after removing grouping separators might be needed if issues arise.
+      // For now, stick to parseFloat as it was.
+      numberValue = parseFloat(value);
+    } else {
+      numberValue = value;
     }
 
-    return parseFloat(value).toLocaleString('en-US', {
-      maximumFractionDigits: decimals,
-      minimumFractionDigits: decimals
-    });
+    if (isNaN(numberValue)) {
+      // Handle cases where parsing might fail, return a default or based on requirements
+      return (0).toLocaleString(undefined, options);
+    }
+
+    return numberValue.toLocaleString(undefined, options);
   },
   /**
    * Parse a formatted local string back to a number
    * @param value - The formatted string to parse
    * @returns
    */
-  parseLocalStringToNumber(value: string | undefined) {
-    if (value === undefined) {
+  parseLocalStringToNumber(value: string | undefined): number {
+    if (value === undefined || value === null || value.trim() === '') {
       return 0;
     }
 
-    // Remove any commas used as thousand separators and parse the float
-    return parseFloat(value.replace(/,/gu, ''));
+    const decimalSeparator = this.getLocaleDecimalSeparator();
+    let processedValue = value;
+
+    if (decimalSeparator === ',') {
+      // If locale uses COMMA for decimal:
+      // 1. Remove all period characters (thousand separators)
+      processedValue = processedValue.replace(/\./g, '');
+      // 2. Replace the comma decimal separator with a period
+      processedValue = processedValue.replace(/,/g, '.');
+    } else {
+      // If locale uses PERIOD for decimal (or anything else):
+      // 1. Remove all comma characters (thousand separators)
+      processedValue = processedValue.replace(/,/g, '');
+      // 2. Period decimal separator is already correct
+    }
+
+    // Parse the cleaned string which should now use '.' as decimal and no thousand separators
+    const result = parseFloat(processedValue);
+
+    // Return the parsed number, or 0 if parsing failed (NaN)
+    return isNaN(result) ? 0 : result;
+  },
+
+  /**
+   * Determines the decimal separator based on the user's locale.
+   * @returns The locale's decimal separator (e.g., '.' or ',').
+   */
+  getLocaleDecimalSeparator(): string {
+    // Format a known decimal number and extract the second character
+    return (1.1).toLocaleString().substring(1, 2);
   }
 };
