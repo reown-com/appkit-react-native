@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@reown/appkit-common-react-native": "1.2.3",
+    "@reown/appkit-react-native": "1.2.3",
     "@reown/appkit-scaffold-react-native": "1.2.3",
     "@reown/appkit-scaffold-utils-react-native": "1.2.3",
     "@reown/appkit-siwe-react-native": "1.2.3"
