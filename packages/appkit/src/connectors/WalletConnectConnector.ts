@@ -1,6 +1,11 @@
 import { type Metadata, ConnectionController } from '@reown/appkit-core-react-native';
 import { UniversalProvider, type IUniversalProvider } from '@walletconnect/universal-provider';
-import { WalletConnector, type Provider } from '../adapters/types';
+import {
+  WalletConnector,
+  type Namespaces,
+  type ProposalNamespaces,
+  type Provider
+} from '@reown/appkit-common-react-native';
 
 export class WalletConnectConnector extends WalletConnector {
   private constructor(provider: Provider) {
@@ -27,10 +32,7 @@ export class WalletConnectConnector extends WalletConnector {
     return this.provider.disconnect();
   }
 
-  async connect(namespaces?: string[]): Promise<any> {
-    //TODO: use namespaces
-    this.namespaces = namespaces;
-
+  override async connect(namespaces?: ProposalNamespaces) {
     function onUri(uri: string) {
       ConnectionController.setWcUri(uri);
     }
@@ -38,39 +40,23 @@ export class WalletConnectConnector extends WalletConnector {
     this.provider.on('display_uri', onUri);
 
     const session = await this.provider.connect<IUniversalProvider['session']>({
-      optionalNamespaces: {
-        eip155: {
-          methods: [
-            'eth_sendTransaction',
-            'eth_signTransaction',
-            'eth_sign',
-            'personal_sign',
-            'eth_signTypedData'
-          ],
-          chains: ['eip155:1'],
-          events: ['chainChanged', 'accountsChanged']
-        },
-        solana: {
-          methods: ['solana_signMessage'],
-          chains: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
-          events: ['chainChanged', 'accountsChanged']
-        }
-      }
+      optionalNamespaces: namespaces
     });
 
-    const approvedNamespaces = Object.keys(session?.namespaces ?? {});
-    console.log('session', approvedNamespaces);
+    this.namespaces = session?.namespaces;
+
+    console.log('session', session);
 
     this.provider.off('display_uri', onUri);
 
-    return approvedNamespaces;
+    return this.namespaces;
   }
 
   override getProvider(): Provider {
     return this.provider;
   }
 
-  override getNamespaces(): string[] {
-    return this.namespaces ?? [];
+  override getNamespaces(): Namespaces {
+    return this.namespaces ?? {};
   }
 }

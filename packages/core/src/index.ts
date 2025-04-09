@@ -22,6 +22,11 @@ export {
 } from './controllers/ConnectionController';
 
 export {
+  ConnectionsController,
+  type ConnectionsControllerState
+} from './controllers/ConnectionsController';
+
+export {
   ConnectorController,
   type ConnectorControllerState
 } from './controllers/ConnectorController';

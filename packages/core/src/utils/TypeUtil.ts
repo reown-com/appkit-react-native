@@ -1,4 +1,5 @@
 import { type EventEmitter } from 'events';
+
 import type {
   Balance,
   SocialProvider,
@@ -6,6 +7,7 @@ import type {
   Transaction,
   ConnectorType
 } from '@reown/appkit-common-react-native';
+
 import { OnRampErrorType } from './ConstantsUtil';
 
 export interface BaseError {

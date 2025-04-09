@@ -51,7 +51,28 @@ export function ConnectingView() {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.setWcError(false);
         // ConnectionController.connectWalletConnect(routeData?.wallet?.link_mode ?? undefined);
-        const wcPromise = appKit?.connect('walletconnect', ['eip155']);
+
+        //TODO: check this
+        const namespaces = {
+          eip155: {
+            methods: [
+              'eth_sendTransaction',
+              'eth_signTransaction',
+              'eth_sign',
+              'personal_sign',
+              'eth_signTypedData'
+            ],
+            chains: ['eip155:1'],
+            events: ['chainChanged', 'accountsChanged']
+          },
+          solana: {
+            methods: ['solana_signMessage'],
+            chains: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+            events: ['chainChanged', 'accountsChanged']
+          }
+        };
+
+        const wcPromise = appKit?.connect('walletconnect', namespaces);
         ConnectionController.setWcPromise(wcPromise);
         await wcPromise;
         // await ConnectionController.state.wcPromise;

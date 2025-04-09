@@ -4,7 +4,7 @@ import {
   type SignedTransaction,
   type TransactionData,
   type TransactionReceipt
-} from '@reown/appkit-react-native';
+} from '@reown/appkit-common-react-native';
 
 export class EthersAdapter extends EVMAdapter {
   private static supportedNamespace: string = 'eip155';
@@ -50,18 +50,18 @@ export class EthersAdapter extends EVMAdapter {
   }
 
   onChainChanged(chainId: string): void {
-    console.log('adapter chainChanged', chainId);
+    console.log('EthersAdapter - onChainChanged', chainId);
     this.emit('chainChanged', { chainId, namespace: this.getSupportedNamespace() });
   }
 
   onAccountsChanged(accounts: string[]): void {
-    console.log('adapter accountsChanged', accounts);
+    console.log('EthersAdapter - onAccountsChanged', accounts);
     // Emit this change to AppKit with the corresponding namespace.
     this.emit('accountsChanged', { accounts, namespace: this.getSupportedNamespace() });
   }
 
   onDisconnect(): void {
-    console.log('adapter onDisconnect');
+    console.log('EthersAdapter - onDisconnect');
     this.emit('disconnect', { namespace: this.getSupportedNamespace() });
 
     //the connector might be shared between adapters. Validate this
@@ -70,7 +70,6 @@ export class EthersAdapter extends EVMAdapter {
       provider.off('chainChanged', this.onChainChanged.bind(this));
       provider.off('accountsChanged', this.onAccountsChanged.bind(this));
       provider.off('disconnect', this.onDisconnect.bind(this));
-      console.log('Removed listeners from provider on disconnect');
     }
 
     this.connector = undefined;
@@ -85,15 +84,9 @@ export class EthersAdapter extends EVMAdapter {
     const provider = this.connector?.getProvider();
     if (!provider) return;
 
-    console.log('subscribing to events');
+    console.log('EthersAdapter - subscribing to events');
     provider.on('chainChanged', this.onChainChanged.bind(this));
     provider.on('accountsChanged', this.onAccountsChanged.bind(this));
     provider.on('disconnect', this.onDisconnect.bind(this));
-    //@ts-ignore
-    console.log('subscribed to events', provider?.events);
-
-    provider.on('accountsChanged', () => {
-      console.log('accountsChanged');
-    });
   }
 }

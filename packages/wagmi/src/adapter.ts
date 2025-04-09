@@ -4,7 +4,7 @@ import {
   type SignedTransaction,
   type TransactionData,
   type TransactionReceipt
-} from '@reown/appkit-react-native';
+} from '@reown/appkit-common-react-native';
 import {
   type Config,
   type CreateConfigParameters,

@@ -21,8 +21,6 @@ export type * from '@reown/appkit-core-react-native';
 export { CoreHelperUtil } from '@reown/appkit-core-react-native';
 
 export * from './AppKit';
-export * from './adapters/types';
 export { AppKitProvider, useAppKit } from './AppKitContext';
-export { ConnectionController } from './controllers/ConnectionController';
 export { useProvider } from './hooks/useProvider';
 export { WalletConnectConnector } from './connectors/WalletConnectConnector';
