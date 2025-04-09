@@ -8,7 +8,6 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
-  ConnectionUtil,
   EventsController,
   ModalController,
   NetworkController,
@@ -63,7 +62,7 @@ export function AccountDefaultView() {
 
   async function onDisconnect() {
     setDisconnecting(true);
-    await ConnectionUtil.disconnect();
+    // await ConnectionUtil.disconnect();
     setDisconnecting(false);
   }
 

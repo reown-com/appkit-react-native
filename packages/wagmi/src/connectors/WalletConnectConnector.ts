@@ -22,7 +22,7 @@ import { EthereumProvider } from '@walletconnect/ethereum-provider';
 
 /**** Types ****/
 
-type WalletConnectConnector = Connector & {
+type IWalletConnectConnector = Connector & {
   onDisplayUri(uri: string): void;
   onSessionDelete(data: { topic: string }): void;
 };
@@ -114,18 +114,20 @@ export function walletConnect(parameters: WalletConnectParameters) {
   let providerPromise: Promise<typeof provider_>;
   const NAMESPACE = 'eip155';
 
-  let accountsChanged: WalletConnectConnector['onAccountsChanged'] | undefined;
-  let chainChanged: WalletConnectConnector['onChainChanged'] | undefined;
-  let connect: WalletConnectConnector['onConnect'] | undefined;
-  let displayUri: WalletConnectConnector['onDisplayUri'] | undefined;
-  let sessionDelete: WalletConnectConnector['onSessionDelete'] | undefined;
-  let disconnect: WalletConnectConnector['onDisconnect'] | undefined;
+  let accountsChanged: IWalletConnectConnector['onAccountsChanged'] | undefined;
+  let chainChanged: IWalletConnectConnector['onChainChanged'] | undefined;
+  let connect: IWalletConnectConnector['onConnect'] | undefined;
+  let displayUri: IWalletConnectConnector['onDisplayUri'] | undefined;
+  let sessionDelete: IWalletConnectConnector['onSessionDelete'] | undefined;
+  let disconnect: IWalletConnectConnector['onDisconnect'] | undefined;
+  // let genericConnector: WalletConnectConnector | undefined;
 
   return createConnector<Provider, Properties, StorageItem>(config => ({
     id: 'walletConnect',
     name: 'WalletConnect',
     type: walletConnect.type,
     async setup() {
+      // genericConnector = WalletConnectConnector.create({ projectId: parameters.projectId, metadata: parameters.metadata });
       const provider = await this.getProvider().catch(() => null);
       if (!provider) return;
       if (!connect) {
@@ -139,6 +141,7 @@ export function walletConnect(parameters: WalletConnectParameters) {
     },
     async connect({ chainId, ...rest } = {}) {
       try {
+
         const provider = await this.getProvider();
         if (!provider) throw new ProviderNotFoundError();
         if (!displayUri) {
@@ -291,7 +294,7 @@ export function walletConnect(parameters: WalletConnectParameters) {
         // If the chains are stale on the session, then the connector is unauthorized.
         const isChainsStale = await this.isChainsStale();
         if (isChainsStale && provider.session) {
-          await provider.disconnect().catch(() => {});
+          await provider.disconnect().catch(() => { });
 
           return false;
         }

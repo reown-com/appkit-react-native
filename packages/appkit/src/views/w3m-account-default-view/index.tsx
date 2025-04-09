@@ -8,7 +8,6 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
-  ConnectionUtil,
   EventsController,
   ModalController,
   NetworkController,
@@ -30,10 +29,12 @@ import {
   Spacing,
   ListItem
 } from '@reown/appkit-ui-react-native';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
-import styles from './styles';
+import { useAppKit } from '../../AppKitContext';
+
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { AuthButtons } from './components/auth-buttons';
+import styles from './styles';
 
 export function AccountDefaultView() {
   const {
@@ -60,10 +61,11 @@ export function AccountDefaultView() {
   const showBack = history.length > 1;
   const showSwitchAccountType = isAuth && NetworkController.checkIfSmartAccountEnabled();
   const { padding } = useCustomDimensions();
-
+  const { appKit } = useAppKit();
   async function onDisconnect() {
     setDisconnecting(true);
-    await ConnectionUtil.disconnect();
+    //TODO: USE ACTIVE NAMESPACE
+    await appKit?.disconnect('eip155');
     setDisconnecting(false);
   }
 

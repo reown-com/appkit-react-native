@@ -6,7 +6,6 @@ import {
   ApiController,
   AssetUtil,
   CoreHelperUtil,
-  ConnectionUtil,
   EventsController,
   NetworkController,
   NetworkUtil,
@@ -38,7 +37,7 @@ export function UnsupportedChainView() {
 
   const onDisconnect = async () => {
     setDisconnecting(true);
-    await ConnectionUtil.disconnect();
+    // await ConnectionUtil.disconnect();
     setDisconnecting(false);
   };
 

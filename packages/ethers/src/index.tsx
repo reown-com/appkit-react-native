@@ -16,10 +16,14 @@ export { defaultConfig } from './utils/defaultConfig';
 import type { AppKitOptions } from './client';
 import { AppKit } from './client';
 
+import { EthersAdapter } from './adapter';
+export { EthersAdapter };
+
 // -- Types -------------------------------------------------------------------
 export type { AppKitOptions } from './client';
 
 type OpenOptions = Parameters<AppKit['open']>[0];
+
 
 // -- Setup -------------------------------------------------------------------
 let modal: AppKit | undefined;

@@ -6,13 +6,15 @@ import {
   ApiController,
   AssetUtil,
   CoreHelperUtil,
-  ConnectionUtil,
   EventsController,
   NetworkController,
   NetworkUtil,
   type CaipNetwork,
   type NetworkControllerState
 } from '@reown/appkit-core-react-native';
+
+// import { useAppKit } from '@reown/appkit-react-native';
+import { useAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function UnsupportedChainView() {
@@ -22,6 +24,7 @@ export function UnsupportedChainView() {
   const [disconnecting, setDisconnecting] = useState(false);
   const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
   const imageHeaders = ApiController._getApiHeaders();
+  const { appKit } = useAppKit();
 
   const onNetworkPress = async (network: CaipNetwork) => {
     const result = await NetworkUtil.handleNetworkSwitch(network);
@@ -38,7 +41,8 @@ export function UnsupportedChainView() {
 
   const onDisconnect = async () => {
     setDisconnecting(true);
-    await ConnectionUtil.disconnect();
+    //TODO: USE ACTIVE NAMESPACE
+    await appKit?.disconnect('eip155');
     setDisconnecting(false);
   };
 

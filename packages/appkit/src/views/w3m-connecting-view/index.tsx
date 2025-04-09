@@ -15,7 +15,7 @@ import {
   ConnectorController
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
-import { useAppKit } from '@reown/appkit-react-native';
+import { useAppKit } from '../../AppKitContext';
 
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
 import { ConnectingMobile } from '../../partials/w3m-connecting-mobile';
@@ -47,12 +47,14 @@ export function ConnectingView() {
   const initializeConnection = async (retry = false) => {
     try {
       const { wcPairingExpiry } = ConnectionController.state;
-      const { data: routeData } = RouterController.state;
+      // const { data: routeData } = RouterController.state;
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.setWcError(false);
         // ConnectionController.connectWalletConnect(routeData?.wallet?.link_mode ?? undefined);
-        appKit?.connect('walletconnect', ['eip155']);
-        await ConnectionController.state.wcPromise;
+        const wcPromise = appKit?.connect('walletconnect', ['eip155']);
+        ConnectionController.setWcPromise(wcPromise);
+        await wcPromise;
+        // await ConnectionController.state.wcPromise;
         ConnectorController.setConnectedConnector('WALLET_CONNECT');
         AccountController.setIsConnected(true);
 

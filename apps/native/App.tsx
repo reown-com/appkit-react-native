@@ -6,13 +6,16 @@ import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 
-import {
-  AppKit,
-  AppKitButton,
-  NetworkButton,
-  createAppKit,
-  defaultWagmiConfig
-} from '@reown/appkit-wagmi-react-native';
+// import {
+//   // AppKit,
+//   // AppKitButton,
+//   // NetworkButton,
+//   // createAppKit,
+//   WagmiAdapter,
+//   defaultWagmiConfig
+// } from '@reown/appkit-wagmi-react-native';
+
+import { AppKitProvider, createAppKit, AppKit, AppKitButton } from '@reown/appkit-react-native';
 
 import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
 import { Text } from '@reown/appkit-ui-react-native';
@@ -25,6 +28,7 @@ import { getCustomWallets } from './src/utils/misc';
 import { chains } from './src/utils/WagmiUtils';
 import { OpenButton } from './src/components/OpenButton';
 import { DisconnectButton } from './src/components/DisconnectButton';
+import { EthersAdapter } from '@reown/appkit-ethers-react-native';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -53,40 +57,58 @@ const extraConnectors = Platform.select({
   default: []
 });
 
-const wagmiConfig = defaultWagmiConfig({
-  chains,
-  projectId,
-  metadata,
-  extraConnectors
-});
+// const wagmiConfig = defaultWagmiConfig({
+//   chains,
+//   projectId,
+//   metadata,
+//   extraConnectors
+// });
 
 const queryClient = new QueryClient();
 
 const customWallets = getCustomWallets();
 
-createAppKit({
+// const wagmiAdapter = new WagmiAdapter({
+//   wagmiConfig,
+//   projectId,
+//   networks: chains
+// });
+
+const ethersAdapter = new EthersAdapter({
+  projectId
+});
+
+// createAppKit({
+//   projectId,
+//   wagmiConfig,
+//   siweConfig,
+//   clipboardClient,
+//   customWallets,
+//   enableAnalytics: true,
+//   metadata,
+//   debug: true,
+//   features: {
+//     email: true,
+//     socials: ['x', 'discord', 'apple'],
+//     emailShowWallets: true,
+//     swaps: true
+//     // onramp: true
+//   }
+// });
+
+const appKit = createAppKit({
   projectId,
-  wagmiConfig,
-  siweConfig,
-  clipboardClient,
-  customWallets,
-  enableAnalytics: true,
+  adapters: [ethersAdapter],
   metadata,
-  debug: true,
-  features: {
-    email: true,
-    socials: ['x', 'discord', 'apple'],
-    emailShowWallets: true,
-    swaps: true
-    // onramp: true
-  }
+  networks: chains,
 });
 
 export default function Native() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <WagmiProvider config={wagmiConfig}>
+    // <WagmiProvider config={wagmiConfig}>
+      <AppKitProvider instance={appKit}>
       <QueryClientProvider client={queryClient}>
         <SafeAreaView style={[styles.container, isDarkMode && styles.dark]}>
           <StatusBar style="auto" />
@@ -100,16 +122,17 @@ export default function Native() {
             loadingLabel="Connecting..."
             balance="show"
           />
-          <NetworkButton />
-          <ActionsView />
-          <AccountView />
-          <OpenButton />
-          <DisconnectButton />
+          {/* <NetworkButton /> */}
+          {/* <ActionsView /> */}
+          {/* <AccountView /> */}
+          {/* <OpenButton /> */}
+          {/* <DisconnectButton /> */}
           <AppKit />
         </SafeAreaView>
         <Toast />
       </QueryClientProvider>
-    </WagmiProvider>
+    </AppKitProvider>
+    // </WagmiProvider>
   );
 }
 
