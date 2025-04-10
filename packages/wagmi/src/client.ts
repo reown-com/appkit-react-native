@@ -26,9 +26,6 @@ import { mainnet, type Chain } from '@wagmi/core/chains';
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import { type JsonRpcError } from '@walletconnect/jsonrpc-types';
 import {
-  type CaipAddress,
-  type CaipNetwork,
-  type CaipNetworkId,
   type ConnectionControllerClient,
   type Connector,
   type LibraryOptions,
@@ -48,7 +45,10 @@ import {
   ErrorUtil,
   ConstantsUtil,
   PresetsUtil,
-  type ConnectorType
+  type ConnectorType,
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId
 } from '@reown/appkit-common-react-native';
 import {
   SIWEController,

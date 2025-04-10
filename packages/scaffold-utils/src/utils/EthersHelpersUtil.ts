@@ -1,4 +1,4 @@
-import type { CaipNetwork } from '@reown/appkit-scaffold-react-native';
+import type { CaipNetwork } from '@reown/appkit-common-react-native';
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-common-react-native';
 
 import type { Chain, Provider } from './EthersTypesUtil';

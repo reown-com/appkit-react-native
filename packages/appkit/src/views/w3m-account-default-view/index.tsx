@@ -17,7 +17,8 @@ import {
   type AppKitFrameProvider,
   ConstantsUtil,
   SwapController,
-  OnRampController
+  OnRampController,
+  ConnectionsController
 } from '@reown/appkit-core-react-native';
 import {
   Avatar,
@@ -38,7 +39,6 @@ import styles from './styles';
 
 export function AccountDefaultView() {
   const {
-    address,
     profileName,
     profileImage,
     balance,
@@ -47,6 +47,7 @@ export function AccountDefaultView() {
     preferredAccountType
   } = useSnapshot(AccountController.state);
   const { loading } = useSnapshot(ModalController.state);
+  const { activeAddress: address } = useSnapshot(ConnectionsController.state);
   const [disconnecting, setDisconnecting] = useState(false);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { connectedConnector } = useSnapshot(ConnectorController.state);
@@ -190,7 +191,7 @@ export function AccountDefaultView() {
       />
       <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
         <FlexView alignItems="center" padding={['3xl', 's', '3xl', 's']}>
-          <Avatar imageSrc={profileImage} address={address} />
+          <Avatar imageSrc={profileImage} address={address ?? ''} />
           <FlexView flexDirection="row" alignItems="center" margin={['s', '0', '0', '0']}>
             <Text variant="medium-title-600">
               {profileName

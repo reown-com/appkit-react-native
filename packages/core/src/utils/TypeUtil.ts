@@ -1,4 +1,5 @@
 import { type EventEmitter } from 'events';
+import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
 
 import type {
   Balance,
@@ -12,17 +13,6 @@ import { OnRampErrorType } from './ConstantsUtil';
 
 export interface BaseError {
   message?: string;
-}
-
-export type CaipAddress = `${string}:${string}:${string}`;
-
-export type CaipNetworkId = `${string}:${string}`;
-
-export interface CaipNetwork {
-  id: CaipNetworkId;
-  name?: string;
-  imageId?: string;
-  imageUrl?: string;
 }
 
 export type ConnectedWalletInfo =

@@ -4,7 +4,7 @@ import { NetworkController } from '../controllers/NetworkController';
 import { AccountController } from '../controllers/AccountController';
 import { ConnectorController } from '../controllers/ConnectorController';
 import { SwapController } from '../controllers/SwapController';
-import type { CaipNetwork } from '../utils/TypeUtil';
+import type { CaipNetwork } from '@reown/appkit-common-react-native';
 
 export const NetworkUtil = {
   async handleNetworkSwitch(network: CaipNetwork) {

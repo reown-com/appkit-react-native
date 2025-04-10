@@ -9,11 +9,9 @@ import {
   EventsController,
   NetworkController,
   NetworkUtil,
-  type CaipNetwork,
   type NetworkControllerState
 } from '@reown/appkit-core-react-native';
-
-// import { useAppKit } from '@reown/appkit-react-native';
+import type { CaipNetwork } from '@reown/appkit-common-react-native';
 import { useAppKit } from '../../AppKitContext';
 import styles from './styles';
 

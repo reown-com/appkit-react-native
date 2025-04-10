@@ -101,6 +101,7 @@ const appKit = createAppKit({
   adapters: [ethersAdapter],
   metadata,
   networks: chains,
+  // namespaces: custom namespaces
 });
 
 export default function Native() {

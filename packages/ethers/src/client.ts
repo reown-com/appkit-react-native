@@ -13,9 +13,6 @@ import {
   toUtf8Bytes
 } from 'ethers';
 import {
-  type CaipAddress,
-  type CaipNetwork,
-  type CaipNetworkId,
   type ConnectionControllerClient,
   type Connector,
   type LibraryOptions,
@@ -29,6 +26,9 @@ import {
   type EstimateGasTransactionArgs
 } from '@reown/appkit-scaffold-react-native';
 import {
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId,
   erc20ABI,
   ErrorUtil,
   NamesUtil,

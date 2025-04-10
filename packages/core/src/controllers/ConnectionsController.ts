@@ -1,15 +1,18 @@
-import { proxy } from 'valtio';
-import type { BlockchainAdapter } from '@reown/appkit-common-react-native';
+import { proxy, ref } from 'valtio';
+import { derive } from 'valtio/utils';
+import type {
+  BlockchainAdapter,
+  CaipAddress,
+  CaipNetworkId
+} from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 interface Connection {
-  accounts: string[];
+  accounts: CaipAddress[];
   balances: Record<string, string>;
   activeChainId: string;
   adapter: BlockchainAdapter;
-  events: string[];
-  chains: string[];
-  methods: string[];
+  chains: CaipNetworkId[];
 }
 
 export interface ConnectionsControllerState {
@@ -18,48 +21,66 @@ export interface ConnectionsControllerState {
 }
 
 // -- State --------------------------------------------- //
-const state = proxy<ConnectionsControllerState>({
+const baseState = proxy<ConnectionsControllerState>({
   activeNamespace: 'eip155',
   connections: {}
 });
 
+const derivedState = derive(
+  {
+    activeAddress: (get): string | null => {
+      const snap = get(baseState);
+
+      if (!snap.activeNamespace) return null;
+
+      const connection = snap.connections[snap.activeNamespace];
+
+      if (!connection || !connection.accounts || connection.accounts.length === 0) {
+        return null;
+      }
+
+      const address = connection.accounts[0]?.split(':')[2];
+      if (!address) return null;
+
+      return address;
+    }
+  },
+  {
+    proxy: baseState // Link derived proxy to the base state proxy
+  }
+);
+
 // -- Controller ---------------------------------------- //
 export const ConnectionsController = {
-  state,
+  state: derivedState,
 
   setActiveNamespace(namespace: string) {
-    state.activeNamespace = namespace;
+    baseState.activeNamespace = namespace;
   },
 
   storeConnection({
     namespace,
     adapter,
     accounts,
-    events,
-    chains,
-    methods
+    chains
   }: {
     namespace: string;
     adapter: BlockchainAdapter;
-    accounts: string[];
-    events: string[];
-    chains: string[];
-    methods: string[];
+    accounts: CaipAddress[];
+    chains: CaipNetworkId[];
   }) {
-    state.connections[namespace] = {
+    baseState.connections[namespace] = {
       balances: {},
       activeChainId: chains[0]!,
-      adapter,
+      adapter: ref(adapter),
       accounts,
-      events,
-      chains,
-      methods
+      chains
     };
-    console.log('ConnectionController:storeConnection - state.connections', state.connections);
+    console.log('ConnectionController:storeConnection - state.connections', baseState.connections);
   },
 
-  updateAccounts(namespace: string, accounts: string[]) {
-    const connection = state.connections[namespace];
+  updateAccounts(namespace: string, accounts: CaipAddress[]) {
+    const connection = baseState.connections[namespace];
     if (!connection) {
       return;
     }
@@ -67,7 +88,7 @@ export const ConnectionsController = {
   },
 
   updateBalances(namespace: string, balances: Record<string, string>) {
-    const connection = state.connections[namespace];
+    const connection = baseState.connections[namespace];
     if (!connection) {
       return;
     }
@@ -75,7 +96,7 @@ export const ConnectionsController = {
   },
 
   updateChainId(namespace: string, chainId: string) {
-    const connection = state.connections[namespace];
+    const connection = baseState.connections[namespace];
     if (!connection) {
       return;
     }
@@ -83,7 +104,7 @@ export const ConnectionsController = {
   },
 
   async disconnect(namespace: string) {
-    const connection = state.connections[namespace];
+    const connection = baseState.connections[namespace];
     if (!connection) return;
 
     console.log('ConnectionController:disconnect - connection', connection);
@@ -95,8 +116,8 @@ export const ConnectionsController = {
     console.log('ConnectionController:disconnect - connector', connector);
 
     // Find all namespaces that use the same connector
-    const namespacesUsingConnector = Object.keys(state.connections).filter(
-      ns => state.connections[ns]?.adapter.connector === connector
+    const namespacesUsingConnector = Object.keys(baseState.connections).filter(
+      ns => baseState.connections[ns]?.adapter.connector === connector
     );
 
     console.log(
@@ -106,7 +127,7 @@ export const ConnectionsController = {
 
     // Unsubscribe all event listeners from the adapter
     namespacesUsingConnector.forEach(ns => {
-      const _connection = state.connections[ns];
+      const _connection = baseState.connections[ns];
       if (_connection?.adapter) {
         _connection.adapter.removeAllListeners();
       }
@@ -117,9 +138,9 @@ export const ConnectionsController = {
 
     // Remove all namespaces that used this connector
     namespacesUsingConnector.forEach(ns => {
-      delete state.connections[ns];
+      delete baseState.connections[ns];
     });
 
-    console.log('ConnectionController:disconnect - state.connections', state.connections);
+    console.log('ConnectionController:disconnect - baseState.connections', baseState.connections);
   }
 };

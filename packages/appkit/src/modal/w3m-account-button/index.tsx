@@ -5,7 +5,8 @@ import {
   NetworkController,
   ModalController,
   AssetUtil,
-  ThemeController
+  ThemeController,
+  ConnectionsController
 } from '@reown/appkit-core-react-native';
 
 import { AccountButton as AccountButtonUI, ThemeProvider } from '@reown/appkit-ui-react-native';
@@ -21,7 +22,6 @@ export interface AccountButtonProps {
 
 export function AccountButton({ balance, disabled, style, testID }: AccountButtonProps) {
   const {
-    address,
     balance: balanceVal,
     balanceSymbol,
     profileImage,
@@ -29,6 +29,7 @@ export function AccountButton({ balance, disabled, style, testID }: AccountButto
   } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
+  const { activeAddress: address } = useSnapshot(ConnectionsController.state);
 
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showBalance = balance === 'show';
@@ -37,7 +38,7 @@ export function AccountButton({ balance, disabled, style, testID }: AccountButto
     <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
       <AccountButtonUI
         onPress={() => ModalController.open()}
-        address={address}
+        address={address ?? ''}
         profileName={profileName}
         networkSrc={networkImage}
         imageHeaders={ApiController._getApiHeaders()}

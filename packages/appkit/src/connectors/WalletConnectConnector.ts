@@ -8,8 +8,12 @@ import {
 } from '@reown/appkit-common-react-native';
 
 export class WalletConnectConnector extends WalletConnector {
-  private constructor(provider: Provider) {
-    super({ type: 'walletconnect', provider });
+  private constructor(provider: IUniversalProvider) {
+    super({ type: 'walletconnect', provider: provider as Provider });
+
+    if (provider.session?.namespaces) {
+      this.namespaces = provider.session.namespaces as Namespaces;
+    }
   }
 
   public static async create({
@@ -24,8 +28,7 @@ export class WalletConnectConnector extends WalletConnector {
       metadata
     });
 
-    //TODO: Check this
-    return new WalletConnectConnector(provider as Provider);
+    return new WalletConnectConnector(provider);
   }
 
   override disconnect(): Promise<void> {
@@ -43,7 +46,7 @@ export class WalletConnectConnector extends WalletConnector {
       optionalNamespaces: namespaces
     });
 
-    this.namespaces = session?.namespaces;
+    this.namespaces = session?.namespaces as Namespaces;
 
     console.log('session', session);
 

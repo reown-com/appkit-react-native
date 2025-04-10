@@ -10,6 +10,7 @@ import type {
 import {
   DateUtil,
   type SocialProvider,
+  type New_ConnectorType,
   type ConnectorType
 } from '@reown/appkit-common-react-native';
 
@@ -18,6 +19,7 @@ const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE';
 const RECENT_WALLET = '@w3m/recent';
 const CONNECTED_WALLET_IMAGE_URL = '@w3m/connected_wallet_image_url';
 const CONNECTED_CONNECTOR = '@w3m/connected_connector';
+const CONNECTED_CONNECTORS = '@appkit/connected_connectors';
 const CONNECTED_SOCIAL = '@appkit/connected_social';
 const ONRAMP_PREFERRED_COUNTRY = '@appkit/onramp_preferred_country';
 const ONRAMP_COUNTRIES = '@appkit/onramp_countries';
@@ -99,6 +101,7 @@ export const StorageUtil = {
     return [];
   },
 
+  //TODO: remove this
   async setConnectedConnector(connectorType: ConnectorType) {
     try {
       await AsyncStorage.setItem(CONNECTED_CONNECTOR, JSON.stringify(connectorType));
@@ -122,6 +125,47 @@ export const StorageUtil = {
   async removeConnectedConnector() {
     try {
       await AsyncStorage.removeItem(CONNECTED_CONNECTOR);
+    } catch {
+      console.info('Unable to remove Connected Connector');
+    }
+  },
+
+  async setConnectedConnectors({
+    type,
+    namespaces
+  }: {
+    type: New_ConnectorType;
+    namespaces: string[];
+  }) {
+    try {
+      const currentConnectors = (await StorageUtil.getConnectedConnectors()) || [];
+      // Only add if it doesn't exist already
+      if (!currentConnectors.some(c => c.type === type)) {
+        const updatedConnectors = [...currentConnectors, { type, namespaces }];
+        await AsyncStorage.setItem(CONNECTED_CONNECTORS, JSON.stringify(updatedConnectors));
+      }
+    } catch {
+      console.info('Unable to set Connected Connector');
+    }
+  },
+
+  async getConnectedConnectors(): Promise<{ type: New_ConnectorType; namespaces: string[] }[]> {
+    try {
+      const connectors = await AsyncStorage.getItem(CONNECTED_CONNECTORS);
+
+      return connectors ? JSON.parse(connectors) : [];
+    } catch {
+      console.info('Unable to get Connected Connector');
+    }
+
+    return [];
+  },
+
+  async removeConnectedConnectors(type: New_ConnectorType) {
+    try {
+      const currentConnectors = await StorageUtil.getConnectedConnectors();
+      const updatedConnectors = currentConnectors.filter(c => c.type !== type);
+      await AsyncStorage.setItem(CONNECTED_CONNECTORS, JSON.stringify(updatedConnectors));
     } catch {
       console.info('Unable to remove Connected Connector');
     }

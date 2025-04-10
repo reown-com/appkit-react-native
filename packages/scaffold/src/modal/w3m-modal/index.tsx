@@ -14,11 +14,11 @@ import {
   OptionsController,
   RouterController,
   TransactionsController,
-  type CaipAddress,
   type AppKitFrameProvider,
   WebviewController,
   ThemeController
 } from '@reown/appkit-core-react-native';
+import type { CaipAddress } from '@reown/appkit-common-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
 import { AppKitRouter } from '../w3m-router';

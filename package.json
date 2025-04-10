@@ -9,7 +9,6 @@
     "packages/common",
     "packages/wallet",
     "packages/scaffold-utils",
-    "packages/scaffold",
     "packages/siwe",
     "packages/wagmi",
     "packages/coinbase-wagmi",

@@ -1,9 +1,6 @@
 import { Contract, ethers, utils } from 'ethers';
 import {
   type AppKitFrameAccountType,
-  type CaipAddress,
-  type CaipNetwork,
-  type CaipNetworkId,
   type ConnectionControllerClient,
   type Connector,
   type EstimateGasTransactionArgs,
@@ -37,6 +34,9 @@ import {
   type AppKitSIWEClient
 } from '@reown/appkit-siwe-react-native';
 import {
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId,
   erc20ABI,
   ErrorUtil,
   NamesUtil,

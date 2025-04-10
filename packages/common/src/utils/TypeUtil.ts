@@ -1,5 +1,16 @@
 import { EventEmitter } from 'events';
 
+export type CaipAddress = `${string}:${string}:${string}`;
+
+export type CaipNetworkId = `${string}:${string}`;
+
+export interface CaipNetwork {
+  id: CaipNetworkId;
+  name?: string;
+  imageId?: string;
+  imageUrl?: string;
+}
+
 export interface Balance {
   name: string;
   symbol: string;
@@ -138,8 +149,8 @@ export abstract class EVMAdapter extends BlockchainAdapter {
 
 //********** Connector Types **********//
 interface BaseNamespace {
-  chains?: string[];
-  accounts: string[];
+  chains?: CaipNetworkId[];
+  accounts: CaipAddress[];
   methods: string[];
   events: string[];
 }

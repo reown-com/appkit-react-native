@@ -1,4 +1,4 @@
-import type { CaipNetworkId } from '@reown/appkit-scaffold-react-native';
+import type { CaipNetworkId } from '@reown/appkit-common-react-native';
 import { PresetsUtil, ConstantsUtil } from '@reown/appkit-common-react-native';
 import EthereumProvider from '@walletconnect/ethereum-provider';
 

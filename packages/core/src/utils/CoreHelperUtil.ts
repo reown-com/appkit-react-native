@@ -1,12 +1,17 @@
 /* eslint-disable no-bitwise */
 
 import { Linking, Platform } from 'react-native';
-import { ConstantsUtil as CommonConstants, type Balance } from '@reown/appkit-common-react-native';
+import {
+  ConstantsUtil as CommonConstants,
+  type Balance,
+  type CaipAddress,
+  type CaipNetwork
+} from '@reown/appkit-common-react-native';
+
 import * as ct from 'countries-and-timezones';
 
 import { ConstantsUtil } from './ConstantsUtil';
-import type { CaipAddress, CaipNetwork, DataWallet, LinkingRecord } from './TypeUtil';
-
+import type { DataWallet, LinkingRecord } from './TypeUtil';
 // -- Helpers -----------------------------------------------------------------
 async function isAppInstalledIos(deepLink?: string): Promise<boolean> {
   try {

@@ -50,6 +50,7 @@ export const ConnectorController = {
 
     if (saveStorage) {
       if (connectorType) {
+        //TODO: Check this
         StorageUtil.setConnectedConnector(connectorType);
       } else {
         StorageUtil.removeConnectedConnector();
