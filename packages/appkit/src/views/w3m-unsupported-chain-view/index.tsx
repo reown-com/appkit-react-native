@@ -5,6 +5,7 @@ import { Icon, ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
   AssetUtil,
+  ConnectionsController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
@@ -39,8 +40,7 @@ export function UnsupportedChainView() {
 
   const onDisconnect = async () => {
     setDisconnecting(true);
-    //TODO: USE ACTIVE NAMESPACE
-    await appKit?.disconnect('eip155');
+    await appKit?.disconnect(ConnectionsController.state.activeNamespace);
     setDisconnecting(false);
   };
 

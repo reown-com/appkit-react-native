@@ -11,8 +11,7 @@ import {
   type Platform,
   OptionsController,
   ApiController,
-  EventsController,
-  ConnectorController
+  EventsController
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 import type { CaipNetworkId } from '@reown/appkit-common-react-native';
@@ -76,7 +75,7 @@ export function ConnectingView() {
         ConnectionController.setWcPromise(wcPromise);
         await wcPromise;
         // await ConnectionController.state.wcPromise;
-        ConnectorController.setConnectedConnector('WALLET_CONNECT');
+        // ConnectorController.setConnectedConnector('WALLET_CONNECT');
         AccountController.setIsConnected(true);
 
         if (OptionsController.state.isSiweEnabled) {

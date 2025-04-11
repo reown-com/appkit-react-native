@@ -35,6 +35,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@reown/appkit-core-react-native": "1.2.3",
     "@reown/appkit-common-react-native": "1.2.3",
     "@reown/appkit-scaffold-react-native": "1.2.3"
   },

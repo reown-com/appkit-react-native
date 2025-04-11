@@ -7,12 +7,19 @@ import type {
 } from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
+
+interface Balance {
+  amount: string;
+  symbol: string;
+}
+
 interface Connection {
   accounts: CaipAddress[];
-  balances: Record<string, string>;
-  activeChainId: string;
+  activeAccount: CaipAddress;
+  balances: Record<CaipAddress, Balance>;
   adapter: BlockchainAdapter;
   chains: CaipNetworkId[];
+  activeChain: CaipNetworkId;
 }
 
 export interface ConnectionsControllerState {
@@ -28,21 +35,41 @@ const baseState = proxy<ConnectionsControllerState>({
 
 const derivedState = derive(
   {
-    activeAddress: (get): string | null => {
+    activeAddress: (get): CaipAddress | undefined => {
       const snap = get(baseState);
 
-      if (!snap.activeNamespace) return null;
+      if (!snap.activeNamespace) return undefined;
 
       const connection = snap.connections[snap.activeNamespace];
 
-      if (!connection || !connection.accounts || connection.accounts.length === 0) {
-        return null;
+      if (
+        !connection ||
+        !connection.accounts ||
+        !connection.activeAccount ||
+        connection.accounts.length === 0
+      ) {
+        return undefined;
       }
 
-      const address = connection.accounts[0]?.split(':')[2];
-      if (!address) return null;
+      return connection.activeAccount;
+    },
+    activeBalance: (get): Balance | undefined => {
+      const snap = get(baseState);
 
-      return address;
+      if (!snap.activeNamespace) return undefined;
+
+      const connection = snap.connections[snap.activeNamespace];
+
+      if (
+        !connection ||
+        !connection.balances ||
+        !connection.activeAccount ||
+        Object.keys(connection.balances).length === 0
+      ) {
+        return undefined;
+      }
+
+      return connection.balances[connection.activeAccount];
     }
   },
   {
@@ -71,9 +98,10 @@ export const ConnectionsController = {
   }) {
     baseState.connections[namespace] = {
       balances: {},
-      activeChainId: chains[0]!,
+      activeChain: chains[0]!,
       adapter: ref(adapter),
       accounts,
+      activeAccount: accounts[0]!,
       chains
     };
     console.log('ConnectionController:storeConnection - state.connections', baseState.connections);
@@ -87,20 +115,20 @@ export const ConnectionsController = {
     connection.accounts = accounts;
   },
 
-  updateBalances(namespace: string, balances: Record<string, string>) {
+  updateBalance(namespace: string, address: CaipAddress, balance: Balance) {
     const connection = baseState.connections[namespace];
     if (!connection) {
       return;
     }
-    connection.balances = balances;
+    connection.balances[address] = balance;
   },
 
-  updateChainId(namespace: string, chainId: string) {
+  updateChain(namespace: string, chain: CaipNetworkId) {
     const connection = baseState.connections[namespace];
     if (!connection) {
       return;
     }
-    connection.activeChainId = chainId;
+    connection.activeChain = chain;
   },
 
   async disconnect(namespace: string) {

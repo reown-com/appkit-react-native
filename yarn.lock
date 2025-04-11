@@ -7268,9 +7268,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@reown/appkit-scaffold-react-native@npm:1.2.3, @reown/appkit-scaffold-react-native@workspace:packages/scaffold":
-  version: 0.0.0-use.local
-  resolution: "@reown/appkit-scaffold-react-native@workspace:packages/scaffold"
+"@reown/appkit-scaffold-react-native@npm:1.2.3":
+  version: 1.2.3
+  resolution: "@reown/appkit-scaffold-react-native@npm:1.2.3"
   dependencies:
     "@reown/appkit-common-react-native": "npm:1.2.3"
     "@reown/appkit-core-react-native": "npm:1.2.3"
@@ -7280,8 +7280,9 @@ __metadata:
     react: ">=17"
     react-native: ">=0.68.5"
     react-native-modal: ">=13"
-  languageName: unknown
-  linkType: soft
+  checksum: a8cd99392bc1b2afa69adf904d9b970bbf707b1aea41d147ff63d884e49a77da3cb6482ffde9f61244196d884c906d99c9c90a164af3146c4e68ad5f4f1bd730
+  languageName: node
+  linkType: hard
 
 "@reown/appkit-scaffold-utils-react-native@npm:1.2.3, @reown/appkit-scaffold-utils-react-native@workspace:packages/scaffold-utils":
   version: 0.0.0-use.local

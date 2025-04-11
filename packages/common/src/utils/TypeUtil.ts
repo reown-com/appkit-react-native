@@ -139,12 +139,22 @@ export abstract class BlockchainAdapter extends EventEmitter {
   abstract disconnect(): Promise<void>;
   abstract request(method: string, params?: any[]): Promise<any>;
   abstract getSupportedNamespace(): string;
+  abstract getBalance(params: GetBalanceParams): Promise<GetBalanceResponse>;
+  abstract getAccounts(): CaipAddress[] | undefined;
 }
 
 export abstract class EVMAdapter extends BlockchainAdapter {
   abstract signTransaction(tx: TransactionData): Promise<SignedTransaction>;
-  abstract getBalance(address: string): Promise<string>;
   abstract sendTransaction(tx: TransactionData): Promise<TransactionReceipt>;
+}
+
+export interface GetBalanceParams {
+  address?: CaipAddress;
+}
+
+export interface GetBalanceResponse {
+  amount: string;
+  symbol: string;
 }
 
 //********** Connector Types **********//

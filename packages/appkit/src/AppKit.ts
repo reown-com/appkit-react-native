@@ -15,7 +15,8 @@ import type {
   BlockchainAdapter,
   ProposalNamespaces,
   New_ConnectorType,
-  Namespaces
+  Namespaces,
+  CaipNetworkId
   // Namespaces,
 } from '@reown/appkit-common-react-native';
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
@@ -31,7 +32,7 @@ export class AppKit {
   private projectId: string;
   private metadata: Metadata;
   private adapters: BlockchainAdapter[];
-  private networks: any[]; //TODO: define type for networks
+  // private networks: any[]; //TODO: define type for networks
   // private namespaces: Namespaces;
   private extraConnectors: WalletConnector[];
 
@@ -39,7 +40,7 @@ export class AppKit {
     this.projectId = config.projectId;
     this.metadata = config.metadata;
     this.adapters = config.adapters;
-    this.networks = config.networks;
+    // this.networks = config.networks;
     // this.namespaces = this.getNamespaces(config.networks);
     this.extraConnectors = config.extraConnectors || [];
     // console.log(this.networks?.length); // Removed console log
@@ -69,30 +70,38 @@ export class AppKit {
   private async initConnectors() {
     const connectedConnectors = await StorageUtil.getConnectedConnectors(); // Fetch stored connectors
 
-    for (const connected of connectedConnectors) {
-      try {
-        const connector = await this.createConnector(connected.type);
+    if (connectedConnectors.length > 0) {
+      ModalController.setLoading(true);
 
-        const namespaces = connector.getNamespaces();
-        if (namespaces && Object.keys(namespaces).length > 0) {
-          // Ensure namespaces is not empty
-          // Setup adapters and subscribe to events
-          const initializedAdapters = this._setupAdaptersAndSubscribe(
-            connector,
-            Object.keys(namespaces)
-          );
+      for (const connected of connectedConnectors) {
+        try {
+          const connector = await this.createConnector(connected.type);
 
-          // If adapters were successfully initialized, store the connection details
-          if (initializedAdapters.length > 0) {
-            this._storeConnectionDetails(initializedAdapters, namespaces);
+          const namespaces = connector.getNamespaces();
+          if (namespaces && Object.keys(namespaces).length > 0) {
+            // Ensure namespaces is not empty
+            // Setup adapters and subscribe to events
+            const initializedAdapters = this._setupAdaptersAndSubscribe(
+              connector,
+              Object.keys(namespaces)
+            );
+
+            // If adapters were successfully initialized, store the connection details
+            if (initializedAdapters.length > 0) {
+              this._storeConnectionDetails(initializedAdapters, namespaces);
+            }
+
+            this.syncAccounts(initializedAdapters);
+
+            AccountController.setIsConnected(true);
           }
-          AccountController.setIsConnected(true);
+        } catch (error) {
+          // Use console.warn for non-critical initialization failures
+          console.warn(`Failed to initialize connector type ${connected.type}:`, error);
+          await StorageUtil.removeConnectedConnectors(connected.type);
         }
-      } catch (error) {
-        // Use console.warn for non-critical initialization failures
-        console.warn(`Failed to initialize connector type ${connected.type}:`, error);
-        await StorageUtil.removeConnectedConnectors(connected.type);
       }
+      ModalController.setLoading(false);
     }
   }
 
@@ -163,6 +172,8 @@ export class AppKit {
         namespaces: Object.keys(approvedNamespaces)
       });
 
+      this.syncAccounts(approvedAdapters);
+
       // Set connected state (consider if this should be more nuanced for multi-connections)
       AccountController.setIsConnected(true);
 
@@ -173,6 +184,11 @@ export class AppKit {
       // Rethrow or handle the error appropriately for the UI
       throw error;
     }
+  }
+
+  private async syncAccounts(adapters: BlockchainAdapter[]) {
+    // Get account balance
+    adapters.map(adapter => adapter.getBalance({ address: adapter.getAccounts()?.[0] }));
   }
 
   /**
@@ -211,7 +227,8 @@ export class AppKit {
 
     adapter.on('chainChanged', ({ chainId, namespace }) => {
       // console.log(`Chain changed for namespace: ${namespace}`); // Removed console log
-      ConnectionsController.updateChainId(namespace, chainId);
+      const chain = `${namespace}:${chainId}` as CaipNetworkId;
+      ConnectionsController.updateChain(namespace, chain);
     });
 
     adapter.on('disconnect', ({ namespace }) => {
@@ -219,6 +236,11 @@ export class AppKit {
       ConnectionsController.disconnect(namespace);
       // Potentially remove from storage on disconnect event as well
       // StorageUtil.removeConnectedConnectors(connectorType); // Need connectorType here
+    });
+
+    adapter.on('balanceChanged', ({ namespace, address, balance }) => {
+      // console.log('balanceChanged', namespace, address, balance);
+      ConnectionsController.updateBalance(namespace, address, balance);
     });
   }
 

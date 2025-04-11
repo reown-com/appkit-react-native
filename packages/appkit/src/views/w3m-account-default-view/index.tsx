@@ -38,16 +38,14 @@ import { AuthButtons } from './components/auth-buttons';
 import styles from './styles';
 
 export function AccountDefaultView() {
-  const {
-    profileName,
-    profileImage,
-    balance,
-    balanceSymbol,
-    addressExplorerUrl,
-    preferredAccountType
-  } = useSnapshot(AccountController.state);
+  const { profileName, profileImage, addressExplorerUrl, preferredAccountType } = useSnapshot(
+    AccountController.state
+  );
   const { loading } = useSnapshot(ModalController.state);
-  const { activeAddress: address } = useSnapshot(ConnectionsController.state);
+  const { activeAddress: address, activeBalance: balance } = useSnapshot(
+    ConnectionsController.state
+  );
+  const account = address?.split(':')[2];
   const [disconnecting, setDisconnecting] = useState(false);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { connectedConnector } = useSnapshot(ConnectorController.state);
@@ -63,10 +61,10 @@ export function AccountDefaultView() {
   const showSwitchAccountType = isAuth && NetworkController.checkIfSmartAccountEnabled();
   const { padding } = useCustomDimensions();
   const { appKit } = useAppKit();
+
   async function onDisconnect() {
     setDisconnecting(true);
-    //TODO: USE ACTIVE NAMESPACE
-    await appKit?.disconnect('eip155');
+    await appKit?.disconnect(ConnectionsController.state.activeNamespace);
     setDisconnecting(false);
   }
 
@@ -191,7 +189,7 @@ export function AccountDefaultView() {
       />
       <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
         <FlexView alignItems="center" padding={['3xl', 's', '3xl', 's']}>
-          <Avatar imageSrc={profileImage} address={address ?? ''} />
+          <Avatar imageSrc={profileImage} address={account ?? ''} />
           <FlexView flexDirection="row" alignItems="center" margin={['s', '0', '0', '0']}>
             <Text variant="medium-title-600">
               {profileName
@@ -202,7 +200,7 @@ export function AccountDefaultView() {
                     truncate: 'end'
                   })
                 : UiUtil.getTruncateString({
-                    string: address ?? '',
+                    string: account ?? '',
                     charsStart: 4,
                     charsEnd: 6,
                     truncate: 'middle'
@@ -220,7 +218,7 @@ export function AccountDefaultView() {
           </FlexView>
           {showBalance && (
             <Text variant="paragraph-400" color="fg-200">
-              {CoreHelperUtil.formatBalance(balance, balanceSymbol)}
+              {CoreHelperUtil.formatBalance(balance.amount, balance.symbol)}
             </Text>
           )}
           {showExplorer && (

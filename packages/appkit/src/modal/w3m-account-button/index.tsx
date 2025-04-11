@@ -21,15 +21,10 @@ export interface AccountButtonProps {
 }
 
 export function AccountButton({ balance, disabled, style, testID }: AccountButtonProps) {
-  const {
-    balance: balanceVal,
-    balanceSymbol,
-    profileImage,
-    profileName
-  } = useSnapshot(AccountController.state);
+  const { profileImage, profileName } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
-  const { activeAddress: address } = useSnapshot(ConnectionsController.state);
+  const { activeAddress: address, activeBalance } = useSnapshot(ConnectionsController.state);
 
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showBalance = balance === 'show';
@@ -38,14 +33,18 @@ export function AccountButton({ balance, disabled, style, testID }: AccountButto
     <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
       <AccountButtonUI
         onPress={() => ModalController.open()}
-        address={address ?? ''}
+        address={address?.split(':')[2] ?? ''}
         profileName={profileName}
         networkSrc={networkImage}
         imageHeaders={ApiController._getApiHeaders()}
         avatarSrc={profileImage}
         disabled={disabled}
         style={style}
-        balance={showBalance ? CoreHelperUtil.formatBalance(balanceVal, balanceSymbol) : ''}
+        balance={
+          showBalance
+            ? CoreHelperUtil.formatBalance(activeBalance?.amount, activeBalance?.symbol)
+            : ''
+        }
         testID={testID}
       />
     </ThemeProvider>
