@@ -1,6 +1,9 @@
 import {
   EVMAdapter,
   WalletConnector,
+  type CaipAddress,
+  type GetBalanceParams,
+  type GetBalanceResponse,
   type SignedTransaction,
   type TransactionData,
   type TransactionReceipt
@@ -61,10 +64,20 @@ export class WagmiAdapter extends EVMAdapter {
     return this.request('eth_signTransaction', [tx]) as Promise<SignedTransaction>;
   }
 
-  async getBalance(address: string): Promise<string> {
+  async getBalance(params: GetBalanceParams): Promise<GetBalanceResponse> {
     if (!this.connector) throw new Error('No active connector');
+    const address = params.address || this.getAccounts()?.[0];
 
-    return this.request('eth_getBalance', [address, 'latest']) as Promise<string>;
+    console.log('WagmiAdapter - getBalance', address);
+
+    return Promise.resolve({ amount: '0.00', symbol: 'ETH' });
+  }
+
+  getAccounts(): CaipAddress[] | undefined {
+    if (!this.connector) throw new Error('No active connector');
+    const namespaces = this.connector.getNamespaces();
+
+    return namespaces[this.getSupportedNamespace()]?.accounts;
   }
 
   sendTransaction(/*tx: TransactionData*/): Promise<TransactionReceipt> {
