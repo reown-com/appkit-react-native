@@ -1,6 +1,7 @@
 import { proxy, ref } from 'valtio';
 import { derive } from 'valtio/utils';
 import type {
+  AppKitNetwork,
   BlockchainAdapter,
   CaipAddress,
   CaipNetworkId
@@ -25,12 +26,14 @@ interface Connection {
 export interface ConnectionsControllerState {
   activeNamespace: string;
   connections: Record<string, Connection>;
+  networks: AppKitNetwork[];
 }
 
 // -- State --------------------------------------------- //
 const baseState = proxy<ConnectionsControllerState>({
   activeNamespace: 'eip155',
-  connections: {}
+  connections: {},
+  networks: []
 });
 
 const derivedState = derive(
@@ -70,6 +73,21 @@ const derivedState = derive(
       }
 
       return connection.balances[connection.activeAccount];
+    },
+    activeNetwork: (get): AppKitNetwork | undefined => {
+      const snap = get(baseState);
+
+      if (!snap.activeNamespace) return undefined;
+
+      const connection = snap.connections[snap.activeNamespace];
+
+      if (!connection) return undefined;
+
+      return snap.networks.find(
+        network =>
+          (network.chainNamespace ?? 'eip155') === snap.activeNamespace &&
+          network.id?.toString() === connection.activeChain?.split(':')[1]
+      );
     }
   },
   {
@@ -104,7 +122,7 @@ export const ConnectionsController = {
       activeAccount: accounts[0]!,
       chains
     };
-    console.log('ConnectionController:storeConnection - state.connections', baseState.connections);
+    // console.log('ConnectionController:storeConnection - state.connections', baseState.connections);
   },
 
   updateAccounts(namespace: string, accounts: CaipAddress[]) {
@@ -123,35 +141,47 @@ export const ConnectionsController = {
     connection.balances[address] = balance;
   },
 
-  updateChain(namespace: string, chain: CaipNetworkId) {
+  setActiveChain(namespace: string, chain: CaipNetworkId) {
     const connection = baseState.connections[namespace];
+
     if (!connection) {
       return;
     }
+
     connection.activeChain = chain;
+  },
+
+  setNetworks(networks: AppKitNetwork[]) {
+    baseState.networks = networks;
+  },
+
+  getConnectedNetworks() {
+    return baseState.networks.filter(
+      network => baseState.connections[network.chainNamespace ?? 'eip155']
+    );
   },
 
   async disconnect(namespace: string) {
     const connection = baseState.connections[namespace];
     if (!connection) return;
 
-    console.log('ConnectionController:disconnect - connection', connection);
+    // console.log('ConnectionController:disconnect - connection', connection);
 
     // Get the current connector from the adapter
     const connector = connection.adapter.connector;
     if (!connector) return;
 
-    console.log('ConnectionController:disconnect - connector', connector);
+    // console.log('ConnectionController:disconnect - connector', connector);
 
     // Find all namespaces that use the same connector
     const namespacesUsingConnector = Object.keys(baseState.connections).filter(
       ns => baseState.connections[ns]?.adapter.connector === connector
     );
 
-    console.log(
-      'ConnectionController:disconnect - namespacesUsingConnector',
-      namespacesUsingConnector
-    );
+    // console.log(
+    //   'ConnectionController:disconnect - namespacesUsingConnector',
+    //   namespacesUsingConnector
+    // );
 
     // Unsubscribe all event listeners from the adapter
     namespacesUsingConnector.forEach(ns => {
@@ -169,6 +199,6 @@ export const ConnectionsController = {
       delete baseState.connections[ns];
     });
 
-    console.log('ConnectionController:disconnect - baseState.connections', baseState.connections);
+    // console.log('ConnectionController:disconnect - baseState.connections', baseState.connections);
   }
 };

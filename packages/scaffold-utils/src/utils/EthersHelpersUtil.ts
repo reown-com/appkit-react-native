@@ -43,6 +43,7 @@ export const EthersHelpersUtil = {
     return address;
   },
   async addEthereumChain(provider: Provider, chain: Chain) {
+    //TODO: Check if this is needed
     await provider.request({
       method: 'wallet_addEthereumChain',
       params: [

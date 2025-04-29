@@ -4,6 +4,27 @@ export type CaipAddress = `${string}:${string}:${string}`;
 
 export type CaipNetworkId = `${string}:${string}`;
 
+export type ChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122' | string;
+
+export type AppKitNetwork = {
+  // Core viem/chain properties
+  id: number | string;
+  name: string;
+  nativeCurrency: { name: string; symbol: string; decimals: number };
+  rpcUrls: {
+    default: { http: readonly string[] };
+    [key: string]: { http: readonly string[] } | undefined;
+  };
+  blockExplorers?: {
+    default: { name: string; url: string };
+    [key: string]: { name: string; url: string } | undefined;
+  };
+
+  // AppKit specific / CAIP properties (Optional in type, but often needed in practice)
+  chainNamespace?: ChainNamespace; // e.g., 'eip155'
+  caipNetworkId?: CaipNetworkId; // e.g., 'eip155:1'
+};
+
 export interface CaipNetwork {
   id: CaipNetworkId;
   name?: string;
@@ -141,6 +162,7 @@ export abstract class BlockchainAdapter extends EventEmitter {
   abstract getSupportedNamespace(): string;
   abstract getBalance(params: GetBalanceParams): Promise<GetBalanceResponse>;
   abstract getAccounts(): CaipAddress[] | undefined;
+  abstract switchNetwork(network: AppKitNetwork): Promise<void>;
 }
 
 export abstract class EVMAdapter extends BlockchainAdapter {
@@ -150,6 +172,7 @@ export abstract class EVMAdapter extends BlockchainAdapter {
 
 export interface GetBalanceParams {
   address?: CaipAddress;
+  network?: AppKitNetwork;
 }
 
 export interface GetBalanceResponse {

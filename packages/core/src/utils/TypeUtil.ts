@@ -453,7 +453,7 @@ export type Event =
       type: 'track';
       event: 'SWITCH_NETWORK';
       properties: {
-        network: string;
+        network: number | string;
       };
     }
   | {

@@ -1,8 +1,8 @@
-import { Platform, SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
+import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import * as Clipboard from 'expo-clipboard';
+// import * as Clipboard from 'expo-clipboard';
 import '@walletconnect/react-native-compat';
-import { WagmiProvider } from 'wagmi';
+// import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 
@@ -17,18 +17,20 @@ import Toast from 'react-native-toast-message';
 
 import { AppKitProvider, createAppKit, AppKit, AppKitButton } from '@reown/appkit-react-native';
 
-import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
+// import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
 import { Text } from '@reown/appkit-ui-react-native';
 
-import { siweConfig } from './src/utils/SiweUtils';
+// import { siweConfig } from './src/utils/SiweUtils';
 
-import { AccountView } from './src/views/AccountView';
-import { ActionsView } from './src/views/ActionsView';
-import { getCustomWallets } from './src/utils/misc';
-import { chains } from './src/utils/WagmiUtils';
-import { OpenButton } from './src/components/OpenButton';
-import { DisconnectButton } from './src/components/DisconnectButton';
+// import { AccountView } from './src/views/AccountView';
+// import { ActionsView } from './src/views/ActionsView';
+// import { getCustomWallets } from './src/utils/misc';
+// import { chains } from './src/utils/WagmiUtils';
+// import { OpenButton } from './src/components/OpenButton';
+// import { DisconnectButton } from './src/components/DisconnectButton';
 import { EthersAdapter } from '@reown/appkit-ethers-react-native';
+import { mainnet, polygon, avalanche } from 'viem/chains';
+import { solana } from './src/utils/ChainUtils';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -43,19 +45,19 @@ const metadata = {
   }
 };
 
-const clipboardClient = {
-  setString: async (value: string) => {
-    await Clipboard.setStringAsync(value);
-  }
-};
+// const clipboardClient = {
+//   setString: async (value: string) => {
+//     await Clipboard.setStringAsync(value);
+//   }
+// };
 
-const auth = authConnector({ projectId, metadata });
+// const auth = authConnector({ projectId, metadata });
 
-const extraConnectors = Platform.select({
-  ios: [auth],
-  android: [auth],
-  default: []
-});
+// const extraConnectors = Platform.select({
+//   ios: [auth],
+//   android: [auth],
+//   default: []
+// });
 
 // const wagmiConfig = defaultWagmiConfig({
 //   chains,
@@ -66,7 +68,7 @@ const extraConnectors = Platform.select({
 
 const queryClient = new QueryClient();
 
-const customWallets = getCustomWallets();
+// const customWallets = getCustomWallets();
 
 // const wagmiAdapter = new WagmiAdapter({
 //   wagmiConfig,
@@ -100,8 +102,7 @@ const appKit = createAppKit({
   projectId,
   adapters: [ethersAdapter],
   metadata,
-  networks: chains,
-  // namespaces: custom namespaces
+  networks: [mainnet, polygon, avalanche]
 });
 
 export default function Native() {
@@ -109,7 +110,7 @@ export default function Native() {
 
   return (
     // <WagmiProvider config={wagmiConfig}>
-      <AppKitProvider instance={appKit}>
+    <AppKitProvider instance={appKit}>
       <QueryClientProvider client={queryClient}>
         <SafeAreaView style={[styles.container, isDarkMode && styles.dark]}>
           <StatusBar style="auto" />

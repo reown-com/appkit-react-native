@@ -16,15 +16,18 @@ import type {
   ProposalNamespaces,
   New_ConnectorType,
   Namespaces,
-  CaipNetworkId
-  // Namespaces,
+  CaipNetworkId,
+  AppKitNetwork
 } from '@reown/appkit-common-react-native';
+
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
+import { WcHelpersUtil } from './utils/HelpersUtil';
+
 interface AppKitConfig {
   projectId: string;
   metadata: Metadata;
   adapters: BlockchainAdapter[];
-  networks: any[];
+  networks: AppKitNetwork[];
   extraConnectors?: WalletConnector[];
 }
 
@@ -32,18 +35,17 @@ export class AppKit {
   private projectId: string;
   private metadata: Metadata;
   private adapters: BlockchainAdapter[];
-  // private networks: any[]; //TODO: define type for networks
-  // private namespaces: Namespaces;
+  private networks: AppKitNetwork[];
+  private namespaces: ProposalNamespaces; //TODO: check if its ok to use universal provider NamespaceConfig here
   private extraConnectors: WalletConnector[];
 
   constructor(config: AppKitConfig) {
     this.projectId = config.projectId;
     this.metadata = config.metadata;
     this.adapters = config.adapters;
-    // this.networks = config.networks;
-    // this.namespaces = this.getNamespaces(config.networks);
+    this.networks = config.networks;
+    this.namespaces = WcHelpersUtil.createNamespaces(config.networks) as ProposalNamespaces;
     this.extraConnectors = config.extraConnectors || [];
-    // console.log(this.networks?.length); // Removed console log
 
     this.initControllers(config);
     this.initConnectors();
@@ -144,13 +146,12 @@ export class AppKit {
     try {
       const connector = await this.createConnector(type);
 
-      // Connect using the connector and get approved namespaces first
-      const approvedNamespaces = await connector.connect(requestedNamespaces);
+      const approvedNamespaces = await connector.connect(requestedNamespaces ?? this.namespaces);
       if (!approvedNamespaces || Object.keys(approvedNamespaces).length === 0) {
         throw new Error('Connection cancelled or failed: No approved namespaces returned.');
       }
 
-      // Now, setup adapters and subscribe *only* for the approved namespaces
+      // Setup adapters and subscribe to adapter events
       const approvedAdapters = this._setupAdaptersAndSubscribe(
         connector,
         Object.keys(approvedNamespaces)
@@ -158,8 +159,7 @@ export class AppKit {
 
       // Check if any compatible adapters were found for the *approved* namespaces
       if (approvedAdapters.length === 0) {
-        // This case might happen if the user approved namespaces for which we have no adapters,
-        // or if _setupAdaptersAndSubscribe failed internally.
+        //TODO: handle case where devs want to connect to a namespace that has no adapters. Could use the provider directly.
         throw new Error('No compatible adapters found for the approved namespaces');
       }
 
@@ -188,7 +188,14 @@ export class AppKit {
 
   private async syncAccounts(adapters: BlockchainAdapter[]) {
     // Get account balance
-    adapters.map(adapter => adapter.getBalance({ address: adapter.getAccounts()?.[0] }));
+    adapters.map(adapter => {
+      const namespace = adapter.getSupportedNamespace();
+      const connection = ConnectionsController.state.connections[namespace];
+      const network = this.networks.find(
+        n => n.id === Number(connection?.activeChain?.split(':')[1])
+      );
+      adapter.getBalance({ address: adapter.getAccounts()?.[0], network });
+    });
   }
 
   /**
@@ -221,25 +228,21 @@ export class AppKit {
 
   private subscribeToAdapterEvents(adapter: BlockchainAdapter): void {
     adapter.on('accountsChanged', ({ accounts, namespace }) => {
-      // console.log(`Updating accounts for namespace: ${namespace}`); // Removed console log
       ConnectionsController.updateAccounts(namespace, accounts);
     });
 
     adapter.on('chainChanged', ({ chainId, namespace }) => {
-      // console.log(`Chain changed for namespace: ${namespace}`); // Removed console log
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
-      ConnectionsController.updateChain(namespace, chain);
+      ConnectionsController.setActiveChain(namespace, chain);
     });
 
     adapter.on('disconnect', ({ namespace }) => {
-      // console.log(`Disconnect event received for ${namespace}`); // Removed console log
       ConnectionsController.disconnect(namespace);
       // Potentially remove from storage on disconnect event as well
       // StorageUtil.removeConnectedConnectors(connectorType); // Need connectorType here
     });
 
     adapter.on('balanceChanged', ({ namespace, address, balance }) => {
-      // console.log('balanceChanged', namespace, address, balance);
       ConnectionsController.updateBalance(namespace, address, balance);
     });
   }
@@ -250,6 +253,8 @@ export class AppKit {
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata);
     }
+
+    ConnectionsController.setNetworks(options.networks);
   }
 
   async disconnect(namespace: string): Promise<void> {
@@ -291,6 +296,35 @@ export class AppKit {
     if (!connection || !connection.adapter || !connection.adapter.connector) return null;
 
     return connection.adapter.connector.getProvider() as T | null;
+  }
+
+  getActiveAdapter(): BlockchainAdapter | null {
+    const activeNamespace = ConnectionsController.state.activeNamespace;
+    if (!activeNamespace) return null;
+
+    const connection = ConnectionsController.state.connections[activeNamespace];
+
+    return connection?.adapter ?? null;
+  }
+
+  async switchNetwork(network: AppKitNetwork): Promise<void> {
+    const adapter = this.getActiveAdapter();
+    if (!adapter) throw new Error('No active adapter');
+
+    await adapter.switchNetwork(network);
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SWITCH_NETWORK',
+      properties: {
+        network: network.id
+      }
+    });
+
+    ConnectionsController.setActiveChain(
+      adapter.getSupportedNamespace(),
+      `${adapter.getSupportedNamespace()}:${network.id}` as CaipNetworkId
+    );
   }
 }
 

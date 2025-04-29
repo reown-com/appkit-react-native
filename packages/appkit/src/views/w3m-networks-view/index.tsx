@@ -10,20 +10,17 @@ import {
 } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
-  AssetUtil,
   NetworkController,
   RouterController,
   EventsController,
-  CoreHelperUtil,
-  NetworkUtil
+  ConnectionsController
 } from '@reown/appkit-core-react-native';
-import type { CaipNetwork } from '@reown/appkit-common-react-native';
+import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
-
+import { useAppKit } from '../../AppKitContext';
 export function NetworksView() {
-  const { caipNetwork, requestedCaipNetworks, approvedCaipNetworkIds, supportsAllNetworks } =
-    NetworkController.state;
+  const { caipNetwork } = NetworkController.state;
   const imageHeaders = ApiController._getApiHeaders();
   const { maxWidth: width, padding } = useCustomDimensions();
   const numColumns = 4;
@@ -32,6 +29,7 @@ export function NetworksView() {
   const itemGap = Math.abs(
     Math.trunc((usableWidth - numColumns * CardSelectWidth) / numColumns) / 2
   );
+  const { appKit } = useAppKit();
 
   const onHelpPress = () => {
     RouterController.push('WhatIsANetwork');
@@ -39,19 +37,12 @@ export function NetworksView() {
   };
 
   const networksTemplate = () => {
-    const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
+    //TODO: should show requested networks disabled
+    // const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
+    const networks = ConnectionsController.getConnectedNetworks();
 
-    const onNetworkPress = async (network: CaipNetwork) => {
-      const result = await NetworkUtil.handleNetworkSwitch(network);
-      if (result?.type === 'SWITCH_NETWORK') {
-        EventsController.sendEvent({
-          type: 'track',
-          event: 'SWITCH_NETWORK',
-          properties: {
-            network: network.id
-          }
-        });
-      }
+    const onNetworkPress = async (network: AppKitNetwork) => {
+      await appKit.switchNetwork(network);
     };
 
     return networks.map(network => (
@@ -69,9 +60,9 @@ export function NetworksView() {
           testID={`w3m-network-switch-${network.name ?? network.id}`}
           name={network.name ?? 'Unknown'}
           type="network"
-          imageSrc={AssetUtil.getNetworkImage(network)}
+          // imageSrc={AssetUtil.getNetworkImage(network.caipNetworkId)}
           imageHeaders={imageHeaders}
-          disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
+          // disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.caipNetworkId)}
           selected={caipNetwork?.id === network.id}
           onPress={() => onNetworkPress(network)}
         />

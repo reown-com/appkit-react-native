@@ -1,6 +1,7 @@
 import {
   EVMAdapter,
   WalletConnector,
+  type AppKitNetwork,
   type CaipAddress,
   type GetBalanceParams,
   type GetBalanceResponse,
@@ -62,6 +63,11 @@ export class WagmiAdapter extends EVMAdapter {
     if (!this.connector) throw new Error('No active connector');
 
     return this.request('eth_signTransaction', [tx]) as Promise<SignedTransaction>;
+  }
+
+  async switchNetwork(network: AppKitNetwork): Promise<void> {
+    console.log('WagmiAdapter - switchNetwork', network);
+    throw new Error('Method not implemented.');
   }
 
   async getBalance(params: GetBalanceParams): Promise<GetBalanceResponse> {

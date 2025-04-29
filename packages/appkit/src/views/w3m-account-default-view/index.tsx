@@ -42,9 +42,11 @@ export function AccountDefaultView() {
     AccountController.state
   );
   const { loading } = useSnapshot(ModalController.state);
-  const { activeAddress: address, activeBalance: balance } = useSnapshot(
-    ConnectionsController.state
-  );
+  const {
+    activeAddress: address,
+    activeBalance: balance,
+    activeNetwork
+  } = useSnapshot(ConnectionsController.state);
   const account = address?.split(':')[2];
   const [disconnecting, setDisconnecting] = useState(false);
   const { caipNetwork } = useSnapshot(NetworkController.state);
@@ -260,7 +262,7 @@ export function AccountDefaultView() {
               style={styles.actionButton}
             >
               <Text numberOfLines={1} color="fg-100" testID="account-select-network-text">
-                {caipNetwork?.name}
+                {activeNetwork?.name}
               </Text>
             </ListItem>
             {!isAuth && isOnRampEnabled && (

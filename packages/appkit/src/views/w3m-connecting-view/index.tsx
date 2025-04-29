@@ -14,7 +14,6 @@ import {
   EventsController
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
-import type { CaipNetworkId } from '@reown/appkit-common-react-native';
 import { useAppKit } from '../../AppKitContext';
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
 import { ConnectingMobile } from '../../partials/w3m-connecting-mobile';
@@ -51,27 +50,8 @@ export function ConnectingView() {
         ConnectionController.setWcError(false);
         // ConnectionController.connectWalletConnect(routeData?.wallet?.link_mode ?? undefined);
 
-        //TODO: check this
-        const namespaces = {
-          eip155: {
-            methods: [
-              'eth_sendTransaction',
-              'eth_signTransaction',
-              'eth_sign',
-              'personal_sign',
-              'eth_signTypedData'
-            ],
-            chains: ['eip155:1'] as CaipNetworkId[],
-            events: ['chainChanged', 'accountsChanged']
-          },
-          solana: {
-            methods: ['solana_signMessage'],
-            chains: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'] as CaipNetworkId[],
-            events: ['chainChanged', 'accountsChanged']
-          }
-        };
-
-        const wcPromise = appKit?.connect('walletconnect', namespaces);
+        //TODO: check linkmode
+        const wcPromise = appKit?.connect('walletconnect');
         ConnectionController.setWcPromise(wcPromise);
         await wcPromise;
         // await ConnectionController.state.wcPromise;
