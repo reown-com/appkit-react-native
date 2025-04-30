@@ -18,7 +18,7 @@ export function getCaipDefaultChain(chain?: AppKitClientOptions['defaultChain'])
   return {
     id: `${ConstantsUtil.EIP155}:${chain.id}`,
     name: chain.name,
-    imageId: PresetsUtil.EIP155NetworkImageIds[chain.id]
+    imageId: PresetsUtil.NetworkImageIds[chain.id]
   } as CaipNetwork;
 }
 

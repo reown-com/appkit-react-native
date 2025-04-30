@@ -16,7 +16,6 @@ interface Balance {
 
 interface Connection {
   accounts: CaipAddress[];
-  activeAccount: CaipAddress;
   balances: Record<CaipAddress, Balance>;
   adapter: BlockchainAdapter;
   chains: CaipNetworkId[];
@@ -45,34 +44,40 @@ const derivedState = derive(
 
       const connection = snap.connections[snap.activeNamespace];
 
-      if (
-        !connection ||
-        !connection.accounts ||
-        !connection.activeAccount ||
-        connection.accounts.length === 0
-      ) {
+      if (!connection || !connection.accounts || connection.accounts.length === 0) {
         return undefined;
       }
 
-      return connection.activeAccount;
+      const activeAccount = connection.accounts.find(account =>
+        account.startsWith(connection.activeChain)
+      );
+
+      return activeAccount;
     },
     activeBalance: (get): Balance | undefined => {
       const snap = get(baseState);
 
       if (!snap.activeNamespace) return undefined;
-
       const connection = snap.connections[snap.activeNamespace];
+
+      if (!connection || !connection.accounts || connection.accounts.length === 0) {
+        return undefined;
+      }
+
+      const activeAccount = connection.accounts.find(account =>
+        account.startsWith(connection.activeChain)
+      );
 
       if (
         !connection ||
         !connection.balances ||
-        !connection.activeAccount ||
+        !activeAccount ||
         Object.keys(connection.balances).length === 0
       ) {
         return undefined;
       }
 
-      return connection.balances[connection.activeAccount];
+      return connection.balances[activeAccount];
     },
     activeNetwork: (get): AppKitNetwork | undefined => {
       const snap = get(baseState);
@@ -119,7 +124,6 @@ export const ConnectionsController = {
       activeChain: chains[0]!,
       adapter: ref(adapter),
       accounts,
-      activeAccount: accounts[0]!,
       chains
     };
     // console.log('ConnectionController:storeConnection - state.connections', baseState.connections);

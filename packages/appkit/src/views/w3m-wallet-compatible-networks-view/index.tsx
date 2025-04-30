@@ -32,7 +32,7 @@ export function WalletCompatibleNetworks() {
             padding={['s', 's', 's', 's']}
           >
             <NetworkImage
-              imageSrc={AssetUtil.getNetworkImage(network)}
+              imageSrc={AssetUtil.getNetworkImage(network?.id)}
               imageHeaders={imageHeaders}
               size="sm"
               style={styles.image}

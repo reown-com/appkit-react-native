@@ -166,7 +166,12 @@ export abstract class BlockchainAdapter extends EventEmitter {
 }
 
 export abstract class EVMAdapter extends BlockchainAdapter {
-  abstract signTransaction(tx: TransactionData): Promise<SignedTransaction>;
+  abstract signMessage(params: SignMessageParams): Promise<SignMessageResult>;
+  abstract sendTransaction(tx: TransactionData): Promise<TransactionReceipt>;
+}
+
+export abstract class SolanaBaseAdapter extends BlockchainAdapter {
+  abstract signMessage(params: SignMessageParams): Promise<SignMessageResult>;
   abstract sendTransaction(tx: TransactionData): Promise<TransactionReceipt>;
 }
 
@@ -234,6 +239,14 @@ export interface RequestArguments {
 export type New_ConnectorType = 'walletconnect' | 'coinbase' | 'auth';
 
 //********** Others **********//
+
+export interface SignMessageParams {
+  message: string;
+  address: string;
+}
+export interface SignMessageResult {
+  signature: string;
+}
 
 export interface TransactionData {
   to: string;

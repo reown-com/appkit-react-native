@@ -13,7 +13,7 @@ import {
   AccountController,
   ApiController,
   AssetUtil,
-  NetworkController,
+  ConnectionsController,
   OptionsController,
   RouterController,
   SnackController
@@ -21,21 +21,21 @@ import {
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function WalletReceiveView() {
-  const { address, profileName, preferredAccountType } = useSnapshot(AccountController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const { address, profileName /*preferredAccountType*/ } = useSnapshot(AccountController.state);
+  const { activeNetwork, networks } = useSnapshot(ConnectionsController.state);
+  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
   const { padding } = useCustomDimensions();
   const canCopy = OptionsController.isClipboardAvailable();
-  const isSmartAccount =
-    preferredAccountType === 'smartAccount' && NetworkController.checkIfSmartAccountEnabled();
-  const networks = isSmartAccount
-    ? NetworkController.getSmartAccountEnabledNetworks()
-    : NetworkController.getApprovedCaipNetworks();
+  // const isSmartAccount =
+  //   preferredAccountType === 'smartAccount' && NetworkController.checkIfSmartAccountEnabled();
+  // const networks = isSmartAccount
+  //   ? NetworkController.getSmartAccountEnabledNetworks()
+  //   : NetworkController.getApprovedCaipNetworks();
 
   const imagesArray = networks
-    .filter(network => network?.imageId)
+    .filter(network => network?.id)
     .slice(0, 5)
-    .map(AssetUtil.getNetworkImage)
+    .map(network => AssetUtil.getNetworkImage(network?.id))
     .filter(Boolean) as string[];
 
   const label = UiUtil.getTruncateString({

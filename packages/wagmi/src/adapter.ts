@@ -6,6 +6,8 @@ import {
   type GetBalanceParams,
   type GetBalanceResponse,
   type SignedTransaction,
+  type SignMessageParams,
+  type SignMessageResult,
   type TransactionData,
   type TransactionReceipt
 } from '@reown/appkit-common-react-native';
@@ -57,6 +59,15 @@ export class WagmiAdapter extends EVMAdapter {
       multiInjectedProviderDiscovery: false
       // ...wagmiConfig
     });
+  }
+
+  async signMessage(_params: SignMessageParams): Promise<SignMessageResult> {
+    if (!this.connector) throw new Error('No active connector');
+
+    const provider = this.connector.getProvider();
+    if (!provider) throw new Error('No active provider');
+
+    throw new Error('Method not implemented.');
   }
 
   async signTransaction(tx: TransactionData): Promise<SignedTransaction> {

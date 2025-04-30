@@ -1,0 +1,53 @@
+{
+  "name": "@reown/appkit-solana-react-native",
+  "version": "1.2.3",
+  "main": "lib/commonjs/index.js",
+  "types": "lib/typescript/index.d.ts",
+  "module": "lib/module/index.js",
+  "source": "src/index.tsx",
+  "scripts": {
+    "build": "bob build",
+    "clean": "rm -rf lib",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "files": [
+    "src",
+    "lib",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "keywords": [
+    "web3",
+    "crypto",
+    "solana",
+    "appkit",
+    "walletconnect",
+    "react-native"
+  ],
+  "repository": "https://github.com/reown-com/appkit-react-native",
+  "author": "Reown <support@reown.com> (https://reown.com)",
+  "homepage": "https://reown.com/appkit",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/reown-com/appkit-react-native/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "dependencies": {
+    "@reown/appkit-common-react-native": "1.2.3",
+    "@solana/web3.js": "1.98.2",
+    "bs58": "6.0.0"
+  },
+  "peerDependencies": {
+    "@solana/web3.js": ">=1.90.0",
+    "bs58": ">=6.0.0"
+  },
+  "devDependencies": {
+    "@solana/web3.js": "1.98.2",
+    "bs58": "6.0.0"
+  },
+  "react-native": "src/index.tsx"
+}

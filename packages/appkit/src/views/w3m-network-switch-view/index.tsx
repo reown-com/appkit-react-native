@@ -5,6 +5,7 @@ import {
   ApiController,
   AssetUtil,
   ConnectionController,
+  ConnectionsController,
   ConnectorController,
   EventsController,
   NetworkController,
@@ -24,7 +25,7 @@ import styles from './styles';
 export function NetworkSwitchView() {
   const { data } = useSnapshot(RouterController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const isAuthConnected = ConnectorController.state.connectedConnector === 'AUTH';
   const [error, setError] = useState<boolean>(false);
   const [showRetry, setShowRetry] = useState<boolean>(false);
@@ -34,6 +35,7 @@ export function NetworkSwitchView() {
   const onSwitchNetwork = async () => {
     try {
       setError(false);
+      //TODO: change to appkit switchNetwork
       await NetworkController.switchActiveNetwork(network);
       EventsController.sendEvent({
         type: 'track',
@@ -55,10 +57,10 @@ export function NetworkSwitchView() {
 
   useEffect(() => {
     // Go back if network is already switched
-    if (caipNetwork?.id === network?.id) {
+    if (activeNetwork?.id === network?.id) {
       RouterUtil.navigateAfterNetworkSwitch();
     }
-  }, [caipNetwork?.id, network?.id]);
+  }, [activeNetwork?.id, network?.id]);
 
   const retryTemplate = () => {
     if (!showRetry) return null;
@@ -115,7 +117,7 @@ export function NetworkSwitchView() {
     <FlexView alignItems="center" padding={['2xl', 's', '4xl', 's']}>
       <LoadingHexagon paused={error}>
         <NetworkImage
-          imageSrc={AssetUtil.getNetworkImage(network)}
+          imageSrc={AssetUtil.getNetworkImage(network?.id)}
           imageHeaders={ApiController._getApiHeaders()}
           size="lg"
         />

@@ -418,7 +418,7 @@ export class AppKit extends AppKitScaffold {
         ({
           id: `${ConstantsUtil.EIP155}:${chain.id}`,
           name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
+          imageId: PresetsUtil.NetworkImageIds[chain.id],
           imageUrl: this.options?.chainImages?.[chain.id]
         }) as CaipNetwork
     );
@@ -467,7 +467,7 @@ export class AppKit extends AppKitScaffold {
       this.setCaipNetwork({
         id: caipChainId,
         name,
-        imageId: PresetsUtil.EIP155NetworkImageIds[id],
+        imageId: PresetsUtil.NetworkImageIds[id],
         imageUrl: this.options?.chainImages?.[id]
       });
       if (isConnected && address && chainId) {

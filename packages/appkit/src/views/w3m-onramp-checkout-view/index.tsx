@@ -1,6 +1,6 @@
 import {
   AssetUtil,
-  NetworkController,
+  ConnectionsController,
   OnRampController,
   RouterController,
   ThemeController
@@ -27,8 +27,8 @@ export function OnRampCheckoutView() {
     OnRampController.state
   );
 
-  const { caipNetwork } = useSnapshot(NetworkController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const { activeNetwork } = useSnapshot(ConnectionsController.state);
+  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
 
   const value = NumberUtil.roundNumber(selectedQuote?.destinationAmount ?? 0, 6, 5);
   const symbol = selectedQuote?.destinationCurrencyCode;

@@ -6,7 +6,7 @@ export const solana = {
   network: 'solana-mainnet',
   nativeCurrency: { name: 'Solana', symbol: 'SOL', decimals: 9 },
   rpcUrls: {
-    default: { http: ['https://rpc.walletconnect.org/v1'] }
+    default: { http: ['https://api.mainnet-beta.solana.com'] }
   },
   blockExplorers: { default: { name: 'Solscan', url: 'https://solscan.io' } },
   testnet: false,

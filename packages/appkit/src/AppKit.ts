@@ -307,8 +307,14 @@ export class AppKit {
     return connection?.adapter ?? null;
   }
 
+  getAdapterByNamespace(namespace: string = 'eip155'): BlockchainAdapter | null {
+    const namespaceConnection = ConnectionsController.state.connections[namespace];
+
+    return namespaceConnection?.adapter ?? null;
+  }
+
   async switchNetwork(network: AppKitNetwork): Promise<void> {
-    const adapter = this.getActiveAdapter();
+    const adapter = this.getAdapterByNamespace(network.chainNamespace);
     if (!adapter) throw new Error('No active adapter');
 
     await adapter.switchNetwork(network);
@@ -325,6 +331,12 @@ export class AppKit {
       adapter.getSupportedNamespace(),
       `${adapter.getSupportedNamespace()}:${network.id}` as CaipNetworkId
     );
+
+    if (ConnectionsController.state.activeNamespace !== (network.chainNamespace ?? 'eip155')) {
+      ConnectionsController.setActiveNamespace(network.chainNamespace ?? 'eip155');
+    }
+
+    adapter.getBalance({ network });
   }
 }
 

@@ -49,12 +49,11 @@ export function AccountDefaultView() {
   } = useSnapshot(ConnectionsController.state);
   const account = address?.split(':')[2];
   const [disconnecting, setDisconnecting] = useState(false);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
   const { connectedConnector } = useSnapshot(ConnectorController.state);
   const { connectedSocialProvider } = useSnapshot(ConnectionController.state);
   const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
   const { history } = useSnapshot(RouterController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
   const showCopy = OptionsController.isClipboardAvailable();
   const isAuth = connectedConnector === 'AUTH';
   const showBalance = balance && !isAuth;

@@ -17,15 +17,18 @@ import { useAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function UnsupportedChainView() {
-  const { caipNetwork, supportsAllNetworks, approvedCaipNetworkIds, requestedCaipNetworks } =
-    useSnapshot(NetworkController.state) as NetworkControllerState;
+  const { supportsAllNetworks, approvedCaipNetworkIds, requestedCaipNetworks } = useSnapshot(
+    NetworkController.state
+  ) as NetworkControllerState;
 
+  const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const [disconnecting, setDisconnecting] = useState(false);
   const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
   const imageHeaders = ApiController._getApiHeaders();
   const { appKit } = useAppKit();
 
   const onNetworkPress = async (network: CaipNetwork) => {
+    //TODO: change to appkit switchNetwork
     const result = await NetworkUtil.handleNetworkSwitch(network);
     if (result?.type === 'SWITCH_NETWORK') {
       EventsController.sendEvent({
@@ -61,7 +64,7 @@ export function UnsupportedChainView() {
           key={item.id}
           icon="networkPlaceholder"
           iconBackgroundColor="gray-glass-010"
-          imageSrc={AssetUtil.getNetworkImage(item)}
+          imageSrc={AssetUtil.getNetworkImage(item.id)}
           imageHeaders={imageHeaders}
           onPress={() => onNetworkPress(item)}
           testID="button-network"
@@ -72,7 +75,7 @@ export function UnsupportedChainView() {
           <Text numberOfLines={1} color="fg-100">
             {item.name ?? 'Unknown'}
           </Text>
-          {item.id === caipNetwork?.id && <Icon name="checkmark" color="accent-100" />}
+          {item.id === activeNetwork?.id && <Icon name="checkmark" color="accent-100" />}
         </ListItem>
       )}
       ListFooterComponent={

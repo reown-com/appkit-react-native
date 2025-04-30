@@ -4,9 +4,9 @@ import {
   AccountController,
   ApiController,
   AssetUtil,
+  ConnectionsController,
   EventsController,
   ModalController,
-  NetworkController,
   ThemeController
 } from '@reown/appkit-core-react-native';
 import { NetworkButton as NetworkButtonUI, ThemeProvider } from '@reown/appkit-ui-react-native';
@@ -18,7 +18,7 @@ export interface NetworkButtonProps {
 
 export function NetworkButton({ disabled, style }: NetworkButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const { loading } = useSnapshot(ModalController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
 
@@ -33,7 +33,7 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
   return (
     <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
       <NetworkButtonUI
-        imageSrc={AssetUtil.getNetworkImage(caipNetwork)}
+        imageSrc={AssetUtil.getNetworkImage(activeNetwork?.id)}
         imageHeaders={ApiController._getApiHeaders()}
         disabled={disabled || loading}
         style={style}
@@ -41,7 +41,7 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
         loading={loading}
         testID="network-button"
       >
-        {caipNetwork?.name ?? (isConnected ? 'Unknown Network' : 'Select Network')}
+        {activeNetwork?.name ?? (isConnected ? 'Unknown Network' : 'Select Network')}
       </NetworkButtonUI>
     </ThemeProvider>
   );

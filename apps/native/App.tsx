@@ -29,6 +29,7 @@ import { Text } from '@reown/appkit-ui-react-native';
 // import { OpenButton } from './src/components/OpenButton';
 // import { DisconnectButton } from './src/components/DisconnectButton';
 import { EthersAdapter } from '@reown/appkit-ethers-react-native';
+import { SolanaAdapter } from '@reown/appkit-solana-react-native';
 import { mainnet, polygon, avalanche } from 'viem/chains';
 import { solana } from './src/utils/ChainUtils';
 
@@ -80,6 +81,10 @@ const ethersAdapter = new EthersAdapter({
   projectId
 });
 
+const solanaAdapter = new SolanaAdapter({
+  projectId
+});
+
 // createAppKit({
 //   projectId,
 //   wagmiConfig,
@@ -100,9 +105,9 @@ const ethersAdapter = new EthersAdapter({
 
 const appKit = createAppKit({
   projectId,
-  adapters: [ethersAdapter],
+  adapters: [ethersAdapter, solanaAdapter],
   metadata,
-  networks: [mainnet, polygon, avalanche]
+  networks: [mainnet, polygon, avalanche, solana]
 });
 
 export default function Native() {

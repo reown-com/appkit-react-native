@@ -12,12 +12,13 @@ import type {
   WcWallet
 } from '../utils/TypeUtil';
 import { AssetController } from './AssetController';
-import { NetworkController } from './NetworkController';
 import { OptionsController } from './OptionsController';
 import { ConnectorController } from './ConnectorController';
 import { ConnectionController } from './ConnectionController';
 import { ApiUtil } from '../utils/ApiUtil';
 import { SnackController } from './SnackController';
+import { ConnectionsController } from './ConnectionsController';
+import { PresetsUtil } from '@reown/appkit-common-react-native';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl();
@@ -92,11 +93,16 @@ export const ApiController = {
     }
   },
 
-  async _fetchNetworkImage(imageId: string) {
+  async _fetchNetworkImage(networkId: string) {
+    const imageId = PresetsUtil.NetworkImageIds[networkId];
+    if (!imageId) {
+      return;
+    }
+
     const headers = ApiController._getApiHeaders();
     const url = await api.fetchImage(`/public/getAssetImage/${imageId}`, headers);
     if (url) {
-      AssetController.setNetworkImage(imageId, url);
+      AssetController.setNetworkImage(networkId, url);
     }
   },
 
@@ -109,11 +115,10 @@ export const ApiController = {
   },
 
   async fetchNetworkImages() {
-    const { requestedCaipNetworks } = NetworkController.state;
-    const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean);
-    if (ids) {
+    const networks = ConnectionsController.state.networks;
+    if (networks) {
       await CoreHelperUtil.allSettled(
-        (ids as string[]).map(id => ApiController._fetchNetworkImage(id))
+        networks.map(network => ApiController._fetchNetworkImage(network.id as string))
       );
     }
   },

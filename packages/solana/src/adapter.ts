@@ -1,6 +1,5 @@
-import { formatEther, hexlify, isHexString, JsonRpcProvider, toUtf8Bytes } from 'ethers';
 import {
-  EVMAdapter,
+  SolanaBaseAdapter,
   WalletConnector,
   type AppKitNetwork,
   type CaipAddress,
@@ -10,15 +9,16 @@ import {
   type SignMessageResult,
   type TransactionReceipt
 } from '@reown/appkit-common-react-native';
-import { EthersHelpersUtil } from '@reown/appkit-scaffold-utils-react-native';
+import { Connection, PublicKey } from '@solana/web3.js';
+import base58 from 'bs58';
 
-export class EthersAdapter extends EVMAdapter {
-  private static supportedNamespace: string = 'eip155';
+export class SolanaAdapter extends SolanaBaseAdapter {
+  private static supportedNamespace: string = 'solana';
 
   constructor(configParams: { projectId: string }) {
     super({
       projectId: configParams.projectId,
-      supportedNamespace: EthersAdapter.supportedNamespace
+      supportedNamespace: SolanaAdapter.supportedNamespace
     });
   }
 
@@ -28,14 +28,20 @@ export class EthersAdapter extends EVMAdapter {
     const provider = this.connector.getProvider();
     if (!provider) throw new Error('No active provider');
 
-    const { message, address } = params;
+    const { message } = params;
 
-    const hexMessage = isHexString(message) ? message : hexlify(toUtf8Bytes(message));
+    // return this.request('eth_signTransaction', [tx]) as Promise<SignedTransaction>;
+    // throw new Error('Method not implemented.');
+
+    const signParams = {
+      message: base58.encode(new TextEncoder().encode(message)),
+      pubkey: params.address || this.getAccounts()?.[0] //TODO: Check if this is correct
+    };
 
     const signature = (await provider.request({
-      method: 'personal_sign',
-      params: [hexMessage, address]
-    })) as `0x${string}`;
+      method: 'solana_signTransaction',
+      params: [signParams]
+    })) as any; //TODO: check type
 
     return { signature };
   }
@@ -49,36 +55,31 @@ export class EthersAdapter extends EVMAdapter {
     const balanceAddress =
       address || this.getAccounts()?.find(account => account.includes(network.id.toString()));
 
-    let balance = { amount: '0.00', symbol: network.nativeCurrency.symbol || 'ETH' };
-
     if (!balanceAddress) {
-      return Promise.resolve(balance);
+      return Promise.resolve({ amount: '0.00', symbol: 'SOL' });
     }
 
-    const account = balanceAddress.split(':')[2];
-
     try {
-      const jsonRpcProvider = new JsonRpcProvider(network.rpcUrls.default.http[0], {
-        chainId: Number(network.id),
-        name: network.name
-      });
+      const connection = new Connection(network?.rpcUrls?.default?.http?.[0] as string); //TODO: check connection settings
+      const balanceAmount = await connection.getBalance(
+        new PublicKey(balanceAddress.split(':')[2] as string)
+      );
+      const formattedBalance = (balanceAmount / 1000000000).toString(); //TODO: add util with LAMPORTS_PER_SOL
 
-      if (jsonRpcProvider && account) {
-        const _balance = await jsonRpcProvider.getBalance(account);
-        const formattedBalance = formatEther(_balance);
-
-        balance = { amount: formattedBalance, symbol: network.nativeCurrency.symbol || 'ETH' };
-      }
+      const balance = {
+        amount: formattedBalance,
+        symbol: network?.nativeCurrency.symbol || 'SOL'
+      };
 
       this.emit('balanceChanged', {
         namespace: this.getSupportedNamespace(),
-        address: balanceAddress,
+        address,
         balance
       });
 
       return balance;
     } catch (error) {
-      return balance;
+      return { amount: '0.00', symbol: 'SOL' };
     }
   }
 
@@ -89,20 +90,32 @@ export class EthersAdapter extends EVMAdapter {
     if (!provider) throw new Error('No active provider');
 
     try {
-      return await provider.request(
-        {
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: EthersHelpersUtil.numberToHexString(Number(network.id)) }] //TODO: check util
-        },
-        `${network.chainNamespace ?? 'eip155'}:${network.id}`
-      );
-    } catch (switchError: any) {
-      const message = switchError?.message as string;
-      if (/(?<temp1>user rejected)/u.test(message?.toLowerCase())) {
-        throw new Error('Chain is not supported');
-      }
+      // await provider.request({
+      //   method: 'wallet_switchEthereumChain',
+      //   params: [{ chainId: EthersHelpersUtil.numberToHexString(Number(network.id)) }] //TODO: check util
+      // });
 
-      throw switchError;
+      this.getBalance({ address: this.getAccounts()?.[0], network });
+
+      return;
+    } catch (switchError: any) {
+      // const message = switchError?.message as string;
+      // if (/(?<temp1>user rejected)/u.test(message?.toLowerCase())) {
+      //   throw new Error('Chain is not supported');
+      // }
+      // provider.request({
+      //   method: 'wallet_addEthereumChain',
+      //   params: [
+      //     {
+      //       chainId: EthersHelpersUtil.numberToHexString(Number(network.id)),
+      //       rpcUrls: network.rpcUrls,
+      //       chainName: network.name,
+      //       nativeCurrency: network.nativeCurrency,
+      //       blockExplorerUrls: network.blockExplorers,
+      //       iconUrls: [PresetsUtil.NetworkImageIds[network.id]]
+      //     }
+      //   ]
+      // });
     }
   }
 
@@ -118,7 +131,7 @@ export class EthersAdapter extends EVMAdapter {
   }
 
   disconnect(): Promise<void> {
-    if (!this.connector) throw new Error('EthersAdapter:disconnect - No active connector');
+    if (!this.connector) throw new Error('SolanaAdapter:disconnect - No active connector');
 
     return this.connector.disconnect();
   }
@@ -131,22 +144,22 @@ export class EthersAdapter extends EVMAdapter {
   }
 
   getSupportedNamespace(): string {
-    return EthersAdapter.supportedNamespace;
+    return SolanaAdapter.supportedNamespace;
   }
 
   onChainChanged(chainId: string): void {
-    // console.log('EthersAdapter - onChainChanged', chainId);
+    // console.log('SolanaAdapter - onChainChanged', chainId);
     this.emit('chainChanged', { chainId, namespace: this.getSupportedNamespace() });
   }
 
   onAccountsChanged(accounts: string[]): void {
-    // console.log('EthersAdapter - onAccountsChanged', accounts);
+    // console.log('SolanaAdapter - onAccountsChanged', accounts);
     // Emit this change to AppKit with the corresponding namespace.
     this.emit('accountsChanged', { accounts, namespace: this.getSupportedNamespace() });
   }
 
   onDisconnect(): void {
-    // console.log('EthersAdapter - onDisconnect');
+    // console.log('SolanaAdapter - onDisconnect');
     this.emit('disconnect', { namespace: this.getSupportedNamespace() });
 
     //the connector might be shared between adapters. Validate this
@@ -169,7 +182,7 @@ export class EthersAdapter extends EVMAdapter {
     const provider = this.connector?.getProvider();
     if (!provider) return;
 
-    // console.log('EthersAdapter - subscribing to events');
+    // console.log('SolanaAdapter - subscribing to events');
     provider.on('chainChanged', this.onChainChanged.bind(this));
     provider.on('accountsChanged', this.onAccountsChanged.bind(this));
     provider.on('disconnect', this.onDisconnect.bind(this));

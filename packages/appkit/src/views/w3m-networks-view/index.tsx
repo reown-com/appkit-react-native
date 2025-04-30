@@ -13,7 +13,8 @@ import {
   NetworkController,
   RouterController,
   EventsController,
-  ConnectionsController
+  ConnectionsController,
+  AssetUtil
 } from '@reown/appkit-core-react-native';
 import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
@@ -43,31 +44,34 @@ export function NetworksView() {
 
     const onNetworkPress = async (network: AppKitNetwork) => {
       await appKit.switchNetwork(network);
+      RouterController.goBack();
     };
 
-    return networks.map(network => (
-      <View
-        key={network.id}
-        style={[
-          styles.itemContainer,
-          {
-            width: itemWidth,
-            marginVertical: itemGap
-          }
-        ]}
-      >
-        <CardSelect
-          testID={`w3m-network-switch-${network.name ?? network.id}`}
-          name={network.name ?? 'Unknown'}
-          type="network"
-          // imageSrc={AssetUtil.getNetworkImage(network.caipNetworkId)}
-          imageHeaders={imageHeaders}
-          // disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.caipNetworkId)}
-          selected={caipNetwork?.id === network.id}
-          onPress={() => onNetworkPress(network)}
-        />
-      </View>
-    ));
+    return networks.map(network => {
+      return (
+        <View
+          key={network.id}
+          style={[
+            styles.itemContainer,
+            {
+              width: itemWidth,
+              marginVertical: itemGap
+            }
+          ]}
+        >
+          <CardSelect
+            testID={`w3m-network-switch-${network.name ?? network.id}`}
+            name={network.name ?? 'Unknown'}
+            type="network"
+            imageSrc={AssetUtil.getNetworkImage(network.id)}
+            imageHeaders={imageHeaders}
+            // disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.caipNetworkId)}
+            selected={caipNetwork?.id === network.id}
+            onPress={() => onNetworkPress(network)}
+          />
+        </View>
+      );
+    });
   };
 
   return (

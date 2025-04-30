@@ -42,7 +42,7 @@ export function PreviewSendDetails({
     truncate: 'middle'
   });
 
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork?.id);
 
   return (
     <FlexView

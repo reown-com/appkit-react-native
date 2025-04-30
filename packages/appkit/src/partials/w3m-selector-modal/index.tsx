@@ -13,7 +13,7 @@ import {
   useTheme
 } from '@reown/appkit-ui-react-native';
 import styles from './styles';
-import { AssetUtil, NetworkController } from '@reown/appkit-core-react-native';
+import { AssetUtil, ConnectionsController } from '@reown/appkit-core-react-native';
 
 interface SelectorModalProps {
   title?: string;
@@ -45,8 +45,8 @@ export function SelectorModal({
   showNetwork
 }: SelectorModalProps) {
   const Theme = useTheme();
-  const { caipNetwork } = useSnapshot(NetworkController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const { activeNetwork } = useSnapshot(ConnectionsController.state);
+  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
 
   const renderSeparator = () => {
     return <View style={{ height: SEPARATOR_HEIGHT }} />;

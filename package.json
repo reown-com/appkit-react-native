@@ -17,6 +17,7 @@
     "packages/coinbase-ethers",
     "packages/ethers5",
     "packages/ethers",
+    "packages/solana",
     "apps/*"
   ],
   "scripts": {

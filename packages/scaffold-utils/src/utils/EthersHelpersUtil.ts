@@ -12,7 +12,7 @@ export const EthersHelpersUtil = {
     return {
       id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
       name: chain.name,
-      imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId]
+      imageId: PresetsUtil.NetworkImageIds[chain.chainId]
     } as CaipNetwork;
   },
   hexStringToNumber(value: string) {
@@ -57,7 +57,7 @@ export const EthersHelpersUtil = {
             symbol: chain.currency
           },
           blockExplorerUrls: [chain.explorerUrl],
-          iconUrls: [PresetsUtil.EIP155NetworkImageIds[chain.chainId]]
+          iconUrls: [PresetsUtil.NetworkImageIds[chain.chainId]]
         }
       ]
     });

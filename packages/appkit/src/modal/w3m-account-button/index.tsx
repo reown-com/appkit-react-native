@@ -2,7 +2,6 @@ import { useSnapshot } from 'valtio';
 import {
   AccountController,
   CoreHelperUtil,
-  NetworkController,
   ModalController,
   AssetUtil,
   ThemeController,
@@ -22,11 +21,14 @@ export interface AccountButtonProps {
 
 export function AccountButton({ balance, disabled, style, testID }: AccountButtonProps) {
   const { profileImage, profileName } = useSnapshot(AccountController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
-  const { activeAddress: address, activeBalance } = useSnapshot(ConnectionsController.state);
+  const {
+    activeAddress: address,
+    activeBalance,
+    activeNetwork
+  } = useSnapshot(ConnectionsController.state);
 
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
   const showBalance = balance === 'show';
 
   return (
