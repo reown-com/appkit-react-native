@@ -80,7 +80,8 @@ export type {
   SizeType,
   TagType,
   TextType,
-  VisualType
+  VisualType,
+  TransactionType
 } from './utils/TypesUtil';
 export { UiUtil } from './utils/UiUtil';
 export { TransactionUtil } from './utils/TransactionUtil';

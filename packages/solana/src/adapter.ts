@@ -95,15 +95,21 @@ export class SolanaAdapter extends SolanaBaseAdapter {
     return SolanaAdapter.supportedNamespace;
   }
 
-  onChainChanged(chainId: string): void {
-    // console.log('SolanaAdapter - onChainChanged', chainId);
+  override onChainChanged(chainId: string): void {
     this.emit('chainChanged', { chainId, namespace: this.getSupportedNamespace() });
   }
 
-  onAccountsChanged(accounts: string[]): void {
-    // console.log('SolanaAdapter - onAccountsChanged', accounts);
-    // Emit this change to AppKit with the corresponding namespace.
-    this.emit('accountsChanged', { accounts, namespace: this.getSupportedNamespace() });
+  override onAccountsChanged(accounts: string[]): void {
+    const _accounts = this.getAccounts();
+    const shouldEmit = _accounts?.some(account => {
+      const accountAddress = account.split(':')[2];
+
+      return accountAddress !== undefined && accounts.includes(accountAddress);
+    });
+
+    if (shouldEmit) {
+      this.emit('accountsChanged', { accounts, namespace: this.getSupportedNamespace() });
+    }
   }
 
   onDisconnect(): void {

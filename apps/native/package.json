@@ -29,7 +29,7 @@
     "@tanstack/query-async-storage-persister": "^5.40.0",
     "@tanstack/react-query": "5.56.2",
     "@tanstack/react-query-persist-client": "5.56.2",
-    "@walletconnect/react-native-compat": "2.19.1",
+    "@walletconnect/react-native-compat": "2.20.2",
     "ethers": "6.13.5",
     "expo": "^52.0.38",
     "expo-application": "~6.0.2",
@@ -46,8 +46,8 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "uuid": "^11.1.0",
-    "viem": "2.23.10",
-    "wagmi": "2.14.13"
+    "viem": "2.28.3",
+    "wagmi": "2.15.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

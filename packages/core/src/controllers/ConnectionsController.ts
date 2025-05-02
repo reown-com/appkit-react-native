@@ -126,7 +126,6 @@ export const ConnectionsController = {
       accounts,
       chains
     };
-    // console.log('ConnectionController:storeConnection - state.connections', baseState.connections);
   },
 
   updateAccounts(namespace: string, accounts: CaipAddress[]) {

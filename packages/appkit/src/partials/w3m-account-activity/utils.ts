@@ -1,6 +1,5 @@
 import { DateUtil, type Transaction } from '@reown/appkit-common-react-native';
-import { TransactionUtil } from '@reown/appkit-ui-react-native';
-import type { TransactionType } from '@reown/appkit-ui-react-native/lib/typescript/utils/TypesUtil';
+import { TransactionUtil, type TransactionType } from '@reown/appkit-ui-react-native';
 
 export function getTransactionListItemProps(transaction: Transaction) {
   const date = DateUtil.formatDate(transaction?.metadata?.minedAt);

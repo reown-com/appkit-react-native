@@ -10,7 +10,6 @@ export function EthersActionsView() {
   const { appKit } = useAppKit();
   const { address, chainId } = useAppKitAccount();
   const provider = appKit?.getProvider('eip155');
-  console.log('provider', provider?.setDefaultChain);
 
   const onSignSuccess = (data: any) => {
     ToastUtils.showSuccessToast('Sign successful', data);
@@ -37,12 +36,13 @@ export function EthersActionsView() {
       const message = 'hello appkit + ethers';
       const hexMessage = isHexString(message) ? message : hexlify(toUtf8Bytes(message));
 
-      const signature =
-        (await provider.request({
+      const signature = await provider.request(
+        {
           method: 'personal_sign',
           params: [hexMessage, address]
-        }),
-        'eip155:1');
+        },
+        chainId
+      );
 
       onSignSuccess(signature);
     } catch (error) {

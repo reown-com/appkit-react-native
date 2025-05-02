@@ -23,7 +23,6 @@ import { Button, Text } from '@reown/appkit-ui-react-native';
 // import { siweConfig } from './src/utils/SiweUtils';
 
 // import { AccountView } from './src/views/AccountView';
-import { EthersActionsView } from './src/views/EthersActionsView';
 // import { getCustomWallets } from './src/utils/misc';
 // import { chains } from './src/utils/WagmiUtils';
 // import { OpenButton } from './src/components/OpenButton';
@@ -32,7 +31,7 @@ import { EthersAdapter } from '@reown/appkit-ethers-react-native';
 import { SolanaAdapter } from '@reown/appkit-solana-react-native';
 import { mainnet, polygon, avalanche } from 'viem/chains';
 import { solana } from './src/utils/ChainUtils';
-import { SolanaActionsView } from './src/views/SolanaActionsView';
+import { ActionsView } from './src/views/ActionsView';
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
 const metadata = {
@@ -130,8 +129,7 @@ export default function Native() {
             balance="show"
           />
           {/* <NetworkButton /> */}
-          <EthersActionsView />
-          <SolanaActionsView />
+          <ActionsView />
           {/* <AccountView /> */}
           {/* <OpenButton /> */}
           {/* <DisconnectButton /> */}

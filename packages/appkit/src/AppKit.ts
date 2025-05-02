@@ -229,7 +229,8 @@ export class AppKit {
 
   private subscribeToAdapterEvents(adapter: BlockchainAdapter): void {
     adapter.on('accountsChanged', ({ accounts, namespace }) => {
-      ConnectionsController.updateAccounts(namespace, accounts);
+      console.log('accountsChanged', accounts, namespace);
+      //TODO: do i need this?
     });
 
     adapter.on('chainChanged', ({ chainId, namespace }) => {
@@ -244,6 +245,7 @@ export class AppKit {
     });
 
     adapter.on('balanceChanged', ({ namespace, address, balance }) => {
+      // console.log('balanceChanged', namespace, address, balance);
       ConnectionsController.updateBalance(namespace, address, balance);
     });
   }
