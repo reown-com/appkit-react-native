@@ -11,7 +11,11 @@ export function ActionsView() {
 
   return isConnected ? (
     <FlexView style={styles.container}>
-      {chainId?.startsWith('eip155') ? <EthersActionsView /> : <SolanaActionsView />}
+      {chainId?.startsWith('eip155') ? (
+        <EthersActionsView />
+      ) : chainId?.startsWith('solana') ? (
+        <SolanaActionsView />
+      ) : null}
     </FlexView>
   ) : null;
 }

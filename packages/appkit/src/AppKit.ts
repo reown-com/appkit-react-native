@@ -188,13 +188,15 @@ export class AppKit {
   }
 
   private async syncAccounts(adapters: BlockchainAdapter[]) {
-    // Get account balance
+    // Get account balances
     adapters.map(adapter => {
       const namespace = adapter.getSupportedNamespace();
       const connection = ConnectionsController.state.connections[namespace];
+
       const network = this.networks.find(
-        n => n.id === Number(connection?.activeChain?.split(':')[1])
+        n => n.id?.toString() === connection?.activeChain?.split(':')[1]
       );
+
       adapter.getBalance({ address: adapter.getAccounts()?.[0], network });
     });
   }
