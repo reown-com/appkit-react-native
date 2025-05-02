@@ -18,12 +18,12 @@ import Toast from 'react-native-toast-message';
 import { AppKitProvider, createAppKit, AppKit, AppKitButton } from '@reown/appkit-react-native';
 
 // import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
-import { Text } from '@reown/appkit-ui-react-native';
+import { Button, Text } from '@reown/appkit-ui-react-native';
 
 // import { siweConfig } from './src/utils/SiweUtils';
 
 // import { AccountView } from './src/views/AccountView';
-// import { ActionsView } from './src/views/ActionsView';
+import { EthersActionsView } from './src/views/EthersActionsView';
 // import { getCustomWallets } from './src/utils/misc';
 // import { chains } from './src/utils/WagmiUtils';
 // import { OpenButton } from './src/components/OpenButton';
@@ -32,7 +32,7 @@ import { EthersAdapter } from '@reown/appkit-ethers-react-native';
 import { SolanaAdapter } from '@reown/appkit-solana-react-native';
 import { mainnet, polygon, avalanche } from 'viem/chains';
 import { solana } from './src/utils/ChainUtils';
-
+import { SolanaActionsView } from './src/views/SolanaActionsView';
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
 const metadata = {
@@ -130,10 +130,14 @@ export default function Native() {
             balance="show"
           />
           {/* <NetworkButton /> */}
-          {/* <ActionsView /> */}
+          <EthersActionsView />
+          <SolanaActionsView />
           {/* <AccountView /> */}
           {/* <OpenButton /> */}
           {/* <DisconnectButton /> */}
+          <Button size="sm" onPress={() => appKit.disconnect()}>
+            Disconnect
+          </Button>
           <AppKit />
         </SafeAreaView>
         <Toast />
