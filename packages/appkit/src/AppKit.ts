@@ -17,7 +17,8 @@ import type {
   New_ConnectorType,
   Namespaces,
   CaipNetworkId,
-  AppKitNetwork
+  AppKitNetwork,
+  Provider
 } from '@reown/appkit-common-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
@@ -257,12 +258,17 @@ export class AppKit {
     ConnectionsController.setNetworks(options.networks);
   }
 
-  async disconnect(namespace: string): Promise<void> {
+  async disconnect(namespace?: string): Promise<void> {
     try {
-      const connection = ConnectionsController.state.connections[namespace];
+      const connection =
+        ConnectionsController.state.connections[
+          namespace ?? ConnectionsController.state.activeNamespace
+        ];
       const connectorType = connection?.adapter?.connector?.type;
 
-      await ConnectionsController.disconnect(namespace); // This should trigger the 'disconnect' event handler via the adapter/connector
+      await ConnectionsController.disconnect(
+        namespace ?? ConnectionsController.state.activeNamespace
+      );
 
       if (connectorType) {
         await StorageUtil.removeConnectedConnectors(connectorType);
@@ -288,14 +294,14 @@ export class AppKit {
     }
   }
 
-  getProvider<T>(namespace?: string): T | null {
+  getProvider<T extends Provider>(namespace?: string): T | null {
     const activeNamespace = namespace ?? ConnectionsController.state.activeNamespace;
     if (!activeNamespace) return null;
 
     const connection = ConnectionsController.state.connections[activeNamespace];
     if (!connection || !connection.adapter || !connection.adapter.connector) return null;
 
-    return connection.adapter.connector.getProvider() as T | null;
+    return connection.adapter.connector.getProvider() as T;
   }
 
   getActiveAdapter(): BlockchainAdapter | null {

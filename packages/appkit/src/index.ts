@@ -23,4 +23,5 @@ export { CoreHelperUtil } from '@reown/appkit-core-react-native';
 export * from './AppKit';
 export { AppKitProvider, useAppKit } from './AppKitContext';
 export { useProvider } from './hooks/useProvider';
+export { useAppKitAccount } from './hooks/useAppKitAccount';
 export { WalletConnectConnector } from './connectors/WalletConnectConnector';

@@ -4,12 +4,7 @@ import {
   type AppKitNetwork,
   type CaipAddress,
   type GetBalanceParams,
-  type GetBalanceResponse,
-  type SignedTransaction,
-  type SignMessageParams,
-  type SignMessageResult,
-  type TransactionData,
-  type TransactionReceipt
+  type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
 import {
   type Config,
@@ -61,21 +56,6 @@ export class WagmiAdapter extends EVMAdapter {
     });
   }
 
-  async signMessage(_params: SignMessageParams): Promise<SignMessageResult> {
-    if (!this.connector) throw new Error('No active connector');
-
-    const provider = this.connector.getProvider();
-    if (!provider) throw new Error('No active provider');
-
-    throw new Error('Method not implemented.');
-  }
-
-  async signTransaction(tx: TransactionData): Promise<SignedTransaction> {
-    if (!this.connector) throw new Error('No active connector');
-
-    return this.request('eth_signTransaction', [tx]) as Promise<SignedTransaction>;
-  }
-
   async switchNetwork(network: AppKitNetwork): Promise<void> {
     console.log('WagmiAdapter - switchNetwork', network);
     throw new Error('Method not implemented.');
@@ -95,10 +75,6 @@ export class WagmiAdapter extends EVMAdapter {
     const namespaces = this.connector.getNamespaces();
 
     return namespaces[this.getSupportedNamespace()]?.accounts;
-  }
-
-  sendTransaction(/*tx: TransactionData*/): Promise<TransactionReceipt> {
-    throw new Error('Method not implemented.');
   }
 
   disconnect(): Promise<void> {

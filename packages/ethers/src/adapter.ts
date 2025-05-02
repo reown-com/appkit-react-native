@@ -1,14 +1,11 @@
-import { formatEther, hexlify, isHexString, JsonRpcProvider, toUtf8Bytes } from 'ethers';
+import { formatEther, JsonRpcProvider } from 'ethers';
 import {
   EVMAdapter,
   WalletConnector,
   type AppKitNetwork,
   type CaipAddress,
   type GetBalanceParams,
-  type GetBalanceResponse,
-  type SignMessageParams,
-  type SignMessageResult,
-  type TransactionReceipt
+  type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
 import { EthersHelpersUtil } from '@reown/appkit-scaffold-utils-react-native';
 
@@ -20,24 +17,6 @@ export class EthersAdapter extends EVMAdapter {
       projectId: configParams.projectId,
       supportedNamespace: EthersAdapter.supportedNamespace
     });
-  }
-
-  async signMessage(params: SignMessageParams): Promise<SignMessageResult> {
-    if (!this.connector) throw new Error('No active connector');
-
-    const provider = this.connector.getProvider();
-    if (!provider) throw new Error('No active provider');
-
-    const { message, address } = params;
-
-    const hexMessage = isHexString(message) ? message : hexlify(toUtf8Bytes(message));
-
-    const signature = (await provider.request({
-      method: 'personal_sign',
-      params: [hexMessage, address]
-    })) as `0x${string}`;
-
-    return { signature };
   }
 
   async getBalance(params: GetBalanceParams): Promise<GetBalanceResponse> {
@@ -89,7 +68,7 @@ export class EthersAdapter extends EVMAdapter {
     if (!provider) throw new Error('No active provider');
 
     try {
-      return await provider.request(
+      await provider.request(
         {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: EthersHelpersUtil.numberToHexString(Number(network.id)) }] //TODO: check util
@@ -111,10 +90,6 @@ export class EthersAdapter extends EVMAdapter {
     const namespaces = this.connector.getNamespaces();
 
     return namespaces[this.getSupportedNamespace()]?.accounts;
-  }
-
-  sendTransaction(/*tx: TransactionData*/): Promise<TransactionReceipt> {
-    throw new Error('Method not implemented.');
   }
 
   disconnect(): Promise<void> {

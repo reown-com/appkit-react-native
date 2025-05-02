@@ -4,13 +4,9 @@ import {
   type AppKitNetwork,
   type CaipAddress,
   type GetBalanceParams,
-  type GetBalanceResponse,
-  type SignMessageParams,
-  type SignMessageResult,
-  type TransactionReceipt
+  type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
 import { Connection, PublicKey } from '@solana/web3.js';
-import base58 from 'bs58';
 
 export class SolanaAdapter extends SolanaBaseAdapter {
   private static supportedNamespace: string = 'solana';
@@ -20,30 +16,6 @@ export class SolanaAdapter extends SolanaBaseAdapter {
       projectId: configParams.projectId,
       supportedNamespace: SolanaAdapter.supportedNamespace
     });
-  }
-
-  async signMessage(params: SignMessageParams): Promise<SignMessageResult> {
-    if (!this.connector) throw new Error('No active connector');
-
-    const provider = this.connector.getProvider();
-    if (!provider) throw new Error('No active provider');
-
-    const { message } = params;
-
-    // return this.request('eth_signTransaction', [tx]) as Promise<SignedTransaction>;
-    // throw new Error('Method not implemented.');
-
-    const signParams = {
-      message: base58.encode(new TextEncoder().encode(message)),
-      pubkey: params.address || this.getAccounts()?.[0] //TODO: Check if this is correct
-    };
-
-    const signature = (await provider.request({
-      method: 'solana_signTransaction',
-      params: [signParams]
-    })) as any; //TODO: check type
-
-    return { signature };
   }
 
   async getBalance(params: GetBalanceParams): Promise<GetBalanceResponse> {
@@ -73,7 +45,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
 
       this.emit('balanceChanged', {
         namespace: this.getSupportedNamespace(),
-        address,
+        address: balanceAddress,
         balance
       });
 
@@ -90,32 +62,12 @@ export class SolanaAdapter extends SolanaBaseAdapter {
     if (!provider) throw new Error('No active provider');
 
     try {
-      // await provider.request({
-      //   method: 'wallet_switchEthereumChain',
-      //   params: [{ chainId: EthersHelpersUtil.numberToHexString(Number(network.id)) }] //TODO: check util
-      // });
-
-      this.getBalance({ address: this.getAccounts()?.[0], network });
+      //@ts-ignore //TODO: check this
+      await provider?.setDefaultChain(network.caipNetworkId);
 
       return;
     } catch (switchError: any) {
-      // const message = switchError?.message as string;
-      // if (/(?<temp1>user rejected)/u.test(message?.toLowerCase())) {
-      //   throw new Error('Chain is not supported');
-      // }
-      // provider.request({
-      //   method: 'wallet_addEthereumChain',
-      //   params: [
-      //     {
-      //       chainId: EthersHelpersUtil.numberToHexString(Number(network.id)),
-      //       rpcUrls: network.rpcUrls,
-      //       chainName: network.name,
-      //       nativeCurrency: network.nativeCurrency,
-      //       blockExplorerUrls: network.blockExplorers,
-      //       iconUrls: [PresetsUtil.NetworkImageIds[network.id]]
-      //     }
-      //   ]
-      // });
+      throw switchError;
     }
   }
 
@@ -124,10 +76,6 @@ export class SolanaAdapter extends SolanaBaseAdapter {
     const namespaces = this.connector.getNamespaces();
 
     return namespaces[this.getSupportedNamespace()]?.accounts;
-  }
-
-  sendTransaction(/*tx: TransactionData*/): Promise<TransactionReceipt> {
-    throw new Error('Method not implemented.');
   }
 
   disconnect(): Promise<void> {

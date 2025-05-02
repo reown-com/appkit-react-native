@@ -48,8 +48,6 @@ export class WalletConnectConnector extends WalletConnector {
 
     this.namespaces = session?.namespaces as Namespaces;
 
-    console.log('session', session);
-
     this.provider.off('display_uri', onUri);
 
     return this.namespaces;
