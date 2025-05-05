@@ -113,14 +113,13 @@ export function AccountDefaultView() {
   };
 
   const onCopyAddress = () => {
-    if (AccountController.state.profileName) {
-      OptionsController.copyToClipboard(AccountController.state.profileName);
-      SnackController.showSuccess('Name copied');
-    } else if (AccountController.state.address) {
-      OptionsController.copyToClipboard(
-        AccountController.state.profileName ?? AccountController.state.address
-      );
-      SnackController.showSuccess('Address copied');
+    //TODO: Check ENS name
+    if (OptionsController.isClipboardAvailable() && ConnectionsController.state.activeAddress) {
+      const _address = ConnectionsController.state.activeAddress.split(':')[2];
+      if (_address) {
+        OptionsController.copyToClipboard(_address);
+        SnackController.showSuccess('Address copied');
+      }
     }
   };
 

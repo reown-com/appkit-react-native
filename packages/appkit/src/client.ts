@@ -52,7 +52,7 @@ export interface LibraryOptions {
   customWallets?: OptionsControllerState['customWallets'];
   defaultChain?: NetworkControllerState['caipNetwork'];
   tokens?: OptionsControllerState['tokens'];
-  clipboardClient?: OptionsControllerState['_clipboardClient'];
+  clipboardClient?: OptionsControllerState['clipboardClient'];
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
   _sdkVersion: OptionsControllerState['sdkVersion'];
   debug?: OptionsControllerState['debug'];

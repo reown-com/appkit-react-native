@@ -7,7 +7,8 @@ import {
   RouterController,
   TransactionsController,
   type Metadata,
-  StorageUtil
+  StorageUtil,
+  type OptionsControllerState
 } from '@reown/appkit-core-react-native';
 
 import type {
@@ -31,6 +32,7 @@ interface AppKitConfig {
   adapters: BlockchainAdapter[];
   networks: AppKitNetwork[];
   extraConnectors?: WalletConnector[];
+  clipboardClient?: OptionsControllerState['clipboardClient'];
 }
 
 export class AppKit {
@@ -258,6 +260,11 @@ export class AppKit {
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata);
+    }
+
+    if (options.clipboardClient) {
+      console.log('setting clipboard client', options.clipboardClient);
+      OptionsController.setClipboardClient(options.clipboardClient);
     }
 
     ConnectionsController.setNetworks(options.networks);

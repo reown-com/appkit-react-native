@@ -1,6 +1,6 @@
 import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-// import * as Clipboard from 'expo-clipboard';
+import * as Clipboard from 'expo-clipboard';
 import '@walletconnect/react-native-compat';
 // import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -53,11 +53,11 @@ const metadata = {
   }
 };
 
-// const clipboardClient = {
-//   setString: async (value: string) => {
-//     await Clipboard.setStringAsync(value);
-//   }
-// };
+const clipboardClient = {
+  setString: async (value: string) => {
+    await Clipboard.setStringAsync(value);
+  }
+};
 
 // const auth = authConnector({ projectId, metadata });
 
@@ -118,7 +118,8 @@ const appKit = createAppKit({
   projectId,
   adapters: [ethersAdapter, solanaAdapter, bitcoinAdapter],
   metadata,
-  networks: [mainnet, polygon, avalanche, solana, bitcoin, bitcoinTestnet]
+  networks: [mainnet, polygon, avalanche, solana, bitcoin, bitcoinTestnet],
+  clipboardClient
 });
 
 export default function Native() {

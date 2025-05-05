@@ -17,7 +17,7 @@ export interface ClipboardClient {
 
 export interface OptionsControllerState {
   projectId: ProjectId;
-  _clipboardClient?: ClipboardClient;
+  clipboardClient?: ClipboardClient;
   includeWalletIds?: string[];
   excludeWalletIds?: string[];
   featuredWalletIds?: string[];
@@ -47,7 +47,7 @@ export const OptionsController = {
   state,
 
   setClipboardClient(client: ClipboardClient) {
-    state._clipboardClient = ref(client);
+    state.clipboardClient = ref(client);
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -103,11 +103,11 @@ export const OptionsController = {
   },
 
   isClipboardAvailable() {
-    return !!state._clipboardClient;
+    return !!state.clipboardClient;
   },
 
   copyToClipboard(value: string) {
-    const client = state._clipboardClient;
+    const client = state.clipboardClient;
     if (client) {
       client?.setString(value);
     }

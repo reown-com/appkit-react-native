@@ -7310,7 +7310,6 @@ __metadata:
   dependencies:
     "@reown/appkit-common-react-native": "npm:1.2.3"
     "@reown/appkit-core-react-native": "npm:1.2.3"
-    "@reown/appkit-scaffold-react-native": "npm:1.2.3"
   languageName: unknown
   linkType: soft
 
