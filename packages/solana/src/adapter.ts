@@ -62,8 +62,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
     if (!provider) throw new Error('No active provider');
 
     try {
-      //@ts-ignore //TODO: check this
-      await provider?.setDefaultChain(network.caipNetworkId);
+      await this.connector.switchNetwork(network);
 
       return;
     } catch (switchError: any) {
@@ -95,11 +94,11 @@ export class SolanaAdapter extends SolanaBaseAdapter {
     return SolanaAdapter.supportedNamespace;
   }
 
-  override onChainChanged(chainId: string): void {
+  onChainChanged(chainId: string): void {
     this.emit('chainChanged', { chainId, namespace: this.getSupportedNamespace() });
   }
 
-  override onAccountsChanged(accounts: string[]): void {
+  onAccountsChanged(accounts: string[]): void {
     const _accounts = this.getAccounts();
     const shouldEmit = _accounts?.some(account => {
       const accountAddress = account.split(':')[2];

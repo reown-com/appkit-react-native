@@ -50,6 +50,7 @@ export const WcHelpersUtil = {
   getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
     return DEFAULT_METHODS[chainNamespace as keyof typeof DEFAULT_METHODS] || [];
   },
+
   createDefaultNamespace(chainNamespace: ChainNamespace): Namespace {
     return {
       methods: this.getMethodsByChainNamespace(chainNamespace),

@@ -219,7 +219,7 @@ export function AccountDefaultView() {
           </FlexView>
           {showBalance && (
             <Text variant="paragraph-400" color="fg-200">
-              {CoreHelperUtil.formatBalance(balance.amount, balance.symbol)}
+              {CoreHelperUtil.formatBalance(balance.amount, balance.symbol, 6)}
             </Text>
           )}
           {showExplorer && (

@@ -18,6 +18,7 @@
     "packages/ethers5",
     "packages/ethers",
     "packages/solana",
+    "packages/bitcoin",
     "apps/*"
   ],
   "scripts": {

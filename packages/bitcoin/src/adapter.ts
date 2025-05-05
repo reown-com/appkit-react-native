@@ -1,21 +1,22 @@
-import { formatEther, JsonRpcProvider } from 'ethers';
 import {
-  EVMAdapter,
+  BlockchainAdapter,
   WalletConnector,
   type AppKitNetwork,
   type CaipAddress,
   type GetBalanceParams,
   type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
-import { EthersHelpersUtil } from '@reown/appkit-scaffold-utils-react-native';
+import { BitcoinApi } from './utils/BitcoinApi';
+import { UnitsUtil } from './utils/UnitsUtil';
 
-export class EthersAdapter extends EVMAdapter {
-  private static supportedNamespace: string = 'eip155';
+export class BitcoinAdapter extends BlockchainAdapter {
+  private static supportedNamespace: string = 'bip122';
+  private static api = BitcoinApi;
 
   constructor(configParams: { projectId: string }) {
     super({
       projectId: configParams.projectId,
-      supportedNamespace: EthersAdapter.supportedNamespace
+      supportedNamespace: BitcoinAdapter.supportedNamespace
     });
   }
 
@@ -25,62 +26,50 @@ export class EthersAdapter extends EVMAdapter {
     if (!this.connector) throw new Error('No active connector');
     if (!network) throw new Error('No network provided');
 
-    const balanceAddress =
+    const balanceCaipAddress =
       address || this.getAccounts()?.find(account => account.includes(network.id.toString()));
 
-    let balance = { amount: '0.00', symbol: network.nativeCurrency.symbol || 'ETH' };
+    const balanceAddress = balanceCaipAddress?.split(':')[2];
 
-    if (!balanceAddress) {
-      return Promise.resolve(balance);
+    if (!balanceCaipAddress || !balanceAddress) {
+      return Promise.resolve({ amount: '0.00', symbol: 'BTC' });
     }
 
-    const account = balanceAddress.split(':')[2];
-
     try {
-      const jsonRpcProvider = new JsonRpcProvider(network.rpcUrls.default.http[0], {
-        chainId: Number(network.id),
-        name: network.name
+      const utxos = await BitcoinAdapter.api.getUTXOs({
+        network,
+        address: balanceAddress
       });
 
-      if (jsonRpcProvider && account) {
-        const _balance = await jsonRpcProvider.getBalance(account);
-        const formattedBalance = formatEther(_balance);
-
-        balance = { amount: formattedBalance, symbol: network.nativeCurrency.symbol || 'ETH' };
-      }
+      const balance = utxos.reduce((acc, utxo) => acc + utxo.value, 0);
+      const formattedBalance = UnitsUtil.parseSatoshis(balance.toString(), network);
 
       this.emit('balanceChanged', {
         namespace: this.getSupportedNamespace(),
-        address: balanceAddress,
-        balance
+        address: balanceCaipAddress,
+        balance: {
+          amount: formattedBalance,
+          symbol: network.nativeCurrency.symbol
+        }
       });
 
-      return balance;
+      return { amount: formattedBalance, symbol: network.nativeCurrency.symbol };
     } catch (error) {
-      return balance;
+      return { amount: '0.00', symbol: 'BTC' };
     }
   }
 
-  async switchNetwork(network: AppKitNetwork): Promise<void> {
+  override async switchNetwork(network: AppKitNetwork): Promise<void> {
     if (!this.connector) throw new Error('No active connector');
 
     const provider = this.connector.getProvider();
     if (!provider) throw new Error('No active provider');
 
     try {
-      await provider.request(
-        {
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: EthersHelpersUtil.numberToHexString(Number(network.id)) }] //TODO: check util
-        },
-        `${network.chainNamespace ?? 'eip155'}:${network.id}`
-      );
-    } catch (switchError: any) {
-      const message = switchError?.message as string;
-      if (/(?<temp1>user rejected)/u.test(message?.toLowerCase())) {
-        throw new Error('Chain is not supported');
-      }
+      await this.connector.switchNetwork(network);
 
+      return;
+    } catch (switchError: any) {
       throw switchError;
     }
   }
@@ -93,7 +82,7 @@ export class EthersAdapter extends EVMAdapter {
   }
 
   disconnect(): Promise<void> {
-    if (!this.connector) throw new Error('EthersAdapter:disconnect - No active connector');
+    if (!this.connector) throw new Error('SolanaAdapter:disconnect - No active connector');
 
     return this.connector.disconnect();
   }
@@ -106,7 +95,7 @@ export class EthersAdapter extends EVMAdapter {
   }
 
   getSupportedNamespace(): string {
-    return EthersAdapter.supportedNamespace;
+    return BitcoinAdapter.supportedNamespace;
   }
 
   onChainChanged(chainId: string): void {
@@ -127,10 +116,8 @@ export class EthersAdapter extends EVMAdapter {
   }
 
   onDisconnect(): void {
-    // console.log('EthersAdapter - onDisconnect');
     this.emit('disconnect', { namespace: this.getSupportedNamespace() });
 
-    //the connector might be shared between adapters. Validate this
     const provider = this.connector?.getProvider();
     if (provider) {
       provider.off('chainChanged', this.onChainChanged.bind(this));
@@ -150,7 +137,6 @@ export class EthersAdapter extends EVMAdapter {
     const provider = this.connector?.getProvider();
     if (!provider) return;
 
-    // console.log('EthersAdapter - subscribing to events');
     provider.on('chainChanged', this.onChainChanged.bind(this));
     provider.on('accountsChanged', this.onAccountsChanged.bind(this));
     provider.on('disconnect', this.onDisconnect.bind(this));

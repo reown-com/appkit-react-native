@@ -15,7 +15,15 @@ import Toast from 'react-native-toast-message';
 //   defaultWagmiConfig
 // } from '@reown/appkit-wagmi-react-native';
 
-import { AppKitProvider, createAppKit, AppKit, AppKitButton } from '@reown/appkit-react-native';
+import {
+  AppKitProvider,
+  createAppKit,
+  AppKit,
+  AppKitButton,
+  solana,
+  bitcoin,
+  bitcoinTestnet
+} from '@reown/appkit-react-native';
 
 // import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
 import { Button, Text } from '@reown/appkit-ui-react-native';
@@ -29,8 +37,8 @@ import { Button, Text } from '@reown/appkit-ui-react-native';
 // import { DisconnectButton } from './src/components/DisconnectButton';
 import { EthersAdapter } from '@reown/appkit-ethers-react-native';
 import { SolanaAdapter } from '@reown/appkit-solana-react-native';
+import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
 import { mainnet, polygon, avalanche } from 'viem/chains';
-import { solana } from './src/utils/ChainUtils';
 import { ActionsView } from './src/views/ActionsView';
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -84,6 +92,10 @@ const solanaAdapter = new SolanaAdapter({
   projectId
 });
 
+const bitcoinAdapter = new BitcoinAdapter({
+  projectId
+});
+
 // createAppKit({
 //   projectId,
 //   wagmiConfig,
@@ -104,9 +116,9 @@ const solanaAdapter = new SolanaAdapter({
 
 const appKit = createAppKit({
   projectId,
-  adapters: [ethersAdapter, solanaAdapter],
+  adapters: [ethersAdapter, solanaAdapter, bitcoinAdapter],
   metadata,
-  networks: [mainnet, polygon, avalanche, solana]
+  networks: [mainnet, polygon, avalanche, solana, bitcoin, bitcoinTestnet]
 });
 
 export default function Native() {

@@ -33,7 +33,7 @@ export function SolanaActionsView() {
 
         return;
       }
-      const encodedMessage = new TextEncoder().encode('Hello from AppKit');
+      const encodedMessage = new TextEncoder().encode('Hello from AppKit Solana');
 
       const params = {
         message: base58.encode(encodedMessage),
@@ -46,7 +46,7 @@ export function SolanaActionsView() {
           params
         },
         chainId
-      )) as any; //TODO: check type
+      )) as { address: string; signature: string };
 
       onSignSuccess(signature);
     } catch (error) {

@@ -23,6 +23,8 @@ export type AppKitNetwork = {
   // AppKit specific / CAIP properties (Optional in type, but often needed in practice)
   chainNamespace?: ChainNamespace; // e.g., 'eip155'
   caipNetworkId?: CaipNetworkId; // e.g., 'eip155:1'
+  testnet?: boolean;
+  deprecatedCaipNetworkId?: CaipNetworkId; // for Solana
 };
 
 export interface CaipNetwork {
@@ -191,7 +193,10 @@ type Namespace = BaseNamespace;
 
 export type Namespaces = Record<string, Namespace>;
 
-export type ProposalNamespaces = Record<string, Omit<Namespace, 'accounts'>>;
+export type ProposalNamespaces = Record<
+  string,
+  Omit<Namespace, 'accounts'> & Required<Pick<Namespace, 'chains'>>
+>;
 
 export abstract class WalletConnector extends EventEmitter {
   public type: New_ConnectorType;
@@ -208,6 +213,7 @@ export abstract class WalletConnector extends EventEmitter {
   abstract disconnect(): Promise<void>;
   abstract getProvider(): Provider;
   abstract getNamespaces(): Namespaces;
+  abstract switchNetwork(network: AppKitNetwork): Promise<void>;
 }
 
 //********** Provider Types **********//

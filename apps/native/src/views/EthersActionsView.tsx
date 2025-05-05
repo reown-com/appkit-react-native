@@ -33,7 +33,7 @@ export function EthersActionsView() {
         return;
       }
 
-      const message = 'hello appkit + ethers';
+      const message = 'Hello from AppKit Ethers';
       const hexMessage = isHexString(message) ? message : hexlify(toUtf8Bytes(message));
 
       const signature = await provider.request(
@@ -46,6 +46,7 @@ export function EthersActionsView() {
 
       onSignSuccess(signature);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log('error', error);
       onSignError(error as Error);
     }

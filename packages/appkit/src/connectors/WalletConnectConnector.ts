@@ -2,6 +2,7 @@ import { type Metadata, ConnectionController } from '@reown/appkit-core-react-na
 import { UniversalProvider, type IUniversalProvider } from '@walletconnect/universal-provider';
 import {
   WalletConnector,
+  type AppKitNetwork,
   type Namespaces,
   type ProposalNamespaces,
   type Provider
@@ -35,7 +36,7 @@ export class WalletConnectConnector extends WalletConnector {
     return this.provider.disconnect();
   }
 
-  override async connect(namespaces?: ProposalNamespaces) {
+  override async connect(namespaces: ProposalNamespaces) {
     function onUri(uri: string) {
       ConnectionController.setWcUri(uri);
     }
@@ -59,5 +60,13 @@ export class WalletConnectConnector extends WalletConnector {
 
   override getNamespaces(): Namespaces {
     return this.namespaces ?? {};
+  }
+
+  override switchNetwork(network: AppKitNetwork): Promise<void> {
+    if (!network.caipNetworkId) throw new Error('No network provided');
+
+    (this.provider as IUniversalProvider).setDefaultChain(network.caipNetworkId);
+
+    return Promise.resolve();
   }
 }

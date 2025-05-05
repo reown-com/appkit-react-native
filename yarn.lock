@@ -102,13 +102,16 @@ __metadata:
   resolution: "@apps/native@workspace:apps/native"
   dependencies:
     "@babel/core": "npm:^7.24.0"
+    "@bitcoinerlab/secp256k1": "npm:1.2.0"
     "@expo/metro-runtime": "npm:~4.0.1"
     "@playwright/test": "npm:^1.49.1"
     "@react-native-async-storage/async-storage": "npm:2.1.2"
     "@react-native-community/netinfo": "npm:11.4.1"
     "@reown/appkit-auth-wagmi-react-native": "npm:1.2.3"
+    "@reown/appkit-bitcoin-react-native": "workspace:*"
     "@reown/appkit-ethers-react-native": "workspace:*"
     "@reown/appkit-react-native": "workspace:*"
+    "@reown/appkit-solana-react-native": "workspace:*"
     "@reown/appkit-wagmi-react-native": "npm:1.2.3"
     "@tanstack/query-async-storage-persister": "npm:^5.40.0"
     "@tanstack/react-query": "npm:5.56.2"
@@ -118,6 +121,7 @@ __metadata:
     "@types/react": "npm:~18.2.79"
     "@walletconnect/react-native-compat": "npm:2.20.2"
     babel-plugin-module-resolver: "npm:^5.0.0"
+    bitcoinjs-lib: "npm:7.0.0-rc.0"
     ethers: "npm:6.13.5"
     expo: "npm:^52.0.38"
     expo-application: "npm:~6.0.2"
@@ -3899,6 +3903,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bitcoinerlab/secp256k1@npm:1.2.0":
+  version: 1.2.0
+  resolution: "@bitcoinerlab/secp256k1@npm:1.2.0"
+  dependencies:
+    "@noble/curves": "npm:^1.7.0"
+  checksum: ab5196e6052b60cbfee347434105dee59ecd93cb73473706252d35581b63dec2f4241b9e5ce7d5bbb062fb3fa9898a78660c886be8ae2d375480080c30a3a4b3
+  languageName: node
+  linkType: hard
+
 "@changesets/apply-release-plan@npm:^7.0.4":
   version: 7.0.4
   resolution: "@changesets/apply-release-plan@npm:7.0.4"
@@ -6127,7 +6140,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:^1.4.2":
+"@noble/curves@npm:^1.4.2, @noble/curves@npm:^1.7.0":
   version: 1.9.0
   resolution: "@noble/curves@npm:1.9.0"
   dependencies:
@@ -6194,7 +6207,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.8.0":
+"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.2.0":
   version: 1.8.0
   resolution: "@noble/hashes@npm:1.8.0"
   checksum: 06a0b52c81a6fa7f04d67762e08b2c476a00285858150caeaaff4037356dd5e119f45b2a530f638b77a5eeca013168ec1b655db41bae3236cb2e9d511484fc77
@@ -7109,6 +7122,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@reown/appkit-bitcoin-react-native@workspace:*, @reown/appkit-bitcoin-react-native@workspace:packages/bitcoin":
+  version: 0.0.0-use.local
+  resolution: "@reown/appkit-bitcoin-react-native@workspace:packages/bitcoin"
+  dependencies:
+    "@reown/appkit-common-react-native": "npm:1.2.3"
+    "@solana/web3.js": "npm:1.98.2"
+    bs58: "npm:6.0.0"
+  peerDependencies:
+    "@solana/web3.js": ">=1.90.0"
+    bs58: ">=6.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@reown/appkit-coinbase-ethers-react-native@workspace:packages/coinbase-ethers":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-coinbase-ethers-react-native@workspace:packages/coinbase-ethers"
@@ -7301,13 +7327,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@reown/appkit-solana-react-native@workspace:packages/solana":
+"@reown/appkit-solana-react-native@workspace:*, @reown/appkit-solana-react-native@workspace:packages/solana":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-solana-react-native@workspace:packages/solana"
   dependencies:
     "@reown/appkit-common-react-native": "npm:1.2.3"
     "@solana/web3.js": "npm:1.98.2"
-    bs58: "npm:6.0.0"
   peerDependencies:
     "@solana/web3.js": ">=1.90.0"
     bs58: ">=6.0.0"
@@ -10786,6 +10811,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bech32@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "bech32@npm:2.0.0"
+  checksum: 45e7cc62758c9b26c05161b4483f40ea534437cf68ef785abadc5b62a2611319b878fef4f86ddc14854f183b645917a19addebc9573ab890e19194bc8f521942
+  languageName: node
+  linkType: hard
+
 "better-opn@npm:~3.0.2":
   version: 3.0.2
   resolution: "better-opn@npm:3.0.2"
@@ -10829,6 +10861,31 @@ __metadata:
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
   checksum: d73d8b897238a2d3ffa5f59c0241870043aa7471335e89ea5e1ff48edb7c2d0bb471517a3e4c5c3f4c043615caa2717b5f80a5e61e07503d51dc85cb848e665d
+  languageName: node
+  linkType: hard
+
+"bip174@npm:^3.0.0-rc.0":
+  version: 3.0.0-rc.1
+  resolution: "bip174@npm:3.0.0-rc.1"
+  dependencies:
+    uint8array-tools: "npm:^0.0.9"
+    varuint-bitcoin: "npm:^2.0.0"
+  checksum: d4fc26a4ec3dc6f4ce5b5cf38acc0825570c96a2bea536bf857a743ebfca5061ea9bc5c0cb21466a47c82e757190e7f00149eb6c6ccbba3238a48e853341b945
+  languageName: node
+  linkType: hard
+
+"bitcoinjs-lib@npm:7.0.0-rc.0":
+  version: 7.0.0-rc.0
+  resolution: "bitcoinjs-lib@npm:7.0.0-rc.0"
+  dependencies:
+    "@noble/hashes": "npm:^1.2.0"
+    bech32: "npm:^2.0.0"
+    bip174: "npm:^3.0.0-rc.0"
+    bs58check: "npm:^4.0.0"
+    uint8array-tools: "npm:^0.0.9"
+    valibot: "npm:^0.38.0"
+    varuint-bitcoin: "npm:^2.0.0"
+  checksum: 9185d2b59a3a75d34a715dd0f654019cba4a274042c376c6ff130469fb5577de6dbe224c0c1a482fa842dfd35d3b0d25de263a5c1a79762cf46ed325194b6614
   languageName: node
   linkType: hard
 
@@ -11089,7 +11146,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bs58@npm:6.0.0":
+"bs58@npm:6.0.0, bs58@npm:^6.0.0":
   version: 6.0.0
   resolution: "bs58@npm:6.0.0"
   dependencies:
@@ -11104,6 +11161,16 @@ __metadata:
   dependencies:
     base-x: "npm:^3.0.2"
   checksum: 613a1b1441e754279a0e3f44d1faeb8c8e838feef81e550efe174ff021dd2e08a4c9ae5805b52dfdde79f97b5c0918c78dd24a0eb726c4a94365f0984a0ffc65
+  languageName: node
+  linkType: hard
+
+"bs58check@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "bs58check@npm:4.0.0"
+  dependencies:
+    "@noble/hashes": "npm:^1.2.0"
+    bs58: "npm:^6.0.0"
+  checksum: a4e695202711daffa157ada2044bb55ff21adcfe22c92ede12111d55570e170dd4cb8cd058db12980dca6bd51733f17f7534cddc19ea1f7dfa9852583f888eea
   languageName: node
   linkType: hard
 
@@ -23080,6 +23147,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uint8array-tools@npm:^0.0.8":
+  version: 0.0.8
+  resolution: "uint8array-tools@npm:0.0.8"
+  checksum: ffc01a50aaed4ce7d9c30260b23465c79ffe6e4d0fe1ba4605611e59feabbaff81b42ddf7896a747f07aafcbb5a4252d1b39f2325bacb21454212c42c954d74d
+  languageName: node
+  linkType: hard
+
+"uint8array-tools@npm:^0.0.9":
+  version: 0.0.9
+  resolution: "uint8array-tools@npm:0.0.9"
+  checksum: 1f3692aa60f87b84ebd3254bea2024ee9b8c1dc226ac906a879190298c736b3c942a7a12d20996d179d3918a65d4613fc2494837e8959329ac0747e12a18f90c
+  languageName: node
+  linkType: hard
+
 "uint8arrays@npm:3.1.0":
   version: 3.1.0
   resolution: "uint8arrays@npm:3.1.0"
@@ -23570,6 +23651,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"valibot@npm:^0.38.0":
+  version: 0.38.0
+  resolution: "valibot@npm:0.38.0"
+  peerDependencies:
+    typescript: ">=5"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: dd61a2299879fa644e6192ec5c67fd036b27c023b77146369ca2d720368f096ca6c9a8711f2e4b7cbac1716df5fe0e2d3eeee5028f233f87de04c08b93e98d81
+  languageName: node
+  linkType: hard
+
 "validate-npm-package-name@npm:^5.0.0":
   version: 5.0.1
   resolution: "validate-npm-package-name@npm:5.0.1"
@@ -23611,6 +23704,15 @@ __metadata:
     react:
       optional: true
   checksum: 514b8509308056e474c7d3ccfbbd6ac8e589740a92c53c53c78591a217e14da0694bd67f54195d8ec46920b6aab89eebab3c78c98c33d814b3606cdaacb6489b
+  languageName: node
+  linkType: hard
+
+"varuint-bitcoin@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "varuint-bitcoin@npm:2.0.0"
+  dependencies:
+    uint8array-tools: "npm:^0.0.8"
+  checksum: 63048ddcf85ef728ec610d234a1de010ce81204751d7d1a54eca9f140a86c30bb187cd4871ee042ce9e656d76ee50093a7370c56114ae6716297ef32de4a8b26
   languageName: node
   linkType: hard
 

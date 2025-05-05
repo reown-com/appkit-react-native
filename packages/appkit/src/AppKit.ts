@@ -23,6 +23,7 @@ import type {
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
 import { WcHelpersUtil } from './utils/HelpersUtil';
+import { NetworkUtil } from './utils/NetworkUtil';
 
 interface AppKitConfig {
   projectId: string;
@@ -44,7 +45,7 @@ export class AppKit {
     this.projectId = config.projectId;
     this.metadata = config.metadata;
     this.adapters = config.adapters;
-    this.networks = config.networks;
+    this.networks = NetworkUtil.formatNetworks(config.networks, this.projectId); //TODO: check this
     this.namespaces = WcHelpersUtil.createNamespaces(config.networks) as ProposalNamespaces;
     this.extraConnectors = config.extraConnectors || [];
 

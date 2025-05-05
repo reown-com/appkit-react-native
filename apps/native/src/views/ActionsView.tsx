@@ -4,7 +4,7 @@ import { useAppKitAccount } from '@reown/appkit-react-native';
 
 import { EthersActionsView } from './EthersActionsView';
 import { SolanaActionsView } from './SolanaActionsView';
-
+import { BitcoinActionsView } from './BitcoinActionsView';
 export function ActionsView() {
   const isConnected = true;
   const { chainId } = useAppKitAccount();
@@ -15,6 +15,8 @@ export function ActionsView() {
         <EthersActionsView />
       ) : chainId?.startsWith('solana') ? (
         <SolanaActionsView />
+      ) : chainId?.startsWith('bip122') ? (
+        <BitcoinActionsView />
       ) : null}
     </FlexView>
   ) : null;

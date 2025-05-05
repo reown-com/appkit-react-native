@@ -21,6 +21,7 @@ export type * from '@reown/appkit-core-react-native';
 export { CoreHelperUtil } from '@reown/appkit-core-react-native';
 
 export * from './AppKit';
+export * from './networks';
 export { AppKitProvider, useAppKit } from './AppKitContext';
 export { useProvider } from './hooks/useProvider';
 export { useAppKitAccount } from './hooks/useAppKitAccount';
