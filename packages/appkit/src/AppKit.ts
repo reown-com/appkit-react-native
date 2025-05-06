@@ -8,7 +8,9 @@ import {
   TransactionsController,
   type Metadata,
   StorageUtil,
-  type OptionsControllerState
+  type OptionsControllerState,
+  ThemeController,
+  type Features
 } from '@reown/appkit-core-react-native';
 
 import type {
@@ -19,12 +21,15 @@ import type {
   Namespaces,
   CaipNetworkId,
   AppKitNetwork,
-  Provider
+  Provider,
+  ThemeVariables,
+  ThemeMode
 } from '@reown/appkit-common-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
 import { WcHelpersUtil } from './utils/HelpersUtil';
 import { NetworkUtil } from './utils/NetworkUtil';
+import { SIWEController, type AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
 
 interface AppKitConfig {
   projectId: string;
@@ -33,6 +38,19 @@ interface AppKitConfig {
   networks: AppKitNetwork[];
   extraConnectors?: WalletConnector[];
   clipboardClient?: OptionsControllerState['clipboardClient'];
+  includeWalletIds?: OptionsControllerState['includeWalletIds'];
+  excludeWalletIds?: OptionsControllerState['excludeWalletIds'];
+  featuredWalletIds?: OptionsControllerState['featuredWalletIds'];
+  customWallets?: OptionsControllerState['customWallets'];
+  tokens?: OptionsControllerState['tokens'];
+  enableAnalytics?: OptionsControllerState['enableAnalytics'];
+  debug?: OptionsControllerState['debug'];
+  themeMode?: ThemeMode;
+  themeVariables?: ThemeVariables;
+  features?: Features;
+  siweConfig?: AppKitSIWEClient;
+  // defaultChain?: NetworkControllerState['caipNetwork'];
+  // chainImages?: Record<number, string>;
 }
 
 export class AppKit {
@@ -257,17 +275,38 @@ export class AppKit {
 
   private async initControllers(options: AppKitConfig) {
     OptionsController.setProjectId(options.projectId);
+    OptionsController.setMetadata(options.metadata);
+    OptionsController.setIncludeWalletIds(options.includeWalletIds);
+    OptionsController.setExcludeWalletIds(options.excludeWalletIds);
+    OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
+    OptionsController.setTokens(options.tokens);
+    OptionsController.setCustomWallets(options.customWallets);
+    OptionsController.setEnableAnalytics(options.enableAnalytics);
+    OptionsController.setDebug(options.debug);
+    OptionsController.setFeatures(options.features);
 
-    if (options.metadata) {
-      OptionsController.setMetadata(options.metadata);
-    }
+    ThemeController.setThemeMode(options.themeMode);
+    ThemeController.setThemeVariables(options.themeVariables);
+
+    //TODO: function to get sdk version based on adapters
+    // OptionsController.setSdkVersion(options._sdkVersion);
 
     if (options.clipboardClient) {
-      console.log('setting clipboard client', options.clipboardClient);
       OptionsController.setClipboardClient(options.clipboardClient);
     }
 
     ConnectionsController.setNetworks(options.networks);
+
+    if (options.siweConfig) {
+      SIWEController.setSIWEClient(options.siweConfig);
+    }
+
+    if (
+      (options.features?.onramp === true || options.features?.onramp === undefined) &&
+      (options.metadata?.redirect?.universal || options.metadata?.redirect?.native)
+    ) {
+      OptionsController.setIsOnRampEnabled(true);
+    }
   }
 
   async disconnect(namespace?: string): Promise<void> {

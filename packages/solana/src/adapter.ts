@@ -3,13 +3,14 @@ import {
   WalletConnector,
   type AppKitNetwork,
   type CaipAddress,
+  type ChainNamespace,
   type GetBalanceParams,
   type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
 import { Connection, PublicKey } from '@solana/web3.js';
 
 export class SolanaAdapter extends SolanaBaseAdapter {
-  private static supportedNamespace: string = 'solana';
+  private static supportedNamespace: ChainNamespace = 'solana';
 
   constructor(configParams: { projectId: string }) {
     super({
@@ -90,7 +91,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
     return provider.request({ method, params });
   }
 
-  getSupportedNamespace(): string {
+  getSupportedNamespace(): ChainNamespace {
     return SolanaAdapter.supportedNamespace;
   }
 

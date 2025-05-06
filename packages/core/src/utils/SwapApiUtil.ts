@@ -8,12 +8,14 @@ import type {
 } from './TypeUtil';
 import { AccountController } from '../controllers/AccountController';
 import { ConnectionController } from '../controllers/ConnectionController';
+import { ConnectionsController } from '../controllers/ConnectionsController';
 
 export const SwapApiUtil = {
   async getTokenList() {
+    const chainId = ConnectionsController.state.activeNetwork?.caipNetworkId ?? 'eip155:1';
     const response = await BlockchainApiController.fetchSwapTokens({
       projectId: OptionsController.state.projectId,
-      chainId: NetworkController.state.caipNetwork?.id
+      chainId
     });
     const tokens =
       response?.tokens?.map(
@@ -62,14 +64,18 @@ export const SwapApiUtil = {
   },
 
   async getMyTokensWithBalance(forceUpdate?: string) {
-    const address = AccountController.state.address;
-    const chainId = NetworkController.state.caipNetwork?.id;
+    const { activeAddress, activeNetwork: network } = ConnectionsController.state;
+    const address = activeAddress?.split(':')[2];
 
     if (!address) {
       return [];
     }
 
-    const response = await BlockchainApiController.getBalance(address, chainId, forceUpdate);
+    const response = await BlockchainApiController.getBalance(
+      address,
+      network?.caipNetworkId,
+      forceUpdate
+    );
     const balances = response?.balances.filter(balance => balance.quantity.decimals !== '0');
 
     AccountController.setTokenBalance(balances);

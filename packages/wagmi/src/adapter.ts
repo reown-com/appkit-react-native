@@ -3,6 +3,7 @@ import {
   WalletConnector,
   type AppKitNetwork,
   type CaipAddress,
+  type ChainNamespace,
   type GetBalanceParams,
   type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
@@ -21,7 +22,7 @@ type ConfigParams = Partial<CreateConfigParameters> & {
 };
 
 export class WagmiAdapter extends EVMAdapter {
-  private static supportedNamespace: string = 'eip155';
+  private static supportedNamespace: ChainNamespace = 'eip155';
   public wagmiChains: readonly [Chain, ...Chain[]] | undefined;
   public wagmiConfig!: Config;
 
@@ -88,7 +89,7 @@ export class WagmiAdapter extends EVMAdapter {
     return provider.request({ method, params });
   }
 
-  getSupportedNamespace(): string {
+  getSupportedNamespace(): ChainNamespace {
     return WagmiAdapter.supportedNamespace;
   }
 

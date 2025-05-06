@@ -1,3 +1,4 @@
+import type { ChainNamespace } from '@reown/appkit-common-react-native';
 import type { Features } from './TypeUtil';
 
 const defaultFeatures: Features = {
@@ -34,7 +35,12 @@ export const ConstantsUtil = {
 
   LINKING_ERROR: 'LINKING_ERROR',
 
-  NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  NATIVE_TOKEN_ADDRESS: {
+    eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    solana: 'So11111111111111111111111111111111111111111',
+    polkadot: '0x',
+    bip122: '0x'
+  } as const satisfies Record<ChainNamespace, string>,
 
   ONRAMP_ERROR_TYPES: OnRampErrorType,
 

@@ -37,10 +37,12 @@ import type {
 import { OptionsController } from './OptionsController';
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 import { ApiUtil } from '../utils/ApiUtil';
+import type { CaipNetworkId } from '@reown/appkit-common-react-native';
+import { ConnectionsController } from './ConnectionsController';
+import { SnackController } from './SnackController';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getBlockchainApiUrl();
-const stagingUrl = CoreHelperUtil.getBlockchainStagingApiUrl();
 
 const getHeaders = () => {
   const { sdkType, sdkVersion } = OptionsController.state;
@@ -58,22 +60,54 @@ const getHeaders = () => {
 export interface BlockchainApiControllerState {
   clientId: string | null;
   api: FetchUtil;
-  stageApi: FetchUtil;
+  supportedChains: { http: CaipNetworkId[]; ws: CaipNetworkId[] };
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<BlockchainApiControllerState>({
   clientId: null,
   api: new FetchUtil({ baseUrl }),
-  //TODO: remove this before release
-  stageApi: new FetchUtil({ baseUrl: stagingUrl })
+  supportedChains: { http: [], ws: [] }
 });
 
 // -- Controller ---------------------------------------- //
 export const BlockchainApiController = {
   state,
 
-  fetchIdentity({ address }: BlockchainApiIdentityRequest) {
+  async isNetworkSupported(networkId?: CaipNetworkId) {
+    if (!networkId) {
+      return false;
+    }
+    try {
+      if (!state.supportedChains.http.length) {
+        await BlockchainApiController.getSupportedNetworks();
+      }
+    } catch (e) {
+      return false;
+    }
+
+    return state.supportedChains.http.includes(networkId);
+  },
+
+  async getSupportedNetworks() {
+    const supportedChains = await state.api.get<BlockchainApiControllerState['supportedChains']>({
+      path: 'v1/supported-chains'
+    });
+
+    state.supportedChains = supportedChains!;
+
+    return supportedChains;
+  },
+
+  async fetchIdentity({ address }: BlockchainApiIdentityRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ConnectionsController.state.activeCaipNetworkId
+    );
+
+    if (!isSupported) {
+      return { avatar: '', name: '' };
+    }
+
     return state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
@@ -83,29 +117,48 @@ export const BlockchainApiController = {
     });
   },
 
-  fetchTransactions({
+  async fetchTransactions({
     account,
     projectId,
     cursor,
     onramp,
     signal,
-    cache
+    cache,
+    chainId
   }: BlockchainApiTransactionsRequest) {
-    return state.api.get<BlockchainApiTransactionsResponse>({
+    const _chainId = chainId ?? ConnectionsController.state.activeCaipNetworkId;
+    const isSupported = await BlockchainApiController.isNetworkSupported(_chainId);
+
+    if (!isSupported) {
+      return { data: [], next: undefined };
+    }
+
+    const response = await state.api.get<BlockchainApiTransactionsResponse>({
       path: `/v1/account/${account}/history`,
       headers: getHeaders(),
       params: {
         projectId,
         cursor,
-        onramp
+        onramp,
+        chainId: _chainId
       },
       signal,
       cache
     });
+
+    return response;
   },
 
-  fetchTokenPrice({ projectId, addresses }: BlockchainApiTokenPriceRequest) {
-    return state.api.post<BlockchainApiTokenPriceResponse>({
+  async fetchTokenPrice({ projectId, addresses }: BlockchainApiTokenPriceRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ConnectionsController.state.activeCaipNetworkId
+    );
+
+    if (!isSupported) {
+      return { fungibles: [] };
+    }
+
+    const response = await state.api.post<BlockchainApiTokenPriceResponse>({
       path: '/v1/fungible/price',
       body: {
         projectId,
@@ -114,9 +167,23 @@ export const BlockchainApiController = {
       },
       headers: getHeaders()
     });
+
+    return response;
   },
 
-  fetchSwapAllowance({ projectId, tokenAddress, userAddress }: BlockchainApiSwapAllowanceRequest) {
+  async fetchSwapAllowance({
+    projectId,
+    tokenAddress,
+    userAddress
+  }: BlockchainApiSwapAllowanceRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ConnectionsController.state.activeCaipNetworkId
+    );
+
+    if (!isSupported) {
+      return { allowance: '0' };
+    }
+
     return state.api.get<BlockchainApiSwapAllowanceResponse>({
       path: `/v1/convert/allowance`,
       params: {
@@ -128,7 +195,15 @@ export const BlockchainApiController = {
     });
   },
 
-  fetchGasPrice({ projectId, chainId }: BlockchainApiGasPriceRequest) {
+  async fetchGasPrice({ projectId, chainId }: BlockchainApiGasPriceRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ConnectionsController.state.activeCaipNetworkId
+    );
+
+    if (!isSupported) {
+      throw new Error('Network not supported for Gas Price');
+    }
+
     return state.api.get<BlockchainApiGasPriceResponse>({
       path: `/v1/convert/gas-price`,
       headers: getHeaders(),
@@ -139,7 +214,7 @@ export const BlockchainApiController = {
     });
   },
 
-  fetchSwapQuote({
+  async fetchSwapQuote({
     projectId,
     amount,
     userAddress,
@@ -147,6 +222,14 @@ export const BlockchainApiController = {
     to,
     gasPrice
   }: BlockchainApiSwapQuoteRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ConnectionsController.state.activeCaipNetworkId
+    );
+
+    if (!isSupported) {
+      return { quotes: [] };
+    }
+
     return state.api.get<BlockchainApiSwapQuoteResponse>({
       path: `/v1/convert/quotes`,
       headers: getHeaders(),
@@ -161,7 +244,15 @@ export const BlockchainApiController = {
     });
   },
 
-  fetchSwapTokens({ projectId, chainId }: BlockchainApiSwapTokensRequest) {
+  async fetchSwapTokens({ projectId, chainId }: BlockchainApiSwapTokensRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ConnectionsController.state.activeCaipNetworkId
+    );
+
+    if (!isSupported) {
+      return { tokens: [] };
+    }
+
     return state.api.get<BlockchainApiSwapTokensResponse>({
       path: `/v1/convert/tokens`,
       headers: getHeaders(),
@@ -172,13 +263,21 @@ export const BlockchainApiController = {
     });
   },
 
-  generateSwapCalldata({
+  async generateSwapCalldata({
     amount,
     from,
     projectId,
     to,
     userAddress
   }: BlockchainApiGenerateSwapCalldataRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ConnectionsController.state.activeCaipNetworkId
+    );
+
+    if (!isSupported) {
+      throw new Error('Network not supported for Swaps');
+    }
+
     return state.api.post<BlockchainApiGenerateSwapCalldataResponse>({
       path: '/v1/convert/build-transaction',
       headers: getHeaders(),
@@ -195,12 +294,20 @@ export const BlockchainApiController = {
     });
   },
 
-  generateApproveCalldata({
+  async generateApproveCalldata({
     from,
     projectId,
     to,
     userAddress
   }: BlockchainApiGenerateApproveCalldataRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ConnectionsController.state.activeCaipNetworkId
+    );
+
+    if (!isSupported) {
+      throw new Error('Network not supported for Swaps');
+    }
+
     return state.api.get<BlockchainApiGenerateApproveCalldataResponse>({
       path: `/v1/convert/build-approve`,
       headers: getHeaders(),
@@ -214,6 +321,15 @@ export const BlockchainApiController = {
   },
 
   async getBalance(address: string, chainId?: string, forceUpdate?: string) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ConnectionsController.state.activeCaipNetworkId
+    );
+    if (!isSupported) {
+      SnackController.showError('Token Balance Unavailable');
+
+      return { balances: [] };
+    }
+
     return state.api.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
       headers: getHeaders(),
@@ -238,7 +354,7 @@ export const BlockchainApiController = {
   },
 
   async fetchOnRampCountries() {
-    return await state.stageApi.get<OnRampCountry[]>({
+    return await state.api.get<OnRampCountry[]>({
       path: '/v1/onramp/providers/properties',
       headers: getHeaders(),
       params: {
@@ -249,7 +365,7 @@ export const BlockchainApiController = {
   },
 
   async fetchOnRampServiceProviders() {
-    return await state.stageApi.get<OnRampServiceProvider[]>({
+    return await state.api.get<OnRampServiceProvider[]>({
       path: '/v1/onramp/providers',
       headers: getHeaders(),
       params: {
@@ -259,7 +375,7 @@ export const BlockchainApiController = {
   },
 
   async fetchOnRampPaymentMethods(params: { countries?: string }) {
-    return await state.stageApi.get<OnRampPaymentMethod[]>({
+    return await state.api.get<OnRampPaymentMethod[]>({
       path: '/v1/onramp/providers/properties',
       headers: getHeaders(),
       params: {
@@ -271,7 +387,7 @@ export const BlockchainApiController = {
   },
 
   async fetchOnRampCryptoCurrencies(params: { countries?: string }) {
-    return await state.stageApi.get<OnRampCryptoCurrency[]>({
+    return await state.api.get<OnRampCryptoCurrency[]>({
       path: '/v1/onramp/providers/properties',
       headers: getHeaders(),
       params: {
@@ -283,7 +399,7 @@ export const BlockchainApiController = {
   },
 
   async fetchOnRampFiatCurrencies() {
-    return await state.stageApi.get<OnRampFiatCurrency[]>({
+    return await state.api.get<OnRampFiatCurrency[]>({
       path: '/v1/onramp/providers/properties',
       headers: getHeaders(),
       params: {
@@ -294,7 +410,7 @@ export const BlockchainApiController = {
   },
 
   async fetchOnRampFiatLimits() {
-    return await state.stageApi.get<OnRampFiatLimit[]>({
+    return await state.api.get<OnRampFiatLimit[]>({
       path: '/v1/onramp/providers/properties',
       headers: getHeaders(),
       params: {
@@ -305,7 +421,7 @@ export const BlockchainApiController = {
   },
 
   async getOnRampQuotes(body: BlockchainApiOnRampQuotesRequest, signal?: AbortSignal) {
-    return await state.stageApi.post<OnRampQuote[]>({
+    return await state.api.post<OnRampQuote[]>({
       path: '/v1/onramp/multi/quotes',
       headers: getHeaders(),
       body: {
@@ -317,7 +433,7 @@ export const BlockchainApiController = {
   },
 
   async getOnRampWidget(body: BlockchainApiOnRampWidgetRequest, signal?: AbortSignal) {
-    return await state.stageApi.post<BlockchainApiOnRampWidgetResponse>({
+    return await state.api.post<BlockchainApiOnRampWidgetResponse>({
       path: '/v1/onramp/widget',
       headers: getHeaders(),
       body: {

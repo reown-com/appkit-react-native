@@ -4,13 +4,14 @@ import {
   WalletConnector,
   type AppKitNetwork,
   type CaipAddress,
+  type ChainNamespace,
   type GetBalanceParams,
   type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
 import { EthersHelpersUtil } from '@reown/appkit-scaffold-utils-react-native';
 
 export class EthersAdapter extends EVMAdapter {
-  private static supportedNamespace: string = 'eip155';
+  private static supportedNamespace: ChainNamespace = 'eip155';
 
   constructor(configParams: { projectId: string }) {
     super({
@@ -105,7 +106,7 @@ export class EthersAdapter extends EVMAdapter {
     return provider.request({ method, params });
   }
 
-  getSupportedNamespace(): string {
+  getSupportedNamespace(): ChainNamespace {
     return EthersAdapter.supportedNamespace;
   }
 

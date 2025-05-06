@@ -4,7 +4,7 @@ export type CaipAddress = `${string}:${string}:${string}`;
 
 export type CaipNetworkId = `${string}:${string}`;
 
-export type ChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122' | string;
+export type ChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122';
 
 export type AppKitNetwork = {
   // Core viem/chain properties
@@ -133,18 +133,17 @@ export interface ThemeVariables {
 export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
 
 //********** Adapter Types **********//
-
 export abstract class BlockchainAdapter extends EventEmitter {
   public projectId: string;
   public connector?: WalletConnector;
-  public supportedNamespace: string;
+  public supportedNamespace: ChainNamespace;
 
   constructor({
     projectId,
     supportedNamespace
   }: {
     projectId: string;
-    supportedNamespace: string;
+    supportedNamespace: ChainNamespace;
   }) {
     super();
     this.projectId = projectId;
@@ -161,13 +160,15 @@ export abstract class BlockchainAdapter extends EventEmitter {
 
   abstract disconnect(): Promise<void>;
   abstract request(method: string, params?: any[]): Promise<any>;
-  abstract getSupportedNamespace(): string;
+  abstract getSupportedNamespace(): ChainNamespace;
   abstract getBalance(params: GetBalanceParams): Promise<GetBalanceResponse>;
   abstract getAccounts(): CaipAddress[] | undefined;
   abstract switchNetwork(network: AppKitNetwork): Promise<void>;
 }
 
-export abstract class EVMAdapter extends BlockchainAdapter {}
+export abstract class EVMAdapter extends BlockchainAdapter {
+  // ens logic
+}
 
 export abstract class SolanaBaseAdapter extends BlockchainAdapter {}
 
@@ -176,9 +177,12 @@ export interface GetBalanceParams {
   network?: AppKitNetwork;
 }
 
+type ContractAddress = CaipAddress;
+
 export interface GetBalanceResponse {
   amount: string;
   symbol: string;
+  contractAddress?: ContractAddress;
 }
 
 //********** Connector Types **********//

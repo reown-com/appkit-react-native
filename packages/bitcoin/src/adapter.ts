@@ -3,6 +3,7 @@ import {
   WalletConnector,
   type AppKitNetwork,
   type CaipAddress,
+  type ChainNamespace,
   type GetBalanceParams,
   type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
@@ -10,7 +11,7 @@ import { BitcoinApi } from './utils/BitcoinApi';
 import { UnitsUtil } from './utils/UnitsUtil';
 
 export class BitcoinAdapter extends BlockchainAdapter {
-  private static supportedNamespace: string = 'bip122';
+  private static supportedNamespace: ChainNamespace = 'bip122';
   private static api = BitcoinApi;
 
   constructor(configParams: { projectId: string }) {
@@ -94,7 +95,7 @@ export class BitcoinAdapter extends BlockchainAdapter {
     return provider.request({ method, params });
   }
 
-  getSupportedNamespace(): string {
+  getSupportedNamespace(): ChainNamespace {
     return BitcoinAdapter.supportedNamespace;
   }
 

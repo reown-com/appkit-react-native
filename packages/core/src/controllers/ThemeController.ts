@@ -1,10 +1,11 @@
+import { Appearance } from 'react-native';
 import { proxy, subscribe as sub } from 'valtio';
 import type { ThemeMode, ThemeVariables } from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 export interface ThemeControllerState {
   themeMode?: ThemeMode;
-  themeVariables: ThemeVariables;
+  themeVariables?: ThemeVariables;
 }
 
 // -- State --------------------------------------------- //
@@ -22,10 +23,18 @@ export const ThemeController = {
   },
 
   setThemeMode(themeMode: ThemeControllerState['themeMode']) {
-    state.themeMode = themeMode;
+    if (!themeMode) {
+      state.themeMode = Appearance.getColorScheme() as ThemeMode;
+    } else {
+      state.themeMode = themeMode;
+    }
   },
 
   setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
+    if (!themeVariables) {
+      state.themeVariables = {};
+    }
+
     state.themeVariables = { ...state.themeVariables, ...themeVariables };
   }
 };

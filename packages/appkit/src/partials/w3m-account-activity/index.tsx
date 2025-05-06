@@ -36,12 +36,13 @@ export function AccountActivity({ style }: Props) {
   const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
 
   const handleLoadMore = () => {
-    TransactionsController.fetchTransactions(AccountController.state.address);
+    const address = ConnectionsController.state.activeAddress?.split(':')[2];
+    TransactionsController.fetchTransactions(address);
     EventsController.sendEvent({
       type: 'track',
       event: 'LOAD_MORE_TRANSACTIONS',
       properties: {
-        address: AccountController.state.address,
+        address,
         projectId: OptionsController.state.projectId,
         cursor: TransactionsController.state.next,
         isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
@@ -51,7 +52,8 @@ export function AccountActivity({ style }: Props) {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await TransactionsController.fetchTransactions(AccountController.state.address, true);
+    const address = ConnectionsController.state.activeAddress?.split(':')[2];
+    await TransactionsController.fetchTransactions(address, true);
     setRefreshing(false);
   }, []);
 
@@ -61,7 +63,8 @@ export function AccountActivity({ style }: Props) {
 
   useEffect(() => {
     if (!TransactionsController.state.transactions.length) {
-      TransactionsController.fetchTransactions(AccountController.state.address, true);
+      const address = ConnectionsController.state.activeAddress?.split(':')[2];
+      TransactionsController.fetchTransactions(address, true);
     }
     // Set initial load to false after first fetch
     const timer = setTimeout(() => setInitialLoad(false), 100);

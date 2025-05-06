@@ -29,9 +29,7 @@ import {
 import { Button, Text } from '@reown/appkit-ui-react-native';
 
 // import { siweConfig } from './src/utils/SiweUtils';
-
 // import { AccountView } from './src/views/AccountView';
-// import { getCustomWallets } from './src/utils/misc';
 // import { chains } from './src/utils/WagmiUtils';
 // import { OpenButton } from './src/components/OpenButton';
 // import { DisconnectButton } from './src/components/DisconnectButton';
@@ -40,6 +38,7 @@ import { SolanaAdapter } from '@reown/appkit-solana-react-native';
 import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
 import { mainnet, polygon, avalanche } from 'viem/chains';
 import { ActionsView } from './src/views/ActionsView';
+
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
 const metadata = {
@@ -75,8 +74,6 @@ const clipboardClient = {
 // });
 
 const queryClient = new QueryClient();
-
-// const customWallets = getCustomWallets();
 
 // const wagmiAdapter = new WagmiAdapter({
 //   wagmiConfig,
@@ -119,7 +116,17 @@ const appKit = createAppKit({
   adapters: [ethersAdapter, solanaAdapter, bitcoinAdapter],
   metadata,
   networks: [mainnet, polygon, avalanche, solana, bitcoin, bitcoinTestnet],
-  clipboardClient
+  clipboardClient,
+  debug: true,
+  enableAnalytics: true
+  // siweConfig,
+  // features: {
+  //   email: true,
+  //   socials: ['x', 'discord', 'apple'],
+  //   emailShowWallets: true,
+  //   swaps: true,
+  //   onramp: true
+  // }
 });
 
 export default function Native() {
