@@ -61,11 +61,11 @@ export function AccountDefaultView() {
   const showBack = history.length > 1;
   const showSwitchAccountType = isAuth && NetworkController.checkIfSmartAccountEnabled();
   const { padding } = useCustomDimensions();
-  const { appKit } = useAppKit();
+  const { disconnect } = useAppKit();
 
   async function onDisconnect() {
     setDisconnecting(true);
-    await appKit?.disconnect(ConnectionsController.state.activeNamespace);
+    await disconnect(ConnectionsController.state.activeNamespace);
     setDisconnecting(false);
   }
 

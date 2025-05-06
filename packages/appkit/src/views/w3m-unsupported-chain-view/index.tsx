@@ -25,7 +25,7 @@ export function UnsupportedChainView() {
   const [disconnecting, setDisconnecting] = useState(false);
   const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
   const imageHeaders = ApiController._getApiHeaders();
-  const { appKit } = useAppKit();
+  const { disconnect } = useAppKit();
 
   const onNetworkPress = async (network: CaipNetwork) => {
     //TODO: change to appkit switchNetwork
@@ -43,7 +43,7 @@ export function UnsupportedChainView() {
 
   const onDisconnect = async () => {
     setDisconnecting(true);
-    await appKit?.disconnect(ConnectionsController.state.activeNamespace);
+    await disconnect(ConnectionsController.state.activeNamespace);
     setDisconnecting(false);
   };
 

@@ -1,11 +1,11 @@
 import { useSnapshot } from 'valtio';
 import { ConnectionsController } from '@reown/appkit-core-react-native';
 
-export function useProvider<T>(namespace?: string): T | null {
+export function useProvider(namespace?: string) {
   const { connections, activeNamespace } = useSnapshot(ConnectionsController.state);
   const connection = connections[namespace ?? activeNamespace];
 
-  if (!connection) return null;
+  if (!connection) return undefined;
 
-  return connection.adapter.connector?.getProvider() as T;
+  return connection.adapter.connector?.getProvider();
 }

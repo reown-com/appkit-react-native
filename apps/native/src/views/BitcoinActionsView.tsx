@@ -1,16 +1,14 @@
 import { StyleSheet } from 'react-native';
 import { Button, Text, FlexView } from '@reown/appkit-ui-react-native';
-import { useAppKit, useAppKitAccount } from '@reown/appkit-react-native';
+import { useAccount, useProvider } from '@reown/appkit-react-native';
 
 import { ToastUtils } from '../utils/ToastUtils';
 import { BitcoinUtil, SignPSBTResponse } from '../utils/BitcoinUtil';
 
 export function BitcoinActionsView() {
   const isConnected = true;
-  const { appKit } = useAppKit();
-  const { address, chainId } = useAppKitAccount();
-
-  const provider = appKit?.getProvider('bip122');
+  const { address, chainId } = useAccount();
+  const provider = useProvider('bip122');
 
   const onSignSuccess = (data: string) => {
     ToastUtils.showSuccessToast('Sign successful', data);

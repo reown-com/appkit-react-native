@@ -22,7 +22,7 @@ import { ConnectingHeader } from '../../partials/w3m-connecting-header';
 import { UiUtil } from '../../utils/UiUtil';
 
 export function ConnectingView() {
-  const { appKit } = useAppKit();
+  const { connect } = useAppKit();
   const { installed } = useSnapshot(ApiController.state);
   const { data } = RouterController.state;
   const [lastRetry, setLastRetry] = useState(Date.now());
@@ -51,7 +51,7 @@ export function ConnectingView() {
         // ConnectionController.connectWalletConnect(routeData?.wallet?.link_mode ?? undefined);
 
         //TODO: check linkmode
-        const wcPromise = appKit?.connect('walletconnect');
+        const wcPromise = connect('walletconnect');
         ConnectionController.setWcPromise(wcPromise);
         await wcPromise;
         // await ConnectionController.state.wcPromise;

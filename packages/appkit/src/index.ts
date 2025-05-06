@@ -22,11 +22,12 @@ export { CoreHelperUtil } from '@reown/appkit-core-react-native';
 
 export * from './AppKit';
 export * from './networks';
-export { AppKitProvider, useAppKit } from './AppKitContext';
+export { AppKitProvider } from './AppKitContext';
 export { WalletConnectConnector } from './connectors/WalletConnectConnector';
 
 /****** Hooks *******/
+export { useAppKit } from './hooks/useAppKit';
 export { useProvider } from './hooks/useProvider';
-export { useAppKitAccount } from './hooks/useAppKitAccount';
+export { useAccount } from './hooks/useAccount';
 export { useWalletInfo } from './hooks/useWalletInfo';
 export { useAppKitEvents, useAppKitEventSubscription } from './hooks/useAppKitEvents';

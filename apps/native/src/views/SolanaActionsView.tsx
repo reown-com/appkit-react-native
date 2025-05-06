@@ -1,16 +1,14 @@
 import { StyleSheet } from 'react-native';
 import { Button, Text, FlexView } from '@reown/appkit-ui-react-native';
-import { useAppKit, useAppKitAccount } from '@reown/appkit-react-native';
+import { useAccount, useProvider } from '@reown/appkit-react-native';
 import base58 from 'bs58';
 
 import { ToastUtils } from '../utils/ToastUtils';
 
 export function SolanaActionsView() {
   const isConnected = true;
-  const { appKit } = useAppKit();
-  const { address, chainId } = useAppKitAccount();
-
-  const provider = appKit?.getProvider('solana');
+  const { address, chainId } = useAccount();
+  const provider = useProvider('solana');
 
   const onSignSuccess = (data: any) => {
     ToastUtils.showSuccessToast('Sign successful', data);

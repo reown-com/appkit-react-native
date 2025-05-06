@@ -5,7 +5,7 @@ interface AppKitContextType {
   appKit: AppKit | null;
 }
 
-const AppKitContext = createContext<AppKitContextType>({ appKit: null });
+export const AppKitContext = createContext<AppKitContextType>({ appKit: null });
 
 interface AppKitProviderProps {
   children: ReactNode;
@@ -16,7 +16,8 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children, instan
   return <AppKitContext.Provider value={{ appKit: instance }}>{children}</AppKitContext.Provider>;
 };
 
-export const useAppKit = (): { appKit: AppKit } => {
+//TODO: rename this so it doesn't conflict with the useAppKit hook in the hooks folder
+export const useAppKit = () => {
   const context = useContext(AppKitContext);
   if (context === undefined) {
     throw new Error('useAppKit must be used within an AppKitProvider');
@@ -26,5 +27,12 @@ export const useAppKit = (): { appKit: AppKit } => {
     throw new Error('AppKit instance is not yet available in context.');
   }
 
-  return { appKit: context.appKit };
+  return {
+    connect: context.appKit.connect.bind(context.appKit),
+    disconnect: context.appKit.disconnect.bind(context.appKit),
+    open: context.appKit.open.bind(context.appKit),
+    close: context.appKit.close.bind(context.appKit),
+    switchNetwork: context.appKit.switchNetwork.bind(context.appKit),
+    getProvider: context.appKit.getProvider.bind(context.appKit)
+  };
 };

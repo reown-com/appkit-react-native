@@ -1,13 +1,13 @@
 import { StyleSheet } from 'react-native';
 import { FlexView } from '@reown/appkit-ui-react-native';
-import { useAppKitAccount } from '@reown/appkit-react-native';
+import { useAccount } from '@reown/appkit-react-native';
 
 import { EthersActionsView } from './EthersActionsView';
 import { SolanaActionsView } from './SolanaActionsView';
 import { BitcoinActionsView } from './BitcoinActionsView';
 export function ActionsView() {
   const isConnected = true;
-  const { chainId } = useAppKitAccount();
+  const { chainId } = useAccount();
 
   return isConnected ? (
     <FlexView style={styles.container}>

@@ -30,6 +30,7 @@ import { WalletConnectConnector } from './connectors/WalletConnectConnector';
 import { WcHelpersUtil } from './utils/HelpersUtil';
 import { NetworkUtil } from './utils/NetworkUtil';
 import { SIWEController, type AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
+import type { OpenOptions } from './client';
 
 interface AppKitConfig {
   projectId: string;
@@ -244,7 +245,6 @@ export class AppKit {
       const accounts = namespaceDetails.accounts ?? [];
       const chains = namespaceDetails.chains ?? [];
 
-      console.log('walletInfo', walletInfo);
       ConnectionsController.storeConnection({
         namespace,
         adapter,
@@ -363,16 +363,7 @@ export class AppKit {
     return connection.adapter.connector.getProvider() as T;
   }
 
-  getActiveAdapter(): BlockchainAdapter | null {
-    const activeNamespace = ConnectionsController.state.activeNamespace;
-    if (!activeNamespace) return null;
-
-    const connection = ConnectionsController.state.connections[activeNamespace];
-
-    return connection?.adapter ?? null;
-  }
-
-  getAdapterByNamespace(namespace: string = 'eip155'): BlockchainAdapter | null {
+  private getAdapterByNamespace(namespace: string = 'eip155'): BlockchainAdapter | null {
     const namespaceConnection = ConnectionsController.state.connections[namespace];
 
     return namespaceConnection?.adapter ?? null;
@@ -402,6 +393,14 @@ export class AppKit {
     }
 
     adapter.getBalance({ network });
+  }
+
+  open(options?: OpenOptions) {
+    ModalController.open(options);
+  }
+
+  close() {
+    ModalController.close();
   }
 }
 

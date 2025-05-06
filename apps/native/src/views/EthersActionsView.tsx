@@ -1,15 +1,14 @@
 import { StyleSheet } from 'react-native';
 import { Button, Text, FlexView } from '@reown/appkit-ui-react-native';
-import { useAppKit, useAppKitAccount } from '@reown/appkit-react-native';
+import { useAccount, useProvider } from '@reown/appkit-react-native';
 import { hexlify, isHexString, toUtf8Bytes } from 'ethers';
 
 import { ToastUtils } from '../utils/ToastUtils';
 
 export function EthersActionsView() {
   const isConnected = true;
-  const { appKit } = useAppKit();
-  const { address, chainId } = useAppKitAccount();
-  const provider = appKit?.getProvider('eip155');
+  const { address, chainId } = useAccount();
+  const provider = useProvider('eip155');
 
   const onSignSuccess = (data: any) => {
     ToastUtils.showSuccessToast('Sign successful', data);

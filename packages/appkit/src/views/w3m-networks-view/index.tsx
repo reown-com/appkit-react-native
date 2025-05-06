@@ -20,6 +20,7 @@ import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 import { useAppKit } from '../../AppKitContext';
+
 export function NetworksView() {
   const { caipNetwork } = NetworkController.state;
   const imageHeaders = ApiController._getApiHeaders();
@@ -30,7 +31,7 @@ export function NetworksView() {
   const itemGap = Math.abs(
     Math.trunc((usableWidth - numColumns * CardSelectWidth) / numColumns) / 2
   );
-  const { appKit } = useAppKit();
+  const { switchNetwork } = useAppKit();
 
   const onHelpPress = () => {
     RouterController.push('WhatIsANetwork');
@@ -43,7 +44,7 @@ export function NetworksView() {
     const networks = ConnectionsController.getConnectedNetworks();
 
     const onNetworkPress = async (network: AppKitNetwork) => {
-      await appKit.switchNetwork(network);
+      await switchNetwork(network);
       RouterController.goBack();
     };
 

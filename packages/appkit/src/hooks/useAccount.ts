@@ -1,7 +1,7 @@
-import { ConnectionsController } from '@reown/appkit-core-react-native';
 import { useSnapshot } from 'valtio';
+import { ConnectionsController } from '@reown/appkit-core-react-native';
 
-export function useAppKitAccount() {
+export function useAccount() {
   const {
     activeAddress: address,
     activeNamespace,
