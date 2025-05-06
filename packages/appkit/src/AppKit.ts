@@ -9,8 +9,7 @@ import {
   type Metadata,
   StorageUtil,
   type OptionsControllerState,
-  ThemeController,
-  type Features
+  ThemeController
 } from '@reown/appkit-core-react-native';
 
 import type {
@@ -23,7 +22,8 @@ import type {
   AppKitNetwork,
   Provider,
   ThemeVariables,
-  ThemeMode
+  ThemeMode,
+  WalletInfo
 } from '@reown/appkit-common-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
@@ -47,7 +47,7 @@ interface AppKitConfig {
   debug?: OptionsControllerState['debug'];
   themeMode?: ThemeMode;
   themeVariables?: ThemeVariables;
-  features?: Features;
+  // features?: Features;
   siweConfig?: AppKitSIWEClient;
   // defaultChain?: NetworkControllerState['caipNetwork'];
   // chainImages?: Record<number, string>;
@@ -102,6 +102,8 @@ export class AppKit {
           const connector = await this.createConnector(connected.type);
 
           const namespaces = connector.getNamespaces();
+          const walletInfo = connector.getWalletInfo();
+
           if (namespaces && Object.keys(namespaces).length > 0) {
             // Ensure namespaces is not empty
             // Setup adapters and subscribe to events
@@ -112,7 +114,7 @@ export class AppKit {
 
             // If adapters were successfully initialized, store the connection details
             if (initializedAdapters.length > 0) {
-              this._storeConnectionDetails(initializedAdapters, namespaces);
+              this._storeConnectionDetails(initializedAdapters, namespaces, walletInfo);
             }
 
             this.syncAccounts(initializedAdapters);
@@ -169,6 +171,8 @@ export class AppKit {
       const connector = await this.createConnector(type);
 
       const approvedNamespaces = await connector.connect(requestedNamespaces ?? this.namespaces);
+      const walletInfo = connector.getWalletInfo();
+
       if (!approvedNamespaces || Object.keys(approvedNamespaces).length === 0) {
         throw new Error('Connection cancelled or failed: No approved namespaces returned.');
       }
@@ -186,7 +190,7 @@ export class AppKit {
       }
 
       // Store the connection details for the successfully connected adapters
-      this._storeConnectionDetails(approvedAdapters, approvedNamespaces);
+      this._storeConnectionDetails(approvedAdapters, approvedNamespaces, walletInfo);
 
       // Store connector type and namespaces in storage
       await StorageUtil.setConnectedConnectors({
@@ -227,7 +231,11 @@ export class AppKit {
    * @param adapters - The adapters for which to store the connection.
    * @param approvedNamespaces - The map of approved namespaces and their details.
    */
-  private _storeConnectionDetails(adapters: BlockchainAdapter[], approvedNamespaces: Namespaces) {
+  private _storeConnectionDetails(
+    adapters: BlockchainAdapter[],
+    approvedNamespaces: Namespaces,
+    wallet?: WalletInfo
+  ) {
     adapters.forEach(async adapter => {
       const namespace = adapter.getSupportedNamespace();
       const namespaceDetails = approvedNamespaces[namespace];
@@ -236,11 +244,13 @@ export class AppKit {
       const accounts = namespaceDetails.accounts ?? [];
       const chains = namespaceDetails.chains ?? [];
 
+      console.log('walletInfo', walletInfo);
       ConnectionsController.storeConnection({
         namespace,
         adapter,
         accounts,
-        chains
+        chains,
+        wallet
       });
     });
 
@@ -262,13 +272,10 @@ export class AppKit {
     });
 
     adapter.on('disconnect', ({ namespace }) => {
-      ConnectionsController.disconnect(namespace);
-      // Potentially remove from storage on disconnect event as well
-      // StorageUtil.removeConnectedConnectors(connectorType); // Need connectorType here
+      this.disconnect(namespace, false);
     });
 
     adapter.on('balanceChanged', ({ namespace, address, balance }) => {
-      // console.log('balanceChanged', namespace, address, balance);
       ConnectionsController.updateBalance(namespace, address, balance);
     });
   }
@@ -283,7 +290,7 @@ export class AppKit {
     OptionsController.setCustomWallets(options.customWallets);
     OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setDebug(options.debug);
-    OptionsController.setFeatures(options.features);
+    // OptionsController.setFeatures(options.features);
 
     ThemeController.setThemeMode(options.themeMode);
     ThemeController.setThemeVariables(options.themeVariables);
@@ -301,15 +308,15 @@ export class AppKit {
       SIWEController.setSIWEClient(options.siweConfig);
     }
 
-    if (
-      (options.features?.onramp === true || options.features?.onramp === undefined) &&
-      (options.metadata?.redirect?.universal || options.metadata?.redirect?.native)
-    ) {
-      OptionsController.setIsOnRampEnabled(true);
-    }
+    // if (
+    //   (options.features?.onramp === true || options.features?.onramp === undefined) &&
+    //   (options.metadata?.redirect?.universal || options.metadata?.redirect?.native)
+    // ) {
+    //   OptionsController.setIsOnRampEnabled(true);
+    // }
   }
 
-  async disconnect(namespace?: string): Promise<void> {
+  async disconnect(namespace?: string, isInternal?: boolean): Promise<void> {
     try {
       const connection =
         ConnectionsController.state.connections[
@@ -318,7 +325,8 @@ export class AppKit {
       const connectorType = connection?.adapter?.connector?.type;
 
       await ConnectionsController.disconnect(
-        namespace ?? ConnectionsController.state.activeNamespace
+        namespace ?? ConnectionsController.state.activeNamespace,
+        isInternal
       );
 
       if (connectorType) {

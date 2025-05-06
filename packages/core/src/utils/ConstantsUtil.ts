@@ -1,11 +1,12 @@
 import type { ChainNamespace } from '@reown/appkit-common-react-native';
 import type { Features } from './TypeUtil';
 
+//TODO: enable this again after implemented
 const defaultFeatures: Features = {
-  swaps: true,
-  onramp: true,
-  email: true,
-  emailShowWallets: true,
+  swaps: false,
+  onramp: false,
+  email: false,
+  emailShowWallets: false,
   socials: ['x', 'discord', 'apple']
 };
 

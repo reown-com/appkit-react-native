@@ -6,7 +6,8 @@ import type {
   CaipAddress,
   CaipNetworkId,
   ChainNamespace,
-  GetBalanceResponse
+  GetBalanceResponse,
+  WalletInfo
 } from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
@@ -19,6 +20,7 @@ interface Connection {
   adapter: BlockchainAdapter;
   chains: CaipNetworkId[];
   activeChain: CaipNetworkId;
+  wallet?: WalletInfo;
 }
 
 export interface ConnectionsControllerState {
@@ -103,6 +105,13 @@ const derivedState = derive(
       if (!connection) return undefined;
 
       return connection.activeChain;
+    },
+    walletInfo: (get): WalletInfo | undefined => {
+      const snap = get(baseState);
+
+      if (!snap.activeNamespace) return undefined;
+
+      return snap.connections[snap.activeNamespace]?.wallet;
     }
   },
   {
@@ -122,19 +131,22 @@ export const ConnectionsController = {
     namespace,
     adapter,
     accounts,
-    chains
+    chains,
+    wallet
   }: {
     namespace: string;
     adapter: BlockchainAdapter;
     accounts: CaipAddress[];
     chains: CaipNetworkId[];
+    wallet?: WalletInfo;
   }) {
     baseState.connections[namespace] = {
       balances: {},
       activeChain: chains[0]!,
       adapter: ref(adapter),
       accounts,
-      chains
+      chains,
+      wallet
     };
   },
 
@@ -174,7 +186,7 @@ export const ConnectionsController = {
     );
   },
 
-  async disconnect(namespace: string) {
+  async disconnect(namespace: string, isInternal = true) {
     const connection = baseState.connections[namespace];
     if (!connection) return;
 
@@ -196,7 +208,9 @@ export const ConnectionsController = {
     });
 
     // Disconnect the adapter
-    await connection.adapter.disconnect();
+    if (isInternal) {
+      await connection.adapter.disconnect();
+    }
 
     // Remove all namespaces that used this connector
     namespacesUsingConnector.forEach(ns => {

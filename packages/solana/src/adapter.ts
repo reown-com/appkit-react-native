@@ -113,7 +113,6 @@ export class SolanaAdapter extends SolanaBaseAdapter {
   }
 
   onDisconnect(): void {
-    // console.log('SolanaAdapter - onDisconnect');
     this.emit('disconnect', { namespace: this.getSupportedNamespace() });
 
     //the connector might be shared between adapters. Validate this
@@ -136,7 +135,6 @@ export class SolanaAdapter extends SolanaBaseAdapter {
     const provider = this.connector?.getProvider();
     if (!provider) return;
 
-    // console.log('SolanaAdapter - subscribing to events');
     provider.on('chainChanged', this.onChainChanged.bind(this));
     provider.on('accountsChanged', this.onAccountsChanged.bind(this));
     provider.on('disconnect', this.onDisconnect.bind(this));

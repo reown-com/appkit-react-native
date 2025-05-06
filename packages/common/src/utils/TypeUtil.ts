@@ -158,6 +158,12 @@ export abstract class BlockchainAdapter extends EventEmitter {
     this.connector = undefined;
   }
 
+  getProvider(): Provider {
+    if (!this.connector) throw new Error('No active connector');
+
+    return this.connector.getProvider();
+  }
+
   abstract disconnect(): Promise<void>;
   abstract request(method: string, params?: any[]): Promise<any>;
   abstract getSupportedNamespace(): ChainNamespace;
@@ -206,6 +212,7 @@ export abstract class WalletConnector extends EventEmitter {
   public type: New_ConnectorType;
   protected provider: Provider;
   protected namespaces?: Namespaces;
+  protected wallet?: WalletInfo;
 
   constructor({ type, provider }: { type: New_ConnectorType; provider: Provider }) {
     super();
@@ -217,6 +224,7 @@ export abstract class WalletConnector extends EventEmitter {
   abstract disconnect(): Promise<void>;
   abstract getProvider(): Provider;
   abstract getNamespaces(): Namespaces;
+  abstract getWalletInfo(): WalletInfo | undefined;
   abstract switchNetwork(network: AppKitNetwork): Promise<void>;
 }
 
@@ -239,7 +247,7 @@ export interface RequestArguments {
   params?: unknown[] | Record<string, unknown> | object | undefined;
 }
 
-//TODO: rename this and remove the old one
+//TODO: rename this and remove the old one ConnectorType
 export type New_ConnectorType = 'walletconnect' | 'coinbase' | 'auth';
 
 //********** Others **********//
@@ -248,4 +256,18 @@ export interface ConnectionResponse {
   accounts: string[];
   chainId: string;
   [key: string]: any;
+}
+
+export interface WalletInfo {
+  name?: string;
+  icon?: string;
+  description?: string;
+  url?: string;
+  icons?: string[];
+  redirect?: {
+    native?: string;
+    universal?: string;
+    linkMode?: boolean;
+  };
+  [key: string]: unknown;
 }

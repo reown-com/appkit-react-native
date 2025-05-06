@@ -38,6 +38,8 @@ import { SolanaAdapter } from '@reown/appkit-solana-react-native';
 import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
 import { mainnet, polygon, avalanche } from 'viem/chains';
 import { ActionsView } from './src/views/ActionsView';
+import { WalletInfoView } from './src/views/WalletInfoView';
+import { EventsView } from './src/views/EventsView';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -141,6 +143,7 @@ export default function Native() {
           <Text variant="medium-title-600" style={styles.title}>
             AppKit for React Native
           </Text>
+          <WalletInfoView />
           <AppKitButton
             connectStyle={styles.button}
             accountStyle={styles.button}
@@ -156,6 +159,7 @@ export default function Native() {
           <Button size="sm" onPress={() => appKit.disconnect()}>
             Disconnect
           </Button>
+          <EventsView style={styles.events} />
           <AppKit />
         </SafeAreaView>
         <Toast />
@@ -179,9 +183,15 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   title: {
-    marginBottom: 30
+    marginBottom: 10
   },
   button: {
-    marginVertical: 6
+    marginVertical: 16
+  },
+  walletInfo: {
+    marginBottom: 10
+  },
+  events: {
+    marginTop: 30
   }
 });

@@ -5,7 +5,8 @@ import {
   type AppKitNetwork,
   type Namespaces,
   type ProposalNamespaces,
-  type Provider
+  type Provider,
+  type WalletInfo
 } from '@reown/appkit-common-react-native';
 
 export class WalletConnectConnector extends WalletConnector {
@@ -14,6 +15,17 @@ export class WalletConnectConnector extends WalletConnector {
 
     if (provider.session?.namespaces) {
       this.namespaces = provider.session.namespaces as Namespaces;
+    }
+
+    if (provider.session?.peer?.metadata) {
+      const metadata = provider.session?.peer.metadata;
+      if (metadata) {
+        this.wallet = {
+          ...metadata,
+          name: metadata.name,
+          icon: metadata.icons?.[0]
+        };
+      }
     }
   }
 
@@ -68,5 +80,9 @@ export class WalletConnectConnector extends WalletConnector {
     (this.provider as IUniversalProvider).setDefaultChain(network.caipNetworkId);
 
     return Promise.resolve();
+  }
+
+  override getWalletInfo(): WalletInfo | undefined {
+    return this.wallet;
   }
 }

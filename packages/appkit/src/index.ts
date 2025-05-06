@@ -23,6 +23,10 @@ export { CoreHelperUtil } from '@reown/appkit-core-react-native';
 export * from './AppKit';
 export * from './networks';
 export { AppKitProvider, useAppKit } from './AppKitContext';
+export { WalletConnectConnector } from './connectors/WalletConnectConnector';
+
+/****** Hooks *******/
 export { useProvider } from './hooks/useProvider';
 export { useAppKitAccount } from './hooks/useAppKitAccount';
-export { WalletConnectConnector } from './connectors/WalletConnectConnector';
+export { useWalletInfo } from './hooks/useWalletInfo';
+export { useAppKitEvents, useAppKitEventSubscription } from './hooks/useAppKitEvents';

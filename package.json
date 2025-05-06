@@ -10,7 +10,6 @@
     "packages/wallet",
     "packages/scaffold-utils",
     "packages/siwe",
-    "packages/wagmi",
     "packages/coinbase-wagmi",
     "packages/auth-wagmi",
     "packages/auth-ethers",
