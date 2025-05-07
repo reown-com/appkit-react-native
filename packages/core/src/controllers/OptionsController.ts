@@ -1,13 +1,14 @@
 import { proxy, ref } from 'valtio';
+import type { Tokens } from '@reown/appkit-common-react-native';
 import type {
   CustomWallet,
   Features,
   Metadata,
   ProjectId,
   SdkType,
-  SdkVersion,
-  Tokens
+  SdkVersion
 } from '../utils/TypeUtil';
+
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 
 // -- Types --------------------------------------------- //

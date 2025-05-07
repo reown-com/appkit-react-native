@@ -339,13 +339,6 @@ export type BlockchainApiOnRampWidgetResponse = {
 };
 
 // -- OptionsController Types ---------------------------------------------------
-export interface Token {
-  address: string;
-  image?: string;
-}
-
-export type Tokens = Record<CaipNetworkId, Token>;
-
 export type Metadata = {
   name: string;
   description: string;

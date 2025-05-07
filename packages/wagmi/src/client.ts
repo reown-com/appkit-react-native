@@ -32,7 +32,6 @@ import {
   type NetworkControllerClient,
   type PublicStateControllerState,
   type SendTransactionArgs,
-  type Token,
   AppKitScaffold,
   type WriteContractArgs,
   type AppKitFrameProvider,
@@ -49,6 +48,7 @@ import {
   type CaipAddress,
   type CaipNetwork,
   type CaipNetworkId
+  type Token,
 } from '@reown/appkit-common-react-native';
 import {
   SIWEController,

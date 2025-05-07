@@ -44,15 +44,15 @@ interface AppKitConfig {
   excludeWalletIds?: OptionsControllerState['excludeWalletIds'];
   featuredWalletIds?: OptionsControllerState['featuredWalletIds'];
   customWallets?: OptionsControllerState['customWallets'];
-  tokens?: OptionsControllerState['tokens'];
+  tokens?: OptionsControllerState['tokens']; //TODO: check if needed in OptionsController
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
   debug?: OptionsControllerState['debug'];
   themeMode?: ThemeMode;
   themeVariables?: ThemeVariables;
-  // features?: Features;
   siweConfig?: AppKitSIWEClient;
   defaultChain?: AppKitNetwork;
-  // chainImages?: Record<number, string>;
+  // features?: Features;
+  // chainImages?: Record<number, string>; //TODO: rename to networkImages
 }
 
 export class AppKit {
@@ -60,7 +60,7 @@ export class AppKit {
   private metadata: Metadata;
   private adapters: BlockchainAdapter[];
   private networks: AppKitNetwork[];
-  private namespaces: ProposalNamespaces; //TODO: check if its ok to use universal provider NamespaceConfig here
+  private namespaces: ProposalNamespaces;
   private config: AppKitConfig;
   private extraConnectors: WalletConnector[];
 
@@ -189,6 +189,10 @@ export class AppKit {
     return connection.adapter.connector.getProvider() as T;
   }
 
+  getNetworks() {
+    return this.networks;
+  }
+
   async switchNetwork(network: AppKitNetwork): Promise<void> {
     const adapter = this.getAdapterByNamespace(network.chainNamespace);
     if (!adapter) throw new Error('No active adapter');
@@ -212,7 +216,7 @@ export class AppKit {
       ConnectionsController.setActiveNamespace(network.chainNamespace ?? 'eip155');
     }
 
-    adapter.getBalance({ network });
+    adapter.getBalance({ network, tokens: this.config.tokens });
   }
 
   open(options?: OpenOptions) {
@@ -327,7 +331,7 @@ export class AppKit {
         adapter.getAccounts()?.find(a => a.startsWith(connection?.activeChain)) ??
         adapter.getAccounts()?.[0];
 
-      adapter.getBalance({ address, network });
+      adapter.getBalance({ address, network, tokens: this.config.tokens });
     });
   }
 

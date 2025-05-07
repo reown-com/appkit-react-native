@@ -1,5 +1,4 @@
-import type { Tokens } from '@reown/appkit-core-react-native';
-import { ConstantsUtil } from '@reown/appkit-common-react-native';
+import { ConstantsUtil, type Tokens } from '@reown/appkit-common-react-native';
 
 export const HelpersUtil = {
   getCaipTokens(tokens?: Tokens) {

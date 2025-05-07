@@ -20,6 +20,7 @@ import {
   createAppKit,
   AppKit,
   AppKitButton,
+  NetworkButton,
   solana,
   bitcoin,
   bitcoinTestnet
@@ -152,7 +153,7 @@ export default function Native() {
             loadingLabel="Connecting..."
             balance="show"
           />
-          {/* <NetworkButton /> */}
+          <NetworkButton />
           <ActionsView />
           {/* <AccountView /> */}
           {/* <OpenButton /> */}

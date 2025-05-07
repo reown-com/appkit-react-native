@@ -8,7 +8,6 @@ import {
   type NetworkControllerClient,
   type PublicStateControllerState,
   type SendTransactionArgs,
-  type Token,
   type WriteContractArgs,
   AppKitScaffold
 } from '@reown/appkit-scaffold-react-native';
@@ -37,6 +36,7 @@ import {
   type CaipAddress,
   type CaipNetwork,
   type CaipNetworkId,
+  type Token,
   erc20ABI,
   ErrorUtil,
   NamesUtil,

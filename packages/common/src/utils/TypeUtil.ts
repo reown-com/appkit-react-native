@@ -130,6 +130,13 @@ export interface ThemeVariables {
   accent?: string;
 }
 
+export interface Token {
+  address: string;
+  image?: string;
+}
+
+export type Tokens = Record<CaipNetworkId, Token>;
+
 export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
 
 //********** Adapter Types **********//
@@ -181,6 +188,7 @@ export abstract class SolanaBaseAdapter extends BlockchainAdapter {}
 export interface GetBalanceParams {
   address?: CaipAddress;
   network?: AppKitNetwork;
+  tokens?: Tokens;
 }
 
 type ContractAddress = CaipAddress;

@@ -50,6 +50,7 @@ const derivedState = derive(
         return undefined;
       }
 
+      //TODO: what happens if there are several accounts on the same chain?
       const activeAccount = connection.accounts.find(account =>
         account.startsWith(connection.activeChain)
       );
