@@ -1,28 +1,25 @@
-import { BorderRadius } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
+import { BorderRadius } from '../../utils/ThemeUtil';
 
 export default StyleSheet.create({
-  dappIcon: {
+  rightImage: {
     height: 64,
     width: 64,
     borderRadius: BorderRadius.full
   },
-  iconBorder: {
+  itemBorder: {
     width: 74,
     height: 74,
     alignItems: 'center',
     justifyContent: 'center'
   },
-  dappBorder: {
+  leftItemBorder: {
     borderRadius: BorderRadius.full,
     zIndex: 2
   },
-  walletBorder: {
+  rightItemBorder: {
     borderRadius: 22,
     width: 72,
     height: 72
-  },
-  walletAvatar: {
-    borderRadius: BorderRadius.full
   }
 });

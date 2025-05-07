@@ -89,7 +89,12 @@ export function SendInputToken({
           numberOfLines={1}
           autoFocus={!!token}
         />
-        <TokenButton imageUrl={token?.iconUrl} text={token?.symbol} onPress={onTokenPress} />
+        <TokenButton
+          imageUrl={token?.iconUrl}
+          text={token?.symbol}
+          onPress={onTokenPress}
+          chevron
+        />
       </FlexView>
       {token && (
         <FlexView

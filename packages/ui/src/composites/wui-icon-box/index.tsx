@@ -16,6 +16,7 @@ export interface IconBoxProps {
   borderColor?: ThemeKeys;
   borderSize?: number;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
 export function IconBox({
@@ -28,7 +29,8 @@ export function IconBox({
   border,
   borderColor,
   borderSize = 4,
-  style
+  style,
+  testID
 }: IconBoxProps) {
   const Theme = useTheme();
   let _iconSize: SizeType;
@@ -97,6 +99,7 @@ export function IconBox({
         border && { borderColor: Theme[borderColor || 'bg-125'], borderWidth: borderSize / 2 },
         style
       ]}
+      testID={testID}
     >
       <Icon size={iconSize || _iconSize} color={iconColor} name={icon} />
     </View>

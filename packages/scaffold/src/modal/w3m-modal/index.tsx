@@ -33,7 +33,7 @@ export function AppKit() {
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
-  const portraitHeight = height - 120;
+  const portraitHeight = height - 80;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
   const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
   const AuthView = authProvider?.AuthView;
@@ -58,6 +58,14 @@ export function AppKit() {
       if (SIWEController.state.status !== 'success' && AccountController.state.isConnected) {
         await ConnectionController.disconnect();
       }
+    }
+
+    if (
+      RouterController.state.view === 'OnRampLoading' &&
+      EventsController.state.data.event === 'BUY_SUBMITTED'
+    ) {
+      // Send event only if the onramp url was already created
+      EventsController.sendEvent({ type: 'track', event: 'BUY_CANCEL' });
     }
   };
 
