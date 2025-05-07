@@ -11,7 +11,8 @@ import {
   DateUtil,
   type SocialProvider,
   type New_ConnectorType,
-  type ConnectorType
+  type ConnectorType,
+  type ChainNamespace
 } from '@reown/appkit-common-react-native';
 
 // -- Helpers -----------------------------------------------------------------
@@ -27,6 +28,8 @@ const ONRAMP_SERVICE_PROVIDERS = '@appkit/onramp_service_providers';
 const ONRAMP_FIAT_LIMITS = '@appkit/onramp_fiat_limits';
 const ONRAMP_FIAT_CURRENCIES = '@appkit/onramp_fiat_currencies';
 const ONRAMP_PREFERRED_FIAT_CURRENCY = '@appkit/onramp_preferred_fiat_currency';
+const ACTIVE_NAMESPACE = '@appkit/active_namespace';
+
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
   setWalletConnectDeepLink({ href, name }: { href: string; name: string }) {
@@ -392,5 +395,39 @@ export const StorageUtil = {
     }
 
     return [];
+  },
+
+  async setActiveNamespace(namespace?: ChainNamespace) {
+    try {
+      if (!namespace) {
+        await AsyncStorage.removeItem(ACTIVE_NAMESPACE);
+
+        return;
+      }
+
+      await AsyncStorage.setItem(ACTIVE_NAMESPACE, namespace);
+    } catch {
+      console.info('Unable to set Active Namespace');
+    }
+  },
+
+  async getActiveNamespace() {
+    try {
+      const namespace = (await AsyncStorage.getItem(ACTIVE_NAMESPACE)) as ChainNamespace;
+
+      return namespace ?? undefined;
+    } catch (err) {
+      console.info('Unable to get Active Namespace');
+    }
+
+    return undefined;
+  },
+
+  async removeActiveNamespace() {
+    try {
+      await AsyncStorage.removeItem(ACTIVE_NAMESPACE);
+    } catch {
+      console.info('Unable to remove Active Namespace');
+    }
   }
 };

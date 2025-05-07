@@ -7,7 +7,8 @@ export function useAccount() {
     activeNamespace,
     connections
   } = useSnapshot(ConnectionsController.state);
-  const connection = connections[activeNamespace];
+
+  const connection = connections[activeNamespace ?? ''];
 
   return {
     address: address?.split(':')[2],

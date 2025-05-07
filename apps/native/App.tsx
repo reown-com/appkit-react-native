@@ -118,6 +118,7 @@ const appKit = createAppKit({
   adapters: [ethersAdapter, solanaAdapter, bitcoinAdapter],
   metadata,
   networks: [mainnet, polygon, avalanche, solana, bitcoin, bitcoinTestnet],
+  defaultChain: polygon,
   clipboardClient,
   debug: true,
   enableAnalytics: true

@@ -35,5 +35,19 @@ export const NetworkUtil = {
     url.searchParams.set('projectId', projectId);
 
     return url.toString();
+  },
+
+  getDefaultChainId(network?: AppKitNetwork): CaipNetworkId | undefined {
+    if (!network) return undefined;
+
+    if (network.caipNetworkId) {
+      return network.caipNetworkId;
+    }
+
+    if (network.chainNamespace) {
+      return `${network.chainNamespace}:${network.id}`;
+    }
+
+    return `eip155:${network.id}`;
   }
 };

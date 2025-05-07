@@ -6,10 +6,14 @@ import {
   type Namespaces,
   type ProposalNamespaces,
   type Provider,
-  type WalletInfo
+  type WalletInfo,
+  type ChainNamespace,
+  type CaipNetworkId
 } from '@reown/appkit-common-react-native';
 
 export class WalletConnectConnector extends WalletConnector {
+  // private override provider: IUniversalProvider;
+
   private constructor(provider: IUniversalProvider) {
     super({ type: 'walletconnect', provider: provider as Provider });
 
@@ -48,7 +52,7 @@ export class WalletConnectConnector extends WalletConnector {
     return this.provider.disconnect();
   }
 
-  override async connect(namespaces: ProposalNamespaces) {
+  override async connect(opts: { namespaces: ProposalNamespaces; defaultChain?: CaipNetworkId }) {
     function onUri(uri: string) {
       ConnectionController.setWcUri(uri);
     }
@@ -56,8 +60,12 @@ export class WalletConnectConnector extends WalletConnector {
     this.provider.on('display_uri', onUri);
 
     const session = await this.provider.connect<IUniversalProvider['session']>({
-      optionalNamespaces: namespaces
+      optionalNamespaces: opts.namespaces
     });
+
+    if (opts.defaultChain) {
+      (this.provider as IUniversalProvider).setDefaultChain(opts.defaultChain);
+    }
 
     this.namespaces = session?.namespaces as Namespaces;
 
@@ -76,7 +84,6 @@ export class WalletConnectConnector extends WalletConnector {
 
   override switchNetwork(network: AppKitNetwork): Promise<void> {
     if (!network.caipNetworkId) throw new Error('No network provided');
-
     (this.provider as IUniversalProvider).setDefaultChain(network.caipNetworkId);
 
     return Promise.resolve();
@@ -84,5 +91,21 @@ export class WalletConnectConnector extends WalletConnector {
 
   override getWalletInfo(): WalletInfo | undefined {
     return this.wallet;
+  }
+
+  override getChainId(namespace: ChainNamespace): CaipNetworkId | undefined {
+    if (!this.namespaces || !this.namespaces[namespace]) {
+      return undefined;
+    }
+
+    const chainId = (this.provider as IUniversalProvider).rpcProviders[
+      namespace
+    ]?.getDefaultChain();
+
+    if (!chainId) {
+      return undefined;
+    }
+
+    return `${namespace}:${chainId}` as CaipNetworkId;
   }
 }

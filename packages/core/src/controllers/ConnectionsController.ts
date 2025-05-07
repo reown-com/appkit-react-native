@@ -9,6 +9,7 @@ import type {
   GetBalanceResponse,
   WalletInfo
 } from '@reown/appkit-common-react-native';
+import { StorageUtil } from '../utils/StorageUtil';
 
 // -- Types --------------------------------------------- //
 type Balance = GetBalanceResponse;
@@ -24,14 +25,14 @@ interface Connection {
 }
 
 export interface ConnectionsControllerState {
-  activeNamespace: ChainNamespace;
+  activeNamespace?: ChainNamespace;
   connections: Record<string, Connection>;
   networks: AppKitNetwork[];
 }
 
 // -- State --------------------------------------------- //
 const baseState = proxy<ConnectionsControllerState>({
-  activeNamespace: 'eip155',
+  activeNamespace: undefined,
   connections: {},
   networks: []
 });
@@ -123,8 +124,9 @@ const derivedState = derive(
 export const ConnectionsController = {
   state: derivedState,
 
-  setActiveNamespace(namespace: ChainNamespace) {
+  setActiveNamespace(namespace?: ChainNamespace) {
     baseState.activeNamespace = namespace;
+    StorageUtil.setActiveNamespace(namespace);
   },
 
   storeConnection({
@@ -132,17 +134,19 @@ export const ConnectionsController = {
     adapter,
     accounts,
     chains,
-    wallet
+    wallet,
+    activeChain
   }: {
     namespace: string;
     adapter: BlockchainAdapter;
     accounts: CaipAddress[];
     chains: CaipNetworkId[];
     wallet?: WalletInfo;
+    activeChain?: CaipNetworkId;
   }) {
     baseState.connections[namespace] = {
       balances: {},
-      activeChain: chains[0]!,
+      activeChain: activeChain ?? chains[0]!,
       adapter: ref(adapter),
       accounts,
       chains,
@@ -216,5 +220,15 @@ export const ConnectionsController = {
     namespacesUsingConnector.forEach(ns => {
       delete baseState.connections[ns];
     });
+
+    // Remove activeNamespace if it is in the list of namespaces using the connector
+    if (
+      baseState.activeNamespace &&
+      (baseState.activeNamespace === namespace ||
+        namespacesUsingConnector.includes(baseState.activeNamespace))
+    ) {
+      baseState.activeNamespace = undefined;
+      StorageUtil.setActiveNamespace(undefined);
+    }
   }
 };

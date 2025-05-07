@@ -220,10 +220,14 @@ export abstract class WalletConnector extends EventEmitter {
     this.provider = provider;
   }
 
-  abstract connect(namespaces?: ProposalNamespaces): Promise<Namespaces | undefined>;
+  abstract connect(opts: {
+    namespaces?: ProposalNamespaces;
+    defaultChain?: CaipNetworkId;
+  }): Promise<Namespaces | undefined>;
   abstract disconnect(): Promise<void>;
   abstract getProvider(): Provider;
   abstract getNamespaces(): Namespaces;
+  abstract getChainId(namespace: ChainNamespace): CaipNetworkId | undefined;
   abstract getWalletInfo(): WalletInfo | undefined;
   abstract switchNetwork(network: AppKitNetwork): Promise<void>;
 }

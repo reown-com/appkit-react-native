@@ -9,7 +9,8 @@ import {
   type Metadata,
   StorageUtil,
   type OptionsControllerState,
-  ThemeController
+  ThemeController,
+  ConnectionController
 } from '@reown/appkit-core-react-native';
 
 import type {
@@ -50,7 +51,7 @@ interface AppKitConfig {
   themeVariables?: ThemeVariables;
   // features?: Features;
   siweConfig?: AppKitSIWEClient;
-  // defaultChain?: NetworkControllerState['caipNetwork'];
+  defaultChain?: AppKitNetwork;
   // chainImages?: Record<number, string>;
 }
 
@@ -60,6 +61,7 @@ export class AppKit {
   private adapters: BlockchainAdapter[];
   private networks: AppKitNetwork[];
   private namespaces: ProposalNamespaces; //TODO: check if its ok to use universal provider NamespaceConfig here
+  private config: AppKitConfig;
   private extraConnectors: WalletConnector[];
 
   constructor(config: AppKitConfig) {
@@ -68,10 +70,157 @@ export class AppKit {
     this.adapters = config.adapters;
     this.networks = NetworkUtil.formatNetworks(config.networks, this.projectId); //TODO: check this
     this.namespaces = WcHelpersUtil.createNamespaces(config.networks) as ProposalNamespaces;
+    this.config = config;
     this.extraConnectors = config.extraConnectors || [];
 
     this.initControllers(config);
     this.initConnectors();
+  }
+
+  /**
+   * Handles the full connection flow for a given connector type.
+   * @param type - The type of connector to use.
+   * @param requestedNamespaces - Optional specific namespaces to request.
+   */
+  async connect(type: New_ConnectorType, requestedNamespaces?: ProposalNamespaces): Promise<void> {
+    try {
+      const connector = await this.createConnector(type);
+      const defaultChain = NetworkUtil.getDefaultChainId(this.config.defaultChain);
+
+      const approvedNamespaces = await connector.connect({
+        namespaces: requestedNamespaces ?? this.namespaces,
+        defaultChain
+      });
+
+      const walletInfo = connector.getWalletInfo();
+
+      if (!approvedNamespaces || Object.keys(approvedNamespaces).length === 0) {
+        throw new Error('Connection cancelled or failed: No approved namespaces returned.');
+      }
+
+      // Setup adapters and subscribe to adapter events
+      const approvedAdapters = this.setupAdaptersAndSubscribe(
+        connector,
+        Object.keys(approvedNamespaces)
+      );
+
+      // Check if any compatible adapters were found for the *approved* namespaces
+      if (approvedAdapters.length === 0) {
+        //TODO: handle case where devs want to connect to a namespace that has no adapters. Could use the provider directly.
+        throw new Error('No compatible adapters found for the approved namespaces');
+      }
+
+      // Store the connection details for the successfully connected adapters
+      this.storeConnectionDetails(approvedAdapters, approvedNamespaces, walletInfo);
+
+      // Store connector type and namespaces in storage
+      await StorageUtil.setConnectedConnectors({
+        type: connector.type,
+        namespaces: Object.keys(approvedNamespaces)
+      });
+
+      this.syncAccounts(approvedAdapters);
+
+      //TODO: Replace this
+      AccountController.setIsConnected(true);
+    } catch (error) {
+      console.warn('Connection failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Disconnects from a given namespace.
+   * @param namespace - The namespace to disconnect from.
+   * @param isInternal - Whether the disconnect is internal (i.e. from the AppKit) or external (i.e. from wallet side).
+   */
+  async disconnect(namespace?: string, isInternal?: boolean): Promise<void> {
+    try {
+      if (!namespace || !ConnectionsController.state.activeNamespace) {
+        return;
+      }
+
+      const connection =
+        ConnectionsController.state.connections[
+          namespace ?? ConnectionsController.state.activeNamespace
+        ];
+      const connectorType = connection?.adapter?.connector?.type;
+
+      await ConnectionsController.disconnect(
+        namespace ?? ConnectionsController.state.activeNamespace,
+        isInternal
+      );
+
+      if (connectorType) {
+        await StorageUtil.removeConnectedConnectors(connectorType);
+      }
+
+      ModalController.close();
+
+      AccountController.setIsConnected(false); // Might need adjustment based on multi-connection logic
+      RouterController.reset('Connect');
+      TransactionsController.resetTransactions();
+      ConnectionController.disconnect();
+
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_SUCCESS'
+      });
+    } catch (error) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_ERROR'
+      });
+    }
+  }
+
+  /**
+   * Returns the provider for a given namespace.
+   * @param namespace - The namespace to get the provider for.
+   * @returns The provider for the given namespace.
+   */
+  getProvider<T extends Provider>(namespace?: string): T | null {
+    const activeNamespace = namespace ?? ConnectionsController.state.activeNamespace;
+    if (!activeNamespace) return null;
+
+    const connection = ConnectionsController.state.connections[activeNamespace];
+    if (!connection || !connection.adapter || !connection.adapter.connector) return null;
+
+    return connection.adapter.connector.getProvider() as T;
+  }
+
+  async switchNetwork(network: AppKitNetwork): Promise<void> {
+    const adapter = this.getAdapterByNamespace(network.chainNamespace);
+    if (!adapter) throw new Error('No active adapter');
+
+    await adapter.switchNetwork(network);
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SWITCH_NETWORK',
+      properties: {
+        network: network.id
+      }
+    });
+
+    ConnectionsController.setActiveChain(
+      adapter.getSupportedNamespace(),
+      `${adapter.getSupportedNamespace()}:${network.id}` as CaipNetworkId
+    );
+
+    if (ConnectionsController.state.activeNamespace !== (network.chainNamespace ?? 'eip155')) {
+      ConnectionsController.setActiveNamespace(network.chainNamespace ?? 'eip155');
+    }
+
+    adapter.getBalance({ network });
+  }
+
+  open(options?: OpenOptions) {
+    ModalController.open(options);
+  }
+
+  close() {
+    ModalController.close();
   }
 
   private async createConnector(type: New_ConnectorType): Promise<WalletConnector> {
@@ -88,6 +237,7 @@ export class AppKit {
     return WalletConnectConnector.create({ projectId: this.projectId, metadata: this.metadata });
   }
 
+  //TODO: reuse logic with connect method
   /**
    * Initializes connectors based on stored connection data.
    * This attempts to restore previous sessions.
@@ -108,14 +258,14 @@ export class AppKit {
           if (namespaces && Object.keys(namespaces).length > 0) {
             // Ensure namespaces is not empty
             // Setup adapters and subscribe to events
-            const initializedAdapters = this._setupAdaptersAndSubscribe(
+            const initializedAdapters = this.setupAdaptersAndSubscribe(
               connector,
               Object.keys(namespaces)
             );
 
             // If adapters were successfully initialized, store the connection details
             if (initializedAdapters.length > 0) {
-              this._storeConnectionDetails(initializedAdapters, namespaces, walletInfo);
+              this.storeConnectionDetails(initializedAdapters, namespaces, walletInfo);
             }
 
             this.syncAccounts(initializedAdapters);
@@ -132,14 +282,7 @@ export class AppKit {
     }
   }
 
-  /**
-   * Sets up blockchain adapters for a given connector and namespaces,
-   * subscribes to adapter events.
-   * @param connector - The WalletConnector instance.
-   * @param namespaces - The namespaces to find adapters for.
-   * @returns The array of BlockchainAdapter instances that were set up.
-   */
-  private _setupAdaptersAndSubscribe(
+  private setupAdaptersAndSubscribe(
     connector: WalletConnector,
     namespaces: string[]
   ): BlockchainAdapter[] {
@@ -162,55 +305,10 @@ export class AppKit {
     return adapters;
   }
 
-  /**
-   * Handles the full connection flow for a given connector type.
-   * @param type - The type of connector to use.
-   * @param requestedNamespaces - Optional specific namespaces to request.
-   */
-  async connect(type: New_ConnectorType, requestedNamespaces?: ProposalNamespaces): Promise<void> {
-    try {
-      const connector = await this.createConnector(type);
+  private getAdapterByNamespace(namespace: string = 'eip155'): BlockchainAdapter | null {
+    const namespaceConnection = ConnectionsController.state.connections[namespace];
 
-      const approvedNamespaces = await connector.connect(requestedNamespaces ?? this.namespaces);
-      const walletInfo = connector.getWalletInfo();
-
-      if (!approvedNamespaces || Object.keys(approvedNamespaces).length === 0) {
-        throw new Error('Connection cancelled or failed: No approved namespaces returned.');
-      }
-
-      // Setup adapters and subscribe to adapter events
-      const approvedAdapters = this._setupAdaptersAndSubscribe(
-        connector,
-        Object.keys(approvedNamespaces)
-      );
-
-      // Check if any compatible adapters were found for the *approved* namespaces
-      if (approvedAdapters.length === 0) {
-        //TODO: handle case where devs want to connect to a namespace that has no adapters. Could use the provider directly.
-        throw new Error('No compatible adapters found for the approved namespaces');
-      }
-
-      // Store the connection details for the successfully connected adapters
-      this._storeConnectionDetails(approvedAdapters, approvedNamespaces, walletInfo);
-
-      // Store connector type and namespaces in storage
-      await StorageUtil.setConnectedConnectors({
-        type: connector.type,
-        namespaces: Object.keys(approvedNamespaces)
-      });
-
-      this.syncAccounts(approvedAdapters);
-
-      // Set connected state (consider if this should be more nuanced for multi-connections)
-      AccountController.setIsConnected(true);
-
-      // No longer need to unsubscribe as we only subscribe to approved ones
-    } catch (error) {
-      // Log connection errors
-      console.warn('Connection failed:', error); // Using warn for potentially recoverable errors
-      // Rethrow or handle the error appropriately for the UI
-      throw error;
-    }
+    return namespaceConnection?.adapter ?? null;
   }
 
   private async syncAccounts(adapters: BlockchainAdapter[]) {
@@ -219,20 +317,21 @@ export class AppKit {
       const namespace = adapter.getSupportedNamespace();
       const connection = ConnectionsController.state.connections[namespace];
 
+      if (!connection) return;
+
       const network = this.networks.find(
         n => n.id?.toString() === connection?.activeChain?.split(':')[1]
       );
 
-      adapter.getBalance({ address: adapter.getAccounts()?.[0], network });
+      const address =
+        adapter.getAccounts()?.find(a => a.startsWith(connection?.activeChain)) ??
+        adapter.getAccounts()?.[0];
+
+      adapter.getBalance({ address, network });
     });
   }
 
-  /**
-   * Stores connection details in the ConnectionsController.
-   * @param adapters - The adapters for which to store the connection.
-   * @param approvedNamespaces - The map of approved namespaces and their details.
-   */
-  private _storeConnectionDetails(
+  private storeConnectionDetails(
     adapters: BlockchainAdapter[],
     approvedNamespaces: Namespaces,
     wallet?: WalletInfo
@@ -244,18 +343,24 @@ export class AppKit {
 
       const accounts = namespaceDetails.accounts ?? [];
       const chains = namespaceDetails.chains ?? [];
+      const activeChain = adapter?.connector?.getChainId(namespace);
 
       ConnectionsController.storeConnection({
         namespace,
         adapter,
         accounts,
         chains,
+        activeChain,
         wallet
       });
     });
 
-    // Set the first connected adapter's namespace as active
-    if (adapters.length > 0 && adapters[0]) {
+    const updateActiveNamespace = !Object.keys(approvedNamespaces).find(
+      n => n === ConnectionsController.state.activeNamespace
+    );
+
+    // If the active namespace is not in the approved namespaces or is undefined, set the first connected adapter's namespace as active
+    if (updateActiveNamespace && adapters[0]) {
       ConnectionsController.setActiveNamespace(adapters[0].getSupportedNamespace());
     }
   }
@@ -263,7 +368,7 @@ export class AppKit {
   private subscribeToAdapterEvents(adapter: BlockchainAdapter): void {
     adapter.on('accountsChanged', ({ accounts, namespace }) => {
       console.log('accountsChanged', accounts, namespace);
-      //TODO: do i need this?
+      //TODO: check this
     });
 
     adapter.on('chainChanged', ({ chainId, namespace }) => {
@@ -281,6 +386,8 @@ export class AppKit {
   }
 
   private async initControllers(options: AppKitConfig) {
+    await this.initAsyncValues(options);
+
     OptionsController.setProjectId(options.projectId);
     OptionsController.setMetadata(options.metadata);
     OptionsController.setIncludeWalletIds(options.includeWalletIds);
@@ -316,91 +423,13 @@ export class AppKit {
     // }
   }
 
-  async disconnect(namespace?: string, isInternal?: boolean): Promise<void> {
-    try {
-      const connection =
-        ConnectionsController.state.connections[
-          namespace ?? ConnectionsController.state.activeNamespace
-        ];
-      const connectorType = connection?.adapter?.connector?.type;
-
-      await ConnectionsController.disconnect(
-        namespace ?? ConnectionsController.state.activeNamespace,
-        isInternal
-      );
-
-      if (connectorType) {
-        await StorageUtil.removeConnectedConnectors(connectorType);
-      }
-
-      ModalController.close();
-      // Resetting states after successful disconnect logic
-      AccountController.setIsConnected(false); // Might need adjustment based on multi-connection logic
-      RouterController.reset('Connect');
-      TransactionsController.resetTransactions();
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'DISCONNECT_SUCCESS'
-      });
-    } catch (error) {
-      // Use console.warn for disconnect errors as they might not be critical app failures
-      console.warn('Disconnect failed:', error); // Keep error log for disconnect issues
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'DISCONNECT_ERROR'
-      });
-      // Do not rethrow? Or handle differently?
+  private async initAsyncValues(options: AppKitConfig) {
+    const activeNamespace = await StorageUtil.getActiveNamespace();
+    if (activeNamespace) {
+      ConnectionsController.setActiveNamespace(activeNamespace);
+    } else if (options.defaultChain) {
+      ConnectionsController.setActiveNamespace(options.defaultChain?.chainNamespace ?? 'eip155');
     }
-  }
-
-  getProvider<T extends Provider>(namespace?: string): T | null {
-    const activeNamespace = namespace ?? ConnectionsController.state.activeNamespace;
-    if (!activeNamespace) return null;
-
-    const connection = ConnectionsController.state.connections[activeNamespace];
-    if (!connection || !connection.adapter || !connection.adapter.connector) return null;
-
-    return connection.adapter.connector.getProvider() as T;
-  }
-
-  private getAdapterByNamespace(namespace: string = 'eip155'): BlockchainAdapter | null {
-    const namespaceConnection = ConnectionsController.state.connections[namespace];
-
-    return namespaceConnection?.adapter ?? null;
-  }
-
-  async switchNetwork(network: AppKitNetwork): Promise<void> {
-    const adapter = this.getAdapterByNamespace(network.chainNamespace);
-    if (!adapter) throw new Error('No active adapter');
-
-    await adapter.switchNetwork(network);
-
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'SWITCH_NETWORK',
-      properties: {
-        network: network.id
-      }
-    });
-
-    ConnectionsController.setActiveChain(
-      adapter.getSupportedNamespace(),
-      `${adapter.getSupportedNamespace()}:${network.id}` as CaipNetworkId
-    );
-
-    if (ConnectionsController.state.activeNamespace !== (network.chainNamespace ?? 'eip155')) {
-      ConnectionsController.setActiveNamespace(network.chainNamespace ?? 'eip155');
-    }
-
-    adapter.getBalance({ network });
-  }
-
-  open(options?: OpenOptions) {
-    ModalController.open(options);
-  }
-
-  close() {
-    ModalController.close();
   }
 }
 
