@@ -1,4 +1,4 @@
-import type { CaipNetwork } from '@reown/appkit-scaffold-react-native';
+import type { CaipNetwork } from '@reown/appkit-common-react-native';
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-common-react-native';
 
 import type { Chain, Provider } from './EthersTypesUtil';
@@ -12,7 +12,7 @@ export const EthersHelpersUtil = {
     return {
       id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
       name: chain.name,
-      imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId]
+      imageId: PresetsUtil.NetworkImageIds[chain.chainId]
     } as CaipNetwork;
   },
   hexStringToNumber(value: string) {
@@ -43,6 +43,7 @@ export const EthersHelpersUtil = {
     return address;
   },
   async addEthereumChain(provider: Provider, chain: Chain) {
+    //TODO: Check if this is needed
     await provider.request({
       method: 'wallet_addEthereumChain',
       params: [
@@ -56,7 +57,7 @@ export const EthersHelpersUtil = {
             symbol: chain.currency
           },
           blockExplorerUrls: [chain.explorerUrl],
-          iconUrls: [PresetsUtil.EIP155NetworkImageIds[chain.chainId]]
+          iconUrls: [PresetsUtil.NetworkImageIds[chain.chainId]]
         }
       ]
     });

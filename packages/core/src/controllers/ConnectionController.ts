@@ -120,6 +120,15 @@ export const ConnectionController = {
     state.pressedWallet = undefined;
   },
 
+  setWcPromise(wcPromise: ConnectionControllerState['wcPromise']) {
+    state.wcPromise = wcPromise;
+  },
+
+  setWcUri(wcUri: ConnectionControllerState['wcUri']) {
+    state.wcUri = wcUri;
+    state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry();
+  },
+
   setRecentWallets(wallets: ConnectionControllerState['recentWallets']) {
     state.recentWallets = wallets;
   },
@@ -192,7 +201,7 @@ export const ConnectionController = {
   },
 
   async disconnect() {
-    await this._getClient().disconnect();
+    await this._getClient()?.disconnect();
     this.resetWcConnection();
     // remove transactions
     // RouterController.reset('Connect');

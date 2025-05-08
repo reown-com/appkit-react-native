@@ -1,5 +1,5 @@
 import { AssetController } from '../controllers/AssetController';
-import type { CaipNetwork, Connector, WcWallet } from './TypeUtil';
+import type { Connector, WcWallet } from './TypeUtil';
 
 export const AssetUtil = {
   getWalletImage(wallet?: WcWallet) {
@@ -14,13 +14,11 @@ export const AssetUtil = {
     return undefined;
   },
 
-  getNetworkImage(network?: CaipNetwork) {
-    if (network?.imageUrl) {
-      return network?.imageUrl;
-    }
+  getNetworkImage(networkId?: string | number) {
+    //TODO: check if imageUrl case is needed
 
-    if (network?.imageId) {
-      return AssetController.state.networkImages[network.imageId];
+    if (networkId) {
+      return AssetController.state.networkImages[networkId];
     }
 
     return undefined;

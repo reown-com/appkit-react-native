@@ -1,4 +1,6 @@
 import { type EventEmitter } from 'events';
+import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
+
 import type {
   Balance,
   SocialProvider,
@@ -7,19 +9,10 @@ import type {
   ConnectorType
 } from '@reown/appkit-common-react-native';
 
+import { OnRampErrorType } from './ConstantsUtil';
+
 export interface BaseError {
   message?: string;
-}
-
-export type CaipAddress = `${string}:${string}:${string}`;
-
-export type CaipNetworkId = `${string}:${string}`;
-
-export interface CaipNetwork {
-  id: CaipNetworkId;
-  name?: string;
-  imageId?: string;
-  imageUrl?: string;
 }
 
 export type ConnectedWalletInfo =
@@ -83,6 +76,11 @@ export type Features = {
    * @type {boolean}
    */
   swaps?: boolean;
+  /**
+   * @description Enable or disable the onramp feature. Enabled by default.
+   * @type {boolean}
+   */
+  onramp?: boolean;
   /**
    * @description Enable or disable the email feature. Enabled by default.
    * @type {boolean}
@@ -173,6 +171,7 @@ export interface BlockchainApiTransactionsRequest {
   onramp?: 'coinbase';
   signal?: AbortSignal;
   cache?: RequestCache;
+  chainId?: CaipNetworkId;
 }
 
 export interface BlockchainApiTransactionsResponse {
@@ -311,18 +310,35 @@ export interface BlockchainApiSwapTokensRequest {
   chainId?: string;
 }
 
+export interface BlockchainApiOnRampQuotesRequest {
+  countryCode: string;
+  paymentMethodType: string;
+  destinationCurrencyCode: string;
+  sourceAmount: number;
+  sourceCurrencyCode: string;
+  walletAddress: string;
+}
+
 export interface BlockchainApiSwapTokensResponse {
   tokens: SwapToken[];
 }
 
-// -- OptionsController Types ---------------------------------------------------
-export interface Token {
-  address: string;
-  image?: string;
+export interface BlockchainApiOnRampWidgetRequest {
+  countryCode: string;
+  destinationCurrencyCode: string;
+  paymentMethodType: string;
+  serviceProvider: string;
+  sourceAmount: number;
+  sourceCurrencyCode: string;
+  walletAddress: string;
+  redirectUrl?: string;
 }
 
-export type Tokens = Record<CaipNetworkId, Token>;
+export type BlockchainApiOnRampWidgetResponse = {
+  widgetUrl: string;
+};
 
+// -- OptionsController Types ---------------------------------------------------
 export type Metadata = {
   name: string;
   description: string;
@@ -431,7 +447,7 @@ export type Event =
       type: 'track';
       event: 'SWITCH_NETWORK';
       properties: {
-        network: string;
+        network: number | string;
       };
     }
   | {
@@ -699,6 +715,63 @@ export type Event =
         accountType: AppKitFrameAccountType;
         network: string;
       };
+    }
+  | {
+      type: 'track';
+      event: 'SELECT_BUY_CRYPTO';
+    }
+  | {
+      type: 'track';
+      event: 'SELECT_BUY_ASSET';
+      properties: {
+        asset: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'BUY_SUBMITTED';
+      properties: {
+        asset?: string;
+        network?: string;
+        amount?: string;
+        currency?: string;
+        provider?: string;
+        serviceProvider?: string;
+        paymentMethod?: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'BUY_SUCCESS';
+      properties: {
+        asset?: string | null;
+        network?: string | null;
+        amount?: string | null;
+        currency?: string | null;
+        provider?: string | null;
+        orderId?: string | null;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'BUY_FAIL';
+      properties: {
+        asset?: string;
+        network?: string;
+        amount?: string;
+        currency?: string;
+        provider?: string;
+        serviceProvider?: string;
+        paymentMethod?: string;
+        message?: string;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'BUY_CANCEL';
+      properties?: {
+        message?: string;
+      };
     };
 
 // -- Send Controller Types -------------------------------------
@@ -748,6 +821,100 @@ export type SwapTokenWithBalance = SwapToken & {
 };
 
 export type SwapInputTarget = 'sourceToken' | 'toToken';
+
+// -- OnRamp Controller Types ------------------------------------------------
+export type OnRampErrorTypeValues = (typeof OnRampErrorType)[keyof typeof OnRampErrorType];
+
+export interface OnRampError {
+  type: OnRampErrorTypeValues;
+  message: string;
+}
+
+export type OnRampPaymentMethod = {
+  logos: {
+    dark: string;
+    light: string;
+  };
+  name: string;
+  paymentMethod: string;
+  paymentType: string;
+};
+
+export type OnRampCountry = {
+  countryCode: string;
+  flagImageUrl: string;
+  name: string;
+};
+
+export type OnRampFiatCurrency = {
+  currencyCode: string;
+  name: string;
+  symbolImageUrl: string;
+};
+
+export type OnRampCryptoCurrency = {
+  currencyCode: string;
+  name: string;
+  chainCode: string;
+  chainName: string;
+  chainId: string;
+  contractAddress: string | null;
+  symbolImageUrl: string;
+};
+
+export type OnRampQuote = {
+  countryCode: string;
+  customerScore: number;
+  destinationAmount: number;
+  destinationAmountWithoutFees: number;
+  destinationCurrencyCode: string;
+  exchangeRate: number;
+  fiatAmountWithoutFees: number;
+  lowKyc: boolean;
+  networkFee: number;
+  paymentMethodType: string;
+  serviceProvider: string;
+  sourceAmount: number;
+  sourceAmountWithoutFees: number;
+  sourceCurrencyCode: string;
+  totalFee: number;
+  transactionFee: number;
+  transactionType: string;
+};
+
+export type OnRampServiceProvider = {
+  categories: string[];
+  categoryStatuses: {
+    additionalProp: string;
+  };
+  logos: {
+    dark: string;
+    darkShort: string;
+    light: string;
+    lightShort: string;
+  };
+  name: string;
+  serviceProvider: string;
+  status: string;
+  websiteUrl: string;
+};
+
+export type OnRampFiatLimit = {
+  currencyCode: string;
+  defaultAmount: number | null;
+  minimumAmount: number;
+  maximumAmount: number;
+};
+
+export type OnRampTransactionResult = {
+  purchaseCurrency: string | null;
+  purchaseAmount: string | null;
+  purchaseImageUrl: string | null;
+  paymentCurrency: string | null;
+  paymentAmount: string | null;
+  status: string | null;
+  network: string | null;
+};
 
 // -- Email Types ------------------------------------------------
 /**

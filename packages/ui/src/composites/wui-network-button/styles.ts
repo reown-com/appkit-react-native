@@ -21,8 +21,7 @@ export default StyleSheet.create({
     height: 24,
     width: 24,
     borderRadius: BorderRadius.full,
-    borderWidth: 2,
-    paddingLeft: Spacing['4xs']
+    borderWidth: 2
   },
   imageDisabled: {
     opacity: 0.4

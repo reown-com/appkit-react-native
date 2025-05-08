@@ -17,6 +17,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { ConnectionController } from './ConnectionController';
 import { TransactionsController } from './TransactionsController';
 import { EventsController } from './EventsController';
+import { ConnectionsController } from './ConnectionsController';
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000;
@@ -158,9 +159,17 @@ export const SwapController = {
   },
 
   getParams() {
-    const caipAddress = AccountController.state.caipAddress;
-    const address = CoreHelperUtil.getPlainAddress(caipAddress);
-    const networkAddress = NetworkController.getActiveNetworkTokenAddress();
+    const { activeAddress, activeNamespace, activeNetwork } = ConnectionsController.state;
+    const address = CoreHelperUtil.getPlainAddress(activeAddress);
+
+    if (!activeNamespace || !activeNetwork) {
+      throw new Error('No active namespace or network found to swap the tokens from.');
+    }
+
+    const networkAddress = `${activeNetwork.caipNetworkId ?? 'eip155:1'}:${
+      ConstantsUtil.NATIVE_TOKEN_ADDRESS[activeNamespace]
+    }`;
+
     const type = ConnectorController.state.connectedConnector;
 
     if (!address) {
@@ -178,7 +187,7 @@ export const SwapController = {
     return {
       networkAddress,
       fromAddress: address,
-      fromCaipAddress: caipAddress,
+      fromCaipAddress: activeAddress,
       sourceTokenAddress: state.sourceToken?.address,
       toTokenAddress: state.toToken?.address,
       toTokenAmount: state.toTokenAmount,
@@ -189,7 +198,7 @@ export const SwapController = {
       invalidSourceToken,
       invalidSourceTokenAmount,
       availableToSwap:
-        caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
+        activeAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
       isAuthConnector: type === 'AUTH'
     };
   },

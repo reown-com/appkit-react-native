@@ -8,7 +8,6 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
-  ConnectionUtil,
   EventsController,
   ModalController,
   NetworkController,
@@ -17,7 +16,8 @@ import {
   SnackController,
   type AppKitFrameProvider,
   ConstantsUtil,
-  SwapController
+  SwapController,
+  OnRampController
 } from '@reown/appkit-core-react-native';
 import {
   Avatar,
@@ -49,7 +49,7 @@ export function AccountDefaultView() {
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { connectedConnector } = useSnapshot(ConnectorController.state);
   const { connectedSocialProvider } = useSnapshot(ConnectionController.state);
-  const { features } = useSnapshot(OptionsController.state);
+  const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
   const { history } = useSnapshot(RouterController.state);
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
   const showCopy = OptionsController.isClipboardAvailable();
@@ -62,7 +62,7 @@ export function AccountDefaultView() {
 
   async function onDisconnect() {
     setDisconnecting(true);
-    await ConnectionUtil.disconnect();
+    // await ConnectionUtil.disconnect();
     setDisconnecting(false);
   }
 
@@ -139,6 +139,16 @@ export function AccountDefaultView() {
       });
       RouterController.push('Swap');
     }
+  };
+
+  const onBuyPress = () => {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_BUY_CRYPTO'
+    });
+
+    OnRampController.resetState();
+    RouterController.push('OnRamp');
   };
 
   const onActivityPress = () => {
@@ -251,7 +261,19 @@ export function AccountDefaultView() {
                 {caipNetwork?.name}
               </Text>
             </ListItem>
-
+            {!isAuth && isOnRampEnabled && (
+              <ListItem
+                chevron
+                icon="card"
+                iconColor="accent-100"
+                iconBackgroundColor="accent-glass-015"
+                onPress={onBuyPress}
+                testID="button-onramp"
+                style={styles.actionButton}
+              >
+                <Text color="fg-100">Buy crypto</Text>
+              </ListItem>
+            )}
             {!isAuth && features?.swaps && (
               <ListItem
                 chevron

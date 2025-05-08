@@ -3,9 +3,9 @@ import { proxy, subscribe as sub } from 'valtio/vanilla';
 import { OptionsController } from './OptionsController';
 import { EventsController } from './EventsController';
 import { SnackController } from './SnackController';
-import { NetworkController } from './NetworkController';
 import { BlockchainApiController } from './BlockchainApiController';
 import { AccountController } from './AccountController';
+import { ConnectionsController } from './ConnectionsController';
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<string, Transaction[]>;
@@ -121,7 +121,7 @@ export const TransactionsController = {
   },
 
   filterByConnectedChain(transactions: Transaction[]) {
-    const chainId = NetworkController.state.caipNetwork?.id;
+    const chainId = ConnectionsController.state.activeCaipNetworkId;
     const filteredTransactions = transactions.filter(
       transaction => transaction.metadata.chain === chainId
     );

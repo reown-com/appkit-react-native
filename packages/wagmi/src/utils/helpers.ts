@@ -1,9 +1,10 @@
+import { CoreHelperUtil } from '@reown/appkit-scaffold-react-native';
 import {
-  CoreHelperUtil,
+  PresetsUtil,
+  ConstantsUtil,
   type CaipNetwork,
   type CaipNetworkId
-} from '@reown/appkit-scaffold-react-native';
-import { PresetsUtil, ConstantsUtil } from '@reown/appkit-common-react-native';
+} from '@reown/appkit-common-react-native';
 import type { Connector } from '@wagmi/core';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
 import type { AppKitClientOptions } from '../client';
@@ -17,7 +18,7 @@ export function getCaipDefaultChain(chain?: AppKitClientOptions['defaultChain'])
   return {
     id: `${ConstantsUtil.EIP155}:${chain.id}`,
     name: chain.name,
-    imageId: PresetsUtil.EIP155NetworkImageIds[chain.id]
+    imageId: PresetsUtil.NetworkImageIds[chain.id]
   } as CaipNetwork;
 }
 

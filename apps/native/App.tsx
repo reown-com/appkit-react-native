@@ -1,30 +1,46 @@
-import { Platform, SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
+import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
 import '@walletconnect/react-native-compat';
-import { WagmiProvider } from 'wagmi';
+// import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 
+// import {
+//   // AppKit,
+//   // AppKitButton,
+//   // NetworkButton,
+//   // createAppKit,
+//   WagmiAdapter,
+//   defaultWagmiConfig
+// } from '@reown/appkit-wagmi-react-native';
+
 import {
+  AppKitProvider,
+  createAppKit,
   AppKit,
   AppKitButton,
   NetworkButton,
-  createAppKit,
-  defaultWagmiConfig
-} from '@reown/appkit-wagmi-react-native';
+  solana,
+  bitcoin,
+  bitcoinTestnet
+} from '@reown/appkit-react-native';
 
-import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
-import { Text } from '@reown/appkit-ui-react-native';
+// import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
+import { Button, Text } from '@reown/appkit-ui-react-native';
 
-import { siweConfig } from './src/utils/SiweUtils';
-
-import { AccountView } from './src/views/AccountView';
+// import { siweConfig } from './src/utils/SiweUtils';
+// import { AccountView } from './src/views/AccountView';
+// import { chains } from './src/utils/WagmiUtils';
+// import { OpenButton } from './src/components/OpenButton';
+// import { DisconnectButton } from './src/components/DisconnectButton';
+import { EthersAdapter } from '@reown/appkit-ethers-react-native';
+import { SolanaAdapter } from '@reown/appkit-solana-react-native';
+import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
+import { mainnet, polygon, avalanche } from 'viem/chains';
 import { ActionsView } from './src/views/ActionsView';
-import { getCustomWallets } from './src/utils/misc';
-import { chains } from './src/utils/WagmiUtils';
-import { OpenButton } from './src/components/OpenButton';
-import { DisconnectButton } from './src/components/DisconnectButton';
+import { WalletInfoView } from './src/views/WalletInfoView';
+import { EventsView } from './src/views/EventsView';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -34,9 +50,8 @@ const metadata = {
   url: 'https://reown.com/appkit',
   icons: ['https://avatars.githubusercontent.com/u/179229932'],
   redirect: {
-    native: 'redirect://',
-    universal: 'https://appkit-lab.reown.com/rn_appkit',
-    linkMode: true
+    native: 'host.exp.exponent://',
+    universal: 'https://appkit-lab.reown.com/rn_appkit'
   }
 };
 
@@ -46,53 +61,91 @@ const clipboardClient = {
   }
 };
 
-const auth = authConnector({ projectId, metadata });
+// const auth = authConnector({ projectId, metadata });
 
-const extraConnectors = Platform.select({
-  ios: [auth],
-  android: [auth],
-  default: []
-});
+// const extraConnectors = Platform.select({
+//   ios: [auth],
+//   android: [auth],
+//   default: []
+// });
 
-const wagmiConfig = defaultWagmiConfig({
-  chains,
-  projectId,
-  metadata,
-  extraConnectors
-});
+// const wagmiConfig = defaultWagmiConfig({
+//   chains,
+//   projectId,
+//   metadata,
+//   extraConnectors
+// });
 
 const queryClient = new QueryClient();
 
-const customWallets = getCustomWallets();
+// const wagmiAdapter = new WagmiAdapter({
+//   wagmiConfig,
+//   projectId,
+//   networks: chains
+// });
 
-createAppKit({
+const ethersAdapter = new EthersAdapter({
+  projectId
+});
+
+const solanaAdapter = new SolanaAdapter({
+  projectId
+});
+
+const bitcoinAdapter = new BitcoinAdapter({
+  projectId
+});
+
+// createAppKit({
+//   projectId,
+//   wagmiConfig,
+//   siweConfig,
+//   clipboardClient,
+//   customWallets,
+//   enableAnalytics: true,
+//   metadata,
+//   debug: true,
+//   features: {
+//     email: true,
+//     socials: ['x', 'discord', 'apple'],
+//     emailShowWallets: true,
+//     swaps: true
+//     // onramp: true
+//   }
+// });
+
+const appKit = createAppKit({
   projectId,
-  wagmiConfig,
-  siweConfig,
-  clipboardClient,
-  customWallets,
-  enableAnalytics: true,
+  adapters: [ethersAdapter, solanaAdapter, bitcoinAdapter],
   metadata,
+  networks: [mainnet, polygon, avalanche, solana, bitcoin, bitcoinTestnet],
+  defaultChain: polygon,
+  clipboardClient,
   debug: true,
-  features: {
-    email: true,
-    socials: ['x', 'discord', 'apple'],
-    emailShowWallets: true,
-    swaps: true
-  }
+  enableAnalytics: true
+  // siweConfig,
+  // features: {
+  //   email: true,
+  //   socials: ['x', 'discord', 'apple'],
+  //   emailShowWallets: true,
+  //   swaps: true,
+  //   onramp: true
+  // }
 });
 
 export default function Native() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <WagmiProvider config={wagmiConfig}>
+    // <WagmiProvider config={wagmiConfig}>
+    <AppKitProvider instance={appKit}>
       <QueryClientProvider client={queryClient}>
         <SafeAreaView style={[styles.container, isDarkMode && styles.dark]}>
           <StatusBar style="auto" />
           <Text variant="medium-title-600" style={styles.title}>
             AppKit for React Native
           </Text>
+          <WalletInfoView />
           <AppKitButton
             connectStyle={styles.button}
             accountStyle={styles.button}
@@ -102,14 +155,19 @@ export default function Native() {
           />
           <NetworkButton />
           <ActionsView />
-          <AccountView />
-          <OpenButton />
-          <DisconnectButton />
+          {/* <AccountView /> */}
+          {/* <OpenButton /> */}
+          {/* <DisconnectButton /> */}
+          <Button size="sm" onPress={() => appKit.disconnect()}>
+            Disconnect
+          </Button>
+          <EventsView style={styles.events} />
           <AppKit />
         </SafeAreaView>
         <Toast />
       </QueryClientProvider>
-    </WagmiProvider>
+    </AppKitProvider>
+    // </WagmiProvider>
   );
 }
 
@@ -127,9 +185,15 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   title: {
-    marginBottom: 30
+    marginBottom: 10
   },
   button: {
-    marginVertical: 6
+    marginVertical: 16
+  },
+  walletInfo: {
+    marginBottom: 10
+  },
+  events: {
+    marginTop: 30
   }
 });

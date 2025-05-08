@@ -13,7 +13,7 @@ import { ConstantsUtil } from '@reown/appkit-common-react-native';
 export { defaultWagmiConfig } from './utils/defaultWagmiConfig';
 import type { AppKitOptions } from './client';
 import { AppKit } from './client';
-
+import { WagmiAdapter } from './adapter';
 // -- Types -------------------------------------------------------------------
 export type { AppKitOptions } from './client';
 
@@ -21,6 +21,8 @@ type OpenOptions = Parameters<AppKit['open']>[0];
 
 // -- Setup -------------------------------------------------------------------
 let modal: AppKit | undefined;
+
+export { WagmiAdapter };
 
 export function createAppKit(options: AppKitOptions) {
   if (!modal) {

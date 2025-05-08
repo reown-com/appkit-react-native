@@ -1,9 +1,6 @@
 import { Contract, ethers, utils } from 'ethers';
 import {
   type AppKitFrameAccountType,
-  type CaipAddress,
-  type CaipNetwork,
-  type CaipNetworkId,
   type ConnectionControllerClient,
   type Connector,
   type EstimateGasTransactionArgs,
@@ -11,7 +8,6 @@ import {
   type NetworkControllerClient,
   type PublicStateControllerState,
   type SendTransactionArgs,
-  type Token,
   type WriteContractArgs,
   AppKitScaffold
 } from '@reown/appkit-scaffold-react-native';
@@ -37,6 +33,10 @@ import {
   type AppKitSIWEClient
 } from '@reown/appkit-siwe-react-native';
 import {
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId,
+  type Token,
   erc20ABI,
   ErrorUtil,
   NamesUtil,
@@ -563,7 +563,7 @@ export class AppKit extends AppKitScaffold {
         ({
           id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
           name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageId: PresetsUtil.NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId]
         }) as CaipNetwork
     );
@@ -752,7 +752,7 @@ export class AppKit extends AppKitScaffold {
         this.setCaipNetwork({
           id: caipChainId,
           name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageId: PresetsUtil.NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId]
         });
         if (isConnected && address) {

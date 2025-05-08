@@ -10,6 +10,7 @@ import ArrowLeftSvg from '../../assets/svg/ArrowLeft';
 import ArrowRightSvg from '../../assets/svg/ArrowRight';
 import ArrowTopSvg from '../../assets/svg/ArrowTop';
 import BrowserSvg from '../../assets/svg/Browser';
+import CardSvg from '../../assets/svg/Card';
 import CheckmarkSvg from '../../assets/svg/Checkmark';
 import ChevronBottomSvg from '../../assets/svg/ChevronBottom';
 import ChevronLeftSvg from '../../assets/svg/ChevronLeft';
@@ -23,6 +24,7 @@ import CoinPlaceholderSvg from '../../assets/svg/CoinPlaceholder';
 import CopySvg from '../../assets/svg/Copy';
 import CopySmallSvg from '../../assets/svg/CopySmall';
 import CursorSvg from '../../assets/svg/Cursor';
+import CurrencyDollarSvg from '../../assets/svg/CurrencyDollar';
 import DesktopSvg from '../../assets/svg/Desktop';
 import DisconnectSvg from '../../assets/svg/Disconnect';
 import DiscordSvg from '../../assets/svg/Discord';
@@ -48,6 +50,7 @@ import QrCodeSvg from '../../assets/svg/QrCode';
 import RecycleHorizontalSvg from '../../assets/svg/RecycleHorizontal';
 import RefreshSvg from '../../assets/svg/Refresh';
 import SearchSvg from '../../assets/svg/Search';
+import SettingsSvg from '../../assets/svg/Settings';
 import SwapHorizontalSvg from '../../assets/svg/SwapHorizontal';
 import SwapVerticalSvg from '../../assets/svg/SwapVertical';
 import TelegramSvg from '../../assets/svg/Telegram';
@@ -71,6 +74,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   arrowRight: ArrowRightSvg,
   arrowTop: ArrowTopSvg,
   browser: BrowserSvg,
+  card: CardSvg,
   checkmark: CheckmarkSvg,
   chevronBottom: ChevronBottomSvg,
   chevronLeft: ChevronLeftSvg,
@@ -84,6 +88,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   copy: CopySvg,
   copySmall: CopySmallSvg,
   cursor: CursorSvg,
+  currencyDollar: CurrencyDollarSvg,
   desktop: DesktopSvg,
   disconnect: DisconnectSvg,
   discord: DiscordSvg,
@@ -109,6 +114,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   recycleHorizontal: RecycleHorizontalSvg,
   refresh: RefreshSvg,
   search: SearchSvg,
+  settings: SettingsSvg,
   swapHorizontal: SwapHorizontalSvg,
   swapVertical: SwapVerticalSvg,
   telegram: TelegramSvg,

@@ -1,13 +1,14 @@
 import { proxy, ref } from 'valtio';
+import type { Tokens } from '@reown/appkit-common-react-native';
 import type {
   CustomWallet,
   Features,
   Metadata,
   ProjectId,
   SdkType,
-  SdkVersion,
-  Tokens
+  SdkVersion
 } from '../utils/TypeUtil';
+
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 
 // -- Types --------------------------------------------- //
@@ -17,7 +18,7 @@ export interface ClipboardClient {
 
 export interface OptionsControllerState {
   projectId: ProjectId;
-  _clipboardClient?: ClipboardClient;
+  clipboardClient?: ClipboardClient;
   includeWalletIds?: string[];
   excludeWalletIds?: string[];
   featuredWalletIds?: string[];
@@ -28,6 +29,7 @@ export interface OptionsControllerState {
   sdkVersion: SdkVersion;
   metadata?: Metadata;
   isSiweEnabled?: boolean;
+  isOnRampEnabled?: boolean;
   features?: Features;
   debug?: boolean;
 }
@@ -46,7 +48,7 @@ export const OptionsController = {
   state,
 
   setClipboardClient(client: ClipboardClient) {
-    state._clipboardClient = ref(client);
+    state.clipboardClient = ref(client);
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -97,12 +99,16 @@ export const OptionsController = {
     state.debug = debug;
   },
 
+  setIsOnRampEnabled(isOnRampEnabled: OptionsControllerState['isOnRampEnabled']) {
+    state.isOnRampEnabled = isOnRampEnabled;
+  },
+
   isClipboardAvailable() {
-    return !!state._clipboardClient;
+    return !!state.clipboardClient;
   },
 
   copyToClipboard(value: string) {
-    const client = state._clipboardClient;
+    const client = state.clipboardClient;
     if (client) {
       client?.setString(value);
     }

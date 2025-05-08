@@ -22,6 +22,11 @@ export {
 } from './controllers/ConnectionController';
 
 export {
+  ConnectionsController,
+  type ConnectionsControllerState
+} from './controllers/ConnectionsController';
+
+export {
   ConnectorController,
   type ConnectorControllerState
 } from './controllers/ConnectorController';
@@ -56,12 +61,12 @@ export {
 
 export { SendController, type SendControllerState } from './controllers/SendController';
 
+export { OnRampController, type OnRampControllerState } from './controllers/OnRampController';
 export { WebviewController, type WebviewControllerState } from './controllers/WebviewController';
 
 // -- Utils -------------------------------------------------------------------
 export { ApiUtil } from './utils/ApiUtil';
 export { AssetUtil } from './utils/AssetUtil';
-export { ConnectionUtil } from './utils/ConnectionUtil';
 export { ConstantsUtil } from './utils/ConstantsUtil';
 export { CoreHelperUtil } from './utils/CoreHelperUtil';
 export { StorageUtil } from './utils/StorageUtil';

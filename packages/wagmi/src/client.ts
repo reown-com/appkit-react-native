@@ -26,16 +26,12 @@ import { mainnet, type Chain } from '@wagmi/core/chains';
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
 import { type JsonRpcError } from '@walletconnect/jsonrpc-types';
 import {
-  type CaipAddress,
-  type CaipNetwork,
-  type CaipNetworkId,
   type ConnectionControllerClient,
   type Connector,
   type LibraryOptions,
   type NetworkControllerClient,
   type PublicStateControllerState,
   type SendTransactionArgs,
-  type Token,
   AppKitScaffold,
   type WriteContractArgs,
   type AppKitFrameProvider,
@@ -48,7 +44,11 @@ import {
   ErrorUtil,
   ConstantsUtil,
   PresetsUtil,
-  type ConnectorType
+  type ConnectorType,
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId
+  type Token,
 } from '@reown/appkit-common-react-native';
 import {
   SIWEController,
@@ -418,7 +418,7 @@ export class AppKit extends AppKitScaffold {
         ({
           id: `${ConstantsUtil.EIP155}:${chain.id}`,
           name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
+          imageId: PresetsUtil.NetworkImageIds[chain.id],
           imageUrl: this.options?.chainImages?.[chain.id]
         }) as CaipNetwork
     );
@@ -467,7 +467,7 @@ export class AppKit extends AppKitScaffold {
       this.setCaipNetwork({
         id: caipChainId,
         name,
-        imageId: PresetsUtil.EIP155NetworkImageIds[id],
+        imageId: PresetsUtil.NetworkImageIds[id],
         imageUrl: this.options?.chainImages?.[id]
       });
       if (isConnected && address && chainId) {

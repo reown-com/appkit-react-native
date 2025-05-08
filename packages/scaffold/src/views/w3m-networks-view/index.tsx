@@ -13,11 +13,11 @@ import {
   AssetUtil,
   NetworkController,
   RouterController,
-  type CaipNetwork,
   EventsController,
   CoreHelperUtil,
   NetworkUtil
 } from '@reown/appkit-core-react-native';
+import type { CaipNetwork } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
