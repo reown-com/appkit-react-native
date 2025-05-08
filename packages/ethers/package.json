@@ -40,7 +40,6 @@
   "dependencies": {
     "@reown/appkit-common-react-native": "1.2.3",
     "@reown/appkit-react-native": "workspace:*",
-    "@reown/appkit-scaffold-react-native": "1.2.3",
     "@reown/appkit-scaffold-utils-react-native": "1.2.3",
     "@reown/appkit-siwe-react-native": "1.2.3",
     "@walletconnect/ethereum-provider": "2.20.2"
