@@ -59,7 +59,8 @@ export class WalletConnectConnector extends WalletConnector {
 
     this.provider.on('display_uri', onUri);
 
-    const session = await this.provider.connect<IUniversalProvider['session']>({
+    const session = await (this.provider as IUniversalProvider).connect({
+      namespaces: {},
       optionalNamespaces: opts.namespaces
     });
 

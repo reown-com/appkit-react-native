@@ -1,6 +1,11 @@
 import type { Namespace, NamespaceConfig } from '@walletconnect/universal-provider';
 
-import type { AppKitNetwork, ChainNamespace } from '@reown/appkit-common-react-native';
+import type {
+  AppKitNetwork,
+  CaipNetworkId,
+  ChainNamespace
+} from '@reown/appkit-common-react-native';
+import { solana, solanaDevnet } from '../networks/solana';
 // import { EnsController, type OptionsControllerState } from '@reown/appkit-controllers'
 
 // import { solana, solanaDevnet } from '../networks/index.js'
@@ -62,7 +67,7 @@ export const WcHelpersUtil = {
 
   applyNamespaceOverrides(
     baseNamespaces: NamespaceConfig,
-    overrides?: any //TODO: fix this
+    overrides?: any //TODO: add OptionsControllerState['universalProviderConfigOverride']
   ): NamespaceConfig {
     if (!overrides) {
       return { ...baseNamespaces };
@@ -169,26 +174,28 @@ export const WcHelpersUtil = {
         acc[chainNamespace] = this.createDefaultNamespace(chainNamespace);
       }
 
-      const caipNetworkId = `${chainNamespace}:${id}`;
+      const caipNetworkId: CaipNetworkId = `${chainNamespace}:${id}`;
 
       const namespace = acc[chainNamespace];
 
-      //@ts-ignore
-      namespace.chains.push(caipNetworkId);
+      if (namespace) {
+        //@ts-ignore
+        namespace.chains.push(caipNetworkId);
 
-      // Workaround for wallets that only support deprecated Solana network ID
-      // switch (caipNetworkId) {
-      //   case solana.caipNetworkId:
-      //     namespace.chains.push(solana.deprecatedCaipNetworkId)
-      //     break
-      //   case solanaDevnet.caipNetworkId:
-      //     namespace.chains.push(solanaDevnet.deprecatedCaipNetworkId)
-      //     break
-      //   default:
-      // }
+        // Workaround for wallets that only support deprecated Solana network ID
+        switch (caipNetworkId) {
+          case solana.caipNetworkId:
+            namespace.chains.push(solana.deprecatedCaipNetworkId as string);
+            break;
+          case solanaDevnet.caipNetworkId:
+            namespace.chains.push(solanaDevnet.deprecatedCaipNetworkId as string);
+            break;
+          default:
+        }
 
-      if (namespace?.rpcMap && rpcUrl) {
-        namespace.rpcMap[id] = rpcUrl;
+        if (namespace?.rpcMap && rpcUrl) {
+          namespace.rpcMap[id] = rpcUrl;
+        }
       }
 
       return acc;

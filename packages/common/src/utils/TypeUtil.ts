@@ -159,6 +159,7 @@ export abstract class BlockchainAdapter extends EventEmitter {
 
   setConnector(connector: WalletConnector) {
     this.connector = connector;
+    this.subscribeToEvents();
   }
 
   removeConnector() {
@@ -169,6 +170,45 @@ export abstract class BlockchainAdapter extends EventEmitter {
     if (!this.connector) throw new Error('No active connector');
 
     return this.connector.getProvider();
+  }
+
+  onChainChanged(chainId: string): void {
+    this.emit('chainChanged', { chainId, namespace: this.getSupportedNamespace() });
+  }
+
+  onAccountsChanged(accounts: string[]): void {
+    const _accounts = this.getAccounts();
+    const shouldEmit = _accounts?.some(account => {
+      const accountAddress = account.split(':')[2];
+
+      return accountAddress !== undefined && accounts.includes(accountAddress);
+    });
+
+    if (shouldEmit) {
+      this.emit('accountsChanged', { accounts, namespace: this.getSupportedNamespace() });
+    }
+  }
+
+  onDisconnect(): void {
+    this.emit('disconnect', { namespace: this.getSupportedNamespace() });
+
+    const provider = this.connector?.getProvider();
+    if (provider) {
+      provider.off('chainChanged', this.onChainChanged.bind(this));
+      provider.off('accountsChanged', this.onAccountsChanged.bind(this));
+      provider.off('disconnect', this.onDisconnect.bind(this));
+    }
+
+    this.connector = undefined;
+  }
+
+  subscribeToEvents(): void {
+    const provider = this.connector?.getProvider();
+    if (!provider) return;
+
+    provider.on('chainChanged', this.onChainChanged.bind(this));
+    provider.on('accountsChanged', this.onAccountsChanged.bind(this));
+    provider.on('disconnect', this.onDisconnect.bind(this));
   }
 
   abstract disconnect(): Promise<void>;

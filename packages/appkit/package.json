@@ -41,7 +41,7 @@
     "@reown/appkit-core-react-native": "1.2.3",
     "@reown/appkit-siwe-react-native": "1.2.3",
     "@reown/appkit-ui-react-native": "1.2.3",
-    "@walletconnect/universal-provider": "2.19.2",
+    "@walletconnect/universal-provider": "2.20.2",
     "valtio": "^1.13.2"
   },
   "peerDependencies": {

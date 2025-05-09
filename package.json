@@ -18,6 +18,7 @@
     "packages/ethers",
     "packages/solana",
     "packages/bitcoin",
+    "packages/wagmi",
     "apps/*"
   ],
   "scripts": {
