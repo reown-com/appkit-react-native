@@ -62,5 +62,9 @@
     "babel-plugin-module-resolver": "^5.0.0",
     "gh-pages": "^6.2.0",
     "typescript": "~5.3.3"
+  },
+  "resolutions": {
+    "@walletconnect/ethereum-provider": "2.20.2",
+    "@walletconnect/universal-provider": "2.20.2"
   }
 }

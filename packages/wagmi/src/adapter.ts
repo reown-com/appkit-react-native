@@ -68,7 +68,10 @@ export class WagmiAdapter extends EVMAdapter {
       throw new Error('WagmiAdapter: AppKit connector not set or not connected via Wagmi.');
     }
 
-    await switchChainWagmi(this.wagmiConfig, { chainId: network.id as number });
+    await switchChainWagmi(this.wagmiConfig, {
+      chainId: network.id as number,
+      connector: this.appKitWagmiConnector
+    });
   }
 
   async getBalance(params: GetBalanceParams): Promise<GetBalanceResponse> {

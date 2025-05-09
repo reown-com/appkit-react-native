@@ -2,9 +2,11 @@ import { StyleSheet } from 'react-native';
 import { FlexView } from '@reown/appkit-ui-react-native';
 import { useAccount } from '@reown/appkit-react-native';
 
-import { EthersActionsView } from './EthersActionsView';
+// import { EthersActionsView } from './EthersActionsView';
 import { SolanaActionsView } from './SolanaActionsView';
 import { BitcoinActionsView } from './BitcoinActionsView';
+import { WagmiActionsView } from './WagmiActionsView';
+
 export function ActionsView() {
   const isConnected = true;
   const { chainId } = useAccount();
@@ -12,7 +14,7 @@ export function ActionsView() {
   return isConnected ? (
     <FlexView style={styles.container}>
       {chainId?.startsWith('eip155') ? (
-        <EthersActionsView />
+        <WagmiActionsView />
       ) : chainId?.startsWith('solana') ? (
         <SolanaActionsView />
       ) : chainId?.startsWith('bip122') ? (

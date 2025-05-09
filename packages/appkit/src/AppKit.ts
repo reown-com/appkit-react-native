@@ -136,20 +136,16 @@ export class AppKit {
    */
   async disconnect(namespace?: string, isInternal?: boolean): Promise<void> {
     try {
-      if (!namespace || !ConnectionsController.state.activeNamespace) {
+      const activeNamespace = namespace ?? ConnectionsController.state.activeNamespace;
+
+      if (!activeNamespace) {
         return;
       }
 
-      const connection =
-        ConnectionsController.state.connections[
-          namespace ?? ConnectionsController.state.activeNamespace
-        ];
+      const connection = ConnectionsController.state.connections[activeNamespace];
       const connectorType = connection?.adapter?.connector?.type;
 
-      await ConnectionsController.disconnect(
-        namespace ?? ConnectionsController.state.activeNamespace,
-        isInternal
-      );
+      await ConnectionsController.disconnect(activeNamespace, isInternal);
 
       if (connectorType) {
         await StorageUtil.removeConnectedConnectors(connectorType);
@@ -216,7 +212,7 @@ export class AppKit {
       ConnectionsController.setActiveNamespace(network.chainNamespace ?? 'eip155');
     }
 
-    adapter.getBalance({ network, tokens: this.config.tokens });
+    // adapter.getBalance({ network, tokens: this.config.tokens });
   }
 
   open(options?: OpenOptions) {
@@ -248,7 +244,7 @@ export class AppKit {
    */
   private async initConnectors() {
     const connectedConnectors = await StorageUtil.getConnectedConnectors(); // Fetch stored connectors
-
+    console.log('initConnectors', connectedConnectors);
     if (connectedConnectors.length > 0) {
       ModalController.setLoading(true);
 
@@ -376,8 +372,17 @@ export class AppKit {
     });
 
     adapter.on('chainChanged', ({ chainId, namespace }) => {
+      console.log('chainChanged', chainId, namespace);
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
       ConnectionsController.setActiveChain(namespace, chain);
+
+      const network = this.networks.find(n => n.id?.toString() === chainId);
+      if (network) {
+        adapter.getBalance({
+          network,
+          tokens: this.config.tokens
+        });
+      }
     });
 
     adapter.on('disconnect', ({ namespace }) => {

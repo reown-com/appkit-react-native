@@ -12,7 +12,7 @@ import {
 } from '@reown/appkit-common-react-native';
 
 export class WalletConnectConnector extends WalletConnector {
-  // private override provider: IUniversalProvider;
+  private static universalProviderInstance: IUniversalProvider | null = null;
 
   private constructor(provider: IUniversalProvider) {
     super({ type: 'walletconnect', provider: provider as Provider });
@@ -33,6 +33,23 @@ export class WalletConnectConnector extends WalletConnector {
     }
   }
 
+  private static async getUniversalProvider({
+    projectId,
+    metadata
+  }: {
+    projectId: string;
+    metadata: Metadata;
+  }): Promise<IUniversalProvider> {
+    if (!WalletConnectConnector.universalProviderInstance) {
+      WalletConnectConnector.universalProviderInstance = await UniversalProvider.init({
+        projectId,
+        metadata
+      });
+    }
+
+    return WalletConnectConnector.universalProviderInstance;
+  }
+
   public static async create({
     projectId,
     metadata
@@ -40,7 +57,7 @@ export class WalletConnectConnector extends WalletConnector {
     projectId: string;
     metadata: Metadata;
   }): Promise<WalletConnectConnector> {
-    const provider = await UniversalProvider.init({
+    const provider = await WalletConnectConnector.getUniversalProvider({
       projectId,
       metadata
     });

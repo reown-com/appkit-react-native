@@ -7211,7 +7211,6 @@ __metadata:
   dependencies:
     "@reown/appkit-common-react-native": "npm:1.2.3"
     "@reown/appkit-react-native": "workspace:*"
-    "@reown/appkit-scaffold-react-native": "npm:1.2.3"
     "@reown/appkit-scaffold-utils-react-native": "npm:1.2.3"
     "@reown/appkit-siwe-react-native": "npm:1.2.3"
     "@walletconnect/ethereum-provider": "npm:2.20.2"
@@ -7265,7 +7264,7 @@ __metadata:
     "@reown/appkit-core-react-native": "npm:1.2.3"
     "@reown/appkit-siwe-react-native": "npm:1.2.3"
     "@reown/appkit-ui-react-native": "npm:1.2.3"
-    "@walletconnect/universal-provider": "npm:2.19.2"
+    "@walletconnect/universal-provider": "npm:2.20.2"
     valtio: "npm:^1.13.2"
   peerDependencies:
     react: ">=17"
@@ -7388,7 +7387,6 @@ __metadata:
   dependencies:
     "@reown/appkit-common-react-native": "npm:1.2.3"
     "@reown/appkit-react-native": "npm:1.2.3"
-    "@reown/appkit-scaffold-react-native": "npm:1.2.3"
     "@reown/appkit-scaffold-utils-react-native": "npm:1.2.3"
     "@reown/appkit-siwe-react-native": "npm:1.2.3"
   peerDependencies:

@@ -1,6 +1,5 @@
 import {
   SolanaBaseAdapter,
-  WalletConnector,
   type AppKitNetwork,
   type CaipAddress,
   type ChainNamespace,
@@ -93,49 +92,5 @@ export class SolanaAdapter extends SolanaBaseAdapter {
 
   getSupportedNamespace(): ChainNamespace {
     return SolanaAdapter.supportedNamespace;
-  }
-
-  onChainChanged(chainId: string): void {
-    this.emit('chainChanged', { chainId, namespace: this.getSupportedNamespace() });
-  }
-
-  onAccountsChanged(accounts: string[]): void {
-    const _accounts = this.getAccounts();
-    const shouldEmit = _accounts?.some(account => {
-      const accountAddress = account.split(':')[2];
-
-      return accountAddress !== undefined && accounts.includes(accountAddress);
-    });
-
-    if (shouldEmit) {
-      this.emit('accountsChanged', { accounts, namespace: this.getSupportedNamespace() });
-    }
-  }
-
-  onDisconnect(): void {
-    this.emit('disconnect', { namespace: this.getSupportedNamespace() });
-
-    const provider = this.connector?.getProvider();
-    if (provider) {
-      provider.off('chainChanged', this.onChainChanged.bind(this));
-      provider.off('accountsChanged', this.onAccountsChanged.bind(this));
-      provider.off('disconnect', this.onDisconnect.bind(this));
-    }
-
-    this.connector = undefined;
-  }
-
-  override setConnector(connector: WalletConnector): void {
-    super.setConnector(connector);
-    this.subscribeToEvents();
-  }
-
-  subscribeToEvents(): void {
-    const provider = this.connector?.getProvider();
-    if (!provider) return;
-
-    provider.on('chainChanged', this.onChainChanged.bind(this));
-    provider.on('accountsChanged', this.onAccountsChanged.bind(this));
-    provider.on('disconnect', this.onDisconnect.bind(this));
   }
 }

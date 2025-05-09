@@ -22,8 +22,7 @@ import {
   AppKitButton,
   NetworkButton,
   solana,
-  bitcoin,
-  bitcoinTestnet
+  bitcoin
 } from '@reown/appkit-react-native';
 
 // import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
@@ -34,13 +33,15 @@ import { Button, Text } from '@reown/appkit-ui-react-native';
 // import { chains } from './src/utils/WagmiUtils';
 // import { OpenButton } from './src/components/OpenButton';
 // import { DisconnectButton } from './src/components/DisconnectButton';
-import { EthersAdapter } from '@reown/appkit-ethers-react-native';
+// import { EthersAdapter } from '@reown/appkit-ethers-react-native';
 import { SolanaAdapter } from '@reown/appkit-solana-react-native';
 import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
+import { WagmiAdapter } from '@reown/appkit-wagmi-react-native';
 import { mainnet, polygon, avalanche } from 'viem/chains';
 import { ActionsView } from './src/views/ActionsView';
 import { WalletInfoView } from './src/views/WalletInfoView';
 import { EventsView } from './src/views/EventsView';
+import { WagmiProvider } from 'wagmi';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -84,8 +85,13 @@ const queryClient = new QueryClient();
 //   networks: chains
 // });
 
-const ethersAdapter = new EthersAdapter({
-  projectId
+// const ethersAdapter = new EthersAdapter({
+//   projectId
+// });
+
+const wagmiAdapter = new WagmiAdapter({
+  projectId,
+  networks: [mainnet, polygon, avalanche]
 });
 
 const solanaAdapter = new SolanaAdapter({
@@ -116,10 +122,10 @@ const bitcoinAdapter = new BitcoinAdapter({
 
 const appKit = createAppKit({
   projectId,
-  adapters: [ethersAdapter, solanaAdapter, bitcoinAdapter],
+  adapters: [wagmiAdapter, solanaAdapter, bitcoinAdapter],
   metadata,
-  networks: [mainnet, polygon, avalanche, solana, bitcoin, bitcoinTestnet],
-  defaultChain: polygon,
+  networks: [mainnet, polygon, avalanche, bitcoin, solana],
+  defaultChain: mainnet,
   clipboardClient,
   debug: true,
   enableAnalytics: true
@@ -137,37 +143,37 @@ export default function Native() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    // <WagmiProvider config={wagmiConfig}>
-    <AppKitProvider instance={appKit}>
-      <QueryClientProvider client={queryClient}>
-        <SafeAreaView style={[styles.container, isDarkMode && styles.dark]}>
-          <StatusBar style="auto" />
-          <Text variant="medium-title-600" style={styles.title}>
-            AppKit for React Native
-          </Text>
-          <WalletInfoView />
-          <AppKitButton
-            connectStyle={styles.button}
-            accountStyle={styles.button}
-            label="Connect"
-            loadingLabel="Connecting..."
-            balance="show"
-          />
-          <NetworkButton />
-          <ActionsView />
-          {/* <AccountView /> */}
-          {/* <OpenButton /> */}
-          {/* <DisconnectButton /> */}
-          <Button size="sm" onPress={() => appKit.disconnect()}>
-            Disconnect
-          </Button>
-          <EventsView style={styles.events} />
-          <AppKit />
-        </SafeAreaView>
-        <Toast />
-      </QueryClientProvider>
-    </AppKitProvider>
-    // </WagmiProvider>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
+      <AppKitProvider instance={appKit}>
+        <QueryClientProvider client={queryClient}>
+          <SafeAreaView style={[styles.container, isDarkMode && styles.dark]}>
+            <StatusBar style="auto" />
+            <Text variant="medium-title-600" style={styles.title}>
+              AppKit for React Native
+            </Text>
+            <WalletInfoView />
+            <AppKitButton
+              connectStyle={styles.button}
+              accountStyle={styles.button}
+              label="Connect"
+              loadingLabel="Connecting..."
+              balance="show"
+            />
+            <NetworkButton />
+            <ActionsView />
+            {/* <AccountView /> */}
+            {/* <OpenButton /> */}
+            {/* <DisconnectButton /> */}
+            <Button size="sm" onPress={() => appKit.disconnect()}>
+              Disconnect
+            </Button>
+            <EventsView style={styles.events} />
+            <AppKit />
+          </SafeAreaView>
+          <Toast />
+        </QueryClientProvider>
+      </AppKitProvider>
+    </WagmiProvider>
   );
 }
 

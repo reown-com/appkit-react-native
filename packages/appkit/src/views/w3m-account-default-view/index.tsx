@@ -38,9 +38,7 @@ import { AuthButtons } from './components/auth-buttons';
 import styles from './styles';
 
 export function AccountDefaultView() {
-  const { profileName, profileImage, addressExplorerUrl, preferredAccountType } = useSnapshot(
-    AccountController.state
-  );
+  const { profileName, profileImage, preferredAccountType } = useSnapshot(AccountController.state);
   const { loading } = useSnapshot(ModalController.state);
   const {
     activeAddress: address,
@@ -57,7 +55,7 @@ export function AccountDefaultView() {
   const showCopy = OptionsController.isClipboardAvailable();
   const isAuth = connectedConnector === 'AUTH';
   const showBalance = balance && !isAuth;
-  const showExplorer = addressExplorerUrl && !isAuth;
+  const showExplorer = Object.keys(activeNetwork?.blockExplorers ?? {}).length > 0 && !isAuth;
   const showBack = history.length > 1;
   const showSwitchAccountType = isAuth && NetworkController.checkIfSmartAccountEnabled();
   const { padding } = useCustomDimensions();
@@ -107,8 +105,8 @@ export function AccountDefaultView() {
   };
 
   const onExplorerPress = () => {
-    if (AccountController.state.addressExplorerUrl) {
-      Linking.openURL(AccountController.state.addressExplorerUrl);
+    if (showExplorer && ConnectionsController.state.activeNetwork?.blockExplorers?.default?.url) {
+      Linking.openURL(ConnectionsController.state.activeNetwork?.blockExplorers?.default?.url);
     }
   };
 
