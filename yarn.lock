@@ -108,10 +108,10 @@ __metadata:
     "@react-native-async-storage/async-storage": "npm:2.1.2"
     "@react-native-community/netinfo": "npm:11.4.1"
     "@reown/appkit-auth-wagmi-react-native": "npm:1.2.3"
-    "@reown/appkit-bitcoin-react-native": "workspace:*"
-    "@reown/appkit-ethers-react-native": "workspace:*"
-    "@reown/appkit-react-native": "workspace:*"
-    "@reown/appkit-solana-react-native": "workspace:*"
+    "@reown/appkit-bitcoin-react-native": "npm:1.2.3"
+    "@reown/appkit-ethers-react-native": "npm:1.2.3"
+    "@reown/appkit-react-native": "npm:1.2.3"
+    "@reown/appkit-solana-react-native": "npm:1.2.3"
     "@reown/appkit-wagmi-react-native": "npm:1.2.3"
     "@tanstack/query-async-storage-persister": "npm:^5.40.0"
     "@tanstack/react-query": "npm:5.56.2"
@@ -7122,7 +7122,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@reown/appkit-bitcoin-react-native@workspace:*, @reown/appkit-bitcoin-react-native@workspace:packages/bitcoin":
+"@reown/appkit-bitcoin-react-native@npm:1.2.3, @reown/appkit-bitcoin-react-native@workspace:packages/bitcoin":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-bitcoin-react-native@workspace:packages/bitcoin"
   dependencies:
@@ -7205,12 +7205,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@reown/appkit-ethers-react-native@workspace:*, @reown/appkit-ethers-react-native@workspace:packages/ethers":
+"@reown/appkit-ethers-react-native@npm:1.2.3, @reown/appkit-ethers-react-native@workspace:packages/ethers":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-ethers-react-native@workspace:packages/ethers"
   dependencies:
     "@reown/appkit-common-react-native": "npm:1.2.3"
-    "@reown/appkit-react-native": "workspace:*"
+    "@reown/appkit-react-native": "npm:1.2.3"
     "@reown/appkit-scaffold-utils-react-native": "npm:1.2.3"
     "@reown/appkit-siwe-react-native": "npm:1.2.3"
     "@walletconnect/ethereum-provider": "npm:2.20.2"
@@ -7256,7 +7256,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reown/appkit-react-native@npm:1.2.3, @reown/appkit-react-native@workspace:*, @reown/appkit-react-native@workspace:packages/appkit":
+"@reown/appkit-react-native@npm:1.2.3, @reown/appkit-react-native@workspace:packages/appkit":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-react-native@workspace:packages/appkit"
   dependencies:
@@ -7325,7 +7325,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@reown/appkit-solana-react-native@workspace:*, @reown/appkit-solana-react-native@workspace:packages/solana":
+"@reown/appkit-solana-react-native@npm:1.2.3, @reown/appkit-solana-react-native@workspace:packages/solana":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-solana-react-native@workspace:packages/solana"
   dependencies:
