@@ -19,6 +19,25 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
+      - name: Publish Initial Versions for New Packages
+        continue-on-error: false
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
+          # Find packages that don't exist in NPM and publish them with initial version
+          yarn workspaces list --json | jq -r '.name' | while read pkg; do
+            if [ "$pkg" != "." ] && ! npm view "$pkg" &>/dev/null; then
+              echo "Package $pkg doesn't exist in NPM, publishing initial version 0.0.0"
+              cd $(yarn workspaces info --json | jq -r ".[\"$pkg\"].location")
+              # Temporarily set version to 0.0.0 for initial publish
+              jq '.version = "0.0.0"' package.json > package.json.tmp && mv package.json.tmp package.json
+              yarn npm publish --access public --tag alpha
+              cd -
+            fi
+          done
+
       - name: Publish Snapshots
         continue-on-error: false
         env:
