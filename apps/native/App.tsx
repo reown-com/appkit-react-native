@@ -33,7 +33,7 @@ import { Button, Text } from '@reown/appkit-ui-react-native';
 // import { chains } from './src/utils/WagmiUtils';
 import { OpenButton } from './src/components/OpenButton';
 import { DisconnectButton } from './src/components/DisconnectButton';
-import { EthersAdapter } from '@reown/appkit-ethers-react-native';
+// import { EthersAdapter } from '@reown/appkit-ethers-react-native';
 import { SolanaAdapter } from '@reown/appkit-solana-react-native';
 import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
 import { WagmiAdapter } from '@reown/appkit-wagmi-react-native';
@@ -64,9 +64,9 @@ const clipboardClient = {
 
 const queryClient = new QueryClient();
 
-const ethersAdapter = new EthersAdapter({
-  projectId
-});
+// const ethersAdapter = new EthersAdapter({
+//   projectId
+// });
 
 const wagmiAdapter = new WagmiAdapter({
   projectId,

@@ -366,12 +366,13 @@ export class AppKit {
 
   private subscribeToAdapterEvents(adapter: BlockchainAdapter): void {
     adapter.on('accountsChanged', ({ accounts, namespace }) => {
+      //eslint-disable-next-line no-console
       console.log('accountsChanged', accounts, namespace);
       //TODO: check this
     });
 
     adapter.on('chainChanged', ({ chainId, namespace }) => {
-      console.log('chainChanged', chainId, namespace);
+      // console.log('chainChanged', chainId, namespace);
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
       ConnectionsController.setActiveChain(namespace, chain);
 
@@ -385,7 +386,7 @@ export class AppKit {
     });
 
     adapter.on('disconnect', ({ namespace }) => {
-      console.log('AppKit disconnect namespace', namespace);
+      // console.log('AppKit disconnect namespace', namespace);
       this.disconnect(namespace, false);
     });
 
