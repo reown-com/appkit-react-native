@@ -9,7 +9,7 @@ import {
 } from 'viem';
 import { ChainNotConfiguredError, createConnector, ProviderNotFoundError } from 'wagmi';
 
-export function WalletConnectConnector(appKitProvidedConnector: WalletConnector) {
+export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
   let provider: Provider | undefined;
 
   let accountsChangedHandler: ((accounts: string[]) => void) | undefined;
@@ -26,6 +26,7 @@ export function WalletConnectConnector(appKitProvidedConnector: WalletConnector)
 
     async setup() {
       provider = appKitProvidedConnector.getProvider();
+      // appkitConnector = appKitProvidedConnector;
       if (provider?.on) {
         accountsChangedHandler = (accounts: string[]) => {
           const hexAccounts = accounts.map(acc => getAddress(acc));
@@ -82,7 +83,8 @@ export function WalletConnectConnector(appKitProvidedConnector: WalletConnector)
     },
 
     async disconnect() {
-      await provider?.disconnect();
+      await appKitProvidedConnector.disconnect();
+      config.emitter.emit('message', { type: 'externalDisconnect' });
       if (provider?.off && accountsChangedHandler && chainChangedHandler && disconnectHandler) {
         provider.off('accountsChanged', accountsChangedHandler);
         provider.off('chainChanged', chainChangedHandler);
@@ -112,7 +114,7 @@ export function WalletConnectConnector(appKitProvidedConnector: WalletConnector)
     },
 
     async getChainId() {
-      const _provider = await this.getProvider();
+      const _provider = appKitProvidedConnector.getProvider();
       if (_provider) {
         try {
           const chainId = (await _provider.request({

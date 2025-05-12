@@ -172,6 +172,15 @@ export abstract class BlockchainAdapter extends EventEmitter {
     return this.connector.getProvider();
   }
 
+  subscribeToEvents(): void {
+    const provider = this.connector?.getProvider();
+    if (!provider) return;
+
+    provider.on('chainChanged', this.onChainChanged.bind(this));
+    provider.on('accountsChanged', this.onAccountsChanged.bind(this));
+    provider.on('disconnect', this.onDisconnect.bind(this));
+  }
+
   onChainChanged(chainId: string): void {
     this.emit('chainChanged', { chainId, namespace: this.getSupportedNamespace() });
   }
@@ -200,15 +209,6 @@ export abstract class BlockchainAdapter extends EventEmitter {
     }
 
     this.connector = undefined;
-  }
-
-  subscribeToEvents(): void {
-    const provider = this.connector?.getProvider();
-    if (!provider) return;
-
-    provider.on('chainChanged', this.onChainChanged.bind(this));
-    provider.on('accountsChanged', this.onAccountsChanged.bind(this));
-    provider.on('disconnect', this.onDisconnect.bind(this));
   }
 
   abstract disconnect(): Promise<void>;

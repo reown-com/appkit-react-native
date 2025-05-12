@@ -20,19 +20,19 @@ import {
 import type { Chain } from 'wagmi/chains';
 import { getTransport } from './utils/helpers';
 import { formatUnits, type Hex } from 'viem';
-import { WalletConnectConnector } from './connectors/WalletConnectConnector';
+import { UniversalConnector } from './connectors/UniversalConnector';
 
 type ConfigParams = Partial<CreateConfigParameters> & {
-  networks: [Chain, ...Chain[]]; // Use Wagmi's Chain type
+  networks: [Chain, ...Chain[]];
   projectId: string;
   connectors?: Connector[];
 };
 
 export class WagmiAdapter extends EVMAdapter {
   private static supportedNamespace: ChainNamespace = 'eip155';
-  public wagmiChains: readonly Chain[] | undefined; // Use Wagmi's Chain type
+  public wagmiChains: readonly Chain[] | undefined;
   public wagmiConfig!: Config;
-  private appKitWagmiConnector?: Connector; // Store the created connector instance
+  private wagmiConfigConnector?: Connector;
 
   constructor(configParams: ConfigParams) {
     super({
@@ -64,13 +64,13 @@ export class WagmiAdapter extends EVMAdapter {
   }
 
   async switchNetwork(network: AppKitNetwork): Promise<void> {
-    if (!this.appKitWagmiConnector) {
+    if (!this.wagmiConfigConnector) {
       throw new Error('WagmiAdapter: AppKit connector not set or not connected via Wagmi.');
     }
 
     await switchChainWagmi(this.wagmiConfig, {
       chainId: network.id as number,
-      connector: this.appKitWagmiConnector
+      connector: this.wagmiConfigConnector
     });
   }
 
@@ -80,8 +80,7 @@ export class WagmiAdapter extends EVMAdapter {
     if (!this.connector) throw new Error('No active AppKit connector (EVMAdapter.connector)');
     if (!network) throw new Error('No network provided');
 
-    if (!this.appKitWagmiConnector) {
-      // Ensure our Wagmi connector wrapper is also active
+    if (!this.wagmiConfigConnector) {
       throw new Error('WagmiAdapter: AppKit connector not properly configured with Wagmi.');
     }
 
@@ -136,11 +135,12 @@ export class WagmiAdapter extends EVMAdapter {
   }
 
   async disconnect(): Promise<void> {
-    if (this.appKitWagmiConnector) {
-      await disconnectWagmiCore(this.wagmiConfig, { connector: this.appKitWagmiConnector });
-      this.appKitWagmiConnector = undefined;
+    if (this.wagmiConfigConnector) {
+      await disconnectWagmiCore(this.wagmiConfig, { connector: this.wagmiConfigConnector });
+      this.wagmiConfigConnector = undefined;
     } else if (this.connector) {
       await this.connector.disconnect();
+      this.onDisconnect();
     }
 
     const evmAdapterInstance = this as any;
@@ -160,23 +160,31 @@ export class WagmiAdapter extends EVMAdapter {
     return WagmiAdapter.supportedNamespace;
   }
 
-  override setConnector(newAppKitConnector: WalletConnector): void {
-    super.setConnector(newAppKitConnector);
+  override setConnector(_connector: WalletConnector): void {
+    super.setConnector(_connector);
 
-    if (newAppKitConnector && this.wagmiChains) {
-      if (!this.appKitWagmiConnector) {
+    if (_connector && this.wagmiChains) {
+      if (!this.wagmiConfigConnector) {
         // Manually add the connector to the wagmiConfig
-        const connector = this.wagmiConfig._internal.connectors.setup(
-          WalletConnectConnector(newAppKitConnector)
+        const connectorInstance = this.wagmiConfig._internal.connectors.setup(
+          UniversalConnector(_connector)
         );
-        this.wagmiConfig._internal.connectors.setState(prev => [...prev, connector]);
 
-        this.appKitWagmiConnector = connector as unknown as Connector;
+        this.wagmiConfig._internal.connectors.setState(prev => [...prev, connectorInstance]);
+        this.wagmiConfigConnector = connectorInstance;
+
+        connectorInstance.emitter.on('message', ({ type }: { type: string }) => {
+          if (type === 'externalDisconnect') {
+            this.onDisconnect();
+
+            this.wagmiConfigConnector = undefined;
+          }
+        });
 
         try {
-          connectWagmi(this.wagmiConfig, { connector });
+          connectWagmi(this.wagmiConfig, { connector: connectorInstance });
         } catch (error) {
-          this.appKitWagmiConnector = undefined; // Clear if connection fails
+          this.wagmiConfigConnector = undefined;
         }
       }
     }

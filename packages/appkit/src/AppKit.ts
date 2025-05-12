@@ -244,7 +244,6 @@ export class AppKit {
    */
   private async initConnectors() {
     const connectedConnectors = await StorageUtil.getConnectedConnectors(); // Fetch stored connectors
-    console.log('initConnectors', connectedConnectors);
     if (connectedConnectors.length > 0) {
       ModalController.setLoading(true);
 
@@ -386,6 +385,7 @@ export class AppKit {
     });
 
     adapter.on('disconnect', ({ namespace }) => {
+      console.log('AppKit disconnect namespace', namespace);
       this.disconnect(namespace, false);
     });
 

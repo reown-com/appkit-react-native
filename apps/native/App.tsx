@@ -31,9 +31,9 @@ import { Button, Text } from '@reown/appkit-ui-react-native';
 // import { siweConfig } from './src/utils/SiweUtils';
 // import { AccountView } from './src/views/AccountView';
 // import { chains } from './src/utils/WagmiUtils';
-// import { OpenButton } from './src/components/OpenButton';
-// import { DisconnectButton } from './src/components/DisconnectButton';
-// import { EthersAdapter } from '@reown/appkit-ethers-react-native';
+import { OpenButton } from './src/components/OpenButton';
+import { DisconnectButton } from './src/components/DisconnectButton';
+import { EthersAdapter } from '@reown/appkit-ethers-react-native';
 import { SolanaAdapter } from '@reown/appkit-solana-react-native';
 import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
 import { WagmiAdapter } from '@reown/appkit-wagmi-react-native';
@@ -62,32 +62,11 @@ const clipboardClient = {
   }
 };
 
-// const auth = authConnector({ projectId, metadata });
-
-// const extraConnectors = Platform.select({
-//   ios: [auth],
-//   android: [auth],
-//   default: []
-// });
-
-// const wagmiConfig = defaultWagmiConfig({
-//   chains,
-//   projectId,
-//   metadata,
-//   extraConnectors
-// });
-
 const queryClient = new QueryClient();
 
-// const wagmiAdapter = new WagmiAdapter({
-//   wagmiConfig,
-//   projectId,
-//   networks: chains
-// });
-
-// const ethersAdapter = new EthersAdapter({
-//   projectId
-// });
+const ethersAdapter = new EthersAdapter({
+  projectId
+});
 
 const wagmiAdapter = new WagmiAdapter({
   projectId,
@@ -102,30 +81,12 @@ const bitcoinAdapter = new BitcoinAdapter({
   projectId
 });
 
-// createAppKit({
-//   projectId,
-//   wagmiConfig,
-//   siweConfig,
-//   clipboardClient,
-//   customWallets,
-//   enableAnalytics: true,
-//   metadata,
-//   debug: true,
-//   features: {
-//     email: true,
-//     socials: ['x', 'discord', 'apple'],
-//     emailShowWallets: true,
-//     swaps: true
-//     // onramp: true
-//   }
-// });
-
 const appKit = createAppKit({
   projectId,
   adapters: [wagmiAdapter, solanaAdapter, bitcoinAdapter],
   metadata,
   networks: [mainnet, polygon, avalanche, bitcoin, solana],
-  defaultChain: mainnet,
+  defaultChain: polygon,
   clipboardClient,
   debug: true,
   enableAnalytics: true
@@ -149,7 +110,7 @@ export default function Native() {
           <SafeAreaView style={[styles.container, isDarkMode && styles.dark]}>
             <StatusBar style="auto" />
             <Text variant="medium-title-600" style={styles.title}>
-              AppKit for React Native
+              AppKit Multichain for React Native
             </Text>
             <WalletInfoView />
             <AppKitButton
@@ -162,8 +123,8 @@ export default function Native() {
             <NetworkButton />
             <ActionsView />
             {/* <AccountView /> */}
-            {/* <OpenButton /> */}
-            {/* <DisconnectButton /> */}
+            <OpenButton />
+            <DisconnectButton />
             <Button size="sm" onPress={() => appKit.disconnect()}>
               Disconnect
             </Button>
