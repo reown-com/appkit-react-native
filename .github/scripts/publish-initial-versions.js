@@ -103,15 +103,15 @@ for (const pkg of packagesToPublish) {
     parsedPackageJson.version = '0.0.1';
     fs.writeFileSync(packageJsonPath, JSON.stringify(parsedPackageJson, null, 2));
 
-    // runCommand('yarn', ['npm', 'publish', '--access', 'public', '--tag', 'alpha'], {
-    //   cwd: pkg.dir
-    // });
-    console.log(
-      `DRY RUN: Would publish ${pkg.name} from ${pkg.dir} with version 0.0.1 and alpha tag.`
-    );
-    console.log(
-      `DRY RUN: Command would be: yarn npm publish --access public --tag alpha (in ${pkg.dir})`
-    );
+    runCommand('yarn', ['npm', 'publish', '--access', 'public', '--tag', 'alpha'], {
+      cwd: pkg.dir
+    });
+    // console.log(
+    //   `DRY RUN: Would publish ${pkg.name} from ${pkg.dir} with version 0.0.1 and alpha tag.`
+    // );
+    // console.log(
+    //   `DRY RUN: Command would be: yarn npm publish --access public --tag alpha (in ${pkg.dir})`
+    // );
   } catch (publishError) {
     // runCommand already logs error details if it's from there
     console.error(`Failed to publish ${pkg.name}: ${publishError.message}`);
