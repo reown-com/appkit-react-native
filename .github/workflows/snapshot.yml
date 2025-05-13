@@ -23,8 +23,10 @@ jobs:
         continue-on-error: false
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
+          yarn run changeset:prepublish
           node .github/scripts/publish-initial-versions.js
 
       - name: Publish Snapshots
