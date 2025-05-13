@@ -27,7 +27,7 @@ console.log('Starting initial package publishing process...');
 let packagesToPublish = [];
 const rootDir = process.cwd();
 
-const packagesToExclude = ['@apps/native', '@apps/gallery'];
+const packagesToExclude = ['@apps/native', '@apps/gallery', 'appkit-react-native'];
 
 try {
   // Get workspace info using yarn workspaces list --json
@@ -40,8 +40,13 @@ try {
   const workspacePackages = lines.map(line => JSON.parse(line));
 
   for (const pkgData of workspacePackages) {
-    // Skip the root package or any package without a defined location
-    if (pkgData.name === '.' || !pkgData.location) {
+    console.log(`[DEBUG] Processing workspace entry: ${JSON.stringify(pkgData)}`);
+
+    // Skip the root package (identified by location '.') or any package without a defined location
+    if (pkgData.location === '.' || !pkgData.location) {
+      console.log(
+        `[DEBUG] Skipping root or undefined location package: ${pkgData.name} at ${pkgData.location}`
+      );
       continue;
     }
 
@@ -69,6 +74,11 @@ try {
         `Package ${pkgName} does not appear to exist on NPM or has no published versions.`
       );
       if (fs.existsSync(path.join(pkgDir, 'package.json'))) {
+        const packageJsonContent = fs.readFileSync(path.join(pkgDir, 'package.json'), 'utf8');
+        const parsedPackageJson = JSON.parse(packageJsonContent);
+        console.log(
+          `[DEBUG] package.json for ${pkgName}: private=${parsedPackageJson.private}, version=${parsedPackageJson.version}`
+        ); // Added for debugging
         packagesToPublish.push({ name: pkgName, dir: pkgDir });
       } else {
         console.warn(`Skipping ${pkgName}: package.json not found in ${pkgDir}`);
@@ -92,12 +102,18 @@ if (packagesToPublish.length === 0) {
 
 let hasPublishErrors = false;
 for (const pkg of packagesToPublish) {
+  console.log(`[DEBUG] Attempting to publish from list: ${JSON.stringify(pkg)}`); // Added for debugging
   console.log(`Attempting to publish ${pkg.name} from ${pkg.dir} with alpha tag...`);
   const packageJsonPath = path.join(pkg.dir, 'package.json');
   let originalPackageJson = '';
   try {
     originalPackageJson = fs.readFileSync(packageJsonPath, 'utf8');
     const parsedPackageJson = JSON.parse(originalPackageJson);
+
+    if (parsedPackageJson.private === true) {
+      console.log(`Package ${pkg.name} is private, skipping initial publish.`);
+      continue; // Skip to the next package
+    }
 
     console.log(`Temporarily setting version of ${pkg.name} to 0.0.1 for initial publish.`);
     parsedPackageJson.version = '0.0.1';
