@@ -1,5 +1,17 @@
 # @reown/appkit-ethers5-react-native
 
+## 1.2.4
+
+### Patch Changes
+
+- [#337](https://github.com/reown-com/appkit-react-native/pull/337) [`c121ae3`](https://github.com/reown-com/appkit-react-native/commit/c121ae3d52cb134e695df44d53eb548c1c934a14) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: disable coverscreen on root modal to solve issues with expo-router
+
+- Updated dependencies [[`c121ae3`](https://github.com/reown-com/appkit-react-native/commit/c121ae3d52cb134e695df44d53eb548c1c934a14)]:
+  - @reown/appkit-scaffold-react-native@1.2.4
+  - @reown/appkit-common-react-native@1.2.4
+  - @reown/appkit-scaffold-utils-react-native@1.2.4
+  - @reown/appkit-siwe-react-native@1.2.4
+
 ## 1.2.3
 
 ### Patch Changes
