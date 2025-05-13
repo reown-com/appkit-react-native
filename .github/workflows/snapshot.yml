@@ -23,37 +23,9 @@ jobs:
         continue-on-error: false
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
-          # Find packages that don't exist in NPM and publish them with initial version
-          yarn workspaces list --json | jq -r '.name' | while read pkg; do
-            if [ "$pkg" != "." ] && ! npm view "$pkg" &>/dev/null; then
-              echo "Package $pkg doesn't exist in NPM, publishing initial version 0.0.0"
-              # Get the location of the package
-              PKG_DIR=$(yarn workspaces info --json | jq -r ".[\"$pkg\"].location")
-              if [ -d "$PKG_DIR" ] && [ -f "$PKG_DIR/package.json" ]; then
-                echo "Found package directory at $PKG_DIR"
-                # Create a backup of the original package.json
-                cp "$PKG_DIR/package.json" "$PKG_DIR/package.json.bak"
-                # Update the version to 0.0.0 using Node.js
-                node -e "
-                  const fs = require('fs');
-                  const pkg = JSON.parse(fs.readFileSync('$PKG_DIR/package.json', 'utf8'));
-                  pkg.version = '0.0.0';
-                  fs.writeFileSync('$PKG_DIR/package.json', JSON.stringify(pkg, null, 2));
-                "
-                # Publish from the package directory
-                (cd "$PKG_DIR" && yarn npm publish --access public --tag alpha)
-                # Restore the original package.json
-                mv "$PKG_DIR/package.json.bak" "$PKG_DIR/package.json"
-              else
-                echo "Error: Could not find package.json in $PKG_DIR"
-                echo "Current directory: $(pwd)"
-                echo "Directory contents: $(ls -la)"
-              fi
-            fi
-          done
+          node .github/scripts/publish-initial-versions.js
 
       - name: Publish Snapshots
         continue-on-error: false

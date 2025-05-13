@@ -21,7 +21,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name:
+      - name: Setup Environment
         uses: ./.github/actions/setup
 
       - name: Create Release Pull Request or Publish to NPM
