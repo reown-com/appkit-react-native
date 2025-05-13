@@ -98,6 +98,18 @@ if (packagesToPublish.length === 0) {
       .map(p => p.name)
       .join(', ')}`
   );
+
+  // Conditionally run changeset:prepublish if there are packages to publish
+  if (packagesToPublish.length > 0) {
+    console.log('New packages found. Running changeset:prepublish to build packages...');
+    try {
+      runCommand('yarn', ['run', 'changeset:prepublish']); // Assumes it runs from rootDir
+      console.log('changeset:prepublish completed successfully.');
+    } catch (prepublishError) {
+      console.error('Failed to run changeset:prepublish:', prepublishError.message);
+      process.exit(1); // Exit if build fails, as publishing would also fail
+    }
+  }
 }
 
 let hasPublishErrors = false;
