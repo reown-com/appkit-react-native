@@ -36,8 +36,13 @@ jobs:
                 echo "Found package directory at $PKG_DIR"
                 # Create a backup of the original package.json
                 cp "$PKG_DIR/package.json" "$PKG_DIR/package.json.bak"
-                # Update the version to 0.0.0
-                jq '.version = "0.0.0"' "$PKG_DIR/package.json" > "$PKG_DIR/package.json.tmp" && mv "$PKG_DIR/package.json.tmp" "$PKG_DIR/package.json"
+                # Update the version to 0.0.0 using Node.js
+                node -e "
+                  const fs = require('fs');
+                  const pkg = JSON.parse(fs.readFileSync('$PKG_DIR/package.json', 'utf8'));
+                  pkg.version = '0.0.0';
+                  fs.writeFileSync('$PKG_DIR/package.json', JSON.stringify(pkg, null, 2));
+                "
                 # Publish from the package directory
                 (cd "$PKG_DIR" && yarn npm publish --access public --tag alpha)
                 # Restore the original package.json
