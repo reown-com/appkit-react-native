@@ -30,11 +30,23 @@ jobs:
           yarn workspaces list --json | jq -r '.name' | while read pkg; do
             if [ "$pkg" != "." ] && ! npm view "$pkg" &>/dev/null; then
               echo "Package $pkg doesn't exist in NPM, publishing initial version 0.0.0"
-              cd $(yarn workspaces info --json | jq -r ".[\"$pkg\"].location")
-              # Temporarily set version to 0.0.0 for initial publish
-              jq '.version = "0.0.0"' package.json > package.json.tmp && mv package.json.tmp package.json
-              yarn npm publish --access public --tag alpha
-              cd -
+              # Get the location of the package
+              PKG_DIR=$(yarn workspaces info --json | jq -r ".[\"$pkg\"].location")
+              if [ -d "$PKG_DIR" ] && [ -f "$PKG_DIR/package.json" ]; then
+                echo "Found package directory at $PKG_DIR"
+                # Create a backup of the original package.json
+                cp "$PKG_DIR/package.json" "$PKG_DIR/package.json.bak"
+                # Update the version to 0.0.0
+                jq '.version = "0.0.0"' "$PKG_DIR/package.json" > "$PKG_DIR/package.json.tmp" && mv "$PKG_DIR/package.json.tmp" "$PKG_DIR/package.json"
+                # Publish from the package directory
+                (cd "$PKG_DIR" && yarn npm publish --access public --tag alpha)
+                # Restore the original package.json
+                mv "$PKG_DIR/package.json.bak" "$PKG_DIR/package.json"
+              else
+                echo "Error: Could not find package.json in $PKG_DIR"
+                echo "Current directory: $(pwd)"
+                echo "Directory contents: $(ls -la)"
+              fi
             fi
           done
 
