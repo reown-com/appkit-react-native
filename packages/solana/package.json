@@ -38,15 +38,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@reown/appkit-common-react-native": "1.2.3",
-    "@solana/web3.js": "1.98.2"
-  },
-  "peerDependencies": {
-    "@solana/web3.js": ">=1.90.0",
-    "bs58": ">=6.0.0"
-  },
-  "devDependencies": {
-    "@solana/web3.js": "1.98.2"
+    "@reown/appkit-common-react-native": "1.2.3"
   },
   "react-native": "src/index.tsx"
 }

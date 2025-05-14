@@ -6,7 +6,7 @@ import {
   type GetBalanceParams,
   type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
-import { Connection, PublicKey } from '@solana/web3.js';
+import { getSolanaBalance } from './helpers';
 
 export class SolanaAdapter extends SolanaBaseAdapter {
   private static supportedNamespace: ChainNamespace = 'solana';
@@ -28,19 +28,22 @@ export class SolanaAdapter extends SolanaBaseAdapter {
       address || this.getAccounts()?.find(account => account.includes(network.id.toString()));
 
     if (!balanceAddress) {
-      return Promise.resolve({ amount: '0.00', symbol: 'SOL' });
+      return { amount: '0.00', symbol: 'SOL' };
     }
 
     try {
-      const connection = new Connection(network?.rpcUrls?.default?.http?.[0] as string); //TODO: check connection settings
-      const balanceAmount = await connection.getBalance(
-        new PublicKey(balanceAddress.split(':')[2] as string)
-      );
-      const formattedBalance = (balanceAmount / 1000000000).toString(); //TODO: add util with LAMPORTS_PER_SOL
+      const rpcUrl = network.rpcUrls?.default?.http?.[0];
+      if (!rpcUrl) throw new Error('No RPC URL available');
+
+      const base58Address = balanceAddress.split(':')[2];
+
+      if (!base58Address) throw new Error('Invalid balance address');
+
+      const amount = await getSolanaBalance(rpcUrl, base58Address);
 
       const balance = {
-        amount: formattedBalance,
-        symbol: network?.nativeCurrency.symbol || 'SOL'
+        amount: amount.toString(),
+        symbol: network.nativeCurrency?.symbol ?? 'SOL'
       };
 
       this.emit('balanceChanged', {
@@ -78,7 +81,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
   }
 
   disconnect(): Promise<void> {
-    if (!this.connector) throw new Error('SolanaAdapter:disconnect - No active connector');
+    if (!this.connector) throw new Error('No active connector');
 
     return this.connector.disconnect();
   }
