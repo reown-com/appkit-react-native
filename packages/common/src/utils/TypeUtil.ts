@@ -139,11 +139,52 @@ export type Tokens = Record<CaipNetworkId, Token>;
 
 export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
 
+//********** Adapter Event Payloads **********//
+export type AccountsChangedEvent = {
+  accounts: string[];
+  namespace: ChainNamespace;
+};
+
+export type ChainChangedEvent = {
+  chainId: string;
+  namespace: ChainNamespace;
+};
+
+export type DisconnectEvent = {
+  namespace: ChainNamespace;
+};
+
+export type BalanceChangedEvent = {
+  namespace: ChainNamespace;
+  address: CaipAddress;
+  balance: {
+    amount: string;
+    symbol: string;
+    contractAddress?: ContractAddress;
+  };
+};
+
+//********** Adapter Event Map **********//
+export interface AdapterEvents {
+  accountsChanged: (event: AccountsChangedEvent) => void;
+  chainChanged: (event: ChainChangedEvent) => void;
+  disconnect: (event: DisconnectEvent) => void;
+  balanceChanged: (event: BalanceChangedEvent) => void;
+}
+
 //********** Adapter Types **********//
 export abstract class BlockchainAdapter extends EventEmitter {
   public projectId: string;
   public connector?: WalletConnector;
   public supportedNamespace: ChainNamespace;
+
+  // Typed emit method
+  override emit<K extends keyof AdapterEvents>(
+    event: K,
+    payload: Parameters<AdapterEvents[K]>[0]
+  ): boolean {
+    return super.emit(event, payload);
+  }
 
   constructor({
     projectId,
