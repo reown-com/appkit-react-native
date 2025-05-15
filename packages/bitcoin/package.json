@@ -5,6 +5,7 @@
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
   "source": "src/index.tsx",
+  "react-native": "src/index.tsx",
   "scripts": {
     "build": "bob build",
     "clean": "rm -rf lib",
@@ -39,6 +40,5 @@
   },
   "dependencies": {
     "@reown/appkit-common-react-native": "1.2.3"
-  },
-  "react-native": "src/index.tsx"
+  }
 }

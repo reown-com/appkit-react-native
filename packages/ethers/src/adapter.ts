@@ -1,4 +1,3 @@
-import { formatEther, JsonRpcProvider } from 'ethers';
 import {
   EVMAdapter,
   type AppKitNetwork,
@@ -8,6 +7,7 @@ import {
   type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
 import { EthersHelpersUtil } from '@reown/appkit-scaffold-utils-react-native';
+import { formatEther, getEthBalance } from './helpers';
 
 export class EthersAdapter extends EVMAdapter {
   private static supportedNamespace: ChainNamespace = 'eip155';
@@ -28,26 +28,20 @@ export class EthersAdapter extends EVMAdapter {
     const balanceAddress =
       address || this.getAccounts()?.find(account => account.includes(network.id.toString()));
 
-    let balance = { amount: '0.00', symbol: network.nativeCurrency.symbol || 'ETH' };
+    const balance: GetBalanceResponse = {
+      amount: '0.00',
+      symbol: network.nativeCurrency.symbol || 'ETH'
+    };
 
-    if (!balanceAddress) {
-      return Promise.resolve(balance);
-    }
+    if (!balanceAddress) return balance;
 
     const account = balanceAddress.split(':')[2];
+    const rpcUrl = network.rpcUrls.default.http?.[0];
+    if (!rpcUrl || !account) return balance;
 
     try {
-      const jsonRpcProvider = new JsonRpcProvider(network.rpcUrls.default.http[0], {
-        chainId: Number(network.id),
-        name: network.name
-      });
-
-      if (jsonRpcProvider && account) {
-        const _balance = await jsonRpcProvider.getBalance(account);
-        const formattedBalance = formatEther(_balance);
-
-        balance = { amount: formattedBalance, symbol: network.nativeCurrency.symbol || 'ETH' };
-      }
+      const wei = await getEthBalance(rpcUrl, account);
+      balance.amount = formatEther(wei);
 
       this.emit('balanceChanged', {
         namespace: this.getSupportedNamespace(),
@@ -56,7 +50,7 @@ export class EthersAdapter extends EVMAdapter {
       });
 
       return balance;
-    } catch (error) {
+    } catch {
       return balance;
     }
   }
