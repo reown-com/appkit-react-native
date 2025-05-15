@@ -8,7 +8,7 @@ interface Options {
 
 interface RequestArguments {
   path: string;
-  headers?: HeadersInit_;
+  headers?: HeadersInit;
   params?: Record<string, string | undefined>;
   cache?: RequestCache;
   signal?: AbortSignal;

@@ -86,13 +86,6 @@ export class SolanaAdapter extends SolanaBaseAdapter {
     return this.connector.disconnect();
   }
 
-  async request(method: string, params?: any[]) {
-    if (!this.connector) throw new Error('No active connector');
-    const provider = this.connector.getProvider();
-
-    return provider.request({ method, params });
-  }
-
   getSupportedNamespace(): ChainNamespace {
     return SolanaAdapter.supportedNamespace;
   }

@@ -68,6 +68,8 @@ export class WagmiAdapter extends EVMAdapter {
       throw new Error('WagmiAdapter: AppKit connector not set or not connected via Wagmi.');
     }
 
+    await this.wagmiConfigConnector?.switchChain?.({ chainId: network.id as number });
+
     await switchChainWagmi(this.wagmiConfig, {
       chainId: network.id as number,
       connector: this.wagmiConfigConnector
@@ -147,13 +149,6 @@ export class WagmiAdapter extends EVMAdapter {
     if ('connector' in evmAdapterInstance) {
       evmAdapterInstance.connector = undefined;
     }
-  }
-
-  async request(method: string, params?: any[]) {
-    if (!this.connector) throw new Error('WagmiAdapter: No active AppKit connector');
-    const provider = this.connector.getProvider();
-
-    return provider.request({ method, params });
   }
 
   getSupportedNamespace(): ChainNamespace {

@@ -212,7 +212,6 @@ export abstract class BlockchainAdapter extends EventEmitter {
   }
 
   abstract disconnect(): Promise<void>;
-  abstract request(method: string, params?: any[]): Promise<any>;
   abstract getSupportedNamespace(): ChainNamespace;
   abstract getBalance(params: GetBalanceParams): Promise<GetBalanceResponse>;
   abstract getAccounts(): CaipAddress[] | undefined;
