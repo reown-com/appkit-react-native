@@ -165,16 +165,22 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
       const _provider = await this.getProvider();
       if (!_provider) throw new Error('Provider not available for switching chain.');
       const currentChainId = await this.getChainId();
-      if (currentChainId === chainId) return config.chains.find(c => c.id === chainId) as Chain;
+      const newChain = config.chains.find(c => c.id === chainId) as Chain;
+
+      if (!newChain) throw new Error('Chain not found');
+
+      if (currentChainId === chainId) return newChain;
 
       try {
         await _provider.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: numberToHex(chainId) }]
         });
+
+        await appKitProvidedConnector.switchNetwork(newChain);
         config.emitter.emit('change', { chainId });
 
-        return config.chains.find(c => c.id === chainId) as Chain;
+        return newChain;
       } catch (error) {
         const chain = config.chains.find(c => c.id === chainId);
         // Check if chain is not configured
@@ -196,6 +202,7 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
                 }
               ]
             });
+            await appKitProvidedConnector.switchNetwork(newChain);
             config.emitter.emit('change', { chainId });
 
             return chain;

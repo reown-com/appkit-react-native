@@ -101,8 +101,11 @@ export class WalletConnectConnector extends WalletConnector {
   }
 
   override switchNetwork(network: AppKitNetwork): Promise<void> {
-    if (!network.caipNetworkId) throw new Error('No network provided');
-    (this.provider as IUniversalProvider).setDefaultChain(network.caipNetworkId);
+    if (!network) throw new Error('No network provided');
+
+    let caipNetworkId = network.caipNetworkId ?? `eip155:${network.id}`;
+
+    (this.provider as IUniversalProvider).setDefaultChain(caipNetworkId);
 
     return Promise.resolve();
   }

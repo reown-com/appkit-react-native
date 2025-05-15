@@ -38,11 +38,7 @@ export function WagmiActionsView() {
 
   const { data: gas, isError: isGasError } = useEstimateGas(TX);
 
-  const {
-    isPending: isSending,
-
-    sendTransaction
-  } = useSendTransaction({
+  const { isPending: isSending, sendTransaction } = useSendTransaction({
     mutation: {
       onSuccess: onSendSuccess,
       onError: onSendError
