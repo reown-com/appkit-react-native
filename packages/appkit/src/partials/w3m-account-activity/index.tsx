@@ -32,8 +32,9 @@ export function AccountActivity({ style }: Props) {
   const [refreshing, setRefreshing] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const { loading, transactions, next } = useSnapshot(TransactionsController.state);
-  const { activeNetwork } = useSnapshot(ConnectionsController.state);
+  const { activeNetwork, activeNamespace } = useSnapshot(ConnectionsController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
+  const isSupported = activeNamespace && ['eip155', 'solana'].includes(activeNamespace);
 
   const handleLoadMore = () => {
     const address = ConnectionsController.state.activeAddress?.split(':')[2];
@@ -78,6 +79,17 @@ export function AccountActivity({ style }: Props) {
       <FlexView style={[styles.placeholder, style]} alignItems="center" justifyContent="center">
         <LoadingSpinner />
       </FlexView>
+    );
+  }
+
+  if (!isSupported) {
+    return (
+      <Placeholder
+        icon="infoCircle"
+        title="Unsupported network"
+        description="Activity list is not available for this network"
+        style={[styles.placeholder, style]}
+      />
     );
   }
 

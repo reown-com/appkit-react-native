@@ -43,7 +43,8 @@ export function AccountDefaultView() {
   const {
     activeAddress: address,
     activeBalance: balance,
-    activeNetwork
+    activeNetwork,
+    activeNamespace
   } = useSnapshot(ConnectionsController.state);
   const account = address?.split(':')[2];
   const [disconnecting, setDisconnecting] = useState(false);
@@ -58,6 +59,7 @@ export function AccountDefaultView() {
   const showExplorer = Object.keys(activeNetwork?.blockExplorers ?? {}).length > 0 && !isAuth;
   const showBack = history.length > 1;
   const showSwitchAccountType = isAuth && NetworkController.checkIfSmartAccountEnabled();
+  const showActivity = !isAuth && activeNamespace && ['eip155', 'solana'].includes(activeNamespace);
   const { padding } = useCustomDimensions();
   const { disconnect } = useAppKit();
 
@@ -287,7 +289,7 @@ export function AccountDefaultView() {
                 <Text color="fg-100">Swap</Text>
               </ListItem>
             )}
-            {!isAuth && (
+            {showActivity && (
               <ListItem
                 chevron
                 icon="clock"
