@@ -2,18 +2,14 @@ import { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import {
   EventsController,
-  OptionsController,
   type EventName,
   type EventsControllerState
 } from '@reown/appkit-core-react-native';
+import { useAppKit } from './useAppKit';
 
 export function useAppKitEvents(callback?: (newEvent: EventsControllerState) => void) {
-  const { projectId } = useSnapshot(OptionsController.state);
+  useAppKit(); // Use the hook for checks
   const { data, timestamp } = useSnapshot(EventsController.state);
-
-  if (!projectId) {
-    throw new Error('Please call "createAppKit" before using "useAppKitEvents" hook');
-  }
 
   useEffect(() => {
     const unsubscribe = EventsController.subscribe(newEvent => {
@@ -32,10 +28,7 @@ export function useAppKitEventSubscription(
   event: EventName,
   callback: (newEvent: EventsControllerState) => void
 ) {
-  const { projectId } = useSnapshot(OptionsController.state);
-  if (!projectId) {
-    throw new Error('Please call "createAppKit" before using "useAppKitEventSubscription" hook');
-  }
+  useAppKit(); // Use the hook for checks
 
   useEffect(() => {
     const unsubscribe = EventsController?.subscribeEvent(event, callback);

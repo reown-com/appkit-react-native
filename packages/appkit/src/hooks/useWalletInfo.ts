@@ -1,13 +1,10 @@
 import { useSnapshot } from 'valtio';
-import { ConnectionsController, OptionsController } from '@reown/appkit-core-react-native';
+import { ConnectionsController } from '@reown/appkit-core-react-native';
+import { useAppKit } from './useAppKit';
 
 export function useWalletInfo() {
-  const { projectId } = useSnapshot(OptionsController.state);
+  useAppKit(); // Use the hook for checks
   const { walletInfo } = useSnapshot(ConnectionsController.state);
-
-  if (!projectId) {
-    throw new Error('Please call "createAppKit" before using "useWalletInfo" hook');
-  }
 
   return { walletInfo };
 }
