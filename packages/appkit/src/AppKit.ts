@@ -211,8 +211,6 @@ export class AppKit {
     if (ConnectionsController.state.activeNamespace !== (network.chainNamespace ?? 'eip155')) {
       ConnectionsController.setActiveNamespace(network.chainNamespace ?? 'eip155');
     }
-
-    // adapter.getBalance({ network, tokens: this.config.tokens });
   }
 
   open(options?: OpenOptions) {
@@ -372,7 +370,6 @@ export class AppKit {
     });
 
     adapter.on('chainChanged', ({ chainId, namespace }) => {
-      // console.log('chainChanged', chainId, namespace);
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
       ConnectionsController.setActiveChain(namespace, chain);
 

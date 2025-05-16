@@ -1,4 +1,8 @@
-import type { Provider, WalletConnector } from '@reown/appkit-common-react-native';
+import type {
+  Provider,
+  RequestArguments,
+  WalletConnector
+} from '@reown/appkit-common-react-native';
 import {
   getAddress,
   numberToHex,
@@ -26,7 +30,6 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
 
     async setup() {
       provider = appKitProvidedConnector.getProvider();
-      // appkitConnector = appKitProvidedConnector;
       if (provider?.on) {
         accountsChangedHandler = (accounts: string[]) => {
           const hexAccounts = accounts.map(acc => getAddress(acc));
@@ -114,18 +117,10 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
     },
 
     async getChainId() {
-      const _provider = appKitProvidedConnector.getProvider();
-      if (_provider) {
-        try {
-          const chainId = (await _provider.request({
-            method: 'eth_chainId'
-          })) as string;
+      const chainId = appKitProvidedConnector.getChainId('eip155')?.split(':')[1];
 
-          return parseInt(chainId, 10);
-        } catch (e) {
-          // console.warn("Could not get chainId from provider", e);
-        }
-      }
+      if (chainId) return parseInt(chainId, 10);
+
       // Fallback: Try to get from CAIP accounts if available
       const namespaces = appKitProvidedConnector.getNamespaces();
       // @ts-ignore
@@ -148,7 +143,17 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
         provider = appKitProvidedConnector.getProvider();
       }
 
-      return Promise.resolve(provider);
+      const chainId = await this.getChainId();
+
+      //TODO: Review this with gancho
+      const _provider = {
+        ...provider,
+        request: (args: RequestArguments) => {
+          return provider?.request(args, `eip155:${chainId}`);
+        }
+      };
+
+      return Promise.resolve(_provider as Provider);
     },
 
     async isAuthorized() {
@@ -164,12 +169,9 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
     async switchChain({ chainId }) {
       const _provider = await this.getProvider();
       if (!_provider) throw new Error('Provider not available for switching chain.');
-      const currentChainId = await this.getChainId();
       const newChain = config.chains.find(c => c.id === chainId) as Chain;
 
-      if (!newChain) throw new Error('Chain not found');
-
-      if (currentChainId === chainId) return newChain;
+      if (!newChain) throw new SwitchChainError(new ChainNotConfiguredError());
 
       try {
         await _provider.request({
@@ -177,15 +179,10 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
           params: [{ chainId: numberToHex(chainId) }]
         });
 
-        await appKitProvidedConnector.switchNetwork(newChain);
         config.emitter.emit('change', { chainId });
 
         return newChain;
       } catch (error) {
-        const chain = config.chains.find(c => c.id === chainId);
-        // Check if chain is not configured
-        if (!chain) throw new SwitchChainError(new ChainNotConfiguredError());
-
         // Try to add chain if switch failed (common pattern)
         //4902 in MetaMask: Unrecognized chain ID
         if ((error as any)?.code === 4902 || (error as any)?.data?.originalError?.code === 4902) {
@@ -195,17 +192,17 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
               params: [
                 {
                   chainId: numberToHex(chainId),
-                  chainName: chain.name,
-                  nativeCurrency: chain.nativeCurrency,
-                  rpcUrls: [chain.rpcUrls.default?.http[0] ?? ''], // Take first default HTTP RPC URL
-                  blockExplorerUrls: [chain.blockExplorers?.default?.url]
+                  chainName: newChain.name,
+                  nativeCurrency: newChain.nativeCurrency,
+                  rpcUrls: [newChain.rpcUrls.default?.http[0] ?? ''], // Take first default HTTP RPC URL
+                  blockExplorerUrls: [newChain.blockExplorers?.default?.url]
                 }
               ]
             });
             await appKitProvidedConnector.switchNetwork(newChain);
             config.emitter.emit('change', { chainId });
 
-            return chain;
+            return newChain;
           } catch (addError) {
             throw new UserRejectedRequestError(addError as Error);
           }

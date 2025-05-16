@@ -67,7 +67,7 @@ export class EthersAdapter extends EVMAdapter {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: EthersHelpersUtil.numberToHexString(Number(network.id)) }] //TODO: check util
         },
-        `${network.chainNamespace ?? 'eip155'}:${network.id}`
+        `${EthersAdapter.supportedNamespace}:${network.id}`
       );
     } catch (switchError: any) {
       const message = switchError?.message as string;

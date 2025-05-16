@@ -68,8 +68,6 @@ export class WagmiAdapter extends EVMAdapter {
       throw new Error('WagmiAdapter: AppKit connector not set or not connected via Wagmi.');
     }
 
-    await this.wagmiConfigConnector?.switchChain?.({ chainId: network.id as number });
-
     await switchChainWagmi(this.wagmiConfig, {
       chainId: network.id as number,
       connector: this.wagmiConfigConnector
@@ -77,7 +75,7 @@ export class WagmiAdapter extends EVMAdapter {
   }
 
   async getBalance(params: GetBalanceParams): Promise<GetBalanceResponse> {
-    const { network, address } = params;
+    const { network, address, tokens } = params;
 
     if (!this.connector) throw new Error('No active AppKit connector (EVMAdapter.connector)');
     if (!network) throw new Error('No network provided');
@@ -96,8 +94,7 @@ export class WagmiAdapter extends EVMAdapter {
 
     const accountHex = balanceAddress.split(':')[2] as Hex;
 
-    const token =
-      network?.caipNetworkId && (params.tokens?.[network.caipNetworkId]?.address as Hex);
+    const token = network?.caipNetworkId && (tokens?.[network.caipNetworkId]?.address as Hex);
 
     const balance = await getBalanceWagmi(this.wagmiConfig, {
       address: accountHex,

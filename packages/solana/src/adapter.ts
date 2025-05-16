@@ -6,7 +6,7 @@ import {
   type GetBalanceParams,
   type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
-import { getSolanaBalance } from './helpers';
+import { getSolanaNativeBalance, getSolanaTokenBalance } from './helpers';
 
 export class SolanaAdapter extends SolanaBaseAdapter {
   private static supportedNamespace: ChainNamespace = 'solana';
@@ -19,7 +19,8 @@ export class SolanaAdapter extends SolanaBaseAdapter {
   }
 
   async getBalance(params: GetBalanceParams): Promise<GetBalanceResponse> {
-    const { network, address } = params;
+    console.log('solana getBalance');
+    const { network, address, tokens } = params;
 
     if (!this.connector) throw new Error('No active connector');
     if (!network) throw new Error('No network provided');
@@ -39,12 +40,22 @@ export class SolanaAdapter extends SolanaBaseAdapter {
 
       if (!base58Address) throw new Error('Invalid balance address');
 
-      const amount = await getSolanaBalance(rpcUrl, base58Address);
+      const token = network?.caipNetworkId && tokens?.[network.caipNetworkId]?.address;
+      let balance;
 
-      const balance = {
-        amount: amount.toString(),
-        symbol: network.nativeCurrency?.symbol ?? 'SOL'
-      };
+      if (token) {
+        const { amount, symbol } = await getSolanaTokenBalance(rpcUrl, base58Address, token);
+        balance = {
+          amount,
+          symbol
+        };
+      } else {
+        const amount = await getSolanaNativeBalance(rpcUrl, base58Address);
+        balance = {
+          amount: amount.toString(),
+          symbol: 'SOL'
+        };
+      }
 
       this.emit('balanceChanged', {
         namespace: this.getSupportedNamespace(),

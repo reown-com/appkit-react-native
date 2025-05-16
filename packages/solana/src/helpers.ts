@@ -1,3 +1,11 @@
+export interface TokenInfo {
+  address: string;
+  symbol: string;
+  name: string;
+  decimals: number;
+  logoURI?: string;
+}
+
 /**
  * Validates if the given string is a Solana address.
  * @param address The string to validate.
@@ -14,7 +22,7 @@ export function isSolanaAddress(address: string): boolean {
  * @param rpcUrl Solana RPC endpoint
  * @param address Solana public address (base58)
  */
-export async function getSolanaBalance(rpcUrl: string, address: string): Promise<number> {
+export async function getSolanaNativeBalance(rpcUrl: string, address: string): Promise<number> {
   if (!isSolanaAddress(address)) {
     throw new Error('Invalid Solana address format');
   }
@@ -37,4 +45,56 @@ export async function getSolanaBalance(rpcUrl: string, address: string): Promise
   if (json.error) throw new Error(json.error.message);
 
   return json.result.value / 1000000000; // Convert lamports to SOL
+}
+
+let tokenCache: Record<string, TokenInfo> = {};
+/**
+ * Fetch metadata for a Solana SPL token using the Jupiter token list.
+ * @param mint - The token's mint address
+ * @returns TokenInfo if found, or undefined
+ */
+export async function getSolanaTokenMetadata(mint: string): Promise<TokenInfo | undefined> {
+  // Return from cache if available
+  if (tokenCache[mint]) return tokenCache[mint];
+
+  try {
+    const res = await fetch('https://token.jup.ag/all');
+    const list: TokenInfo[] = await res.json();
+
+    for (const token of list) {
+      tokenCache[token.address] = token;
+    }
+
+    return tokenCache[mint];
+  } catch (error) {
+    return undefined;
+  }
+}
+
+export async function getSolanaTokenBalance(
+  rpcUrl: string,
+  address: string,
+  tokenAddress: string
+): Promise<{ amount: string; symbol: string }> {
+  if (!isSolanaAddress(address)) {
+    throw new Error('Invalid Solana address format');
+  }
+
+  const token = await getSolanaTokenMetadata(tokenAddress);
+
+  const response = await fetch(rpcUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'getTokenAccountsByOwner',
+      params: [address, { mint: tokenAddress }, { encoding: 'jsonParsed' }]
+    })
+  });
+
+  const result = await response.json();
+  const balance = result.result.value[0]?.account?.data?.parsed?.info?.tokenAmount?.uiAmount;
+
+  return { amount: balance?.toString() ?? '0', symbol: token?.symbol ?? 'SOL' };
 }

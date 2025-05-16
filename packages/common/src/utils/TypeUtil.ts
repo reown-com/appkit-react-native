@@ -6,7 +6,7 @@ export type CaipNetworkId = `${string}:${string}`;
 
 export type ChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122';
 
-export type AppKitNetwork = {
+export type Network = {
   // Core viem/chain properties
   id: number | string;
   name: string;
@@ -19,7 +19,9 @@ export type AppKitNetwork = {
     default: { name: string; url: string };
     [key: string]: { name: string; url: string } | undefined;
   };
+};
 
+export type AppKitNetwork = Network & {
   // AppKit specific / CAIP properties (Optional in type, but often needed in practice)
   chainNamespace?: ChainNamespace; // e.g., 'eip155'
   caipNetworkId?: CaipNetworkId; // e.g., 'eip155:1'
@@ -223,7 +225,12 @@ export abstract class BlockchainAdapter extends EventEmitter {
   }
 
   onChainChanged(chainId: string): void {
-    this.emit('chainChanged', { chainId, namespace: this.getSupportedNamespace() });
+    const _chains = this.getAccounts()?.map(account => account.split(':')[1]);
+    const shouldEmit = _chains?.some(chain => chain === chainId);
+
+    if (shouldEmit) {
+      this.emit('chainChanged', { chainId, namespace: this.getSupportedNamespace() });
+    }
   }
 
   onAccountsChanged(accounts: string[]): void {
