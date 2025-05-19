@@ -19,14 +19,19 @@ export type Network = {
     default: { name: string; url: string };
     [key: string]: { name: string; url: string } | undefined;
   };
-};
 
-export type AppKitNetwork = Network & {
-  // AppKit specific / CAIP properties (Optional in type, but often needed in practice)
+  // AppKit specific / CAIP properties (Optional in type, but needed in practice)
   chainNamespace?: ChainNamespace; // e.g., 'eip155'
   caipNetworkId?: CaipNetworkId; // e.g., 'eip155:1'
   testnet?: boolean;
-  deprecatedCaipNetworkId?: CaipNetworkId; // for Solana
+  deprecatedCaipNetworkId?: CaipNetworkId; // for Solana deprecated id
+};
+
+export type AppKitNetwork = Network & {
+  chainNamespace: ChainNamespace; // e.g., 'eip155'
+  caipNetworkId: CaipNetworkId; // e.g., 'eip155:1'
+  testnet?: boolean;
+  deprecatedCaipNetworkId?: CaipNetworkId; // for Solana deprecated id
 };
 
 export interface CaipNetwork {

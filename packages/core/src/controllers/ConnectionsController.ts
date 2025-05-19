@@ -93,7 +93,7 @@ const derivedState = derive(
 
       return snap.networks.find(
         network =>
-          (network.chainNamespace ?? 'eip155') === snap.activeNamespace &&
+          network.chainNamespace === snap.activeNamespace &&
           network.id?.toString() === connection.activeChain?.split(':')[1]
       );
     },
@@ -187,7 +187,8 @@ export const ConnectionsController = {
 
   getConnectedNetworks() {
     return baseState.networks.filter(
-      network => baseState.connections[network.chainNamespace ?? 'eip155']
+      network =>
+        baseState.connections[network.chainNamespace]?.chains.includes(network.caipNetworkId)
     );
   },
 

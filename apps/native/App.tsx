@@ -2,18 +2,9 @@ import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
 import '@walletconnect/react-native-compat';
-// import { WagmiProvider } from 'wagmi';
+import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
-
-// import {
-//   // AppKit,
-//   // AppKitButton,
-//   // NetworkButton,
-//   // createAppKit,
-//   WagmiAdapter,
-//   defaultWagmiConfig
-// } from '@reown/appkit-wagmi-react-native';
 
 import {
   AppKitProvider,
@@ -37,11 +28,10 @@ import { DisconnectButton } from './src/components/DisconnectButton';
 import { SolanaAdapter } from '@reown/appkit-solana-react-native';
 import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
 import { WagmiAdapter } from '@reown/appkit-wagmi-react-native';
-import { mainnet, polygon, avalanche } from 'viem/chains';
+import { mainnet, polygon, avalanche, zora, sepolia } from 'wagmi/chains';
 import { ActionsView } from './src/views/ActionsView';
 import { WalletInfoView } from './src/views/WalletInfoView';
 import { EventsView } from './src/views/EventsView';
-import { WagmiProvider } from 'wagmi';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -70,7 +60,7 @@ const queryClient = new QueryClient();
 
 const wagmiAdapter = new WagmiAdapter({
   projectId,
-  networks: [mainnet, polygon, avalanche]
+  networks: [mainnet, polygon, avalanche, zora, sepolia]
 });
 
 const solanaAdapter = new SolanaAdapter({
@@ -85,19 +75,19 @@ const appKit = createAppKit({
   projectId,
   adapters: [wagmiAdapter, solanaAdapter, bitcoinAdapter],
   metadata,
-  networks: [mainnet, polygon, avalanche, bitcoin, solana],
+  networks: [mainnet, polygon, avalanche, zora, sepolia, solana, bitcoin],
   defaultChain: polygon,
   clipboardClient,
   debug: true,
-  enableAnalytics: true
-  // siweConfig,
-  // features: {
-  //   email: true,
-  //   socials: ['x', 'discord', 'apple'],
-  //   emailShowWallets: true,
-  //   swaps: true,
-  //   onramp: true
-  // }
+  enableAnalytics: true,
+  tokens: {
+    'eip155:1': {
+      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+    },
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+      address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' // USDC SPL token
+    }
+  }
 });
 
 export default function Native() {

@@ -24,7 +24,9 @@ import type {
   Provider,
   ThemeVariables,
   ThemeMode,
-  WalletInfo
+  WalletInfo,
+  Network,
+  ChainNamespace
 } from '@reown/appkit-common-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
@@ -37,7 +39,7 @@ interface AppKitConfig {
   projectId: string;
   metadata: Metadata;
   adapters: BlockchainAdapter[];
-  networks: AppKitNetwork[];
+  networks: Network[];
   extraConnectors?: WalletConnector[];
   clipboardClient?: OptionsControllerState['clipboardClient'];
   includeWalletIds?: OptionsControllerState['includeWalletIds'];
@@ -50,7 +52,7 @@ interface AppKitConfig {
   themeMode?: ThemeMode;
   themeVariables?: ThemeVariables;
   siweConfig?: AppKitSIWEClient;
-  defaultChain?: AppKitNetwork;
+  defaultChain?: Network;
   // features?: Features;
   // chainImages?: Record<number, string>; //TODO: rename to networkImages
 }
@@ -60,6 +62,7 @@ export class AppKit {
   private metadata: Metadata;
   private adapters: BlockchainAdapter[];
   private networks: AppKitNetwork[];
+  private defaultChain?: AppKitNetwork;
   private namespaces: ProposalNamespaces;
   private config: AppKitConfig;
   private extraConnectors: WalletConnector[];
@@ -69,7 +72,10 @@ export class AppKit {
     this.metadata = config.metadata;
     this.adapters = config.adapters;
     this.networks = NetworkUtil.formatNetworks(config.networks, this.projectId); //TODO: check this
-    this.namespaces = WcHelpersUtil.createNamespaces(config.networks) as ProposalNamespaces;
+    this.defaultChain = config.defaultChain
+      ? NetworkUtil.formatNetwork(config.defaultChain, this.projectId)
+      : undefined;
+    this.namespaces = WcHelpersUtil.createNamespaces(this.networks) as ProposalNamespaces;
     this.config = config;
     this.extraConnectors = config.extraConnectors || [];
 
@@ -85,7 +91,9 @@ export class AppKit {
   async connect(type: New_ConnectorType, requestedNamespaces?: ProposalNamespaces): Promise<void> {
     try {
       const connector = await this.createConnector(type);
-      const defaultChain = NetworkUtil.getDefaultChainId(this.config.defaultChain);
+      const defaultChain = this.defaultChain
+        ? NetworkUtil.getDefaultChainId(this.defaultChain)
+        : undefined;
 
       const approvedNamespaces = await connector.connect({
         namespaces: requestedNamespaces ?? this.namespaces,
@@ -208,8 +216,8 @@ export class AppKit {
       `${adapter.getSupportedNamespace()}:${network.id}` as CaipNetworkId
     );
 
-    if (ConnectionsController.state.activeNamespace !== (network.chainNamespace ?? 'eip155')) {
-      ConnectionsController.setActiveNamespace(network.chainNamespace ?? 'eip155');
+    if (ConnectionsController.state.activeNamespace !== network.chainNamespace) {
+      ConnectionsController.setActiveNamespace(network.chainNamespace);
     }
   }
 
@@ -302,7 +310,7 @@ export class AppKit {
     return adapters;
   }
 
-  private getAdapterByNamespace(namespace: string = 'eip155'): BlockchainAdapter | null {
+  private getAdapterByNamespace(namespace: ChainNamespace): BlockchainAdapter | null {
     const namespaceConnection = ConnectionsController.state.connections[namespace];
 
     return namespaceConnection?.adapter ?? null;
@@ -393,7 +401,7 @@ export class AppKit {
   }
 
   private async initControllers(options: AppKitConfig) {
-    await this.initAsyncValues(options);
+    await this.initAsyncValues();
 
     OptionsController.setProjectId(options.projectId);
     OptionsController.setMetadata(options.metadata);
@@ -416,7 +424,7 @@ export class AppKit {
       OptionsController.setClipboardClient(options.clipboardClient);
     }
 
-    ConnectionsController.setNetworks(options.networks);
+    ConnectionsController.setNetworks(this.networks);
 
     if (options.siweConfig) {
       SIWEController.setSIWEClient(options.siweConfig);
@@ -430,12 +438,12 @@ export class AppKit {
     // }
   }
 
-  private async initAsyncValues(options: AppKitConfig) {
+  private async initAsyncValues() {
     const activeNamespace = await StorageUtil.getActiveNamespace();
     if (activeNamespace) {
       ConnectionsController.setActiveNamespace(activeNamespace);
-    } else if (options.defaultChain) {
-      ConnectionsController.setActiveNamespace(options.defaultChain?.chainNamespace ?? 'eip155');
+    } else if (this.defaultChain) {
+      ConnectionsController.setActiveNamespace(this.defaultChain?.chainNamespace);
     }
   }
 }

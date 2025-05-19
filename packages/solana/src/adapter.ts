@@ -19,7 +19,6 @@ export class SolanaAdapter extends SolanaBaseAdapter {
   }
 
   async getBalance(params: GetBalanceParams): Promise<GetBalanceResponse> {
-    console.log('solana getBalance');
     const { network, address, tokens } = params;
 
     if (!this.connector) throw new Error('No active connector');

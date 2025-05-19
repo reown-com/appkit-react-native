@@ -30,7 +30,7 @@ export const solanaDevnet: AppKitNetwork = {
   testnet: true
 };
 
-export const solanaTestnet = {
+export const solanaTestnet: AppKitNetwork = {
   id: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
   name: 'Solana Testnet',
   nativeCurrency: { name: 'Solana', symbol: 'SOL', decimals: 9 },

@@ -1,32 +1,32 @@
 import { ConstantsUtil } from '@reown/appkit-common-react-native';
-import type { AppKitNetwork, CaipNetworkId } from '@reown/appkit-common-react-native';
+import type { AppKitNetwork, CaipNetworkId, Network } from '@reown/appkit-common-react-native';
 
 export const NetworkUtil = {
-  //TODO: check this function
-  formatNetworks(networks: AppKitNetwork[], projectId: string): AppKitNetwork[] {
-    return networks.map(network => {
-      const formattedNetwork = {
-        ...network,
-        rpcUrls: { ...network.rpcUrls }
-      };
+  formatNetwork(network: Network, projectId: string): AppKitNetwork {
+    const formattedNetwork = {
+      ...network,
+      rpcUrls: { ...network.rpcUrls },
+      chainNamespace: network.chainNamespace ?? 'eip155',
+      caipNetworkId: network.caipNetworkId ?? `${network.chainNamespace ?? 'eip155'}:${network.id}`
+    };
 
-      Object.keys(formattedNetwork.rpcUrls).forEach(key => {
-        const rpcConfig = formattedNetwork.rpcUrls[key];
-        if (rpcConfig?.http?.some(url => url.includes(ConstantsUtil.BLOCKCHAIN_API_RPC_URL))) {
-          formattedNetwork.rpcUrls[key] = {
-            ...rpcConfig,
-            http: [
-              this.getBlockchainApiRpcUrl(
-                network.caipNetworkId ?? `${network.chainNamespace ?? 'eip155'}:${network.id}`,
-                projectId
-              )
-            ]
-          };
-        }
-      });
-
-      return formattedNetwork;
+    Object.keys(formattedNetwork.rpcUrls).forEach(key => {
+      const rpcConfig = formattedNetwork.rpcUrls[key];
+      if (rpcConfig?.http?.some(url => url.includes(ConstantsUtil.BLOCKCHAIN_API_RPC_URL))) {
+        formattedNetwork.rpcUrls[key] = {
+          ...rpcConfig,
+          http: [this.getBlockchainApiRpcUrl(formattedNetwork.caipNetworkId, projectId)]
+        };
+      }
     });
+
+    return formattedNetwork;
+  },
+
+  formatNetworks(networks: Network[], projectId: string): AppKitNetwork[] {
+    const formattedNetworks = networks.map(network => this.formatNetwork(network, projectId));
+
+    return formattedNetworks;
   },
 
   getBlockchainApiRpcUrl(caipNetworkId: CaipNetworkId, projectId: string) {

@@ -23,7 +23,7 @@ import { formatUnits, type Hex } from 'viem';
 import { UniversalConnector } from './connectors/UniversalConnector';
 
 type ConfigParams = Partial<CreateConfigParameters> & {
-  networks: [Chain, ...Chain[]];
+  networks: readonly [Chain, ...Chain[]];
   projectId: string;
   connectors?: Connector[];
 };

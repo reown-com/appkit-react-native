@@ -8,10 +8,10 @@ import {
   numberToHex,
   SwitchChainError,
   UserRejectedRequestError,
-  type Chain,
   type Hex
 } from 'viem';
 import { ChainNotConfiguredError, createConnector, ProviderNotFoundError } from 'wagmi';
+import { formatNetwork } from '../utils/helpers';
 
 export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
   let provider: Provider | undefined;
@@ -169,7 +169,7 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
     async switchChain({ chainId }) {
       const _provider = await this.getProvider();
       if (!_provider) throw new Error('Provider not available for switching chain.');
-      const newChain = config.chains.find(c => c.id === chainId) as Chain;
+      const newChain = config.chains.find(c => c.id === chainId);
 
       if (!newChain) throw new SwitchChainError(new ChainNotConfiguredError());
 
@@ -199,7 +199,7 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
                 }
               ]
             });
-            await appKitProvidedConnector.switchNetwork(newChain);
+            await appKitProvidedConnector.switchNetwork(formatNetwork(newChain));
             config.emitter.emit('change', { chainId });
 
             return newChain;
