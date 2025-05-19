@@ -33,6 +33,7 @@ export function AppKit() {
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
   const { frameViewVisible, webviewVisible } = useSnapshot(WebviewController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
+  const { projectId } = useSnapshot(OptionsController.state);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
   const portraitHeight = height - 80;
@@ -50,10 +51,10 @@ export function AppKit() {
     return handleClose();
   };
 
-  const prefetch = async () => {
+  const prefetch = useCallback(async () => {
     await ApiController.prefetch();
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' });
-  };
+  }, []);
 
   const handleClose = async () => {
     if (OptionsController.state.isSiweEnabled) {
@@ -117,8 +118,10 @@ export function AppKit() {
   };
 
   useEffect(() => {
-    prefetch();
-  }, []);
+    if (projectId) {
+      prefetch();
+    }
+  }, [projectId, prefetch]);
 
   useEffect(() => {
     onNewAddress(caipAddress);
