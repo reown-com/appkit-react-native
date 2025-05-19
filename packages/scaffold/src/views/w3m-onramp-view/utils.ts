@@ -21,7 +21,7 @@ export const getPurchaseCurrencies = (searchValue?: string, filterSelected?: boo
     ? networkTokens.filter(
         item =>
           item.name.toLowerCase().includes(searchValue) ||
-          item.currencyCode.toLowerCase().includes(searchValue)
+          item.currencyCode.toLowerCase()?.split('_')?.[0]?.includes(searchValue)
       )
     : networkTokens;
 };

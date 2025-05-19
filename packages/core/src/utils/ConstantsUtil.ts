@@ -64,7 +64,7 @@ export const ConstantsUtil = {
     'BICO',
     'CRV',
     'ENS',
-    'MATIC',
+    'POL',
     'OP'
   ],
 
@@ -94,7 +94,7 @@ export const ConstantsUtil = {
     'BICO',
     'CRV',
     'ENS',
-    'MATIC',
+    'POL',
     'OP',
     'METAL',
     'DAI',
@@ -417,7 +417,7 @@ export const ConstantsUtil = {
   NETWORK_DEFAULT_CURRENCIES: {
     'eip155:1': 'ETH', // Ethereum Mainnet
     'eip155:56': 'BNB', // Binance Smart Chain
-    'eip155:137': 'MATIC', // Polygon
+    'eip155:137': 'POL', // Polygon
     'eip155:42161': 'ETH_ARBITRUM', // Arbitrum One
     'eip155:43114': 'AVAX', // Avalanche C-Chain
     'eip155:10': 'ETH_OPTIMISM', // Optimism

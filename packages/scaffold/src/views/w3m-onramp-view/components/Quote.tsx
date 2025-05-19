@@ -60,7 +60,8 @@ export function Quote({ item, logoURL, onQuotePress, selected, tagText }: Props)
               )}
             </FlexView>
             <Text variant="tiny-500">
-              {NumberUtil.roundNumber(item.destinationAmount, 6, 5)} {item.destinationCurrencyCode}
+              {NumberUtil.roundNumber(item.destinationAmount, 6, 5)}{' '}
+              {item.destinationCurrencyCode?.split('_')[0]}
             </Text>
           </FlexView>
         </FlexView>
