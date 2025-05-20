@@ -8,7 +8,7 @@ import { BitcoinUtil, SignPSBTResponse } from '../utils/BitcoinUtil';
 export function BitcoinActionsView() {
   const isConnected = true;
   const { address, chainId } = useAccount();
-  const provider = useProvider('bip122');
+  const { provider } = useProvider('bip122');
 
   const onSignSuccess = (data: string) => {
     ToastUtils.showSuccessToast('Sign successful', data);

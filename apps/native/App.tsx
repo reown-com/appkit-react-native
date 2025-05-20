@@ -76,7 +76,7 @@ const appKit = createAppKit({
   adapters: [wagmiAdapter, solanaAdapter, bitcoinAdapter],
   metadata,
   networks: [mainnet, polygon, avalanche, zora, sepolia, solana, bitcoin],
-  defaultChain: polygon,
+  defaultNetwork: polygon,
   clipboardClient,
   debug: true,
   enableAnalytics: true,

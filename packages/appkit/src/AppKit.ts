@@ -52,7 +52,7 @@ interface AppKitConfig {
   themeMode?: ThemeMode;
   themeVariables?: ThemeVariables;
   siweConfig?: AppKitSIWEClient;
-  defaultChain?: Network;
+  defaultNetwork?: Network;
   // features?: Features;
   // chainImages?: Record<number, string>; //TODO: rename to networkImages
 }
@@ -62,7 +62,7 @@ export class AppKit {
   private metadata: Metadata;
   private adapters: BlockchainAdapter[];
   private networks: AppKitNetwork[];
-  private defaultChain?: AppKitNetwork;
+  private defaultNetwork?: AppKitNetwork;
   private namespaces: ProposalNamespaces;
   private config: AppKitConfig;
   private extraConnectors: WalletConnector[];
@@ -71,9 +71,25 @@ export class AppKit {
     this.projectId = config.projectId;
     this.metadata = config.metadata;
     this.adapters = config.adapters;
+
+    // Validate adapters to ensure no duplicate chainNamespaces
+    const namespaceMap = new Map<ChainNamespace, string>();
+    for (const adapter of this.adapters) {
+      const chainNamespace = adapter.supportedNamespace;
+      const adapterName = adapter.constructor.name;
+      if (namespaceMap.has(chainNamespace)) {
+        throw new Error(
+          `Duplicate adapter for namespace '${chainNamespace}'. Adapter "${adapterName}" conflicts with adapter "${namespaceMap.get(
+            chainNamespace
+          )}". Please provide only one adapter per chain namespace.`
+        );
+      }
+      namespaceMap.set(chainNamespace, adapterName);
+    }
+
     this.networks = NetworkUtil.formatNetworks(config.networks, this.projectId); //TODO: check this
-    this.defaultChain = config.defaultChain
-      ? NetworkUtil.formatNetwork(config.defaultChain, this.projectId)
+    this.defaultNetwork = config.defaultNetwork
+      ? NetworkUtil.formatNetwork(config.defaultNetwork, this.projectId)
       : undefined;
     this.namespaces = WcHelpersUtil.createNamespaces(this.networks) as ProposalNamespaces;
     this.config = config;
@@ -91,8 +107,8 @@ export class AppKit {
   async connect(type: New_ConnectorType, requestedNamespaces?: ProposalNamespaces): Promise<void> {
     try {
       const connector = await this.createConnector(type);
-      const defaultChain = this.defaultChain
-        ? NetworkUtil.getDefaultChainId(this.defaultChain)
+      const defaultChain = this.defaultNetwork
+        ? NetworkUtil.getDefaultChainId(this.defaultNetwork)
         : undefined;
 
       const approvedNamespaces = await connector.connect({
@@ -442,8 +458,8 @@ export class AppKit {
     const activeNamespace = await StorageUtil.getActiveNamespace();
     if (activeNamespace) {
       ConnectionsController.setActiveNamespace(activeNamespace);
-    } else if (this.defaultChain) {
-      ConnectionsController.setActiveNamespace(this.defaultChain?.chainNamespace);
+    } else if (this.defaultNetwork) {
+      ConnectionsController.setActiveNamespace(this.defaultNetwork?.chainNamespace);
     }
   }
 }

@@ -8,7 +8,7 @@ import { ToastUtils } from '../utils/ToastUtils';
 export function SolanaActionsView() {
   const isConnected = true;
   const { address, chainId } = useAccount();
-  const provider = useProvider('solana');
+  const { provider } = useProvider('solana');
 
   const onSignSuccess = (data: any) => {
     ToastUtils.showSuccessToast('Sign successful', data);
