@@ -1,0 +1,57 @@
+name: Alpha Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  alpha-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Environment and Install Dependencies (Immutable)
+        uses: ./.github/actions/setup # Uses your custom action (node setup, yarn install --immutable)
+
+      - name: Configure Git User
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+        shell: bash
+
+      - name: Enter Pre-mode
+        run: yarn changeset pre enter alpha
+        shell: bash
+
+      - name: Version Packages for Alpha
+        run: yarn changeset version
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Lockfile
+        run: yarn install --immutable false
+        shell: bash
+
+      - name: Build Packages
+        run: yarn changeset:prepublish
+        shell: bash
+
+      - name: Configure NPM for Publishing
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+        shell: bash
+
+      - name: Publish Alpha to NPM
+        run: yarn changeset publish --tag alpha
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Changes and Tags
+        run: |
+          git push --follow-tags
+        shell: bash 
