@@ -51,6 +51,28 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Exit Pre-mode and Commit Changes
+        run: |
+          yarn changeset pre exit
+          # Check if pre.json was actually deleted (it should be)
+          if [ ! -f .changeset/pre.json ]; then
+            echo "pre.json successfully deleted by 'changeset pre exit'."
+            # Add the potential deletion of pre.json to git.
+            # If pre.json didn't exist or wasn't tracked, this might not add anything, which is fine.
+            git add .changeset/pre.json || echo "No pre.json to stage or pre.json was not tracked."
+            # Commit only if there are changes to commit (i.e., pre.json was deleted and staged)
+            if ! git diff --staged --quiet; then
+              git commit -m "chore: exit changeset pre-mode"
+            else
+              echo "No changes to commit for pre-mode exit."
+            fi
+          else
+            echo "Warning: .changeset/pre.json still exists after 'changeset pre exit'."
+          fi
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Push Changes and Tags
         run: |
           git push --follow-tags
