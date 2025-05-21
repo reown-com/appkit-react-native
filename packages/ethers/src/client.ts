@@ -226,7 +226,10 @@ export class AppKit extends AppKitScaffold {
             }
           }
         } else {
-          await WalletConnectProvider.connect();
+          await WalletConnectProvider.connect({
+            chains: [],
+            optionalChains: [...this.chains.map(chain => chain.chainId)] as [number]
+          });
         }
 
         await this.setWalletConnectProvider();
@@ -552,6 +555,7 @@ export class AppKit extends AppKitScaffold {
       projectId: this.projectId,
       showQrModal: false,
       rpcMap,
+      chains: [],
       optionalChains: [...this.chains.map(chain => chain.chainId)] as [number],
       metadata: this.metadata
     };

@@ -164,7 +164,9 @@ export function walletConnect(parameters: WalletConnectParameters) {
           const optionalChains = config.chains
             .filter(chain => chain.id !== targetChainId)
             .map(optionalChain => optionalChain.id);
+
           await provider.connect({
+            chains: [],
             optionalChains: [targetChainId, ...optionalChains],
             ...('pairingTopic' in rest ? { pairingTopic: rest.pairingTopic } : {})
           });
@@ -255,6 +257,7 @@ export function walletConnect(parameters: WalletConnectParameters) {
         const { projectId, metadata, ...params } = parameters;
 
         return await EthereumProvider.init({
+          chains: [],
           optionalChains,
           projectId,
           rpcMap: Object.fromEntries(
