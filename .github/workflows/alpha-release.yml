@@ -3,6 +3,9 @@ name: Alpha Release
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   alpha-release:
     runs-on: ubuntu-latest
