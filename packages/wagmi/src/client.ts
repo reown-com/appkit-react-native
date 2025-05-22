@@ -473,8 +473,8 @@ export class AppKit extends AppKitScaffold {
       
       const internalState = this.wagmiConfig.chains || [];
       const isNetworkSupported = internalState.length === 0 || 
-                                internalState.some((chain: Chain) => 
-                                  `${ConstantsUtil.EIP155}:${chain.id}` === caipChainId);
+                                internalState.some((chainItem: Chain) => 
+                                  `${ConstantsUtil.EIP155}:${chainItem.id}` === caipChainId);
       if (!isNetworkSupported) {
         console.warn(`Network ${caipChainId} is not in the requested networks list`);
       }

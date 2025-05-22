@@ -18,11 +18,12 @@ export interface NetworkButtonProps {
 
 export function NetworkButton({ disabled, style }: NetworkButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { caipNetwork, requestedCaipNetworks } = useSnapshot(NetworkController.state);
   const { loading } = useSnapshot(ModalController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   
-  const isNetworkSupported = NetworkController.isActiveNetworkInRequestedNetworks();
+  const isNetworkSupported = !caipNetwork || !requestedCaipNetworks?.length || 
+                            requestedCaipNetworks.some(network => network.id === caipNetwork.id);
 
   const onNetworkPress = () => {
     if (isConnected && !isNetworkSupported) {
