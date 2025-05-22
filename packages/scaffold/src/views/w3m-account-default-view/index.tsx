@@ -254,7 +254,9 @@ export function AccountDefaultView() {
               style={styles.actionButton}
             >
               <Text numberOfLines={1} color="fg-100" testID="account-select-network-text">
-                {caipNetwork?.name}
+                {!NetworkController.isActiveNetworkInRequestedNetworks() && AccountController.state.isConnected
+                  ? 'Switch Network'
+                  : caipNetwork?.name}
               </Text>
             </ListItem>
 
