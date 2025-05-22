@@ -54,4 +54,4 @@ jobs:
       - name: Push Changes and Tags
         run: |
           git push --follow-tags
-        shell: bash 
+        shell: bash

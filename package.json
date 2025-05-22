@@ -28,7 +28,7 @@
     "build:gallery": "turbo run build:gallery",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "prettier": "prettier --check .",
-    "test": "turbo run test --parallel",
+    "test": "turbo build && turbo run test --parallel",
     "clean": "turbo clean && rm -rf node_modules && watchman watch-del-all",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
     "playwright:test": "cd apps/native && yarn playwright:test",
