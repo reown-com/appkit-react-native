@@ -470,15 +470,17 @@ export class AppKit extends AppKitScaffold {
         imageId: PresetsUtil.EIP155NetworkImageIds[id],
         imageUrl: this.options?.chainImages?.[id]
       });
-      
+
       const internalState = this.wagmiConfig.chains || [];
-      const isNetworkSupported = internalState.length === 0 || 
-                                internalState.some((chainItem: Chain) => 
-                                  `${ConstantsUtil.EIP155}:${chainItem.id}` === caipChainId);
+      const isNetworkSupported =
+        internalState.length === 0 ||
+        internalState.some(
+          (chainItem: Chain) => `${ConstantsUtil.EIP155}:${chainItem.id}` === caipChainId
+        );
       if (!isNetworkSupported) {
         console.warn(`Network ${caipChainId} is not in the requested networks list`);
       }
-      
+
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`;
         this.setCaipAddress(caipAddress);

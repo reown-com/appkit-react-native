@@ -77,10 +77,10 @@ describe('NetworkController', () => {
 
   it('should validate if active network is in requested networks', () => {
     NetworkController.setRequestedCaipNetworks(requestedCaipNetworks);
-    
+
     NetworkController.setCaipNetwork({ id: 'eip155:1', name: 'Ethereum' });
     expect(NetworkController.isActiveNetworkInRequestedNetworks()).toBe(true);
-    
+
     NetworkController.setCaipNetwork({ id: 'eip155:99', name: 'Unknown Network' });
     expect(NetworkController.isActiveNetworkInRequestedNetworks()).toBe(false);
   });

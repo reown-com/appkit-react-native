@@ -17,16 +17,18 @@ export interface NetworkButtonProps {
 }
 
 export function NetworkButton({ disabled, style }: NetworkButtonProps) {
-  const { isConnected } = useSnapshot(AccountController.state);
-  const { caipNetwork, requestedCaipNetworks } = useSnapshot(NetworkController.state);
   const { loading } = useSnapshot(ModalController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
-  
-  const isNetworkSupported = !caipNetwork || !requestedCaipNetworks?.length || 
-                            requestedCaipNetworks.some(network => network.id === caipNetwork.id);
+
+  const isNetworkSupported =
+    !NetworkController.state.caipNetwork ||
+    !NetworkController.state.requestedCaipNetworks?.length ||
+    NetworkController.state.requestedCaipNetworks.some(
+      network => network.id === NetworkController.state.caipNetwork?.id
+    );
 
   const onNetworkPress = () => {
-    if (isConnected && !isNetworkSupported) {
+    if (AccountController.state.isConnected && !isNetworkSupported) {
       ModalController.open({ view: 'UnsupportedChain' });
     } else {
       ModalController.open({ view: 'Networks' });
@@ -40,7 +42,7 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
   return (
     <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
       <NetworkButtonUI
-        imageSrc={AssetUtil.getNetworkImage(caipNetwork)}
+        imageSrc={AssetUtil.getNetworkImage(NetworkController.state.caipNetwork)}
         imageHeaders={ApiController._getApiHeaders()}
         disabled={disabled || loading}
         style={style}
@@ -48,7 +50,12 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
         loading={loading}
         testID="network-button"
       >
-        {caipNetwork?.name ?? (isConnected ? (isNetworkSupported ? 'Unknown Network' : 'Switch Network') : 'Select Network')}
+        {NetworkController.state.caipNetwork?.name ??
+          (AccountController.state.isConnected
+            ? isNetworkSupported
+              ? 'Unknown Network'
+              : 'Switch Network'
+            : 'Select Network')}
       </NetworkButtonUI>
     </ThemeProvider>
   );

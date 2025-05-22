@@ -122,7 +122,7 @@ export const NetworkController = {
     if (!state.caipNetwork || !state.requestedCaipNetworks?.length) {
       return true; // No active network or no requested networks, so no validation needed
     }
-    
+
     return state.requestedCaipNetworks.some(network => network.id === state.caipNetwork?.id);
   }
 };
