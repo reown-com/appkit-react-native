@@ -17,12 +17,12 @@ import {
 import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
 import { Text } from '@reown/appkit-ui-react-native';
 
-import { siweConfig } from './src/utils/SiweUtils';
+// import { siweConfig } from './src/utils/SiweUtils';
 
 import { AccountView } from './src/views/AccountView';
 import { ActionsView } from './src/views/ActionsView';
 import { getCustomWallets } from './src/utils/misc';
-import { chains } from './src/utils/WagmiUtils';
+import { bscTestnet } from 'viem/chains';
 import { OpenButton } from './src/components/OpenButton';
 import { DisconnectButton } from './src/components/DisconnectButton';
 
@@ -55,7 +55,7 @@ const extraConnectors = Platform.select({
 });
 
 const wagmiConfig = defaultWagmiConfig({
-  chains,
+  chains: [bscTestnet],
   projectId,
   metadata,
   extraConnectors
@@ -68,7 +68,7 @@ const customWallets = getCustomWallets();
 createAppKit({
   projectId,
   wagmiConfig,
-  siweConfig,
+  // siweConfig,
   clipboardClient,
   customWallets,
   enableAnalytics: true,

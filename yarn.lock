@@ -126,8 +126,6 @@ __metadata:
     react-native-webview: "npm:13.12.5"
     typescript: "npm:~5.3.3"
     uuid: "npm:^11.1.0"
-    viem: "npm:2.23.10"
-    wagmi: "npm:2.14.13"
   languageName: unknown
   linkType: soft
 
