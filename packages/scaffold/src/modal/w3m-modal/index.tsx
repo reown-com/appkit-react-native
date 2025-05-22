@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useWindowDimensions, StatusBar } from 'react-native';
 import Modal from 'react-native-modal';
 import { Card, ThemeProvider } from '@reown/appkit-ui-react-native';
@@ -16,7 +16,8 @@ import {
   TransactionsController,
   type CaipAddress,
   type AppKitFrameProvider,
-  ThemeController
+  ThemeController,
+  NetworkController
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -30,7 +31,9 @@ export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
   const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
+  const { caipNetwork } = useSnapshot(NetworkController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
+  const [isNetworkStateStable, setIsNetworkStateStable] = useState(false);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
   const portraitHeight = height - 120;
@@ -113,6 +116,39 @@ export function AppKit() {
   useEffect(() => {
     onNewAddress(caipAddress);
   }, [caipAddress, onNewAddress]);
+
+  useEffect(() => {
+    if (isConnected) {
+      const timer = setTimeout(() => {
+        setIsNetworkStateStable(true);
+      }, 750); // Stability period. Sometimes the network state updates at init
+
+      return () => {
+        clearTimeout(timer);
+      };
+    } else {
+      setIsNetworkStateStable(false);
+
+      return () => {};
+    }
+  }, [isConnected]);
+
+  useEffect(() => {
+    if (isConnected && caipNetwork && isNetworkStateStable) {
+      const isNetworkSupported = NetworkController.isActiveNetworkInRequestedNetworks();
+      if (!isNetworkSupported) {
+        const currentView = RouterController.state.view;
+        // Only push/open if not already on UnsupportedChain or actively choosing a network
+        if (currentView !== 'UnsupportedChain' && currentView !== 'Networks') {
+          if (ModalController.state.open) {
+            RouterController.push('UnsupportedChain');
+          } else {
+            ModalController.open({ view: 'UnsupportedChain' });
+          }
+        }
+      }
+    }
+  }, [caipNetwork, isConnected, isNetworkStateStable]);
 
   return (
     <>

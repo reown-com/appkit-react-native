@@ -30,6 +30,7 @@ import {
   ListItem
 } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { UiUtil as ScaffoldUiUtil } from '../../utils/UiUtil';
 
 import styles from './styles';
 import { AuthButtons } from './components/auth-buttons';
@@ -42,7 +43,8 @@ export function AccountDefaultView() {
     balance,
     balanceSymbol,
     addressExplorerUrl,
-    preferredAccountType
+    preferredAccountType,
+    isConnected
   } = useSnapshot(AccountController.state);
   const { loading } = useSnapshot(ModalController.state);
   const [disconnecting, setDisconnecting] = useState(false);
@@ -59,6 +61,7 @@ export function AccountDefaultView() {
   const showBack = history.length > 1;
   const showSwitchAccountType = isAuth && NetworkController.checkIfSmartAccountEnabled();
   const { padding } = useCustomDimensions();
+  const isNetworkSupported = NetworkController.isActiveNetworkInRequestedNetworks();
 
   async function onDisconnect() {
     setDisconnecting(true);
@@ -146,8 +149,6 @@ export function AccountDefaultView() {
   };
 
   const onNetworkPress = () => {
-    const isNetworkSupported = NetworkController.isActiveNetworkInRequestedNetworks();
-
     if (AccountController.state.isConnected && !isNetworkSupported) {
       RouterController.push('UnsupportedChain');
     } else {
@@ -254,10 +255,7 @@ export function AccountDefaultView() {
               style={styles.actionButton}
             >
               <Text numberOfLines={1} color="fg-100" testID="account-select-network-text">
-                {!NetworkController.isActiveNetworkInRequestedNetworks() &&
-                AccountController.state.isConnected
-                  ? 'Switch Network'
-                  : caipNetwork?.name}
+                {ScaffoldUiUtil.getNetworkButtonText(isConnected, caipNetwork, isNetworkSupported)}
               </Text>
             </ListItem>
 

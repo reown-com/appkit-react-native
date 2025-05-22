@@ -10,6 +10,7 @@ import {
   ThemeController
 } from '@reown/appkit-core-react-native';
 import { NetworkButton as NetworkButtonUI, ThemeProvider } from '@reown/appkit-ui-react-native';
+import { UiUtil } from '../../utils/UiUtil';
 
 export interface NetworkButtonProps {
   disabled?: boolean;
@@ -18,14 +19,11 @@ export interface NetworkButtonProps {
 
 export function NetworkButton({ disabled, style }: NetworkButtonProps) {
   const { loading } = useSnapshot(ModalController.state);
+  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { isConnected } = useSnapshot(AccountController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
 
-  const isNetworkSupported =
-    !NetworkController.state.caipNetwork ||
-    !NetworkController.state.requestedCaipNetworks?.length ||
-    NetworkController.state.requestedCaipNetworks.some(
-      network => network.id === NetworkController.state.caipNetwork?.id
-    );
+  const isNetworkSupported = NetworkController.isActiveNetworkInRequestedNetworks();
 
   const onNetworkPress = () => {
     if (AccountController.state.isConnected && !isNetworkSupported) {
@@ -39,6 +37,8 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
     });
   };
 
+  const buttonText = UiUtil.getNetworkButtonText(isConnected, caipNetwork, isNetworkSupported);
+
   return (
     <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
       <NetworkButtonUI
@@ -50,12 +50,7 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
         loading={loading}
         testID="network-button"
       >
-        {NetworkController.state.caipNetwork?.name ??
-          (AccountController.state.isConnected
-            ? isNetworkSupported
-              ? 'Unknown Network'
-              : 'Switch Network'
-            : 'Select Network')}
+        {buttonText}
       </NetworkButtonUI>
     </ThemeProvider>
   );

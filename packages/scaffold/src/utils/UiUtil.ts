@@ -2,7 +2,8 @@ import {
   AssetUtil,
   ConnectionController,
   StorageUtil,
-  type WcWallet
+  type WcWallet,
+  type CaipNetwork
 } from '@reown/appkit-core-react-native';
 import { LayoutAnimation } from 'react-native';
 
@@ -27,5 +28,34 @@ export const UiUtil = {
       const url = AssetUtil.getWalletImage(pressedWallet);
       ConnectionController.setConnectedWalletImageUrl(url);
     }
+  },
+
+  getNetworkButtonText(
+    isConnected: boolean,
+    caipNetwork: CaipNetwork | undefined,
+    isNetworkSupported: boolean
+  ): string {
+    let buttonText: string;
+
+    if (!isConnected) {
+      if (caipNetwork) {
+        buttonText = caipNetwork.name ?? 'Unknown Network';
+      } else {
+        buttonText = 'Select Network';
+      }
+    } else {
+      // isConnected is true
+      if (caipNetwork) {
+        if (isNetworkSupported) {
+          buttonText = caipNetwork.name ?? 'Unknown Network';
+        } else {
+          buttonText = 'Switch Network';
+        }
+      } else {
+        buttonText = 'Select Network';
+      }
+    }
+
+    return buttonText;
   }
 };
