@@ -39,7 +39,13 @@ export function AccountView() {
   };
 
   const onNetworkPress = () => {
-    RouterController.push('Networks');
+    const isNetworkSupported = NetworkController.isActiveNetworkInRequestedNetworks();
+    
+    if (AccountController.state.isConnected && !isNetworkSupported) {
+      RouterController.push('UnsupportedChain');
+    } else {
+      RouterController.push('Networks');
+    }
   };
 
   const onActivatePress = () => {
