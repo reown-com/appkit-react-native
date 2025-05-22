@@ -40,7 +40,7 @@ export function AccountView() {
 
   const onNetworkPress = () => {
     const isNetworkSupported = NetworkController.isActiveNetworkInRequestedNetworks();
-    
+
     if (AccountController.state.isConnected && !isNetworkSupported) {
       RouterController.push('UnsupportedChain');
     } else {
