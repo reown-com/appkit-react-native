@@ -21,9 +21,15 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { loading } = useSnapshot(ModalController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
+  
+  const isNetworkSupported = NetworkController.isActiveNetworkInRequestedNetworks();
 
   const onNetworkPress = () => {
-    ModalController.open({ view: 'Networks' });
+    if (isConnected && !isNetworkSupported) {
+      ModalController.open({ view: 'UnsupportedChain' });
+    } else {
+      ModalController.open({ view: 'Networks' });
+    }
     EventsController.sendEvent({
       type: 'track',
       event: 'CLICK_NETWORKS'
@@ -41,7 +47,7 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
         loading={loading}
         testID="network-button"
       >
-        {caipNetwork?.name ?? (isConnected ? 'Unknown Network' : 'Select Network')}
+        {caipNetwork?.name ?? (isConnected ? (isNetworkSupported ? 'Unknown Network' : 'Switch Network') : 'Select Network')}
       </NetworkButtonUI>
     </ThemeProvider>
   );
