@@ -766,6 +766,11 @@ export class AppKit extends AppKitScaffold {
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId);
 
+      if (isConnected) {
+        // If the network is not supported, set the unsupported network state
+        this.setUnsupportedNetwork(!chain);
+      }
+
       if (chain) {
         const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}`;
 

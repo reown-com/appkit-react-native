@@ -8,12 +8,20 @@ export const RouterUtil = {
     }
 
     const { history } = RouterController.state;
-    const networkSelectIndex = history.findIndex(
-      name => name === 'Networks' || name === 'UnsupportedChain'
-    );
 
-    if (networkSelectIndex >= 1) {
-      RouterController.goBackToIndex(networkSelectIndex - 1);
+    // Find the last occurrence of 'Networks' or 'UnsupportedChain'
+    let lastNetworkViewIndex = -1;
+    for (let i = history.length - 1; i >= 0; i--) {
+      if (history[i] === 'Networks' || history[i] === 'UnsupportedChain') {
+        lastNetworkViewIndex = i;
+        break;
+      }
+    }
+
+    // Case 1: Navigated from a network selection view deeper in the app
+    if (lastNetworkViewIndex > 0) {
+      // Go to the view right before the network selection
+      RouterController.goBackToIndex(lastNetworkViewIndex - 1);
     } else {
       ModalController.close();
     }

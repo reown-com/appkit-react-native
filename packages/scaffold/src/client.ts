@@ -274,6 +274,12 @@ export class AppKitScaffold {
     }
   }
 
+  protected setUnsupportedNetwork(
+    isUnsupportedNetwork: NetworkControllerState['isUnsupportedNetwork']
+  ) {
+    NetworkController.setUnsupportedNetwork(isUnsupportedNetwork);
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     this.initAsyncValues(options);

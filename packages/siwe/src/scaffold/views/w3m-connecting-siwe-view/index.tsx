@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { Button, FlexView, IconLink, Text } from '@reown/appkit-ui-react-native';
+import { Button, FlexView, Text } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
   ConnectionController,
@@ -86,13 +86,6 @@ export function ConnectingSiweView() {
 
   return (
     <FlexView padding={['2xl', 's', '3xl', 's']}>
-      <IconLink
-        icon="close"
-        size="md"
-        onPress={onCancel}
-        testID="header-close"
-        style={styles.closeButton}
-      />
       <Text variant="paragraph-600" numberOfLines={1} center>
         Sign in
       </Text>

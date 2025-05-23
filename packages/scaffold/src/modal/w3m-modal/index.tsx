@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useWindowDimensions, StatusBar } from 'react-native';
 import Modal from 'react-native-modal';
 import { Card, ThemeProvider } from '@reown/appkit-ui-react-native';
@@ -16,7 +16,8 @@ import {
   TransactionsController,
   type CaipAddress,
   type AppKitFrameProvider,
-  ThemeController
+  ThemeController,
+  NetworkController
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -30,7 +31,9 @@ export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
   const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
+  const { isUnsupportedNetwork } = useSnapshot(NetworkController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
+  const [isNetworkStateStable, setIsNetworkStateStable] = useState(false);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
   const portraitHeight = height - 120;
@@ -39,8 +42,21 @@ export function AppKit() {
   const AuthView = authProvider?.AuthView;
   const SocialView = authProvider?.Webview;
   const showAuth = !connectedConnector || connectedConnector === 'AUTH';
+  const disableClose = ['UnsupportedChain', 'ConnectingSiwe'].includes(RouterController.state.view);
+
+  const onBackdropPress = () => {
+    if (disableClose) {
+      return;
+    }
+
+    return ModalController.close();
+  };
 
   const onBackButtonPress = () => {
+    if (disableClose) {
+      return;
+    }
+
     if (RouterController.state.history.length > 1) {
       return RouterController.goBack();
     }
@@ -71,6 +87,12 @@ export function AppKit() {
       TransactionsController.resetTransactions();
 
       if (OptionsController.state.isSiweEnabled) {
+        if (NetworkController.state.isUnsupportedNetwork) {
+          // If the network is unsupported, don't do siwe stuff until user changes network
+
+          return;
+        }
+
         const newNetworkId = CoreHelperUtil.getNetworkId(address);
 
         const { signOutOnAccountChange, signOutOnNetworkChange } =
@@ -114,6 +136,32 @@ export function AppKit() {
     onNewAddress(caipAddress);
   }, [caipAddress, onNewAddress]);
 
+  useEffect(() => {
+    if (isConnected) {
+      const timer = setTimeout(() => {
+        setIsNetworkStateStable(true);
+      }, 750); // Stability period. Sometimes the network state updates at init
+
+      return () => {
+        clearTimeout(timer);
+      };
+    } else {
+      setIsNetworkStateStable(false);
+
+      return () => {};
+    }
+  }, [isConnected]);
+
+  useEffect(() => {
+    if (isUnsupportedNetwork && isNetworkStateStable) {
+      if (ModalController.state.open) {
+        RouterController.reset('UnsupportedChain');
+      } else {
+        ModalController.open({ view: 'UnsupportedChain' });
+      }
+    }
+  }, [isUnsupportedNetwork, isNetworkStateStable]);
+
   return (
     <>
       <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
@@ -127,7 +175,7 @@ export function AppKit() {
           hideModalContentWhileAnimating
           propagateSwipe
           onModalHide={handleClose}
-          onBackdropPress={ModalController.close}
+          onBackdropPress={onBackdropPress}
           onBackButtonPress={onBackButtonPress}
           testID="w3m-modal"
         >

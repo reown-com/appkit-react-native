@@ -19,6 +19,7 @@ export function Header() {
     RouterController.push('WhatIsAWallet');
     EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' });
   };
+  const showButtons = !['ConnectingSiwe', 'UnsupportedChain'].includes(view);
 
   const headings = (_data: RouterControllerState['data'], _view: RouterControllerState['view']) => {
     const connectorName = _data?.connector?.name;
@@ -100,9 +101,7 @@ export function Header() {
   };
 
   const dynamicButtonTemplate = () => {
-    const noButtonViews = ['ConnectingSiwe'];
-
-    if (noButtonViews.includes(RouterController.state.view)) {
+    if (!showButtons) {
       return <FlexView style={styles.iconPlaceholder} />;
     }
 
@@ -130,7 +129,11 @@ export function Header() {
       <Text variant="paragraph-600" numberOfLines={1} testID="header-text">
         {header}
       </Text>
-      <IconLink icon="close" size="md" onPress={handleClose} testID="header-close" />
+      {showButtons ? (
+        <IconLink icon="close" size="md" onPress={handleClose} testID="header-close" />
+      ) : (
+        <FlexView style={styles.iconPlaceholder} />
+      )}
     </FlexView>
   );
 }
