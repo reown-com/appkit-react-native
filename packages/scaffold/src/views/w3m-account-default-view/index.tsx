@@ -48,7 +48,7 @@ export function AccountDefaultView() {
   } = useSnapshot(AccountController.state);
   const { loading } = useSnapshot(ModalController.state);
   const [disconnecting, setDisconnecting] = useState(false);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { caipNetwork, isUnsupportedNetwork } = useSnapshot(NetworkController.state);
   const { connectedConnector } = useSnapshot(ConnectorController.state);
   const { connectedSocialProvider } = useSnapshot(ConnectionController.state);
   const { features } = useSnapshot(OptionsController.state);
@@ -61,7 +61,6 @@ export function AccountDefaultView() {
   const showBack = history.length > 1;
   const showSwitchAccountType = isAuth && NetworkController.checkIfSmartAccountEnabled();
   const { padding } = useCustomDimensions();
-  const isNetworkSupported = NetworkController.isActiveNetworkInRequestedNetworks();
 
   async function onDisconnect() {
     setDisconnecting(true);
@@ -149,7 +148,7 @@ export function AccountDefaultView() {
   };
 
   const onNetworkPress = () => {
-    if (AccountController.state.isConnected && !isNetworkSupported) {
+    if (AccountController.state.isConnected && NetworkController.state.isUnsupportedNetwork) {
       RouterController.push('UnsupportedChain');
     } else {
       RouterController.push('Networks');
@@ -245,17 +244,25 @@ export function AccountDefaultView() {
             )}
             <ListItem
               chevron
-              icon="networkPlaceholder"
-              iconColor="accent-100"
-              iconBackgroundColor="accent-glass-015"
+              icon={isUnsupportedNetwork ? 'infoCircle' : 'networkPlaceholder'}
+              iconColor={isUnsupportedNetwork ? 'error-100' : 'accent-100'}
+              iconBackgroundColor={isUnsupportedNetwork ? 'error-glass-015' : 'accent-glass-015'}
               imageSrc={networkImage}
               imageHeaders={ApiController._getApiHeaders()}
               onPress={onNetworkPress}
               testID="button-network"
               style={styles.actionButton}
             >
-              <Text numberOfLines={1} color="fg-100" testID="account-select-network-text">
-                {ScaffoldUiUtil.getNetworkButtonText(isConnected, caipNetwork, isNetworkSupported)}
+              <Text
+                numberOfLines={1}
+                color={isUnsupportedNetwork ? 'error-100' : 'fg-100'}
+                testID="account-select-network-text"
+              >
+                {ScaffoldUiUtil.getNetworkButtonText(
+                  isConnected,
+                  caipNetwork,
+                  isUnsupportedNetwork
+                )}
               </Text>
             </ListItem>
 

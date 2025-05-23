@@ -31,7 +31,7 @@ export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
   const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
   const { caipAddress, isConnected } = useSnapshot(AccountController.state);
-  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { isUnsupportedNetwork } = useSnapshot(NetworkController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const [isNetworkStateStable, setIsNetworkStateStable] = useState(false);
   const { height } = useWindowDimensions();
@@ -42,8 +42,21 @@ export function AppKit() {
   const AuthView = authProvider?.AuthView;
   const SocialView = authProvider?.Webview;
   const showAuth = !connectedConnector || connectedConnector === 'AUTH';
+  const disableClose = ['UnsupportedChain', 'ConnectingSiwe'].includes(RouterController.state.view);
+
+  const onBackdropPress = () => {
+    if (disableClose) {
+      return;
+    }
+
+    return ModalController.close();
+  };
 
   const onBackButtonPress = () => {
+    if (disableClose) {
+      return;
+    }
+
     if (RouterController.state.history.length > 1) {
       return RouterController.goBack();
     }
@@ -74,6 +87,12 @@ export function AppKit() {
       TransactionsController.resetTransactions();
 
       if (OptionsController.state.isSiweEnabled) {
+        if (NetworkController.state.isUnsupportedNetwork) {
+          // If the network is unsupported, don't do siwe stuff until user changes network
+
+          return;
+        }
+
         const newNetworkId = CoreHelperUtil.getNetworkId(address);
 
         const { signOutOnAccountChange, signOutOnNetworkChange } =
@@ -134,21 +153,14 @@ export function AppKit() {
   }, [isConnected]);
 
   useEffect(() => {
-    if (isConnected && caipNetwork && isNetworkStateStable) {
-      const isNetworkSupported = NetworkController.isActiveNetworkInRequestedNetworks();
-      if (!isNetworkSupported) {
-        const currentView = RouterController.state.view;
-        // Only push/open if not already on UnsupportedChain or actively choosing a network
-        if (currentView !== 'UnsupportedChain' && currentView !== 'Networks') {
-          if (ModalController.state.open) {
-            RouterController.push('UnsupportedChain');
-          } else {
-            ModalController.open({ view: 'UnsupportedChain' });
-          }
-        }
+    if (isUnsupportedNetwork && isNetworkStateStable) {
+      if (ModalController.state.open) {
+        RouterController.reset('UnsupportedChain');
+      } else {
+        ModalController.open({ view: 'UnsupportedChain' });
       }
     }
-  }, [caipNetwork, isConnected, isNetworkStateStable]);
+  }, [isUnsupportedNetwork, isNetworkStateStable]);
 
   return (
     <>
@@ -163,7 +175,7 @@ export function AppKit() {
           hideModalContentWhileAnimating
           propagateSwipe
           onModalHide={handleClose}
-          onBackdropPress={ModalController.close}
+          onBackdropPress={onBackdropPress}
           onBackButtonPress={onBackButtonPress}
           testID="w3m-modal"
         >

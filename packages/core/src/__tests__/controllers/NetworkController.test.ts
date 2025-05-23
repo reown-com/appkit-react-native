@@ -19,6 +19,7 @@ const client: NetworkControllerClient = {
 const initialState = {
   _client: client,
   supportsAllNetworks: true,
+  isUnsupportedNetwork: false,
   smartAccountEnabledNetworks: []
 };
 
@@ -74,13 +75,13 @@ describe('NetworkController', () => {
     expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks);
   });
 
-  it('should validate if active network is in requested networks', () => {
-    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks);
+  it('should set isUnsupportedNetwork to true when setUnsupportedNetwork is called', () => {
+    NetworkController.setUnsupportedNetwork(true);
+    expect(NetworkController.state.isUnsupportedNetwork).toEqual(true);
+  });
 
-    NetworkController.setCaipNetwork({ id: 'eip155:1', name: 'Ethereum' });
-    expect(NetworkController.isActiveNetworkInRequestedNetworks()).toBe(true);
-
-    NetworkController.setCaipNetwork({ id: 'eip155:99', name: 'Unknown Network' });
-    expect(NetworkController.isActiveNetworkInRequestedNetworks()).toBe(false);
+  it('should set isUnsupportedNetwork to false when setUnsupportedNetwork is called', () => {
+    NetworkController.setUnsupportedNetwork(false);
+    expect(NetworkController.state.isUnsupportedNetwork).toEqual(false);
   });
 });

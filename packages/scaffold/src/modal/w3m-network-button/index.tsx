@@ -23,10 +23,8 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
 
-  const isNetworkSupported = NetworkController.isActiveNetworkInRequestedNetworks();
-
   const onNetworkPress = () => {
-    if (AccountController.state.isConnected && !isNetworkSupported) {
+    if (AccountController.state.isConnected && NetworkController.state.isUnsupportedNetwork) {
       ModalController.open({ view: 'UnsupportedChain' });
     } else {
       ModalController.open({ view: 'Networks' });
@@ -37,7 +35,11 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
     });
   };
 
-  const buttonText = UiUtil.getNetworkButtonText(isConnected, caipNetwork, isNetworkSupported);
+  const buttonText = UiUtil.getNetworkButtonText(
+    isConnected,
+    caipNetwork,
+    NetworkController.state.isUnsupportedNetwork
+  );
 
   return (
     <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>

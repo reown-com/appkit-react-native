@@ -21,13 +21,15 @@ export interface NetworkControllerState {
   requestedCaipNetworks?: CaipNetwork[];
   approvedCaipNetworkIds?: CaipNetworkId[];
   smartAccountEnabledNetworks: number[];
+  isUnsupportedNetwork?: boolean;
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<NetworkControllerState>({
   supportsAllNetworks: true,
   defaultCaipNetwork: undefined,
-  smartAccountEnabledNetworks: []
+  smartAccountEnabledNetworks: [],
+  isUnsupportedNetwork: false
 });
 
 // -- Controller ---------------------------------------- //
@@ -55,6 +57,10 @@ export const NetworkController = {
     state.caipNetwork = caipNetwork;
     state.defaultCaipNetwork = caipNetwork;
     PublicStateController.set({ selectedNetworkId: caipNetwork?.id });
+  },
+
+  setUnsupportedNetwork(isUnsupportedNetwork: NetworkControllerState['isUnsupportedNetwork']) {
+    state.isUnsupportedNetwork = isUnsupportedNetwork;
   },
 
   setRequestedCaipNetworks(requestedNetworks: NetworkControllerState['requestedCaipNetworks']) {
@@ -111,16 +117,9 @@ export const NetworkController = {
 
   resetNetwork() {
     state.caipNetwork = state.defaultCaipNetwork || undefined;
+    state.isUnsupportedNetwork = undefined;
     state.approvedCaipNetworkIds = undefined;
     state.supportsAllNetworks = true;
     state.smartAccountEnabledNetworks = [];
-  },
-
-  isActiveNetworkInRequestedNetworks() {
-    if (!state.caipNetwork || !state.requestedCaipNetworks?.length) {
-      return false;
-    }
-
-    return state.requestedCaipNetworks.some(network => network.id === state.caipNetwork?.id);
   }
 };

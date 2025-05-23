@@ -246,10 +246,6 @@ export class AppKit extends AppKitScaffold {
       disconnect: async () => {
         await disconnect(this.wagmiConfig);
         this.setClientId(null);
-
-        if (siweConfig?.options?.signOutOnDisconnect) {
-          await SIWEController.signOut();
-        }
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
@@ -383,6 +379,7 @@ export class AppKit extends AppKitScaffold {
         this.syncAccount({ ...accountData });
 
         if (accountData.status === 'disconnected' && prevAccountData.status === 'connected') {
+          this.onSiweDisconnect();
           this.close();
         }
       }
@@ -460,6 +457,11 @@ export class AppKit extends AppKitScaffold {
   private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId);
 
+    if (isConnected) {
+      // If the network is not supported, set the unsupported network state
+      this.setUnsupportedNetwork(!chain);
+    }
+
     if (chain || chainId) {
       const name = chain?.name ?? chainId?.toString();
       const id = Number(chain?.id ?? chainId);
@@ -470,16 +472,6 @@ export class AppKit extends AppKitScaffold {
         imageId: PresetsUtil.EIP155NetworkImageIds[id],
         imageUrl: this.options?.chainImages?.[id]
       });
-
-      const internalState = this.wagmiConfig.chains || [];
-      const isNetworkSupported =
-        internalState.length === 0 ||
-        internalState.some(
-          (chainItem: Chain) => `${ConstantsUtil.EIP155}:${chainItem.id}` === caipChainId
-        );
-      if (!isNetworkSupported) {
-        console.warn(`Network ${caipChainId} is not in the requested networks list`);
-      }
 
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`;
@@ -651,5 +643,11 @@ export class AppKit extends AppKitScaffold {
       this.handleAlertError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
       this.setLoading(false);
     });
+  }
+
+  private async onSiweDisconnect() {
+    if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
+      await SIWEController.signOut();
+    }
   }
 }
