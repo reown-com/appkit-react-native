@@ -318,9 +318,7 @@ export class AppKit extends AppKitScaffold {
       getEnsAddress: async (value: string) => {
         try {
           if (!this.wagmiConfig) {
-            throw new Error(
-              'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
-            );
+            throw new Error('WagmiAdapter:getEnsAddress - wagmiConfig is undefined');
           }
           const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id));
           let ensName: boolean | GetEnsAddressReturnType = false;
@@ -443,8 +441,7 @@ export class AppKit extends AppKitScaffold {
       await Promise.all([
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
-        this.syncConnectedWalletInfo(connector),
-        this.getApprovedCaipNetworksData()
+        this.syncConnectedWalletInfo(connector)
       ]);
       this.hasSyncedConnectedAccount = true;
     } else if (!isConnected && !isConnecting && !isReconnecting && this.hasSyncedConnectedAccount) {
@@ -458,8 +455,17 @@ export class AppKit extends AppKitScaffold {
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId);
 
     if (isConnected) {
+      await this.getApprovedCaipNetworksData();
+      const approvedCaipNetworks = this.getApprovedCaipNetworks();
+
+      const isApproved = approvedCaipNetworks.some(
+        network => network.id === `${ConstantsUtil.EIP155}:${chainId}`
+      );
+
+      const isSupported = !!chain && isApproved;
+
       // If the network is not supported, set the unsupported network state
-      this.setUnsupportedNetwork(!chain);
+      this.setUnsupportedNetwork(!isSupported);
     }
 
     if (chain || chainId) {

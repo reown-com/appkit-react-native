@@ -156,7 +156,7 @@ export function AppKit() {
   useEffect(() => {
     if (isUnsupportedNetwork && isNetworkStateStable) {
       if (ModalController.state.open) {
-        RouterController.reset('UnsupportedChain');
+        RouterController.push('UnsupportedChain');
       } else {
         ModalController.open({ view: 'UnsupportedChain' });
       }

@@ -12,7 +12,8 @@ import {
   NetworkUtil,
   type CaipNetwork,
   type NetworkControllerState,
-  ModalController
+  ModalController,
+  RouterUtil
 } from '@reown/appkit-core-react-native';
 import styles from './styles';
 
@@ -34,7 +35,7 @@ export function UnsupportedChainView() {
       return ModalController.close();
     }
 
-    const result = await NetworkUtil.handleNetworkSwitch(network);
+    const result = await NetworkUtil.handleNetworkSwitch(network, false);
     if (result?.type === 'SWITCH_NETWORK') {
       EventsController.sendEvent({
         type: 'track',
@@ -54,7 +55,7 @@ export function UnsupportedChainView() {
 
   useEffect(() => {
     if (!isUnsupportedNetwork) {
-      ModalController.close();
+      RouterUtil.goBackOrCloseModal();
     }
   }, [isUnsupportedNetwork]);
 

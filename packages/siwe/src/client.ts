@@ -2,7 +2,7 @@ import {
   AccountController,
   NetworkController,
   ConnectionController,
-  RouterUtil
+  ModalController
 } from '@reown/appkit-core-react-native';
 import { NetworkUtil } from '@reown/appkit-common-react-native';
 
@@ -120,7 +120,7 @@ export class AppKitSIWEClient {
       this.methods.onSignIn(session);
     }
 
-    RouterUtil.navigateAfterNetworkSwitch();
+    ModalController.close();
 
     return session;
   }

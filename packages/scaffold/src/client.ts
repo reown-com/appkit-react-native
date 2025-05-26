@@ -200,6 +200,9 @@ export class AppKitScaffold {
   protected getApprovedCaipNetworksData: (typeof NetworkController)['getApprovedCaipNetworksData'] =
     () => NetworkController.getApprovedCaipNetworksData();
 
+  protected getApprovedCaipNetworks: (typeof NetworkController)['getApprovedCaipNetworks'] = () =>
+    NetworkController.getApprovedCaipNetworks();
+
   protected resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
     NetworkController.resetNetwork();
   };

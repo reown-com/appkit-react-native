@@ -725,11 +725,7 @@ export class AppKit extends AppKitScaffold {
 
       this.setCaipAddress(caipAddress);
 
-      await Promise.all([
-        this.syncProfile(address),
-        this.syncBalance(address),
-        this.getApprovedCaipNetworksData()
-      ]);
+      await Promise.all([this.syncProfile(address), this.syncBalance(address)]);
       this.hasSyncedConnectedAccount = true;
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.close();
@@ -745,11 +741,17 @@ export class AppKit extends AppKitScaffold {
     const isConnected = EthersStoreUtil.state.isConnected;
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId);
+      await this.getApprovedCaipNetworksData();
+      const approvedCaipNetworks = this.getApprovedCaipNetworks();
+
+      const isApproved = approvedCaipNetworks.some(
+        network => network.id === `${ConstantsUtil.EIP155}:${chainId}`
+      );
 
       //Supported network
       if (chain) {
         const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}`;
-        this.setUnsupportedNetwork(false);
+        this.setUnsupportedNetwork(!isApproved);
         this.setCaipNetwork({
           id: caipChainId,
           name: chain.name,
