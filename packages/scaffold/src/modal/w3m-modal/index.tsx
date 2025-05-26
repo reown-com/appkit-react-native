@@ -27,6 +27,8 @@ import { Snackbar } from '../../partials/w3m-snackbar';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
+const disableCloseViews = ['UnsupportedChain', 'ConnectingSiwe'];
+
 export function AppKit() {
   const { open, loading } = useSnapshot(ModalController.state);
   const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
@@ -42,10 +44,9 @@ export function AppKit() {
   const AuthView = authProvider?.AuthView;
   const SocialView = authProvider?.Webview;
   const showAuth = !connectedConnector || connectedConnector === 'AUTH';
-  const disableClose = ['UnsupportedChain', 'ConnectingSiwe'].includes(RouterController.state.view);
 
   const onBackdropPress = () => {
-    if (disableClose) {
+    if (disableCloseViews.includes(RouterController.state.view)) {
       return;
     }
 
@@ -53,7 +54,7 @@ export function AppKit() {
   };
 
   const onBackButtonPress = () => {
-    if (disableClose) {
+    if (disableCloseViews.includes(RouterController.state.view)) {
       return;
     }
 

@@ -766,14 +766,10 @@ export class AppKit extends AppKitScaffold {
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId);
 
-      if (isConnected) {
-        // If the network is not supported, set the unsupported network state
-        this.setUnsupportedNetwork(!chain);
-      }
-
+      //Supported network
       if (chain) {
         const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}`;
-
+        this.setUnsupportedNetwork(false);
         this.setCaipNetwork({
           id: caipChainId,
           name: chain.name,
@@ -793,6 +789,17 @@ export class AppKit extends AppKitScaffold {
           if (this.hasSyncedConnectedAccount) {
             await this.syncBalance(address);
           }
+        }
+      } else {
+        //Unsupported network
+        if (isConnected) {
+          this.setUnsupportedNetwork(true);
+          this.setCaipNetwork({
+            id: `${ConstantsUtil.EIP155}:${chainId}`,
+            name: 'Unsupported Network'
+          });
+          this.setAddressExplorerUrl(undefined);
+          this.setBalance(undefined, undefined);
         }
       }
     }
