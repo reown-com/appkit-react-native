@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FlatList } from 'react-native';
 import { Icon, ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
 import {
@@ -12,26 +12,20 @@ import {
   NetworkUtil,
   type CaipNetwork,
   type NetworkControllerState,
-  ModalController,
-  RouterUtil
+  ModalController
 } from '@reown/appkit-core-react-native';
 import styles from './styles';
 
 export function UnsupportedChainView() {
-  const {
-    caipNetwork,
-    supportsAllNetworks,
-    approvedCaipNetworkIds,
-    requestedCaipNetworks,
-    isUnsupportedNetwork
-  } = useSnapshot(NetworkController.state) as NetworkControllerState;
+  const { caipNetwork, supportsAllNetworks, approvedCaipNetworkIds, requestedCaipNetworks } =
+    useSnapshot(NetworkController.state) as NetworkControllerState;
 
   const [disconnecting, setDisconnecting] = useState(false);
   const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
   const imageHeaders = ApiController._getApiHeaders();
 
   const onNetworkPress = async (network: CaipNetwork) => {
-    if (caipNetwork?.id === network.id) {
+    if (NetworkController.state.caipNetwork?.id === network.id) {
       return ModalController.close();
     }
 
@@ -52,12 +46,6 @@ export function UnsupportedChainView() {
     await ConnectionUtil.disconnect();
     setDisconnecting(false);
   };
-
-  useEffect(() => {
-    if (!isUnsupportedNetwork) {
-      RouterUtil.goBackOrCloseModal();
-    }
-  }, [isUnsupportedNetwork]);
 
   return (
     <FlatList

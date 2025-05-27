@@ -27,6 +27,8 @@ import {
   NetworkController,
   OptionsController,
   PublicStateController,
+  RouterController,
+  RouterUtil,
   SnackController,
   StorageUtil,
   ThemeController,
@@ -277,10 +279,53 @@ export class AppKitScaffold {
     }
   }
 
-  protected setUnsupportedNetwork(
-    isUnsupportedNetwork: NetworkControllerState['isUnsupportedNetwork']
-  ) {
-    NetworkController.setUnsupportedNetwork(isUnsupportedNetwork);
+  protected onSiweNavigation = () => {
+    if (ModalController.state.open) {
+      RouterController.push('ConnectingSiwe');
+    } else {
+      ModalController.open({ view: 'ConnectingSiwe' });
+    }
+  };
+
+  protected openUnsupportedNetworkView(isSupported: boolean) {
+    if (isSupported && RouterController.state.view === 'UnsupportedChain') {
+      return RouterUtil.goBackOrCloseModal();
+    } else if (!isSupported) {
+      if (ModalController.state.open) {
+        RouterController.push('UnsupportedChain');
+      } else {
+        ModalController.open({ view: 'UnsupportedChain' });
+      }
+    }
+  }
+
+  protected async handleSiweChange(params: {
+    isNetworkChange?: boolean;
+    isAccountChange?: boolean;
+  }) {
+    const { isNetworkChange, isAccountChange } = params;
+    const { enabled, signOutOnAccountChange, signOutOnNetworkChange } =
+      SIWEController.state._client?.options ?? {};
+
+    if (enabled) {
+      const session = await SIWEController.getSession();
+      if (session && isAccountChange && signOutOnAccountChange) {
+        // If the address has changed and signOnAccountChange is enabled, sign out
+        await SIWEController.signOut();
+        this.onSiweNavigation();
+      } else if (isNetworkChange && signOutOnNetworkChange) {
+        // If the network has changed and signOnNetworkChange is enabled, sign out
+        await SIWEController.signOut();
+        this.onSiweNavigation();
+      } else if (!session) {
+        // If it's connected but there's no session, show sign view
+        this.onSiweNavigation();
+      }
+    }
+  }
+
+  protected resetTransactions() {
+    TransactionsController.resetTransactions();
   }
 
   // -- Private ------------------------------------------------------------------

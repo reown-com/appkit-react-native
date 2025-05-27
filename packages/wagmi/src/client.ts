@@ -374,7 +374,11 @@ export class AppKit extends AppKitScaffold {
 
     watchAccount(wagmiConfig, {
       onChange: (accountData, prevAccountData) => {
-        this.syncAccount({ ...accountData });
+        this.syncAccount({
+          ...accountData,
+          isNetworkChange: accountData.chainId !== prevAccountData.chainId,
+          isAccountChange: accountData.address !== prevAccountData.address
+        });
 
         if (accountData.status === 'disconnected' && prevAccountData.status === 'connected') {
           this.onSiweDisconnect();
@@ -426,18 +430,21 @@ export class AppKit extends AppKitScaffold {
     chainId,
     connector,
     isConnecting,
-    isReconnecting
+    isReconnecting,
+    isNetworkChange,
+    isAccountChange
   }: Pick<
     GetAccountReturnType,
     'address' | 'isConnected' | 'chainId' | 'connector' | 'isConnecting' | 'isReconnecting'
-  >) {
-    this.syncNetwork(address, chainId, isConnected);
+  > & { isNetworkChange?: boolean; isAccountChange?: boolean }) {
+    this.syncNetwork(address, chainId, isConnected, isNetworkChange, isAccountChange);
     this.setLoading(!!connector && (isConnecting || isReconnecting));
 
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
       this.setIsConnected(isConnected);
       this.setCaipAddress(caipAddress);
+      this.resetTransactions();
       await Promise.all([
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
@@ -451,37 +458,58 @@ export class AppKit extends AppKitScaffold {
     }
   }
 
-  private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
+  private async checkNetworkSupport(params: { chainId?: number; isConnected?: boolean }) {
+    const { isConnected = false, chainId } = params;
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId);
+    await this.getApprovedCaipNetworksData();
+    const isApproved = this.getApprovedCaipNetworks().some(
+      network => network.id === `${ConstantsUtil.EIP155}:${params.chainId}`
+    );
 
-    if (isConnected) {
-      await this.getApprovedCaipNetworksData();
-      const approvedCaipNetworks = this.getApprovedCaipNetworks();
-
-      const isApproved = approvedCaipNetworks.some(
-        network => network.id === `${ConstantsUtil.EIP155}:${chainId}`
-      );
-
-      const isSupported = !!chain && isApproved;
-
-      // If the network is not supported, set the unsupported network state
-      this.setUnsupportedNetwork(!isSupported);
-    }
-
-    if (chain || chainId) {
-      const name = chain?.name ?? chainId?.toString();
-      const id = Number(chain?.id ?? chainId);
+    if (chain) {
+      const id = Number(chain.id);
       const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}`;
       this.setCaipNetwork({
         id: caipChainId,
-        name,
+        name: chain.name,
         imageId: PresetsUtil.EIP155NetworkImageIds[id],
         imageUrl: this.options?.chainImages?.[id]
       });
+    } else if (params.chainId) {
+      this.setCaipNetwork({
+        id: `${ConstantsUtil.EIP155}:${params.chainId}`,
+        name: 'Unsupported Network'
+      });
+    }
 
+    if (isConnected) {
+      const isSupported = !!chain && isApproved;
+
+      this.openUnsupportedNetworkView(isSupported);
+
+      return isSupported;
+    }
+
+    return false;
+  }
+
+  private async syncNetwork(
+    address?: Hex,
+    chainId?: number,
+    isConnected?: boolean,
+    isNetworkChange?: boolean,
+    isAccountChange?: boolean
+  ) {
+    const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId);
+    const isSupported = await this.checkNetworkSupport({ chainId, isConnected });
+    const isSiweEnabled = this.options?.siweConfig?.options?.enabled;
+
+    if (chain || chainId) {
+      const id = Number(chain?.id ?? chainId);
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`;
         this.setCaipAddress(caipAddress);
+        this.resetTransactions();
         if (chain?.blockExplorers?.default?.url) {
           const url = `${chain.blockExplorers.default.url}/address/${address}`;
           this.setAddressExplorerUrl(url);
@@ -493,6 +521,10 @@ export class AppKit extends AppKitScaffold {
           await this.syncBalance(address, chainId);
         }
       }
+    }
+
+    if (isConnected && isSupported && isSiweEnabled) {
+      this.handleSiweChange({ isNetworkChange, isAccountChange });
     }
   }
 

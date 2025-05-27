@@ -30,11 +30,7 @@ export const UiUtil = {
     }
   },
 
-  getNetworkButtonText(
-    isConnected: boolean,
-    caipNetwork: CaipNetwork | undefined,
-    isUnsupportedNetwork?: boolean
-  ): string {
+  getNetworkButtonText(isConnected: boolean, caipNetwork: CaipNetwork | undefined): string {
     let buttonText: string;
 
     if (!isConnected) {
@@ -44,13 +40,8 @@ export const UiUtil = {
         buttonText = 'Select Network';
       }
     } else {
-      // isConnected is true
       if (caipNetwork) {
-        if (isUnsupportedNetwork) {
-          buttonText = 'Switch Network';
-        } else {
-          buttonText = caipNetwork.name ?? 'Unknown Network';
-        }
+        buttonText = caipNetwork.name ?? 'Unknown Network';
       } else {
         buttonText = 'Select Network';
       }

@@ -459,7 +459,7 @@ export class AppKit extends AppKitScaffold {
     });
 
     EthersStoreUtil.subscribeKey('chainId', () => {
-      this.syncNetwork(chainImages);
+      this.syncNetwork();
     });
 
     EthersStoreUtil.subscribeKey('provider', provider => {
@@ -719,6 +719,7 @@ export class AppKit extends AppKitScaffold {
   private async syncAccount({ address }: { address?: Address }) {
     const chainId = EthersStoreUtil.state.chainId;
     const isConnected = EthersStoreUtil.state.isConnected;
+    const isSiweEnabled = this.options?.siweConfig?.options?.enabled;
 
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
@@ -726,9 +727,14 @@ export class AppKit extends AppKitScaffold {
       this.setIsConnected(isConnected);
 
       this.setCaipAddress(caipAddress);
+      this.resetTransactions();
 
       await Promise.all([this.syncProfile(address), this.syncBalance(address)]);
       this.hasSyncedConnectedAccount = true;
+
+      if (isSiweEnabled) {
+        this.handleSiweChange({ isNetworkChange: false, isAccountChange: true });
+      }
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.close();
       this.resetAccount();
@@ -737,53 +743,69 @@ export class AppKit extends AppKitScaffold {
     }
   }
 
-  private async syncNetwork(chainImages?: AppKitClientOptions['chainImages']) {
+  private async checkNetworkSupport(params: { chainId?: number; isConnected?: boolean }) {
+    const { isConnected = false, chainId } = params;
+    const chain = this.chains.find((c: Chain) => c.chainId === chainId);
+    await this.getApprovedCaipNetworksData();
+    const isApproved = this.getApprovedCaipNetworks().some(
+      network => network.id === `${ConstantsUtil.EIP155}:${params.chainId}`
+    );
+
+    if (chain) {
+      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}`;
+      this.setCaipNetwork({
+        id: caipChainId,
+        name: chain.name,
+        imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+        imageUrl: this.options?.chainImages?.[chain.chainId]
+      });
+    } else if (params.chainId) {
+      this.setCaipNetwork({
+        id: `${ConstantsUtil.EIP155}:${params.chainId}`,
+        name: 'Unsupported Network'
+      });
+      this.setAddressExplorerUrl(undefined);
+      this.setBalance(undefined, undefined);
+    }
+
+    if (isConnected) {
+      const isSupported = !!chain && isApproved;
+
+      this.openUnsupportedNetworkView(isSupported);
+
+      return isSupported;
+    }
+
+    return false;
+  }
+
+  private async syncNetwork() {
     const address = EthersStoreUtil.state.address;
     const chainId = EthersStoreUtil.state.chainId;
     const isConnected = EthersStoreUtil.state.isConnected;
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId);
+      const isSupported = await this.checkNetworkSupport({ chainId, isConnected });
+      const isSiweEnabled = this.options?.siweConfig?.options?.enabled;
 
-      // await this.getApprovedCaipNetworksData();
-      const approvedCaipNetworks = this.getApprovedCaipNetworks();
-
-      const isApproved = approvedCaipNetworks.some(
-        network => network.id === `${ConstantsUtil.EIP155}:${chainId}`
-      );
-
-      //Supported network
-      if (chain) {
-        const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}`;
-        this.setCaipNetwork({
-          id: caipChainId,
-          name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId]
-        });
-        this.setUnsupportedNetwork(isApproved);
-        if (isConnected && address) {
-          const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
-          this.setCaipAddress(caipAddress);
-          if (chain.explorerUrl) {
-            const url = `${chain.explorerUrl}/address/${address}`;
-            this.setAddressExplorerUrl(url);
-          } else {
-            this.setAddressExplorerUrl(undefined);
-          }
-
-          if (this.hasSyncedConnectedAccount) {
-            await this.syncBalance(address);
-          }
+      if (chain && isConnected && address) {
+        const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
+        this.setCaipAddress(caipAddress);
+        this.resetTransactions();
+        if (chain.explorerUrl) {
+          const url = `${chain.explorerUrl}/address/${address}`;
+          this.setAddressExplorerUrl(url);
+        } else {
+          this.setAddressExplorerUrl(undefined);
         }
-      } else {
-        //Unsupported network
-        this.setUnsupportedNetwork(true);
-        this.setCaipNetwork({
-          id: `${ConstantsUtil.EIP155}:${chainId}`,
-          name: 'Unsupported Network'
-        });
-        this.setAddressExplorerUrl(undefined);
-        this.setBalance(undefined, undefined);
+
+        if (this.hasSyncedConnectedAccount) {
+          await this.syncBalance(address);
+        }
+      }
+
+      if (isConnected && isSupported && isSiweEnabled) {
+        this.handleSiweChange({ isNetworkChange: true, isAccountChange: false });
       }
     }
   }

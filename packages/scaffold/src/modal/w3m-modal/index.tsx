@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useWindowDimensions, StatusBar } from 'react-native';
 import Modal from 'react-native-modal';
 import { Card, ThemeProvider } from '@reown/appkit-ui-react-native';
@@ -8,16 +8,12 @@ import {
   ApiController,
   ConnectionController,
   ConnectorController,
-  CoreHelperUtil,
   EventsController,
   ModalController,
   OptionsController,
   RouterController,
-  TransactionsController,
-  type CaipAddress,
   type AppKitFrameProvider,
-  ThemeController,
-  NetworkController
+  ThemeController
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -30,12 +26,10 @@ import styles from './styles';
 const disableCloseViews = ['UnsupportedChain', 'ConnectingSiwe'];
 
 export function AppKit() {
-  const { open, loading } = useSnapshot(ModalController.state);
+  const { open } = useSnapshot(ModalController.state);
   const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
-  const { caipAddress, isConnected } = useSnapshot(AccountController.state);
-  const { isUnsupportedNetwork } = useSnapshot(NetworkController.state);
+
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
-  const [isNetworkStateStable, setIsNetworkStateStable] = useState(false);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
   const portraitHeight = height - 120;
@@ -78,90 +72,9 @@ export function AppKit() {
     }
   };
 
-  const onNewAddress = useCallback(
-    async (address?: CaipAddress) => {
-      if (!isConnected || loading) {
-        return;
-      }
-
-      const newAddress = CoreHelperUtil.getPlainAddress(address);
-      TransactionsController.resetTransactions();
-
-      if (OptionsController.state.isSiweEnabled) {
-        if (NetworkController.state.isUnsupportedNetwork) {
-          // If the network is unsupported, don't do siwe stuff until user changes network
-
-          return;
-        }
-
-        const newNetworkId = CoreHelperUtil.getNetworkId(address);
-
-        const { signOutOnAccountChange, signOutOnNetworkChange } =
-          SIWEController.state._client?.options ?? {};
-        const session = await SIWEController.getSession();
-
-        if (session && newAddress && signOutOnAccountChange) {
-          // If the address has changed and signOnAccountChange is enabled, sign out
-          await SIWEController.signOut();
-          onSiweNavigation();
-        } else if (
-          newNetworkId &&
-          session?.chainId.toString() !== newNetworkId &&
-          signOutOnNetworkChange
-        ) {
-          // If the network has changed and signOnNetworkChange is enabled, sign out
-          await SIWEController.signOut();
-          onSiweNavigation();
-        } else if (!session) {
-          // If it's connected but there's no session, show sign view
-          onSiweNavigation();
-        }
-      }
-    },
-    [isConnected, loading]
-  );
-
-  const onSiweNavigation = () => {
-    if (ModalController.state.open) {
-      RouterController.push('ConnectingSiwe');
-    } else {
-      ModalController.open({ view: 'ConnectingSiwe' });
-    }
-  };
-
   useEffect(() => {
     prefetch();
   }, []);
-
-  useEffect(() => {
-    onNewAddress(caipAddress);
-  }, [caipAddress, onNewAddress]);
-
-  useEffect(() => {
-    if (isConnected) {
-      const timer = setTimeout(() => {
-        setIsNetworkStateStable(true);
-      }, 750); // Stability period. Sometimes the network state updates at init
-
-      return () => {
-        clearTimeout(timer);
-      };
-    } else {
-      setIsNetworkStateStable(false);
-
-      return () => {};
-    }
-  }, [isConnected]);
-
-  useEffect(() => {
-    if (isConnected && isUnsupportedNetwork && isNetworkStateStable) {
-      if (ModalController.state.open) {
-        RouterController.push('UnsupportedChain');
-      } else {
-        ModalController.open({ view: 'UnsupportedChain' });
-      }
-    }
-  }, [isUnsupportedNetwork, isNetworkStateStable, isConnected]);
 
   return (
     <>
