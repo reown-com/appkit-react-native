@@ -90,6 +90,12 @@ export class AppKit extends AppKitScaffold {
 
   private authProvider?: AppKitFrameProvider;
 
+  private providerHandlers: {
+    disconnect: () => void;
+    accountsChanged: (accounts: string[]) => void;
+    chainChanged: (chainId: string) => void;
+  } | null = null;
+
   public constructor(options: AppKitClientOptions) {
     const {
       config,
@@ -235,6 +241,7 @@ export class AppKit extends AppKitScaffold {
             await this.setCoinbaseProvider(coinbaseProvider as Provider);
           } catch (error) {
             EthersStoreUtil.setError(error);
+            throw error;
           }
         } else if (id === ConstantsUtil.AUTH_CONNECTOR_ID) {
           await this.setAuthProvider();
@@ -509,7 +516,7 @@ export class AppKit extends AppKitScaffold {
     EthersStoreUtil.reset();
     this.setClientId(null);
 
-    await (provider as unknown as EthereumProvider).disconnect();
+    await (provider as unknown as EthereumProvider)?.disconnect?.();
   }
 
   // -- Private -----------------------------------------------------------------
@@ -589,7 +596,6 @@ export class AppKit extends AppKitScaffold {
       if (walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
         if (CoinbaseProvider.address) {
           await this.setCoinbaseProvider(provider);
-          await this.watchCoinbase(provider);
         } else {
           await StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
           EthersStoreUtil.reset();
@@ -603,12 +609,12 @@ export class AppKit extends AppKitScaffold {
     const WalletConnectProvider = await this.getWalletConnectProvider();
     if (WalletConnectProvider) {
       const providerType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
-      EthersStoreUtil.setChainId(WalletConnectProvider.chainId);
       EthersStoreUtil.setProviderType(providerType);
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider);
       EthersStoreUtil.setIsConnected(true);
       this.setAddress(WalletConnectProvider.accounts?.[0]);
-      await this.watchWalletConnect();
+      EthersStoreUtil.setChainId(WalletConnectProvider.chainId);
+      this.listenProviderEvents(WalletConnectProvider as unknown as Provider);
     }
   }
 
@@ -619,12 +625,12 @@ export class AppKit extends AppKitScaffold {
       const { address, chainId } = await EthersHelpersUtil.getUserInfo(provider);
       if (address && chainId) {
         const providerType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.COINBASE_CONNECTOR_ID];
-        EthersStoreUtil.setChainId(chainId);
         EthersStoreUtil.setProviderType(providerType);
         EthersStoreUtil.setProvider(provider);
         EthersStoreUtil.setIsConnected(true);
         this.setAddress(address);
-        await this.watchCoinbase(provider);
+        EthersStoreUtil.setChainId(chainId);
+        this.listenProviderEvents(provider);
       }
     }
   }
@@ -647,70 +653,46 @@ export class AppKit extends AppKitScaffold {
     }
   }
 
-  private async watchWalletConnect() {
-    const WalletConnectProvider = await this.getWalletConnectProvider();
-
-    function disconnectHandler() {
+  private listenProviderEvents(provider: Provider) {
+    const disconnectHandler = () => {
+      this.removeProviderListeners(provider);
       StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
       EthersStoreUtil.reset();
+      this.setClientId(null);
+    };
 
-      WalletConnectProvider?.removeListener('disconnect', disconnectHandler);
-      WalletConnectProvider?.removeListener('accountsChanged', accountsChangedHandler);
-      WalletConnectProvider?.removeListener('chainChanged', chainChangedHandler);
-    }
+    const accountsChangedHandler = (accounts: string[]) => {
+      if (accounts.length === 0) {
+        disconnectHandler();
+      } else {
+        EthersStoreUtil.setAddress(accounts[0] as Address);
+      }
+    };
 
-    function chainChangedHandler(chainId: string) {
+    const chainChangedHandler = (chainId: string) => {
       if (chainId) {
         const chain = EthersHelpersUtil.hexStringToNumber(chainId);
         EthersStoreUtil.setChainId(chain);
       }
-    }
-
-    const accountsChangedHandler = async (accounts: string[]) => {
-      if (accounts.length > 0) {
-        await this.setWalletConnectProvider();
-      }
     };
 
-    if (WalletConnectProvider) {
-      WalletConnectProvider.on('disconnect', disconnectHandler);
-      WalletConnectProvider.on('accountsChanged', accountsChangedHandler);
-      WalletConnectProvider.on('chainChanged', chainChangedHandler);
-    }
+    provider.on('disconnect', disconnectHandler);
+    provider.on('accountsChanged', accountsChangedHandler);
+    provider.on('chainChanged', chainChangedHandler);
+
+    this.providerHandlers = {
+      disconnect: disconnectHandler,
+      accountsChanged: accountsChangedHandler,
+      chainChanged: chainChangedHandler
+    };
   }
 
-  private async watchCoinbase(provider: Provider) {
-    const walletId = await StorageUtil.getItem(EthersConstantsUtil.WALLET_ID);
-
-    function disconnectHandler() {
-      StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
-      EthersStoreUtil.reset();
-
-      provider?.removeListener('disconnect', disconnectHandler);
-      provider?.removeListener('accountsChanged', accountsChangedHandler);
-      provider?.removeListener('chainChanged', chainChangedHandler);
-    }
-
-    function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
-        StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
-        EthersStoreUtil.reset();
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address);
-      }
-    }
-
-    function chainChangedHandler(chainId: string) {
-      if (chainId && walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
-        const chain = Number(chainId);
-        EthersStoreUtil.setChainId(chain);
-      }
-    }
-
-    if (provider) {
-      provider.on('disconnect', disconnectHandler);
-      provider.on('accountsChanged', accountsChangedHandler);
-      provider.on('chainChanged', chainChangedHandler);
+  private removeProviderListeners(provider: Provider) {
+    if (this.providerHandlers) {
+      provider.removeListener('disconnect', this.providerHandlers.disconnect);
+      provider.removeListener('accountsChanged', this.providerHandlers.accountsChanged);
+      provider.removeListener('chainChanged', this.providerHandlers.chainChanged);
+      this.providerHandlers = null;
     }
   }
 

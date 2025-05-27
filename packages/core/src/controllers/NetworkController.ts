@@ -90,9 +90,11 @@ export const NetworkController = {
   },
 
   getApprovedCaipNetworks() {
-    return state.approvedCaipNetworkIds
+    const networks = state.approvedCaipNetworkIds
       ?.map(id => state.requestedCaipNetworks?.find(network => network.id === id))
       .filter(Boolean) as CaipNetwork[];
+
+    return networks ?? [];
   },
 
   getSmartAccountEnabledNetworks() {

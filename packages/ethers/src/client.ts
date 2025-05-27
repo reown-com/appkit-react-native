@@ -103,6 +103,12 @@ export class AppKit extends AppKitScaffold {
 
   private authProvider?: AppKitFrameProvider;
 
+  private providerHandlers: {
+    disconnect: () => void;
+    accountsChanged: (accounts: string[]) => void;
+    chainChanged: (chainId: string) => void;
+  } | null = null;
+
   public constructor(options: AppKitClientOptions) {
     const {
       config,
@@ -248,6 +254,7 @@ export class AppKit extends AppKitScaffold {
             await this.setCoinbaseProvider(coinbaseProvider as Provider);
           } catch (error) {
             EthersStoreUtil.setError(error);
+            throw error;
           }
         } else if (id === ConstantsUtil.AUTH_CONNECTOR_ID) {
           await this.setAuthProvider();
@@ -609,7 +616,6 @@ export class AppKit extends AppKitScaffold {
       if (walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
         if (CoinbaseProvider.address) {
           await this.setCoinbaseProvider(provider);
-          await this.watchCoinbase(provider);
         } else {
           await StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
           EthersStoreUtil.reset();
@@ -623,12 +629,12 @@ export class AppKit extends AppKitScaffold {
     const WalletConnectProvider = await this.getWalletConnectProvider();
     if (WalletConnectProvider) {
       const providerType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID];
-      EthersStoreUtil.setChainId(WalletConnectProvider.chainId);
       EthersStoreUtil.setProviderType(providerType);
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider);
       EthersStoreUtil.setIsConnected(true);
+      EthersStoreUtil.setChainId(WalletConnectProvider.chainId);
       this.setAddress(WalletConnectProvider.accounts?.[0]);
-      await this.watchWalletConnect();
+      this.listenProviderEvents(WalletConnectProvider as unknown as Provider);
     }
   }
 
@@ -639,12 +645,12 @@ export class AppKit extends AppKitScaffold {
       const { address, chainId } = await EthersHelpersUtil.getUserInfo(provider);
       if (address && chainId) {
         const providerType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.COINBASE_CONNECTOR_ID];
-        EthersStoreUtil.setChainId(chainId);
         EthersStoreUtil.setProviderType(providerType);
         EthersStoreUtil.setProvider(provider);
         EthersStoreUtil.setIsConnected(true);
         this.setAddress(address);
-        await this.watchCoinbase(provider);
+        EthersStoreUtil.setChainId(chainId);
+        this.listenProviderEvents(provider);
       }
     }
   }
@@ -656,81 +662,57 @@ export class AppKit extends AppKitScaffold {
       const { address, chainId } = await this.authProvider.connect();
       super.setLoading(false);
       if (address && chainId) {
-        EthersStoreUtil.setChainId(chainId);
         EthersStoreUtil.setProviderType(
           PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID]
         );
         EthersStoreUtil.setProvider(this.authProvider as CombinedProviderType);
         EthersStoreUtil.setIsConnected(true);
         EthersStoreUtil.setAddress(address as Address);
+        EthersStoreUtil.setChainId(chainId);
       }
     }
   }
 
-  private async watchWalletConnect() {
-    const WalletConnectProvider = await this.getWalletConnectProvider();
-
-    function disconnectHandler() {
+  private listenProviderEvents(provider: Provider) {
+    const disconnectHandler = () => {
+      this.removeProviderListeners(provider);
       StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
       EthersStoreUtil.reset();
+      this.setClientId(null);
+    };
 
-      WalletConnectProvider?.removeListener('disconnect', disconnectHandler);
-      WalletConnectProvider?.removeListener('accountsChanged', accountsChangedHandler);
-      WalletConnectProvider?.removeListener('chainChanged', chainChangedHandler);
-    }
+    const accountsChangedHandler = (accounts: string[]) => {
+      if (accounts.length === 0) {
+        disconnectHandler();
+      } else {
+        EthersStoreUtil.setAddress(accounts[0] as Address);
+      }
+    };
 
-    function chainChangedHandler(chainId: string) {
+    const chainChangedHandler = (chainId: string) => {
       if (chainId) {
         const chain = EthersHelpersUtil.hexStringToNumber(chainId);
         EthersStoreUtil.setChainId(chain);
       }
-    }
-
-    const accountsChangedHandler = async (accounts: string[]) => {
-      if (accounts.length > 0) {
-        await this.setWalletConnectProvider();
-      }
     };
 
-    if (WalletConnectProvider) {
-      WalletConnectProvider.on('disconnect', disconnectHandler);
-      WalletConnectProvider.on('accountsChanged', accountsChangedHandler);
-      WalletConnectProvider.on('chainChanged', chainChangedHandler);
-    }
+    provider.on('disconnect', disconnectHandler);
+    provider.on('accountsChanged', accountsChangedHandler);
+    provider.on('chainChanged', chainChangedHandler);
+
+    this.providerHandlers = {
+      disconnect: disconnectHandler,
+      accountsChanged: accountsChangedHandler,
+      chainChanged: chainChangedHandler
+    };
   }
 
-  private async watchCoinbase(provider: Provider) {
-    const walletId = await StorageUtil.getItem(EthersConstantsUtil.WALLET_ID);
-
-    function disconnectHandler() {
-      StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
-      EthersStoreUtil.reset();
-
-      provider?.removeListener('disconnect', disconnectHandler);
-      provider?.removeListener('accountsChanged', accountsChangedHandler);
-      provider?.removeListener('chainChanged', chainChangedHandler);
-    }
-
-    function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
-        StorageUtil.removeItem(EthersConstantsUtil.WALLET_ID);
-        EthersStoreUtil.reset();
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address);
-      }
-    }
-
-    function chainChangedHandler(chainId: string) {
-      if (chainId && walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
-        const chain = Number(chainId);
-        EthersStoreUtil.setChainId(chain);
-      }
-    }
-
-    if (provider) {
-      provider.on('disconnect', disconnectHandler);
-      provider.on('accountsChanged', accountsChangedHandler);
-      provider.on('chainChanged', chainChangedHandler);
+  private removeProviderListeners(provider: Provider) {
+    if (this.providerHandlers) {
+      provider.removeListener('disconnect', this.providerHandlers.disconnect);
+      provider.removeListener('accountsChanged', this.providerHandlers.accountsChanged);
+      provider.removeListener('chainChanged', this.providerHandlers.chainChanged);
+      this.providerHandlers = null;
     }
   }
 
@@ -761,50 +743,47 @@ export class AppKit extends AppKitScaffold {
     const isConnected = EthersStoreUtil.state.isConnected;
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId);
-      if (isConnected) {
-        await this.getApprovedCaipNetworksData();
-        const approvedCaipNetworks = this.getApprovedCaipNetworks();
 
-        const isApproved = approvedCaipNetworks.some(
-          network => network.id === `${ConstantsUtil.EIP155}:${chainId}`
-        );
+      // await this.getApprovedCaipNetworksData();
+      const approvedCaipNetworks = this.getApprovedCaipNetworks();
 
-        //Supported network
-        if (chain) {
-          const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}`;
-          this.setUnsupportedNetwork(!isApproved);
-          this.setCaipNetwork({
-            id: caipChainId,
-            name: chain.name,
-            imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-            imageUrl: chainImages?.[chain.chainId]
-          });
-          if (isConnected && address) {
-            const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
-            this.setCaipAddress(caipAddress);
-            if (chain.explorerUrl) {
-              const url = `${chain.explorerUrl}/address/${address}`;
-              this.setAddressExplorerUrl(url);
-            } else {
-              this.setAddressExplorerUrl(undefined);
-            }
+      const isApproved = approvedCaipNetworks.some(
+        network => network.id === `${ConstantsUtil.EIP155}:${chainId}`
+      );
 
-            if (this.hasSyncedConnectedAccount) {
-              await this.syncBalance(address);
-            }
-          }
-        } else {
-          //Unsupported network
-          if (isConnected) {
-            this.setUnsupportedNetwork(true);
-            this.setCaipNetwork({
-              id: `${ConstantsUtil.EIP155}:${chainId}`,
-              name: 'Unsupported Network'
-            });
+      //Supported network
+      if (chain) {
+        const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}`;
+        this.setCaipNetwork({
+          id: caipChainId,
+          name: chain.name,
+          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageUrl: chainImages?.[chain.chainId]
+        });
+        this.setUnsupportedNetwork(isApproved);
+        if (isConnected && address) {
+          const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
+          this.setCaipAddress(caipAddress);
+          if (chain.explorerUrl) {
+            const url = `${chain.explorerUrl}/address/${address}`;
+            this.setAddressExplorerUrl(url);
+          } else {
             this.setAddressExplorerUrl(undefined);
-            this.setBalance(undefined, undefined);
+          }
+
+          if (this.hasSyncedConnectedAccount) {
+            await this.syncBalance(address);
           }
         }
+      } else {
+        //Unsupported network
+        this.setUnsupportedNetwork(true);
+        this.setCaipNetwork({
+          id: `${ConstantsUtil.EIP155}:${chainId}`,
+          name: 'Unsupported Network'
+        });
+        this.setAddressExplorerUrl(undefined);
+        this.setBalance(undefined, undefined);
       }
     }
   }

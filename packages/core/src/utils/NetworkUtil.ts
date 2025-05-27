@@ -7,7 +7,7 @@ import { SwapController } from '../controllers/SwapController';
 import type { CaipNetwork } from '../utils/TypeUtil';
 
 export const NetworkUtil = {
-  async handleNetworkSwitch(network: CaipNetwork, navigate = true) {
+  async handleNetworkSwitch(network: CaipNetwork) {
     const { isConnected } = AccountController.state;
     const { caipNetwork, approvedCaipNetworkIds, supportsAllNetworks } = NetworkController.state;
     const isAuthConnector = ConnectorController.state.connectedConnector === 'AUTH';
@@ -16,20 +16,14 @@ export const NetworkUtil = {
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id) && !isAuthConnector) {
         await NetworkController.switchActiveNetwork(network);
-        if (navigate) {
-          RouterUtil.goBackOrCloseModal();
-        }
+        RouterUtil.goBackOrCloseModal();
         eventData = { type: 'SWITCH_NETWORK', networkId: network.id };
       } else if (supportsAllNetworks || isAuthConnector) {
-        if (navigate) {
-          RouterController.push('SwitchNetwork', { network });
-        }
+        RouterController.push('SwitchNetwork', { network });
       }
     } else if (!isConnected) {
       NetworkController.setCaipNetwork(network);
-      if (navigate) {
-        RouterController.push('Connect');
-      }
+      RouterController.push('Connect');
     }
 
     SwapController.resetState();
