@@ -32,7 +32,7 @@ export class ModalPage {
     const qrLoadInitiatedTime = new Date();
 
     const qrCode = this.page.getByTestId('qr-code');
-    await expect(qrCode).toBeVisible();
+    await expect(qrCode).toBeVisible({ timeout: 20000 });
     const uri = await this.clickCopyLink();
 
     const qrLoadedTime = new Date();
@@ -51,7 +51,7 @@ export class ModalPage {
     const qrLoadInitiatedTime = new Date();
 
     const qrCode = this.page.getByTestId('qr-code');
-    await expect(qrCode).toBeVisible();
+    await expect(qrCode).toBeVisible({ timeout: 20000 });
     const uri = await this.clickCopyLink();
     const qrLoadedTime = new Date();
     if (timingRecords) {

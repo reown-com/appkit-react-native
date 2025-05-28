@@ -19,7 +19,6 @@ const client: NetworkControllerClient = {
 const initialState = {
   _client: client,
   supportsAllNetworks: true,
-  isDefaultCaipNetwork: false,
   smartAccountEnabledNetworks: []
 };
 
@@ -65,7 +64,7 @@ describe('NetworkController', () => {
   it('should update state correctly on setDefaultCaipNetwork()', () => {
     NetworkController.setDefaultCaipNetwork(caipNetwork);
     expect(NetworkController.state.caipNetwork).toEqual(caipNetwork);
-    expect(NetworkController.state.isDefaultCaipNetwork).toEqual(true);
+    expect(NetworkController.state.defaultCaipNetwork).toEqual(caipNetwork);
   });
 
   it('should reset state correctly when default caip network is true', () => {

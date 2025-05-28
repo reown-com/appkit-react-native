@@ -11,7 +11,8 @@ import {
   NetworkController,
   NetworkUtil,
   type CaipNetwork,
-  type NetworkControllerState
+  type NetworkControllerState,
+  ModalController
 } from '@reown/appkit-core-react-native';
 import styles from './styles';
 
@@ -24,7 +25,11 @@ export function UnsupportedChainView() {
   const imageHeaders = ApiController._getApiHeaders();
 
   const onNetworkPress = async (network: CaipNetwork) => {
-    const result = await NetworkUtil.handleNetworkSwitch(network);
+    if (NetworkController.state.caipNetwork?.id === network.id) {
+      return ModalController.close();
+    }
+
+    const result = await NetworkUtil.handleNetworkSwitch(network, false);
     if (result?.type === 'SWITCH_NETWORK') {
       EventsController.sendEvent({
         type: 'track',
@@ -49,8 +54,8 @@ export function UnsupportedChainView() {
       ListHeaderComponentStyle={styles.header}
       ListHeaderComponent={
         <Text variant="small-400" color="fg-200" center>
-          The swap feature doesn't support your current network. Switch to an available option to
-          continue.
+          The current network is not supported by this application. Please switch to an available
+          option to continue.
         </Text>
       }
       contentContainerStyle={styles.contentContainer}

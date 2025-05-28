@@ -30,6 +30,7 @@ import {
   ListItem
 } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { UiUtil as ScaffoldUiUtil } from '../../utils/UiUtil';
 
 import styles from './styles';
 import { AuthButtons } from './components/auth-buttons';
@@ -42,7 +43,8 @@ export function AccountDefaultView() {
     balance,
     balanceSymbol,
     addressExplorerUrl,
-    preferredAccountType
+    preferredAccountType,
+    isConnected
   } = useSnapshot(AccountController.state);
   const { loading } = useSnapshot(ModalController.state);
   const [disconnecting, setDisconnecting] = useState(false);
@@ -238,17 +240,17 @@ export function AccountDefaultView() {
             )}
             <ListItem
               chevron
-              icon="networkPlaceholder"
-              iconColor="accent-100"
-              iconBackgroundColor="accent-glass-015"
+              icon={'networkPlaceholder'}
+              iconColor={'accent-100'}
+              iconBackgroundColor={'accent-glass-015'}
               imageSrc={networkImage}
               imageHeaders={ApiController._getApiHeaders()}
               onPress={onNetworkPress}
               testID="button-network"
               style={styles.actionButton}
             >
-              <Text numberOfLines={1} color="fg-100" testID="account-select-network-text">
-                {caipNetwork?.name}
+              <Text numberOfLines={1} color={'fg-100'} testID="account-select-network-text">
+                {ScaffoldUiUtil.getNetworkButtonText(isConnected, caipNetwork)}
               </Text>
             </ListItem>
 

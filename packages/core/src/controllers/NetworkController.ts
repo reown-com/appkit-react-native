@@ -15,9 +15,9 @@ export interface NetworkControllerClient {
 
 export interface NetworkControllerState {
   supportsAllNetworks: boolean;
-  isDefaultCaipNetwork: boolean;
   _client?: NetworkControllerClient;
   caipNetwork?: CaipNetwork;
+  defaultCaipNetwork?: CaipNetwork;
   requestedCaipNetworks?: CaipNetwork[];
   approvedCaipNetworkIds?: CaipNetworkId[];
   smartAccountEnabledNetworks: number[];
@@ -26,7 +26,7 @@ export interface NetworkControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<NetworkControllerState>({
   supportsAllNetworks: true,
-  isDefaultCaipNetwork: false,
+  defaultCaipNetwork: undefined,
   smartAccountEnabledNetworks: []
 });
 
@@ -53,7 +53,7 @@ export const NetworkController = {
 
   setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
     state.caipNetwork = caipNetwork;
-    state.isDefaultCaipNetwork = true;
+    state.defaultCaipNetwork = caipNetwork;
     PublicStateController.set({ selectedNetworkId: caipNetwork?.id });
   },
 
@@ -84,9 +84,11 @@ export const NetworkController = {
   },
 
   getApprovedCaipNetworks() {
-    return state.approvedCaipNetworkIds
+    const networks = state.approvedCaipNetworkIds
       ?.map(id => state.requestedCaipNetworks?.find(network => network.id === id))
       .filter(Boolean) as CaipNetwork[];
+
+    return networks ?? [];
   },
 
   getSmartAccountEnabledNetworks() {
@@ -110,9 +112,7 @@ export const NetworkController = {
   },
 
   resetNetwork() {
-    if (!state.isDefaultCaipNetwork) {
-      state.caipNetwork = undefined;
-    }
+    state.caipNetwork = state.defaultCaipNetwork || undefined;
     state.approvedCaipNetworkIds = undefined;
     state.supportsAllNetworks = true;
     state.smartAccountEnabledNetworks = [];

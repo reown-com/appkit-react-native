@@ -56,7 +56,7 @@ export function NetworkSwitchView() {
   useEffect(() => {
     // Go back if network is already switched
     if (caipNetwork?.id === network?.id) {
-      RouterUtil.navigateAfterNetworkSwitch();
+      RouterUtil.goBackOrCloseModal();
     }
   }, [caipNetwork?.id, network?.id]);
 

@@ -124,7 +124,7 @@ export class AppKit extends AppKitScaffold {
           );
 
           return getWalletConnectCaipNetworks(connector);
-        } else if (authType) {
+        } else if (walletChoice?.includes(authType)) {
           return getAuthCaipNetworks();
         }
 
@@ -157,7 +157,8 @@ export class AppKit extends AppKitScaffold {
           this.setClientId(clientId);
         }
 
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+        const caipNetwork = this.getCaipNetwork();
+        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id);
 
         // SIWE
         const siweParams = await siweConfig?.getMessageParams?.();
@@ -198,7 +199,7 @@ export class AppKit extends AppKitScaffold {
                 cacao: signedCacao
               });
 
-              if (address && chainId) {
+              if (address && cacaoChainId) {
                 const session = {
                   address,
                   chainId: parseInt(cacaoChainId, 10)
@@ -246,10 +247,6 @@ export class AppKit extends AppKitScaffold {
       disconnect: async () => {
         await disconnect(this.wagmiConfig);
         this.setClientId(null);
-
-        if (siweConfig?.options?.signOutOnDisconnect) {
-          await SIWEController.signOut();
-        }
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
@@ -322,9 +319,7 @@ export class AppKit extends AppKitScaffold {
       getEnsAddress: async (value: string) => {
         try {
           if (!this.wagmiConfig) {
-            throw new Error(
-              'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
-            );
+            throw new Error('WagmiAdapter:getEnsAddress - wagmiConfig is undefined');
           }
           const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id));
           let ensName: boolean | GetEnsAddressReturnType = false;
@@ -380,9 +375,14 @@ export class AppKit extends AppKitScaffold {
 
     watchAccount(wagmiConfig, {
       onChange: (accountData, prevAccountData) => {
-        this.syncAccount({ ...accountData });
+        this.syncAccount({
+          ...accountData,
+          isNetworkChange: accountData.chainId !== prevAccountData.chainId,
+          isAccountChange: accountData.address !== prevAccountData.address
+        });
 
         if (accountData.status === 'disconnected' && prevAccountData.status === 'connected') {
+          this.onSiweDisconnect();
           this.close();
         }
       }
@@ -431,23 +431,25 @@ export class AppKit extends AppKitScaffold {
     chainId,
     connector,
     isConnecting,
-    isReconnecting
+    isReconnecting,
+    isNetworkChange,
+    isAccountChange
   }: Pick<
     GetAccountReturnType,
     'address' | 'isConnected' | 'chainId' | 'connector' | 'isConnecting' | 'isReconnecting'
-  >) {
-    this.syncNetwork(address, chainId, isConnected);
+  > & { isNetworkChange?: boolean; isAccountChange?: boolean }) {
+    this.syncNetwork(address, chainId, isConnected, isNetworkChange, isAccountChange);
     this.setLoading(!!connector && (isConnecting || isReconnecting));
 
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
       this.setIsConnected(isConnected);
       this.setCaipAddress(caipAddress);
+      this.resetTransactions();
       await Promise.all([
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
-        this.syncConnectedWalletInfo(connector),
-        this.getApprovedCaipNetworksData()
+        this.syncConnectedWalletInfo(connector)
       ]);
       this.hasSyncedConnectedAccount = true;
     } else if (!isConnected && !isConnecting && !isReconnecting && this.hasSyncedConnectedAccount) {
@@ -457,22 +459,60 @@ export class AppKit extends AppKitScaffold {
     }
   }
 
-  private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
+  private async checkNetworkSupport(params: { chainId?: number; isConnected?: boolean }) {
+    // wait until the session is set
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    const { isConnected = false, chainId } = params;
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId);
 
-    if (chain || chainId) {
-      const name = chain?.name ?? chainId?.toString();
-      const id = Number(chain?.id ?? chainId);
+    if (chain) {
+      const id = Number(chain.id);
       const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}`;
       this.setCaipNetwork({
         id: caipChainId,
-        name,
+        name: chain.name,
         imageId: PresetsUtil.EIP155NetworkImageIds[id],
         imageUrl: this.options?.chainImages?.[id]
       });
+    } else if (params.chainId) {
+      this.setCaipNetwork({
+        id: `${ConstantsUtil.EIP155}:${params.chainId}`,
+        name: 'Unsupported Network'
+      });
+    }
+
+    if (isConnected) {
+      await this.getApprovedCaipNetworksData();
+      const isApproved = this.getApprovedCaipNetworks().some(
+        network => network.id === `${ConstantsUtil.EIP155}:${params.chainId}`
+      );
+
+      const isSupported = !!chain && isApproved;
+      this.openUnsupportedNetworkView(isSupported);
+
+      return isSupported;
+    }
+
+    return false;
+  }
+
+  private async syncNetwork(
+    address?: Hex,
+    chainId?: number,
+    isConnected?: boolean,
+    isNetworkChange?: boolean,
+    isAccountChange?: boolean
+  ) {
+    const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId);
+    const isSiweEnabled = this.options?.siweConfig?.options?.enabled;
+
+    if (chain || chainId) {
+      const id = Number(chain?.id ?? chainId);
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`;
         this.setCaipAddress(caipAddress);
+        this.resetTransactions();
         if (chain?.blockExplorers?.default?.url) {
           const url = `${chain.blockExplorers.default.url}/address/${address}`;
           this.setAddressExplorerUrl(url);
@@ -484,6 +524,15 @@ export class AppKit extends AppKitScaffold {
           await this.syncBalance(address, chainId);
         }
       }
+    }
+
+    let isSupported = true;
+    if (isNetworkChange) {
+      isSupported = await this.checkNetworkSupport({ chainId, isConnected });
+    }
+
+    if (isConnected && isSupported && isSiweEnabled) {
+      this.handleSiweChange({ isNetworkChange, isAccountChange });
     }
   }
 
@@ -640,5 +689,11 @@ export class AppKit extends AppKitScaffold {
       this.handleAlertError(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT);
       this.setLoading(false);
     });
+  }
+
+  private async onSiweDisconnect() {
+    if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
+      await SIWEController.signOut();
+    }
   }
 }

@@ -28,14 +28,14 @@ export class WalletValidator {
   async expectSessionCard({ visible = true }: { visible?: boolean }) {
     if (visible) {
       await expect(
-        this.page.getByTestId('session-card'),
+        this.page.getByTestId('session-card').first(),
         'Session card should be visible'
       ).toBeVisible({
         timeout: MAX_WAIT
       });
     } else {
       await expect(
-        this.page.getByTestId('session-card'),
+        this.page.getByTestId('session-card').first(),
         'Session card should not be visible'
       ).not.toBeVisible({
         timeout: MAX_WAIT
@@ -46,7 +46,7 @@ export class WalletValidator {
   async expectDisconnected() {
     await this.gotoSessions.click();
     await expect(
-      this.page.getByTestId('session-card'),
+      this.page.getByTestId('session-card').first(),
       'Session card should not be visible'
     ).not.toBeVisible({
       timeout: MAX_WAIT

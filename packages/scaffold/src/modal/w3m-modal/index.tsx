@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useWindowDimensions, StatusBar } from 'react-native';
 import Modal from 'react-native-modal';
 import { Card, ThemeProvider } from '@reown/appkit-ui-react-native';
@@ -8,13 +8,10 @@ import {
   ApiController,
   ConnectionController,
   ConnectorController,
-  CoreHelperUtil,
   EventsController,
   ModalController,
   OptionsController,
   RouterController,
-  TransactionsController,
-  type CaipAddress,
   type AppKitFrameProvider,
   ThemeController
 } from '@reown/appkit-core-react-native';
@@ -26,10 +23,12 @@ import { Snackbar } from '../../partials/w3m-snackbar';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
+const disableCloseViews = ['UnsupportedChain', 'ConnectingSiwe'];
+
 export function AppKit() {
-  const { open, loading } = useSnapshot(ModalController.state);
+  const { open } = useSnapshot(ModalController.state);
   const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
-  const { caipAddress, isConnected } = useSnapshot(AccountController.state);
+
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
@@ -40,7 +39,19 @@ export function AppKit() {
   const SocialView = authProvider?.Webview;
   const showAuth = !connectedConnector || connectedConnector === 'AUTH';
 
+  const onBackdropPress = () => {
+    if (disableCloseViews.includes(RouterController.state.view)) {
+      return;
+    }
+
+    return ModalController.close();
+  };
+
   const onBackButtonPress = () => {
+    if (disableCloseViews.includes(RouterController.state.view)) {
+      return;
+    }
+
     if (RouterController.state.history.length > 1) {
       return RouterController.goBack();
     }
@@ -61,58 +72,9 @@ export function AppKit() {
     }
   };
 
-  const onNewAddress = useCallback(
-    async (address?: CaipAddress) => {
-      if (!isConnected || loading) {
-        return;
-      }
-
-      const newAddress = CoreHelperUtil.getPlainAddress(address);
-      TransactionsController.resetTransactions();
-
-      if (OptionsController.state.isSiweEnabled) {
-        const newNetworkId = CoreHelperUtil.getNetworkId(address);
-
-        const { signOutOnAccountChange, signOutOnNetworkChange } =
-          SIWEController.state._client?.options ?? {};
-        const session = await SIWEController.getSession();
-
-        if (session && newAddress && signOutOnAccountChange) {
-          // If the address has changed and signOnAccountChange is enabled, sign out
-          await SIWEController.signOut();
-          onSiweNavigation();
-        } else if (
-          newNetworkId &&
-          session?.chainId.toString() !== newNetworkId &&
-          signOutOnNetworkChange
-        ) {
-          // If the network has changed and signOnNetworkChange is enabled, sign out
-          await SIWEController.signOut();
-          onSiweNavigation();
-        } else if (!session) {
-          // If it's connected but there's no session, show sign view
-          onSiweNavigation();
-        }
-      }
-    },
-    [isConnected, loading]
-  );
-
-  const onSiweNavigation = () => {
-    if (ModalController.state.open) {
-      RouterController.push('ConnectingSiwe');
-    } else {
-      ModalController.open({ view: 'ConnectingSiwe' });
-    }
-  };
-
   useEffect(() => {
     prefetch();
   }, []);
-
-  useEffect(() => {
-    onNewAddress(caipAddress);
-  }, [caipAddress, onNewAddress]);
 
   return (
     <>
@@ -127,7 +89,7 @@ export function AppKit() {
           hideModalContentWhileAnimating
           propagateSwipe
           onModalHide={handleClose}
-          onBackdropPress={ModalController.close}
+          onBackdropPress={onBackdropPress}
           onBackButtonPress={onBackButtonPress}
           testID="w3m-modal"
         >
