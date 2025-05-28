@@ -410,7 +410,7 @@ export class AppKitScaffold {
   private async initConnectedConnector() {
     const connectedConnector = await StorageUtil.getConnectedConnector();
     if (connectedConnector) {
-      ConnectorController.setConnectedConnector(connectedConnector, false);
+      await ConnectorController.setConnectedConnector(connectedConnector, false);
     }
   }
 

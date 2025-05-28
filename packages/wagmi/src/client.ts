@@ -460,12 +460,11 @@ export class AppKit extends AppKitScaffold {
   }
 
   private async checkNetworkSupport(params: { chainId?: number; isConnected?: boolean }) {
+    // wait until the session is set
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     const { isConnected = false, chainId } = params;
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId);
-    await this.getApprovedCaipNetworksData();
-    const isApproved = this.getApprovedCaipNetworks().some(
-      network => network.id === `${ConstantsUtil.EIP155}:${params.chainId}`
-    );
 
     if (chain) {
       const id = Number(chain.id);
@@ -484,8 +483,12 @@ export class AppKit extends AppKitScaffold {
     }
 
     if (isConnected) {
-      const isSupported = !!chain && isApproved;
+      await this.getApprovedCaipNetworksData();
+      const isApproved = this.getApprovedCaipNetworks().some(
+        network => network.id === `${ConstantsUtil.EIP155}:${params.chainId}`
+      );
 
+      const isSupported = !!chain && isApproved;
       this.openUnsupportedNetworkView(isSupported);
 
       return isSupported;
@@ -502,7 +505,6 @@ export class AppKit extends AppKitScaffold {
     isAccountChange?: boolean
   ) {
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId);
-    const isSupported = await this.checkNetworkSupport({ chainId, isConnected });
     const isSiweEnabled = this.options?.siweConfig?.options?.enabled;
 
     if (chain || chainId) {
@@ -522,6 +524,11 @@ export class AppKit extends AppKitScaffold {
           await this.syncBalance(address, chainId);
         }
       }
+    }
+
+    let isSupported = true;
+    if (isNetworkChange) {
+      isSupported = await this.checkNetworkSupport({ chainId, isConnected });
     }
 
     if (isConnected && isSupported && isSiweEnabled) {

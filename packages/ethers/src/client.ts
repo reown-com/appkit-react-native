@@ -150,7 +150,7 @@ export class AppKit extends AppKitScaffold {
           const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID]!;
           if (walletChoice?.includes(walletConnectType)) {
             const provider = await this.getWalletConnectProvider();
-            const result = getWalletConnectCaipNetworks(provider);
+            const result = await getWalletConnectCaipNetworks(provider);
 
             resolve(result);
           } else if (walletChoice?.includes(authType)) {
@@ -718,13 +718,13 @@ export class AppKit extends AppKitScaffold {
 
   private async syncAccount({ address }: { address?: Address }) {
     const chainId = EthersStoreUtil.state.chainId;
-    const isConnected = EthersStoreUtil.state.isConnected;
     const isSiweEnabled = this.options?.siweConfig?.options?.enabled;
 
-    if (isConnected && address && chainId) {
+    if (address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
 
-      this.setIsConnected(isConnected);
+      EthersStoreUtil.setIsConnected(true);
+      this.setIsConnected(true);
 
       this.setCaipAddress(caipAddress);
       this.resetTransactions();
@@ -735,7 +735,7 @@ export class AppKit extends AppKitScaffold {
       if (isSiweEnabled) {
         this.handleSiweChange({ isNetworkChange: false, isAccountChange: true });
       }
-    } else if (!isConnected && this.hasSyncedConnectedAccount) {
+    } else if (!address && this.hasSyncedConnectedAccount) {
       this.close();
       this.resetAccount();
       this.resetWcConnection();
@@ -744,12 +744,11 @@ export class AppKit extends AppKitScaffold {
   }
 
   private async checkNetworkSupport(params: { chainId?: number; isConnected?: boolean }) {
+    // wait until the session is set
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     const { isConnected = false, chainId } = params;
     const chain = this.chains.find((c: Chain) => c.chainId === chainId);
-    await this.getApprovedCaipNetworksData();
-    const isApproved = this.getApprovedCaipNetworks().some(
-      network => network.id === `${ConstantsUtil.EIP155}:${params.chainId}`
-    );
 
     if (chain) {
       const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}`;
@@ -769,6 +768,11 @@ export class AppKit extends AppKitScaffold {
     }
 
     if (isConnected) {
+      await this.getApprovedCaipNetworksData();
+      const isApproved = this.getApprovedCaipNetworks().some(
+        network => network.id === `${ConstantsUtil.EIP155}:${params.chainId}`
+      );
+
       const isSupported = !!chain && isApproved;
 
       this.openUnsupportedNetworkView(isSupported);

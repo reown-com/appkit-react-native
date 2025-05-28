@@ -42,7 +42,7 @@ export const ConnectorController = {
     return state.connectors.find(c => c.type === 'AUTH');
   },
 
-  setConnectedConnector(
+  async setConnectedConnector(
     connectorType: ConnectorControllerState['connectedConnector'],
     saveStorage = true
   ) {
@@ -50,9 +50,9 @@ export const ConnectorController = {
 
     if (saveStorage) {
       if (connectorType) {
-        StorageUtil.setConnectedConnector(connectorType);
+        await StorageUtil.setConnectedConnector(connectorType);
       } else {
-        StorageUtil.removeConnectedConnector();
+        await StorageUtil.removeConnectedConnector();
       }
     }
   },
