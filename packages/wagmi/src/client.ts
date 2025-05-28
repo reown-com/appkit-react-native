@@ -124,7 +124,7 @@ export class AppKit extends AppKitScaffold {
           );
 
           return getWalletConnectCaipNetworks(connector);
-        } else if (authType) {
+        } else if (walletChoice?.includes(authType)) {
           return getAuthCaipNetworks();
         }
 
