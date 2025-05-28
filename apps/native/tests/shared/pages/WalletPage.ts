@@ -81,8 +81,8 @@ export class WalletPage {
       timeout: 30000
     });
     await expect(btn).toBeEnabled();
-    await btn.focus();
-    await this.page.keyboard.press('Space');
+    await this.page.waitForTimeout(1000);
+    await btn.click();
   }
 
   /**

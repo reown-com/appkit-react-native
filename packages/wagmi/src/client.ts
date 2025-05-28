@@ -157,7 +157,8 @@ export class AppKit extends AppKitScaffold {
           this.setClientId(clientId);
         }
 
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id);
+        const caipNetwork = this.getCaipNetwork();
+        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id);
 
         // SIWE
         const siweParams = await siweConfig?.getMessageParams?.();
@@ -198,7 +199,7 @@ export class AppKit extends AppKitScaffold {
                 cacao: signedCacao
               });
 
-              if (address && chainId) {
+              if (address && cacaoChainId) {
                 const session = {
                   address,
                   chainId: parseInt(cacaoChainId, 10)
