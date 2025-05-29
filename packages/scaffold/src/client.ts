@@ -1,22 +1,19 @@
 import './config/animations';
 
-import type {
-  AccountControllerState,
-  ConnectionControllerClient,
-  ModalControllerState,
-  NetworkControllerClient,
-  NetworkControllerState,
-  OptionsControllerState,
-  EventsControllerState,
-  PublicStateControllerState,
-  ThemeControllerState,
-  Connector,
-  ConnectedWalletInfo,
-  Features,
-  EventName
-} from '@reown/appkit-core-react-native';
-import { SIWEController, type SIWEControllerClient } from '@reown/appkit-siwe-react-native';
 import {
+  type AccountControllerState,
+  type ConnectionControllerClient,
+  type ModalControllerState,
+  type NetworkControllerClient,
+  type NetworkControllerState,
+  type OptionsControllerState,
+  type EventsControllerState,
+  type PublicStateControllerState,
+  type ThemeControllerState,
+  type Connector,
+  type ConnectedWalletInfo,
+  type Features,
+  type EventName,
   AccountController,
   BlockchainApiController,
   ConnectionController,
@@ -32,6 +29,7 @@ import {
   ThemeController,
   TransactionsController
 } from '@reown/appkit-core-react-native';
+import { SIWEController, type SIWEControllerClient } from '@reown/appkit-siwe-react-native';
 import {
   ConstantsUtil,
   ErrorUtil,

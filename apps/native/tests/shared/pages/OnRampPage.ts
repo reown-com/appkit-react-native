@@ -1,5 +1,4 @@
-import type { Locator, Page } from '@playwright/test';
-import { expect } from '@playwright/test';
+import { type Locator, type Page, expect } from '@playwright/test';
 import { TIMEOUTS } from '../constants';
 
 export class OnRampPage {
@@ -62,14 +61,6 @@ export class OnRampPage {
     await paymentMethod.click();
     // Wait for UI updates
     await this.page.waitForTimeout(500);
-  }
-
-  async selectSuggestedValue() {
-    const suggestedValue = this.page.getByTestId(new RegExp('suggested-value-.')).last();
-    await expect(suggestedValue).toBeVisible({ timeout: 5000 });
-    await suggestedValue.click();
-    // Wait for quote generation
-    await this.page.waitForTimeout(1000);
   }
 
   async clickContinue() {

@@ -44,8 +44,10 @@ import {
   ConstantsUtil,
   PresetsUtil
 } from '@reown/appkit-common-react-native';
-import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
-import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
+import EthereumProvider, {
+  type EthereumProviderOptions,
+  OPTIONAL_METHODS
+} from '@walletconnect/ethereum-provider';
 import { type JsonRpcError } from '@walletconnect/jsonrpc-types';
 
 import { getAuthCaipNetworks, getWalletConnectCaipNetworks } from './utils/helpers';

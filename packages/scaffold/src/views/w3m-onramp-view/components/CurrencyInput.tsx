@@ -10,8 +10,7 @@ import {
   Spacing,
   BorderRadius
 } from '@reown/appkit-ui-react-native';
-import { useEffect, useState } from 'react';
-import { useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export interface InputTokenProps {
   style?: StyleProp<ViewStyle>;

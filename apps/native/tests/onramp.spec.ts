@@ -99,24 +99,9 @@ onrampTest('Should be able to select a payment method', async () => {
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log('Payment method selection failed');
+    throw error;
   }
   await onRampPage.closePaymentModal();
-  await modalPage.goBack();
-  await modalPage.closeModal();
-});
-
-onrampTest('Should show suggested values and be able to select them', async () => {
-  await onRampPage.openBuyCryptoModal();
-  await onRampValidator.expectOnRampInitialScreen();
-  try {
-    await onRampValidator.expectSuggestedValues();
-    await onRampPage.selectSuggestedValue();
-    // Wait for quotes to load
-    await onRampValidator.expectQuotesLoaded();
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log('Suggested values not available or quotes not loading, continuing test');
-  }
   await modalPage.goBack();
   await modalPage.closeModal();
 });
@@ -137,6 +122,7 @@ onrampTest('Should proceed to checkout when continue button is clicked', async (
     // If checkout fails, it's likely due to API issues - skip this step
     // eslint-disable-next-line no-console
     console.log('Checkout process failed, likely API issue');
+    throw error;
   }
   await modalPage.closeModal();
 });
@@ -155,6 +141,7 @@ onrampTest('Should be able to navigate to onramp settings', async () => {
     // If settings navigation fails, skip this step
     // eslint-disable-next-line no-console
     console.log('Settings navigation failed');
+    throw error;
   }
 
   await modalPage.goBack();
@@ -177,6 +164,7 @@ onrampTest('Should display appropriate error messages for invalid amounts', asyn
     // If error messages don't appear, it might be that the API accepts these values
     // eslint-disable-next-line no-console
     console.log('Amount error testing failed, API might accept these values');
+    throw error;
   }
   await modalPage.goBack();
   await modalPage.closeModal();

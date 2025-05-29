@@ -1,5 +1,4 @@
-import type { ConnectionControllerClient } from '../../index';
-import { ConnectionController } from '../../index';
+import { ConnectionController, type ConnectionControllerClient } from '../../index';
 
 // -- Setup --------------------------------------------------------------------
 const walletConnectUri = 'wc://uri?=123';

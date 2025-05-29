@@ -57,8 +57,10 @@ import {
   getDidChainId,
   getDidAddress
 } from '@reown/appkit-siwe-react-native';
-import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider';
-import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
+import EthereumProvider, {
+  type EthereumProviderOptions,
+  OPTIONAL_METHODS
+} from '@walletconnect/ethereum-provider';
 import { type JsonRpcError } from '@walletconnect/jsonrpc-types';
 
 import { getAuthCaipNetworks, getWalletConnectCaipNetworks } from './utils/helpers';

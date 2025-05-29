@@ -303,7 +303,7 @@ describe('OnRampController', () => {
       expect(OnRampController.state.paymentAmount).toBe(200);
 
       // Execute with undefined
-      OnRampController.setPaymentAmount(undefined);
+      OnRampController.setPaymentAmount();
       expect(OnRampController.state.paymentAmount).toBeUndefined();
     });
   });

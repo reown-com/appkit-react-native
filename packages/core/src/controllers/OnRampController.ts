@@ -188,7 +188,7 @@ export const OnRampController = {
       selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === defaultCurrency);
     }
 
-    state.purchaseCurrency = selectedCurrency || state.purchaseCurrencies?.[0] || undefined;
+    state.purchaseCurrency = selectedCurrency ?? state.purchaseCurrencies?.[0] ?? undefined;
   },
 
   getServiceProviderImage(serviceProviderName?: string) {
