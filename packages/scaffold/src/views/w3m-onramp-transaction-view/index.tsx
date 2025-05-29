@@ -56,41 +56,45 @@ export function OnRampTransactionView() {
             padding="m"
             margin={['s', '0', '0', '0']}
           >
-            {showPaid && (<FlexView
-              flexDirection="row"
-              justifyContent="space-between"
-              alignItems="center"
-              margin={['0', '0', 'xs', '0']}
-            >
-              <Text variant="paragraph-400" color="fg-150">
-                You Paid
-              </Text>
-              <Text variant="paragraph-500">
-                {data?.onrampResult?.paymentAmount} {data?.onrampResult?.paymentCurrency}
-              </Text>
-            </FlexView>)}
-            {showBought && (<FlexView
-              flexDirection="row"
-              justifyContent="space-between"
-              alignItems="center"
-              margin={['0', '0', 'xs', '0']}
-            >
-              <Text variant="paragraph-400" color="fg-150">
-                You Bought
-              </Text>
-              <FlexView flexDirection="row" alignItems="center">
-                <Text variant="paragraph-500">
-                  {data?.onrampResult?.purchaseAmount}{' '}
-                  {data?.onrampResult?.purchaseCurrency?.split('_')[0] ?? ''}
+            {showPaid && (
+              <FlexView
+                flexDirection="row"
+                justifyContent="space-between"
+                alignItems="center"
+                margin={['0', '0', 'xs', '0']}
+              >
+                <Text variant="paragraph-400" color="fg-150">
+                  You Paid
                 </Text>
-                {data?.onrampResult?.purchaseImageUrl && (
-                  <Image
-                    source={data?.onrampResult?.purchaseImageUrl}
-                    style={[styles.tokenImage, { borderColor: Theme['gray-glass-010'] }]}
-                  />
-                )}
+                <Text variant="paragraph-500">
+                  {data?.onrampResult?.paymentAmount} {data?.onrampResult?.paymentCurrency}
+                </Text>
               </FlexView>
-            </FlexView>)}
+            )}
+            {showBought && (
+              <FlexView
+                flexDirection="row"
+                justifyContent="space-between"
+                alignItems="center"
+                margin={['0', '0', 'xs', '0']}
+              >
+                <Text variant="paragraph-400" color="fg-150">
+                  You Bought
+                </Text>
+                <FlexView flexDirection="row" alignItems="center">
+                  <Text variant="paragraph-500">
+                    {data?.onrampResult?.purchaseAmount}{' '}
+                    {data?.onrampResult?.purchaseCurrency?.split('_')[0] ?? ''}
+                  </Text>
+                  {data?.onrampResult?.purchaseImageUrl && (
+                    <Image
+                      source={data?.onrampResult?.purchaseImageUrl}
+                      style={[styles.tokenImage, { borderColor: Theme['gray-glass-010'] }]}
+                    />
+                  )}
+                </FlexView>
+              </FlexView>
+            )}
             {showNetwork && (
               <FlexView
                 flexDirection="row"

@@ -62,7 +62,7 @@ export interface BlockchainApiControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<BlockchainApiControllerState>({
   clientId: null,
-  api: new FetchUtil({ baseUrl }),
+  api: new FetchUtil({ baseUrl })
 });
 
 // -- Controller ---------------------------------------- //

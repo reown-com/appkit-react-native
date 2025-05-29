@@ -60,11 +60,22 @@ export function OnRampLoadingView() {
       ) {
         const parsedUrl = new URL(url);
         const searchParams = new URLSearchParams(parsedUrl.search);
-        const asset = searchParams.get('cryptoCurrency') ?? OnRampController.state.purchaseCurrency?.currencyCode ?? null;
-        const network = searchParams.get('network') ?? OnRampController.state.purchaseCurrency?.chainName ?? null;
-        const purchaseAmount = searchParams.get('cryptoAmount') ?? OnRampController.state.selectedQuote?.destinationAmount ?? null;
-        const amount = searchParams.get('fiatAmount') ?? OnRampController.state.paymentAmount ?? null;
-        const currency = searchParams.get('fiatCurrency') ?? OnRampController.state.paymentCurrency?.currencyCode ?? null;
+        const asset =
+          searchParams.get('cryptoCurrency') ??
+          OnRampController.state.purchaseCurrency?.currencyCode ??
+          null;
+        const network =
+          searchParams.get('network') ?? OnRampController.state.purchaseCurrency?.chainName ?? null;
+        const purchaseAmount =
+          searchParams.get('cryptoAmount') ??
+          OnRampController.state.selectedQuote?.destinationAmount ??
+          null;
+        const amount =
+          searchParams.get('fiatAmount') ?? OnRampController.state.paymentAmount ?? null;
+        const currency =
+          searchParams.get('fiatCurrency') ??
+          OnRampController.state.paymentCurrency?.currencyCode ??
+          null;
         const orderId = searchParams.get('orderId');
         const status = searchParams.get('status');
 
@@ -83,7 +94,9 @@ export function OnRampLoadingView() {
         RouterController.reset('OnRampTransaction', {
           onrampResult: {
             purchaseCurrency: asset,
-            purchaseAmount: purchaseAmount ? NumberUtil.formatNumberToLocalString(purchaseAmount) : null,
+            purchaseAmount: purchaseAmount
+              ? NumberUtil.formatNumberToLocalString(purchaseAmount)
+              : null,
             purchaseImageUrl: OnRampController.state.purchaseCurrency?.symbolImageUrl ?? '',
             paymentCurrency: currency,
             paymentAmount: amount ? NumberUtil.formatNumberToLocalString(amount) : null,
