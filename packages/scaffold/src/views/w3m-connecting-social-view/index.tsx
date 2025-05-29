@@ -1,6 +1,5 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
-import { Platform } from 'react-native';
 import {
   ConnectionController,
   ConnectorController,
@@ -35,12 +34,9 @@ export function ConnectingSocialView() {
         const { uri } = await provider.getSocialRedirectUri({
           provider: ConnectionController.state.selectedSocialProvider
         });
+
         WebviewController.setWebviewUrl(uri);
-
-        const isNativeApple =
-          ConnectionController.state.selectedSocialProvider === 'apple' && Platform.OS === 'ios';
-
-        WebviewController.setWebviewVisible(!isNativeApple);
+        WebviewController.setWebviewVisible(true);
         WebviewController.setConnecting(true);
         WebviewController.setConnectingProvider(ConnectionController.state.selectedSocialProvider);
       }

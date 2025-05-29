@@ -213,7 +213,10 @@ export class AppKit extends AppKitScaffold {
             }
           }
         } else {
-          await WalletConnectProvider.connect();
+          await WalletConnectProvider.connect({
+            chains: [],
+            optionalChains: [...this.chains.map(chain => chain.chainId)] as [number]
+          });
         }
 
         await this.setWalletConnectProvider();
@@ -532,6 +535,7 @@ export class AppKit extends AppKitScaffold {
             return map;
           }, {})
         : ({} as Record<number, string>),
+      chains: [],
       optionalChains: [...this.chains.map(chain => chain.chainId)] as [number],
       metadata: this.metadata
     };
