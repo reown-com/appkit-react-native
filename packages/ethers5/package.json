@@ -42,7 +42,7 @@
     "@reown/appkit-scaffold-react-native": "1.2.3",
     "@reown/appkit-scaffold-utils-react-native": "1.2.3",
     "@reown/appkit-siwe-react-native": "1.2.3",
-    "@walletconnect/ethereum-provider": "2.20.3"
+    "@walletconnect/ethereum-provider": "2.21.0"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": ">=1.17.0",
