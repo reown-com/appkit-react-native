@@ -1,4 +1,8 @@
-name: expo-update
+name: Expo Update
+
+permissions:
+  contents: read
+
 on:
   workflow_call:
   workflow_dispatch:

@@ -3,6 +3,9 @@ name: Alpha Release
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   alpha-release:
     runs-on: ubuntu-latest
@@ -54,4 +57,4 @@ jobs:
       - name: Push Changes and Tags
         run: |
           git push --follow-tags
-        shell: bash 
+        shell: bash
