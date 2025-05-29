@@ -19,8 +19,7 @@ interface Connection {
   accounts: CaipAddress[];
   balances: Record<CaipAddress, Balance>; //TODO: make this an array of balances
   adapter: BlockchainAdapter;
-  chains: CaipNetworkId[];
-  activeChain: CaipNetworkId;
+  caipNetwork: CaipNetworkId;
   wallet?: WalletInfo;
 }
 
@@ -54,7 +53,7 @@ const derivedState = derive(
 
       //TODO: what happens if there are several accounts on the same chain?
       const activeAccount = connection.accounts.find(account =>
-        account.startsWith(connection.activeChain)
+        account.startsWith(connection.caipNetwork)
       );
 
       return activeAccount;
@@ -70,7 +69,7 @@ const derivedState = derive(
       }
 
       const activeAccount = connection.accounts.find(account =>
-        account.startsWith(connection.activeChain)
+        account.startsWith(connection.caipNetwork)
       );
 
       if (
@@ -96,7 +95,7 @@ const derivedState = derive(
       return snap.networks.find(
         network =>
           network.chainNamespace === snap.activeNamespace &&
-          network.id?.toString() === connection.activeChain?.split(':')[1]
+          network.id?.toString() === connection.caipNetwork?.split(':')[1]
       );
     },
     activeCaipNetworkId: (get): CaipNetworkId | undefined => {
@@ -108,7 +107,7 @@ const derivedState = derive(
 
       if (!connection) return undefined;
 
-      return connection.activeChain;
+      return connection.caipNetwork;
     },
     walletInfo: (get): WalletInfo | undefined => {
       const snap = get(baseState);
@@ -138,18 +137,18 @@ export const ConnectionsController = {
     accounts,
     chains,
     wallet,
-    activeChain
+    caipNetwork
   }: {
     namespace: ChainNamespace;
     adapter: BlockchainAdapter;
     accounts: CaipAddress[];
     chains: CaipNetworkId[];
     wallet?: WalletInfo;
-    activeChain?: CaipNetworkId;
+    caipNetwork?: CaipNetworkId;
   }) {
     const newConnectionEntry = {
       balances: {},
-      activeChain: activeChain ?? chains[0]!,
+      caipNetwork: caipNetwork ?? chains[0]!,
       adapter: ref(adapter),
       accounts,
       chains,
@@ -187,7 +186,7 @@ export const ConnectionsController = {
     baseState.connections = newConnectionsMap;
   },
 
-  setActiveChain(namespace: ChainNamespace, chain: CaipNetworkId) {
+  setActiveNetwork(namespace: ChainNamespace, networkId: CaipNetworkId) {
     const connection = baseState.connections.get(namespace);
 
     if (!connection) {
@@ -196,7 +195,7 @@ export const ConnectionsController = {
 
     baseState.connections.set(namespace, {
       ...connection,
-      activeChain: chain
+      caipNetwork: networkId
     });
   },
 
@@ -207,7 +206,9 @@ export const ConnectionsController = {
   getConnectedNetworks() {
     return baseState.networks.filter(
       network =>
-        baseState.connections.get(network.chainNamespace)?.chains.includes(network.caipNetworkId)
+        baseState.connections
+          .get(network.chainNamespace)
+          ?.accounts.some(account => account.startsWith(network.caipNetworkId))
     );
   },
 

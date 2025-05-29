@@ -231,7 +231,7 @@ export class AppKit {
       }
     });
 
-    ConnectionsController.setActiveChain(
+    ConnectionsController.setActiveNetwork(
       adapter.getSupportedNamespace(),
       `${adapter.getSupportedNamespace()}:${network.id}` as CaipNetworkId
     );
@@ -349,11 +349,11 @@ export class AppKit {
           ConnectionsController.updateAccounts(namespace, accounts);
 
           const network = this.networks.find(
-            n => n.id?.toString() === connection?.activeChain?.split(':')[1]
+            n => n.id?.toString() === connection?.caipNetwork?.split(':')[1]
           );
 
           const address = accounts.find(
-            a => a.split(':')[1] === connection.activeChain?.split(':')[1]
+            a => a.split(':')[1] === connection.caipNetwork?.split(':')[1]
           );
 
           if (address) {
@@ -376,14 +376,14 @@ export class AppKit {
 
       const accounts = namespaceDetails.accounts ?? [];
       const chains = namespaceDetails.chains ?? [];
-      const activeChain = adapter?.connector?.getChainId(namespace);
+      const caipNetwork = adapter?.connector?.getChainId(namespace);
 
       ConnectionsController.storeConnection({
         namespace,
         adapter,
         accounts,
         chains,
-        activeChain,
+        caipNetwork,
         wallet
       });
     });
@@ -409,7 +409,7 @@ export class AppKit {
     adapter.on('chainChanged', ({ chainId }) => {
       const namespace = adapter.getSupportedNamespace();
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
-      ConnectionsController.setActiveChain(namespace, chain);
+      ConnectionsController.setActiveNetwork(namespace, chain);
 
       const network = this.networks.find(n => n.id?.toString() === chainId);
       if (network) {
