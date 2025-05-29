@@ -432,7 +432,7 @@ export class AppKit {
   }
 
   private async initControllers(options: AppKitConfig) {
-    await this.initAsyncValues();
+    await this.initAsyncValues(options);
 
     OptionsController.setProjectId(options.projectId);
     OptionsController.setMetadata(options.metadata);
@@ -469,13 +469,42 @@ export class AppKit {
     // }
   }
 
-  private async initAsyncValues() {
+  private async initActiveNamespace() {
     const activeNamespace = await StorageUtil.getActiveNamespace();
     if (activeNamespace) {
       ConnectionsController.setActiveNamespace(activeNamespace);
     } else if (this.defaultNetwork) {
       ConnectionsController.setActiveNamespace(this.defaultNetwork?.chainNamespace);
     }
+  }
+
+  private async initRecentWallets(options: AppKitConfig) {
+    const wallets = await StorageUtil.getRecentWallets();
+    const connectedWalletImage = await StorageUtil.getConnectedWalletImageUrl();
+
+    const filteredWallets = wallets.filter(wallet => {
+      const { includeWalletIds, excludeWalletIds } = options;
+      if (includeWalletIds) {
+        return includeWalletIds.includes(wallet.id);
+      }
+      if (excludeWalletIds) {
+        return !excludeWalletIds.includes(wallet.id);
+      }
+
+      return true;
+    });
+
+    ConnectionController.setRecentWallets(filteredWallets);
+
+    if (connectedWalletImage) {
+      ConnectionController.setConnectedWalletImageUrl(connectedWalletImage);
+    }
+  }
+
+  private async initAsyncValues(options: AppKitConfig) {
+    await this.initActiveNamespace();
+    await this.initRecentWallets(options);
+    //disable coinbase if connector is not set
   }
 }
 
