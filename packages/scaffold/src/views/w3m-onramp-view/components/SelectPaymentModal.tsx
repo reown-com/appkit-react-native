@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo, useEffect } from 'react';
 import Modal from 'react-native-modal';
-import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import {
   FlexView,
   IconLink,
@@ -19,7 +19,7 @@ import {
 } from '@reown/appkit-core-react-native';
 import { Placeholder } from '../../../partials/w3m-placeholder';
 import { Quote, ITEM_HEIGHT as QUOTE_ITEM_HEIGHT } from './Quote';
-import { PaymentMethod, ITEM_SIZE } from './PaymentMethod';
+import { PaymentMethod } from './PaymentMethod';
 
 interface SelectPaymentModalProps {
   title?: string;
@@ -66,33 +66,6 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
     ) {
       OnRampController.setSelectedPaymentMethod(paymentMethod);
     }
-
-    const visibleItemsCount = Math.round(Dimensions.get('window').width / ITEM_SIZE);
-
-    // Switch payment method to the top if there are more than visibleItemsCount payment methods
-    if (OnRampController.state.paymentMethods.length > visibleItemsCount) {
-      const paymentIndex = paymentMethods.findIndex(
-        method => method.paymentMethod === paymentMethod.paymentMethod
-      );
-
-      // Switch payment if its not visible
-      if (paymentIndex + 1 > visibleItemsCount - 1) {
-        const realIndex = OnRampController.state.paymentMethods.findIndex(
-          method => method.paymentMethod === paymentMethod.paymentMethod
-        );
-
-        const newPaymentMethods = [
-          paymentMethod,
-          ...OnRampController.state.paymentMethods.slice(0, realIndex),
-          ...OnRampController.state.paymentMethods.slice(realIndex + 1)
-        ];
-        setPaymentMethods(newPaymentMethods);
-      }
-    }
-    paymentMethodsRef.current?.scrollToIndex({
-      index: 0,
-      animated: true
-    });
   };
 
   const renderQuote = ({ item }: { item: OnRampQuote }) => {
@@ -148,6 +121,13 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
       />
     );
   };
+
+  useEffect(() => {
+    if (visible) {
+      //Update payment methods order
+      setPaymentMethods(OnRampController.state.paymentMethods);
+    }
+  }, [visible]);
 
   return (
     <Modal

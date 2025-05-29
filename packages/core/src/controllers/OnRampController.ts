@@ -134,6 +134,10 @@ export const OnRampController = {
 
   setSelectedPaymentMethod(paymentMethod: OnRampPaymentMethod) {
     state.selectedPaymentMethod = paymentMethod;
+    state.paymentMethods = [
+      paymentMethod,
+      ...state.paymentMethods.filter(m => m.paymentMethod !== paymentMethod.paymentMethod)
+    ];
 
     this.clearQuotes();
   },

@@ -14,8 +14,8 @@ export default StyleSheet.create({
     height: 64
   },
   paymentMethodImage: {
-    width: 20,
-    height: 20,
+    width: 22,
+    height: 22,
     borderRadius: 0
   },
   paymentMethodImageContainer: {

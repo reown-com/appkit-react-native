@@ -114,32 +114,34 @@ export function CurrencyInput({
           )}
         </FlexView>
       </FlexView>
-      <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
-        {suggestedValues?.map((suggestion: number) => {
-          const isSelected = suggestion.toString() === value;
+      {suggestedValues && suggestedValues.length > 0 && (
+        <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
+          {suggestedValues?.map((suggestion: number) => {
+            const isSelected = suggestion.toString() === value;
 
-          return (
-            <Button
-              key={suggestion}
-              testID={`suggested-value-${suggestion}`}
-              style={[
-                styles.suggestedValue,
-                isSelected && {
-                  ...styles.selectedValue,
-                  backgroundColor: Theme['accent-glass-020'],
-                  borderColor: Theme['accent-100']
-                }
-              ]}
-              variant="shade"
-              onPress={() => onSuggestedValuePress?.(suggestion)}
-            >
-              <Text variant="small-400" color="fg-100">
-                {`${suggestion} ${symbol ?? ''}`}
-              </Text>
-            </Button>
-          );
-        })}
-      </FlexView>
+            return (
+              <Button
+                key={suggestion}
+                testID={`suggested-value-${suggestion}`}
+                style={[
+                  styles.suggestedValue,
+                  isSelected && {
+                    ...styles.selectedValue,
+                    backgroundColor: Theme['accent-glass-020'],
+                    borderColor: Theme['accent-100']
+                  }
+                ]}
+                variant="shade"
+                onPress={() => onSuggestedValuePress?.(suggestion)}
+              >
+                <Text variant="small-400" color="fg-100">
+                  {`${suggestion} ${symbol ?? ''}`}
+                </Text>
+              </Button>
+            );
+          })}
+        </FlexView>
+      )}
       <Separator color="gray-glass-020" style={styles.separator} />
       <NumericKeyboard onKeyPress={handleKeyPress} />
     </FlexView>

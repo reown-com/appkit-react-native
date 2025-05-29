@@ -12,7 +12,7 @@ import {
 } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
-export const ITEM_SIZE = 85;
+export const ITEM_SIZE = 100;
 
 interface Props {
   onPress: (item: OnRampPaymentMethod) => void;
@@ -47,7 +47,7 @@ export function PaymentMethod({ onPress, item, selected, testID }: Props) {
           source={item.logos[themeMode ?? 'light']}
           style={styles.logo}
           resizeMethod="resize"
-          resizeMode="center"
+          resizeMode="contain"
         />
         {selected && (
           <IconBox
@@ -61,7 +61,7 @@ export function PaymentMethod({ onPress, item, selected, testID }: Props) {
           />
         )}
       </FlexView>
-      <Text variant="tiny-400" color="fg-100" numberOfLines={1} style={styles.text}>
+      <Text variant="tiny-400" color="fg-100" numberOfLines={2} style={styles.text}>
         {item.name}
       </Text>
     </Pressable>
@@ -71,8 +71,7 @@ export function PaymentMethod({ onPress, item, selected, testID }: Props) {
 const styles = StyleSheet.create({
   container: {
     height: ITEM_SIZE,
-    width: ITEM_SIZE,
-    justifyContent: 'center',
+    width: 85,
     alignItems: 'center'
   },
   logoContainer: {
@@ -82,8 +81,8 @@ const styles = StyleSheet.create({
     marginBottom: Spacing['4xs']
   },
   logo: {
-    width: 22,
-    height: 22
+    width: 24,
+    height: 24
   },
   checkmark: {
     borderRadius: BorderRadius.full,
@@ -92,6 +91,8 @@ const styles = StyleSheet.create({
     right: -10
   },
   text: {
-    marginTop: Spacing.xs
+    marginTop: Spacing.xs,
+    paddingHorizontal: Spacing['3xs'],
+    textAlign: 'center'
   }
 });

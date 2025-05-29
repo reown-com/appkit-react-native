@@ -24,7 +24,7 @@ import {
 import { NumberUtil, StringUtil } from '@reown/appkit-common-react-native';
 import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Currency } from './components/Currency';
-import { getPurchaseCurrencies, getCurrencySuggestedValues } from './utils';
+import { getPurchaseCurrencies } from './utils';
 import { CurrencyInput } from './components/CurrencyInput';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
 import { ITEM_HEIGHT as CURRENCY_ITEM_HEIGHT } from './components/Currency';
@@ -55,7 +55,6 @@ export function OnRampView() {
   const [isCurrencyModalVisible, setIsCurrencyModalVisible] = useState(false);
   const [isPaymentMethodModalVisible, setIsPaymentMethodModalVisible] = useState(false);
   const providerImage = OnRampController.getServiceProviderImage(selectedQuote?.serviceProvider);
-  const suggestedValues = getCurrencySuggestedValues(paymentCurrency);
   const purchaseCurrencyCode =
     purchaseCurrency?.currencyCode?.split('_')[0] ?? purchaseCurrency?.currencyCode;
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
@@ -94,11 +93,6 @@ export function OnRampView() {
 
     OnRampController.setPaymentAmount(value);
     OnRampController.getQuotesDebounced();
-  };
-
-  const onSuggestedValuePress = (value: number) => {
-    OnRampController.setPaymentAmount(value);
-    getQuotes();
   };
 
   const handleSearch = (value: string) => {
@@ -192,18 +186,17 @@ export function OnRampView() {
             value={paymentAmount?.toString()}
             symbol={paymentCurrency?.currencyCode}
             error={error?.message}
-            suggestedValues={suggestedValues}
-            onSuggestedValuePress={onSuggestedValuePress}
             isAmountError={
               error?.type === ConstantsUtil.ONRAMP_ERROR_TYPES.AMOUNT_TOO_LOW ||
               error?.type === ConstantsUtil.ONRAMP_ERROR_TYPES.AMOUNT_TOO_HIGH ||
               error?.type === ConstantsUtil.ONRAMP_ERROR_TYPES.INVALID_AMOUNT
             }
             loading={loading || quotesLoading}
-            purchaseValue={`${selectedQuote?.destinationAmount
-              ? NumberUtil.roundNumber(selectedQuote.destinationAmount, 6, 5)?.toString()
-              : '0.00'
-              } ${purchaseCurrencyCode ?? ''}`}
+            purchaseValue={`${
+              selectedQuote?.destinationAmount
+                ? NumberUtil.roundNumber(selectedQuote.destinationAmount, 6, 5)?.toString()
+                : '0.00'
+            } ${purchaseCurrencyCode ?? ''}`}
             onValueChange={onValueChange}
             style={styles.currencyInput}
           />
@@ -215,6 +208,10 @@ export function OnRampView() {
             style={styles.paymentMethodButton}
             imageSrc={selectedPaymentMethod?.logos[themeMode ?? 'light']}
             imageStyle={styles.paymentMethodImage}
+            imageProps={{
+              resizeMethod: 'resize',
+              resizeMode: 'contain'
+            }}
             imageContainerStyle={[
               styles.paymentMethodImageContainer,
               { backgroundColor: Theme['gray-glass-010'] }
