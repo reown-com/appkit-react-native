@@ -343,7 +343,6 @@ export class AppKitScaffold {
 
   private async initRecentWallets(options: ScaffoldOptions) {
     const wallets = await StorageUtil.getRecentWallets();
-    const connectedWalletImage = await StorageUtil.getConnectedWalletImageUrl();
 
     const filteredWallets = wallets.filter(wallet => {
       const { includeWalletIds, excludeWalletIds } = options;
@@ -358,10 +357,6 @@ export class AppKitScaffold {
     });
 
     ConnectionController.setRecentWallets(filteredWallets);
-
-    if (connectedWalletImage) {
-      ConnectionController.setConnectedWalletImageUrl(connectedWalletImage);
-    }
   }
 
   private async initConnectedConnector() {

@@ -50,7 +50,7 @@ export interface ConnectionControllerState {
   pressedWallet?: WcWallet;
   recentWallets?: WcWallet[];
   selectedSocialProvider?: SocialProvider;
-  connectedWalletImageUrl?: string;
+  connectedWalletImageUrl?: string; //TODO: remove this
   connectedSocialProvider?: SocialProvider;
 }
 
