@@ -56,11 +56,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
         };
       }
 
-      this.emit('balanceChanged', {
-        namespace: this.getSupportedNamespace(),
-        address: balanceAddress,
-        balance
-      });
+      this.emit('balanceChanged', { address: balanceAddress, balance });
 
       return balance;
     } catch (error) {

@@ -26,14 +26,14 @@ interface Connection {
 
 export interface ConnectionsControllerState {
   activeNamespace?: ChainNamespace;
-  connections: Record<string, Connection>;
+  connections: Map<ChainNamespace, Connection>;
   networks: AppKitNetwork[];
 }
 
 // -- State --------------------------------------------- //
 const baseState = proxy<ConnectionsControllerState>({
   activeNamespace: undefined,
-  connections: {},
+  connections: new Map<ChainNamespace, Connection>(),
   networks: []
 });
 
@@ -42,9 +42,11 @@ const derivedState = derive(
     activeAddress: (get): CaipAddress | undefined => {
       const snap = get(baseState);
 
-      if (!snap.activeNamespace) return undefined;
+      if (!snap.activeNamespace) {
+        return undefined;
+      }
 
-      const connection = snap.connections[snap.activeNamespace];
+      const connection = snap.connections.get(snap.activeNamespace);
 
       if (!connection || !connection.accounts || connection.accounts.length === 0) {
         return undefined;
@@ -61,7 +63,7 @@ const derivedState = derive(
       const snap = get(baseState);
 
       if (!snap.activeNamespace) return undefined;
-      const connection = snap.connections[snap.activeNamespace];
+      const connection = snap.connections.get(snap.activeNamespace);
 
       if (!connection || !connection.accounts || connection.accounts.length === 0) {
         return undefined;
@@ -87,7 +89,7 @@ const derivedState = derive(
 
       if (!snap.activeNamespace) return undefined;
 
-      const connection = snap.connections[snap.activeNamespace];
+      const connection = snap.connections.get(snap.activeNamespace);
 
       if (!connection) return undefined;
 
@@ -102,7 +104,7 @@ const derivedState = derive(
 
       if (!snap.activeNamespace) return undefined;
 
-      const connection = snap.connections[snap.activeNamespace];
+      const connection = snap.connections.get(snap.activeNamespace);
 
       if (!connection) return undefined;
 
@@ -113,7 +115,7 @@ const derivedState = derive(
 
       if (!snap.activeNamespace) return undefined;
 
-      return snap.connections[snap.activeNamespace]?.wallet;
+      return snap.connections.get(snap.activeNamespace)?.wallet;
     }
   },
   {
@@ -138,14 +140,14 @@ export const ConnectionsController = {
     wallet,
     activeChain
   }: {
-    namespace: string;
+    namespace: ChainNamespace;
     adapter: BlockchainAdapter;
     accounts: CaipAddress[];
     chains: CaipNetworkId[];
     wallet?: WalletInfo;
     activeChain?: CaipNetworkId;
   }) {
-    baseState.connections[namespace] = {
+    const newConnectionEntry = {
       balances: {},
       activeChain: activeChain ?? chains[0]!,
       adapter: ref(adapter),
@@ -153,32 +155,49 @@ export const ConnectionsController = {
       chains,
       wallet
     };
+
+    // Create a new Map to ensure Valtio detects the change
+    const newConnectionsMap = new Map(baseState.connections);
+    newConnectionsMap.set(namespace, newConnectionEntry);
+    baseState.connections = newConnectionsMap;
   },
 
-  updateAccounts(namespace: string, accounts: CaipAddress[]) {
-    const connection = baseState.connections[namespace];
-    if (!connection) {
-      return;
-    }
-    connection.accounts = accounts;
-  },
-
-  updateBalance(namespace: string, address: CaipAddress, balance: Balance) {
-    const connection = baseState.connections[namespace];
-    if (!connection) {
-      return;
-    }
-    connection.balances[address] = balance;
-  },
-
-  setActiveChain(namespace: string, chain: CaipNetworkId) {
-    const connection = baseState.connections[namespace];
-
+  updateAccounts(namespace: ChainNamespace, accounts: CaipAddress[]) {
+    const connection = baseState.connections.get(namespace);
     if (!connection) {
       return;
     }
 
-    connection.activeChain = chain;
+    const newConnectionsMap = new Map(baseState.connections);
+    const updatedConnection = { ...connection, accounts };
+    newConnectionsMap.set(namespace, updatedConnection);
+    baseState.connections = newConnectionsMap;
+  },
+
+  updateBalance(namespace: ChainNamespace, address: CaipAddress, balance: Balance) {
+    const connection = baseState.connections.get(namespace);
+    if (!connection) {
+      return;
+    }
+
+    const newBalances = { ...connection.balances, [address]: balance };
+    const updatedConnection = { ...connection, balances: newBalances };
+    const newConnectionsMap = new Map(baseState.connections);
+    newConnectionsMap.set(namespace, updatedConnection);
+    baseState.connections = newConnectionsMap;
+  },
+
+  setActiveChain(namespace: ChainNamespace, chain: CaipNetworkId) {
+    const connection = baseState.connections.get(namespace);
+
+    if (!connection) {
+      return;
+    }
+
+    baseState.connections.set(namespace, {
+      ...connection,
+      activeChain: chain
+    });
   },
 
   setNetworks(networks: AppKitNetwork[]) {
@@ -188,12 +207,12 @@ export const ConnectionsController = {
   getConnectedNetworks() {
     return baseState.networks.filter(
       network =>
-        baseState.connections[network.chainNamespace]?.chains.includes(network.caipNetworkId)
+        baseState.connections.get(network.chainNamespace)?.chains.includes(network.caipNetworkId)
     );
   },
 
-  async disconnect(namespace: string, isInternal = true) {
-    const connection = baseState.connections[namespace];
+  async disconnect(namespace: ChainNamespace, isInternal = true) {
+    const connection = baseState.connections.get(namespace);
     if (!connection) return;
 
     // Get the current connector from the adapter
@@ -201,13 +220,13 @@ export const ConnectionsController = {
     if (!connector) return;
 
     // Find all namespaces that use the same connector
-    const namespacesUsingConnector = Object.keys(baseState.connections).filter(
-      ns => baseState.connections[ns]?.adapter.connector === connector
+    const namespacesUsingConnector = Array.from(baseState.connections.keys()).filter(
+      ns => baseState.connections.get(ns)?.adapter.connector === connector
     );
 
     // Unsubscribe all event listeners from the adapter
     namespacesUsingConnector.forEach(ns => {
-      const _connection = baseState.connections[ns];
+      const _connection = baseState.connections.get(ns);
       if (_connection?.adapter) {
         _connection.adapter.removeAllListeners();
       }
@@ -219,9 +238,11 @@ export const ConnectionsController = {
     }
 
     // Remove all namespaces that used this connector
+    const newConnectionsMap = new Map(baseState.connections);
     namespacesUsingConnector.forEach(ns => {
-      delete baseState.connections[ns];
+      newConnectionsMap.delete(ns);
     });
+    baseState.connections = newConnectionsMap;
 
     // Remove activeNamespace if it is in the list of namespaces using the connector
     if (

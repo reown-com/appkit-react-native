@@ -166,10 +166,12 @@ export class AppKit {
         return;
       }
 
-      const connection = ConnectionsController.state.connections[activeNamespace];
+      const connection = ConnectionsController.state.connections.get(
+        activeNamespace as ChainNamespace
+      );
       const connectorType = connection?.adapter?.connector?.type;
 
-      await ConnectionsController.disconnect(activeNamespace, isInternal);
+      await ConnectionsController.disconnect(activeNamespace as ChainNamespace, isInternal);
 
       if (connectorType) {
         await StorageUtil.removeConnectedConnectors(connectorType);
@@ -203,7 +205,9 @@ export class AppKit {
     const activeNamespace = namespace ?? ConnectionsController.state.activeNamespace;
     if (!activeNamespace) return null;
 
-    const connection = ConnectionsController.state.connections[activeNamespace];
+    const connection = ConnectionsController.state.connections.get(
+      activeNamespace as ChainNamespace
+    );
     if (!connection || !connection.adapter || !connection.adapter.connector) return null;
 
     return connection.adapter.connector.getProvider() as T;
@@ -327,28 +331,36 @@ export class AppKit {
   }
 
   private getAdapterByNamespace(namespace: ChainNamespace): BlockchainAdapter | null {
-    const namespaceConnection = ConnectionsController.state.connections[namespace];
+    const namespaceConnection = ConnectionsController.state.connections.get(namespace);
+    if (namespaceConnection) {
+      return namespaceConnection.adapter;
+    }
 
-    return namespaceConnection?.adapter ?? null;
+    return null;
   }
 
   private async syncAccounts(adapters: BlockchainAdapter[]) {
-    // Get account balances
-    adapters.map(adapter => {
+    adapters.forEach(async adapter => {
       const namespace = adapter.getSupportedNamespace();
-      const connection = ConnectionsController.state.connections[namespace];
+      const connection = ConnectionsController.state.connections.get(namespace);
+      if (connection) {
+        const accounts = adapter.getAccounts();
+        if (accounts && accounts.length > 0) {
+          ConnectionsController.updateAccounts(namespace, accounts);
 
-      if (!connection) return;
+          const network = this.networks.find(
+            n => n.id?.toString() === connection?.activeChain?.split(':')[1]
+          );
 
-      const network = this.networks.find(
-        n => n.id?.toString() === connection?.activeChain?.split(':')[1]
-      );
+          const address = accounts.find(
+            a => a.split(':')[1] === connection.activeChain?.split(':')[1]
+          );
 
-      const address =
-        adapter.getAccounts()?.find(a => a.startsWith(connection?.activeChain)) ??
-        adapter.getAccounts()?.[0];
-
-      adapter.getBalance({ address, network, tokens: this.config.tokens });
+          if (address) {
+            adapter.getBalance({ address, network, tokens: this.config.tokens });
+          }
+        }
+      }
     });
   }
 
@@ -387,13 +399,15 @@ export class AppKit {
   }
 
   private subscribeToAdapterEvents(adapter: BlockchainAdapter): void {
-    adapter.on('accountsChanged', ({ accounts, namespace }) => {
+    adapter.on('accountsChanged', ({ accounts }) => {
+      const namespace = adapter.getSupportedNamespace();
       //eslint-disable-next-line no-console
       console.log('accountsChanged', accounts, namespace);
       //TODO: check this
     });
 
-    adapter.on('chainChanged', ({ chainId, namespace }) => {
+    adapter.on('chainChanged', ({ chainId }) => {
+      const namespace = adapter.getSupportedNamespace();
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
       ConnectionsController.setActiveChain(namespace, chain);
 
@@ -406,12 +420,13 @@ export class AppKit {
       }
     });
 
-    adapter.on('disconnect', ({ namespace }) => {
-      // console.log('AppKit disconnect namespace', namespace);
+    adapter.on('disconnect', () => {
+      const namespace = adapter.getSupportedNamespace();
       this.disconnect(namespace, false);
     });
 
-    adapter.on('balanceChanged', ({ namespace, address, balance }) => {
+    adapter.on('balanceChanged', ({ address, balance }) => {
+      const namespace = adapter.getSupportedNamespace();
       ConnectionsController.updateBalance(namespace, address, balance);
     });
   }

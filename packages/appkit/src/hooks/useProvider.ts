@@ -7,12 +7,14 @@ interface ProviderResult {
   providerType?: ChainNamespace;
 }
 
-export function useProvider(namespace?: string): ProviderResult {
+export function useProvider(namespace?: ChainNamespace): ProviderResult {
   const { connections, activeNamespace } = useSnapshot(ConnectionsController.state);
 
-  if (!namespace || !activeNamespace) return { provider: undefined, providerType: undefined };
+  const targetNamespace = namespace ?? activeNamespace;
 
-  const connection = connections[namespace ?? activeNamespace];
+  if (!targetNamespace) return { provider: undefined, providerType: undefined };
+
+  const connection = connections.get(targetNamespace);
 
   if (!connection) return { provider: undefined, providerType: undefined };
 

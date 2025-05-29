@@ -11,7 +11,7 @@ export function useAccount() {
     connections
   } = useSnapshot(ConnectionsController.state);
 
-  const connection = activeNamespace ? connections[activeNamespace] : undefined;
+  const connection = activeNamespace ? connections.get(activeNamespace) : undefined;
 
   return {
     address: address?.split(':')[2],

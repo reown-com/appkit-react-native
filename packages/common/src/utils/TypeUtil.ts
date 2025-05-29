@@ -149,20 +149,15 @@ export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
 //********** Adapter Event Payloads **********//
 export type AccountsChangedEvent = {
   accounts: string[];
-  namespace: ChainNamespace;
 };
 
 export type ChainChangedEvent = {
   chainId: string;
-  namespace: ChainNamespace;
 };
 
-export type DisconnectEvent = {
-  namespace: ChainNamespace;
-};
+export type DisconnectEvent = {};
 
 export type BalanceChangedEvent = {
-  namespace: ChainNamespace;
   address: CaipAddress;
   balance: {
     amount: string;
@@ -234,7 +229,7 @@ export abstract class BlockchainAdapter extends EventEmitter {
     const shouldEmit = _chains?.some(chain => chain === chainId);
 
     if (shouldEmit) {
-      this.emit('chainChanged', { chainId, namespace: this.getSupportedNamespace() });
+      this.emit('chainChanged', { chainId });
     }
   }
 
@@ -247,7 +242,7 @@ export abstract class BlockchainAdapter extends EventEmitter {
     });
 
     if (shouldEmit) {
-      this.emit('accountsChanged', { accounts, namespace: this.getSupportedNamespace() });
+      this.emit('accountsChanged', { accounts });
     }
   }
 

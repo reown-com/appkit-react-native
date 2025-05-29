@@ -45,7 +45,6 @@ export class BitcoinAdapter extends BlockchainAdapter {
       const formattedBalance = UnitsUtil.parseSatoshis(balance.toString(), network);
 
       this.emit('balanceChanged', {
-        namespace: this.getSupportedNamespace(),
         address: balanceCaipAddress,
         balance: {
           amount: formattedBalance,

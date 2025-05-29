@@ -108,11 +108,7 @@ export class WagmiAdapter extends EVMAdapter {
       contractAddress: token ? (`${network.caipNetworkId}:${token}` as CaipAddress) : undefined
     };
 
-    this.emit('balanceChanged', {
-      namespace: this.getSupportedNamespace(),
-      address: balanceAddress,
-      balance: formattedBalance
-    });
+    this.emit('balanceChanged', { address: balanceAddress, balance: formattedBalance });
 
     return Promise.resolve(formattedBalance);
   }
