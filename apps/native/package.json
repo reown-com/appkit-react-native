@@ -38,13 +38,11 @@
     "react-native": "0.76.7",
     "react-native-get-random-values": "~1.11.0",
     "react-native-modal": "14.0.0-rc.0",
-    "react-native-svg": "15.8.0",
+    "react-native-svg": "15.12.0",
     "react-native-toast-message": "2.2.1",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
-    "uuid": "^11.1.0",
-    "viem": "2.23.10",
-    "wagmi": "2.14.13"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
