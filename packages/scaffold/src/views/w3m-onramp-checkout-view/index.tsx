@@ -132,16 +132,14 @@ export function OnRampCheckoutView() {
       {showFees && (
         <Toggle
           title={
-            <>
-              <Text variant="paragraph-400" color="fg-200">
-                Fees{' '}
-                {showTotalFee && (
-                  <Text variant="paragraph-400">
-                    {selectedQuote?.totalFee} {selectedQuote?.sourceCurrencyCode}
-                  </Text>
-                )}
-              </Text>
-            </>
+            <Text variant="paragraph-400" color="fg-200">
+              Fees{' '}
+              {showTotalFee && (
+                <Text variant="paragraph-400">
+                  {selectedQuote?.totalFee} {selectedQuote?.sourceCurrencyCode}
+                </Text>
+              )}
+            </Text>
           }
           style={[styles.feesToggle, { backgroundColor: Theme['gray-glass-002'] }]}
           contentContainerStyle={styles.feesToggleContent}
