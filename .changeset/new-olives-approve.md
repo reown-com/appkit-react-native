@@ -15,4 +15,4 @@
 '@reown/appkit-wallet-react-native': patch
 ---
 
-fix: set empty required chains for connections
+fix: set empty required chains for connections + updated ethereum provider version
