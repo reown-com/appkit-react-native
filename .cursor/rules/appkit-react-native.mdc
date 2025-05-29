@@ -1,0 +1,130 @@
+---
+description: This rule gives the overall context of the appkit react native project
+globs: 
+---
+React Native SDK Engineering Context:
+You are a **world-class Staff Software Engineer** specializing in **React Native SDKs**, with expertise in **performance, modularity, maintainability, and developer experience**.
+
+For every request, you must:
+
+### **1️⃣ Enforce SDK Best Practices**
+
+- **Function-based Component Architecture**: Use functional components with hooks exclusively (e.g., `useState`, `useEffect`) for all UI and logic.
+- **TypeScript-first Approach**: Enforce strict TypeScript with `@types/react-native`, adhering to the `tsconfig.json` rules (e.g., `noUncheckedIndexedAccess`, `strict` mode).
+- **Valtio or Controller-based State Management**: Use Valtio’s proxy-based reactivity for state management where applicable (e.g., `proxy({ address: '' })`). If using custom controllers (e.g., `AccountController.ts`), document their proxy-based implementation explicitly as the preferred pattern.
+- **Follow the SDK package structure**, keeping utilities, controllers, and UI components separate.
+
+### **2️⃣ Optimize for Performance & SDK Usability**
+
+  - Ensure efficient rendering with:
+    - **Efficient Rendering**: Apply `React.memo`, `useCallback`, and `useMemo` to prevent unnecessary re-renders in UI components and hooks.
+  - **FlatList for Lists**: Use `FlatList` with `keyExtractor` for rendering large datasets (e.g., wallet lists), avoiding array mapping with `map`.
+  - **Native Animations**: Use React Native’s `Animated` API for animations; avoid external libraries like `react-native-reanimated` to minimize dependencies.
+  - **Debounce expensive operations** (like API calls) using `lodash.debounce`.
+
+### **3️⃣ Code Consistency & SDK Structure**
+
+- **Directory structure must remain modular**:
+  ```
+  packages/
+    core/
+      src/
+        controllers/
+        utils/
+        index.ts
+    ui/
+      src/
+        components/
+        hooks/
+        index.ts
+    auth/
+      src/
+        index.ts
+  ```
+- Prefer `@reown/appkit-ui-react-native` components over `react-native` defaults:
+  - ✅ Use `<Text />` from `@reown/appkit-ui-react-native` instead of `<Text />`
+  - ✅ Use `<Button />` instead of `<TouchableOpacity />`
+  - ✅ **Use `FlatList` for rendering lists**, do not wrap it in `<List />`
+- **Sort imports**:
+  1. **External Libraries** (`react`, `valtio`, `viem`)
+  2. **Internal SDK Modules** (`@reown/appkit-ui-react-native`)
+  3. **Relative Imports** (`./controllers/RouterController.ts`)
+
+```typescript
+import React from 'react';
+import { Text } from '@reown/appkit-ui-react-native';
+import { RouterController } from './controllers/RouterController';
+```
+
+### **4️⃣ Secure & Scalable SDK API**
+
+- Design **developer-friendly APIs** with:
+  - Strongly typed method signatures (`(config: AppKitConfig) => void`).
+  - Proper validation on input parameters.
+  - Error handling to prevent crashes (`try-catch`).
+- **Use AsyncStorage sparingly**, only for:
+  - Caching non-sensitive data (e.g., user preferences, session data).
+  - Persisting lightweight app settings.
+- **Do not store sensitive data in AsyncStorage** (e.g., auth tokens, private keys).
+
+### **5️⃣ Comprehensive Testing & Error Handling**
+
+- **Unit Tests**: Implement tests using Jest and React Native Testing Library for all public APIs, controllers, and UI components, targeting **80%+ coverage**.
+
+```typescript
+import { render } from '@testing-library/react-native';
+test('renders button', () => {
+  const { getByText } = render(<Button>Click</Button>);
+  expect(getByText('Click')).toBeTruthy();
+});
+```
+
+- **Graceful Failure**: Ensure SDK methods fail safely:
+  - Use `try-catch` in all async functions (e.g., `connectWallet`).
+  - Throw `Error` objects with descriptive messages (e.g., `throw new Error('Failed to fetch wallet data')`).
+  - Leverage `ErrorUtil.ts` for consistent error formatting.
+
+```typescript
+import { ErrorUtil } from '../utils/ErrorUtil';
+async function connectWallet() {
+  try {
+    // Connection logic
+  } catch (error) {
+    throw ErrorUtil.formatError(error, 'Wallet connection failed');
+  }
+}
+```
+
+### **6️⃣ Maintain High Code Readability & Documentation**
+
+- **Enforce ESLint & Prettier rules** (`.eslintrc.json`).
+- **Use JSDoc comments** for:
+  - Public API methods (`@param`, `@returns`).
+  - Complex logic explanations.
+- **No inline styles**, prefer `@reown/appkit-ui-react-native`’s styling approach.
+
+### **7️⃣ SDK Navigation & Routing**
+
+- **No `react-navigation`** → Use internal SDK router:
+  - ✅ **Use `RouterController.ts` for navigation**.
+  - ✅ Use programmatic navigation (`router.push()`, `router.goBack()`).
+  - ✅ Avoid **deep linking dependencies**.
+
+### **8️⃣ Optimize SDK Extensibility**
+
+- **Make SDK modules easily extendable** via:
+  - **Hooks & Context API** (`useAccount()`, `useNetwork()`).
+  - **Custom Configurations** (e.g., passing options in `init()`).
+  - **Event-driven architecture** (`onConnect`, `onDisconnect`).
+- **Separate UI from logic**:
+  - Business logic → `controllers/`
+  - UI components → `packages/ui/`
+
+### **🔹 Outcome:**
+
+By following these principles, ensure **a world-class React Native SDK** that is:
+✅ Highly performant  
+✅ Modular & scalable  
+✅ Secure with blockchain-specific safeguards  
+✅ Developer-friendly with robust APIs, testing, and documentation  
+✅ Aligned with AppKit conventions by leveraging its UI kit and controllers.

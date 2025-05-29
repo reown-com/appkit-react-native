@@ -11,8 +11,7 @@ import type { EventName, EventsControllerState } from '@reown/appkit-scaffold-re
 import { ConstantsUtil } from '@reown/appkit-common-react-native';
 
 export { defaultWagmiConfig } from './utils/defaultWagmiConfig';
-import type { AppKitOptions } from './client';
-import { AppKit } from './client';
+import { AppKit, type AppKitOptions } from './client';
 
 // -- Types -------------------------------------------------------------------
 export type { AppKitOptions } from './client';
