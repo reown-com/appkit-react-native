@@ -8,7 +8,31 @@ const client: ConnectionControllerClient = {
     onUri(walletConnectUri);
     await Promise.resolve();
   },
-  disconnect: async () => Promise.resolve()
+  disconnect: async () => Promise.resolve(),
+  signMessage: function (): Promise<string> {
+    throw new Error('Function not implemented.');
+  },
+  sendTransaction: function (): Promise<`0x${string}` | null> {
+    throw new Error('Function not implemented.');
+  },
+  parseUnits: function (): bigint {
+    throw new Error('Function not implemented.');
+  },
+  formatUnits: function (): string {
+    throw new Error('Function not implemented.');
+  },
+  writeContract: function (): Promise<`0x${string}` | null> {
+    throw new Error('Function not implemented.');
+  },
+  estimateGas: function (): Promise<bigint> {
+    throw new Error('Function not implemented.');
+  },
+  getEnsAddress: function (): Promise<false | string> {
+    throw new Error('Function not implemented.');
+  },
+  getEnsAvatar: function (): Promise<false | string> {
+    throw new Error('Function not implemented.');
+  }
 };
 
 // -- Tests --------------------------------------------------------------------

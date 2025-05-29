@@ -1,4 +1,9 @@
-import { OnRampController, BlockchainApiController, ConstantsUtil } from '../../index';
+import {
+  OnRampController,
+  BlockchainApiController,
+  ConstantsUtil,
+  CoreHelperUtil
+} from '../../index';
 import { StorageUtil } from '../../utils/StorageUtil';
 import type {
   OnRampCountry,
@@ -17,11 +22,21 @@ jest.mock('../../controllers/EventsController', () => ({
     sendEvent: jest.fn()
   }
 }));
+
 jest.mock('../../controllers/NetworkController', () => ({
   NetworkController: {
     state: {
       caipNetwork: { id: 'eip155:1' }
     }
+  }
+}));
+
+jest.mock('../../utils/CoreHelperUtil', () => ({
+  CoreHelperUtil: {
+    getCountryFromTimezone: jest.fn(),
+    getBlockchainApiUrl: jest.fn(),
+    getApiUrl: jest.fn(),
+    debounce: jest.fn()
   }
 }));
 
@@ -214,16 +229,18 @@ describe('OnRampController', () => {
 
   describe('setSelectedCountry', () => {
     it('should update country and currency', async () => {
-      // Mock API responses
-      (StorageUtil.setOnRampPreferredCountry as jest.Mock).mockResolvedValue(undefined);
-      (StorageUtil.setOnRampPreferredFiatCurrency as jest.Mock).mockResolvedValue(undefined);
+      // Mock utils
+      (StorageUtil.getOnRampCountries as jest.Mock).mockResolvedValue([]);
+      (StorageUtil.getOnRampPreferredCountry as jest.Mock).mockResolvedValue(undefined);
+      (StorageUtil.setOnRampCountries as jest.Mock).mockImplementation(() => Promise.resolve([]));
+      (CoreHelperUtil.getCountryFromTimezone as jest.Mock).mockReturnValue('US');
 
       // Mock COUNTRY_CURRENCIES mapping
       const originalCountryCurrencies = ConstantsUtil.COUNTRY_CURRENCIES;
       Object.defineProperty(ConstantsUtil, 'COUNTRY_CURRENCIES', {
         value: {
           US: 'USD',
-          AR: 'ARS' // Assuming mockCountry2 has ES country code
+          AR: 'ARS'
         },
         configurable: true
       });
