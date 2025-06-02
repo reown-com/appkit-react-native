@@ -1,5 +1,4 @@
-import type { Locator, Page } from '@playwright/test';
-import { expect } from '@playwright/test';
+import { type Locator, type Page, expect } from '@playwright/test';
 import { BASE_URL, DEFAULT_SESSION_PARAMS, TIMEOUTS } from '../constants';
 import { WalletValidator } from '../validators/WalletValidator';
 import { WalletPage } from './WalletPage';

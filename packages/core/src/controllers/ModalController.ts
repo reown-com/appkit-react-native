@@ -1,7 +1,6 @@
 import { proxy } from 'valtio';
 import { AccountController } from './AccountController';
-import type { RouterControllerState } from './RouterController';
-import { RouterController } from './RouterController';
+import { RouterController, type RouterControllerState } from './RouterController';
 import { PublicStateController } from './PublicStateController';
 import { EventsController } from './EventsController';
 import { ApiController } from './ApiController';

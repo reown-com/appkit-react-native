@@ -3,7 +3,8 @@ import {
   Animated,
   Image as NativeImage,
   type ImageProps as NativeProps,
-  Platform
+  Platform,
+  StyleSheet
 } from 'react-native';
 import styles from './styles';
 
@@ -29,7 +30,7 @@ export function Image({ source, headers, style, ...rest }: ImageProps) {
     <Animated.Image
       source={{ uri: source, headers }}
       onLoadEnd={onLoadEnd}
-      style={[styles.image, { opacity: opacity.current }, style]}
+      style={StyleSheet.flatten([styles.image, { opacity: opacity.current }, style])}
       {...rest}
     />
   ) : (
