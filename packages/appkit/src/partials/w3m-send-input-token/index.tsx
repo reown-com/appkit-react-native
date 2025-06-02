@@ -43,7 +43,7 @@ export function SendInputToken({
       const isNetworkToken =
         token.address === undefined ||
         Object.values(ConstantsUtil.NATIVE_TOKEN_ADDRESS).some(
-          nativeAddress => token?.address === nativeAddress
+          nativeAddress => token?.address?.split(':')[2] === nativeAddress
         );
 
       const numericGas = NumberUtil.bigNumber(gasPrice).shiftedBy(-token.quantity.decimals);

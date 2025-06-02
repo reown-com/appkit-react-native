@@ -90,7 +90,10 @@ export function SwapPreviewView() {
             </Text>
           </FlexView>
           <TokenButton
-            text={` ${sourceTokenAmount} ${sourceToken?.symbol}`}
+            text={` ${UiUtil.formatNumberToLocalString(
+              sourceTokenAmount,
+              8
+            )} ${sourceToken?.symbol}`}
             imageUrl={sourceToken?.logoUri}
             inverse
             disabled

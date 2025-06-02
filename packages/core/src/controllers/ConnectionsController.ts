@@ -1,13 +1,14 @@
 import { proxy, ref } from 'valtio';
 import { derive } from 'valtio/utils';
-import type {
-  AppKitNetwork,
-  BlockchainAdapter,
-  CaipAddress,
-  CaipNetworkId,
-  ChainNamespace,
-  GetBalanceResponse,
-  WalletInfo
+import {
+  EVMAdapter,
+  type AppKitNetwork,
+  type BlockchainAdapter,
+  type CaipAddress,
+  type CaipNetworkId,
+  type ChainNamespace,
+  type GetBalanceResponse,
+  type WalletInfo
 } from '@reown/appkit-common-react-native';
 import { StorageUtil } from '../utils/StorageUtil';
 
@@ -254,5 +255,37 @@ export const ConnectionsController = {
       baseState.activeNamespace = undefined;
       StorageUtil.setActiveNamespace(undefined);
     }
+  },
+
+  parseUnits(value: string, decimals: number) {
+    if (!baseState.activeNamespace) return undefined;
+
+    return baseState.connections
+      .get(baseState.activeNamespace)
+      ?.adapter.parseUnits(value, decimals);
+  },
+
+  async sendTransaction(args: any) {
+    if (!baseState.activeNamespace) return undefined;
+
+    const adapter = baseState.connections.get(baseState.activeNamespace)?.adapter;
+
+    if (adapter instanceof EVMAdapter) {
+      return adapter.sendTransaction(args);
+    }
+
+    return undefined;
+  },
+
+  async estimateGas(args: any) {
+    if (!baseState.activeNamespace) return undefined;
+
+    const adapter = baseState.connections.get(baseState.activeNamespace)?.adapter;
+
+    if (adapter instanceof EVMAdapter) {
+      return adapter.estimateGas(args);
+    }
+
+    return undefined;
   }
 };

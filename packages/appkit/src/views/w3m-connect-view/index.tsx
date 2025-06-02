@@ -31,6 +31,7 @@ export function ConnectView() {
   const { padding } = useCustomDimensions();
   const { keyboardShown, keyboardHeight } = useKeyboard();
 
+  //TODO: check this
   // const isWalletConnectEnabled = connectors.some(c => c.type === 'WALLET_CONNECT');
   const isWalletConnectEnabled = true;
   const isAuthEnabled = connectors.some(c => c.type === 'AUTH');

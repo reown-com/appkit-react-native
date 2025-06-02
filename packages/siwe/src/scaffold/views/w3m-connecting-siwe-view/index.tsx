@@ -11,9 +11,9 @@ import {
   AccountController,
   AssetUtil,
   ConnectionController,
+  ConnectionsController,
   EventsController,
   ModalController,
-  NetworkController,
   OptionsController,
   RouterController,
   SnackController
@@ -40,7 +40,7 @@ export function ConnectingSiweView() {
       event: 'CLICK_SIGN_SIWE_MESSAGE',
       type: 'track',
       properties: {
-        network: NetworkController.state.caipNetwork?.id || '',
+        network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
         isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
       }
     });
@@ -51,7 +51,7 @@ export function ConnectingSiweView() {
         event: 'SIWE_AUTH_SUCCESS',
         type: 'track',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
           isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
         }
       });
@@ -66,7 +66,7 @@ export function ConnectingSiweView() {
         event: 'SIWE_AUTH_ERROR',
         type: 'track',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
           isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
         }
       });
@@ -89,7 +89,7 @@ export function ConnectingSiweView() {
       event: 'CLICK_CANCEL_SIWE',
       type: 'track',
       properties: {
-        network: NetworkController.state.caipNetwork?.id || '',
+        network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
         isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
       }
     });

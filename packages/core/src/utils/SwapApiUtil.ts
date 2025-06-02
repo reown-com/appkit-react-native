@@ -1,18 +1,19 @@
 import { BlockchainApiController } from '../controllers/BlockchainApiController';
 import { OptionsController } from '../controllers/OptionsController';
-import { NetworkController } from '../controllers/NetworkController';
 import type {
   BlockchainApiBalanceResponse,
   BlockchainApiSwapAllowanceRequest,
   SwapTokenWithBalance
 } from './TypeUtil';
 import { AccountController } from '../controllers/AccountController';
-import { ConnectionController } from '../controllers/ConnectionController';
 import { ConnectionsController } from '../controllers/ConnectionsController';
+import type { CaipNetworkId } from '@reown/appkit-common-react-native';
+import { ConstantsUtil } from './ConstantsUtil';
 
 export const SwapApiUtil = {
   async getTokenList() {
-    const chainId = ConnectionsController.state.activeNetwork?.caipNetworkId ?? 'eip155:1';
+    const chainId: CaipNetworkId =
+      ConnectionsController.state.activeNetwork?.caipNetworkId ?? 'eip155:1';
     const response = await BlockchainApiController.fetchSwapTokens({
       projectId: OptionsController.state.projectId,
       chainId
@@ -54,7 +55,7 @@ export const SwapApiUtil = {
 
     if (response?.allowance && sourceTokenAmount && sourceTokenDecimals) {
       const parsedValue =
-        ConnectionController.parseUnits(sourceTokenAmount, sourceTokenDecimals) || 0;
+        ConnectionsController.parseUnits(sourceTokenAmount, sourceTokenDecimals) || 0;
       const hasAllowance = BigInt(response.allowance) >= parsedValue;
 
       return hasAllowance;
@@ -84,12 +85,17 @@ export const SwapApiUtil = {
   },
 
   mapBalancesToSwapTokens(balances?: BlockchainApiBalanceResponse['balances']) {
+    const { activeNamespace, activeCaipNetworkId } = ConnectionsController.state;
+    const address = activeNamespace
+      ? ConstantsUtil.NATIVE_TOKEN_ADDRESS[activeNamespace]
+      : undefined;
+
     return (
       balances?.map(
         token =>
           ({
             ...token,
-            address: token?.address || NetworkController.getActiveNetworkTokenAddress(),
+            address: token?.address ?? `${token?.chainId ?? activeCaipNetworkId}:${address}`,
             decimals: parseInt(token.quantity.decimals, 10),
             logoUri: token.iconUrl,
             eip2612: false
@@ -100,7 +106,7 @@ export const SwapApiUtil = {
 
   async fetchGasPrice() {
     const projectId = OptionsController.state.projectId;
-    const caipNetwork = NetworkController.state.caipNetwork;
+    const caipNetwork = ConnectionsController.state.activeNetwork;
 
     if (!caipNetwork) {
       return null;
@@ -108,7 +114,7 @@ export const SwapApiUtil = {
 
     return await BlockchainApiController.fetchGasPrice({
       projectId,
-      chainId: caipNetwork.id
+      chainId: caipNetwork.caipNetworkId
     });
   }
 };

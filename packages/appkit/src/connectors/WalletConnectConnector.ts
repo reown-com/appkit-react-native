@@ -4,11 +4,11 @@ import {
   WalletConnector,
   type AppKitNetwork,
   type Namespaces,
-  type ProposalNamespaces,
   type Provider,
   type WalletInfo,
   type ChainNamespace,
-  type CaipNetworkId
+  type CaipNetworkId,
+  type ConnectOptions
 } from '@reown/appkit-common-react-native';
 
 export class WalletConnectConnector extends WalletConnector {
@@ -69,7 +69,7 @@ export class WalletConnectConnector extends WalletConnector {
     return this.provider.disconnect();
   }
 
-  override async connect(opts: { namespaces: ProposalNamespaces; defaultChain?: CaipNetworkId }) {
+  override async connect(opts: ConnectOptions) {
     function onUri(uri: string) {
       ConnectionController.setWcUri(uri);
     }

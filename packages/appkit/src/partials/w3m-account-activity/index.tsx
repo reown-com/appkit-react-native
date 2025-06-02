@@ -15,6 +15,7 @@ import {
   AccountController,
   AssetUtil,
   ConnectionsController,
+  ConstantsUtil,
   EventsController,
   OptionsController,
   TransactionsController
@@ -32,9 +33,11 @@ export function AccountActivity({ style }: Props) {
   const [refreshing, setRefreshing] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const { loading, transactions, next } = useSnapshot(TransactionsController.state);
-  const { activeNetwork, activeNamespace } = useSnapshot(ConnectionsController.state);
+  const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
-  const isSupported = activeNamespace && ['eip155', 'solana'].includes(activeNamespace);
+  const isSupported =
+    activeNetwork?.caipNetworkId &&
+    ConstantsUtil.ACTIVITY_SUPPORTED_CHAINS.includes(activeNetwork.caipNetworkId);
 
   const handleLoadMore = () => {
     const address = ConnectionsController.state.activeAddress?.split(':')[2];

@@ -79,15 +79,15 @@ const appKit = createAppKit({
   defaultNetwork: polygon,
   clipboardClient,
   debug: true,
-  enableAnalytics: true,
-  tokens: {
-    'eip155:1': {
-      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
-    },
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-      address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' // USDC SPL token
-    }
-  }
+  enableAnalytics: true
+  // tokens: {
+  //   'eip155:1': {
+  //     address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+  //   },
+  //   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+  //     address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' // USDC SPL token
+  //   }
+  // }
 });
 
 export default function Native() {

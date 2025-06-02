@@ -45,7 +45,7 @@ export interface Balance {
   name: string;
   symbol: string;
   chainId: string;
-  address?: string;
+  address?: CaipAddress;
   value?: number;
   price: number;
   quantity: BalanceQuantity;
@@ -174,104 +174,6 @@ export interface AdapterEvents {
   balanceChanged: (event: BalanceChangedEvent) => void;
 }
 
-//********** Adapter Types **********//
-export abstract class BlockchainAdapter extends EventEmitter {
-  public projectId: string;
-  public connector?: WalletConnector;
-  public supportedNamespace: ChainNamespace;
-
-  // Typed emit method
-  override emit<K extends keyof AdapterEvents>(
-    event: K,
-    payload: Parameters<AdapterEvents[K]>[0]
-  ): boolean {
-    return super.emit(event, payload);
-  }
-
-  constructor({
-    projectId,
-    supportedNamespace
-  }: {
-    projectId: string;
-    supportedNamespace: ChainNamespace;
-  }) {
-    super();
-    this.projectId = projectId;
-    this.supportedNamespace = supportedNamespace;
-  }
-
-  setConnector(connector: WalletConnector) {
-    this.connector = connector;
-    this.subscribeToEvents();
-  }
-
-  removeConnector() {
-    this.connector = undefined;
-  }
-
-  getProvider(): Provider {
-    if (!this.connector) throw new Error('No active connector');
-
-    return this.connector.getProvider();
-  }
-
-  subscribeToEvents(): void {
-    const provider = this.connector?.getProvider();
-    if (!provider) return;
-
-    provider.on('chainChanged', this.onChainChanged.bind(this));
-    provider.on('accountsChanged', this.onAccountsChanged.bind(this));
-    provider.on('disconnect', this.onDisconnect.bind(this));
-  }
-
-  onChainChanged(chainId: string): void {
-    const _chains = this.getAccounts()?.map(account => account.split(':')[1]);
-    const shouldEmit = _chains?.some(chain => chain === chainId);
-
-    if (shouldEmit) {
-      this.emit('chainChanged', { chainId });
-    }
-  }
-
-  onAccountsChanged(accounts: string[]): void {
-    const _accounts = this.getAccounts();
-    const shouldEmit = _accounts?.some(account => {
-      const accountAddress = account.split(':')[2];
-
-      return accountAddress !== undefined && accounts.includes(accountAddress);
-    });
-
-    if (shouldEmit) {
-      this.emit('accountsChanged', { accounts });
-    }
-  }
-
-  onDisconnect(): void {
-    this.emit('disconnect', { namespace: this.getSupportedNamespace() });
-
-    const provider = this.connector?.getProvider();
-    if (provider) {
-      provider.off('chainChanged', this.onChainChanged.bind(this));
-      provider.off('accountsChanged', this.onAccountsChanged.bind(this));
-      provider.off('disconnect', this.onDisconnect.bind(this));
-    }
-
-    this.connector = undefined;
-  }
-
-  abstract disconnect(): Promise<void>;
-  abstract getSupportedNamespace(): ChainNamespace;
-  abstract getBalance(params: GetBalanceParams): Promise<GetBalanceResponse>;
-  abstract getAccounts(): CaipAddress[] | undefined;
-  abstract switchNetwork(network: AppKitNetwork): Promise<void>;
-}
-
-export abstract class EVMAdapter extends BlockchainAdapter {
-  // ens logic
-}
-
-export abstract class SolanaBaseAdapter extends BlockchainAdapter {}
-
 export interface GetBalanceParams {
   address?: CaipAddress;
   network?: AppKitNetwork;
@@ -303,6 +205,12 @@ export type ProposalNamespaces = Record<
   Omit<Namespace, 'accounts'> & Required<Pick<Namespace, 'chains'>>
 >;
 
+export type ConnectOptions = {
+  namespaces?: ProposalNamespaces;
+  defaultChain?: CaipNetworkId;
+  universalLink?: string;
+};
+
 export abstract class WalletConnector extends EventEmitter {
   public type: New_ConnectorType;
   protected provider: Provider;
@@ -315,10 +223,7 @@ export abstract class WalletConnector extends EventEmitter {
     this.provider = provider;
   }
 
-  abstract connect(opts: {
-    namespaces?: ProposalNamespaces;
-    defaultChain?: CaipNetworkId;
-  }): Promise<Namespaces | undefined>;
+  abstract connect(opts: ConnectOptions): Promise<Namespaces | undefined>;
   abstract disconnect(): Promise<void>;
   abstract getProvider(): Provider;
   abstract getNamespaces(): Namespaces;

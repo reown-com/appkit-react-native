@@ -10,7 +10,8 @@ import {
   StorageUtil,
   type OptionsControllerState,
   ThemeController,
-  ConnectionController
+  ConnectionController,
+  type Features
 } from '@reown/appkit-core-react-native';
 
 import type {
@@ -26,7 +27,8 @@ import type {
   ThemeMode,
   WalletInfo,
   Network,
-  ChainNamespace
+  ChainNamespace,
+  ConnectOptions
 } from '@reown/appkit-common-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
@@ -53,7 +55,7 @@ interface AppKitConfig {
   themeVariables?: ThemeVariables;
   siweConfig?: AppKitSIWEClient;
   defaultNetwork?: Network;
-  // features?: Features;
+  features?: Features;
   // chainImages?: Record<number, string>; //TODO: rename to networkImages
 }
 
@@ -102,18 +104,17 @@ export class AppKit {
   /**
    * Handles the full connection flow for a given connector type.
    * @param type - The type of connector to use.
-   * @param requestedNamespaces - Optional specific namespaces to request.
+   * @param options - Optional connection options.
    */
-  async connect(type: New_ConnectorType, requestedNamespaces?: ProposalNamespaces): Promise<void> {
+  async connect(type: New_ConnectorType, options?: ConnectOptions): Promise<void> {
     try {
+      const { namespaces, defaultChain, universalLink } = options ?? {};
       const connector = await this.createConnector(type);
-      const defaultChain = this.defaultNetwork
-        ? NetworkUtil.getDefaultChainId(this.defaultNetwork)
-        : undefined;
 
       const approvedNamespaces = await connector.connect({
-        namespaces: requestedNamespaces ?? this.namespaces,
-        defaultChain
+        namespaces: namespaces ?? this.namespaces,
+        defaultChain,
+        universalLink
       });
 
       const walletInfo = connector.getWalletInfo();
@@ -443,7 +444,7 @@ export class AppKit {
     OptionsController.setCustomWallets(options.customWallets);
     OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setDebug(options.debug);
-    // OptionsController.setFeatures(options.features);
+    OptionsController.setFeatures(options.features);
 
     ThemeController.setThemeMode(options.themeMode);
     ThemeController.setThemeVariables(options.themeVariables);

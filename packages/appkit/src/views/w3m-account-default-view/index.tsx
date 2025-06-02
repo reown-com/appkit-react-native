@@ -59,7 +59,16 @@ export function AccountDefaultView() {
   const showExplorer = Object.keys(activeNetwork?.blockExplorers ?? {}).length > 0 && !isAuth;
   const showBack = history.length > 1;
   const showSwitchAccountType = isAuth && NetworkController.checkIfSmartAccountEnabled();
-  const showActivity = !isAuth && activeNamespace && ['eip155', 'solana'].includes(activeNamespace);
+  const showActivity =
+    !isAuth &&
+    activeNamespace &&
+    activeNetwork?.caipNetworkId &&
+    ConstantsUtil.ACTIVITY_SUPPORTED_CHAINS.includes(activeNetwork.caipNetworkId);
+  const showSwaps =
+    !isAuth &&
+    features?.swaps &&
+    activeNetwork?.caipNetworkId &&
+    ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(activeNetwork.caipNetworkId);
   const { padding } = useCustomDimensions();
   const { disconnect } = useAppKit();
 
@@ -82,7 +91,7 @@ export function AccountDefaultView() {
           event: 'SET_PREFERRED_ACCOUNT_TYPE',
           properties: {
             accountType,
-            network: NetworkController.state.caipNetwork?.id || ''
+            network: ConnectionsController.state.activeNetwork?.caipNetworkId || ''
           }
         });
       }
@@ -124,23 +133,16 @@ export function AccountDefaultView() {
   };
 
   const onSwapPress = () => {
-    if (
-      NetworkController.state.caipNetwork?.id &&
-      !ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(`${NetworkController.state.caipNetwork.id}`)
-    ) {
-      RouterController.push('UnsupportedChain');
-    } else {
-      SwapController.resetState();
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'OPEN_SWAP',
-        properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
-          isSmartAccount: false
-        }
-      });
-      RouterController.push('Swap');
-    }
+    SwapController.resetState();
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'OPEN_SWAP',
+      properties: {
+        network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
+        isSmartAccount: false
+      }
+    });
+    RouterController.push('Swap');
   };
 
   const onBuyPress = () => {
@@ -276,7 +278,7 @@ export function AccountDefaultView() {
                 <Text color="fg-100">Buy crypto</Text>
               </ListItem>
             )}
-            {!isAuth && features?.swaps && (
+            {showSwaps && (
               <ListItem
                 chevron
                 icon="recycleHorizontal"

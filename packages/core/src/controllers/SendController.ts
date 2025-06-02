@@ -6,8 +6,8 @@ import { ConnectionController } from './ConnectionController';
 import { SnackController } from './SnackController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { EventsController } from './EventsController';
-import { NetworkController } from './NetworkController';
 import { RouterController } from './RouterController';
+import { ConnectionsController } from './ConnectionsController';
 
 // -- Types --------------------------------------------- //
 export interface TxParams {
@@ -100,7 +100,7 @@ export const SendController = {
           isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
           token: this.state.token.address,
           amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ConnectionsController.state.activeNetwork?.caipNetworkId || ''
         }
       });
       this.sendERC20Token({
@@ -123,7 +123,7 @@ export const SendController = {
           isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
           token: this.state.token?.symbol,
           amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ConnectionsController.state.activeNetwork?.caipNetworkId || ''
         }
       });
       this.sendNativeToken({
@@ -165,7 +165,7 @@ export const SendController = {
           isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ConnectionsController.state.activeNetwork?.caipNetworkId || ''
         }
       });
       this.resetSend();
@@ -178,7 +178,7 @@ export const SendController = {
           isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ConnectionsController.state.activeNetwork?.caipNetworkId || ''
         }
       });
       SnackController.showError('Something went wrong');

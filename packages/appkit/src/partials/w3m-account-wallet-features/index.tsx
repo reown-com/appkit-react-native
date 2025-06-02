@@ -3,10 +3,10 @@ import { useSnapshot } from 'valtio';
 import { Balance, FlexView, IconLink, Tabs } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
+  ConnectionsController,
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  NetworkController,
   OnRampController,
   OptionsController,
   RouterController,
@@ -25,8 +25,12 @@ export function AccountWalletFeatures() {
   const [activeTab, setActiveTab] = useState(0);
   const { tokenBalance } = useSnapshot(AccountController.state);
   const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
+  const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const balance = CoreHelperUtil.calculateAndFormatBalance(tokenBalance as BalanceType[]);
-  const isSwapsEnabled = features?.swaps;
+  const isSwapsEnabled =
+    features?.swaps &&
+    activeNetwork?.caipNetworkId &&
+    ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(activeNetwork.caipNetworkId);
 
   const onTabChange = (index: number) => {
     setActiveTab(index);
@@ -46,23 +50,16 @@ export function AccountWalletFeatures() {
   };
 
   const onSwapPress = () => {
-    if (
-      NetworkController.state.caipNetwork?.id &&
-      !ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(`${NetworkController.state.caipNetwork.id}`)
-    ) {
-      RouterController.push('UnsupportedChain');
-    } else {
-      SwapController.resetState();
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'OPEN_SWAP',
-        properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
-        }
-      });
-      RouterController.push('Swap');
-    }
+    SwapController.resetState();
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'OPEN_SWAP',
+      properties: {
+        network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
+        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+      }
+    });
+    RouterController.push('Swap');
   };
 
   const onSendPress = () => {
@@ -70,7 +67,7 @@ export function AccountWalletFeatures() {
       type: 'track',
       event: 'OPEN_SEND',
       properties: {
-        network: NetworkController.state.caipNetwork?.id || '',
+        network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
         isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
       }
     });
