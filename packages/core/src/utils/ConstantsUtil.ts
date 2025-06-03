@@ -135,6 +135,7 @@ export const ConstantsUtil = {
     'WNT'
   ],
 
+  //TODO: replace with supported chains from backend
   ACTIVITY_SUPPORTED_CHAINS: [
     // Arbitrum
     'eip155:42161',

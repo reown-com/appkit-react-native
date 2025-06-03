@@ -1,4 +1,5 @@
 import { BlockchainAdapter } from './BlockchainAdapter';
+import { NumberUtil } from '../utils/NumberUtil';
 
 export abstract class EVMAdapter extends BlockchainAdapter {
   async estimateGas({ address, to, data, chainNamespace }: any): Promise<bigint> {
@@ -49,9 +50,9 @@ export abstract class EVMAdapter extends BlockchainAdapter {
     const txParams = {
       from: address,
       to: data.to,
-      value: data.value?.toString(), // hex string or decimal string
-      gas: data.gas?.toString(), // optional
-      gasPrice: data.gasPrice?.toString(), // optional
+      value: NumberUtil.convertNumericToHexString(data.value),
+      gas: NumberUtil.convertNumericToHexString(data.gas),
+      gasPrice: NumberUtil.convertNumericToHexString(data.gasPrice),
       data: data.data, // hex-encoded bytecode
       type: '0x0' // optional: legacy transaction type
     };

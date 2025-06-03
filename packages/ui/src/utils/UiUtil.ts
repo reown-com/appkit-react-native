@@ -71,20 +71,18 @@ export const UiUtil = {
   },
 
   formatNumberToLocalString(value: string | number | undefined, decimals = 2) {
+    let numericValue: number;
+
     if (value === undefined) {
-      return '0.00';
+      numericValue = 0;
+    } else if (typeof value === 'string') {
+      numericValue = parseFloat(value);
+    } else {
+      numericValue = value;
     }
 
-    if (typeof value === 'number') {
-      return value.toLocaleString('en-US', {
-        maximumFractionDigits: decimals,
-        minimumFractionDigits: decimals
-      });
-    }
-
-    return parseFloat(value).toLocaleString('en-US', {
-      maximumFractionDigits: decimals,
-      minimumFractionDigits: decimals
+    return numericValue.toLocaleString('en-US', {
+      maximumFractionDigits: decimals
     });
   }
 };

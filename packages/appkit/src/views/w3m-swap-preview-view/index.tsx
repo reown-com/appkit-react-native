@@ -86,7 +86,7 @@ export function SwapPreviewView() {
               Send
             </Text>
             <Text variant="paragraph-400" color="fg-100">
-              ${UiUtil.formatNumberToLocalString(sourceTokenMarketValue, 2)}
+              ${UiUtil.formatNumberToLocalString(sourceTokenMarketValue, 6)}
             </Text>
           </FlexView>
           <TokenButton
@@ -106,7 +106,7 @@ export function SwapPreviewView() {
               Receive
             </Text>
             <Text variant="paragraph-400" color="fg-100">
-              ${UiUtil.formatNumberToLocalString(toTokenMarketValue, 2)}
+              ${UiUtil.formatNumberToLocalString(toTokenMarketValue, 6)}
             </Text>
           </FlexView>
           <TokenButton

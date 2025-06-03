@@ -521,7 +521,8 @@ export const SwapController = {
         this.setTransactionDetails();
       }
     } catch (error) {
-      console.log('swapTokens error', error);
+      SnackController.showError('Failed to get swap quote');
+      state.loadingQuote = false;
     }
   },
 
@@ -557,7 +558,6 @@ export const SwapController = {
 
       return transaction;
     } catch (error) {
-      console.log('getTransaction error', error);
       RouterController.goBack();
       SnackController.showError('Failed to check allowance');
       state.loadingBuildTransaction = false;
@@ -737,7 +737,6 @@ export const SwapController = {
     if (!data) {
       return undefined;
     }
-
     const { fromAddress, toTokenAmount, isAuthConnector } = this.getParams();
 
     state.loadingTransaction = true;
@@ -803,7 +802,6 @@ export const SwapController = {
 
       return transactionHash;
     } catch (err) {
-      console.log('sendTransactionForSwap error', err);
       const error = err as TransactionError;
       state.transactionError = error?.shortMessage;
       state.loadingTransaction = false;

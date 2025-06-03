@@ -128,7 +128,7 @@ export function SwapInput({
             >
               <Text variant="small-400" color="fg-200" numberOfLines={1}>
                 {isMarketValueGreaterThanZero
-                  ? `~$${UiUtil.formatNumberToLocalString(marketValue, 2)}`
+                  ? `~$${UiUtil.formatNumberToLocalString(marketValue, 6)}`
                   : ''}
               </Text>
               {showMax && (
