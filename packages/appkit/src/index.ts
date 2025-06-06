@@ -23,7 +23,7 @@ export { CoreHelperUtil } from '@reown/appkit-core-react-native';
 export * from './AppKit';
 export { AppKitProvider } from './AppKitContext';
 
-export type { AppKitNetwork } from '@reown/appkit-common-react-native';
+export type { AppKitNetwork, Storage } from '@reown/appkit-common-react-native';
 
 export { WalletConnectConnector } from './connectors/WalletConnectConnector';
 

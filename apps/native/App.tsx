@@ -32,7 +32,7 @@ import { ActionsView } from './src/views/ActionsView';
 import { WalletInfoView } from './src/views/WalletInfoView';
 import { EventsView } from './src/views/EventsView';
 import { getCustomWallets } from './src/utils/misc';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { storage } from './src/utils/StorageUtil';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -44,18 +44,6 @@ const metadata = {
   redirect: {
     native: 'host.exp.exponent://',
     universal: 'https://appkit-lab.reown.com/rn_appkit'
-  }
-};
-
-const storage = {
-  setItem: async (key: string, value: string) => {
-    await AsyncStorage.setItem(key, value);
-  },
-  getItem: async (key: string) => {
-    return await AsyncStorage.getItem(key);
-  },
-  removeItem: async (key: string) => {
-    await AsyncStorage.removeItem(key);
   }
 };
 
