@@ -146,6 +146,18 @@ export type Tokens = Record<CaipNetworkId, Token>;
 
 export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
 
+export type Metadata = {
+  name: string;
+  description: string;
+  url: string;
+  icons: string[];
+  redirect?: {
+    native?: string;
+    universal?: string;
+    linkMode?: boolean;
+  };
+};
+
 //********** Adapter Event Payloads **********//
 export type AccountsChangedEvent = {
   accounts: string[];
@@ -202,7 +214,8 @@ export type Namespaces = Record<string, Namespace>;
 
 export type ProposalNamespaces = Record<
   string,
-  Omit<Namespace, 'accounts'> & Required<Pick<Namespace, 'chains'>>
+  Omit<Namespace, 'accounts'> &
+    Required<Pick<Namespace, 'chains'>> & { rpcMap: Record<string, string> }
 >;
 
 export type ConnectOptions = {
@@ -211,15 +224,30 @@ export type ConnectOptions = {
   universalLink?: string;
 };
 
+export type ConnectorInitOptions = {
+  storage: Storage;
+  metadata: Metadata;
+};
+
 export abstract class WalletConnector extends EventEmitter {
   public type: New_ConnectorType;
-  protected provider: Provider;
+  protected provider?: Provider;
   protected namespaces?: Namespaces;
   protected wallet?: WalletInfo;
+  protected storage?: Storage;
+  protected metadata?: Metadata;
 
-  constructor({ type, provider }: { type: New_ConnectorType; provider: Provider }) {
+  constructor({ type }: { type: New_ConnectorType }) {
     super();
     this.type = type;
+  }
+
+  public async init(ops: ConnectorInitOptions) {
+    this.storage = ops.storage;
+    this.metadata = ops.metadata;
+  }
+
+  public setProvider(provider: Provider) {
     this.provider = provider;
   }
 
@@ -252,7 +280,7 @@ export interface RequestArguments {
 }
 
 //TODO: rename this and remove the old one ConnectorType
-export type New_ConnectorType = 'walletconnect' | 'coinbase' | 'auth';
+export type New_ConnectorType = 'walletconnect' | 'coinbase' | 'auth' | 'phantom';
 
 //********** Others **********//
 
@@ -274,4 +302,35 @@ export interface WalletInfo {
     linkMode?: boolean;
   };
   [key: string]: unknown;
+}
+
+export interface Storage {
+  /**
+   * Returns all keys in storage.
+   */
+  getKeys(): Promise<string[]>;
+
+  /**
+   * Returns all key-value entries in storage.
+   */
+  getEntries<T = any>(): Promise<[string, T][]>;
+
+  /**
+   * Get an item from storage for a given key.
+   * @param key The key to retrieve.
+   */
+  getItem<T = any>(key: string): Promise<T | undefined>;
+
+  /**
+   * Set an item in storage for a given key.
+   * @param key The key to set.
+   * @param value The value to set.
+   */
+  setItem<T = any>(key: string, value: T): Promise<void>;
+
+  /**
+   * Remove an item from storage for a given key.
+   * @param key The key to remove.
+   */
+  removeItem(key: string): Promise<void>;
 }

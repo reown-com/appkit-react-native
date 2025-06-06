@@ -20,8 +20,12 @@
       "policy": "appVersion"
     },
     "owner": "nacho.reown",
-    "assetBundlePatterns": ["**/*"],
-    "plugins": ["./expo-plugins/installed-wallets.js"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "plugins": [
+      "./expo-plugins/installed-wallets.js"
+    ],
     "ios": {
       "buildNumber": "1",
       "bundleIdentifier": "com.walletconnect.web3modal.rnsdk",
@@ -62,8 +66,44 @@
           "ambire",
           "internetmoney",
           "walletnow",
+          "bitcoincom",
+          "metamask",
+          "trust",
+          "safe",
+          "rainbow",
+          "uniswap",
+          "zerion",
+          "imtokenv2",
+          "argent",
+          "spot",
+          "omni",
+          "dfw",
+          "tpoutside",
+          "robinhood-wallet",
+          "frontier",
+          "blockchain-wallet",
+          "safepalwallet",
+          "bitkeep",
+          "zengo",
+          "oneinch",
+          "bnc",
+          "exodus",
+          "ledgerlive",
+          "mewwallet",
+          "awallet",
+          "keyring",
+          "lobstr",
+          "ontoprovider",
+          "mathwallet",
+          "unstoppabledomains",
+          "obvious",
+          "fireblocks-wc",
+          "ambire",
+          "internetmoney",
+          "walletnow",
           "bitcoincom"
-        ]
+        ],
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {

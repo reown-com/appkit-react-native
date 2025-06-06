@@ -1,10 +1,4 @@
-export interface TokenInfo {
-  address: string;
-  symbol: string;
-  name: string;
-  decimals: number;
-  logoURI?: string;
-}
+import type { TokenInfo } from './types';
 
 /**
  * Validates if the given string is a Solana address.
@@ -48,6 +42,7 @@ export async function getSolanaNativeBalance(rpcUrl: string, address: string): P
 }
 
 let tokenCache: Record<string, TokenInfo> = {};
+
 /**
  * Fetch metadata for a Solana SPL token using the Jupiter token list.
  * @param mint - The token's mint address
@@ -71,6 +66,13 @@ export async function getSolanaTokenMetadata(mint: string): Promise<TokenInfo | 
   }
 }
 
+/**
+ * Get the balance of a token for a given address
+ * @param rpcUrl - The RPC URL to use
+ * @param address - The address to get the balance for
+ * @param tokenAddress - The address of the token to get the balance for
+ * @returns The balance of the token for the given address
+ */
 export async function getSolanaTokenBalance(
   rpcUrl: string,
   address: string,

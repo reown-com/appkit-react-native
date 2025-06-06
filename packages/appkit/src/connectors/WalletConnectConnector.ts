@@ -1,4 +1,4 @@
-import { type Metadata, ConnectionController } from '@reown/appkit-core-react-native';
+import { ConnectionController } from '@reown/appkit-core-react-native';
 import { UniversalProvider, type IUniversalProvider } from '@walletconnect/universal-provider';
 import {
   WalletConnector,
@@ -8,14 +8,41 @@ import {
   type WalletInfo,
   type ChainNamespace,
   type CaipNetworkId,
-  type ConnectOptions
+  type ConnectOptions,
+  type ConnectorInitOptions,
+  type Metadata
 } from '@reown/appkit-common-react-native';
 
-export class WalletConnectConnector extends WalletConnector {
-  private static universalProviderInstance: IUniversalProvider | null = null;
+interface WalletConnectConnectorConfig {
+  projectId: string;
+}
 
-  private constructor(provider: IUniversalProvider) {
-    super({ type: 'walletconnect', provider: provider as Provider });
+export class WalletConnectConnector extends WalletConnector {
+  private readonly config: WalletConnectConnectorConfig;
+
+  constructor(config: WalletConnectConnectorConfig) {
+    super({ type: 'walletconnect' });
+    this.config = config;
+  }
+
+  override async init(ops: ConnectorInitOptions) {
+    super.init(ops);
+
+    const provider = await this.getUniversalProvider({
+      projectId: this.config.projectId,
+      metadata: ops.metadata
+    });
+
+    this.provider = provider as Provider;
+
+    await this.restoreSession();
+  }
+
+  private async restoreSession(): Promise<boolean> {
+    const provider = this.getProvider() as IUniversalProvider;
+    if (!provider) {
+      return false;
+    }
 
     if (provider.session?.namespaces) {
       this.namespaces = provider.session.namespaces as Namespaces;
@@ -31,42 +58,30 @@ export class WalletConnectConnector extends WalletConnector {
         };
       }
     }
+
+    return true;
   }
 
-  private static async getUniversalProvider({
+  private async getUniversalProvider({
     projectId,
     metadata
   }: {
     projectId: string;
     metadata: Metadata;
   }): Promise<IUniversalProvider> {
-    if (!WalletConnectConnector.universalProviderInstance) {
-      WalletConnectConnector.universalProviderInstance = await UniversalProvider.init({
+    if (!this.provider) {
+      this.provider = (await UniversalProvider.init({
         projectId,
-        metadata
-      });
+        metadata,
+        storage: this.storage
+      })) as Provider;
     }
 
-    return WalletConnectConnector.universalProviderInstance;
-  }
-
-  public static async create({
-    projectId,
-    metadata
-  }: {
-    projectId: string;
-    metadata: Metadata;
-  }): Promise<WalletConnectConnector> {
-    const provider = await WalletConnectConnector.getUniversalProvider({
-      projectId,
-      metadata
-    });
-
-    return new WalletConnectConnector(provider);
+    return this.provider as IUniversalProvider;
   }
 
   override disconnect(): Promise<void> {
-    return this.provider.disconnect();
+    return this.getProvider().disconnect();
   }
 
   override async connect(opts: ConnectOptions) {
@@ -74,7 +89,10 @@ export class WalletConnectConnector extends WalletConnector {
       ConnectionController.setWcUri(uri);
     }
 
-    this.provider.on('display_uri', onUri);
+    const provider = this.getProvider() as IUniversalProvider;
+
+    // @ts-ignore
+    provider.on('display_uri', onUri);
 
     const session = await (this.provider as IUniversalProvider).connect({
       namespaces: {},
@@ -87,12 +105,16 @@ export class WalletConnectConnector extends WalletConnector {
 
     this.namespaces = session?.namespaces as Namespaces;
 
-    this.provider.off('display_uri', onUri);
+    provider.off('display_uri', onUri);
 
     return this.namespaces;
   }
 
   override getProvider(): Provider {
+    if (!this.provider) {
+      throw new Error('WalletConnectConnector: Provider not initialized. Call init() first.');
+    }
+
     return this.provider;
   }
 

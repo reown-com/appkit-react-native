@@ -1,13 +1,6 @@
 import { proxy, ref } from 'valtio';
-import type { Tokens } from '@reown/appkit-common-react-native';
-import type {
-  CustomWallet,
-  Features,
-  Metadata,
-  ProjectId,
-  SdkType,
-  SdkVersion
-} from '../utils/TypeUtil';
+import type { Tokens, Storage, Metadata } from '@reown/appkit-common-react-native';
+import type { CustomWallet, Features, ProjectId, SdkType, SdkVersion } from '../utils/TypeUtil';
 
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 
@@ -19,6 +12,7 @@ export interface ClipboardClient {
 export interface OptionsControllerState {
   projectId: ProjectId;
   clipboardClient?: ClipboardClient;
+  storage?: Storage;
   includeWalletIds?: string[];
   excludeWalletIds?: string[];
   featuredWalletIds?: string[];
@@ -101,6 +95,12 @@ export const OptionsController = {
 
   setIsOnRampEnabled(isOnRampEnabled: OptionsControllerState['isOnRampEnabled']) {
     state.isOnRampEnabled = isOnRampEnabled;
+  },
+
+  setStorage(storage?: OptionsControllerState['storage']) {
+    if (storage) {
+      state.storage = ref(storage);
+    }
   },
 
   isClipboardAvailable() {

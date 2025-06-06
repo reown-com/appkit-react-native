@@ -21,17 +21,18 @@ import { Button, Text } from '@reown/appkit-ui-react-native';
 
 // import { siweConfig } from './src/utils/SiweUtils';
 // import { AccountView } from './src/views/AccountView';
-// import { chains } from './src/utils/WagmiUtils';
+import { chains } from './src/utils/WagmiUtils';
 import { OpenButton } from './src/components/OpenButton';
 import { DisconnectButton } from './src/components/DisconnectButton';
 // import { EthersAdapter } from '@reown/appkit-ethers-react-native';
-import { SolanaAdapter } from '@reown/appkit-solana-react-native';
+import { SolanaAdapter, PhantomConnector } from '@reown/appkit-solana-react-native';
 import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
 import { WagmiAdapter } from '@reown/appkit-wagmi-react-native';
-import { mainnet, polygon, avalanche, zora, sepolia } from 'wagmi/chains';
 import { ActionsView } from './src/views/ActionsView';
 import { WalletInfoView } from './src/views/WalletInfoView';
 import { EventsView } from './src/views/EventsView';
+import { getCustomWallets } from './src/utils/misc';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -43,6 +44,18 @@ const metadata = {
   redirect: {
     native: 'host.exp.exponent://',
     universal: 'https://appkit-lab.reown.com/rn_appkit'
+  }
+};
+
+const storage = {
+  setItem: async (key: string, value: string) => {
+    await AsyncStorage.setItem(key, value);
+  },
+  getItem: async (key: string) => {
+    return await AsyncStorage.getItem(key);
+  },
+  removeItem: async (key: string) => {
+    await AsyncStorage.removeItem(key);
   }
 };
 
@@ -60,7 +73,7 @@ const queryClient = new QueryClient();
 
 const wagmiAdapter = new WagmiAdapter({
   projectId,
-  networks: [mainnet, polygon, avalanche, zora, sepolia]
+  networks: chains
 });
 
 const solanaAdapter = new SolanaAdapter({
@@ -75,11 +88,14 @@ const appKit = createAppKit({
   projectId,
   adapters: [wagmiAdapter, solanaAdapter, bitcoinAdapter],
   metadata,
-  networks: [mainnet, polygon, avalanche, zora, sepolia, solana, bitcoin],
-  defaultNetwork: polygon,
+  networks: [...chains, solana, bitcoin],
+  defaultNetwork: chains[2],
   clipboardClient,
   debug: true,
-  enableAnalytics: true
+  enableAnalytics: true,
+  customWallets: getCustomWallets(),
+  storage,
+  extraConnectors: [new PhantomConnector({ cluster: 'mainnet-beta' })]
   // tokens: {
   //   'eip155:1': {
   //     address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
