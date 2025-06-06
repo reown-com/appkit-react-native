@@ -66,7 +66,7 @@ export class PhantomConnector extends WalletConnector {
     };
 
     this.provider = new PhantomProvider(providerConfig);
-    this.restoreSession();
+    await this.restoreSession();
   }
 
   private async initializeKeyPair(): Promise<void> {

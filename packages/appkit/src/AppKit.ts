@@ -63,7 +63,6 @@ interface AppKitConfig {
 
 export class AppKit {
   private projectId: string;
-  private metadata: Metadata;
   private adapters: BlockchainAdapter[];
   private networks: AppKitNetwork[];
   private defaultNetwork?: AppKitNetwork;
@@ -73,7 +72,6 @@ export class AppKit {
 
   constructor(config: AppKitConfig) {
     this.projectId = config.projectId;
-    this.metadata = config.metadata;
     this.adapters = config.adapters;
 
     // Validate adapters to ensure no duplicate chainNamespaces
