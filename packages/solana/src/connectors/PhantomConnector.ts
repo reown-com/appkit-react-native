@@ -41,9 +41,9 @@ export class PhantomConnector extends WalletConnector {
 
   private static readonly SUPPORTED_NAMESPACE: ChainNamespace = 'solana';
 
-  constructor(config: PhantomConnectorConfig) {
+  constructor(config?: PhantomConnectorConfig) {
     super({ type: 'phantom' });
-    this.config = config;
+    this.config = config ?? { cluster: 'mainnet-beta' };
   }
 
   override async init(ops: ConnectorInitOptions) {
@@ -268,14 +268,13 @@ export class PhantomConnector extends WalletConnector {
       }
 
       // If provider session is restored, try to restore connector data
-      const storedConnectorDataJson = await this.getStorage().getItem(
+      const connectorData = await this.getStorage().getItem<PhantomConnectorSessionData>(
         PHANTOM_CONNECTOR_STORAGE_KEY
       );
-      if (!storedConnectorDataJson) {
+      if (!connectorData) {
         return false; // Provider session exists but connector data is missing
       }
 
-      const connectorData: PhantomConnectorSessionData = JSON.parse(storedConnectorDataJson);
       this.namespaces = connectorData.namespaces;
       this.wallet = connectorData.wallet;
       this.currentCaipNetworkId = connectorData.currentCaipNetworkId;
@@ -312,7 +311,7 @@ export class PhantomConnector extends WalletConnector {
     };
 
     try {
-      await this.getStorage().setItem(PHANTOM_CONNECTOR_STORAGE_KEY, JSON.stringify(connectorData));
+      await this.getStorage().setItem(PHANTOM_CONNECTOR_STORAGE_KEY, connectorData);
     } catch (error) {
       // console.error('PhantomConnector: Failed to save session.', error);
     }

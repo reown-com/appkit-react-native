@@ -145,9 +145,8 @@ export class PhantomProvider extends EventEmitter implements Provider {
 
   public async restoreSession(): Promise<boolean> {
     try {
-      const storedSessionJson = await this.storage.getItem(PHANTOM_PROVIDER_STORAGE_KEY);
-      if (storedSessionJson) {
-        const session: PhantomSession = JSON.parse(storedSessionJson);
+      const session = await this.storage.getItem<PhantomSession>(PHANTOM_PROVIDER_STORAGE_KEY);
+      if (session) {
         this.setSession(session);
 
         return true;

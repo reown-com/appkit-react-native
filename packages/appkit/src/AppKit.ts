@@ -260,8 +260,8 @@ export class AppKit {
 
     if (CustomConnector) {
       await CustomConnector.init({
-        storage: OptionsController.state.storage!,
-        metadata: this.metadata
+        storage: this.config.storage,
+        metadata: this.config.metadata
       });
 
       return CustomConnector;
@@ -272,8 +272,8 @@ export class AppKit {
       projectId: this.projectId
     });
     await walletConnectConnector.init({
-      storage: OptionsController.state.storage!,
-      metadata: this.metadata
+      storage: this.config.storage,
+      metadata: this.config.metadata
     });
 
     return walletConnectConnector;
