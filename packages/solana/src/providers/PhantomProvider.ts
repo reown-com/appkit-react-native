@@ -191,11 +191,10 @@ export class PhantomProvider extends EventEmitter implements Provider {
   }): Promise<T> {
     const cluster = params?.cluster ?? 'mainnet-beta';
     this.currentCluster = cluster;
-    const redirectLink = `${this.config.appScheme}://phantom_connect`;
     const connectDeeplinkParams: PhantomConnectParams = {
       app_url: this.config.dappUrl,
       dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
-      redirect_link: redirectLink,
+      redirect_link: this.config.appScheme,
       cluster
     };
     const url = this.buildUrl('connect', connectDeeplinkParams as any);
@@ -207,7 +206,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
           subscription.remove();
         }
         const fullUrl = event.url;
-        if (fullUrl.startsWith(redirectLink)) {
+        if (fullUrl.startsWith(this.config.appScheme)) {
           const responseUrlParams = new URLSearchParams(
             fullUrl.substring(fullUrl.indexOf('?') + 1)
           );
@@ -289,10 +288,9 @@ export class PhantomProvider extends EventEmitter implements Provider {
       return Promise.resolve(); // Or reject, depending on desired strictness
     }
 
-    const redirectLink = `${this.config.appScheme}://phantom_disconnect`;
     const disconnectDeeplinkParams: PhantomDisconnectParams = {
       dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
-      redirect_link: redirectLink,
+      redirect_link: this.config.appScheme,
       payload: encryptedDisconnectPayload.encryptedPayload,
       nonce: encryptedDisconnectPayload.nonce
     };
@@ -304,7 +302,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
         if (subscription) {
           subscription.remove();
         }
-        if (event.url.startsWith(redirectLink)) {
+        if (event.url.startsWith(this.config.appScheme)) {
           this.clearSession();
           resolve();
         } else {
@@ -353,8 +351,6 @@ export class PhantomProvider extends EventEmitter implements Provider {
     }
 
     const rpcMethodName = this.getRpcMethodName(signingMethod);
-    const redirectSuffix = rpcMethodName.toLowerCase();
-    const redirectLink = `${this.config.appScheme}://phantom_${redirectSuffix}`;
     let deeplinkUrl = '';
 
     switch (signingMethod) {
@@ -381,7 +377,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
 
         const signTxDeeplinkParams: PhantomSignTransactionParams = {
           dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
-          redirect_link: redirectLink,
+          redirect_link: this.config.appScheme,
           cluster: this.currentCluster,
           payload: encryptedData.encryptedPayload,
           nonce: encryptedData.nonce
@@ -426,7 +422,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
 
         const signMsgDeeplinkQueryPayload: PhantomSignMessageParams = {
           dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
-          redirect_link: redirectLink,
+          redirect_link: this.config.appScheme,
           payload: encryptedPayloadData.encryptedPayload,
           nonce: encryptedPayloadData.nonce
         };
@@ -459,7 +455,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
 
         const signAllTxDeeplinkParams: PhantomSignAllTransactionsParams = {
           dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
-          redirect_link: redirectLink,
+          redirect_link: this.config.appScheme,
           cluster: this.currentCluster,
           payload: encryptedData.encryptedPayload,
           nonce: encryptedData.nonce
@@ -479,7 +475,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
           subscription.remove();
         }
         const fullUrl = event.url;
-        if (fullUrl.startsWith(redirectLink)) {
+        if (fullUrl.startsWith(this.config.appScheme)) {
           const responseUrlParams = new URLSearchParams(
             fullUrl.substring(fullUrl.indexOf('?') + 1)
           );
