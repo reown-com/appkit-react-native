@@ -35,8 +35,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@reown/appkit-core-react-native": "2.0.0",
-    "@reown/appkit-ui-react-native": "2.0.0",
+    "@reown/appkit-core-react-native": "1.2.4",
+    "@reown/appkit-ui-react-native": "1.2.4",
     "zod": "3.22.4"
   },
   "peerDependencies": {

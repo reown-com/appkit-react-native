@@ -36,7 +36,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@reown/appkit-common-react-native": "2.0.0",
+    "@reown/appkit-common-react-native": "1.2.4",
     "@reown/appkit-wallet-react-native": "1.2.4"
   },
   "peerDependencies": {
