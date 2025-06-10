@@ -1,5 +1,14 @@
 # @reown/appkit-wallet-react-native
 
+## 1.2.4
+
+### Patch Changes
+
+- Updated dependencies [5f71dfb]
+- Updated dependencies [40d26c1]
+  - @reown/appkit-core-react-native@2.0.0
+  - @reown/appkit-ui-react-native@2.0.0
+
 ## 1.2.3
 
 ### Patch Changes
