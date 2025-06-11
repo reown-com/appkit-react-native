@@ -81,8 +81,7 @@ export class WalletPage {
       timeout: 30000
     });
     await expect(btn).toBeEnabled();
-    await btn.focus();
-    await this.page.keyboard.press('Space');
+    await btn.click();
   }
 
   /**
@@ -115,6 +114,7 @@ export class WalletPage {
    */
   async disconnectConnection() {
     await this.page.waitForLoadState();
+    await this.page.waitForTimeout(1000);
     const sessionsButton = this.page.getByTestId('sessions');
     await sessionsButton.click();
 
