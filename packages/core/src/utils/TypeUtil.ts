@@ -6,7 +6,8 @@ import type {
   SocialProvider,
   ThemeMode,
   Transaction,
-  ConnectorType
+  ConnectorType,
+  Metadata
 } from '@reown/appkit-common-react-native';
 
 import { OnRampErrorType } from './ConstantsUtil';
@@ -339,18 +340,6 @@ export type BlockchainApiOnRampWidgetResponse = {
 };
 
 // -- OptionsController Types ---------------------------------------------------
-export type Metadata = {
-  name: string;
-  description: string;
-  url: string;
-  icons: string[];
-  redirect?: {
-    native?: string;
-    universal?: string;
-    linkMode?: boolean;
-  };
-};
-
 export type CustomWallet = Pick<
   WcWallet,
   | 'id'

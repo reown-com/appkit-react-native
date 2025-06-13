@@ -21,8 +21,10 @@ export type * from '@reown/appkit-core-react-native';
 export { CoreHelperUtil } from '@reown/appkit-core-react-native';
 
 export * from './AppKit';
-export * from './networks';
 export { AppKitProvider } from './AppKitContext';
+
+export type { AppKitNetwork, Storage } from '@reown/appkit-common-react-native';
+
 export { WalletConnectConnector } from './connectors/WalletConnectConnector';
 
 /****** Hooks *******/
@@ -31,3 +33,7 @@ export { useProvider } from './hooks/useProvider';
 export { useAccount } from './hooks/useAccount';
 export { useWalletInfo } from './hooks/useWalletInfo';
 export { useAppKitEvents, useAppKitEventSubscription } from './hooks/useAppKitEvents';
+
+/********** Networks **********/
+export { solana, solanaDevnet, solanaTestnet } from '@reown/appkit-common-react-native';
+export { bitcoin, bitcoinTestnet } from '@reown/appkit-common-react-native';

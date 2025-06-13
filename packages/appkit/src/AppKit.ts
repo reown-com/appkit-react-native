@@ -1,4 +1,5 @@
 import {
+  type Features,
   AccountController,
   EventsController,
   ModalController,
@@ -6,12 +7,10 @@ import {
   OptionsController,
   RouterController,
   TransactionsController,
-  type Metadata,
   StorageUtil,
   type OptionsControllerState,
   ThemeController,
-  ConnectionController,
-  type Features
+  ConnectionController
 } from '@reown/appkit-core-react-native';
 
 import type {
@@ -20,6 +19,7 @@ import type {
   ProposalNamespaces,
   New_ConnectorType,
   Namespaces,
+  Metadata,
   CaipNetworkId,
   AppKitNetwork,
   Provider,
@@ -28,7 +28,8 @@ import type {
   WalletInfo,
   Network,
   ChainNamespace,
-  ConnectOptions
+  ConnectOptions,
+  Storage
 } from '@reown/appkit-common-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
@@ -42,6 +43,7 @@ interface AppKitConfig {
   metadata: Metadata;
   adapters: BlockchainAdapter[];
   networks: Network[];
+  storage: Storage;
   extraConnectors?: WalletConnector[];
   clipboardClient?: OptionsControllerState['clipboardClient'];
   includeWalletIds?: OptionsControllerState['includeWalletIds'];
@@ -61,7 +63,6 @@ interface AppKitConfig {
 
 export class AppKit {
   private projectId: string;
-  private metadata: Metadata;
   private adapters: BlockchainAdapter[];
   private networks: AppKitNetwork[];
   private defaultNetwork?: AppKitNetwork;
@@ -71,7 +72,6 @@ export class AppKit {
 
   constructor(config: AppKitConfig) {
     this.projectId = config.projectId;
-    this.metadata = config.metadata;
     this.adapters = config.adapters;
 
     // Validate adapters to ensure no duplicate chainNamespaces
@@ -253,15 +253,28 @@ export class AppKit {
   private async createConnector(type: New_ConnectorType): Promise<WalletConnector> {
     // Check if an extra connector was provided by the developer
     const CustomConnector = this.extraConnectors.find(
-      connector => connector.constructor.name.toLowerCase() === type.toLowerCase()
+      connector => connector.type.toLowerCase() === type.toLowerCase()
     );
 
     if (CustomConnector) {
+      await CustomConnector.init({
+        storage: this.config.storage,
+        metadata: this.config.metadata
+      });
+
       return CustomConnector;
     }
 
     // Default to WalletConnectConnector if no custom connector matches
-    return WalletConnectConnector.create({ projectId: this.projectId, metadata: this.metadata });
+    const walletConnectConnector = new WalletConnectConnector({
+      projectId: this.projectId
+    });
+    await walletConnectConnector.init({
+      storage: this.config.storage,
+      metadata: this.config.metadata
+    });
+
+    return walletConnectConnector;
   }
 
   //TODO: reuse logic with connect method
@@ -445,6 +458,7 @@ export class AppKit {
     OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setDebug(options.debug);
     OptionsController.setFeatures(options.features);
+    OptionsController.setStorage(options.storage);
 
     ThemeController.setThemeMode(options.themeMode);
     ThemeController.setThemeVariables(options.themeVariables);

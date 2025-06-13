@@ -1,4 +1,4 @@
-import type { AppKitNetwork } from '@reown/appkit-common-react-native';
+import type { AppKitNetwork } from '../utils/TypeUtil';
 
 export const bitcoin: AppKitNetwork = {
   id: '000000000019d6689c085ae165831e93',

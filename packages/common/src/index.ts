@@ -8,6 +8,8 @@ export { PresetsUtil } from './utils/PresetsUtil';
 export { StringUtil } from './utils/StringUtil';
 export { ErrorUtil } from './utils/ErrorUtil';
 export { erc20ABI } from './contracts/erc20';
+export { solana, solanaDevnet, solanaTestnet } from './networks/solana';
+export { bitcoin, bitcoinTestnet } from './networks/bitcoin';
 export { BlockchainAdapter } from './adapters/BlockchainAdapter';
 export { EVMAdapter } from './adapters/EvmAdapter';
 export { SolanaBaseAdapter } from './adapters/SolanaBaseAdapter';

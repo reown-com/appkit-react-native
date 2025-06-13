@@ -50,10 +50,16 @@ export function ConnectingView() {
         ConnectionController.setWcError(false);
         // ConnectionController.connectWalletConnect(routeData?.wallet?.link_mode ?? undefined);
 
-        //TODO: check linkmode
-        const wcPromise = connect('walletconnect');
-        ConnectionController.setWcPromise(wcPromise);
-        await wcPromise;
+        let connectPromise: Promise<void>;
+        // TODO: check phantom wallet id from cloud
+        if (data?.wallet?.id === 'phantom-wallet') {
+          connectPromise = connect('phantom');
+        } else {
+          //TODO: check linkmode
+          connectPromise = connect('walletconnect');
+        }
+        ConnectionController.setWcPromise(connectPromise);
+        await connectPromise;
         // await ConnectionController.state.wcPromise;
         // ConnectorController.setConnectedConnector('WALLET_CONNECT');
         AccountController.setIsConnected(true);

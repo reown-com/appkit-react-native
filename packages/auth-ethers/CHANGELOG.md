@@ -1,5 +1,14 @@
 # @reown/appkit-auth-ethers-react-native
 
+## 1.2.4
+
+### Patch Changes
+
+- Updated dependencies [5f71dfb]
+- Updated dependencies [40d26c1]
+  - @reown/appkit-common-react-native@2.0.0
+  - @reown/appkit-wallet-react-native@1.2.4
+
 ## 1.2.3
 
 ### Patch Changes

@@ -10,8 +10,7 @@ import {
   zora,
   base,
   celo,
-  aurora,
-  sepolia
+  aurora
 } from 'wagmi/chains';
 
 export const chains: CreateConfigParameters['chains'] = [
@@ -25,6 +24,5 @@ export const chains: CreateConfigParameters['chains'] = [
   zora,
   base,
   celo,
-  aurora,
-  sepolia
+  aurora
 ];

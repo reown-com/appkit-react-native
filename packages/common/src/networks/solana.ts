@@ -1,4 +1,4 @@
-import type { AppKitNetwork } from '@reown/appkit-common-react-native';
+import type { AppKitNetwork } from '../utils/TypeUtil';
 
 export const solana: AppKitNetwork = {
   id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
