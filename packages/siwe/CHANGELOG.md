@@ -1,5 +1,14 @@
 # @reown/appkit-siwe-react-native
 
+## 2.0.0-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [f39727b]
+  - @reown/appkit-common-react-native@2.0.0-alpha.1
+  - @reown/appkit-core-react-native@2.0.0-alpha.1
+  - @reown/appkit-ui-react-native@2.0.0-alpha.1
+
 ## 1.2.4
 
 ### Patch Changes

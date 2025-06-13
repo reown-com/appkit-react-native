@@ -1,0 +1,8 @@
+.changeset/
+.github/
+.maestro/
+.turbo/
+.vscode/
+.yarn/
+.yarnrc.yml
+.yarn.lock

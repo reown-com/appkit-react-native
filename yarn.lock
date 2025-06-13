@@ -71,7 +71,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.22.5"
     "@babel/preset-typescript": "npm:7.24.7"
     "@chromatic-com/storybook": "npm:^1"
-    "@reown/appkit-ui-react-native": "npm:2.0.0-alpha.0"
+    "@reown/appkit-ui-react-native": "npm:2.0.0-alpha.1"
     "@storybook/addon-essentials": "npm:^8.3.0"
     "@storybook/addon-interactions": "npm:^8.3.0"
     "@storybook/addon-links": "npm:^8.3.0"
@@ -108,11 +108,11 @@ __metadata:
     "@react-native-async-storage/async-storage": "npm:2.1.2"
     "@react-native-community/netinfo": "npm:11.4.1"
     "@reown/appkit-auth-wagmi-react-native": "npm:1.2.4"
-    "@reown/appkit-bitcoin-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-ethers-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-solana-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-wagmi-react-native": "npm:2.0.0-alpha.0"
+    "@reown/appkit-bitcoin-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-ethers-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-solana-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-wagmi-react-native": "npm:2.0.0-alpha.1"
     "@solana/web3.js": "npm:^1.98.2"
     "@tanstack/query-async-storage-persister": "npm:^5.40.0"
     "@tanstack/react-query": "npm:5.56.2"
@@ -6718,11 +6718,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reown/appkit-bitcoin-react-native@npm:2.0.0-alpha.0, @reown/appkit-bitcoin-react-native@workspace:packages/bitcoin":
+"@reown/appkit-bitcoin-react-native@npm:2.0.0-alpha.1, @reown/appkit-bitcoin-react-native@workspace:packages/bitcoin":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-bitcoin-react-native@workspace:packages/bitcoin"
   dependencies:
-    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.0"
+    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
   languageName: unknown
   linkType: soft
 
@@ -6736,7 +6736,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reown/appkit-common-react-native@npm:2.0.0-alpha.0, @reown/appkit-common-react-native@workspace:packages/common":
+"@reown/appkit-common-react-native@npm:2.0.0-alpha.1, @reown/appkit-common-react-native@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-common-react-native@workspace:packages/common"
   dependencies:
@@ -6784,11 +6784,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reown/appkit-core-react-native@npm:2.0.0-alpha.0, @reown/appkit-core-react-native@workspace:packages/core":
+"@reown/appkit-core-react-native@npm:2.0.0-alpha.1, @reown/appkit-core-react-native@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-core-react-native@workspace:packages/core"
   dependencies:
-    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.0"
+    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
     countries-and-timezones: "npm:3.7.2"
     valtio: "npm:1.11.2"
   peerDependencies:
@@ -6799,14 +6799,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@reown/appkit-ethers-react-native@npm:2.0.0-alpha.0, @reown/appkit-ethers-react-native@workspace:packages/ethers":
+"@reown/appkit-ethers-react-native@npm:2.0.0-alpha.1, @reown/appkit-ethers-react-native@workspace:packages/ethers":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-ethers-react-native@workspace:packages/ethers"
   dependencies:
-    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-scaffold-utils-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-siwe-react-native": "npm:1.2.4"
+    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-scaffold-utils-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-siwe-react-native": "npm:2.0.0-alpha.1"
     "@walletconnect/ethereum-provider": "npm:2.20.2"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
@@ -6827,14 +6827,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reown/appkit-react-native@npm:2.0.0-alpha.0, @reown/appkit-react-native@workspace:packages/appkit":
+"@reown/appkit-react-native@npm:2.0.0-alpha.1, @reown/appkit-react-native@workspace:packages/appkit":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-react-native@workspace:packages/appkit"
   dependencies:
-    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-core-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-siwe-react-native": "npm:1.2.4"
-    "@reown/appkit-ui-react-native": "npm:2.0.0-alpha.0"
+    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-core-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-siwe-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-ui-react-native": "npm:2.0.0-alpha.1"
     "@walletconnect/universal-provider": "npm:2.20.2"
     valtio: "npm:^1.13.2"
   peerDependencies:
@@ -6858,47 +6858,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reown/appkit-scaffold-utils-react-native@npm:2.0.0-alpha.0, @reown/appkit-scaffold-utils-react-native@workspace:packages/scaffold-utils":
+"@reown/appkit-scaffold-utils-react-native@npm:2.0.0-alpha.1, @reown/appkit-scaffold-utils-react-native@workspace:packages/scaffold-utils":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-scaffold-utils-react-native@workspace:packages/scaffold-utils"
   dependencies:
-    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-core-react-native": "npm:2.0.0-alpha.0"
+    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-core-react-native": "npm:2.0.0-alpha.1"
   languageName: unknown
   linkType: soft
 
-"@reown/appkit-siwe-react-native@npm:1.2.4":
-  version: 1.2.4
-  resolution: "@reown/appkit-siwe-react-native@npm:1.2.4"
-  dependencies:
-    "@reown/appkit-common-react-native": "npm:1.2.4"
-    "@reown/appkit-core-react-native": "npm:1.2.4"
-    "@reown/appkit-ui-react-native": "npm:1.2.4"
-    valtio: "npm:1.11.2"
-  peerDependencies:
-    "@walletconnect/utils": ">=2.16.1"
-  checksum: c87cad0009de3bd17a65c9bd2fc7685e02c5e3b9b3a974492bcfeb175c641a6de440a8943c812c1cacecb3265a92fc83a63d3ea67fea718af4c6f51b366f98ce
-  languageName: node
-  linkType: hard
-
-"@reown/appkit-siwe-react-native@workspace:packages/siwe":
+"@reown/appkit-siwe-react-native@npm:2.0.0-alpha.1, @reown/appkit-siwe-react-native@workspace:packages/siwe":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-siwe-react-native@workspace:packages/siwe"
   dependencies:
-    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-core-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-ui-react-native": "npm:2.0.0-alpha.0"
+    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-core-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-ui-react-native": "npm:2.0.0-alpha.1"
     valtio: "npm:1.11.2"
   peerDependencies:
     "@walletconnect/utils": ">=2.16.1"
   languageName: unknown
   linkType: soft
 
-"@reown/appkit-solana-react-native@npm:2.0.0-alpha.0, @reown/appkit-solana-react-native@workspace:packages/solana":
+"@reown/appkit-solana-react-native@npm:2.0.0-alpha.1, @reown/appkit-solana-react-native@workspace:packages/solana":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-solana-react-native@workspace:packages/solana"
   dependencies:
-    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.0"
+    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
     bs58: "npm:6.0.0"
     tweetnacl: "npm:1.0.3"
   languageName: unknown
@@ -6918,11 +6904,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reown/appkit-ui-react-native@npm:2.0.0-alpha.0, @reown/appkit-ui-react-native@workspace:packages/ui":
+"@reown/appkit-ui-react-native@npm:2.0.0-alpha.1, @reown/appkit-ui-react-native@workspace:packages/ui":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-ui-react-native@workspace:packages/ui"
   dependencies:
-    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.0"
+    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
     polished: "npm:4.3.1"
     qrcode: "npm:1.5.3"
   peerDependencies:
@@ -6963,14 +6949,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reown/appkit-wagmi-react-native@npm:2.0.0-alpha.0, @reown/appkit-wagmi-react-native@workspace:packages/wagmi":
+"@reown/appkit-wagmi-react-native@npm:2.0.0-alpha.1, @reown/appkit-wagmi-react-native@workspace:packages/wagmi":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-wagmi-react-native@workspace:packages/wagmi"
   dependencies:
-    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-scaffold-utils-react-native": "npm:2.0.0-alpha.0"
-    "@reown/appkit-siwe-react-native": "npm:1.2.4"
+    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-scaffold-utils-react-native": "npm:2.0.0-alpha.1"
+    "@reown/appkit-siwe-react-native": "npm:2.0.0-alpha.1"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
     "@react-native-community/netinfo": "*"

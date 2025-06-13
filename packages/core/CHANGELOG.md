@@ -1,5 +1,13 @@
 # @reown/appkit-core-react-native
 
+## 2.0.0-alpha.1
+
+### Patch Changes
+
+- f39727b: chore: bump alpha
+- Updated dependencies [f39727b]
+  - @reown/appkit-common-react-native@2.0.0-alpha.1
+
 ## 2.0.0
 
 ### Major Changes
