@@ -112,8 +112,6 @@ export class WalletConnectConnector extends WalletConnector {
         universalLink
       );
 
-      console.log('result SIWE', result);
-
       // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
       const signedCacao = result?.auths?.[0];
       if (signedCacao) {
@@ -135,13 +133,13 @@ export class WalletConnectConnector extends WalletConnector {
           });
 
           if (address && chainId) {
-            const session = {
+            const siweSession = {
               address,
               chainId: parseInt(chainId, 10)
             };
 
-            SIWEController.setSession(session);
-            SIWEController.onSignIn?.(session);
+            SIWEController.setSession(siweSession);
+            SIWEController.onSignIn?.(siweSession);
           }
         } catch (error) {
           // eslint-disable-next-line no-console
@@ -206,7 +204,6 @@ export class WalletConnectConnector extends WalletConnector {
   }
 
   override getWalletInfo(): WalletInfo | undefined {
-    console.log('getWalletInfo', this.wallet);
     return this.wallet;
   }
 
