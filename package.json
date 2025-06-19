@@ -1,5 +1,5 @@
 {
-  "name": "appkit-react-native",
+  "name": "ak-rn-monorepo",
   "version": "1.2.5",
   "private": true,
   "workspaces": [
