@@ -185,6 +185,10 @@ export class AppKit {
       TransactionsController.resetTransactions();
       ConnectionController.disconnect();
 
+      if (OptionsController.state.isSiweEnabled) {
+        await SIWEController.signOut();
+      }
+
       EventsController.sendEvent({
         type: 'track',
         event: 'DISCONNECT_SUCCESS'
@@ -418,6 +422,10 @@ export class AppKit {
       //eslint-disable-next-line no-console
       console.log('accountsChanged', accounts, namespace);
       //TODO: check this
+
+      if (namespace === 'eip155') {
+        this.handleSiweChange({ isAccountChange: true });
+      }
     });
 
     adapter.on('chainChanged', ({ chainId }) => {
@@ -431,6 +439,10 @@ export class AppKit {
           network,
           tokens: this.config.tokens
         });
+      }
+
+      if (namespace === 'eip155') {
+        this.handleSiweChange({ isNetworkChange: true });
       }
     });
 
@@ -464,7 +476,8 @@ export class AppKit {
     ThemeController.setThemeVariables(options.themeVariables);
 
     //TODO: function to get sdk version based on adapters
-    // OptionsController.setSdkVersion(options._sdkVersion);
+    // @ts-ignore
+    OptionsController.setSdkVersion('appkit-react-native-multichain');
 
     if (options.clipboardClient) {
       OptionsController.setClipboardClient(options.clipboardClient);
@@ -520,6 +533,36 @@ export class AppKit {
     await this.initActiveNamespace();
     await this.initRecentWallets(options);
     //disable coinbase if connector is not set
+  }
+
+  private onSiweNavigation = () => {
+    if (ModalController.state.open) {
+      RouterController.push('ConnectingSiwe');
+    } else {
+      ModalController.open({ view: 'ConnectingSiwe' });
+    }
+  };
+
+  private async handleSiweChange(params: { isNetworkChange?: boolean; isAccountChange?: boolean }) {
+    const { isNetworkChange, isAccountChange } = params;
+    const { enabled, signOutOnAccountChange, signOutOnNetworkChange } =
+      SIWEController.state._client?.options ?? {};
+
+    if (enabled) {
+      const session = await SIWEController.getSession();
+      if (session && isAccountChange && signOutOnAccountChange) {
+        // If the address has changed and signOnAccountChange is enabled, sign out
+        await SIWEController.signOut();
+        this.onSiweNavigation();
+      } else if (isNetworkChange && signOutOnNetworkChange) {
+        // If the network has changed and signOnNetworkChange is enabled, sign out
+        await SIWEController.signOut();
+        this.onSiweNavigation();
+      } else if (!session) {
+        // If it's connected but there's no session, show sign view
+        this.onSiweNavigation();
+      }
+    }
   }
 }
 

@@ -20,13 +20,15 @@ import {
 } from '@reown/appkit-core-react-native';
 
 import { useState } from 'react';
-import { SIWEController } from '../../../controller/SIWEController';
+import { SIWEController } from '@reown/appkit-siwe-react-native';
 import styles from './styles';
+import { useAppKit } from '../../AppKitContext';
 
 export function ConnectingSiweView() {
+  const { disconnect } = useAppKit();
   const { metadata } = useSnapshot(OptionsController.state);
   const { connectedWalletImageUrl, pressedWallet } = useSnapshot(ConnectionController.state);
-  const { address, profileImage } = useSnapshot(AccountController.state);
+  const { activeAddress } = useSnapshot(ConnectionsController.state);
   const [isSigning, setIsSigning] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
 
@@ -76,10 +78,9 @@ export function ConnectingSiweView() {
   };
 
   const onCancel = async () => {
-    const { isConnected } = AccountController.state;
-    if (isConnected) {
+    if (ConnectionsController.state.activeAddress) {
       setIsDisconnecting(true);
-      await ConnectionController.disconnect();
+      await disconnect();
       ModalController.close();
       setIsDisconnecting(false);
     } else {
@@ -112,7 +113,7 @@ export function ConnectingSiweView() {
         leftImage={dappIcon}
         rightImage={walletIcon}
         renderRightPlaceholder={() => (
-          <Avatar imageSrc={profileImage} address={address} size={60} borderWidth={0} />
+          <Avatar imageSrc={undefined} address={activeAddress} size={60} borderWidth={0} />
         )}
         rightItemStyle={!walletIcon && styles.walletAvatar}
       />

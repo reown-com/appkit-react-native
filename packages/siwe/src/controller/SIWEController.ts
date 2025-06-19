@@ -10,7 +10,7 @@ import type {
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {
-  signIn: () => Promise<SIWESession>;
+  signIn: () => Promise<SIWESession | undefined>;
   options: {
     enabled: boolean;
     nonceRefetchIntervalMs: number;

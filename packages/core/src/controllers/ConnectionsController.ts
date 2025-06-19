@@ -265,6 +265,20 @@ export const ConnectionsController = {
       ?.adapter.parseUnits(value, decimals);
   },
 
+  async signMessage(address: CaipAddress, message: string) {
+    if (!baseState.activeNamespace) return undefined;
+
+    const adapter = baseState.connections.get(baseState.activeNamespace)?.adapter;
+
+    const evmAddress = address.split(':')[2];
+    const chainId = address.split(':')[1];
+    if (adapter instanceof EVMAdapter && evmAddress && chainId) {
+      return adapter.signMessage(evmAddress, message, chainId);
+    }
+
+    return undefined;
+  },
+
   async sendTransaction(args: any) {
     if (!baseState.activeNamespace) return undefined;
 

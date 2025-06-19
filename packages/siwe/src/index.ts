@@ -22,5 +22,3 @@ export type {
 export function createSIWEConfig(siweConfig: SIWEConfig) {
   return new AppKitSIWEClient(siweConfig);
 }
-
-export * from './scaffold/views/w3m-connecting-siwe-view/index';

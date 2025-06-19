@@ -33,6 +33,7 @@ import { WalletInfoView } from './src/views/WalletInfoView';
 import { EventsView } from './src/views/EventsView';
 import { getCustomWallets } from './src/utils/misc';
 import { storage } from './src/utils/StorageUtil';
+import { siweConfig } from './src/utils/SiweUtils';
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
@@ -76,6 +77,7 @@ const appKit = createAppKit({
   projectId,
   adapters: [wagmiAdapter, solanaAdapter, bitcoinAdapter],
   metadata,
+  siweConfig,
   networks: [...chains, solana, bitcoin],
   defaultNetwork: chains[2],
   clipboardClient,
