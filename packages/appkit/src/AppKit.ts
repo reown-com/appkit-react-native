@@ -28,14 +28,15 @@ import type {
   WalletInfo,
   Network,
   ChainNamespace,
-  ConnectOptions,
-  Storage
+  Storage,
+  AppKitConnectOptions,
+  AppKitSIWEClient
 } from '@reown/appkit-common-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
 import { WcHelpersUtil } from './utils/HelpersUtil';
 import { NetworkUtil } from './utils/NetworkUtil';
-import { SIWEController, type AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
+import { SIWEController } from '@reown/appkit-siwe-react-native';
 import type { OpenOptions } from './client';
 
 interface AppKitConfig {
@@ -69,6 +70,7 @@ export class AppKit {
   private namespaces: ProposalNamespaces;
   private config: AppKitConfig;
   private extraConnectors: WalletConnector[];
+  private walletConnectConnector?: WalletConnector;
 
   constructor(config: AppKitConfig) {
     this.projectId = config.projectId;
@@ -106,7 +108,7 @@ export class AppKit {
    * @param type - The type of connector to use.
    * @param options - Optional connection options.
    */
-  async connect(type: New_ConnectorType, options?: ConnectOptions): Promise<void> {
+  async connect(type: New_ConnectorType, options?: AppKitConnectOptions): Promise<void> {
     try {
       const { namespaces, defaultChain, universalLink } = options ?? {};
       const connector = await this.createConnector(type);
@@ -114,7 +116,8 @@ export class AppKit {
       const approvedNamespaces = await connector.connect({
         namespaces: namespaces ?? this.namespaces,
         defaultChain,
-        universalLink
+        universalLink,
+        siweConfig: this.config?.siweConfig
       });
 
       const walletInfo = connector.getWalletInfo();
@@ -270,15 +273,23 @@ export class AppKit {
     }
 
     // Default to WalletConnectConnector if no custom connector matches
-    const walletConnectConnector = new WalletConnectConnector({
+    return this.createWalletConnectConnector();
+  }
+
+  private async createWalletConnectConnector() {
+    if (this.walletConnectConnector) {
+      return this.walletConnectConnector;
+    }
+
+    this.walletConnectConnector = new WalletConnectConnector({
       projectId: this.projectId
     });
-    await walletConnectConnector.init({
+    await this.walletConnectConnector.init({
       storage: this.config.storage,
       metadata: this.config.metadata
     });
 
-    return walletConnectConnector;
+    return this.walletConnectConnector;
   }
 
   //TODO: reuse logic with connect method

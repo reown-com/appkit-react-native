@@ -6,7 +6,7 @@ import type {
   SIWESession,
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs
-} from '../utils/TypeUtils';
+} from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {

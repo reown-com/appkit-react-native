@@ -8,7 +8,7 @@ import type {
   SIWEClientMethods,
   SIWESession,
   SIWEMessageArgs
-} from './utils/TypeUtils';
+} from '@reown/appkit-common-react-native';
 import type { SIWEControllerClient } from './controller/SIWEController';
 
 import { ConstantsUtil } from './utils/ConstantsUtil';
