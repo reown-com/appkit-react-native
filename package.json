@@ -1,4 +1,5 @@
 {
+  "name": "appkit-react-native",
   "version": "1.2.5",
   "private": true,
   "workspaces": [
