@@ -99,8 +99,11 @@ export class WalletConnectConnector extends WalletConnector {
     let session;
 
     // SIWE
+    const isEVMOnly = Object.keys(namespaces ?? {}).length === 1 && namespaces?.['eip155'];
     const params = await siweConfig?.getMessageParams?.();
-    if (siweConfig?.options?.enabled && params && Object.keys(params).length > 0) {
+    if (siweConfig?.options?.enabled && params && Object.keys(params).length > 0 && isEVMOnly) {
+      // 1CA is only supported on EVM
+
       // @ts-ignore
       const result = await provider.authenticate(
         {

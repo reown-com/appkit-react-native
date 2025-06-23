@@ -57,6 +57,7 @@ export function AppKit() {
     if (OptionsController.state.isSiweEnabled) {
       if (
         SIWEController.state.status !== 'success' &&
+        ConnectionsController.state.activeNamespace === 'eip155' &&
         !!ConnectionsController.state.activeAddress
       ) {
         await disconnect();

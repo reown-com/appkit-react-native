@@ -11,7 +11,8 @@ import {
   type Platform,
   OptionsController,
   ApiController,
-  EventsController
+  EventsController,
+  ConnectionsController
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 import { useAppKit } from '../../AppKitContext';
@@ -45,10 +46,9 @@ export function ConnectingView() {
   const initializeConnection = async (retry = false) => {
     try {
       const { wcPairingExpiry } = ConnectionController.state;
-      // const { data: routeData } = RouterController.state;
+      const { data: routeData } = RouterController.state;
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.setWcError(false);
-        // ConnectionController.connectWalletConnect(routeData?.wallet?.link_mode ?? undefined);
 
         let connectPromise: Promise<void>;
         // TODO: check phantom wallet id from cloud
@@ -56,16 +56,17 @@ export function ConnectingView() {
           connectPromise = connect('phantom');
         } else {
           connectPromise = connect('walletconnect', {
-            universalLink: data?.wallet?.link_mode ?? undefined
+            universalLink: routeData?.wallet?.link_mode ?? undefined
           });
         }
         ConnectionController.setWcPromise(connectPromise);
         await connectPromise;
-        // await ConnectionController.state.wcPromise;
         // ConnectorController.setConnectedConnector('WALLET_CONNECT');
-        AccountController.setIsConnected(true);
 
-        if (OptionsController.state.isSiweEnabled) {
+        if (
+          OptionsController.state.isSiweEnabled &&
+          ConnectionsController.state.activeNamespace === 'eip155'
+        ) {
           if (SIWEController.state.status === 'success') {
             ModalController.close();
           } else {
