@@ -55,8 +55,9 @@ export function ConnectingView() {
         if (data?.wallet?.id === 'phantom-wallet') {
           connectPromise = connect('phantom');
         } else {
-          //TODO: check linkmode
-          connectPromise = connect('walletconnect');
+          connectPromise = connect('walletconnect', {
+            universalLink: data?.wallet?.link_mode ?? undefined
+          });
         }
         ConnectionController.setWcPromise(connectPromise);
         await connectPromise;
