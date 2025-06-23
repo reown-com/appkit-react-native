@@ -1,7 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
 import {
-  AccountController,
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
