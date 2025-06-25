@@ -7175,7 +7175,7 @@ __metadata:
   resolution: "@reown/appkit-core-react-native@workspace:packages/core"
   dependencies:
     "@reown/appkit-common-react-native": "npm:1.2.5"
-    valtio: "npm:1.11.2"
+    valtio: "npm:1.13.2"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"
     "@walletconnect/react-native-compat": ">=2.13.1"
@@ -7294,7 +7294,7 @@ __metadata:
     "@reown/appkit-common-react-native": "npm:1.2.5"
     "@reown/appkit-core-react-native": "npm:1.2.5"
     "@reown/appkit-ui-react-native": "npm:1.2.5"
-    valtio: "npm:1.11.2"
+    valtio: "npm:1.13.2"
   peerDependencies:
     "@walletconnect/utils": ">=2.16.1"
   languageName: unknown
