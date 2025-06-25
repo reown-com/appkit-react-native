@@ -17,6 +17,10 @@ export default StyleSheet.create({
     width: 16,
     marginRight: 2
   },
+  paymentButtonMock: {
+    borderRadius: BorderRadius.s,
+    height: 64
+  },
   networkImage: {
     height: 14,
     width: 14,

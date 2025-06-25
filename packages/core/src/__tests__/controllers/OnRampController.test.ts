@@ -231,28 +231,33 @@ describe('OnRampController', () => {
     it('should update country and currency', async () => {
       // Mock utils
       (StorageUtil.getOnRampCountries as jest.Mock).mockResolvedValue([]);
+      (StorageUtil.getOnRampCountriesDefaults as jest.Mock).mockResolvedValue([]);
       (StorageUtil.getOnRampPreferredCountry as jest.Mock).mockResolvedValue(undefined);
       (StorageUtil.setOnRampCountries as jest.Mock).mockImplementation(() => Promise.resolve([]));
       (CoreHelperUtil.getCountryFromTimezone as jest.Mock).mockReturnValue('US');
-
-      // Mock COUNTRY_CURRENCIES mapping
-      const originalCountryCurrencies = ConstantsUtil.COUNTRY_CURRENCIES;
-      Object.defineProperty(ConstantsUtil, 'COUNTRY_CURRENCIES', {
-        value: {
-          US: 'USD',
-          AR: 'ARS'
-        },
-        configurable: true
-      });
 
       // Mock API responses with countries and currencies
       (BlockchainApiController.fetchOnRampCountries as jest.Mock).mockResolvedValue([
         mockCountry,
         mockCountry2
       ]);
+
       (BlockchainApiController.fetchOnRampFiatCurrencies as jest.Mock).mockResolvedValue([
         mockFiatCurrency, // USD
         mockFiatCurrency2 // ARS
+      ]);
+
+      (BlockchainApiController.fetchOnRampCountriesDefaults as jest.Mock).mockResolvedValue([
+        {
+          countryCode: 'US',
+          defaultCurrencyCode: 'USD',
+          defaultPaymentMethods: ['CREDIT_DEBIT_CARD']
+        },
+        {
+          countryCode: 'AR',
+          defaultCurrencyCode: 'ARS',
+          defaultPaymentMethods: ['CREDIT_DEBIT_CARD']
+        }
       ]);
 
       // Execute
@@ -268,27 +273,24 @@ describe('OnRampController', () => {
       // Verify both country and currency were updated
       expect(OnRampController.state.selectedCountry).toEqual(mockCountry2);
       expect(OnRampController.state.paymentCurrency).toEqual(mockFiatCurrency2);
-
-      // Restore original COUNTRY_CURRENCIES
-      Object.defineProperty(ConstantsUtil, 'COUNTRY_CURRENCIES', {
-        value: originalCountryCurrencies,
-        configurable: true
-      });
     });
 
     it('should not update currency when updateCurrency is false', async () => {
       // Mock API responses
       (StorageUtil.setOnRampPreferredCountry as jest.Mock).mockResolvedValue(undefined);
 
-      // Mock COUNTRY_CURRENCIES mapping
-      const originalCountryCurrencies = ConstantsUtil.COUNTRY_CURRENCIES;
-      Object.defineProperty(ConstantsUtil, 'COUNTRY_CURRENCIES', {
-        value: {
-          US: 'USD',
-          AR: 'ARS'
+      (BlockchainApiController.fetchOnRampCountriesDefaults as jest.Mock).mockResolvedValue([
+        {
+          countryCode: 'US',
+          defaultCurrencyCode: 'USD',
+          defaultPaymentMethods: ['CREDIT_DEBIT_CARD']
         },
-        configurable: true
-      });
+        {
+          countryCode: 'AR',
+          defaultCurrencyCode: 'ARS',
+          defaultPaymentMethods: ['CREDIT_DEBIT_CARD']
+        }
+      ]);
 
       // Load initial data
       await OnRampController.loadOnRampData();
@@ -300,12 +302,6 @@ describe('OnRampController', () => {
       // Verify country changed but currency remained the same
       expect(OnRampController.state.selectedCountry).toEqual(mockCountry2);
       expect(OnRampController.state.paymentCurrency).toEqual(initialCurrency);
-
-      // Restore original COUNTRY_CURRENCIES
-      Object.defineProperty(ConstantsUtil, 'COUNTRY_CURRENCIES', {
-        value: originalCountryCurrencies,
-        configurable: true
-      });
     });
   });
 
@@ -335,16 +331,20 @@ describe('OnRampController', () => {
       OnRampController.setPaymentAmount(100);
 
       // Mock API response
+      (BlockchainApiController.fetchOnRampPaymentMethods as jest.Mock).mockResolvedValue([
+        mockPaymentMethod
+      ]);
       (BlockchainApiController.getOnRampQuotes as jest.Mock).mockResolvedValue([mockQuote]);
 
       // Execute
       expect(OnRampController.state.quotesLoading).toBe(false);
+      await OnRampController.fetchPaymentMethods();
       await OnRampController.getQuotes();
 
       // Verify
       expect(OnRampController.state.quotesLoading).toBe(false);
       expect(OnRampController.state.quotes).toEqual([mockQuote]);
-      expect(OnRampController.state.selectedQuote).toStrictEqual(mockQuote);
+      expect(OnRampController.state.selectedQuote).toEqual(mockQuote);
     });
 
     it('should handle quotes fetch error', async () => {

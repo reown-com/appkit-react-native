@@ -32,7 +32,8 @@ import type {
   OnRampQuote,
   BlockchainApiOnRampWidgetRequest,
   BlockchainApiOnRampQuotesRequest,
-  OnRampFiatLimit
+  OnRampFiatLimit,
+  OnRampCountryDefaults
 } from '../utils/TypeUtil';
 import { OptionsController } from './OptionsController';
 import { ConstantsUtil } from '../utils/ConstantsUtil';
@@ -296,6 +297,17 @@ export const BlockchainApiController = {
       params: {
         projectId: OptionsController.state.projectId,
         type: 'fiat-purchases-limits'
+      }
+    });
+  },
+
+  async fetchOnRampCountriesDefaults() {
+    return await state.api.get<OnRampCountryDefaults[]>({
+      path: '/v1/onramp/providers/properties',
+      headers: getHeaders(),
+      params: {
+        projectId: OptionsController.state.projectId,
+        type: 'countries-defaults'
       }
     });
   },

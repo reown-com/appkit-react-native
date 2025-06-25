@@ -24,7 +24,7 @@ export function LoadingView() {
           </FlexView>
 
           {/* Payment Method Button */}
-          <Shimmer width="100%" height={64} borderRadius={16} style={styles.paymentMethodButton} />
+          <Shimmer width="100%" height={64} borderRadius={16} style={styles.paymentButtonMock} />
 
           {/* Action Buttons */}
           <FlexView

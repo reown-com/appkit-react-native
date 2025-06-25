@@ -860,6 +860,12 @@ export type OnRampCountry = {
   name: string;
 };
 
+export type OnRampCountryDefaults = {
+  countryCode: string;
+  defaultCurrencyCode: string;
+  defaultPaymentMethods: string[];
+};
+
 export type OnRampFiatCurrency = {
   currencyCode: string;
   name: string;

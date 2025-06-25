@@ -2,6 +2,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {
   OnRampCountry,
+  OnRampCountryDefaults,
   OnRampFiatCurrency,
   OnRampFiatLimit,
   OnRampServiceProvider,
@@ -21,6 +22,7 @@ const CONNECTED_CONNECTOR = '@w3m/connected_connector';
 const CONNECTED_SOCIAL = '@appkit/connected_social';
 const ONRAMP_PREFERRED_COUNTRY = '@appkit/onramp_preferred_country';
 const ONRAMP_COUNTRIES = '@appkit/onramp_countries';
+const ONRAMP_COUNTRIES_DEFAULTS = '@appkit/onramp_countries_defaults';
 const ONRAMP_SERVICE_PROVIDERS = '@appkit/onramp_service_providers';
 const ONRAMP_FIAT_LIMITS = '@appkit/onramp_fiat_limits';
 const ONRAMP_FIAT_CURRENCIES = '@appkit/onramp_fiat_currencies';
@@ -236,6 +238,42 @@ export const StorageUtil = {
       return countries ? (JSON.parse(countries) as OnRampCountry[]) : [];
     } catch {
       console.info('Unable to get OnRamp Countries');
+    }
+
+    return [];
+  },
+
+  async setOnRampCountriesDefaults(countriesDefaults: OnRampCountryDefaults[]) {
+    try {
+      const timestamp = Date.now();
+
+      await AsyncStorage.setItem(
+        ONRAMP_COUNTRIES_DEFAULTS,
+        JSON.stringify({ data: countriesDefaults, timestamp })
+      );
+    } catch {
+      console.info('Unable to set OnRamp Countries Defaults');
+    }
+  },
+
+  async getOnRampCountriesDefaults() {
+    try {
+      const result = await AsyncStorage.getItem(ONRAMP_COUNTRIES_DEFAULTS);
+
+      if (!result) {
+        return [];
+      }
+
+      const { data, timestamp } = JSON.parse(result);
+
+      // Cache for 1 week
+      if (timestamp && DateUtil.isMoreThanOneWeekAgo(timestamp)) {
+        return [];
+      }
+
+      return data ? (data as OnRampCountryDefaults[]) : [];
+    } catch {
+      console.info('Unable to get OnRamp Countries Defaults');
     }
 
     return [];
