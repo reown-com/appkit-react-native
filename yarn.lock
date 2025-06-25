@@ -7320,7 +7320,6 @@ __metadata:
   peerDependencies:
     react: ">=17"
     react-native: ">=0.68.5"
-    react-native-modal: ">=13"
   languageName: unknown
   linkType: soft
 
