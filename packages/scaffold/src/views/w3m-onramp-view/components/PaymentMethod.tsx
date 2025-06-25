@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
     marginBottom: Spacing['4xs']
   },
   logo: {
-    width: 24,
-    height: 24
+    width: 26,
+    height: 26
   },
   checkmark: {
     borderRadius: BorderRadius.full,

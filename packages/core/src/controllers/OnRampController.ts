@@ -126,6 +126,7 @@ export const OnRampController = {
     }
 
     await Promise.all([this.fetchPaymentMethods(), this.fetchCryptoCurrencies()]);
+    this.clearQuotes();
 
     state.loading = false;
 
@@ -134,12 +135,6 @@ export const OnRampController = {
 
   setSelectedPaymentMethod(paymentMethod: OnRampPaymentMethod) {
     state.selectedPaymentMethod = paymentMethod;
-    state.paymentMethods = [
-      paymentMethod,
-      ...state.paymentMethods.filter(m => m.paymentMethod !== paymentMethod.paymentMethod)
-    ];
-
-    this.clearQuotes();
   },
 
   setPurchaseCurrency(currency: OnRampCryptoCurrency) {
@@ -280,9 +275,7 @@ export const OnRampController = {
           return aIndex - bIndex;
         }) || [];
 
-      state.selectedPaymentMethod = paymentMethods?.[0] || undefined;
-
-      this.clearQuotes();
+      state.selectedPaymentMethod = undefined;
     } catch (error) {
       state.error = {
         type: OnRampErrorType.FAILED_TO_LOAD_METHODS,
@@ -391,6 +384,8 @@ export const OnRampController = {
     }
 
     state.quotesLoading = true;
+    state.selectedQuote = undefined;
+    state.selectedServiceProvider = undefined;
     state.error = undefined;
 
     this.abortGetQuotes(false);
@@ -399,7 +394,6 @@ export const OnRampController = {
     try {
       const body = {
         countryCode: state.selectedCountry?.countryCode!,
-        paymentMethodType: state.selectedPaymentMethod?.paymentMethod!,
         destinationCurrencyCode: state.purchaseCurrency?.currencyCode!,
         sourceAmount: state.paymentAmount,
         sourceCurrencyCode: state.paymentCurrency?.currencyCode!,
@@ -418,9 +412,25 @@ export const OnRampController = {
       const quotes = response.sort((a, b) => b.customerScore - a.customerScore);
 
       state.quotes = quotes;
-      state.selectedQuote = quotes[0];
+
+      //Replace payment method if it's not in the quotes
+      if (
+        !state.selectedPaymentMethod ||
+        !quotes.some(
+          quote => quote.paymentMethodType === state.selectedPaymentMethod?.paymentMethod
+        )
+      ) {
+        state.selectedPaymentMethod = state.paymentMethods.find(
+          method => method.paymentMethod === quotes[0]?.paymentMethodType
+        );
+      }
+
+      state.selectedQuote = quotes.find(
+        quote => quote.paymentMethodType === state.selectedPaymentMethod?.paymentMethod
+      );
+
       state.selectedServiceProvider = state.serviceProviders.find(
-        sp => sp.serviceProvider === quotes[0]?.serviceProvider
+        sp => sp.serviceProvider === state.selectedQuote?.serviceProvider
       );
     } catch (error: any) {
       if (error.name === 'AbortError') {

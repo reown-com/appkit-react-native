@@ -319,7 +319,7 @@ export interface BlockchainApiSwapTokensRequest {
 
 export interface BlockchainApiOnRampQuotesRequest {
   countryCode: string;
-  paymentMethodType: string;
+  paymentMethodType?: string;
   destinationCurrencyCode: string;
   sourceAmount: number;
   sourceCurrencyCode: string;

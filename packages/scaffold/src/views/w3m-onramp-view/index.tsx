@@ -16,7 +16,6 @@ import {
   Button,
   FlexView,
   Image,
-  ListItem,
   Text,
   TokenButton,
   useTheme
@@ -29,6 +28,7 @@ import { CurrencyInput } from './components/CurrencyInput';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
 import { Header } from './components/Header';
 import { LoadingView } from './components/LoadingView';
+import PaymentButton from './components/PaymentButton';
 import styles from './styles';
 
 const MemoizedCurrency = memo(Currency);
@@ -40,10 +40,10 @@ export function OnRampView() {
   const {
     purchaseCurrency,
     paymentCurrency,
-    paymentMethods,
     selectedPaymentMethod,
     paymentAmount,
     quotesLoading,
+    quotes,
     selectedQuote,
     error,
     loading,
@@ -53,7 +53,6 @@ export function OnRampView() {
   const [searchValue, setSearchValue] = useState('');
   const [isCurrencyModalVisible, setIsCurrencyModalVisible] = useState(false);
   const [isPaymentMethodModalVisible, setIsPaymentMethodModalVisible] = useState(false);
-  const providerImage = OnRampController.getServiceProviderImage(selectedQuote?.serviceProvider);
   const purchaseCurrencyCode =
     purchaseCurrency?.currencyCode?.split('_')[0] ?? purchaseCurrency?.currencyCode;
   const networkImage = AssetUtil.getNetworkImage(caipNetwork);
@@ -64,20 +63,38 @@ export function OnRampView() {
     }
   }, []);
 
-  const getProviderButtonText = () => {
+  const getPaymentButtonTitle = () => {
+    if (selectedPaymentMethod) {
+      return selectedPaymentMethod.name;
+    }
+
+    if (quotesLoading) {
+      return 'Loading quotes';
+    }
+
+    if (!paymentAmount || quotes?.length === 0) {
+      return 'Enter a valid amount';
+    }
+
+    return '';
+  };
+
+  const getPaymentButtonSubtitle = () => {
     if (selectedQuote) {
-      return 'via ';
+      return StringUtil.capitalize(selectedQuote?.serviceProvider);
     }
 
-    if (!paymentAmount) {
-      return 'Enter an amount';
+    if (selectedPaymentMethod) {
+      if (quotesLoading) {
+        return 'Loading quotes';
+      }
+
+      if (!paymentAmount || quotes?.length === 0) {
+        return 'Enter a valid amount';
+      }
     }
 
-    if (!paymentMethods?.length) {
-      return 'No payment methods available';
-    }
-
-    return 'Select a provider';
+    return undefined;
   };
 
   const onValueChange = (value: number) => {
@@ -130,10 +147,6 @@ export function OnRampView() {
     setIsCurrencyModalVisible(false);
     setIsPaymentMethodModalVisible(false);
   };
-
-  useEffect(() => {
-    getQuotes();
-  }, [selectedPaymentMethod, getQuotes]);
 
   useEffect(() => {
     if (error?.type === ConstantsUtil.ONRAMP_ERROR_TYPES.FAILED_TO_LOAD) {
@@ -199,50 +212,15 @@ export function OnRampView() {
             onValueChange={onValueChange}
             style={styles.currencyInput}
           />
-          <ListItem
-            chevron
-            backgroundColor="gray-glass-005"
+          <PaymentButton
+            title={getPaymentButtonTitle()}
+            subtitle={getPaymentButtonSubtitle()}
+            paymentLogo={selectedPaymentMethod?.logos[themeMode ?? 'light']}
+            providerLogo={OnRampController.getServiceProviderImage(selectedQuote?.serviceProvider)}
+            disabled={!paymentAmount || quotes?.length === 0}
             loading={quotesLoading || loading}
             onPress={() => setIsPaymentMethodModalVisible(true)}
-            style={styles.paymentMethodButton}
-            imageSrc={selectedPaymentMethod?.logos[themeMode ?? 'light']}
-            imageStyle={styles.paymentMethodImage}
-            imageProps={{
-              resizeMethod: 'resize',
-              resizeMode: 'contain'
-            }}
-            imageContainerStyle={[
-              styles.paymentMethodImageContainer,
-              { backgroundColor: Theme['gray-glass-010'] }
-            ]}
-            disabled={!selectedPaymentMethod || !paymentAmount}
-            testID="payment-method-button"
-          >
-            <FlexView>
-              {selectedPaymentMethod?.name && (
-                <Text variant="paragraph-400" color="fg-100">
-                  {selectedPaymentMethod.name}
-                </Text>
-              )}
-              {getProviderButtonText() && (
-                <FlexView flexDirection="row" alignItems="center" margin={['3xs', '0', '0', '0']}>
-                  <Text variant="small-400" color="fg-150">
-                    {getProviderButtonText()}
-                  </Text>
-                  {selectedQuote && (
-                    <>
-                      {providerImage && (
-                        <Image source={providerImage} style={styles.providerImage} />
-                      )}
-                      <Text variant="small-400" color="fg-150">
-                        {StringUtil.capitalize(selectedQuote?.serviceProvider)}
-                      </Text>
-                    </>
-                  )}
-                </FlexView>
-              )}
-            </FlexView>
-          </ListItem>
+          />
           <FlexView
             flexDirection="row"
             alignItems="center"

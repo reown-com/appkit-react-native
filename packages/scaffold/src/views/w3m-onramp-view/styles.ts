@@ -9,21 +9,6 @@ export default StyleSheet.create({
   cancelButton: {
     flex: 1
   },
-  paymentMethodButton: {
-    borderRadius: BorderRadius.s,
-    height: 64
-  },
-  paymentMethodImage: {
-    width: 22,
-    height: 22,
-    borderRadius: 0
-  },
-  paymentMethodImageContainer: {
-    width: 40,
-    height: 40,
-    borderWidth: 0,
-    borderRadius: BorderRadius['3xs']
-  },
   currencyInput: {
     marginBottom: Spacing.m
   },

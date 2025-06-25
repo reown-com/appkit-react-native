@@ -1,6 +1,4 @@
 import {
-  AssetUtil,
-  NetworkController,
   OnRampController,
   RouterController,
   ThemeController
@@ -13,7 +11,6 @@ import {
   Separator,
   Spacing,
   Text,
-  Toggle,
   useTheme
 } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
@@ -26,9 +23,6 @@ export function OnRampCheckoutView() {
   const { selectedQuote, selectedPaymentMethod, purchaseCurrency } = useSnapshot(
     OnRampController.state
   );
-
-  const { caipNetwork } = useSnapshot(NetworkController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
 
   const value = NumberUtil.roundNumber(selectedQuote?.destinationAmount ?? 0, 6, 5);
   const symbol = selectedQuote?.destinationCurrencyCode;
@@ -105,7 +99,7 @@ export function OnRampCheckoutView() {
         </FlexView>
       </FlexView>
       <FlexView
-        padding={['xs', 's', 'm', 's']}
+        padding={['xs', 's', 'xs', 's']}
         flexDirection="row"
         alignItems="center"
         justifyContent="space-between"
@@ -128,60 +122,18 @@ export function OnRampCheckoutView() {
           </Text>
         </FlexView>
       </FlexView>
-
       {showFees && (
-        <Toggle
-          title={
-            <Text variant="paragraph-400" color="fg-200">
-              Fees{' '}
-              {showTotalFee && (
-                <Text variant="paragraph-400">
-                  {selectedQuote?.totalFee} {selectedQuote?.sourceCurrencyCode}
-                </Text>
-              )}
-            </Text>
-          }
-          style={[styles.feesToggle, { backgroundColor: Theme['gray-glass-002'] }]}
-          contentContainerStyle={styles.feesToggleContent}
+        <FlexView
+          padding={['xs', 's', 'xs', 's']}
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="center"
         >
-          {showNetworkFee && (
-            <FlexView
-              flexDirection="row"
-              justifyContent="space-between"
-              style={[styles.toggleItem, { backgroundColor: Theme['gray-glass-002'] }]}
-              margin={['0', '0', 'xs', '0']}
-            >
-              <Text variant="small-500" color="fg-150">
-                Network Fees
-              </Text>
-              <FlexView flexDirection="row" alignItems="center">
-                {networkImage && (
-                  <Image
-                    source={networkImage}
-                    style={[styles.networkImage, { borderColor: Theme['gray-glass-010'] }]}
-                  />
-                )}
-                <Text variant="small-400">
-                  {selectedQuote?.networkFee} {selectedQuote?.sourceCurrencyCode}
-                </Text>
-              </FlexView>
-            </FlexView>
-          )}
-          {showTransactionFee && (
-            <FlexView
-              flexDirection="row"
-              justifyContent="space-between"
-              style={[styles.toggleItem, { backgroundColor: Theme['gray-glass-002'] }]}
-            >
-              <Text variant="small-500" color="fg-150">
-                Transaction Fees
-              </Text>
-              <Text variant="small-400">
-                {selectedQuote.transactionFee} {selectedQuote?.sourceCurrencyCode}
-              </Text>
-            </FlexView>
-          )}
-        </Toggle>
+          <Text color="fg-200">Fees</Text>
+          <Text>
+            {selectedQuote?.totalFee} {selectedQuote?.sourceCurrencyCode}
+          </Text>
+        </FlexView>
       )}
       <FlexView flexDirection="row" justifyContent="space-between" margin={['xl', '0', '0', '0']}>
         <Button
@@ -213,17 +165,6 @@ const styles = StyleSheet.create({
   },
   separator: {
     marginVertical: Spacing.m
-  },
-  feesToggle: {
-    borderRadius: BorderRadius.xs
-  },
-  feesToggleContent: {
-    paddingHorizontal: Spacing.xs,
-    paddingBottom: Spacing.xs
-  },
-  toggleItem: {
-    padding: Spacing.s,
-    borderRadius: BorderRadius.xxs
   },
   paymentMethodImage: {
     width: 14,

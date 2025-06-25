@@ -1,3 +1,4 @@
+/* eslint-disable valtio/state-snapshot-rule */
 import { useSnapshot } from 'valtio';
 import { useRef, useState, useMemo, useEffect } from 'react';
 import Modal from 'react-native-modal';
@@ -9,7 +10,6 @@ import {
   Text,
   useTheme,
   Separator,
-  LoadingSpinner,
   BorderRadius
 } from '@reown/appkit-ui-react-native';
 import {
@@ -17,7 +17,6 @@ import {
   type OnRampPaymentMethod,
   type OnRampQuote
 } from '@reown/appkit-core-react-native';
-import { Placeholder } from '../../../partials/w3m-placeholder';
 import { Quote, ITEM_HEIGHT as QUOTE_ITEM_HEIGHT } from './Quote';
 import { PaymentMethod } from './PaymentMethod';
 
@@ -31,56 +30,74 @@ const SEPARATOR_HEIGHT = Spacing.s;
 
 export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentModalProps) {
   const Theme = useTheme();
-  const { selectedQuote, quotes } = useSnapshot(OnRampController.state);
+  const { selectedQuote, quotes, selectedPaymentMethod } = useSnapshot(OnRampController.state);
+
   const paymentMethodsRef = useRef<FlatList>(null);
   const [paymentMethods, setPaymentMethods] = useState<OnRampPaymentMethod[]>(
     OnRampController.state.paymentMethods
   );
 
+  const [activePaymentMethod, setActivePaymentMethod] = useState<OnRampPaymentMethod | undefined>(
+    OnRampController.state.selectedPaymentMethod
+  );
+
+  const availablePaymentMethods = useMemo(() => {
+    return paymentMethods.filter(
+      paymentMethod =>
+        quotes?.some(quote => quote.paymentMethodType === paymentMethod.paymentMethod)
+    );
+  }, [paymentMethods, quotes]);
+
+  const availableQuotes = useMemo(() => {
+    return quotes?.filter(quote => activePaymentMethod?.paymentMethod === quote.paymentMethodType);
+  }, [quotes, activePaymentMethod]);
+
   const sortedQuotes = useMemo(() => {
-    if (!selectedQuote) {
-      return quotes;
+    if (!selectedQuote || selectedQuote.paymentMethodType !== activePaymentMethod?.paymentMethod) {
+      return availableQuotes;
     }
 
     return [
       selectedQuote,
-      // eslint-disable-next-line valtio/state-snapshot-rule
-      ...(quotes?.filter(quote => quote.serviceProvider !== selectedQuote.serviceProvider) ?? [])
+
+      ...(availableQuotes?.filter(
+        quote => quote.serviceProvider !== selectedQuote.serviceProvider
+      ) ?? [])
     ];
-  }, [quotes, selectedQuote]);
+  }, [availableQuotes, selectedQuote, activePaymentMethod]);
 
   const renderSeparator = () => {
     return <View style={{ height: SEPARATOR_HEIGHT }} />;
   };
 
   const handleQuotePress = (quote: OnRampQuote) => {
-    if (quote.serviceProvider !== OnRampController.state.selectedQuote?.serviceProvider) {
+    if (activePaymentMethod) {
+      OnRampController.clearError();
       OnRampController.setSelectedQuote(quote);
+      OnRampController.setSelectedPaymentMethod(activePaymentMethod);
     }
     onClose();
   };
 
   const handlePaymentMethodPress = (paymentMethod: OnRampPaymentMethod) => {
-    if (
-      paymentMethod.paymentMethod !== OnRampController.state.selectedPaymentMethod?.paymentMethod
-    ) {
-      OnRampController.setSelectedPaymentMethod(paymentMethod);
-    }
+    setActivePaymentMethod(paymentMethod);
   };
 
   const renderQuote = ({ item }: { item: OnRampQuote }) => {
     const logoURL = OnRampController.getServiceProviderImage(item.serviceProvider);
-    const selected = item.serviceProvider === OnRampController.state.selectedQuote?.serviceProvider;
-    const isBestDeal =
-      OnRampController.state.quotes?.findIndex(
-        quote => quote.serviceProvider === item.serviceProvider
-      ) === 0;
-    const tagText = isBestDeal ? 'Best Deal' : item.lowKyc ? 'Low KYC' : undefined;
+    const isSelected =
+      item.serviceProvider === OnRampController.state.selectedQuote?.serviceProvider &&
+      item.paymentMethodType === OnRampController.state.selectedQuote?.paymentMethodType;
+
+    const isRecommended =
+      availableQuotes?.findIndex(quote => quote.serviceProvider === item.serviceProvider) === 0 &&
+      availableQuotes?.length > 1;
+    const tagText = isRecommended ? 'Recommended' : item.lowKyc ? 'Low KYC' : undefined;
 
     return (
       <Quote
         item={item}
-        selected={selected}
+        selected={isSelected}
         logoURL={logoURL}
         onQuotePress={() => handleQuotePress(item)}
         tagText={tagText}
@@ -88,44 +105,31 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
     );
   };
 
-  const renderEmpty = () => {
-    return OnRampController.state.quotesLoading ? (
-      <FlexView
-        alignItems="center"
-        justifyContent="center"
-        padding="2xl"
-        style={styles.emptyContainer}
-      >
-        <LoadingSpinner />
-      </FlexView>
-    ) : (
-      <Placeholder
-        title="No providers available"
-        description="Please select a different payment method or increase the amount"
-        icon="warningCircle"
-      />
-    );
-  };
-
   const renderPaymentMethod = ({ item }: { item: OnRampPaymentMethod }) => {
     const parsedItem = item as OnRampPaymentMethod;
-    const selected =
-      parsedItem.paymentMethod === OnRampController.state.selectedPaymentMethod?.paymentMethod;
+    const isSelected = parsedItem.paymentMethod === activePaymentMethod?.paymentMethod;
 
     return (
       <PaymentMethod
         item={parsedItem}
         onPress={() => handlePaymentMethodPress(parsedItem)}
-        selected={selected}
+        selected={isSelected}
         testID={`payment-method-item-${parsedItem.paymentMethod}`}
       />
     );
   };
 
   useEffect(() => {
-    if (visible) {
+    if (visible && OnRampController.state.selectedPaymentMethod) {
+      const methods = [
+        OnRampController.state.selectedPaymentMethod,
+        ...OnRampController.state.paymentMethods.filter(
+          m => m.paymentMethod !== OnRampController.state.selectedPaymentMethod?.paymentMethod
+        )
+      ];
       //Update payment methods order
-      setPaymentMethods(OnRampController.state.paymentMethods);
+      setPaymentMethods(methods);
+      setActivePaymentMethod(OnRampController.state.selectedPaymentMethod);
     }
   }, [visible]);
 
@@ -156,7 +160,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
         </Text>
         <FlexView>
           <FlatList
-            data={paymentMethods}
+            data={availablePaymentMethods}
             renderItem={renderPaymentMethod}
             ref={paymentMethodsRef}
             style={styles.paymentMethodsContainer}
@@ -175,10 +179,10 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
           data={sortedQuotes}
           bounces={false}
           renderItem={renderQuote}
+          extraData={selectedPaymentMethod}
           contentContainerStyle={styles.listContent}
           ItemSeparatorComponent={renderSeparator}
           fadingEdgeLength={20}
-          ListEmptyComponent={renderEmpty}
           keyExtractor={item => `${item.serviceProvider}-${item.paymentMethodType}`}
           getItemLayout={(_, index) => ({
             length: QUOTE_ITEM_HEIGHT + SEPARATOR_HEIGHT,

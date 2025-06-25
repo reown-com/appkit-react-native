@@ -42,7 +42,7 @@ export function Currency({ onPress, item, selected, title, subtitle, testID }: P
         <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start">
           <Image
             source={{ uri: item.symbolImageUrl }}
-            style={[styles.logo, { backgroundColor: Theme['fg-100'] }]}
+            style={[styles.logo, { backgroundColor: Theme['fg-300'] }]}
           />
           <FlexView>
             <Text variant="paragraph-500" color="fg-100" numberOfLines={1} ellipsizeMode="tail">
