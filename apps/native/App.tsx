@@ -21,7 +21,6 @@ import { siweConfig } from './src/utils/SiweUtils';
 
 import { AccountView } from './src/views/AccountView';
 import { ActionsView } from './src/views/ActionsView';
-import { getCustomWallets } from './src/utils/misc';
 import { chains } from './src/utils/WagmiUtils';
 import { OpenButton } from './src/components/OpenButton';
 import { DisconnectButton } from './src/components/DisconnectButton';
@@ -62,14 +61,11 @@ const wagmiConfig = defaultWagmiConfig({
 
 const queryClient = new QueryClient();
 
-const customWallets = getCustomWallets();
-
 createAppKit({
   projectId,
   wagmiConfig,
   siweConfig,
   clipboardClient,
-  customWallets,
   enableAnalytics: true,
   metadata,
   debug: true,
