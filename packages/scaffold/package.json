@@ -44,8 +44,7 @@
   },
   "peerDependencies": {
     "react": ">=17",
-    "react-native": ">=0.68.5",
-    "react-native-modal": ">=13"
+    "react-native": ">=0.68.5"
   },
   "react-native": "src/index.ts",
   "react-native-builder-bob": {
