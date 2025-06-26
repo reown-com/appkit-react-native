@@ -409,6 +409,7 @@ export const OnRampController = {
 
     this.abortGetQuotes(false);
     quotesAbortController = new AbortController();
+    const currentSignal = quotesAbortController.signal;
 
     try {
       const body = {
@@ -419,10 +420,7 @@ export const OnRampController = {
         walletAddress: AccountController.state.address!
       };
 
-      const response = await BlockchainApiController.getOnRampQuotes(
-        body,
-        quotesAbortController.signal
-      );
+      const response = await BlockchainApiController.getOnRampQuotes(body, currentSignal);
 
       if (!response || !response.length) {
         throw new Error('No quotes available');
@@ -468,7 +466,9 @@ export const OnRampController = {
       this.clearQuotes();
       state.error = mapErrorMessage(error?.code || 'UNKNOWN_ERROR');
     } finally {
-      state.quotesLoading = false;
+      if (!currentSignal.aborted) {
+        state.quotesLoading = false;
+      }
     }
   },
 
