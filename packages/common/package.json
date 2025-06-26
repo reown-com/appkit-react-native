@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-common-react-native",
-  "version": "1.2.3",
+  "version": "1.2.5",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -28,7 +28,7 @@
     "react-native"
   ],
   "repository": "https://github.com/reown-com/appkit-react-native",
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "homepage": "https://reown.com/appkit",
   "license": "Apache-2.0",
   "bugs": {

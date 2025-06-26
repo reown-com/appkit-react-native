@@ -1,5 +1,5 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils';
-import { proxy, ref, subscribe as sub } from 'valtio/vanilla';
+import { subscribeKey as subKey } from 'valtio/utils';
+import { proxy, ref, subscribe as sub } from 'valtio';
 import { ContractUtil, type Balance } from '@reown/appkit-common-react-native';
 import { AccountController } from './AccountController';
 import { ConnectionController } from './ConnectionController';

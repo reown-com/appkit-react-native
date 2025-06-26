@@ -1,5 +1,31 @@
 # @reown/appkit-wagmi-react-native
 
+## 1.2.5
+
+### Patch Changes
+
+- [#354](https://github.com/reown-com/appkit-react-native/pull/354) [`cb8ad43`](https://github.com/reown-com/appkit-react-native/commit/cb8ad43a859ea5ae7b8bf9febb2442a83d24ff59) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: set empty required chains for connections + updated ethereum provider version
+
+- [#355](https://github.com/reown-com/appkit-react-native/pull/355) [`279cb47`](https://github.com/reown-com/appkit-react-native/commit/279cb4741789d4a44506d99b4e11d2cdc685e178) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: solved issue with apple login on iOS
+
+- Updated dependencies [[`cb8ad43`](https://github.com/reown-com/appkit-react-native/commit/cb8ad43a859ea5ae7b8bf9febb2442a83d24ff59), [`279cb47`](https://github.com/reown-com/appkit-react-native/commit/279cb4741789d4a44506d99b4e11d2cdc685e178)]:
+  - @reown/appkit-scaffold-react-native@1.2.5
+  - @reown/appkit-common-react-native@1.2.5
+  - @reown/appkit-scaffold-utils-react-native@1.2.5
+  - @reown/appkit-siwe-react-native@1.2.5
+
+## 1.2.4
+
+### Patch Changes
+
+- [#337](https://github.com/reown-com/appkit-react-native/pull/337) [`c121ae3`](https://github.com/reown-com/appkit-react-native/commit/c121ae3d52cb134e695df44d53eb548c1c934a14) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: disable coverscreen on root modal to solve issues with expo-router
+
+- Updated dependencies [[`c121ae3`](https://github.com/reown-com/appkit-react-native/commit/c121ae3d52cb134e695df44d53eb548c1c934a14)]:
+  - @reown/appkit-scaffold-react-native@1.2.4
+  - @reown/appkit-common-react-native@1.2.4
+  - @reown/appkit-scaffold-utils-react-native@1.2.4
+  - @reown/appkit-siwe-react-native@1.2.4
+
 ## 1.2.3
 
 ### Patch Changes

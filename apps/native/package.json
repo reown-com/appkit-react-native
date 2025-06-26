@@ -1,8 +1,8 @@
 {
-  "name": "@apps/native",
   "version": "1.0.8",
   "main": "index.js",
   "private": true,
+  "name": "@apps/native",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -13,7 +13,7 @@
     "eas:build": "eas build --platform all",
     "eas:build:local": "eas build --local --platform all",
     "eas:update": "eas update --branch preview",
-    "playwright:test": "playwright test",
+    "playwright:test": "./scripts/replace-ep-test.sh && playwright test",
     "playwright:install": "playwright install chromium",
     "deploy": "gh-pages --nojekyll -d dist",
     "build:web": "expo export -p web"
@@ -22,8 +22,8 @@
     "@expo/metro-runtime": "~4.0.1",
     "@react-native-async-storage/async-storage": "2.1.2",
     "@react-native-community/netinfo": "11.4.1",
-    "@reown/appkit-auth-wagmi-react-native": "1.2.3",
-    "@reown/appkit-wagmi-react-native": "1.2.3",
+    "@reown/appkit-auth-wagmi-react-native": "1.2.5",
+    "@reown/appkit-wagmi-react-native": "1.2.5",
     "@tanstack/query-async-storage-persister": "^5.40.0",
     "@tanstack/react-query": "5.56.2",
     "@tanstack/react-query-persist-client": "5.56.2",

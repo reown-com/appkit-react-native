@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-scaffold-react-native",
-  "version": "1.2.3",
+  "version": "1.2.5",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -26,7 +26,7 @@
     "react-native"
   ],
   "repository": "https://github.com/reown-com/appkit-react-native",
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "homepage": "https://reown.com/appkit",
   "license": "Apache-2.0",
   "bugs": {
@@ -37,15 +37,14 @@
     "access": "public"
   },
   "dependencies": {
-    "@reown/appkit-common-react-native": "1.2.3",
-    "@reown/appkit-core-react-native": "1.2.3",
-    "@reown/appkit-siwe-react-native": "1.2.3",
-    "@reown/appkit-ui-react-native": "1.2.3"
+    "@reown/appkit-common-react-native": "1.2.5",
+    "@reown/appkit-core-react-native": "1.2.5",
+    "@reown/appkit-siwe-react-native": "1.2.5",
+    "@reown/appkit-ui-react-native": "1.2.5"
   },
   "peerDependencies": {
     "react": ">=17",
-    "react-native": ">=0.68.5",
-    "react-native-modal": ">=13"
+    "react-native": ">=0.68.5"
   },
   "react-native": "src/index.ts",
   "react-native-builder-bob": {

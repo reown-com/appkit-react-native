@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-ethers5-react-native",
-  "version": "1.2.3",
+  "version": "1.2.5",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -27,7 +27,7 @@
     "ethers"
   ],
   "repository": "https://github.com/reown-com/appkit-react-native",
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "homepage": "https://reown.com/appkit",
   "license": "Apache-2.0",
   "bugs": {
@@ -38,11 +38,11 @@
     "access": "public"
   },
   "dependencies": {
-    "@reown/appkit-common-react-native": "1.2.3",
-    "@reown/appkit-scaffold-react-native": "1.2.3",
-    "@reown/appkit-scaffold-utils-react-native": "1.2.3",
-    "@reown/appkit-siwe-react-native": "1.2.3",
-    "@walletconnect/ethereum-provider": "2.21.0"
+    "@reown/appkit-common-react-native": "1.2.5",
+    "@reown/appkit-scaffold-react-native": "1.2.5",
+    "@reown/appkit-scaffold-utils-react-native": "1.2.5",
+    "@reown/appkit-siwe-react-native": "1.2.5",
+    "@walletconnect/ethereum-provider": "2.21.1"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": ">=1.17.0",
