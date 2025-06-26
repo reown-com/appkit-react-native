@@ -431,15 +431,38 @@ export const OnRampController = {
       state.quotes = quotes;
 
       //Replace payment method if it's not in the quotes
-      if (
-        !state.selectedPaymentMethod ||
-        !quotes.some(
+      const isValidPaymentMethod =
+        state.selectedPaymentMethod &&
+        quotes.some(
           quote => quote.paymentMethodType === state.selectedPaymentMethod?.paymentMethod
-        )
-      ) {
-        state.selectedPaymentMethod = state.paymentMethods.find(
-          method => method.paymentMethod === quotes[0]?.paymentMethodType
         );
+
+      if (!isValidPaymentMethod) {
+        const countryMethods =
+          state.countriesDefaults?.find(d => d.countryCode === state.selectedCountry?.countryCode)
+            ?.defaultPaymentMethods || [];
+
+        const availableQuoteMethods = new Set(quotes.map(q => q.paymentMethodType));
+
+        let newPaymentMethodType: string | undefined;
+        for (const dpm of countryMethods) {
+          if (availableQuoteMethods.has(dpm)) {
+            newPaymentMethodType = dpm;
+            break;
+          }
+        }
+
+        if (newPaymentMethodType) {
+          state.selectedPaymentMethod =
+            state.paymentMethods.find(m => m.paymentMethod === newPaymentMethodType) ||
+            state.paymentMethods.find(
+              method => method.paymentMethod === quotes[0]?.paymentMethodType
+            );
+        } else {
+          state.selectedPaymentMethod = state.paymentMethods.find(
+            method => method.paymentMethod === quotes[0]?.paymentMethodType
+          );
+        }
       }
 
       state.selectedQuote = quotes.find(
