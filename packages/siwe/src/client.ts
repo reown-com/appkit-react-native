@@ -108,7 +108,10 @@ export class AppKitSIWEClient {
     });
 
     const signature = await ConnectionsController.signMessage(activeAddress, message);
-    const isValid = signature && (await this.verifyMessage({ message, signature }));
+    if (!signature) {
+      throw new Error('Error signing SIWE message');
+    }
+    const isValid = await this.verifyMessage({ message, signature });
     if (!isValid) {
       throw new Error('Error verifying SIWE signature');
     }

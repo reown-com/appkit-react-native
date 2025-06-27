@@ -110,7 +110,7 @@ export class WalletConnectConnector extends WalletConnector {
           ...params,
           nonce: await siweConfig.getNonce(),
           methods: namespaces?.['eip155']?.methods,
-          chains: params.chains.map(chain => `eip155:${chain}`)
+          chains: params.chains.map(chain => (chain.includes(':') ? chain : `eip155:${chain}`))
         },
         universalLink
       );
