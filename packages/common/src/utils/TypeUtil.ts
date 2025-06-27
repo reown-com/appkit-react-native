@@ -34,6 +34,11 @@ export type AppKitNetwork = Network & {
   deprecatedCaipNetworkId?: CaipNetworkId; // for Solana deprecated id
 };
 
+export type AppKitConnectOptions = Pick<
+  ConnectOptions,
+  'namespaces' | 'defaultChain' | 'universalLink'
+>;
+
 export interface CaipNetwork {
   id: CaipNetworkId;
   name?: string;
@@ -222,6 +227,7 @@ export type ConnectOptions = {
   namespaces?: ProposalNamespaces;
   defaultChain?: CaipNetworkId;
   universalLink?: string;
+  siweConfig?: AppKitSIWEClient;
 };
 
 export type ConnectorInitOptions = {
@@ -333,4 +339,104 @@ export interface Storage {
    * @param key The key to remove.
    */
   removeItem(key: string): Promise<void>;
+}
+
+//********** SIWE Types **********//
+export interface SIWESession {
+  address: string;
+  chainId: number;
+}
+
+interface CacaoHeader {
+  t: 'caip122';
+}
+
+export interface SIWECreateMessageArgs {
+  chainId: number;
+  domain: string;
+  nonce: string;
+  uri: string;
+  address: string;
+  version: '1';
+  type?: CacaoHeader['t'];
+  nbf?: string;
+  exp?: string;
+  statement?: string;
+  requestId?: string;
+  resources?: string[];
+  expiry?: number;
+  iat?: string;
+}
+export type SIWEMessageArgs = {
+  chains: CaipNetworkId[];
+  methods?: string[];
+} & Omit<SIWECreateMessageArgs, 'address' | 'chainId' | 'nonce' | 'version'>;
+// Signed Cacao (CAIP-74)
+interface CacaoPayload {
+  domain: string;
+  aud: string;
+  nonce: string;
+  iss: string;
+  version?: string;
+  iat?: string;
+  nbf?: string;
+  exp?: string;
+  statement?: string;
+  requestId?: string;
+  resources?: string[];
+  type?: string;
+}
+
+interface Cacao {
+  h: CacaoHeader;
+  p: CacaoPayload;
+  s: {
+    t: 'eip191' | 'eip1271';
+    s: string;
+    m?: string;
+  };
+}
+
+export interface SIWEVerifyMessageArgs {
+  message: string;
+  signature: string;
+  cacao?: Cacao;
+}
+
+export interface SIWEClientMethods {
+  getNonce: (address?: string) => Promise<string>;
+  createMessage: (args: SIWECreateMessageArgs) => string;
+  verifyMessage: (args: SIWEVerifyMessageArgs) => Promise<boolean>;
+  getSession: () => Promise<SIWESession | null>;
+  signOut: () => Promise<boolean>;
+  getMessageParams?: () => Promise<SIWEMessageArgs>;
+  onSignIn?: (session?: SIWESession) => void;
+  onSignOut?: () => void;
+}
+
+export interface SIWEConfig extends SIWEClientMethods {
+  // Defaults to true
+  enabled?: boolean;
+  // In milliseconds, defaults to 5 minutes
+  nonceRefetchIntervalMs?: number;
+  // In milliseconds, defaults to 5 minutes
+  sessionRefetchIntervalMs?: number;
+  // Defaults to true
+  signOutOnDisconnect?: boolean;
+  // Defaults to true
+  signOutOnAccountChange?: boolean;
+  // Defaults to true
+  signOutOnNetworkChange?: boolean;
+}
+
+export interface AppKitSIWEClient extends SIWEClientMethods {
+  signIn: () => Promise<SIWESession | undefined>;
+  options: {
+    enabled: boolean;
+    nonceRefetchIntervalMs: number;
+    sessionRefetchIntervalMs: number;
+    signOutOnDisconnect: boolean;
+    signOutOnAccountChange: boolean;
+    signOutOnNetworkChange: boolean;
+  };
 }

@@ -25,11 +25,11 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "prettier": "prettier --check .",
     "test": "turbo run test --parallel",
-    "clean": "turbo clean && rm -rf node_modules && watchman watch-del-all",
+    "clean": "turbo clean && rm -rf node_modules && (watchman watch-del-all || true)",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
     "playwright:test": "cd apps/native && yarn playwright:test",
-    "changeset:prepublish": "yarn run clean; yarn install; yarn version:update; yarn run lint && yarn run prettier; yarn run build; yarn run test",
-    "changeset:publish": "yarn run changeset:prepublish; yarn run changeset publish",
+    "changeset:prepublish": "yarn run clean && yarn install && yarn version:update && yarn run lint && yarn run prettier && yarn run build && yarn run test",
+    "changeset:publish": "yarn run changeset:prepublish && yarn run changeset publish",
     "changeset:version": "changeset version; yarn run version:update; yarn install --refresh-lockfile",
     "version:update": "./scripts/bump-version.sh"
   },
@@ -73,8 +73,8 @@
     "tsconfig": "*",
     "turbo": "2.1.1",
     "typescript": "5.2.2",
-    "viem": "2.28.3",
-    "wagmi": "2.15.1"
+    "viem": "2.31.3",
+    "wagmi": "2.15.6"
   },
   "packageManager": "yarn@4.0.2",
   "resolutions": {

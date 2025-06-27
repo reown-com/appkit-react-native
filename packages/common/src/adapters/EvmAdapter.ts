@@ -2,6 +2,23 @@ import { BlockchainAdapter } from './BlockchainAdapter';
 import { NumberUtil } from '../utils/NumberUtil';
 
 export abstract class EVMAdapter extends BlockchainAdapter {
+  async signMessage(address: string, message: string, chain?: string): Promise<string> {
+    const provider = this.getProvider();
+
+    if (!provider) {
+      throw new Error('EVMAdapter:signMessage - provider is undefined');
+    }
+
+    const signature = await provider.request(
+      {
+        method: 'personal_sign',
+        params: [message, address]
+      },
+      `eip155:${chain}`
+    );
+
+    return signature as string;
+  }
   async estimateGas({ address, to, data, chainNamespace }: any): Promise<bigint> {
     const provider = this.getProvider();
 

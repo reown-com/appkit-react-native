@@ -28,14 +28,15 @@ import type {
   WalletInfo,
   Network,
   ChainNamespace,
-  ConnectOptions,
-  Storage
+  Storage,
+  AppKitConnectOptions,
+  AppKitSIWEClient
 } from '@reown/appkit-common-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
 import { WcHelpersUtil } from './utils/HelpersUtil';
 import { NetworkUtil } from './utils/NetworkUtil';
-import { SIWEController, type AppKitSIWEClient } from '@reown/appkit-siwe-react-native';
+import { SIWEController } from '@reown/appkit-siwe-react-native';
 import type { OpenOptions } from './client';
 
 interface AppKitConfig {
@@ -69,6 +70,7 @@ export class AppKit {
   private namespaces: ProposalNamespaces;
   private config: AppKitConfig;
   private extraConnectors: WalletConnector[];
+  private walletConnectConnector?: WalletConnector;
 
   constructor(config: AppKitConfig) {
     this.projectId = config.projectId;
@@ -106,7 +108,7 @@ export class AppKit {
    * @param type - The type of connector to use.
    * @param options - Optional connection options.
    */
-  async connect(type: New_ConnectorType, options?: ConnectOptions): Promise<void> {
+  async connect(type: New_ConnectorType, options?: AppKitConnectOptions): Promise<void> {
     try {
       const { namespaces, defaultChain, universalLink } = options ?? {};
       const connector = await this.createConnector(type);
@@ -114,7 +116,8 @@ export class AppKit {
       const approvedNamespaces = await connector.connect({
         namespaces: namespaces ?? this.namespaces,
         defaultChain,
-        universalLink
+        universalLink,
+        siweConfig: this.config?.siweConfig
       });
 
       const walletInfo = connector.getWalletInfo();
@@ -184,6 +187,10 @@ export class AppKit {
       RouterController.reset('Connect');
       TransactionsController.resetTransactions();
       ConnectionController.disconnect();
+
+      if (OptionsController.state.isSiweEnabled) {
+        await SIWEController.signOut();
+      }
 
       EventsController.sendEvent({
         type: 'track',
@@ -266,15 +273,23 @@ export class AppKit {
     }
 
     // Default to WalletConnectConnector if no custom connector matches
-    const walletConnectConnector = new WalletConnectConnector({
+    return this.createWalletConnectConnector();
+  }
+
+  private async createWalletConnectConnector() {
+    if (this.walletConnectConnector) {
+      return this.walletConnectConnector;
+    }
+
+    this.walletConnectConnector = new WalletConnectConnector({
       projectId: this.projectId
     });
-    await walletConnectConnector.init({
+    await this.walletConnectConnector.init({
       storage: this.config.storage,
       metadata: this.config.metadata
     });
 
-    return walletConnectConnector;
+    return this.walletConnectConnector;
   }
 
   //TODO: reuse logic with connect method
@@ -418,6 +433,10 @@ export class AppKit {
       //eslint-disable-next-line no-console
       console.log('accountsChanged', accounts, namespace);
       //TODO: check this
+
+      if (namespace === 'eip155') {
+        this.handleSiweChange({ isAccountChange: true });
+      }
     });
 
     adapter.on('chainChanged', ({ chainId }) => {
@@ -431,6 +450,10 @@ export class AppKit {
           network,
           tokens: this.config.tokens
         });
+      }
+
+      if (namespace === 'eip155') {
+        this.handleSiweChange({ isNetworkChange: true });
       }
     });
 
@@ -464,7 +487,8 @@ export class AppKit {
     ThemeController.setThemeVariables(options.themeVariables);
 
     //TODO: function to get sdk version based on adapters
-    // OptionsController.setSdkVersion(options._sdkVersion);
+    // @ts-ignore
+    OptionsController.setSdkVersion('appkit-react-native-multichain');
 
     if (options.clipboardClient) {
       OptionsController.setClipboardClient(options.clipboardClient);
@@ -520,6 +544,36 @@ export class AppKit {
     await this.initActiveNamespace();
     await this.initRecentWallets(options);
     //disable coinbase if connector is not set
+  }
+
+  private onSiweNavigation = () => {
+    if (ModalController.state.open) {
+      RouterController.push('ConnectingSiwe');
+    } else {
+      ModalController.open({ view: 'ConnectingSiwe' });
+    }
+  };
+
+  private async handleSiweChange(params: { isNetworkChange?: boolean; isAccountChange?: boolean }) {
+    const { isNetworkChange, isAccountChange } = params;
+    const { enabled, signOutOnAccountChange, signOutOnNetworkChange } =
+      SIWEController.state._client?.options ?? {};
+
+    if (enabled) {
+      const session = await SIWEController.getSession();
+      if (session && isAccountChange && signOutOnAccountChange) {
+        // If the address has changed and signOnAccountChange is enabled, sign out
+        await SIWEController.signOut();
+        this.onSiweNavigation();
+      } else if (isNetworkChange && signOutOnNetworkChange) {
+        // If the network has changed and signOnNetworkChange is enabled, sign out
+        await SIWEController.signOut();
+        this.onSiweNavigation();
+      } else if (!session) {
+        // If it's connected but there's no session, show sign view
+        this.onSiweNavigation();
+      }
+    }
   }
 }
 

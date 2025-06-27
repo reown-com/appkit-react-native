@@ -1,9 +1,4 @@
-import {
-  AccountController,
-  ConnectionController,
-  RouterUtil,
-  ConnectionsController
-} from '@reown/appkit-core-react-native';
+import { RouterUtil, ConnectionsController } from '@reown/appkit-core-react-native';
 import { NetworkUtil } from '@reown/appkit-common-react-native';
 
 import type {
@@ -13,7 +8,7 @@ import type {
   SIWEClientMethods,
   SIWESession,
   SIWEMessageArgs
-} from './utils/TypeUtils';
+} from '@reown/appkit-common-react-native';
 import type { SIWEControllerClient } from './controller/SIWEController';
 
 import { ConstantsUtil } from './utils/ConstantsUtil';
@@ -86,21 +81,30 @@ export class AppKitSIWEClient {
     return session;
   }
 
-  async signIn(): Promise<SIWESession> {
-    const { address } = AccountController.state;
-    const nonce = await this.getNonce(address);
-    if (!address) {
+  async signIn(): Promise<SIWESession | undefined> {
+    const { activeAddress, activeCaipNetworkId } = ConnectionsController.state;
+
+    if (!activeCaipNetworkId || !activeCaipNetworkId.startsWith('eip155')) {
+      return Promise.resolve(undefined);
+    }
+
+    const plainAddress = activeAddress?.split(':')[2];
+
+    if (!plainAddress) {
       throw new Error('An address is required to create a SIWE message.');
     }
-    const chainId = NetworkUtil.caipNetworkIdToNumber(
-      ConnectionsController.state.activeNetwork?.caipNetworkId
-    );
+
+    const nonce = await this.getNonce(plainAddress);
+
+    const chainId = NetworkUtil.caipNetworkIdToNumber(activeCaipNetworkId);
+
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.');
     }
+
     const messageParams = await this.getMessageParams?.();
     const message = this.createMessage({
-      address: `eip155:${chainId}:${address}`,
+      address: plainAddress,
       chainId,
       nonce,
       version: '1',
@@ -108,7 +112,10 @@ export class AppKitSIWEClient {
       ...messageParams!
     });
 
-    const signature = await ConnectionController.signMessage(message);
+    const signature = await ConnectionsController.signMessage(activeAddress, message);
+    if (!signature) {
+      throw new Error('Error signing SIWE message');
+    }
     const isValid = await this.verifyMessage({ message, signature });
     if (!isValid) {
       throw new Error('Error verifying SIWE signature');

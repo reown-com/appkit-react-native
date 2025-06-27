@@ -1,3 +1,4 @@
+import type { CaipNetworkId } from '@reown/appkit-common-react-native';
 import { SIWEController } from '../../index';
 
 // -- Mocks -------------------------------------------------------------
@@ -19,7 +20,7 @@ const client = {
   signOut: async () => Promise.resolve(true),
   getMessageParams: () =>
     Promise.resolve({
-      chains: [1],
+      chains: ['eip155:1'] as CaipNetworkId[],
       domain: 'mock-domain',
       uri: 'mock-uri',
       nonce: 'mock-nonce'

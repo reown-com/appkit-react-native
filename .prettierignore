@@ -1,6 +1,7 @@
 .changeset/
 .github/
 .maestro/
+.cursor/
 .turbo/
 .vscode/
 .yarn/

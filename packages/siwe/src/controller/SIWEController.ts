@@ -6,11 +6,11 @@ import type {
   SIWESession,
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs
-} from '../utils/TypeUtils';
+} from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {
-  signIn: () => Promise<SIWESession>;
+  signIn: () => Promise<SIWESession | undefined>;
   options: {
     enabled: boolean;
     nonceRefetchIntervalMs: number;
