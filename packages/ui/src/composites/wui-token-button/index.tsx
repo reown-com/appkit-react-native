@@ -57,7 +57,7 @@ export function TokenButton({
         <Image
           key="image"
           source={imageUrl}
-          style={[styles.image, { backgroundColor: Theme['fg-100'] }]}
+          style={[styles.image, { backgroundColor: Theme['inverse-100'] }]}
         />
         {renderClip && <View style={styles.clipContainer}>{renderClip}</View>}
       </View>
