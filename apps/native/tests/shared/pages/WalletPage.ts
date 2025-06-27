@@ -21,6 +21,11 @@ export class WalletPage {
 
   loadNewPage(page: Page) {
     this.page = page;
+    //clear cache
+    this.page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
     this.gotoHome = this.page.getByTestId('wc-connect');
     this.vercelPreview = this.page.locator('css=vercel-live-feedback');
   }
@@ -117,23 +122,12 @@ export class WalletPage {
     await this.page.waitForTimeout(1000);
     const sessionsButton = this.page.getByTestId('sessions');
     await sessionsButton.click();
+    const sessionCard = this.page.getByTestId('session-card');
+    await sessionCard.click();
+    const disconnectButton = this.page.getByText('Delete');
+    await disconnectButton.click();
 
-    // Try to disconnect all visible session cards
-    while (true) {
-      const sessionCards = this.page.getByTestId('session-card');
-      const count = await sessionCards.count();
-
-      if (count === 0) {
-        break;
-      }
-
-      // Click the first card and disconnect it
-      await sessionCards.first().click();
-      const disconnectButton = this.page.getByText('Delete');
-      await disconnectButton.click();
-
-      // Wait a bit for the disconnection to complete
-      await this.page.waitForTimeout(500);
-    }
+    // Wait a bit for the disconnection to complete
+    await this.page.waitForTimeout(500);
   }
 }

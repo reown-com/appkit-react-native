@@ -112,7 +112,12 @@ export function SwapInput({
               editable={editable}
               autoFocus={autoFocus}
             />
-            <TokenButton text={token?.symbol} imageUrl={token?.logoUri} onPress={onTokenPress} />
+            <TokenButton
+              text={token?.symbol}
+              imageUrl={token?.logoUri}
+              onPress={onTokenPress}
+              chevron
+            />
           </FlexView>
           {(showMax || isMarketValueGreaterThanZero) && (
             <FlexView

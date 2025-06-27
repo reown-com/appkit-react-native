@@ -2,6 +2,7 @@
 
 import { Linking, Platform } from 'react-native';
 import { ConstantsUtil as CommonConstants, type Balance } from '@reown/appkit-common-react-native';
+import * as ct from 'countries-and-timezones';
 
 import { ConstantsUtil } from './ConstantsUtil';
 import type { CaipAddress, CaipNetwork, DataWallet, LinkingRecord } from './TypeUtil';
@@ -172,8 +173,23 @@ export const CoreHelperUtil = {
     return CommonConstants.BLOCKCHAIN_API_RPC_URL;
   },
 
+  getBlockchainStagingApiUrl() {
+    return CommonConstants.BLOCKCHAIN_API_RPC_URL_STAGING;
+  },
+
   getAnalyticsUrl() {
     return CommonConstants.PULSE_API_URL;
+  },
+
+  getCountryFromTimezone() {
+    try {
+      const { timeZone } = new Intl.DateTimeFormat().resolvedOptions();
+      const country = ct.getCountryForTimezone(timeZone);
+
+      return country ? country.id : 'US'; // 'id' is the ISO country code (e.g., "US" for United States)
+    } catch (error) {
+      return 'US';
+    }
   },
 
   getUUID() {
@@ -287,5 +303,19 @@ export const CoreHelperUtil = {
     }
 
     return requested;
+  },
+
+  debounce<F extends (...args: any[]) => any>(func: F, wait: number) {
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+
+    return function (...args: Parameters<F>) {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+
+      timeout = setTimeout(() => {
+        func(...args);
+      }, wait);
+    };
   }
 };

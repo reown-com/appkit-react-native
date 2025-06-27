@@ -50,10 +50,7 @@ export function ListToken({
       >
         <FlexView flexDirection="row" alignItems="center">
           {imageSrc ? (
-            <Image
-              source={imageSrc}
-              style={[styles.image, { backgroundColor: Theme['gray-glass-005'] }]}
-            />
+            <Image source={imageSrc} style={styles.image} />
           ) : (
             <FlexView
               style={[styles.image, { backgroundColor: Theme['gray-glass-005'] }]}
