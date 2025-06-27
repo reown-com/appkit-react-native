@@ -343,7 +343,7 @@ export interface Storage {
 
 //********** SIWE Types **********//
 export interface SIWESession {
-  address: CaipAddress;
+  address: string;
   chainId: number;
 }
 
@@ -356,7 +356,7 @@ export interface SIWECreateMessageArgs {
   domain: string;
   nonce: string;
   uri: string;
-  address: CaipAddress;
+  address: string;
   version: '1';
   type?: CacaoHeader['t'];
   nbf?: string;
@@ -404,7 +404,7 @@ export interface SIWEVerifyMessageArgs {
 }
 
 export interface SIWEClientMethods {
-  getNonce: (address?: CaipAddress) => Promise<string>;
+  getNonce: (address?: string) => Promise<string>;
   createMessage: (args: SIWECreateMessageArgs) => string;
   verifyMessage: (args: SIWEVerifyMessageArgs) => Promise<boolean>;
   getSession: () => Promise<SIWESession | null>;

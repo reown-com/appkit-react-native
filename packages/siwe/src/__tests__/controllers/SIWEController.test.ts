@@ -1,8 +1,8 @@
-import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
+import type { CaipNetworkId } from '@reown/appkit-common-react-native';
 import { SIWEController } from '../../index';
 
 // -- Mocks -------------------------------------------------------------
-const session = { address: 'eip155:1:0x' as CaipAddress, chainId: 1 };
+const session = { address: '0x', chainId: 1 };
 const client = {
   signIn: () => Promise.resolve(session),
   options: {

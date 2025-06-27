@@ -10,8 +10,7 @@ import {
   type CaipNetworkId,
   type ConnectOptions,
   type ConnectorInitOptions,
-  type Metadata,
-  type CaipAddress
+  type Metadata
 } from '@reown/appkit-common-react-native';
 import { getDidAddress, getDidChainId, SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -138,7 +137,7 @@ export class WalletConnectConnector extends WalletConnector {
 
           if (address && chainId) {
             const siweSession = {
-              address: `eip155:${chainId}:${address}` as CaipAddress,
+              address,
               chainId: parseInt(chainId, 10)
             };
 

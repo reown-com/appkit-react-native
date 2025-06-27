@@ -7,8 +7,7 @@ import type {
   SIWEConfig,
   SIWEClientMethods,
   SIWESession,
-  SIWEMessageArgs,
-  CaipAddress
+  SIWEMessageArgs
 } from '@reown/appkit-common-react-native';
 import type { SIWEControllerClient } from './controller/SIWEController';
 
@@ -44,7 +43,7 @@ export class AppKitSIWEClient {
     this.methods = siweConfigMethods;
   }
 
-  async getNonce(address?: CaipAddress) {
+  async getNonce(address?: string) {
     const nonce = await this.methods.getNonce(address);
     if (!nonce) {
       throw new Error('siweControllerClient:getNonce - nonce is undefined');
@@ -89,11 +88,13 @@ export class AppKitSIWEClient {
       return Promise.resolve(undefined);
     }
 
-    if (!activeAddress) {
+    const plainAddress = activeAddress?.split(':')[2];
+
+    if (!plainAddress) {
       throw new Error('An address is required to create a SIWE message.');
     }
 
-    const nonce = await this.getNonce(activeAddress);
+    const nonce = await this.getNonce(plainAddress);
 
     const chainId = NetworkUtil.caipNetworkIdToNumber(activeCaipNetworkId);
 
@@ -103,7 +104,7 @@ export class AppKitSIWEClient {
 
     const messageParams = await this.getMessageParams?.();
     const message = this.createMessage({
-      address: activeAddress,
+      address: plainAddress,
       chainId,
       nonce,
       version: '1',
