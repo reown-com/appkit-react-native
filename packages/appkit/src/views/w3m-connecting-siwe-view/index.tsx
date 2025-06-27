@@ -96,6 +96,7 @@ export function ConnectingSiweView() {
     });
   };
 
+  //TODO: Add profile image in Avatar
   return (
     <FlexView padding={['2xl', 's', '3xl', 's']}>
       <IconLink
