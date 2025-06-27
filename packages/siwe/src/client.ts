@@ -7,7 +7,8 @@ import type {
   SIWEConfig,
   SIWEClientMethods,
   SIWESession,
-  SIWEMessageArgs
+  SIWEMessageArgs,
+  CaipAddress
 } from '@reown/appkit-common-react-native';
 import type { SIWEControllerClient } from './controller/SIWEController';
 
@@ -43,7 +44,7 @@ export class AppKitSIWEClient {
     this.methods = siweConfigMethods;
   }
 
-  async getNonce(address?: string) {
+  async getNonce(address?: CaipAddress) {
     const nonce = await this.methods.getNonce(address);
     if (!nonce) {
       throw new Error('siweControllerClient:getNonce - nonce is undefined');
@@ -99,7 +100,7 @@ export class AppKitSIWEClient {
     }
     const messageParams = await this.getMessageParams?.();
     const message = this.createMessage({
-      address: `eip155:${chainId}:${activeAddress}`,
+      address: activeAddress,
       chainId,
       nonce,
       version: '1',

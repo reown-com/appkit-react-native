@@ -10,7 +10,8 @@ import {
   type CaipNetworkId,
   type ConnectOptions,
   type ConnectorInitOptions,
-  type Metadata
+  type Metadata,
+  type CaipAddress
 } from '@reown/appkit-common-react-native';
 import { getDidAddress, getDidChainId, SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -110,7 +111,7 @@ export class WalletConnectConnector extends WalletConnector {
           ...params,
           nonce: await siweConfig.getNonce(),
           methods: namespaces?.['eip155']?.methods,
-          chains: params.chains.map(chain => (chain.includes(':') ? chain : `eip155:${chain}`))
+          chains: params.chains
         },
         universalLink
       );
@@ -137,7 +138,7 @@ export class WalletConnectConnector extends WalletConnector {
 
           if (address && chainId) {
             const siweSession = {
-              address,
+              address: `eip155:${chainId}:${address}` as CaipAddress,
               chainId: parseInt(chainId, 10)
             };
 

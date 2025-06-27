@@ -5,7 +5,8 @@ import type {
   SIWEClientMethods,
   SIWESession,
   SIWECreateMessageArgs,
-  SIWEVerifyMessageArgs
+  SIWEVerifyMessageArgs,
+  CaipAddress
 } from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
@@ -59,7 +60,7 @@ export const SIWEController = {
     return state._client;
   },
 
-  async getNonce(address?: string) {
+  async getNonce(address?: CaipAddress) {
     const client = this._getClient();
     const nonce = await client.getNonce(address);
     this.setNonce(nonce);

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import { CaipNetworkId } from '@reown/appkit-common-react-native';
 import { generateRandomBytes32 } from '@walletconnect/utils';
 import {
   createSIWEConfig,
@@ -25,7 +26,7 @@ export const siweConfig = createSIWEConfig({
     return {
       domain: 'your.bundle.id', //your bundle id or app id
       uri: 'redirect://', // your redirect uri
-      chains: chains.map(chain => chain.id),
+      chains: chains.map(chain => `eip155:${chain.id}`) as CaipNetworkId[],
       statement: 'Please sign with your account',
       iat: new Date().toISOString()
     };
