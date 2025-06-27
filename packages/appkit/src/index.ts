@@ -1,3 +1,4 @@
+/********** Components **********/
 export {
   AccountButton as AccountButton,
   type AccountButtonProps
@@ -12,20 +13,11 @@ export {
   type NetworkButtonProps as NetworkButtonProps
 } from './modal/w3m-network-button';
 export { AppKit } from './modal/w3m-modal';
-export { AppKitRouter } from './modal/w3m-router';
 
-export { AppKitScaffold } from './client';
+/********** Types **********/
 export type { LibraryOptions, ScaffoldOptions } from './client';
-
 export type * from '@reown/appkit-core-react-native';
-export { CoreHelperUtil } from '@reown/appkit-core-react-native';
-
-export * from './AppKit';
-export { AppKitProvider } from './AppKitContext';
-
 export type { AppKitNetwork, Storage } from '@reown/appkit-common-react-native';
-
-export { WalletConnectConnector } from './connectors/WalletConnectConnector';
 
 /****** Hooks *******/
 export { useAppKit } from './hooks/useAppKit';
@@ -37,3 +29,11 @@ export { useAppKitEvents, useAppKitEventSubscription } from './hooks/useAppKitEv
 /********** Networks **********/
 export { solana, solanaDevnet, solanaTestnet } from '@reown/appkit-common-react-native';
 export { bitcoin, bitcoinTestnet } from '@reown/appkit-common-react-native';
+
+/********** Main **********/
+export { createAppKit } from './AppKit';
+export { AppKitProvider } from './AppKitContext';
+
+// TODO: REMOVE
+/********** To be removed **********/
+export { CoreHelperUtil } from '@reown/appkit-core-react-native';
