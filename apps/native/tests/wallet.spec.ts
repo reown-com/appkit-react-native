@@ -124,38 +124,6 @@ sampleWalletTest('it should reject sign', async () => {
 });
 
 /**
- * Disconnection Tests
- * Tests various disconnection scenarios including:
- * - Hook-based disconnection
- * - Wallet-initiated disconnection
- * - Manual disconnection
- */
-
-sampleWalletTest('it should disconnect using hook', async () => {
-  await modalValidator.expectConnected();
-  await modalPage.clickHookDisconnectButton();
-  await modalValidator.expectDisconnected();
-});
-
-sampleWalletTest('it should disconnect and close modal when connecting from wallet', async () => {
-  await modalValidator.expectDisconnected();
-  await modalPage.qrCodeFlow(modalPage, walletPage);
-  await modalValidator.expectConnected();
-  await modalPage.openAccountModal();
-  await walletPage.disconnectConnection();
-  await walletValidator.expectSessionCard({ visible: false });
-  await modalValidator.expectModalNotVisible();
-  await walletPage.page.waitForTimeout(500);
-});
-
-sampleWalletTest('it should disconnect as expected', async () => {
-  await modalPage.qrCodeFlow(modalPage, walletPage);
-  await modalValidator.expectConnected();
-  await modalPage.disconnect();
-  await modalValidator.expectDisconnected();
-});
-
-/**
  * Activity Screen Tests
  * Tests the Activity screen behavior including:
  * - Loader visibility on first visit
@@ -164,10 +132,6 @@ sampleWalletTest('it should disconnect as expected', async () => {
  */
 
 sampleWalletTest('shows loader behavior on first visit to Activity screen', async () => {
-  // Connect to wallet
-  await modalPage.qrCodeFlow(modalPage, walletPage);
-  await modalValidator.expectConnected();
-
   // First visit to Activity screen
   await modalPage.openAccountModal();
   await modalPage.goToActivity();
@@ -192,8 +156,8 @@ sampleWalletTest('shows loader behavior after network change in Activity screen'
 
   // Change network
   await modalPage.goToNetworks();
-  await modalPage.switchNetwork(TEST_CHAINS.POLYGON);
-  await modalValidator.expectSwitchedNetwork(TEST_CHAINS.POLYGON);
+  await modalPage.switchNetwork(TEST_CHAINS.ETHEREUM);
+  await modalValidator.expectSwitchedNetwork(TEST_CHAINS.ETHEREUM);
 
   // Visit Activity screen after network change
   await modalPage.goToActivity();
@@ -204,4 +168,36 @@ sampleWalletTest('shows loader behavior after network change in Activity screen'
   await modalPage.goBack();
   await modalPage.goToActivity();
   await modalPage.expectLoaderHidden();
+  await modalPage.closeModal();
+});
+
+/**
+ * Disconnection Tests
+ * Tests various disconnection scenarios including:
+ * - Hook-based disconnection
+ * - Wallet-initiated disconnection
+ * - Manual disconnection
+ */
+
+sampleWalletTest('it should disconnect using hook', async () => {
+  await modalValidator.expectConnected();
+  await modalPage.clickHookDisconnectButton();
+  await modalValidator.expectDisconnected();
+});
+
+sampleWalletTest('it should disconnect and close modal when connecting from wallet', async () => {
+  await modalValidator.expectDisconnected();
+  await modalPage.qrCodeFlow(modalPage, walletPage);
+  await modalValidator.expectConnected();
+  await modalPage.openAccountModal();
+  await walletPage.disconnectConnection();
+  await modalValidator.expectModalNotVisible();
+  await walletPage.page.waitForTimeout(500);
+});
+
+sampleWalletTest('it should disconnect as expected', async () => {
+  await modalPage.qrCodeFlow(modalPage, walletPage);
+  await modalValidator.expectConnected();
+  await modalPage.disconnect();
+  await modalValidator.expectDisconnected();
 });

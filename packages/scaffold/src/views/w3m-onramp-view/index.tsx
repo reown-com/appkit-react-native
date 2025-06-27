@@ -220,6 +220,7 @@ export function OnRampView() {
             disabled={!paymentAmount || quotes?.length === 0}
             loading={quotesLoading || loading}
             onPress={() => setIsPaymentMethodModalVisible(true)}
+            testID="payment-method-button"
           />
           <FlexView
             flexDirection="row"

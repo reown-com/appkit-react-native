@@ -17,8 +17,6 @@ const onrampTest = test.extend<{ library: string }>({
   library: ['wagmi', { option: true }]
 });
 
-onrampTest.describe.configure({ mode: 'serial' });
-
 onrampTest.beforeAll(async ({ browser }) => {
   context = await browser.newContext();
   const browserPage = await context.newPage();
@@ -34,6 +32,32 @@ onrampTest.beforeAll(async ({ browser }) => {
   // Connect to wallet first
   await modalPage.qrCodeFlow(modalPage, walletPage);
   await modalValidator.expectConnected();
+});
+
+onrampTest.beforeEach(async () => {
+  await onRampPage.openBuyCryptoModal();
+  try {
+    await onRampValidator.expectOnRampLoadingView();
+  } catch {
+  }
+  await onRampValidator.expectOnRampInitialScreen();
+
+  const currency = await onRampPage.getPaymentCurrency();
+  if (currency !== 'USD') {
+    await onRampPage.openSettings();
+    await onRampValidator.expectSettingsScreen();
+    await onRampPage.clickSelectCountry();
+    await onRampPage.searchCountry('United States');
+    await onRampPage.selectCountry('US');
+    await modalPage.goBack();
+    await onRampValidator.expectOnRampInitialScreen();
+    await onRampValidator.expectPaymentCurrency('USD');
+  }
+});
+
+onrampTest.afterEach(async () => {
+  await modalPage.goBack();
+  await modalPage.closeModal();
 });
 
 onrampTest.afterAll(async () => {
@@ -54,83 +78,54 @@ onrampTest.afterAll(async () => {
  */
 
 onrampTest('Should be able to open buy crypto modal', async () => {
-  await onRampPage.openBuyCryptoModal();
-  try {
-    // Wait for loading to complete
-    await onRampValidator.expectOnRampLoadingView();
-  } catch (error) {
-    // Loading view might be quick and disappear before we can check
-    // eslint-disable-next-line no-console
-    console.log('Loading view not visible, might have already loaded');
-  }
   await onRampValidator.expectOnRampInitialScreen();
-  await modalPage.goBack();
-  await modalPage.closeModal();
 });
 
 onrampTest('Should display loading view when initializing', async () => {
-  await onRampPage.openBuyCryptoModal();
   await onRampValidator.expectOnRampInitialScreen();
-  await modalPage.goBack();
-  await modalPage.closeModal();
 });
 
 onrampTest('Should be able to select a purchase currency', async () => {
-  await onRampPage.openBuyCryptoModal();
-  await onRampValidator.expectOnRampInitialScreen();
   await onRampPage.clickSelectCurrency();
   await onRampValidator.expectCurrencySelectionModal();
   await onRampPage.selectCurrency('ZRX');
   await onRampValidator.expectSelectedCurrency('ZRX');
-  await modalPage.goBack();
-  await modalPage.closeModal();
 });
 
 onrampTest('Should be able to select a payment method', async () => {
-  await onRampPage.openBuyCryptoModal();
-  await onRampValidator.expectOnRampInitialScreen();
-  await onRampPage.enterAmount(100);
+  await onRampPage.enterAmount(200);
   await onRampValidator.expectQuotesLoaded();
   try {
     await onRampPage.clickPaymentMethod();
     await onRampValidator.expectPaymentMethodModal();
     await onRampPage.selectPaymentMethod('Apple Pay');
-    await onRampPage.selectPaymentMethod('Credit & Debit Card');
+    await onRampPage.selectQuote(0);
+    await onRampValidator.expectOnRampInitialScreen();
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log('Payment method selection failed');
     throw error;
   }
-  await onRampPage.closePaymentModal();
-  await modalPage.goBack();
-  await modalPage.closeModal();
 });
 
 onrampTest('Should proceed to checkout when continue button is clicked', async () => {
   test.setTimeout(60000); // Extend timeout for this test
 
-  await onRampPage.openBuyCryptoModal();
-  await onRampValidator.expectOnRampInitialScreen();
   await onRampPage.enterAmount(100);
 
   try {
-    // Wait for quotes to load
     await onRampValidator.expectQuotesLoaded();
     await onRampPage.clickContinue();
     await onRampValidator.expectCheckoutScreen();
   } catch (error) {
-    // If checkout fails, it's likely due to API issues - skip this step
     // eslint-disable-next-line no-console
     console.log('Checkout process failed, likely API issue');
     throw error;
   }
-  await modalPage.closeModal();
+  await modalPage.goBack();
 });
 
 onrampTest('Should be able to navigate to onramp settings', async () => {
-  await onRampPage.openBuyCryptoModal();
-  await onRampValidator.expectOnRampInitialScreen();
-
   try {
     await onRampPage.openSettings();
     await onRampValidator.expectSettingsScreen();
@@ -138,20 +133,29 @@ onrampTest('Should be able to navigate to onramp settings', async () => {
     await modalPage.goBack();
     await onRampValidator.expectOnRampInitialScreen();
   } catch (error) {
-    // If settings navigation fails, skip this step
     // eslint-disable-next-line no-console
     console.log('Settings navigation failed');
     throw error;
   }
+});
 
+onrampTest('Should be able to select a country and see currency update', async () => {
+  // Navigate to settings and select a country
+  await onRampPage.openSettings();
+  await onRampValidator.expectSettingsScreen();
+  await onRampPage.clickSelectCountry();
+  await onRampPage.searchCountry('Argentina');
+  await onRampPage.selectCountry('AR');
+
+  // Go back to the main OnRamp screen
   await modalPage.goBack();
-  await modalPage.closeModal();
+  await onRampValidator.expectOnRampInitialScreen();
+
+  // Verify that the currency has updated to ARS
+  await onRampValidator.expectPaymentCurrency('ARS');
 });
 
 onrampTest('Should display appropriate error messages for invalid amounts', async () => {
-  await onRampPage.openBuyCryptoModal();
-  await onRampValidator.expectOnRampInitialScreen();
-
   try {
     // Test too low amount
     await onRampPage.enterAmount(0.1);
@@ -161,18 +165,13 @@ onrampTest('Should display appropriate error messages for invalid amounts', asyn
     await onRampPage.enterAmount(50000);
     await onRampValidator.expectAmountError();
   } catch (error) {
-    // If error messages don't appear, it might be that the API accepts these values
     // eslint-disable-next-line no-console
     console.log('Amount error testing failed, API might accept these values');
     throw error;
   }
-  await modalPage.goBack();
-  await modalPage.closeModal();
 });
 
 onrampTest('Should navigate to a loading view after checkout', async () => {
-  await onRampPage.openBuyCryptoModal();
-  await onRampValidator.expectOnRampInitialScreen();
   await onRampPage.enterAmount(100);
   await onRampValidator.expectQuotesLoaded();
   await onRampPage.clickContinue();

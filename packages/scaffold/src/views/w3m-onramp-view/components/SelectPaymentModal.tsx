@@ -83,7 +83,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
     setActivePaymentMethod(paymentMethod);
   };
 
-  const renderQuote = ({ item }: { item: OnRampQuote }) => {
+  const renderQuote = ({ item, index }: { item: OnRampQuote; index: number }) => {
     const logoURL = OnRampController.getServiceProviderImage(item.serviceProvider);
     const isSelected =
       item.serviceProvider === OnRampController.state.selectedQuote?.serviceProvider &&
@@ -101,6 +101,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
         logoURL={logoURL}
         onQuotePress={() => handleQuotePress(item)}
         tagText={tagText}
+        testID={`quote-item-${index}`}
       />
     );
   };

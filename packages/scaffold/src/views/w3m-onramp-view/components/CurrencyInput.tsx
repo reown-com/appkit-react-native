@@ -90,7 +90,11 @@ export function CurrencyInput({
       <FlexView alignItems="center" margin={['m', '0', '0', '0']}>
         <FlexView flexDirection="row" alignItems="center">
           <Text style={[styles.input, { color: Theme[amountColor] }]}>{displayValue}</Text>
-          <Text variant="large-400" color={isAmountError ? 'error-100' : 'fg-200'}>
+          <Text
+            variant="large-400"
+            color={isAmountError ? 'error-100' : 'fg-200'}
+            testID="currency-input-symbol"
+          >
             {symbol || ''}
           </Text>
         </FlexView>

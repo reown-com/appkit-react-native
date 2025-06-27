@@ -63,6 +63,14 @@ export class OnRampPage {
     await this.page.waitForTimeout(500);
   }
 
+  async selectQuote(index: number) {
+    const quote = this.page.getByTestId(`quote-item-${index}`);
+    await expect(quote).toBeVisible({ timeout: 5000 });
+    await quote.click();
+    // Wait for UI updates
+    await this.page.waitForTimeout(500);
+  }
+
   async clickContinue() {
     const continueButton = this.page.getByTestId('button-continue');
     await expect(continueButton).toBeVisible({ timeout: 5000 });
@@ -86,6 +94,31 @@ export class OnRampPage {
     await expect(settingsButton).toBeVisible({ timeout: 5000 });
     await settingsButton.click();
     // Wait for navigation
+    await this.page.waitForTimeout(TIMEOUTS.ANIMATION);
+  }
+
+  async getPaymentCurrency() {
+    const currencyInput = this.page.getByTestId('currency-input-symbol');
+    await expect(currencyInput).toBeVisible({ timeout: 5000 });
+    
+return currencyInput.innerText();
+  }
+
+  async clickSelectCountry() {
+    await this.page.getByText('Select Country', { exact: true }).click();
+    await this.page.waitForTimeout(TIMEOUTS.ANIMATION);
+  }
+
+  async searchCountry(country: string) {
+    const searchInput = this.page.getByPlaceholder('Search country');
+    await searchInput.type(country);
+    await this.page.waitForTimeout(TIMEOUTS.ANIMATION);
+  }
+
+  async selectCountry(countryCode: string) {
+    const countryItem = this.page.getByTestId(`country-item-${countryCode}`);
+    await expect(countryItem).toBeVisible({ timeout: 5000 });
+    await countryItem.click();
     await this.page.waitForTimeout(TIMEOUTS.ANIMATION);
   }
 

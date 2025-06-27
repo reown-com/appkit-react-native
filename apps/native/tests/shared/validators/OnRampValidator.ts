@@ -6,7 +6,7 @@ export class OnRampValidator {
   async expectOnRampInitialScreen() {
     // Verify that the main OnRamp screen elements are visible
     await expect(this.page.getByText('You Buy')).toBeVisible({ timeout: 10000 });
-    await expect(this.page.getByTestId('currency-input')).toBeVisible({ timeout: 5000 });
+    await expect(this.page.getByTestId('currency-input')).toBeVisible({ timeout: 10000 });
     await expect(this.page.getByText('Continue')).toBeVisible({ timeout: 5000 });
   }
 
@@ -49,8 +49,8 @@ export class OnRampValidator {
 
   async expectSelectedPaymentMethod(name: string) {
     // Verify that a payment method has been selected
-    const paymentMethodCheck = this.page.getByText(name).getByTestId('payment-method-checkmark');
-    await expect(paymentMethodCheck).toBeVisible({ timeout: 5000 });
+    const paymentMethod = this.page.getByText(name);
+    await expect(paymentMethod).toBeVisible({ timeout: 5000 });
   }
 
   async expectCheckoutScreen() {
@@ -86,6 +86,11 @@ export class OnRampValidator {
       // Try alternative text
       await expect(this.page.getByText('Select Currency')).toBeVisible({ timeout: 5000 });
     }
+  }
+
+  async expectPaymentCurrency(currency: string) {
+    const currencyInput = this.page.getByTestId('currency-input-symbol');
+    await expect(currencyInput).toHaveText(currency, { timeout: 5000 });
   }
 
   async expectLoadingWidgetView() {

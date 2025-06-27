@@ -24,7 +24,12 @@ export function Country({ onPress, item, selected }: Props) {
   };
 
   return (
-    <Pressable onPress={handlePress} style={styles.container} backgroundColor="transparent">
+    <Pressable
+      onPress={handlePress}
+      style={styles.container}
+      backgroundColor="transparent"
+      testID={`country-item-${item.countryCode}`}
+    >
       <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start" padding="s">
         <FlexView style={styles.imageContainer}>
           {item.flagImageUrl && SvgUri && <SvgUri uri={item.flagImageUrl} width={36} height={36} />}

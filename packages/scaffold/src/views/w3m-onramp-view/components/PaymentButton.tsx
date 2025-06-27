@@ -19,6 +19,7 @@ interface PaymentButtonProps {
   paymentLogo?: string;
   providerLogo?: string;
   onPress: () => void;
+  testID?: string;
 }
 
 function PaymentButton({
@@ -28,13 +29,19 @@ function PaymentButton({
   subtitle,
   paymentLogo,
   providerLogo,
-  onPress
+  onPress,
+  testID
 }: PaymentButtonProps) {
   const Theme = useTheme();
   const backgroundColor = Theme['gray-glass-005'];
 
   return (
-    <Pressable disabled={disabled || loading} onPress={onPress} style={styles.pressable}>
+    <Pressable
+      disabled={disabled || loading}
+      onPress={onPress}
+      style={styles.pressable}
+      testID={testID}
+    >
       <FlexView
         style={[styles.container, { backgroundColor }]}
         alignItems="center"
