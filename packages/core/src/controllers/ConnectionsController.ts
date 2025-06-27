@@ -268,12 +268,16 @@ export const ConnectionsController = {
   async signMessage(address: CaipAddress, message: string) {
     if (!baseState.activeNamespace) return undefined;
 
+    const [namespace, chainId, plainAddress] = address.split(':');
+
+    if (!namespace || namespace !== baseState.activeNamespace || !chainId || !plainAddress) {
+      return undefined;
+    }
+
     const adapter = baseState.connections.get(baseState.activeNamespace)?.adapter;
 
-    const evmAddress = address.split(':')[2];
-    const chainId = address.split(':')[1];
-    if (adapter instanceof EVMAdapter && evmAddress && chainId) {
-      return adapter.signMessage(evmAddress, message, chainId);
+    if (adapter instanceof EVMAdapter && plainAddress && chainId) {
+      return adapter.signMessage(plainAddress, message, chainId);
     }
 
     return undefined;
@@ -292,7 +296,7 @@ export const ConnectionsController = {
   },
 
   async estimateGas(args: any) {
-    if (!baseState.activeNamespace) return undefined;
+    if (!baseState.activeNamespace || baseState.activeNamespace !== 'eip155') return undefined;
 
     const adapter = baseState.connections.get(baseState.activeNamespace)?.adapter;
 
