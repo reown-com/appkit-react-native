@@ -85,19 +85,22 @@ export class AppKitSIWEClient {
   async signIn(): Promise<SIWESession | undefined> {
     const { activeAddress, activeCaipNetworkId } = ConnectionsController.state;
 
-    if (activeCaipNetworkId && !activeCaipNetworkId.startsWith('eip155')) {
+    if (!activeCaipNetworkId || !activeCaipNetworkId.startsWith('eip155')) {
       return Promise.resolve(undefined);
     }
-
-    const nonce = await this.getNonce(activeAddress);
 
     if (!activeAddress) {
       throw new Error('An address is required to create a SIWE message.');
     }
+
+    const nonce = await this.getNonce(activeAddress);
+
     const chainId = NetworkUtil.caipNetworkIdToNumber(activeCaipNetworkId);
+
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.');
     }
+
     const messageParams = await this.getMessageParams?.();
     const message = this.createMessage({
       address: activeAddress,
