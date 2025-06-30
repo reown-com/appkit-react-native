@@ -134,7 +134,15 @@ export interface TransactionQuantity {
   numeric: string;
 }
 
-export type SocialProvider = 'apple' | 'x' | 'discord' | 'farcaster';
+export type SocialProvider =
+  | 'google'
+  | 'facebook'
+  | 'github'
+  | 'apple'
+  | 'x'
+  | 'discord'
+  | 'email'
+  | 'farcaster';
 
 export type ThemeMode = 'dark' | 'light';
 

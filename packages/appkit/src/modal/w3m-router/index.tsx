@@ -1,5 +1,5 @@
-import { useLayoutEffect, useMemo } from 'react';
 import { useSnapshot } from 'valtio';
+import { useLayoutEffect, useMemo } from 'react';
 import { RouterController } from '@reown/appkit-core-react-native';
 
 import { AccountDefaultView } from '../../views/w3m-account-default-view';
@@ -9,9 +9,7 @@ import { ConnectView } from '../../views/w3m-connect-view';
 import { ConnectSocialsView } from '../../views/w3m-connect-socials-view';
 import { ConnectingView } from '../../views/w3m-connecting-view';
 import { ConnectingExternalView } from '../../views/w3m-connecting-external-view';
-import { ConnectingFarcasterView } from '../../views/w3m-connecting-farcaster-view';
 import { ConnectingSocialView } from '../../views/w3m-connecting-social-view';
-import { CreateView } from '../../views/w3m-create-view';
 import { ConnectingSiweView } from '../../views/w3m-connecting-siwe-view';
 import { EmailVerifyOtpView } from '../../views/w3m-email-verify-otp-view';
 import { EmailVerifyDeviceView } from '../../views/w3m-email-verify-device-view';
@@ -67,12 +65,8 @@ export function AppKitRouter() {
         return ConnectingSiweView;
       case 'ConnectingSocial':
         return ConnectingSocialView;
-      case 'ConnectingFarcaster':
-        return ConnectingFarcasterView;
       case 'ConnectingWalletConnect':
         return ConnectingView;
-      case 'Create':
-        return CreateView;
       case 'EmailVerifyDevice':
         return EmailVerifyDeviceView;
       case 'EmailVerifyOtp':

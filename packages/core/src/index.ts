@@ -62,7 +62,6 @@ export {
 export { SendController, type SendControllerState } from './controllers/SendController';
 
 export { OnRampController, type OnRampControllerState } from './controllers/OnRampController';
-export { WebviewController, type WebviewControllerState } from './controllers/WebviewController';
 
 // -- Utils -------------------------------------------------------------------
 export { ApiUtil } from './utils/ApiUtil';

@@ -64,12 +64,13 @@ export type CaipNamespaces = Record<
 
 export type SdkType = 'appkit';
 
+//TODO: check this
 export type SdkVersion =
   | `react-native-wagmi-${string}`
   | `react-native-ethers5-${string}`
   | `react-native-ethers-${string}`;
 
-type EnabledSocials = Exclude<SocialProvider, 'farcaster'>;
+type EnabledSocials = SocialProvider;
 
 export type Features = {
   /**
@@ -83,15 +84,10 @@ export type Features = {
    */
   onramp?: boolean;
   /**
-   * @description Enable or disable the email feature. Enabled by default.
+   * @description Show or hide the regular wallet options when socials are enabled. Enabled by default.
    * @type {boolean}
    */
-  email?: boolean;
-  /**
-   * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
-   * @type {boolean}
-   */
-  emailShowWallets?: boolean;
+  showWallets?: boolean;
   /**
    * @description Enable or disable the socials feature. Enabled by default.
    * @type {EnabledSocials[]}
@@ -910,7 +906,7 @@ export type OnRampTransactionResult = {
  * Matches type defined for packages/wallet/src/AppKitFrameProvider.ts
  * It's duplicated in order to decouple scaffold from email package
  */
-
+// TODO: REMOVE THIS
 export type AppKitFrameAccountType = 'eoa' | 'smartAccount';
 
 export interface AppKitFrameProvider {

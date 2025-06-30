@@ -5,13 +5,10 @@ import Modal from 'react-native-modal';
 import { Card, ThemeProvider } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
-  ConnectorController,
   EventsController,
   ModalController,
   OptionsController,
   RouterController,
-  type AppKitFrameProvider,
-  WebviewController,
   ThemeController,
   ConnectionsController
 } from '@reown/appkit-core-react-native';
@@ -27,18 +24,12 @@ import { useAppKit } from '../../AppKitContext';
 export function AppKit() {
   const { disconnect } = useAppKit();
   const { open } = useSnapshot(ModalController.state);
-  const { connectors, connectedConnector } = useSnapshot(ConnectorController.state);
-  const { frameViewVisible, webviewVisible } = useSnapshot(WebviewController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const { projectId } = useSnapshot(OptionsController.state);
   const { height } = useWindowDimensions();
   const { isLandscape } = useCustomDimensions();
   const portraitHeight = height - 80;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
-  const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
-  const AuthView = authProvider?.AuthView;
-  const SocialView = authProvider?.Webview;
-  const showAuth = !connectedConnector || connectedConnector === 'AUTH';
 
   const onBackButtonPress = () => {
     if (RouterController.state.history.length > 1) {
@@ -83,7 +74,6 @@ export function AppKit() {
       <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
         <Modal
           style={styles.modal}
-          coverScreen={!frameViewVisible && !webviewVisible}
           isVisible={open}
           useNativeDriver
           useNativeDriverForBackdrop
@@ -103,8 +93,6 @@ export function AppKit() {
             <Snackbar />
           </Card>
         </Modal>
-        {!!showAuth && AuthView && <AuthView />}
-        {!!showAuth && SocialView && <SocialView />}
       </ThemeProvider>
     </>
   );

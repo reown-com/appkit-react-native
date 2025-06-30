@@ -18,6 +18,7 @@ export interface ListSocialProps {
   testID?: string;
   logoWidth?: number;
   logoHeight?: number;
+  logoStyle?: StyleProp<ViewStyle>;
 }
 
 export function ListSocial({
@@ -28,7 +29,8 @@ export function ListSocial({
   style,
   testID,
   logoHeight = 40,
-  logoWidth = 40
+  logoWidth = 40,
+  logoStyle
 }: ListSocialProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
@@ -48,12 +50,13 @@ export function ListSocial({
       <View
         style={[
           styles.border,
-          { height: logoHeight + 1, width: logoWidth + 1, borderColor: Theme['gray-glass-005'] }
+          { height: logoHeight + 1, width: logoWidth + 1, borderColor: Theme['gray-glass-005'] },
+          logoStyle
         ]}
       >
         <Logo
           logo={logo}
-          style={disabled && styles.disabledLogo}
+          style={[disabled && styles.disabledLogo]}
           width={logoWidth}
           height={logoHeight}
         />

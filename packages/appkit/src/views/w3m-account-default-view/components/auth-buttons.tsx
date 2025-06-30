@@ -34,7 +34,7 @@ export function AuthButtons({
         </ListSocial>
       ) : (
         <ListItem
-          icon="mail"
+          icon="email"
           onPress={onPress}
           chevron
           testID="button-email"

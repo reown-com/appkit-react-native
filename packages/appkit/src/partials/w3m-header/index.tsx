@@ -3,10 +3,7 @@ import {
   RouterController,
   ModalController,
   EventsController,
-  type RouterControllerState,
-  ConnectionController,
-  ConnectorController,
-  type AppKitFrameProvider
+  type RouterControllerState
 } from '@reown/appkit-core-react-native';
 import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
 import { StringUtil } from '@reown/appkit-common-react-native';
@@ -24,8 +21,8 @@ export function Header() {
     const connectorName = _data?.connector?.name;
     const walletName = _data?.wallet?.name;
     const networkName = _data?.network?.name;
-    const socialName = ConnectionController.state.selectedSocialProvider
-      ? StringUtil.capitalize(ConnectionController.state.selectedSocialProvider)
+    const socialName = _data?.socialProvider
+      ? StringUtil.capitalize(_data?.socialProvider)
       : undefined;
 
     return {
@@ -36,10 +33,8 @@ export function Header() {
       ConnectSocials: 'All socials',
       ConnectingExternal: connectorName ?? 'Connect wallet',
       ConnectingSiwe: undefined,
-      ConnectingFarcaster: socialName ?? 'Connecting Social',
       ConnectingSocial: socialName ?? 'Connecting Social',
       ConnectingWalletConnect: walletName ?? 'WalletConnect',
-      Create: 'Create wallet',
       EmailVerifyDevice: ' ',
       EmailVerifyOtp: 'Confirm email',
       GetWallet: 'Get a wallet',
@@ -75,23 +70,11 @@ export function Header() {
   const header = headings(data, view);
 
   const checkSocial = () => {
-    if (
-      RouterController.state.view === 'ConnectingFarcaster' ||
-      RouterController.state.view === 'ConnectingSocial'
-    ) {
-      const socialProvider = ConnectionController.state.selectedSocialProvider;
-      const authProvider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
-
-      if (authProvider && socialProvider === 'farcaster') {
-        // TODO: remove this once Farcaster session refresh is implemented
-        // @ts-expect-error
-        authProvider.webviewRef?.current?.reload();
-      }
-
+    if (RouterController.state.view === 'ConnectingSocial') {
       EventsController.sendEvent({
         type: 'track',
         event: 'SOCIAL_LOGIN_CANCELED',
-        properties: { provider: ConnectionController.state.selectedSocialProvider! }
+        properties: { provider: RouterController.state.data?.socialProvider! }
       });
     }
   };
