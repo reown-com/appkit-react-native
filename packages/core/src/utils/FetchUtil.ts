@@ -105,7 +105,7 @@ export class FetchUtil {
     const queryParams: string[] = [];
     for (const key in allParams) {
       const value = allParams[key];
-      if (value !== undefined) {
+      if (value !== undefined && value !== null && value !== '') {
         queryParams.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
       }
     }
