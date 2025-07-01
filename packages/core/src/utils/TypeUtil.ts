@@ -367,9 +367,6 @@ export type EventName =
   | 'CLICK_NETWORK_HELP'
   | 'CLICK_GET_WALLET'
   | 'EMAIL_LOGIN_SELECTED'
-  | 'EMAIL_SUBMITTED'
-  | 'DEVICE_REGISTERED_FOR_EMAIL'
-  | 'EMAIL_VERIFICATION_CODE_SENT'
   | 'EMAIL_VERIFICATION_CODE_PASS'
   | 'EMAIL_VERIFICATION_CODE_FAIL'
   | 'EMAIL_EDIT'
@@ -483,18 +480,6 @@ export type Event =
   | {
       type: 'track';
       event: 'EMAIL_LOGIN_SELECTED';
-    }
-  | {
-      type: 'track';
-      event: 'EMAIL_SUBMITTED';
-    }
-  | {
-      type: 'track';
-      event: 'DEVICE_REGISTERED_FOR_EMAIL';
-    }
-  | {
-      type: 'track';
-      event: 'EMAIL_VERIFICATION_CODE_SENT';
     }
   | {
       type: 'track';

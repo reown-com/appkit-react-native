@@ -35,8 +35,6 @@ export function Header() {
       ConnectingSiwe: undefined,
       ConnectingSocial: socialName ?? 'Connecting Social',
       ConnectingWalletConnect: walletName ?? 'WalletConnect',
-      EmailVerifyDevice: ' ',
-      EmailVerifyOtp: 'Confirm email',
       GetWallet: 'Get a wallet',
       Networks: 'Select network',
       OnRamp: undefined,

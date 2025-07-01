@@ -29,8 +29,6 @@ export interface RouterControllerState {
     | 'ConnectingSiwe'
     | 'ConnectingSocial'
     | 'ConnectingWalletConnect'
-    | 'EmailVerifyDevice'
-    | 'EmailVerifyOtp'
     | 'GetWallet'
     | 'Networks'
     | 'OnRamp'

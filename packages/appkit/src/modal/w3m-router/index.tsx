@@ -11,8 +11,6 @@ import { ConnectingView } from '../../views/w3m-connecting-view';
 import { ConnectingExternalView } from '../../views/w3m-connecting-external-view';
 import { ConnectingSocialView } from '../../views/w3m-connecting-social-view';
 import { ConnectingSiweView } from '../../views/w3m-connecting-siwe-view';
-import { EmailVerifyOtpView } from '../../views/w3m-email-verify-otp-view';
-import { EmailVerifyDeviceView } from '../../views/w3m-email-verify-device-view';
 import { GetWalletView } from '../../views/w3m-get-wallet-view';
 import { NetworksView } from '../../views/w3m-networks-view';
 import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
@@ -67,10 +65,6 @@ export function AppKitRouter() {
         return ConnectingSocialView;
       case 'ConnectingWalletConnect':
         return ConnectingView;
-      case 'EmailVerifyDevice':
-        return EmailVerifyDeviceView;
-      case 'EmailVerifyOtp':
-        return EmailVerifyOtpView;
       case 'GetWallet':
         return GetWalletView;
       case 'Networks':

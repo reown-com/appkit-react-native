@@ -18,11 +18,19 @@ export function SocialLoginList({ options, disabled }: SocialLoginListProps) {
   bottomSocials = showMoreButton ? bottomSocials.slice(0, MAX_OPTIONS - 2) : bottomSocials;
 
   const onItemPress = (provider: SocialProvider) => {
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'SOCIAL_LOGIN_STARTED',
-      properties: { provider }
-    });
+    if (provider === 'email') {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'EMAIL_LOGIN_SELECTED'
+      });
+    } else {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SOCIAL_LOGIN_STARTED',
+        properties: { provider }
+      });
+    }
+
     RouterController.push('ConnectingSocial', { socialProvider: provider });
   };
 
