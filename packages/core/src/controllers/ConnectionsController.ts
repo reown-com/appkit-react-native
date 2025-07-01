@@ -8,7 +8,8 @@ import {
   type CaipNetworkId,
   type ChainNamespace,
   type GetBalanceResponse,
-  type WalletInfo
+  type WalletInfo,
+  type ConnectionProperties
 } from '@reown/appkit-common-react-native';
 import { StorageUtil } from '../utils/StorageUtil';
 
@@ -22,6 +23,7 @@ interface Connection {
   adapter: BlockchainAdapter;
   caipNetwork: CaipNetworkId;
   wallet?: WalletInfo;
+  properties?: ConnectionProperties;
 }
 
 export interface ConnectionsControllerState {
@@ -132,13 +134,14 @@ export const ConnectionsController = {
     StorageUtil.setActiveNamespace(namespace);
   },
 
-  storeConnection({
+  setConnection({
     namespace,
     adapter,
     accounts,
     chains,
     wallet,
-    caipNetwork
+    caipNetwork,
+    properties
   }: {
     namespace: ChainNamespace;
     adapter: BlockchainAdapter;
@@ -146,6 +149,7 @@ export const ConnectionsController = {
     chains: CaipNetworkId[];
     wallet?: WalletInfo;
     caipNetwork?: CaipNetworkId;
+    properties?: ConnectionProperties;
   }) {
     const newConnectionEntry = {
       balances: {},
@@ -153,7 +157,8 @@ export const ConnectionsController = {
       adapter: ref(adapter),
       accounts,
       chains,
-      wallet
+      wallet,
+      properties
     };
 
     // Create a new Map to ensure Valtio detects the change

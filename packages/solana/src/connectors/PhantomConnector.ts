@@ -11,7 +11,8 @@ import {
   type Storage,
   solana,
   solanaDevnet,
-  solanaTestnet
+  solanaTestnet,
+  type ConnectionProperties
 } from '@reown/appkit-common-react-native';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
@@ -197,6 +198,10 @@ export class PhantomConnector extends WalletConnector {
     }
 
     return undefined;
+  }
+
+  override getProperties(): ConnectionProperties | undefined {
+    return this.properties;
   }
 
   override getWalletInfo(): WalletInfo | undefined {

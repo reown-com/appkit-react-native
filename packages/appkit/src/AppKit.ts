@@ -30,7 +30,8 @@ import type {
   ChainNamespace,
   Storage,
   AppKitConnectOptions,
-  AppKitSIWEClient
+  AppKitSIWEClient,
+  ConnectionProperties
 } from '@reown/appkit-common-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
@@ -121,6 +122,7 @@ export class AppKit {
       });
 
       const walletInfo = connector.getWalletInfo();
+      const properties = connector.getProperties();
 
       if (!approvedNamespaces || Object.keys(approvedNamespaces).length === 0) {
         throw new Error('Connection cancelled or failed: No approved namespaces returned.');
@@ -139,7 +141,7 @@ export class AppKit {
       }
 
       // Store the connection details for the successfully connected adapters
-      this.storeConnectionDetails(approvedAdapters, approvedNamespaces, walletInfo);
+      this.setConnection(approvedAdapters, approvedNamespaces, walletInfo, properties);
 
       // Store connector type and namespaces in storage
       await StorageUtil.setConnectedConnectors({
@@ -314,6 +316,7 @@ export class AppKit {
 
           const namespaces = connector.getNamespaces();
           const walletInfo = connector.getWalletInfo();
+          const properties = connector.getProperties();
 
           if (namespaces && Object.keys(namespaces).length > 0) {
             // Ensure namespaces is not empty
@@ -325,7 +328,7 @@ export class AppKit {
 
             // If adapters were successfully initialized, store the connection details
             if (initializedAdapters.length > 0) {
-              this.storeConnectionDetails(initializedAdapters, namespaces, walletInfo);
+              this.setConnection(initializedAdapters, namespaces, walletInfo, properties);
             }
 
             this.syncAccounts(initializedAdapters);
@@ -399,10 +402,11 @@ export class AppKit {
     });
   }
 
-  private storeConnectionDetails(
+  private setConnection(
     adapters: BlockchainAdapter[],
     approvedNamespaces: Namespaces,
-    wallet?: WalletInfo
+    wallet?: WalletInfo,
+    properties?: ConnectionProperties
   ) {
     adapters.forEach(async adapter => {
       const namespace = adapter.getSupportedNamespace();
@@ -413,13 +417,14 @@ export class AppKit {
       const chains = namespaceDetails.chains ?? [];
       const caipNetwork = adapter?.connector?.getChainId(namespace);
 
-      ConnectionsController.storeConnection({
+      ConnectionsController.setConnection({
         namespace,
         adapter,
         accounts,
         chains,
         caipNetwork,
-        wallet
+        wallet,
+        properties
       });
     });
 

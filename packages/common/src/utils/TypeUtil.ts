@@ -250,6 +250,7 @@ export abstract class WalletConnector extends EventEmitter {
   protected wallet?: WalletInfo;
   protected storage?: Storage;
   protected metadata?: Metadata;
+  protected properties?: ConnectionProperties;
 
   constructor({ type }: { type: New_ConnectorType }) {
     super();
@@ -271,6 +272,7 @@ export abstract class WalletConnector extends EventEmitter {
   abstract getNamespaces(): Namespaces;
   abstract getChainId(namespace: ChainNamespace): CaipNetworkId | undefined;
   abstract getWalletInfo(): WalletInfo | undefined;
+  abstract getProperties(): ConnectionProperties | undefined;
   abstract switchNetwork(network: AppKitNetwork): Promise<void>;
 }
 
@@ -316,6 +318,12 @@ export interface WalletInfo {
     linkMode?: boolean;
   };
   [key: string]: unknown;
+}
+
+export interface ConnectionProperties {
+  email?: string;
+  username?: string;
+  smartAccounts?: CaipAddress[];
 }
 
 export interface Storage {
