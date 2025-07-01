@@ -151,6 +151,12 @@ export class AppKit {
 
       //TODO: Replace this
       AccountController.setIsConnected(true);
+
+      if (ConnectionsController.state.activeNamespace === 'eip155') {
+        this.handleSiweChange();
+      } else {
+        ModalController.close();
+      }
     } catch (error) {
       console.warn('Connection failed:', error);
       throw error;
@@ -554,8 +560,11 @@ export class AppKit {
     }
   };
 
-  private async handleSiweChange(params: { isNetworkChange?: boolean; isAccountChange?: boolean }) {
-    const { isNetworkChange, isAccountChange } = params;
+  private async handleSiweChange(params?: {
+    isNetworkChange?: boolean;
+    isAccountChange?: boolean;
+  }) {
+    const { isNetworkChange, isAccountChange } = params ?? {};
     const { enabled, signOutOnAccountChange, signOutOnNetworkChange } =
       SIWEController.state._client?.options ?? {};
 

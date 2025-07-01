@@ -4,16 +4,13 @@ import {
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
-  ModalController,
   RouterController,
   SnackController,
   type Platform,
   OptionsController,
   ApiController,
-  EventsController,
-  ConnectionsController
+  EventsController
 } from '@reown/appkit-core-react-native';
-import { SIWEController } from '@reown/appkit-siwe-react-native';
 import { useAppKit } from '../../AppKitContext';
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
 import { ConnectingMobile } from '../../partials/w3m-connecting-mobile';
@@ -59,21 +56,6 @@ export function ConnectingView() {
           });
         }
         ConnectionController.setWcPromise(connectPromise);
-        await connectPromise;
-        // ConnectorController.setConnectedConnector('WALLET_CONNECT');
-
-        if (
-          OptionsController.state.isSiweEnabled &&
-          ConnectionsController.state.activeNamespace === 'eip155'
-        ) {
-          if (SIWEController.state.status === 'success') {
-            ModalController.close();
-          } else {
-            RouterController.push('ConnectingSiwe');
-          }
-        } else {
-          ModalController.close();
-        }
       }
     } catch (error) {
       ConnectionController.setWcError(true);
