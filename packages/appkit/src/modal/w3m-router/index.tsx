@@ -28,7 +28,6 @@ import { UpdateEmailWalletView } from '../../views/w3m-update-email-wallet-view'
 import { UpdateEmailPrimaryOtpView } from '../../views/w3m-update-email-primary-otp-view';
 import { UpdateEmailSecondaryOtpView } from '../../views/w3m-update-email-secondary-otp-view';
 import { UpgradeEmailWalletView } from '../../views/w3m-upgrade-email-wallet-view';
-import { UpgradeToSmartAccountView } from '../../views/w3m-upgrade-to-smart-account-view';
 import { WalletCompatibleNetworks } from '../../views/w3m-wallet-compatible-networks-view';
 import { WalletReceiveView } from '../../views/w3m-wallet-receive-view';
 import { WalletSendView } from '../../views/w3m-wallet-send-view';
@@ -99,8 +98,6 @@ export function AppKitRouter() {
         return UpdateEmailWalletView;
       case 'UpgradeEmailWallet':
         return UpgradeEmailWalletView;
-      case 'UpgradeToSmartAccount':
-        return UpgradeToSmartAccountView;
       case 'WalletCompatibleNetworks':
         return WalletCompatibleNetworks;
       case 'WalletReceive':

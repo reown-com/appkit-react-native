@@ -14,6 +14,7 @@ import {
   ApiController,
   AssetUtil,
   ConnectionsController,
+  CoreHelperUtil,
   OptionsController,
   RouterController,
   SnackController
@@ -21,8 +22,9 @@ import {
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function WalletReceiveView() {
-  const { address, profileName /*preferredAccountType*/ } = useSnapshot(AccountController.state);
-  const { activeNetwork, networks } = useSnapshot(ConnectionsController.state);
+  const { profileName /*preferredAccountType*/ } = useSnapshot(AccountController.state);
+  const { activeNetwork, networks, activeAddress } = useSnapshot(ConnectionsController.state);
+  const address = CoreHelperUtil.getPlainAddress(activeAddress);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
   const { padding } = useCustomDimensions();
   const canCopy = OptionsController.isClipboardAvailable();
@@ -50,8 +52,8 @@ export function WalletReceiveView() {
   };
 
   const onCopyAddress = () => {
-    if (canCopy && AccountController.state.address) {
-      OptionsController.copyToClipboard(AccountController.state.address);
+    if (canCopy && address) {
+      OptionsController.copyToClipboard(address);
       SnackController.showSuccess('Address copied');
     }
   };

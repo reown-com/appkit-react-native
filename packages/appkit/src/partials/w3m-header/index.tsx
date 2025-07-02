@@ -52,7 +52,6 @@ export function Header() {
       UpdateEmailSecondaryOtp: 'Confirm new email',
       UpdateEmailWallet: 'Edit email',
       UpgradeEmailWallet: 'Upgrade wallet',
-      UpgradeToSmartAccount: undefined,
       WalletCompatibleNetworks: 'Compatible networks',
       WalletReceive: 'Receive',
       WalletSend: 'Send',

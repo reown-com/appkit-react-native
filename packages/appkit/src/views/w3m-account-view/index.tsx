@@ -7,16 +7,15 @@ import {
   Icon,
   IconLink,
   NetworkButton,
-  useTheme,
-  Promo
+  useTheme
 } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
   ApiController,
   AssetUtil,
   ConnectionsController,
+  CoreHelperUtil,
   ModalController,
-  NetworkController,
   RouterController,
   SendController
 } from '@reown/appkit-core-react-native';
@@ -28,12 +27,14 @@ import styles from './styles';
 export function AccountView() {
   const Theme = useTheme();
   const { padding } = useCustomDimensions();
-  const { activeNetwork } = useSnapshot(ConnectionsController.state);
-  const { address, profileName, profileImage, preferredAccountType } = useSnapshot(
-    AccountController.state
-  );
-  const showActivate =
-    preferredAccountType === 'eoa' && NetworkController.checkIfSmartAccountEnabled();
+  const { activeNetwork, activeAddress, accountType } = useSnapshot(ConnectionsController.state);
+  const address = CoreHelperUtil.getPlainAddress(activeAddress);
+  // const { profileName, profileImage, preferredAccountType } = useSnapshot(
+  //   AccountController.state
+  // );
+  // const showActivate = accountType === 'eoa';
+
+  console.log('type', accountType);
 
   const onProfilePress = () => {
     RouterController.push('AccountDefault');
@@ -41,10 +42,6 @@ export function AccountView() {
 
   const onNetworkPress = () => {
     RouterController.push('Networks');
-  };
-
-  const onActivatePress = () => {
-    RouterController.push('UpgradeToSmartAccount');
   };
 
   useEffect(() => {
@@ -85,17 +82,10 @@ export function AccountView() {
       </NetworkButton>
       <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
       <FlexView padding={['3xl', '0', '0', '0']} style={[{ backgroundColor: Theme['bg-100'] }]}>
-        {showActivate && (
-          <Promo
-            style={styles.promoPill}
-            text="Switch to your smart account"
-            onPress={onActivatePress}
-          />
-        )}
         <AccountPill
           address={address}
-          profileName={profileName}
-          profileImage={profileImage}
+          // profileName={profileName}
+          // profileImage={profileImage}
           onPress={onProfilePress}
           style={styles.accountPill}
         />

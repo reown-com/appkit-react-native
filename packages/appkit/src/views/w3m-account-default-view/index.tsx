@@ -5,16 +5,12 @@ import {
   AccountController,
   ApiController,
   AssetUtil,
-  ConnectionController,
-  ConnectorController,
   CoreHelperUtil,
   EventsController,
   ModalController,
-  NetworkController,
   OptionsController,
   RouterController,
   SnackController,
-  type AppKitFrameProvider,
   ConstantsUtil,
   SwapController,
   OnRampController,
@@ -38,27 +34,27 @@ import { AuthButtons } from './components/auth-buttons';
 import styles from './styles';
 
 export function AccountDefaultView() {
-  const { profileName, profileImage, preferredAccountType } = useSnapshot(AccountController.state);
+  const { profileName, profileImage } = useSnapshot(AccountController.state);
   const { loading } = useSnapshot(ModalController.state);
   const {
     activeAddress: address,
     activeBalance: balance,
     activeNetwork,
-    activeNamespace
+    activeNamespace,
+    connection,
+    accountType
   } = useSnapshot(ConnectionsController.state);
   const account = address?.split(':')[2];
   const [disconnecting, setDisconnecting] = useState(false);
-  const { connectedConnector } = useSnapshot(ConnectorController.state);
-  const { connectedSocialProvider } = useSnapshot(ConnectionController.state);
   const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
   const { history } = useSnapshot(RouterController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
   const showCopy = OptionsController.isClipboardAvailable();
-  const isAuth = connectedConnector === 'AUTH';
+  const isAuth = connection?.properties?.email || connection?.properties?.username;
   const showBalance = balance && !isAuth;
   const showExplorer = Object.keys(activeNetwork?.blockExplorers ?? {}).length > 0 && !isAuth;
   const showBack = history.length > 1;
-  const showSwitchAccountType = isAuth && NetworkController.checkIfSmartAccountEnabled();
+  const showSwitchAccountType = isAuth;
   const showActivity =
     !isAuth &&
     activeNamespace &&
@@ -80,17 +76,19 @@ export function AccountDefaultView() {
 
   const onSwitchAccountType = async () => {
     try {
-      if (isAuth) {
-        ModalController.setLoading(true);
-        const accountType =
-          AccountController.state.preferredAccountType === 'eoa' ? 'smartAccount' : 'eoa';
-        const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
-        await provider?.setPreferredAccount(accountType);
+      if (isAuth && ConnectionsController.state.activeNamespace) {
+        const newType = ConnectionsController.state.accountType === 'eoa' ? 'smartAccount' : 'eoa';
+        ConnectionsController.setAccountType(
+          ConnectionsController.state.activeNamespace,
+          ConnectionsController.state.accountType === 'eoa' ? 'smartAccount' : 'eoa'
+        );
+
         EventsController.sendEvent({
           type: 'track',
           event: 'SET_PREFERRED_ACCOUNT_TYPE',
           properties: {
-            accountType,
+            // eslint-disable-next-line valtio/state-snapshot-rule
+            accountType: newType,
             network: ConnectionsController.state.activeNetwork?.caipNetworkId || ''
           }
         });
@@ -99,20 +97,6 @@ export function AccountDefaultView() {
       ModalController.setLoading(false);
       SnackController.showError('Error switching account type');
     }
-  };
-
-  const getUserEmail = () => {
-    const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
-    if (!provider) return '';
-
-    return provider.getEmail();
-  };
-
-  const getUsername = () => {
-    const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
-    if (!provider) return '';
-
-    return provider.getUsername();
   };
 
   const onExplorerPress = () => {
@@ -174,8 +158,10 @@ export function AccountDefaultView() {
   };
 
   const onEmailPress = () => {
-    if (ConnectionController.state.connectedSocialProvider) return;
-    RouterController.push('UpdateEmailWallet', { email: getUserEmail() });
+    const email = ConnectionsController.state.connection?.properties?.email;
+    const provider = ConnectionsController.state.connection?.properties?.provider;
+    if (provider !== 'email' || !email) return;
+    RouterController.push('UpdateEmailWallet', { email });
   };
 
   return (
@@ -239,11 +225,11 @@ export function AccountDefaultView() {
             {isAuth && (
               <AuthButtons
                 onUpgradePress={onUpgradePress}
-                socialProvider={connectedSocialProvider}
+                socialProvider={connection?.properties?.provider}
                 onPress={onEmailPress}
                 style={styles.actionButton}
                 text={UiUtil.getTruncateString({
-                  string: getUsername() || getUserEmail() || '',
+                  string: connection?.properties?.username || connection?.properties?.email || '',
                   charsStart: 30,
                   charsEnd: 0,
                   truncate: 'end'
@@ -316,7 +302,7 @@ export function AccountDefaultView() {
                 loading={loading}
               >
                 <Text color="fg-100">{`Switch to your ${
-                  preferredAccountType === 'eoa' ? 'smart account' : 'EOA'
+                  accountType === 'eoa' ? 'smart account' : 'EOA'
                 }`}</Text>
               </ListItem>
             )}

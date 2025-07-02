@@ -46,7 +46,6 @@ export interface RouterControllerState {
     | 'UpdateEmailSecondaryOtp'
     | 'UpdateEmailWallet'
     | 'UpgradeEmailWallet'
-    | 'UpgradeToSmartAccount'
     | 'WalletCompatibleNetworks'
     | 'WalletReceive'
     | 'WalletSend'

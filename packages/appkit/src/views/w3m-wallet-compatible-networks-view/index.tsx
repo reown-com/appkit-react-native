@@ -1,24 +1,24 @@
 import { ScrollView } from 'react-native';
 import { useSnapshot } from 'valtio';
 import { FlexView, Text, Banner, NetworkImage } from '@reown/appkit-ui-react-native';
-import {
-  AccountController,
-  ApiController,
-  AssetUtil,
-  NetworkController
-} from '@reown/appkit-core-react-native';
+import { ApiController, AssetUtil, ConnectionsController } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function WalletCompatibleNetworks() {
   const { padding } = useCustomDimensions();
-  const { preferredAccountType } = useSnapshot(AccountController.state);
-  const isSmartAccount =
-    preferredAccountType === 'smartAccount' && NetworkController.checkIfSmartAccountEnabled();
-  const approvedNetworks = isSmartAccount
-    ? NetworkController.getSmartAccountEnabledNetworks()
-    : NetworkController.getApprovedCaipNetworks();
+  const { networks } = useSnapshot(ConnectionsController.state);
+  // const { preferredAccountType } = useSnapshot(AccountController.state);
+  // const isSmartAccount =
+  //   preferredAccountType === 'smartAccount' && NetworkController.checkIfSmartAccountEnabled();
+  // const approvedNetworks = isSmartAccount
+  //   ? NetworkController.getSmartAccountEnabledNetworks()
+  //   : NetworkController.getApprovedCaipNetworks();
   const imageHeaders = ApiController._getApiHeaders();
+  //TODO: check supported networks for smart accounts
+  const approvedNetworks = networks.filter(
+    network => network?.chainNamespace === ConnectionsController.state.activeNamespace
+  );
 
   return (
     <ScrollView bounces={false} style={{ paddingHorizontal: padding }} fadingEdgeLength={20}>

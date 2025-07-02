@@ -23,10 +23,5 @@ export default StyleSheet.create({
     alignSelf: 'center',
     marginBottom: Spacing.s,
     marginHorizontal: Spacing.s
-  },
-  promoPill: {
-    marginTop: Spacing.xs,
-    marginBottom: Spacing['2xl'],
-    alignSelf: 'center'
   }
 });

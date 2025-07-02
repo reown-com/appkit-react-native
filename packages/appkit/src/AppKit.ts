@@ -154,7 +154,10 @@ export class AppKit {
       //TODO: Replace this
       AccountController.setIsConnected(true);
 
-      if (ConnectionsController.state.activeNamespace === 'eip155') {
+      if (
+        OptionsController.state.isSiweEnabled &&
+        ConnectionsController.state.activeNamespace === 'eip155'
+      ) {
         this.handleSiweChange();
       } else {
         ModalController.close();
@@ -411,20 +414,23 @@ export class AppKit {
     adapters.forEach(async adapter => {
       const namespace = adapter.getSupportedNamespace();
       const namespaceDetails = approvedNamespaces[namespace];
-      if (!namespaceDetails) return; // Should not happen if filtering is correct
+      if (!namespaceDetails) return;
 
       const accounts = namespaceDetails.accounts ?? [];
       const chains = namespaceDetails.chains ?? [];
       const caipNetwork = adapter?.connector?.getChainId(namespace);
+      const namespaceProperties = {
+        ...properties,
+        smartAccounts: properties?.smartAccounts?.filter(account => account.startsWith(namespace))
+      };
 
       ConnectionsController.setConnection({
-        namespace,
-        adapter,
         accounts,
-        chains,
-        caipNetwork,
-        wallet,
-        properties
+        adapter,
+        caipNetwork: caipNetwork ?? chains[0]!,
+        namespace,
+        properties: namespaceProperties,
+        wallet
       });
     });
 

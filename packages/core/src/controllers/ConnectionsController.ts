@@ -9,7 +9,8 @@ import {
   type ChainNamespace,
   type GetBalanceResponse,
   type WalletInfo,
-  type ConnectionProperties
+  type ConnectionProperties,
+  type AccountType
 } from '@reown/appkit-common-react-native';
 import { StorageUtil } from '../utils/StorageUtil';
 
@@ -24,6 +25,7 @@ interface Connection {
   caipNetwork: CaipNetworkId;
   wallet?: WalletInfo;
   properties?: ConnectionProperties;
+  type?: AccountType;
 }
 
 export interface ConnectionsControllerState {
@@ -39,59 +41,74 @@ const baseState = proxy<ConnectionsControllerState>({
   networks: []
 });
 
+// -- Helper Functions --------------------------------------------- //
+const getActiveConnection = (snap: ConnectionsControllerState): Connection | undefined => {
+  if (!snap.activeNamespace) return undefined;
+
+  return snap.connections.get(snap.activeNamespace);
+};
+
+const hasValidAccounts = (connection: Connection): boolean => {
+  return connection?.accounts && connection.accounts.length > 0;
+};
+
+const findSmartAccountForNetwork = (connection: Connection): CaipAddress | undefined => {
+  return connection.properties?.smartAccounts?.find(account =>
+    account.startsWith(connection.caipNetwork)
+  );
+};
+
+const findEOAForNetwork = (connection: Connection): CaipAddress | undefined => {
+  const smartAccounts = connection.properties?.smartAccounts || [];
+
+  return connection.accounts.find(
+    account => account.startsWith(connection.caipNetwork) && !smartAccounts.includes(account)
+  );
+};
+
+const getActiveAddress = (connection: Connection): CaipAddress | undefined => {
+  if (!hasValidAccounts(connection)) {
+    return undefined;
+  }
+
+  // For smart accounts, prioritize smart account addresses
+  if (connection.type === 'smartAccount') {
+    const smartAccount = findSmartAccountForNetwork(connection);
+    if (smartAccount) {
+      return smartAccount;
+    }
+  }
+
+  // Fall back to EOA or any account that matches the network
+  return findEOAForNetwork(connection);
+};
+
 const derivedState = derive(
   {
     activeAddress: (get): CaipAddress | undefined => {
       const snap = get(baseState);
+      const connection = getActiveConnection(snap);
 
-      if (!snap.activeNamespace) {
-        return undefined;
-      }
-
-      const connection = snap.connections.get(snap.activeNamespace);
-
-      if (!connection || !connection.accounts || connection.accounts.length === 0) {
-        return undefined;
-      }
-
-      //TODO: what happens if there are several accounts on the same chain?
-      const activeAccount = connection.accounts.find(account =>
-        account.startsWith(connection.caipNetwork)
-      );
-
-      return activeAccount;
+      return connection ? getActiveAddress(connection) : undefined;
     },
     activeBalance: (get): Balance | undefined => {
       const snap = get(baseState);
+      const connection = getActiveConnection(snap);
 
-      if (!snap.activeNamespace) return undefined;
-      const connection = snap.connections.get(snap.activeNamespace);
-
-      if (!connection || !connection.accounts || connection.accounts.length === 0) {
+      if (!connection) {
         return undefined;
       }
 
-      const activeAccount = connection.accounts.find(account =>
-        account.startsWith(connection.caipNetwork)
-      );
-
-      if (
-        !connection ||
-        !connection.balances ||
-        !activeAccount ||
-        Object.keys(connection.balances).length === 0
-      ) {
+      const activeAddress = getActiveAddress(connection);
+      if (!activeAddress || !connection.balances || Object.keys(connection.balances).length === 0) {
         return undefined;
       }
 
-      return connection.balances[activeAccount];
+      return connection.balances[activeAddress];
     },
     activeNetwork: (get): AppKitNetwork | undefined => {
       const snap = get(baseState);
-
-      if (!snap.activeNamespace) return undefined;
-
-      const connection = snap.connections.get(snap.activeNamespace);
+      const connection = getActiveConnection(snap);
 
       if (!connection) return undefined;
 
@@ -103,21 +120,26 @@ const derivedState = derive(
     },
     activeCaipNetworkId: (get): CaipNetworkId | undefined => {
       const snap = get(baseState);
+      const connection = getActiveConnection(snap);
 
-      if (!snap.activeNamespace) return undefined;
+      return connection?.caipNetwork;
+    },
+    accountType: (get): AccountType | undefined => {
+      const snap = get(baseState);
+      const connection = getActiveConnection(snap);
 
-      const connection = snap.connections.get(snap.activeNamespace);
+      return connection?.type;
+    },
+    connection: (get): Connection | undefined => {
+      const snap = get(baseState);
 
-      if (!connection) return undefined;
-
-      return connection.caipNetwork;
+      return getActiveConnection(snap);
     },
     walletInfo: (get): WalletInfo | undefined => {
       const snap = get(baseState);
+      const connection = getActiveConnection(snap);
 
-      if (!snap.activeNamespace) return undefined;
-
-      return snap.connections.get(snap.activeNamespace)?.wallet;
+      return connection?.wallet;
     }
   },
   {
@@ -135,30 +157,34 @@ export const ConnectionsController = {
   },
 
   setConnection({
-    namespace,
-    adapter,
     accounts,
-    chains,
-    wallet,
+    adapter,
     caipNetwork,
-    properties
+    namespace,
+    properties,
+    wallet
   }: {
-    namespace: ChainNamespace;
-    adapter: BlockchainAdapter;
     accounts: CaipAddress[];
-    chains: CaipNetworkId[];
-    wallet?: WalletInfo;
-    caipNetwork?: CaipNetworkId;
+    adapter: BlockchainAdapter;
+    caipNetwork: CaipNetworkId;
+    namespace: ChainNamespace;
     properties?: ConnectionProperties;
+    wallet?: WalletInfo;
   }) {
-    const newConnectionEntry = {
+    const type: AccountType =
+      properties?.smartAccounts?.length &&
+      properties.smartAccounts.find(account => account.startsWith(caipNetwork))
+        ? 'smartAccount'
+        : 'eoa';
+
+    const newConnectionEntry: Connection = {
       balances: {},
-      caipNetwork: caipNetwork ?? chains[0]!,
+      caipNetwork,
       adapter: ref(adapter),
       accounts,
-      chains,
       wallet,
-      properties
+      properties,
+      type
     };
 
     // Create a new Map to ensure Valtio detects the change
@@ -216,6 +242,15 @@ export const ConnectionsController = {
           .get(network.chainNamespace)
           ?.accounts.some(account => account.startsWith(network.caipNetworkId))
     );
+  },
+
+  setAccountType(namespace: ChainNamespace, type: AccountType) {
+    const connection = baseState.connections.get(namespace);
+    if (!connection) return;
+
+    const newConnectionsMap = new Map(baseState.connections);
+    newConnectionsMap.set(namespace, { ...connection, type });
+    baseState.connections = newConnectionsMap;
   },
 
   async disconnect(namespace: ChainNamespace, isInternal = true) {

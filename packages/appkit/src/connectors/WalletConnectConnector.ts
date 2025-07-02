@@ -50,6 +50,15 @@ export class WalletConnectConnector extends WalletConnector {
       this.namespaces = provider.session.namespaces as Namespaces;
     }
 
+    if (provider.session?.sessionProperties) {
+      this.properties = {
+        ...provider.session.sessionProperties,
+        smartAccounts: provider.session.sessionProperties['smartAccounts']
+          ? JSON.parse(provider.session.sessionProperties['smartAccounts'])
+          : []
+      };
+    }
+
     if (provider.session?.peer?.metadata) {
       const metadata = provider.session?.peer.metadata;
       if (metadata) {
@@ -179,7 +188,12 @@ export class WalletConnectConnector extends WalletConnector {
     }
 
     if (session?.sessionProperties) {
-      this.properties = session.sessionProperties;
+      this.properties = {
+        ...session.sessionProperties,
+        smartAccounts: session.sessionProperties['smartAccounts']
+          ? JSON.parse(session.sessionProperties['smartAccounts'])
+          : []
+      };
     }
 
     this.namespaces = session?.namespaces as Namespaces;

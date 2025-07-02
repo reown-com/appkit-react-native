@@ -324,7 +324,10 @@ export interface ConnectionProperties {
   email?: string;
   username?: string;
   smartAccounts?: CaipAddress[];
+  provider?: SocialProvider;
 }
+
+export type AccountType = 'eoa' | 'smartAccount';
 
 export interface Storage {
   /**

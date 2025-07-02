@@ -6,6 +6,7 @@ import type { LogoType } from '../../utils/TypesUtil';
 import styles from './styles';
 import { Logo } from '../wui-logo';
 import type { ReactNode } from 'react';
+import { Icon } from '../../components/wui-icon';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -19,6 +20,7 @@ export interface ListSocialProps {
   logoWidth?: number;
   logoHeight?: number;
   logoStyle?: StyleProp<ViewStyle>;
+  chevron?: boolean;
 }
 
 export function ListSocial({
@@ -30,7 +32,8 @@ export function ListSocial({
   testID,
   logoHeight = 40,
   logoWidth = 40,
-  logoStyle
+  logoStyle,
+  chevron
 }: ListSocialProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
@@ -62,7 +65,11 @@ export function ListSocial({
         />
       </View>
       {children}
-      <View style={styles.rightPlaceholder} />
+      {chevron ? (
+        <Icon name="chevronRight" size="md" color="fg-200" style={styles.rightIcon} />
+      ) : (
+        <View style={styles.rightPlaceholder} />
+      )}
     </AnimatedPressable>
   );
 }
