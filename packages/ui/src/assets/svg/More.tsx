@@ -2,7 +2,7 @@ import Svg, { Circle, Path, type SvgProps } from 'react-native-svg';
 const SvgMore = (props: SvgProps) => (
   <Svg viewBox="0 0 41 40" fill="none" {...props}>
     <Path
-      fill={props.fill || '#fff'}
+      fill={props.fill ?? '#fff'}
       fillOpacity=".05"
       d="M.6 20a20 20 0 1 1 40 0 20 20 0 0 1-40 0Z"
     />

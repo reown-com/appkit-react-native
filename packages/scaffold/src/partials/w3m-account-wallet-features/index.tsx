@@ -7,6 +7,7 @@ import {
   CoreHelperUtil,
   EventsController,
   NetworkController,
+  OnRampController,
   OptionsController,
   RouterController,
   SwapController
@@ -23,7 +24,7 @@ export interface AccountWalletFeaturesProps {
 export function AccountWalletFeatures() {
   const [activeTab, setActiveTab] = useState(0);
   const { tokenBalance } = useSnapshot(AccountController.state);
-  const { features } = useSnapshot(OptionsController.state);
+  const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
   const balance = CoreHelperUtil.calculateAndFormatBalance(tokenBalance as BalanceType[]);
   const isSwapsEnabled = features?.swaps;
 
@@ -80,6 +81,15 @@ export function AccountWalletFeatures() {
     RouterController.push('WalletReceive');
   };
 
+  const onBuyPress = () => {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_BUY_CRYPTO'
+    });
+    OnRampController.resetState();
+    RouterController.push('OnRamp');
+  };
+
   return (
     <FlexView style={styles.container} alignItems="center">
       <Balance integer={balance.dollars} decimal={balance.pennies} />
@@ -89,6 +99,18 @@ export function AccountWalletFeatures() {
         justifyContent="space-around"
         padding={['0', 's', '0', 's']}
       >
+        {isOnRampEnabled && (
+          <IconLink
+            icon="card"
+            size="lg"
+            iconColor="accent-100"
+            background
+            backgroundColor="accent-glass-010"
+            pressedColor="accent-glass-020"
+            style={[styles.action, isSwapsEnabled ? styles.actionCenter : styles.actionLeft]}
+            onPress={onBuyPress}
+          />
+        )}
         {isSwapsEnabled && (
           <IconLink
             icon="recycleHorizontal"

@@ -28,7 +28,7 @@ export const getThemedButtonStyle = (
 
   return {
     ...buttonBaseStyle,
-    backgroundColor: variant === 'fill' ? theme['accent-100'] : theme['gray-glass-002']
+    backgroundColor: variant === 'fill' ? theme['accent-100'] : theme['gray-glass-005']
   };
 };
 
