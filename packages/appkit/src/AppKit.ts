@@ -479,6 +479,7 @@ export class AppKit {
       this.disconnect(namespace, false);
     });
 
+    //TODO: Add types to this events
     adapter.on('balanceChanged', ({ address, balance }) => {
       const namespace = adapter.getSupportedNamespace();
       ConnectionsController.updateBalance(namespace, address, balance);

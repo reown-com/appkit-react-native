@@ -10,7 +10,6 @@ import {
   useTheme
 } from '@reown/appkit-ui-react-native';
 import {
-  AccountController,
   ApiController,
   AssetUtil,
   ConnectionsController,
@@ -27,14 +26,8 @@ import styles from './styles';
 export function AccountView() {
   const Theme = useTheme();
   const { padding } = useCustomDimensions();
-  const { activeNetwork, activeAddress, accountType } = useSnapshot(ConnectionsController.state);
+  const { activeNetwork, activeAddress } = useSnapshot(ConnectionsController.state);
   const address = CoreHelperUtil.getPlainAddress(activeAddress);
-  // const { profileName, profileImage, preferredAccountType } = useSnapshot(
-  //   AccountController.state
-  // );
-  // const showActivate = accountType === 'eoa';
-
-  console.log('type', accountType);
 
   const onProfilePress = () => {
     RouterController.push('AccountDefault');
@@ -45,15 +38,15 @@ export function AccountView() {
   };
 
   useEffect(() => {
-    AccountController.fetchTokenBalance();
+    ConnectionsController.fetchBalance();
     SendController.resetSend();
   }, []);
 
   useEffect(() => {
-    AccountController.fetchTokenBalance();
+    ConnectionsController.fetchBalance();
 
     const balanceInterval = setInterval(() => {
-      AccountController.fetchTokenBalance();
+      ConnectionsController.fetchBalance();
     }, 10000);
 
     return () => {

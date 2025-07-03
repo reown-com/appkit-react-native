@@ -11,9 +11,9 @@ import { FlexView, LoadingThumbnail, IconBox, Logo, Text } from '@reown/appkit-u
 import { ConstantsUtil, StringUtil } from '@reown/appkit-common-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import styles from './styles';
 import { useAppKit } from '../../AppKitContext';
 import { UiUtil } from '../../utils/UiUtil';
+import styles from './styles';
 
 export function ConnectingSocialView() {
   const { maxWidth: width } = useCustomDimensions();

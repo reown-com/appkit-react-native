@@ -22,19 +22,23 @@ import {
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function WalletReceiveView() {
-  const { profileName /*preferredAccountType*/ } = useSnapshot(AccountController.state);
-  const { activeNetwork, networks, activeAddress } = useSnapshot(ConnectionsController.state);
+  const { profileName } = useSnapshot(AccountController.state);
+  const { activeNetwork, networks, activeAddress, accountType } = useSnapshot(
+    ConnectionsController.state
+  );
   const address = CoreHelperUtil.getPlainAddress(activeAddress);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
   const { padding } = useCustomDimensions();
   const canCopy = OptionsController.isClipboardAvailable();
-  // const isSmartAccount =
-  //   preferredAccountType === 'smartAccount' && NetworkController.checkIfSmartAccountEnabled();
-  // const networks = isSmartAccount
-  //   ? NetworkController.getSmartAccountEnabledNetworks()
-  //   : NetworkController.getApprovedCaipNetworks();
+  const isSmartAccount = accountType === 'smartAccount';
 
-  const imagesArray = networks
+  const approvedNetworks = isSmartAccount
+    ? ConnectionsController.getSmartAccountEnabledNetworks()
+    : networks.filter(
+        network => network?.chainNamespace === ConnectionsController.state.activeNamespace
+      );
+
+  const imagesArray = approvedNetworks
     .filter(network => network?.id)
     .slice(0, 5)
     .map(network => AssetUtil.getNetworkImage(network?.id))

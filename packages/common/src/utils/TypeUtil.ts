@@ -211,6 +211,11 @@ export interface GetBalanceResponse {
   amount: string;
   symbol: string;
   contractAddress?: ContractAddress;
+  name?: string;
+  price?: number; //price of the token in USD
+  value?: number; //total value of the amount in USD
+  decimals?: number;
+  iconUrl?: string;
 }
 
 //********** Connector Types **********//
@@ -266,8 +271,14 @@ export abstract class WalletConnector extends EventEmitter {
     this.provider = provider;
   }
 
+  public async disconnect() {
+    await this.provider?.disconnect();
+    this.namespaces = undefined;
+    this.wallet = undefined;
+    this.properties = undefined;
+  }
+
   abstract connect(opts: ConnectOptions): Promise<Namespaces | undefined>;
-  abstract disconnect(): Promise<void>;
   abstract getProvider(): Provider;
   abstract getNamespaces(): Namespaces;
   abstract getChainId(namespace: ChainNamespace): CaipNetworkId | undefined;

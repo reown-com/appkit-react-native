@@ -91,10 +91,6 @@ export class WalletConnectConnector extends WalletConnector {
     return this.provider as IUniversalProvider;
   }
 
-  override disconnect(): Promise<void> {
-    return this.getProvider().disconnect();
-  }
-
   override async connect(opts: ConnectOptions) {
     const { siweConfig, namespaces, defaultChain, universalLink } = opts;
     function onUri(uri: string) {

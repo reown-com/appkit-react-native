@@ -7,18 +7,16 @@ import styles from './styles';
 
 export function WalletCompatibleNetworks() {
   const { padding } = useCustomDimensions();
-  const { networks } = useSnapshot(ConnectionsController.state);
-  // const { preferredAccountType } = useSnapshot(AccountController.state);
-  // const isSmartAccount =
-  //   preferredAccountType === 'smartAccount' && NetworkController.checkIfSmartAccountEnabled();
-  // const approvedNetworks = isSmartAccount
-  //   ? NetworkController.getSmartAccountEnabledNetworks()
-  //   : NetworkController.getApprovedCaipNetworks();
+  const { networks, accountType } = useSnapshot(ConnectionsController.state);
+  const isSmartAccount = accountType === 'smartAccount';
+
+  const approvedNetworks = isSmartAccount
+    ? ConnectionsController.getSmartAccountEnabledNetworks()
+    : networks.filter(
+        network => network?.chainNamespace === ConnectionsController.state.activeNamespace
+      );
+
   const imageHeaders = ApiController._getApiHeaders();
-  //TODO: check supported networks for smart accounts
-  const approvedNetworks = networks.filter(
-    network => network?.chainNamespace === ConnectionsController.state.activeNamespace
-  );
 
   return (
     <ScrollView bounces={false} style={{ paddingHorizontal: padding }} fadingEdgeLength={20}>

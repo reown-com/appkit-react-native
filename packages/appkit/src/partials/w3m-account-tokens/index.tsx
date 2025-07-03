@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import { useSnapshot } from 'valtio';
 import {
-  AccountController,
   AssetUtil,
   ConnectionsController,
   RouterController
@@ -29,13 +28,13 @@ interface Props {
 export function AccountTokens({ style }: Props) {
   const Theme = useTheme();
   const [refreshing, setRefreshing] = useState(false);
-  const { tokenBalance } = useSnapshot(AccountController.state);
-  const { activeNetwork } = useSnapshot(ConnectionsController.state);
+  const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
+  const filteredBalances = balances?.filter(balance => balance.amount > '0');
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    AccountController.fetchTokenBalance();
+    ConnectionsController.fetchBalance();
     setRefreshing(false);
   }, []);
 
@@ -43,7 +42,7 @@ export function AccountTokens({ style }: Props) {
     RouterController.push('WalletReceive');
   };
 
-  if (!tokenBalance?.length) {
+  if (!filteredBalances?.length) {
     return (
       <ListItem
         icon="arrowBottomCircle"
@@ -76,14 +75,14 @@ export function AccountTokens({ style }: Props) {
         />
       }
     >
-      {tokenBalance.map(token => (
+      {filteredBalances.map(token => (
         <ListToken
-          key={token.name}
-          name={token.name}
+          key={token.symbol}
+          name={token.name || 'Unknown'}
           imageSrc={token.iconUrl}
           networkSrc={networkImage}
           value={token.value}
-          amount={token.quantity.numeric}
+          amount={token.amount}
           currency={token.symbol}
           pressable={false}
         />

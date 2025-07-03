@@ -82,6 +82,7 @@ export function AccountDefaultView() {
           ConnectionsController.state.activeNamespace,
           ConnectionsController.state.accountType === 'eoa' ? 'smartAccount' : 'eoa'
         );
+        ConnectionsController.fetchBalance();
 
         EventsController.sendEvent({
           type: 'track',
