@@ -11,7 +11,6 @@ import { SnackController } from './SnackController';
 import { RouterController } from './RouterController';
 import type { SwapInputTarget, SwapTokenWithBalance } from '../utils/TypeUtil';
 import { ConnectorController } from './ConnectorController';
-import { AccountController } from './AccountController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { TransactionsController } from './TransactionsController';
 import { EventsController } from './EventsController';
@@ -285,7 +284,7 @@ export const SwapController = {
     }, {});
   },
 
-  async getMyTokensWithBalance(forceUpdate?: string) {
+  async getMyTokensWithBalance(forceUpdate?: CaipAddress[]) {
     const balances = await SwapApiUtil.getMyTokensWithBalance(forceUpdate);
     if (!balances) {
       return;
@@ -762,7 +761,10 @@ export const SwapController = {
     }
 
     try {
-      const forceUpdateAddresses = [state.sourceToken?.address, state.toToken?.address].join(',');
+      const forceUpdateAddresses = [state.sourceToken?.address, state.toToken?.address].filter(
+        Boolean
+      ) as CaipAddress[];
+
       const transactionHash = await ConnectionsController.sendTransaction({
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
@@ -784,7 +786,7 @@ export const SwapController = {
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+          isSmartAccount: ConnectionsController.state.accountType === 'smartAccount'
         }
       });
       SwapController.resetState();
@@ -794,10 +796,10 @@ export const SwapController = {
       }
 
       SwapController.getMyTokensWithBalance(forceUpdateAddresses);
-      AccountController.fetchTokenBalance();
+      ConnectionsController.fetchBalance();
 
       setTimeout(() => {
-        TransactionsController.fetchTransactions(AccountController.state.address, true);
+        TransactionsController.fetchTransactions(ConnectionsController.state.activeAddress, true);
       }, 5000);
 
       return transactionHash;
@@ -816,7 +818,7 @@ export const SwapController = {
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+          isSmartAccount: ConnectionsController.state.accountType === 'smartAccount'
         }
       });
 
@@ -833,7 +835,7 @@ export const SwapController = {
     );
 
     let insufficientNetworkTokenForGas = true;
-    if (AccountController.state.preferredAccountType === 'smartAccount') {
+    if (ConnectionsController.state.accountType === 'smartAccount') {
       // Smart Accounts may pay gas in any ERC20 token
       insufficientNetworkTokenForGas = false;
     } else {

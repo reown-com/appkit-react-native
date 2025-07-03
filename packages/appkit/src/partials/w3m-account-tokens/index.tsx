@@ -30,11 +30,13 @@ export function AccountTokens({ style }: Props) {
   const [refreshing, setRefreshing] = useState(false);
   const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
-  const filteredBalances = balances?.filter(balance => balance.amount > '0');
+
+  // Show all tokens that come from the API
+  const filteredBalances = balances?.filter(balance => balance.quantity);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    ConnectionsController.fetchBalance();
+    await ConnectionsController.fetchBalance();
     setRefreshing(false);
   }, []);
 
@@ -82,7 +84,7 @@ export function AccountTokens({ style }: Props) {
           imageSrc={token.iconUrl}
           networkSrc={networkImage}
           value={token.value}
-          amount={token.amount}
+          amount={token.quantity?.numeric}
           currency={token.symbol}
           pressable={false}
         />

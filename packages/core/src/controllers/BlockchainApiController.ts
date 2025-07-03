@@ -37,7 +37,7 @@ import type {
 import { OptionsController } from './OptionsController';
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 import { ApiUtil } from '../utils/ApiUtil';
-import type { CaipNetworkId } from '@reown/appkit-common-react-native';
+import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
 import { ConnectionsController } from './ConnectionsController';
 import { SnackController } from './SnackController';
 
@@ -320,7 +320,7 @@ export const BlockchainApiController = {
     });
   },
 
-  async getBalance(address: string, chainId?: string, forceUpdate?: string) {
+  async getBalance(address?: CaipAddress, forceUpdate?: CaipAddress[]) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ConnectionsController.state.activeCaipNetworkId
     );
@@ -330,14 +330,20 @@ export const BlockchainApiController = {
       return { balances: [] };
     }
 
+    const [namespace, chain, plainAddress] = address?.split(':') ?? [];
+
+    if (!namespace || !chain || !plainAddress) {
+      throw new Error('Invalid address');
+    }
+
     return state.api.get<BlockchainApiBalanceResponse>({
-      path: `/v1/account/${address}/balance`,
+      path: `/v1/account/${plainAddress}/balance`,
       headers: getHeaders(),
       params: {
         currency: 'usd',
         projectId: OptionsController.state.projectId,
-        chainId,
-        forceUpdate
+        chainId: `${namespace}:${chain}`,
+        forceUpdate: forceUpdate?.join(',')
       }
     });
   },

@@ -1,12 +1,16 @@
 import { proxy } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
-import type { Balance, CaipAddress } from '@reown/appkit-common-react-native';
+import type { CaipAddress } from '@reown/appkit-common-react-native';
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
-import type { AppKitFrameAccountType, ConnectedWalletInfo } from '../utils/TypeUtil';
-import { NetworkController } from './NetworkController';
-import { BlockchainApiController } from './BlockchainApiController';
-import { SnackController } from './SnackController';
+import type {
+  AppKitFrameAccountType,
+  ConnectedWalletInfo,
+  BlockchainApiBalance
+} from '../utils/TypeUtil';
+// import { NetworkController } from './NetworkController';
+// import { BlockchainApiController } from './BlockchainApiController';
+// import { SnackController } from './SnackController';
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -15,7 +19,7 @@ export interface AccountControllerState {
   address?: string;
   balance?: string;
   balanceSymbol?: string;
-  tokenBalance?: Balance[];
+  tokenBalance?: BlockchainApiBalance[];
   profileName?: string;
   profileImage?: string;
   addressExplorerUrl?: string;
@@ -89,26 +93,22 @@ export const AccountController = {
   },
 
   async fetchTokenBalance() {
-    const chainId = NetworkController.state.caipNetwork?.id;
-    const address = AccountController.state.address;
-
-    try {
-      if (address && chainId) {
-        const response = await BlockchainApiController.getBalance(address, chainId);
-
-        if (!response) {
-          throw new Error('Failed to fetch token balance');
-        }
-
-        const filteredBalances = response.balances.filter(
-          balance => balance.quantity.decimals !== '0'
-        );
-
-        this.setTokenBalance(filteredBalances);
-      }
-    } catch (error) {
-      SnackController.showError('Failed to fetch token balance');
-    }
+    // const chainId = NetworkController.state.caipNetwork?.id;
+    // const address = AccountController.state.address;
+    // try {
+    //   if (address && chainId) {
+    //     const response = await BlockchainApiController.getBalance(address, chainId);
+    //     if (!response) {
+    //       throw new Error('Failed to fetch token balance');
+    //     }
+    //     const filteredBalances = response.balances.filter(
+    //       balance => balance.quantity.decimals !== '0'
+    //     );
+    //     this.setTokenBalance(filteredBalances);
+    //   }
+    // } catch (error) {
+    //   SnackController.showError('Failed to fetch token balance');
+    // }
   },
 
   resetAccount() {

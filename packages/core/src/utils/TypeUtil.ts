@@ -2,7 +2,6 @@ import { type EventEmitter } from 'events';
 import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
 
 import type {
-  Balance,
   SocialProvider,
   ThemeMode,
   Transaction,
@@ -157,8 +156,22 @@ export interface BlockchainApiIdentityResponse {
   name: string;
 }
 
+export interface BlockchainApiBalance {
+  name: string;
+  symbol: string;
+  chainId: string;
+  address?: CaipAddress;
+  value?: number;
+  price: number;
+  quantity: {
+    decimals: string;
+    numeric: string;
+  };
+  iconUrl: string;
+}
+
 export interface BlockchainApiBalanceResponse {
-  balances: Balance[];
+  balances: BlockchainApiBalance[];
 }
 
 export interface BlockchainApiTransactionsRequest {

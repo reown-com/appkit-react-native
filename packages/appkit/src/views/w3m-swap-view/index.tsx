@@ -2,7 +2,6 @@ import { useSnapshot } from 'valtio';
 import { useCallback, useEffect } from 'react';
 import { Platform, ScrollView } from 'react-native';
 import {
-  AccountController,
   ConnectionsController,
   ConstantsUtil,
   EventsController,
@@ -97,7 +96,7 @@ export function SwapView() {
         swapToToken: SwapController.state.toToken?.symbol || '',
         swapFromAmount: SwapController.state.sourceTokenAmount || '',
         swapToAmount: SwapController.state.toTokenAmount || '',
-        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+        isSmartAccount: ConnectionsController.state.accountType === 'smartAccount'
       }
     });
     RouterController.push('SwapPreview');

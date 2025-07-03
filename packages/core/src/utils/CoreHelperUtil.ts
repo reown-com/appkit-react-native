@@ -285,7 +285,7 @@ export const CoreHelperUtil = {
 
     let sum = 0;
     for (const item of array) {
-      sum += item.value ?? 0;
+      sum += item?.value ?? 0;
     }
 
     const roundedNumber = sum.toFixed(2);

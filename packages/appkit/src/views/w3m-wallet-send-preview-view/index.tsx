@@ -25,7 +25,7 @@ export function WalletSendPreviewView() {
   } = useSnapshot(SendController.state);
 
   const getSendValue = () => {
-    if (SendController.state.token && SendController.state.sendTokenAmount) {
+    if (SendController.state.token?.price && SendController.state.sendTokenAmount) {
       const price = SendController.state.token.price;
       const totalValue = price * SendController.state.sendTokenAmount;
 

@@ -27,7 +27,7 @@ export function SendInputToken({
   const [inputValue, setInputValue] = useState<string | undefined>(sendTokenAmount?.toString());
   const sendValue = getSendValue(token, sendTokenAmount);
   const maxAmount = getMaxAmount(token);
-  const maxError = token && sendTokenAmount && sendTokenAmount > Number(token.quantity.numeric);
+  const maxError = token && sendTokenAmount && sendTokenAmount > Number(token?.quantity?.numeric);
 
   const onInputChange = (value: string) => {
     const formattedValue = value.replace(/,/g, '.');
@@ -39,11 +39,11 @@ export function SendInputToken({
   };
 
   const onMaxPress = () => {
-    if (token && gasPrice) {
+    if (token?.quantity && gasPrice) {
       const isNetworkToken =
-        token.address === undefined ||
+        token.contractAddress === undefined ||
         Object.values(ConstantsUtil.NATIVE_TOKEN_ADDRESS).some(
-          nativeAddress => token?.address?.split(':')[2] === nativeAddress
+          nativeAddress => token?.contractAddress?.split(':')[2] === nativeAddress
         );
 
       const numericGas = NumberUtil.bigNumber(gasPrice).shiftedBy(-token.quantity.decimals);

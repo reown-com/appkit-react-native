@@ -47,20 +47,19 @@ export interface CaipNetwork {
 }
 
 export interface Balance {
-  name: string;
+  name?: string;
+  amount: string;
   symbol: string;
-  chainId: string;
-  address?: CaipAddress;
-  value?: number;
-  price: number;
-  quantity: BalanceQuantity;
-  iconUrl: string;
+  quantity?: {
+    decimals: string;
+    numeric: string;
+  };
+  chainId?: string;
+  contractAddress?: CaipAddress;
+  value?: number; //total value of the amount in currency
+  price?: number; //price of the token in currency
+  iconUrl?: string;
 }
-
-type BalanceQuantity = {
-  decimals: string;
-  numeric: string;
-};
 
 export type TransactionStatus = 'confirmed' | 'failed' | 'pending';
 export type TransactionDirection = 'in' | 'out' | 'self';
@@ -184,11 +183,7 @@ export type DisconnectEvent = {};
 
 export type BalanceChangedEvent = {
   address: CaipAddress;
-  balance: {
-    amount: string;
-    symbol: string;
-    contractAddress?: ContractAddress;
-  };
+  balance: Balance;
 };
 
 //********** Adapter Event Map **********//
@@ -205,18 +200,7 @@ export interface GetBalanceParams {
   tokens?: Tokens;
 }
 
-type ContractAddress = CaipAddress;
-
-export interface GetBalanceResponse {
-  amount: string;
-  symbol: string;
-  contractAddress?: ContractAddress;
-  name?: string;
-  price?: number; //price of the token in USD
-  value?: number; //total value of the amount in USD
-  decimals?: number;
-  iconUrl?: string;
-}
+export type GetBalanceResponse = Balance;
 
 //********** Connector Types **********//
 interface BaseNamespace {

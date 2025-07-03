@@ -7,7 +7,7 @@ import {
   type CaipAddress,
   type CaipNetworkId,
   type ChainNamespace,
-  type GetBalanceResponse,
+  type Balance,
   type WalletInfo,
   type ConnectionProperties,
   type AccountType
@@ -16,10 +16,8 @@ import { StorageUtil } from '../utils/StorageUtil';
 import { BlockchainApiController } from './BlockchainApiController';
 import { SnackController } from './SnackController';
 import { OptionsController } from './OptionsController';
-import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 
 // -- Types --------------------------------------------- //
-type Balance = GetBalanceResponse;
 
 //TODO: balance could be elsewhere
 interface Connection {
@@ -85,6 +83,14 @@ const getActiveAddress = (connection: Connection): CaipAddress | undefined => {
 
   // Fall back to EOA or any account that matches the network
   return findEOAForNetwork(connection);
+};
+
+const updateConnection = (namespace: ChainNamespace, updates: Partial<Connection>) => {
+  const connection = baseState.connections.get(namespace);
+  if (!connection) return;
+  const newConnectionsMap = new Map(baseState.connections);
+  newConnectionsMap.set(namespace, { ...connection, ...updates });
+  baseState.connections = newConnectionsMap;
 };
 
 const derivedState = derive(
@@ -260,17 +266,20 @@ export const ConnectionsController = {
   updateBalance(namespace: ChainNamespace, address: CaipAddress, balance: Balance) {
     const connection = baseState.connections.get(namespace);
     if (!connection) {
+      console.warn(`No connection found for namespace: ${namespace}`);
+
       return;
     }
-
     const newBalances = new Map(connection.balances);
     const existingBalances = connection.balances.get(address) || [];
+    // Check if this token already exists by contract address or symbol
+    const existingIndex = existingBalances.findIndex(existingBalance => {
+      if (balance.contractAddress) {
+        return existingBalance.contractAddress === balance.contractAddress;
+      }
 
-    // Check if this token already exists
-    const existingIndex = existingBalances.findIndex(
-      existingBalance => existingBalance.symbol === balance.symbol
-    );
-
+      return existingBalance.symbol === balance.symbol;
+    });
     let updatedBalances: Balance[];
     if (existingIndex >= 0) {
       // Update existing token
@@ -283,12 +292,8 @@ export const ConnectionsController = {
       // Add new token
       updatedBalances = [...existingBalances, balance];
     }
-
     newBalances.set(address, updatedBalances);
-    const updatedConnection = { ...connection, balances: newBalances };
-    const newConnectionsMap = new Map(baseState.connections);
-    newConnectionsMap.set(namespace, updatedConnection);
-    baseState.connections = newConnectionsMap;
+    updateConnection(namespace, { balances: newBalances });
   },
 
   setActiveNetwork(namespace: ChainNamespace, networkId: CaipNetworkId) {
@@ -400,7 +405,6 @@ export const ConnectionsController = {
     if (!baseState.activeNamespace) return undefined;
 
     const adapter = baseState.connections.get(baseState.activeNamespace)?.adapter;
-
     if (adapter instanceof EVMAdapter) {
       return adapter.sendTransaction(args);
     }
@@ -412,7 +416,6 @@ export const ConnectionsController = {
     if (!baseState.activeNamespace || baseState.activeNamespace !== 'eip155') return undefined;
 
     const adapter = baseState.connections.get(baseState.activeNamespace)?.adapter;
-
     if (adapter instanceof EVMAdapter) {
       return adapter.estimateGas(args);
     }
@@ -422,38 +425,38 @@ export const ConnectionsController = {
 
   async fetchBalance() {
     const connection = getActiveConnection(baseState);
-    if (!connection) return;
+    if (!connection) {
+      console.warn('No active connection found for balance fetch');
 
+      return;
+    }
     const chainId = connection.caipNetwork;
     const address = getActiveAddress(connection);
-
     const namespace = baseState.activeNamespace;
+    if (!namespace || !address || !chainId) {
+      console.warn('Missing required data for balance fetch', { namespace, address, chainId });
+
+      return;
+    }
 
     try {
-      const plainAddress = CoreHelperUtil.getPlainAddress(address);
-      if (namespace && address && plainAddress && chainId) {
-        const response = await BlockchainApiController.getBalance(plainAddress, chainId);
-
-        if (!response) {
-          throw new Error('Failed to fetch token balance');
-        }
-
-        // Update balances for each token in the response
-        response.balances.forEach(balance => {
-          if (address) {
-            this.updateBalance(namespace, address, {
-              amount: balance.quantity.numeric,
-              symbol: balance.symbol,
-              contractAddress: balance.address,
-              name: balance.name,
-              price: balance.price,
-              value: balance.value,
-              decimals: Number(balance.quantity.decimals),
-              iconUrl: balance.iconUrl
-            });
-          }
-        });
+      const response = await BlockchainApiController.getBalance(address);
+      if (!response) {
+        throw new Error('Failed to fetch token balance');
       }
+      // Update balances for each token in the response
+      response.balances.forEach(balance => {
+        this.updateBalance(namespace, address, {
+          name: balance.name,
+          symbol: balance.symbol,
+          amount: balance.quantity.numeric,
+          contractAddress: balance.address,
+          quantity: balance.quantity,
+          price: balance.price,
+          value: balance.value,
+          iconUrl: balance.iconUrl
+        });
+      });
     } catch (error) {
       SnackController.showError('Failed to get account balance');
     }
@@ -461,17 +464,17 @@ export const ConnectionsController = {
 
   getSmartAccountEnabledNetworks(): AppKitNetwork[] {
     const activeConnection = getActiveConnection(baseState);
-
-    if (!activeConnection?.properties?.smartAccounts) {
+    if (!activeConnection) {
       return [];
     }
-
+    if (!activeConnection.properties?.smartAccounts?.length) {
+      return [];
+    }
     const smartAccountNetworks = new Set<CaipNetworkId>();
-
     activeConnection.properties.smartAccounts.forEach(smartAccount => {
       const parts = smartAccount.split(':');
       if (parts.length >= 2) {
-        const networkId: CaipNetworkId = `${parts[0]}:${parts[1]}`; // namespace:chainId
+        const networkId: CaipNetworkId = `${parts[0]}:${parts[1]}`;
         smartAccountNetworks.add(networkId);
       }
     });
