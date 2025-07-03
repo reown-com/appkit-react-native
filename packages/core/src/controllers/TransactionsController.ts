@@ -1,5 +1,5 @@
 import type { Transaction } from '@reown/appkit-common-react-native';
-import { proxy, subscribe as sub } from 'valtio/vanilla';
+import { proxy, subscribe as sub } from 'valtio';
 import { OptionsController } from './OptionsController';
 import { EventsController } from './EventsController';
 import { SnackController } from './SnackController';

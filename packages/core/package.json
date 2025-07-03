@@ -27,7 +27,7 @@
     "react-native"
   ],
   "repository": "https://github.com/reown-com/appkit-react-native",
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "homepage": "https://reown.com/appkit",
   "license": "Apache-2.0",
   "bugs": {
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@reown/appkit-common-react-native": "1.2.5",
-    "valtio": "1.11.2"
+    "valtio": "1.13.2"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": ">=1.17.0",

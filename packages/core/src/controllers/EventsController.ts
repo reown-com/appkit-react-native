@@ -1,4 +1,4 @@
-import { proxy, subscribe as sub } from 'valtio/vanilla';
+import { proxy, subscribe as sub } from 'valtio';
 import { ApiController } from './ApiController';
 import { OptionsController } from './OptionsController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
