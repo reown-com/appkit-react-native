@@ -18,14 +18,16 @@ import {
   Text,
   ListToken,
   useTheme,
-  Spacing
+  Spacing,
+  LoadingSpinner
 } from '@reown/appkit-ui-react-native';
 
 interface Props {
   style?: StyleProp<ViewStyle>;
+  isLoading?: boolean;
 }
 
-export function AccountTokens({ style }: Props) {
+export function AccountTokens({ style, isLoading }: Props) {
   const Theme = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
@@ -46,21 +48,24 @@ export function AccountTokens({ style }: Props) {
 
   if (!filteredBalances?.length) {
     return (
-      <ListItem
-        icon="arrowBottomCircle"
-        iconColor="magenta-100"
-        onPress={onReceivePress}
-        style={styles.receiveButton}
-      >
-        <FlexView flexDirection="column" alignItems="flex-start">
-          <Text variant="paragraph-500" color="fg-100">
-            Receive funds
-          </Text>
-          <Text variant="small-400" color="fg-200">
-            Transfer tokens on your wallet
-          </Text>
-        </FlexView>
-      </ListItem>
+      <>
+        <ListItem
+          icon="arrowBottomCircle"
+          iconColor="magenta-100"
+          onPress={onReceivePress}
+          style={styles.receiveButton}
+        >
+          <FlexView flexDirection="column" alignItems="flex-start">
+            <Text variant="paragraph-500" color="fg-100">
+              Receive funds
+            </Text>
+            <Text variant="small-400" color="fg-200">
+              Transfer tokens on your wallet
+            </Text>
+          </FlexView>
+        </ListItem>
+        {isLoading && <LoadingSpinner size="sm" style={styles.loadingSpinner} />}
+      </>
     );
   }
 
@@ -70,7 +75,7 @@ export function AccountTokens({ style }: Props) {
       style={style}
       refreshControl={
         <RefreshControl
-          refreshing={refreshing}
+          refreshing={isLoading || refreshing}
           onRefresh={onRefresh}
           tintColor={Theme['accent-100']}
           colors={[Theme['accent-100']]}
@@ -97,5 +102,8 @@ const styles = StyleSheet.create({
   receiveButton: {
     width: 'auto',
     marginHorizontal: Spacing.s
+  },
+  loadingSpinner: {
+    marginTop: Spacing.m
   }
 });

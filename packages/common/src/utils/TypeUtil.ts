@@ -195,8 +195,8 @@ export interface AdapterEvents {
 }
 
 export interface GetBalanceParams {
+  network: AppKitNetwork;
   address?: CaipAddress;
-  network?: AppKitNetwork;
   tokens?: Tokens;
 }
 

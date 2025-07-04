@@ -34,6 +34,7 @@ import { AuthButtons } from './components/auth-buttons';
 import styles from './styles';
 
 export function AccountDefaultView() {
+  const { switchAccountType, disconnect } = useAppKit();
   const { profileName, profileImage } = useSnapshot(AccountController.state);
   const { loading } = useSnapshot(ModalController.state);
   const {
@@ -66,7 +67,6 @@ export function AccountDefaultView() {
     activeNetwork?.caipNetworkId &&
     ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(activeNetwork.caipNetworkId);
   const { padding } = useCustomDimensions();
-  const { disconnect } = useAppKit();
 
   async function onDisconnect() {
     setDisconnecting(true);
@@ -76,26 +76,13 @@ export function AccountDefaultView() {
 
   const onSwitchAccountType = async () => {
     try {
-      if (isAuth && ConnectionsController.state.activeNamespace) {
+      const namespace = ConnectionsController.state.activeNamespace;
+      const network = ConnectionsController.state.activeNetwork;
+      if (isAuth && namespace && network) {
         const newType = ConnectionsController.state.accountType === 'eoa' ? 'smartAccount' : 'eoa';
-        ConnectionsController.setAccountType(
-          ConnectionsController.state.activeNamespace,
-          ConnectionsController.state.accountType === 'eoa' ? 'smartAccount' : 'eoa'
-        );
-        ConnectionsController.fetchBalance();
-
-        EventsController.sendEvent({
-          type: 'track',
-          event: 'SET_PREFERRED_ACCOUNT_TYPE',
-          properties: {
-            // eslint-disable-next-line valtio/state-snapshot-rule
-            accountType: newType,
-            network: ConnectionsController.state.activeNetwork?.caipNetworkId || ''
-          }
-        });
+        switchAccountType(namespace, newType, network);
       }
     } catch (error) {
-      ModalController.setLoading(false);
       SnackController.showError('Error switching account type');
     }
   };

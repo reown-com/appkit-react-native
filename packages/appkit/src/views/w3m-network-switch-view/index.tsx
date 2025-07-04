@@ -1,4 +1,3 @@
-/* eslint-disable valtio/state-snapshot-rule */
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
 import {
@@ -6,9 +5,6 @@ import {
   AssetUtil,
   ConnectionController,
   ConnectionsController,
-  ConnectorController,
-  EventsController,
-  NetworkController,
   RouterController,
   RouterUtil
 } from '@reown/appkit-core-react-native';
@@ -20,30 +16,27 @@ import {
   NetworkImage,
   Text
 } from '@reown/appkit-ui-react-native';
+import { useAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function NetworkSwitchView() {
+  const { switchNetwork } = useAppKit();
   const { data } = useSnapshot(RouterController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
-  const isAuthConnected = ConnectorController.state.connectedConnector === 'AUTH';
   const [error, setError] = useState<boolean>(false);
   const [showRetry, setShowRetry] = useState<boolean>(false);
-  const network = data?.network!;
+  const network = data?.network;
   const wallet = recentWallets?.[0];
 
   const onSwitchNetwork = async () => {
     try {
-      setError(false);
-      //TODO: change to appkit switchNetwork
-      await NetworkController.switchActiveNetwork(network);
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SWITCH_NETWORK',
-        properties: {
-          network: network.id
-        }
-      });
+      if (network) {
+        setError(false);
+        const _network = ConnectionsController.state.networks.find(n => n.id === network.id);
+        if (!_network) return;
+        await switchNetwork(_network);
+      }
     } catch {
       setError(true);
       setShowRetry(true);
@@ -57,9 +50,12 @@ export function NetworkSwitchView() {
 
   useEffect(() => {
     // Go back if network is already switched
+    // eslint-disable-next-line valtio/state-snapshot-rule
     if (activeNetwork?.id === network?.id) {
       RouterUtil.navigateAfterNetworkSwitch();
     }
+
+    // eslint-disable-next-line valtio/state-snapshot-rule
   }, [activeNetwork?.id, network?.id]);
 
   const retryTemplate = () => {
@@ -92,14 +88,6 @@ export function NetworkSwitchView() {
             still active
           </Text>
         </>
-      );
-    }
-
-    if (isAuthConnected) {
-      return (
-        <Text variant="paragraph-500" style={styles.text}>
-          Switching to {network.name} network
-        </Text>
       );
     }
 

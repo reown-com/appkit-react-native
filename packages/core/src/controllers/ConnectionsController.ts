@@ -18,11 +18,9 @@ import { SnackController } from './SnackController';
 import { OptionsController } from './OptionsController';
 
 // -- Types --------------------------------------------- //
-
-//TODO: balance could be elsewhere
 interface Connection {
   accounts: CaipAddress[];
-  balances: Map<CaipAddress, Balance[]>; // Changed to support multiple tokens per address
+  balances: Map<CaipAddress, Balance[]>;
   adapter: BlockchainAdapter;
   caipNetwork: CaipNetworkId;
   wallet?: WalletInfo;
@@ -85,8 +83,11 @@ const getActiveAddress = (connection: Connection): CaipAddress | undefined => {
   return findEOAForNetwork(connection);
 };
 
-const updateConnection = (namespace: ChainNamespace, updates: Partial<Connection>) => {
-  const connection = baseState.connections.get(namespace);
+const updateConnection = (
+  namespace: ChainNamespace,
+  connection: Connection,
+  updates: Partial<Connection>
+) => {
   if (!connection) return;
   const newConnectionsMap = new Map(baseState.connections);
   newConnectionsMap.set(namespace, { ...connection, ...updates });
@@ -293,7 +294,7 @@ export const ConnectionsController = {
       updatedBalances = [...existingBalances, balance];
     }
     newBalances.set(address, updatedBalances);
-    updateConnection(namespace, { balances: newBalances });
+    updateConnection(namespace, connection, { balances: newBalances });
   },
 
   setActiveNetwork(namespace: ChainNamespace, networkId: CaipNetworkId) {
@@ -327,7 +328,8 @@ export const ConnectionsController = {
     if (!connection) return;
 
     const newConnectionsMap = new Map(baseState.connections);
-    newConnectionsMap.set(namespace, { ...connection, type });
+    const newConnection = { ...connection, type };
+    newConnectionsMap.set(namespace, newConnection);
     baseState.connections = newConnectionsMap;
   },
 
@@ -426,17 +428,14 @@ export const ConnectionsController = {
   async fetchBalance() {
     const connection = getActiveConnection(baseState);
     if (!connection) {
-      console.warn('No active connection found for balance fetch');
-
-      return;
+      throw new Error('No active connection found for balance fetch');
     }
+
     const chainId = connection.caipNetwork;
     const address = getActiveAddress(connection);
     const namespace = baseState.activeNamespace;
     if (!namespace || !address || !chainId) {
-      console.warn('Missing required data for balance fetch', { namespace, address, chainId });
-
-      return;
+      throw new Error('Missing required data for balance fetch');
     }
 
     try {

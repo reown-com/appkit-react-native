@@ -17,10 +17,10 @@ import { AccountTokens } from '../w3m-account-tokens';
 import styles from './styles';
 
 export interface AccountWalletFeaturesProps {
-  value: string;
+  isBalanceLoading: boolean;
 }
 
-export function AccountWalletFeatures() {
+export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeaturesProps) {
   const [activeTab, setActiveTab] = useState(0);
   const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
   const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
@@ -137,7 +137,9 @@ export function AccountWalletFeatures() {
         <Tabs tabs={['Tokens', 'Activity']} onTabChange={onTabChange} />
       </FlexView>
       <FlexView padding={['m', '0', '0', '0']} style={styles.tabContainer}>
-        {activeTab === 0 && <AccountTokens style={styles.tabContent} />}
+        {activeTab === 0 && (
+          <AccountTokens style={styles.tabContent} isLoading={isBalanceLoading} />
+        )}
         {activeTab === 1 && <AccountActivity style={styles.tabContent} />}
       </FlexView>
     </FlexView>

@@ -31,7 +31,8 @@ import type {
   Storage,
   AppKitConnectOptions,
   AppKitSIWEClient,
-  ConnectionProperties
+  ConnectionProperties,
+  AccountType
 } from '@reown/appkit-common-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
@@ -268,6 +269,28 @@ export class AppKit {
     ModalController.close();
   }
 
+  async switchAccountType(namespace: ChainNamespace, type: AccountType, network: AppKitNetwork) {
+    const adapter = this.getAdapterByNamespace(namespace);
+    if (!adapter) throw new Error('No active adapter');
+
+    ConnectionsController.setAccountType(namespace, type);
+
+    // Get balances from API
+    ConnectionsController.fetchBalance();
+
+    // Sync balances from adapter
+    this.syncBalances(adapter, network);
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SET_PREFERRED_ACCOUNT_TYPE',
+      properties: {
+        accountType: type,
+        network: network?.caipNetworkId || ''
+      }
+    });
+  }
+
   private async createConnector(type: New_ConnectorType): Promise<WalletConnector> {
     // Check if an extra connector was provided by the developer
     const CustomConnector = this.extraConnectors.find(
@@ -384,25 +407,27 @@ export class AppKit {
     adapters.forEach(async adapter => {
       const namespace = adapter.getSupportedNamespace();
       const connection = ConnectionsController.state.connections.get(namespace);
-      if (connection) {
-        const accounts = adapter.getAccounts();
-        if (accounts && accounts.length > 0) {
-          ConnectionsController.updateAccounts(namespace, accounts);
+      const network = this.networks.find(
+        n => n.id?.toString() === connection?.caipNetwork?.split(':')[1]
+      );
 
-          const network = this.networks.find(
-            n => n.id?.toString() === connection?.caipNetwork?.split(':')[1]
-          );
+      this.syncBalances(adapter, network);
+    });
+  }
 
-          const address = accounts.find(
-            a => a.split(':')[1] === connection.caipNetwork?.split(':')[1]
-          );
+  private syncBalances(adapter: BlockchainAdapter, network?: AppKitNetwork) {
+    if (adapter && network) {
+      const accounts = adapter.getAccounts();
+      if (accounts && accounts.length > 0) {
+        const addresses = accounts.filter(a => a.split(':')[1] === network?.id?.toString());
 
-          if (address) {
+        if (addresses.length > 0) {
+          addresses.forEach(address => {
             adapter.getBalance({ address, network, tokens: this.config.tokens });
-          }
+          });
         }
       }
-    });
+    }
   }
 
   private setConnection(
@@ -457,17 +482,14 @@ export class AppKit {
     });
 
     adapter.on('chainChanged', ({ chainId }) => {
+      //eslint-disable-next-line no-console
+      console.log('chainChanged', chainId);
       const namespace = adapter.getSupportedNamespace();
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
       ConnectionsController.setActiveNetwork(namespace, chain);
 
       const network = this.networks.find(n => n.id?.toString() === chainId);
-      if (network) {
-        adapter.getBalance({
-          network,
-          tokens: this.config.tokens
-        });
-      }
+      this.syncBalances(adapter, network);
 
       if (namespace === 'eip155') {
         this.handleSiweChange({ isNetworkChange: true });
@@ -481,6 +503,8 @@ export class AppKit {
 
     //TODO: Add types to this events
     adapter.on('balanceChanged', ({ address, balance }) => {
+      //eslint-disable-next-line no-console
+      console.log('balanceChanged', address, balance);
       const namespace = adapter.getSupportedNamespace();
       ConnectionsController.updateBalance(namespace, address, balance);
     });

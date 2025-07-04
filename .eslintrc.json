@@ -10,6 +10,8 @@
     "newline-before-return": "error",
     "radix": "off",
     "dot-notation": "off"
+    // "react/jsx-no-leaked-render": "error",
+    // "react/jsx-no-bind": "error"
   },
   "parserOptions": {
     "requireConfigFile": false
