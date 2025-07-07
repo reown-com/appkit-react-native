@@ -265,7 +265,7 @@ export class PhantomConnector extends WalletConnector {
   }
 
   // Orchestrates session restoration
-  public async restoreSession(): Promise<boolean> {
+  override async restoreSession(): Promise<boolean> {
     try {
       const providerSession = await this.getProvider().restoreSession();
       if (!providerSession) {

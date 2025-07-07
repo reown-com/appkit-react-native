@@ -40,7 +40,7 @@ export class WalletConnectConnector extends WalletConnector {
     await this.restoreSession();
   }
 
-  private async restoreSession(): Promise<boolean> {
+  override async restoreSession(): Promise<boolean> {
     const provider = this.getProvider() as IUniversalProvider;
     if (!provider) {
       return false;

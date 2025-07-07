@@ -55,7 +55,7 @@ export interface Balance {
     numeric: string;
   };
   chainId?: string;
-  contractAddress?: CaipAddress;
+  address?: CaipAddress; // contract address
   value?: number; //total value of the amount in currency
   price?: number; //price of the token in currency
   iconUrl?: string;
@@ -269,6 +269,7 @@ export abstract class WalletConnector extends EventEmitter {
   abstract getWalletInfo(): WalletInfo | undefined;
   abstract getProperties(): ConnectionProperties | undefined;
   abstract switchNetwork(network: AppKitNetwork): Promise<void>;
+  abstract restoreSession(): Promise<boolean>;
 }
 
 //********** Provider Types **********//
