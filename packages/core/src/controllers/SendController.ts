@@ -2,7 +2,6 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils';
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla';
 import { ContractUtil, type Balance } from '@reown/appkit-common-react-native';
 
-import { ConnectionController } from './ConnectionController';
 import { SnackController } from './SnackController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { EventsController } from './EventsController';
@@ -91,25 +90,21 @@ export const SendController = {
   },
 
   sendToken() {
-    if (
-      this.state.token?.contractAddress &&
-      this.state.sendTokenAmount &&
-      this.state.receiverAddress
-    ) {
+    if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
       state.loading = true;
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_INITIATED',
         properties: {
           isSmartAccount: ConnectionsController.state.accountType === 'smartAccount',
-          token: this.state.token.contractAddress,
+          token: this.state.token.address,
           amount: this.state.sendTokenAmount,
           network: ConnectionsController.state.activeNetwork?.caipNetworkId || ''
         }
       });
       this.sendERC20Token({
         receiverAddress: this.state.receiverAddress,
-        tokenAddress: this.state.token.contractAddress,
+        tokenAddress: this.state.token.address,
         sendTokenAmount: this.state.sendTokenAmount,
         decimals: this.state.token.quantity?.decimals || '0'
       });
@@ -153,14 +148,14 @@ export const SendController = {
       throw new Error('Invalid address');
     }
 
-    const value = ConnectionController.parseUnits(
+    const value = ConnectionsController.parseUnits(
       params.sendTokenAmount.toString(),
       Number(params.decimals)
     );
     const data = '0x';
 
     try {
-      await ConnectionController.sendTransaction({
+      await ConnectionsController.sendTransaction({
         to,
         address,
         data,
@@ -201,7 +196,7 @@ export const SendController = {
       goBack: false
     });
 
-    const amount = ConnectionController.parseUnits(
+    const amount = ConnectionsController.parseUnits(
       params.sendTokenAmount.toString(),
       Number(params.decimals)
     );
@@ -224,7 +219,7 @@ export const SendController = {
           throw new Error('Invalid address');
         }
 
-        await ConnectionController.writeContract({
+        await ConnectionsController.writeContract({
           fromAddress,
           tokenAddress,
           receiverAddress: params.receiverAddress as `0x${string}`,

@@ -1,12 +1,8 @@
+import type { Balance, CaipNetworkId } from '@reown/appkit-common-react-native';
 import { BlockchainApiController } from '../controllers/BlockchainApiController';
 import { OptionsController } from '../controllers/OptionsController';
-import type {
-  BlockchainApiBalanceResponse,
-  BlockchainApiSwapAllowanceRequest,
-  SwapTokenWithBalance
-} from './TypeUtil';
+import type { BlockchainApiSwapAllowanceRequest, SwapTokenWithBalance } from './TypeUtil';
 import { ConnectionsController } from '../controllers/ConnectionsController';
-import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
 import { ConstantsUtil } from './ConstantsUtil';
 
 export const SwapApiUtil = {
@@ -63,19 +59,7 @@ export const SwapApiUtil = {
     return false;
   },
 
-  async getMyTokensWithBalance(forceUpdate?: CaipAddress[]) {
-    const { activeAddress } = ConnectionsController.state;
-
-    const response = await BlockchainApiController.getBalance(activeAddress, forceUpdate);
-    const balances = response?.balances.filter(balance => balance.quantity.decimals !== '0');
-
-    // TODO: update balances
-    // ConnectionsController.updateBalances(balances);
-
-    return this.mapBalancesToSwapTokens(balances);
-  },
-
-  mapBalancesToSwapTokens(balances?: BlockchainApiBalanceResponse['balances']) {
+  mapBalancesToSwapTokens(balances?: Balance[]) {
     const { activeNamespace, activeCaipNetworkId } = ConnectionsController.state;
     const address = activeNamespace
       ? ConstantsUtil.NATIVE_TOKEN_ADDRESS[activeNamespace]
@@ -87,7 +71,7 @@ export const SwapApiUtil = {
           ({
             ...token,
             address: token?.address ?? `${token?.chainId ?? activeCaipNetworkId}:${address}`,
-            decimals: parseInt(token.quantity.decimals, 10),
+            decimals: parseInt(token.quantity?.decimals ?? '0', 10),
             logoUri: token.iconUrl,
             eip2612: false
           }) as SwapTokenWithBalance

@@ -133,7 +133,7 @@ const derivedState = derive(
         if (configuredToken) {
           // Find the configured token in the balances
           const specificToken = addressBalances.find(
-            balance => balance.contractAddress === configuredToken.address
+            balance => balance.address === configuredToken.address
           );
           if (specificToken) {
             return specificToken;
@@ -141,8 +141,8 @@ const derivedState = derive(
         }
       }
 
-      // Return the native token (first balance without contractAddress)
-      const nativeToken = addressBalances.find(balance => !balance.contractAddress);
+      // Return the native token (first balance without address)
+      const nativeToken = addressBalances.find(balance => !balance.address);
       if (nativeToken) {
         return nativeToken;
       }
@@ -275,8 +275,8 @@ export const ConnectionsController = {
     const existingBalances = connection.balances.get(address) || [];
     // Check if this token already exists by contract address or symbol
     const existingIndex = existingBalances.findIndex(existingBalance => {
-      if (balance.contractAddress) {
-        return existingBalance.contractAddress === balance.contractAddress;
+      if (balance.address) {
+        return existingBalance.address === balance.address;
       }
 
       return existingBalance.symbol === balance.symbol;
@@ -425,7 +425,18 @@ export const ConnectionsController = {
     return undefined;
   },
 
-  async fetchBalance() {
+  async writeContract(args: any) {
+    if (!baseState.activeNamespace) return undefined;
+
+    const adapter = baseState.connections.get(baseState.activeNamespace)?.adapter;
+    if (adapter instanceof EVMAdapter) {
+      return adapter.writeContract(args);
+    }
+
+    return undefined;
+  },
+
+  async fetchBalance(forceUpdateAddresses?: CaipAddress[]) {
     const connection = getActiveConnection(baseState);
     if (!connection) {
       throw new Error('No active connection found for balance fetch');
@@ -439,7 +450,7 @@ export const ConnectionsController = {
     }
 
     try {
-      const response = await BlockchainApiController.getBalance(address);
+      const response = await BlockchainApiController.getBalance(address, forceUpdateAddresses);
       if (!response) {
         throw new Error('Failed to fetch token balance');
       }
@@ -449,7 +460,7 @@ export const ConnectionsController = {
           name: balance.name,
           symbol: balance.symbol,
           amount: balance.quantity.numeric,
-          contractAddress: balance.address,
+          address: balance.address,
           quantity: balance.quantity,
           price: balance.price,
           value: balance.value,

@@ -1,13 +1,17 @@
 import { SwapController, type SwapTokenWithBalance } from '@reown/appkit-core-react-native';
 
-export function filterTokens(tokens: SwapTokenWithBalance[], searchValue?: string) {
+export function filterTokens(tokens?: SwapTokenWithBalance[], searchValue?: string) {
+  if (!tokens) {
+    return [];
+  }
+
   if (!searchValue) {
     return tokens;
   }
 
   return tokens.filter(
     token =>
-      token.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      token.name?.toLowerCase().includes(searchValue.toLowerCase()) ||
       token.symbol.toLowerCase().includes(searchValue.toLowerCase())
   );
 }

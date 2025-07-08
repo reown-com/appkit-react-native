@@ -51,14 +51,13 @@ export function AccountDefaultView() {
   const { history } = useSnapshot(RouterController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
   const showCopy = OptionsController.isClipboardAvailable();
-  const isAuth = connection?.properties?.email || connection?.properties?.username;
+  const isAuth = !!connection?.properties?.provider;
   const showBalance = balance && !isAuth;
   const showExplorer = Object.keys(activeNetwork?.blockExplorers ?? {}).length > 0 && !isAuth;
   const showBack = history.length > 1;
-  const showSwitchAccountType = isAuth;
+  const showSwitchAccountType = isAuth && activeNamespace === 'eip155';
   const showActivity =
     !isAuth &&
-    activeNamespace &&
     activeNetwork?.caipNetworkId &&
     ConstantsUtil.ACTIVITY_SUPPORTED_CHAINS.includes(activeNetwork.caipNetworkId);
   const showSwaps =

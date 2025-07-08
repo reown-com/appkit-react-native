@@ -65,7 +65,7 @@ export function WalletSendSelectTokenView() {
               amount={_token.quantity?.numeric || '0'}
               currency={_token.symbol}
               onPress={() => onTokenPress(_token)}
-              disabled={_token.contractAddress === token?.contractAddress}
+              disabled={_token.address === token?.address}
             />
           ))
         ) : (
