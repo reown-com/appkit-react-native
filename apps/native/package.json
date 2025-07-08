@@ -49,7 +49,6 @@
     "react-native-svg": "15.8.0",
     "react-native-toast-message": "2.2.1",
     "react-native-web": "~0.19.13",
-    "react-native-webview": "13.12.5",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
