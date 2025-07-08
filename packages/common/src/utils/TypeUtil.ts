@@ -156,6 +156,7 @@ export interface Token {
 
 export type Tokens = Record<CaipNetworkId, Token>;
 
+//TODO: remove this
 export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
 
 export type Metadata = {

@@ -13,26 +13,27 @@ import {
   ConnectionController
 } from '@reown/appkit-core-react-native';
 
-import type {
-  WalletConnector,
-  BlockchainAdapter,
-  ProposalNamespaces,
-  New_ConnectorType,
-  Namespaces,
-  Metadata,
-  CaipNetworkId,
-  AppKitNetwork,
-  Provider,
-  ThemeVariables,
-  ThemeMode,
-  WalletInfo,
-  Network,
-  ChainNamespace,
-  Storage,
-  AppKitConnectOptions,
-  AppKitSIWEClient,
-  ConnectionProperties,
-  AccountType
+import {
+  type WalletConnector,
+  type BlockchainAdapter,
+  type ProposalNamespaces,
+  type New_ConnectorType,
+  type Namespaces,
+  type Metadata,
+  type CaipNetworkId,
+  type AppKitNetwork,
+  type Provider,
+  type ThemeVariables,
+  type ThemeMode,
+  type WalletInfo,
+  type Network,
+  type ChainNamespace,
+  type Storage,
+  type AppKitConnectOptions,
+  type AppKitSIWEClient,
+  type ConnectionProperties,
+  type AccountType,
+  ConstantsUtil
 } from '@reown/appkit-common-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
@@ -516,7 +517,7 @@ export class AppKit {
     OptionsController.setProjectId(options.projectId);
     OptionsController.setMetadata(options.metadata);
     OptionsController.setIncludeWalletIds(options.includeWalletIds);
-    OptionsController.setExcludeWalletIds(options.excludeWalletIds);
+    this.setExcludedWallets(options);
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
     OptionsController.setTokens(options.tokens);
     OptionsController.setCustomWallets(options.customWallets);
@@ -580,6 +581,20 @@ export class AppKit {
     if (connectedWalletImage) {
       ConnectionController.setConnectedWalletImageUrl(connectedWalletImage);
     }
+  }
+
+  private setExcludedWallets(options: AppKitConfig) {
+    // Exclude Coinbase if the connector is not implemented
+    const excludedWallets = options.excludeWalletIds || [];
+
+    //TODO: check this when coinbase connector is implemented
+    const excludeCoinbase = true;
+
+    if (excludeCoinbase) {
+      excludedWallets.push(ConstantsUtil.COINBASE_EXPLORER_ID);
+    }
+
+    OptionsController.setExcludeWalletIds(excludedWallets);
   }
 
   private async initAsyncValues(options: AppKitConfig) {

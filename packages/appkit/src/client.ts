@@ -359,12 +359,12 @@ export class AppKitScaffold {
     ConnectionController.setRecentWallets(filteredWallets);
   }
 
-  private async initConnectedConnector() {
-    const connectedConnector = await StorageUtil.getConnectedConnector();
-    if (connectedConnector) {
-      ConnectorController.setConnectedConnector(connectedConnector, false);
-    }
-  }
+  // private async initConnectedConnector() {
+  //   const connectedConnector = await StorageUtil.getConnectedConnector();
+  //   if (connectedConnector) {
+  //     ConnectorController.setConnectedConnector(connectedConnector, false);
+  //   }
+  // }
 
   private async initSocial() {
     const connectedSocialProvider = await StorageUtil.getConnectedSocialProvider();
@@ -372,7 +372,7 @@ export class AppKitScaffold {
   }
 
   private async initAsyncValues(options: ScaffoldOptions) {
-    await this.initConnectedConnector();
+    // await this.initConnectedConnector();
     await this.initRecentWallets(options);
     await this.initSocial();
   }

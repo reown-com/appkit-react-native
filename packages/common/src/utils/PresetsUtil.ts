@@ -1,4 +1,3 @@
-import type { ConnectorType } from './TypeUtil';
 import { ConstantsUtil } from './ConstantsUtil';
 
 export const PresetsUtil = {
@@ -91,12 +90,6 @@ export const PresetsUtil = {
     [ConstantsUtil.COINBASE_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
     [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400'
   } as Record<string, string>,
-
-  ConnectorTypesMap: {
-    [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT',
-    [ConstantsUtil.COINBASE_CONNECTOR_ID]: 'COINBASE',
-    [ConstantsUtil.AUTH_CONNECTOR_ID]: 'AUTH'
-  } as Record<string, ConnectorType>,
 
   RpcChainIds: [
     // Ethereum
