@@ -1,13 +1,9 @@
 import { proxy } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
-import type { CaipAddress } from '@reown/appkit-common-react-native';
+import type { AccountType, CaipAddress } from '@reown/appkit-common-react-native';
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
-import type {
-  AppKitFrameAccountType,
-  ConnectedWalletInfo,
-  BlockchainApiBalance
-} from '../utils/TypeUtil';
+import type { ConnectedWalletInfo, BlockchainApiBalance } from '../utils/TypeUtil';
 // import { NetworkController } from './NetworkController';
 // import { BlockchainApiController } from './BlockchainApiController';
 // import { SnackController } from './SnackController';
@@ -24,7 +20,7 @@ export interface AccountControllerState {
   profileImage?: string;
   addressExplorerUrl?: string;
   connectedWalletInfo?: ConnectedWalletInfo;
-  preferredAccountType?: AppKitFrameAccountType;
+  preferredAccountType?: AccountType;
   smartAccountDeployed?: boolean;
 }
 

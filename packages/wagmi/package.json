@@ -41,7 +41,6 @@
   "dependencies": {
     "@reown/appkit-common-react-native": "2.0.0-alpha.1",
     "@reown/appkit-react-native": "2.0.0-alpha.1",
-    "@reown/appkit-scaffold-utils-react-native": "2.0.0-alpha.1",
     "@reown/appkit-siwe-react-native": "2.0.0-alpha.1"
   },
   "peerDependencies": {

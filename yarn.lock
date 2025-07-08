@@ -6820,7 +6820,6 @@ __metadata:
   dependencies:
     "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
     "@reown/appkit-react-native": "npm:2.0.0-alpha.1"
-    "@reown/appkit-scaffold-utils-react-native": "npm:2.0.0-alpha.1"
     "@reown/appkit-siwe-react-native": "npm:2.0.0-alpha.1"
     "@walletconnect/ethereum-provider": "npm:2.20.2"
   peerDependencies:
@@ -6872,15 +6871,6 @@ __metadata:
   checksum: e1511b06ef44da380cd5ff2f11dec65d920f32569de72a862d0ae36cce00e591dd73287df20e16af93734723086340057fbcb156429707cf9cf29a989964a9e0
   languageName: node
   linkType: hard
-
-"@reown/appkit-scaffold-utils-react-native@npm:2.0.0-alpha.1, @reown/appkit-scaffold-utils-react-native@workspace:packages/scaffold-utils":
-  version: 0.0.0-use.local
-  resolution: "@reown/appkit-scaffold-utils-react-native@workspace:packages/scaffold-utils"
-  dependencies:
-    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
-    "@reown/appkit-core-react-native": "npm:2.0.0-alpha.1"
-  languageName: unknown
-  linkType: soft
 
 "@reown/appkit-siwe-react-native@npm:2.0.0-alpha.1, @reown/appkit-siwe-react-native@workspace:packages/siwe":
   version: 0.0.0-use.local
@@ -6970,7 +6960,6 @@ __metadata:
   dependencies:
     "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
     "@reown/appkit-react-native": "npm:2.0.0-alpha.1"
-    "@reown/appkit-scaffold-utils-react-native": "npm:2.0.0-alpha.1"
     "@reown/appkit-siwe-react-native": "npm:2.0.0-alpha.1"
   peerDependencies:
     "@react-native-async-storage/async-storage": ">=1.17.0"

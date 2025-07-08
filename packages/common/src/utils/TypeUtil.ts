@@ -321,6 +321,7 @@ export interface ConnectionProperties {
   username?: string;
   smartAccounts?: CaipAddress[];
   provider?: SocialProvider;
+  sessionTopic?: string;
 }
 
 export type AccountType = 'eoa' | 'smartAccount';

@@ -6,8 +6,7 @@ import {
   type GetBalanceParams,
   type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
-import { EthersHelpersUtil } from '@reown/appkit-scaffold-utils-react-native';
-import { formatEther, getEthBalance } from './helpers';
+import { formatEther, getEthBalance, numberToHexString } from './helpers';
 
 export class EthersAdapter extends EVMAdapter {
   private static supportedNamespace: ChainNamespace = 'eip155';
@@ -61,7 +60,7 @@ export class EthersAdapter extends EVMAdapter {
       await provider.request(
         {
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: EthersHelpersUtil.numberToHexString(Number(network.id)) }] //TODO: check util
+          params: [{ chainId: numberToHexString(Number(network.id)) }]
         },
         `${EthersAdapter.supportedNamespace}:${network.id}`
       );

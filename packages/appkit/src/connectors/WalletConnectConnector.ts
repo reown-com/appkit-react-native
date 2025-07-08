@@ -55,7 +55,8 @@ export class WalletConnectConnector extends WalletConnector {
         ...provider.session.sessionProperties,
         smartAccounts: provider.session.sessionProperties['smartAccounts']
           ? JSON.parse(provider.session.sessionProperties['smartAccounts'])
-          : []
+          : [],
+        sessionTopic: provider.session.topic
       };
     }
 
@@ -188,7 +189,8 @@ export class WalletConnectConnector extends WalletConnector {
         ...session.sessionProperties,
         smartAccounts: session.sessionProperties['smartAccounts']
           ? JSON.parse(session.sessionProperties['smartAccounts'])
-          : []
+          : [],
+        sessionTopic: session.topic
       };
     }
 

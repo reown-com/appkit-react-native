@@ -1,13 +1,5 @@
-import { type EventEmitter } from 'events';
-import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
-
-import type {
-  SocialProvider,
-  ThemeMode,
-  Transaction,
-  ConnectorType,
-  Metadata
-} from '@reown/appkit-common-react-native';
+import type { AccountType, CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
+import type { SocialProvider, Transaction, ConnectorType } from '@reown/appkit-common-react-native';
 
 import { OnRampErrorType } from './ConstantsUtil';
 
@@ -695,7 +687,7 @@ export type Event =
       type: 'track';
       event: 'SET_PREFERRED_ACCOUNT_TYPE';
       properties: {
-        accountType: AppKitFrameAccountType;
+        accountType: AccountType;
         network: string;
       };
     }
@@ -898,92 +890,3 @@ export type OnRampTransactionResult = {
   status: string | null;
   network: string | null;
 };
-
-// -- Email Types ------------------------------------------------
-/**
- * Matches type defined for packages/wallet/src/AppKitFrameProvider.ts
- * It's duplicated in order to decouple scaffold from email package
- */
-// TODO: REMOVE THIS
-export type AppKitFrameAccountType = 'eoa' | 'smartAccount';
-
-export interface AppKitFrameProvider {
-  readonly id: string;
-  readonly name: string;
-  getEventEmitter(): EventEmitter;
-  getSecureSiteURL(): string;
-  getSecureSiteDashboardURL(): string;
-  getSecureSiteIconURL(): string;
-  getEmail(): string | undefined;
-  getUsername(): string | undefined;
-  getLastUsedChainId(): Promise<number | undefined>;
-  rejectRpcRequest(): void;
-  connectEmail(payload: { email: string }): Promise<{
-    action: 'VERIFY_DEVICE' | 'VERIFY_OTP';
-  }>;
-  connectDevice(): Promise<unknown>;
-  connectSocial(uri: string): Promise<{
-    chainId: string | number;
-    email: string;
-    address: string;
-    accounts?: {
-      type: AppKitFrameAccountType;
-      address: string;
-    }[];
-    userName?: string;
-  }>;
-  getSocialRedirectUri(payload: { provider: SocialProvider }): Promise<{
-    uri: string;
-  }>;
-  connectOtp(payload: { otp: string }): Promise<unknown>;
-  connectFarcaster: () => Promise<{ userName: string }>;
-  getFarcasterUri(): Promise<{ url: string }>;
-  isConnected(): Promise<{
-    isConnected: boolean;
-  }>;
-  getChainId(): Promise<{
-    chainId: number;
-  }>;
-  updateEmail(payload: { email: string }): Promise<{
-    action: 'VERIFY_PRIMARY_OTP' | 'VERIFY_SECONDARY_OTP';
-  }>;
-  updateEmailPrimaryOtp(payload: { otp: string }): Promise<unknown>;
-  updateEmailSecondaryOtp(payload: { otp: string }): Promise<{
-    newEmail: string;
-  }>;
-  syncTheme(payload: {
-    themeMode: ThemeMode | undefined;
-    themeVariables: Record<string, string | number> | undefined;
-  }): Promise<unknown>;
-  syncDappData(payload: {
-    projectId: string;
-    sdkVersion: SdkVersion;
-    sdkType: SdkType;
-    metadata?: Metadata;
-  }): Promise<unknown>;
-  connect(payload?: { chainId: number | undefined }): Promise<{
-    chainId: number;
-    email?: string | null;
-    address: string;
-    smartAccountDeployed: boolean;
-    preferredAccountType: AppKitFrameAccountType;
-  }>;
-  switchNetwork(chainId: number): Promise<{
-    chainId: number;
-  }>;
-  setPreferredAccount(type: AppKitFrameAccountType): Promise<{
-    type: AppKitFrameAccountType;
-    address: string;
-  }>;
-  setOnTimeout(callback: () => void): void;
-  getSmartAccountEnabledNetworks(): Promise<{
-    smartAccountEnabledNetworks: number[];
-  }>;
-  disconnect(): Promise<unknown>;
-  request(req: any): Promise<any>;
-  AuthView: () => React.JSX.Element | null;
-  Webview: () => React.JSX.Element | null;
-  onSetPreferredAccount: (
-    callback: (values: { type: AppKitFrameAccountType; address: string }) => void
-  ) => void;
-}

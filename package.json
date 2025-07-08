@@ -7,7 +7,6 @@
     "packages/appkit",
     "packages/ui",
     "packages/common",
-    "packages/scaffold-utils",
     "packages/siwe",
     "packages/ethers",
     "packages/solana",
