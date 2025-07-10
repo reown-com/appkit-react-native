@@ -9,15 +9,6 @@ import type {
 } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
-type TransactionAction = {
-  goBack: boolean;
-  view: RouterControllerState['view'] | null;
-  close?: boolean;
-  replace?: boolean;
-  onSuccess?: () => void;
-  onCancel?: () => void;
-};
-
 export interface RouterControllerState {
   view:
     | 'Account'
@@ -61,14 +52,12 @@ export interface RouterControllerState {
     onrampResult?: OnRampTransactionResult;
     socialProvider?: SocialProvider;
   };
-  transactionStack: TransactionAction[];
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<RouterControllerState>({
   view: 'Connect',
-  history: ['Connect'],
-  transactionStack: []
+  history: ['Connect']
 });
 
 // -- Controller ---------------------------------------- //
@@ -80,30 +69,6 @@ export const RouterController = {
       state.view = view;
       state.history = [...state.history, view];
       state.data = data;
-    }
-  },
-
-  pushTransactionStack(action: TransactionAction) {
-    state.transactionStack = [...state.transactionStack, action];
-  },
-
-  popTransactionStack(cancel?: boolean) {
-    const action = state.transactionStack.pop();
-
-    if (!action) {
-      return;
-    }
-
-    if (cancel) {
-      this.goBack();
-      action?.onCancel?.();
-    } else {
-      if (action.goBack) {
-        this.goBack();
-      } else if (action.view) {
-        this.reset(action.view);
-      }
-      action?.onSuccess?.();
     }
   },
 

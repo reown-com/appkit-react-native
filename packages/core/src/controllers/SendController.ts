@@ -135,10 +135,7 @@ export const SendController = {
   },
 
   async sendNativeToken(params: TxParams) {
-    RouterController.pushTransactionStack({
-      view: 'Account',
-      goBack: false
-    });
+    const isAuth = !!ConnectionsController.state.connection?.properties?.provider;
 
     const to = params.receiverAddress as `0x${string}`;
     const address = CoreHelperUtil.getPlainAddress(
@@ -173,6 +170,7 @@ export const SendController = {
           network: ConnectionsController.state.activeNetwork?.caipNetworkId || ''
         }
       });
+      RouterController.reset(isAuth ? 'Account' : 'AccountDefault');
       this.resetSend();
     } catch (error) {
       state.loading = false;
@@ -191,10 +189,7 @@ export const SendController = {
   },
 
   async sendERC20Token(params: ContractWriteParams) {
-    RouterController.pushTransactionStack({
-      view: 'Account',
-      goBack: false
-    });
+    const isAuth = !!ConnectionsController.state.connection?.properties?.provider;
 
     const amount = ConnectionsController.parseUnits(
       params.sendTokenAmount.toString(),
@@ -227,6 +222,7 @@ export const SendController = {
           method: 'transfer',
           abi: ContractUtil.getERC20Abi(tokenAddress)
         });
+        RouterController.reset(isAuth ? 'Account' : 'AccountDefault');
         SnackController.showSuccess('Transaction started');
         this.resetSend();
       }

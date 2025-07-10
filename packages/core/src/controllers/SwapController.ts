@@ -677,12 +677,13 @@ export const SwapController = {
       await this.swapTokens();
       await this.getTransaction();
       state.approvalTransaction = undefined;
-      state.loadingApprovalTransaction = false;
     } catch (err) {
       const error = err as TransactionError;
       state.transactionError = error?.shortMessage as unknown as string;
-      state.loadingApprovalTransaction = false;
+
       SnackController.showError(error?.shortMessage ?? 'Transaction error');
+    } finally {
+      state.loadingApprovalTransaction = false;
     }
   },
 
@@ -690,13 +691,11 @@ export const SwapController = {
     if (!data) {
       return undefined;
     }
-    const { fromAddress, toTokenAmount, isAuthConnector } = this.getParams();
+    const { fromAddress, isAuthConnector } = this.getParams();
 
     state.loadingTransaction = true;
 
-    const snackbarSuccessMessage = `Swapped ${state.sourceToken
-      ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
-      ?.symbol}`;
+    const snackbarSuccessMessage = `Swapped ${state.sourceToken?.symbol} to ${state.toToken?.symbol}`;
 
     SnackController.showLoading('Confirm transaction in your wallet');
 
@@ -770,21 +769,22 @@ export const SwapController = {
     state.toTokenAmount = initialState.toTokenAmount;
     state.toTokenPriceInUSD = initialState.toTokenPriceInUSD;
     state.inputError = initialState.inputError;
+    state.loadingApprovalTransaction = initialState.loadingApprovalTransaction;
+    state.loadingBuildTransaction = initialState.loadingBuildTransaction;
+    state.loadingTransaction = initialState.loadingTransaction;
+    state.fetchError = initialState.fetchError;
+    state.transactionError = initialState.transactionError;
+    state.swapTransaction = initialState.swapTransaction;
+    state.approvalTransaction = initialState.approvalTransaction;
   },
 
   resetState() {
+    this.clearTokens();
+    state.initialized = initialState.initialized;
     state.myTokensWithBalance = initialState.myTokensWithBalance;
     state.tokensPriceMap = initialState.tokensPriceMap;
-    state.initialized = initialState.initialized;
-    state.sourceToken = initialState.sourceToken;
-    state.sourceTokenAmount = initialState.sourceTokenAmount;
-    state.sourceTokenPriceInUSD = initialState.sourceTokenPriceInUSD;
-    state.toToken = initialState.toToken;
-    state.toTokenAmount = initialState.toTokenAmount;
-    state.toTokenPriceInUSD = initialState.toTokenPriceInUSD;
     state.networkPrice = initialState.networkPrice;
     state.networkTokenSymbol = initialState.networkTokenSymbol;
-    state.inputError = initialState.inputError;
   },
 
   // -- Checks -------------------------------------------- //
