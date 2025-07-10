@@ -151,19 +151,7 @@ export abstract class EVMAdapter extends BlockchainAdapter {
       params: [txParams]
     });
 
-    let receipt = null;
-    while (!receipt) {
-      receipt = (await this.getProvider().request({
-        method: 'eth_getTransactionReceipt',
-        params: [txHash]
-      })) as { blockHash?: `0x${string}` };
-
-      if (!receipt) {
-        await new Promise(r => setTimeout(r, 1000)); // wait 1s
-      }
-    }
-
-    return receipt?.blockHash || null;
+    return txHash || null;
   }
 
   /**

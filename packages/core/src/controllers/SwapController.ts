@@ -220,21 +220,6 @@ export const SwapController = {
     this.swapTokens();
   },
 
-  resetState() {
-    state.myTokensWithBalance = initialState.myTokensWithBalance;
-    state.tokensPriceMap = initialState.tokensPriceMap;
-    state.initialized = initialState.initialized;
-    state.sourceToken = initialState.sourceToken;
-    state.sourceTokenAmount = initialState.sourceTokenAmount;
-    state.sourceTokenPriceInUSD = initialState.sourceTokenPriceInUSD;
-    state.toToken = initialState.toToken;
-    state.toTokenAmount = initialState.toTokenAmount;
-    state.toTokenPriceInUSD = initialState.toTokenPriceInUSD;
-    state.networkPrice = initialState.networkPrice;
-    state.networkTokenSymbol = initialState.networkTokenSymbol;
-    state.inputError = initialState.inputError;
-  },
-
   async fetchTokens() {
     const { networkAddress } = this.getParams();
 
@@ -731,7 +716,7 @@ export const SwapController = {
       });
 
       state.loadingTransaction = false;
-      SnackController.showSuccess(snackbarSuccessMessage);
+
       EventsController.sendEvent({
         type: 'track',
         event: 'SWAP_SUCCESS',
@@ -744,12 +729,9 @@ export const SwapController = {
           isSmartAccount: ConnectionsController.state.accountType === 'smartAccount'
         }
       });
-      SwapController.resetState();
-
-      if (!isAuthConnector) {
-        RouterController.replace('AccountDefault');
-      }
-
+      RouterController.replace(isAuthConnector ? 'Account' : 'AccountDefault');
+      SnackController.showSuccess(snackbarSuccessMessage, true);
+      SwapController.clearTokens();
       SwapController.getMyTokensWithBalance(forceUpdateAddresses);
 
       setTimeout(() => {
@@ -778,6 +760,31 @@ export const SwapController = {
 
       return undefined;
     }
+  },
+
+  clearTokens() {
+    state.sourceToken = initialState.sourceToken;
+    state.sourceTokenAmount = initialState.sourceTokenAmount;
+    state.sourceTokenPriceInUSD = initialState.sourceTokenPriceInUSD;
+    state.toToken = initialState.toToken;
+    state.toTokenAmount = initialState.toTokenAmount;
+    state.toTokenPriceInUSD = initialState.toTokenPriceInUSD;
+    state.inputError = initialState.inputError;
+  },
+
+  resetState() {
+    state.myTokensWithBalance = initialState.myTokensWithBalance;
+    state.tokensPriceMap = initialState.tokensPriceMap;
+    state.initialized = initialState.initialized;
+    state.sourceToken = initialState.sourceToken;
+    state.sourceTokenAmount = initialState.sourceTokenAmount;
+    state.sourceTokenPriceInUSD = initialState.sourceTokenPriceInUSD;
+    state.toToken = initialState.toToken;
+    state.toTokenAmount = initialState.toTokenAmount;
+    state.toTokenPriceInUSD = initialState.toTokenPriceInUSD;
+    state.networkPrice = initialState.networkPrice;
+    state.networkTokenSymbol = initialState.networkTokenSymbol;
+    state.inputError = initialState.inputError;
   },
 
   // -- Checks -------------------------------------------- //

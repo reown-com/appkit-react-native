@@ -139,7 +139,7 @@ export const TransactionsController = {
     state.next = undefined;
   },
 
-  resetTransactions() {
+  resetState() {
     state.transactions = [];
     state.loading = false;
     state.empty = false;

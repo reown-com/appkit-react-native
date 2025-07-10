@@ -105,7 +105,7 @@ export function AccountDefaultView() {
   };
 
   const onSwapPress = () => {
-    SwapController.resetState();
+    SwapController.clearTokens();
     EventsController.sendEvent({
       type: 'track',
       event: 'OPEN_SWAP',

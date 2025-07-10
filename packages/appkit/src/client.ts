@@ -200,7 +200,7 @@ export class AppKitScaffold {
 
   protected resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {
     ConnectionController.resetWcConnection();
-    TransactionsController.resetTransactions();
+    TransactionsController.resetState();
   };
 
   protected fetchIdentity: (typeof BlockchainApiController)['fetchIdentity'] = request =>

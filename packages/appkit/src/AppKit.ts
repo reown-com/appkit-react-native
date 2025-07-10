@@ -10,7 +10,9 @@ import {
   StorageUtil,
   type OptionsControllerState,
   ThemeController,
-  ConnectionController
+  ConnectionController,
+  SwapController,
+  OnRampController
 } from '@reown/appkit-core-react-native';
 
 import {
@@ -198,7 +200,9 @@ export class AppKit {
 
       AccountController.setIsConnected(false); // Might need adjustment based on multi-connection logic
       RouterController.reset('Connect');
-      TransactionsController.resetTransactions();
+      TransactionsController.resetState();
+      SwapController.resetState();
+      OnRampController.resetState();
       ConnectionController.disconnect();
 
       if (OptionsController.state.isSiweEnabled) {

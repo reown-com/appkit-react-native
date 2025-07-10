@@ -26,22 +26,25 @@ const state = proxy<SnackControllerState>({
 export const SnackController = {
   state,
 
-  showSuccess(message: SnackControllerState['message']) {
+  showSuccess(message: SnackControllerState['message'], long = false) {
     state.message = message;
     state.variant = 'success';
     state.open = true;
+    state.long = long;
   },
 
-  showError(message: SnackControllerState['message']) {
+  showError(message: SnackControllerState['message'], long = false) {
     state.message = message;
     state.variant = 'error';
     state.open = true;
+    state.long = long;
   },
 
-  showLoading(message: SnackControllerState['message']) {
+  showLoading(message: SnackControllerState['message'], long = false) {
     state.message = message;
     state.variant = 'loading';
     state.open = true;
+    state.long = long;
   },
 
   showInternalError(error: Message) {
