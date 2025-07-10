@@ -26,11 +26,6 @@ export {
   type ConnectionsControllerState
 } from './controllers/ConnectionsController';
 
-export {
-  ConnectorController,
-  type ConnectorControllerState
-} from './controllers/ConnectorController';
-
 export { SnackController, type SnackControllerState } from './controllers/SnackController';
 
 export { ApiController, type ApiControllerState } from './controllers/ApiController';
@@ -71,6 +66,5 @@ export { CoreHelperUtil } from './utils/CoreHelperUtil';
 export { StorageUtil } from './utils/StorageUtil';
 export { EventUtil } from './utils/EventUtil';
 export { RouterUtil } from './utils/RouterUtil';
-export { NetworkUtil } from './utils/NetworkUtil';
 
 export type * from './utils/TypeUtil';

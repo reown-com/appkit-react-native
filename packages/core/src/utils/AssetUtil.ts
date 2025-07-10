@@ -1,5 +1,5 @@
 import { AssetController } from '../controllers/AssetController';
-import type { Connector, WcWallet } from './TypeUtil';
+import type { WcWallet } from './TypeUtil';
 
 export const AssetUtil = {
   getWalletImage(wallet?: WcWallet) {
@@ -24,13 +24,9 @@ export const AssetUtil = {
     return undefined;
   },
 
-  getConnectorImage(connector?: Connector) {
-    if (connector?.imageUrl) {
-      return connector.imageUrl;
-    }
-
-    if (connector?.imageId) {
-      return AssetController.state.connectorImages[connector.imageId];
+  getConnectorImage(imageId?: string) {
+    if (imageId) {
+      return AssetController.state.connectorImages[imageId];
     }
 
     return undefined;

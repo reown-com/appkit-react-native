@@ -2,7 +2,6 @@ import { useSnapshot } from 'valtio';
 import { ScrollView, View } from 'react-native';
 import {
   ApiController,
-  ConnectorController,
   EventUtil,
   EventsController,
   OptionsController,
@@ -12,7 +11,6 @@ import {
 import { FlexView, Icon, ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { Placeholder } from '../../partials/w3m-placeholder';
-import { ConnectorList } from './components/connectors-list';
 import { CustomWalletList } from './components/custom-wallet-list';
 import { AllWalletsButton } from './components/all-wallets-button';
 import { AllWalletList } from './components/all-wallet-list';
@@ -21,16 +19,13 @@ import { SocialLoginList } from './components/social-login-list';
 import styles from './styles';
 
 export function ConnectView() {
-  const connectors = ConnectorController.state.connectors;
-  // const { authLoading } = useSnapshot(ConnectorController.state);
   const { prefetchError } = useSnapshot(ApiController.state);
   const { features } = useSnapshot(OptionsController.state);
   const { padding } = useCustomDimensions();
 
-  //TODO: check this
-  // const isWalletConnectEnabled = connectors.some(c => c.type === 'WALLET_CONNECT');
+  //TODO: check this with Coinbase
   const isWalletConnectEnabled = true;
-  const isCoinbaseEnabled = connectors.some(c => c.type === 'COINBASE');
+  const isCoinbaseEnabled = false;
   const isSocialEnabled = features?.socials && features?.socials.length > 0;
   const showConnectWalletsButton =
     isWalletConnectEnabled && isSocialEnabled && !features?.showWallets;
@@ -39,19 +34,19 @@ export function ConnectView() {
   const showList = !showConnectWalletsButton && !showLoadingError;
 
   const onWalletPress = (wallet: WcWallet, isInstalled?: boolean) => {
-    const connector = connectors.find(c => c.explorerId === wallet.id);
-    if (connector) {
-      RouterController.push('ConnectingExternal', { connector, wallet });
-    } else {
-      RouterController.push('ConnectingWalletConnect', { wallet });
-    }
+    // const connector = connectors.find(c => c.explorerId === wallet.id);
+    // if (connector) {
+    //   RouterController.push('ConnectingExternal', { connector, wallet });
+    // } else {
+    RouterController.push('ConnectingWalletConnect', { wallet });
+    // }
 
     const platform = EventUtil.getWalletPlatform(wallet, isInstalled);
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
       properties: {
-        name: wallet.name ?? connector?.name ?? 'Unknown',
+        name: wallet.name ?? 'Unknown',
         platform,
         explorer_id: wallet.id
       }
@@ -106,10 +101,6 @@ export function ConnectView() {
               <CustomWalletList
                 itemStyle={styles.item}
                 onWalletPress={onWalletPress}
-                isWalletConnectEnabled={isWalletConnectEnabled}
-              />
-              <ConnectorList
-                itemStyle={styles.item}
                 isWalletConnectEnabled={isWalletConnectEnabled}
               />
               <AllWalletsButton

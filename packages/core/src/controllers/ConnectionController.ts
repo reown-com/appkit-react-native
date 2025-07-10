@@ -10,7 +10,7 @@ import type {
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil';
-import { ConnectorController } from './ConnectorController';
+// import { ConnectorController } from './ConnectorController';
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -92,7 +92,7 @@ export const ConnectionController = {
 
   async connectExternal(options: ConnectExternalOptions) {
     await this._getClient().connectExternal?.(options);
-    ConnectorController.setConnectedConnector(options.type);
+    // ConnectorController.setConnectedConnector(options.type);
   },
 
   async signMessage(message: string) {
@@ -190,7 +190,7 @@ export const ConnectionController = {
     this.clearUri();
     state.pressedWallet = undefined;
     ConnectionController.setConnectedWalletImageUrl(undefined);
-    ConnectorController.setConnectedConnector(undefined);
+    // ConnectorController.setConnectedConnector(undefined);
     StorageUtil.removeWalletConnectDeepLink();
   },
 

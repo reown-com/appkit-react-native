@@ -11,7 +11,6 @@ import {
   DateUtil,
   type SocialProvider,
   type New_ConnectorType,
-  type ConnectorType,
   type ChainNamespace
 } from '@reown/appkit-common-react-native';
 
@@ -19,7 +18,6 @@ import {
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE';
 const RECENT_WALLET = '@w3m/recent';
 const CONNECTED_WALLET_IMAGE_URL = '@w3m/connected_wallet_image_url';
-const CONNECTED_CONNECTOR = '@w3m/connected_connector';
 const CONNECTED_CONNECTORS = '@appkit/connected_connectors';
 const CONNECTED_SOCIAL = '@appkit/connected_social';
 const ONRAMP_PREFERRED_COUNTRY = '@appkit/onramp_preferred_country';
@@ -102,35 +100,6 @@ export const StorageUtil = {
     }
 
     return [];
-  },
-
-  //TODO: remove this
-  async setConnectedConnector(connectorType: ConnectorType) {
-    try {
-      await AsyncStorage.setItem(CONNECTED_CONNECTOR, JSON.stringify(connectorType));
-    } catch {
-      console.info('Unable to set Connected Connector');
-    }
-  },
-
-  async getConnectedConnector(): Promise<ConnectorType | undefined> {
-    try {
-      const connector = (await AsyncStorage.getItem(CONNECTED_CONNECTOR)) as ConnectorType;
-
-      return connector ? JSON.parse(connector) : undefined;
-    } catch {
-      console.info('Unable to get Connected Connector');
-    }
-
-    return undefined;
-  },
-
-  async removeConnectedConnector() {
-    try {
-      await AsyncStorage.removeItem(CONNECTED_CONNECTOR);
-    } catch {
-      console.info('Unable to remove Connected Connector');
-    }
   },
 
   async setConnectedConnectors({

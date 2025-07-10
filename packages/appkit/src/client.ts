@@ -10,7 +10,6 @@ import type {
   EventsControllerState,
   PublicStateControllerState,
   ThemeControllerState,
-  Connector,
   ConnectedWalletInfo,
   Features,
   EventName
@@ -20,7 +19,6 @@ import {
   AccountController,
   BlockchainApiController,
   ConnectionController,
-  ConnectorController,
   EnsController,
   EventsController,
   ModalController,
@@ -32,12 +30,7 @@ import {
   ThemeController,
   TransactionsController
 } from '@reown/appkit-core-react-native';
-import {
-  ConstantsUtil,
-  ErrorUtil,
-  type ThemeMode,
-  type ThemeVariables
-} from '@reown/appkit-common-react-native';
+import { ErrorUtil, type ThemeMode, type ThemeVariables } from '@reown/appkit-common-react-native';
 import { Appearance } from 'react-native';
 
 // -- Types ---------------------------------------------------------------------
@@ -205,20 +198,6 @@ export class AppKitScaffold {
     NetworkController.resetNetwork();
   };
 
-  protected setConnectors: (typeof ConnectorController)['setConnectors'] = (
-    connectors: Connector[]
-  ) => {
-    ConnectorController.setConnectors(connectors);
-    this.setConnectorExcludedWallets(connectors);
-  };
-
-  protected addConnector: (typeof ConnectorController)['addConnector'] = (connector: Connector) => {
-    ConnectorController.addConnector(connector);
-  };
-
-  protected getConnectors: (typeof ConnectorController)['getConnectors'] = () =>
-    ConnectorController.getConnectors();
-
   protected resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {
     ConnectionController.resetWcConnection();
     TransactionsController.resetTransactions();
@@ -326,20 +305,20 @@ export class AppKitScaffold {
     }
   }
 
-  private async setConnectorExcludedWallets(connectors: Connector[]) {
-    const excludedWallets = OptionsController.state.excludeWalletIds || [];
+  // private async setConnectorExcludedWallets(connectors: Connector[]) {
+  //   const excludedWallets = OptionsController.state.excludeWalletIds || [];
 
-    // Exclude Coinbase if the connector is not implemented
-    const excludeCoinbase =
-      connectors.findIndex(connector => connector.id === ConstantsUtil.COINBASE_CONNECTOR_ID) ===
-      -1;
+  //   // Exclude Coinbase if the connector is not implemented
+  //   const excludeCoinbase =
+  //     connectors.findIndex(connector => connector.id === ConstantsUtil.COINBASE_CONNECTOR_ID) ===
+  //     -1;
 
-    if (excludeCoinbase) {
-      excludedWallets.push(ConstantsUtil.COINBASE_EXPLORER_ID);
-    }
+  //   if (excludeCoinbase) {
+  //     excludedWallets.push(ConstantsUtil.COINBASE_EXPLORER_ID);
+  //   }
 
-    OptionsController.setExcludeWalletIds(excludedWallets);
-  }
+  //   OptionsController.setExcludeWalletIds(excludedWallets);
+  // }
 
   private async initRecentWallets(options: ScaffoldOptions) {
     const wallets = await StorageUtil.getRecentWallets();
@@ -359,20 +338,12 @@ export class AppKitScaffold {
     ConnectionController.setRecentWallets(filteredWallets);
   }
 
-  // private async initConnectedConnector() {
-  //   const connectedConnector = await StorageUtil.getConnectedConnector();
-  //   if (connectedConnector) {
-  //     ConnectorController.setConnectedConnector(connectedConnector, false);
-  //   }
-  // }
-
   private async initSocial() {
     const connectedSocialProvider = await StorageUtil.getConnectedSocialProvider();
     ConnectionController.setConnectedSocialProvider(connectedSocialProvider);
   }
 
   private async initAsyncValues(options: ScaffoldOptions) {
-    // await this.initConnectedConnector();
     await this.initRecentWallets(options);
     await this.initSocial();
   }
