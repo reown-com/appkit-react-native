@@ -68,6 +68,8 @@ export abstract class EVMAdapter extends BlockchainAdapter {
 
     provider.on('reown_updateEmail', (info: any) => {
       // this.emit('updateEmail', email);
+      //TODO: check this
+      //eslint-disable-next-line no-console
       console.log('reown_updateEmail', info);
     });
   }
