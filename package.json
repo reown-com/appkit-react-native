@@ -35,7 +35,8 @@
     "changeset:prepublish": "yarn run clean; yarn install; yarn version:update; yarn run lint && yarn run prettier; yarn run build; yarn run test",
     "changeset:publish": "yarn run changeset:prepublish; yarn run changeset publish",
     "changeset:version": "changeset version; yarn run version:update; yarn install --refresh-lockfile",
-    "version:update": "./scripts/bump-version.sh"
+    "version:update": "./scripts/bump-version.sh",
+    "bundle:analyze": "cd apps/native && yarn run react-native-bundle-visualizer --expo true --reset-cache true --no-border-checks true --format json --entry-file apps/native/index.js --output-dir ./bundles"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",

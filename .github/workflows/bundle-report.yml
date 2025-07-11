@@ -1,0 +1,59 @@
+name: Bundle Size Report
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  generate-bundle-report:
+    name: Analyze Native Bundle Size
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Build packages
+        run: yarn build
+
+      - name: Generate bundle report
+        run: yarn bundle:analyze
+
+      - name: Rename PR report
+        run: mv apps/native/bundles/explorer.json apps/native/bundles/report-pr.json
+
+      - name: Fetch development branch
+        run: git fetch origin development
+
+      - name: Stash current branch changes
+        run: git stash --include-untracked
+
+      - name: Checkout development
+        run: git checkout origin/development
+
+      - name: Re-run setup on development
+        uses: ./.github/actions/setup
+
+      - name: Build packages
+        run: yarn build
+
+      - name: Generate dev bundle report
+        run: yarn bundle:analyze
+
+      - name: Rename dev report
+        run: mv apps/native/bundles/explorer.json apps/native/bundles/report-dev.json
+
+      - name: Upload both reports as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-bundle-comparison
+          path: |
+            apps/native/bundles/report-pr.json
+            apps/native/bundles/report-dev.json

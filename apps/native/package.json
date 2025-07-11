@@ -52,6 +52,7 @@
     "@types/react": "~18.2.79",
     "babel-plugin-module-resolver": "^5.0.0",
     "gh-pages": "^6.2.0",
+    "react-native-bundle-visualizer": "patch:react-native-bundle-visualizer@npm%3A3.1.3#~/patches/react-native-bundle-visualizer-npm-3.1.3-5b29b2c181.patch",
     "typescript": "~5.3.3"
   }
 }
