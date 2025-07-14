@@ -46,6 +46,7 @@ export function SwapPreviewView() {
     loadingQuote || loadingBuildTransaction || loadingTransaction || loadingApprovalTransaction;
 
   const onCancel = () => {
+    SwapController.clearTransactionLoaders();
     RouterController.goBack();
   };
 

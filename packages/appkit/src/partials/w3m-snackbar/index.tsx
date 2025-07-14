@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Animated } from 'react-native';
 import { SnackController, type SnackControllerState } from '@reown/appkit-core-react-native';
 import { Snackbar as SnackbarComponent } from '@reown/appkit-ui-react-native';
@@ -15,15 +15,22 @@ const getIcon = (variant: SnackControllerState['variant']) => {
 export function Snackbar() {
   const { open, message, variant, long } = useSnapshot(SnackController.state);
   const componentOpacity = useMemo(() => new Animated.Value(0), []);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
     if (open) {
       Animated.timing(componentOpacity, {
         toValue: 1,
         duration: 150,
         useNativeDriver: true
       }).start();
-      setTimeout(
+
+      timeoutRef.current = setTimeout(
         () => {
           Animated.timing(componentOpacity, {
             toValue: 0,
@@ -36,6 +43,18 @@ export function Snackbar() {
         long ? 15000 : 2200
       );
     }
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
+      if (open) {
+        SnackController.hide();
+        componentOpacity.setValue(0);
+      }
+    };
   }, [open, long, componentOpacity]);
 
   return (

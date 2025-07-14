@@ -709,6 +709,7 @@ export const SwapController = {
 
       state.loadingTransaction = false;
 
+      SnackController.showSuccess(snackbarSuccessMessage, true);
       EventsController.sendEvent({
         type: 'track',
         event: 'SWAP_SUCCESS',
@@ -722,7 +723,6 @@ export const SwapController = {
         }
       });
       RouterController.replace(isAuthConnector ? 'Account' : 'AccountDefault');
-      SnackController.showSuccess(snackbarSuccessMessage, true);
       SwapController.clearTokens();
       SwapController.getMyTokensWithBalance(forceUpdateAddresses);
 
@@ -752,6 +752,12 @@ export const SwapController = {
 
       return undefined;
     }
+  },
+
+  clearTransactionLoaders() {
+    state.loadingApprovalTransaction = false;
+    state.loadingBuildTransaction = false;
+    state.loadingTransaction = false;
   },
 
   clearTokens() {
