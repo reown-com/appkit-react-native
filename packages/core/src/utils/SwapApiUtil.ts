@@ -66,16 +66,18 @@ export const SwapApiUtil = {
       : undefined;
 
     return (
-      balances?.map(
-        token =>
-          ({
-            ...token,
-            address: token?.address ?? `${token?.chainId ?? activeCaipNetworkId}:${address}`,
-            decimals: parseInt(token.quantity?.decimals ?? '0', 10),
-            logoUri: token.iconUrl,
-            eip2612: false
-          }) as SwapTokenWithBalance
-      ) || []
+      balances
+        ?.filter(balance => balance?.quantity?.numeric)
+        .map(
+          token =>
+            ({
+              ...token,
+              address: token?.address ?? `${token?.chainId ?? activeCaipNetworkId}:${address}`,
+              decimals: parseInt(token.quantity?.decimals ?? '0', 10),
+              logoUri: token.iconUrl,
+              eip2612: false
+            }) as SwapTokenWithBalance
+        ) || []
     );
   },
 

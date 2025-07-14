@@ -192,7 +192,12 @@ const derivedState = derive(
 
       if (!_activeAddress) return [];
 
-      return _connection?.balances.get(_activeAddress);
+      return (
+        _connection?.balances
+          .get(_activeAddress)
+          // Filter out tokens with no quantity
+          ?.filter(balance => balance?.quantity?.numeric)
+      );
     },
     walletInfo: (get): WalletInfo | undefined => {
       const snap = get(baseState);

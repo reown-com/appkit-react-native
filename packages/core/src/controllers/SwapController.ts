@@ -41,8 +41,7 @@ class TransactionError extends Error {
 
 export interface SwapControllerState {
   // Loading states
-  initializing: boolean;
-  initialized: boolean;
+  loadingTokens: boolean;
   loadingPrices: boolean;
   loadingQuote?: boolean;
   loadingApprovalTransaction?: boolean;
@@ -92,8 +91,7 @@ type StateKey = keyof SwapControllerState;
 // -- State --------------------------------------------- //
 const initialState: SwapControllerState = {
   // Loading states
-  initializing: false,
-  initialized: false,
+  loadingTokens: false,
   loadingPrices: false,
   loadingQuote: false,
   loadingApprovalTransaction: false,
@@ -195,7 +193,7 @@ export const SwapController = {
   },
 
   switchTokens() {
-    if (state.initializing || !state.initialized) {
+    if (state.loadingTokens) {
       return;
     }
 
@@ -221,24 +219,35 @@ export const SwapController = {
   },
 
   async fetchTokens() {
-    const { networkAddress } = this.getParams();
+    try {
+      const { networkAddress } = this.getParams();
 
-    await this.getTokenList();
-    await this.getNetworkTokenPrice();
-    await this.getMyTokensWithBalance();
+      state.loadingTokens = true;
+      await this.getTokenList();
+      await this.getNetworkTokenPrice();
+      await this.getMyTokensWithBalance();
 
-    const networkToken = state.tokens?.find(token => token.address === networkAddress);
+      const networkToken = state.tokens?.find(token => token.address === networkAddress);
 
-    if (networkToken) {
-      state.networkTokenSymbol = networkToken.symbol;
+      if (networkToken) {
+        state.networkTokenSymbol = networkToken.symbol;
+      }
+
+      // Set default source token if not set
+      if (!state.sourceToken && state.myTokensWithBalance?.length) {
+        const sourceToken =
+          state.myTokensWithBalance?.find(token => token.address.startsWith(networkAddress)) ||
+          state.myTokensWithBalance?.[0];
+
+        this.setSourceToken(sourceToken);
+        this.setSourceTokenAmount('1');
+      }
+    } catch (error) {
+      SnackController.showError('Failed to initialize swap');
+      RouterController.goBack();
+    } finally {
+      state.loadingTokens = false;
     }
-
-    const sourceToken =
-      state.myTokensWithBalance?.find(token => token.address.startsWith(networkAddress)) ||
-      state.myTokensWithBalance?.[0];
-
-    this.setSourceToken(sourceToken);
-    this.setSourceTokenAmount('1');
   },
 
   async getTokenList() {
@@ -275,10 +284,12 @@ export const SwapController = {
     this.setBalances(swapBalances);
   },
 
-  getFilteredPopularTokens() {
-    return state.popularTokens?.filter(
-      token => !state.myTokensWithBalance?.some(t => t.address === token.address)
-    );
+  getFilteredPopularTokens(balances?: SwapTokenWithBalance[]) {
+    if (!balances) {
+      return state.popularTokens;
+    }
+
+    return state.popularTokens?.filter(token => !balances.some(t => t.address === token.address));
   },
 
   setSourceToken(sourceToken: SwapTokenWithBalance | undefined) {
@@ -300,25 +311,6 @@ export const SwapController = {
     if (amount === '') {
       state.toTokenAmount = '';
     }
-  },
-
-  async initializeState() {
-    if (state.initializing) {
-      return;
-    }
-
-    state.initializing = true;
-    if (!state.initialized) {
-      try {
-        await this.fetchTokens();
-        state.initialized = true;
-      } catch (error) {
-        state.initialized = false;
-        SnackController.showError('Failed to initialize swap');
-        RouterController.goBack();
-      }
-    }
-    state.initializing = false;
   },
 
   async getAddressPrice(address: string) {
@@ -460,11 +452,11 @@ export const SwapController = {
         amount: amountDecimal.toString()
       });
 
-      state.loadingQuote = false;
-
       const quoteToAmount = quoteResponse?.quotes?.[0]?.toAmount;
 
       if (!quoteToAmount) {
+        state.loadingQuote = false;
+
         return;
       }
 
@@ -487,6 +479,7 @@ export const SwapController = {
       }
     } catch (error) {
       SnackController.showError('Failed to get swap quote');
+    } finally {
       state.loadingQuote = false;
     }
   },
@@ -780,7 +773,6 @@ export const SwapController = {
 
   resetState() {
     this.clearTokens();
-    state.initialized = initialState.initialized;
     state.myTokensWithBalance = initialState.myTokensWithBalance;
     state.tokensPriceMap = initialState.tokensPriceMap;
     state.networkPrice = initialState.networkPrice;

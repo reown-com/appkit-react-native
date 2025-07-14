@@ -16,14 +16,15 @@ export function filterTokens(tokens?: SwapTokenWithBalance[], searchValue?: stri
   );
 }
 
-export function createSections(isSourceToken: boolean, searchValue: string) {
-  const myTokensFiltered = filterTokens(
-    SwapController.state.myTokensWithBalance ?? [],
-    searchValue
-  );
+export function createSections(
+  isSourceToken: boolean,
+  searchValue: string,
+  balances?: SwapTokenWithBalance[]
+) {
+  const myTokensFiltered = filterTokens(balances ?? [], searchValue);
   const popularFiltered = isSourceToken
     ? []
-    : filterTokens(SwapController.getFilteredPopularTokens() ?? [], searchValue);
+    : filterTokens(SwapController.getFilteredPopularTokens(balances), searchValue);
 
   const sections = [];
   if (myTokensFiltered.length > 0) {

@@ -44,7 +44,6 @@ export function Header() {
       OnRampTransaction: ' ',
       SwitchNetwork: networkName ?? 'Switch network',
       Swap: 'Swap',
-      SwapSelectToken: 'Select token',
       SwapPreview: 'Review swap',
       Transactions: 'Activity',
       UnsupportedChain: 'Switch network',

@@ -16,7 +16,6 @@ import {
   bitcoin
 } from '@reown/appkit-react-native';
 
-// import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
 import { Button, Text } from '@reown/appkit-ui-react-native';
 
 // import { AccountView } from './src/views/AccountView';

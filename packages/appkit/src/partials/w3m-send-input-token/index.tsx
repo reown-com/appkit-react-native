@@ -39,7 +39,7 @@ export function SendInputToken({
   };
 
   const onMaxPress = () => {
-    if (token?.quantity && gasPrice) {
+    if (token?.quantity?.numeric && gasPrice) {
       const isNetworkToken =
         token.address === undefined ||
         Object.values(ConstantsUtil.NATIVE_TOKEN_ADDRESS).some(

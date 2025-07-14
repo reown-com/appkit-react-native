@@ -19,5 +19,9 @@ export default StyleSheet.create({
   actionButton: {
     marginTop: Spacing.xs,
     width: '100%'
+  },
+  modal: {
+    margin: 0,
+    justifyContent: 'flex-end'
   }
 });

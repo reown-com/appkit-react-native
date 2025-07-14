@@ -23,7 +23,6 @@
     "@expo/metro-runtime": "~4.0.1",
     "@react-native-async-storage/async-storage": "2.1.2",
     "@react-native-community/netinfo": "11.4.1",
-    "@reown/appkit-auth-wagmi-react-native": "1.2.4",
     "@reown/appkit-bitcoin-react-native": "2.0.0-alpha.1",
     "@reown/appkit-ethers-react-native": "2.0.0-alpha.1",
     "@reown/appkit-react-native": "2.0.0-alpha.1",

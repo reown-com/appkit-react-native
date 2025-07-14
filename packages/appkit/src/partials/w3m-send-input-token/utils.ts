@@ -13,7 +13,7 @@ export function getSendValue(token?: Balance, sendTokenAmount?: number) {
 }
 
 export function getMaxAmount(token?: Balance) {
-  if (token?.quantity) {
+  if (token?.quantity?.numeric) {
     return NumberUtil.roundNumber(Number(token.quantity.numeric), 6, 5);
   }
 

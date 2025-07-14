@@ -21,7 +21,6 @@ import { OnRampSettingsView } from '../../views/w3m-onramp-settings-view';
 import { OnRampTransactionView } from '../../views/w3m-onramp-transaction-view';
 import { SwapView } from '../../views/w3m-swap-view';
 import { SwapPreviewView } from '../../views/w3m-swap-preview-view';
-import { SwapSelectTokenView } from '../../views/w3m-swap-select-token-view';
 import { TransactionsView } from '../../views/w3m-transactions-view';
 import { UnsupportedChainView } from '../../views/w3m-unsupported-chain-view';
 import { UpgradeEmailWalletView } from '../../views/w3m-upgrade-email-wallet-view';
@@ -81,8 +80,6 @@ export function AppKitRouter() {
         return SwapView;
       case 'SwapPreview':
         return SwapPreviewView;
-      case 'SwapSelectToken':
-        return SwapSelectTokenView;
       case 'Transactions':
         return TransactionsView;
       case 'UnsupportedChain':

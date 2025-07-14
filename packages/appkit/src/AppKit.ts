@@ -496,6 +496,10 @@ export class AppKit {
       const network = this.networks.find(n => n.id?.toString() === chainId);
       this.syncBalances(adapter, network);
 
+      if (OptionsController.state.features?.swaps) {
+        SwapController.fetchTokens();
+      }
+
       if (namespace === 'eip155') {
         this.handleSiweChange({ isNetworkChange: true });
       }

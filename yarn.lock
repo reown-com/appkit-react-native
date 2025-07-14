@@ -107,7 +107,6 @@ __metadata:
     "@playwright/test": "npm:^1.49.1"
     "@react-native-async-storage/async-storage": "npm:2.1.2"
     "@react-native-community/netinfo": "npm:11.4.1"
-    "@reown/appkit-auth-wagmi-react-native": "npm:1.2.4"
     "@reown/appkit-bitcoin-react-native": "npm:2.0.0-alpha.1"
     "@reown/appkit-ethers-react-native": "npm:2.0.0-alpha.1"
     "@reown/appkit-react-native": "npm:2.0.0-alpha.1"
@@ -6720,19 +6719,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reown/appkit-auth-wagmi-react-native@npm:1.2.4":
-  version: 1.2.4
-  resolution: "@reown/appkit-auth-wagmi-react-native@npm:1.2.4"
-  dependencies:
-    "@reown/appkit-common-react-native": "npm:1.2.4"
-    "@reown/appkit-core-react-native": "npm:1.2.4"
-    "@reown/appkit-wallet-react-native": "npm:1.2.4"
-  peerDependencies:
-    wagmi: ">=2"
-  checksum: d21527699be64a3e67e91514fb5fe45b27c1415f8b045f8dee28803ced65d8c8ee43cb69c55349e92032fbb42f13d304633582f7a1e89cf6332e393a5e758a8d
-  languageName: node
-  linkType: hard
-
 "@reown/appkit-bitcoin-react-native@npm:2.0.0-alpha.1, @reown/appkit-bitcoin-react-native@workspace:packages/bitcoin":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-bitcoin-react-native@workspace:packages/bitcoin"
@@ -6740,16 +6726,6 @@ __metadata:
     "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
   languageName: unknown
   linkType: soft
-
-"@reown/appkit-common-react-native@npm:1.2.4":
-  version: 1.2.4
-  resolution: "@reown/appkit-common-react-native@npm:1.2.4"
-  dependencies:
-    bignumber.js: "npm:9.1.2"
-    dayjs: "npm:1.11.10"
-  checksum: fc26b9943788fd78bf8d745e439575acaa30e5c3775d2ab83444591eba363ec9412ba14df669175c04f3236df9c2732cd3ee61786b34cc6e121b0ad2ee2880f9
-  languageName: node
-  linkType: hard
 
 "@reown/appkit-common-react-native@npm:2.0.0-alpha.1, @reown/appkit-common-react-native@workspace:packages/common":
   version: 0.0.0-use.local
@@ -6781,21 +6757,6 @@ __metadata:
     valtio: "npm:1.13.2"
     viem: "npm:>=2.23.11"
   checksum: 775c25f7697a0ff59720cfd17c7317ac87284416d2b5e187bd05fba42f6f1294d6cab45c0509fb6faec9477ee60ce3b7cd72b78ae6c393df14fabd1874858650
-  languageName: node
-  linkType: hard
-
-"@reown/appkit-core-react-native@npm:1.2.4":
-  version: 1.2.4
-  resolution: "@reown/appkit-core-react-native@npm:1.2.4"
-  dependencies:
-    "@reown/appkit-common-react-native": "npm:1.2.4"
-    valtio: "npm:1.11.2"
-  peerDependencies:
-    "@react-native-async-storage/async-storage": ">=1.17.0"
-    "@walletconnect/react-native-compat": ">=2.13.1"
-    react: ">=17"
-    react-native: ">=0.68.5"
-  checksum: 6d678d0eb1392f06cc5821a12b45483823c80b203448e5dfaf101a67e62966449ddd38da2b8a1e2aefa799bed672c806b0f58293a3dfdd24b6662af71711c234
   languageName: node
   linkType: hard
 
@@ -6895,20 +6856,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@reown/appkit-ui-react-native@npm:1.2.4":
-  version: 1.2.4
-  resolution: "@reown/appkit-ui-react-native@npm:1.2.4"
-  dependencies:
-    polished: "npm:4.3.1"
-    qrcode: "npm:1.5.3"
-  peerDependencies:
-    react: ">=17"
-    react-native: ">=0.68.5"
-    react-native-svg: ">=13"
-  checksum: 62987750079871d916656b02998cbbf41bc1b026a3e86f6577e9d3f932751920b7a42e33b9b4d992973cc34abd1228d24ada46e3b878ba151dc8bb82255c772f
-  languageName: node
-  linkType: hard
-
 "@reown/appkit-ui-react-native@npm:2.0.0-alpha.1, @reown/appkit-ui-react-native@workspace:packages/ui":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-ui-react-native@workspace:packages/ui"
@@ -6972,20 +6919,6 @@ __metadata:
     wagmi: ">=2.12.10"
   languageName: unknown
   linkType: soft
-
-"@reown/appkit-wallet-react-native@npm:1.2.4":
-  version: 1.2.4
-  resolution: "@reown/appkit-wallet-react-native@npm:1.2.4"
-  dependencies:
-    "@reown/appkit-core-react-native": "npm:1.2.4"
-    "@reown/appkit-ui-react-native": "npm:1.2.4"
-    zod: "npm:3.22.4"
-  peerDependencies:
-    "@react-native-async-storage/async-storage": ">=1.17.0"
-    react-native-webview: ">=11"
-  checksum: debf13a78ab507b7855cbb7e73fbf91c6ed51e900fff29f8266c9e2bcf824c43245dd1c8b87fc8c7b13a94dc12818d94bbd93fc16fd683aa2513641754b599c6
-  languageName: node
-  linkType: hard
 
 "@reown/appkit-wallet@npm:1.7.3":
   version: 1.7.3

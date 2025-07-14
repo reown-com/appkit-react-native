@@ -33,10 +33,7 @@ export function AccountTokens({ style, isLoading }: Props) {
   const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
 
-  // Show all tokens that come from the API
-  const filteredBalances = balances?.filter(balance => balance.quantity);
-
-  const onRefresh = useCallback(async () => {
+  const getBalance = useCallback(async () => {
     setRefreshing(true);
     await ConnectionsController.fetchBalance();
     setRefreshing(false);
@@ -46,7 +43,7 @@ export function AccountTokens({ style, isLoading }: Props) {
     RouterController.push('WalletReceive');
   };
 
-  if (!filteredBalances?.length) {
+  if (!balances?.length) {
     return (
       <>
         <ListItem
@@ -75,14 +72,14 @@ export function AccountTokens({ style, isLoading }: Props) {
       style={style}
       refreshControl={
         <RefreshControl
-          refreshing={isLoading || refreshing}
-          onRefresh={onRefresh}
+          refreshing={refreshing}
+          onRefresh={getBalance}
           tintColor={Theme['accent-100']}
           colors={[Theme['accent-100']]}
         />
       }
     >
-      {filteredBalances.map(token => (
+      {balances.map(token => (
         <ListToken
           key={token.symbol}
           name={token.name || 'Unknown'}
@@ -94,6 +91,7 @@ export function AccountTokens({ style, isLoading }: Props) {
           pressable={false}
         />
       ))}
+      {isLoading && <LoadingSpinner size="sm" style={styles.loadingSpinner} />}
     </ScrollView>
   );
 }

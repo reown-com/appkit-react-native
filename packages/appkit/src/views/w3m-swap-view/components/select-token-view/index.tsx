@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { ScrollView, SectionList, type SectionListData } from 'react-native';
+import { ScrollView, SectionList, View, type SectionListData } from 'react-native';
 import {
   FlexView,
+  IconLink,
   InputText,
   ListToken,
   ListTokenTotalHeight,
@@ -15,33 +16,44 @@ import {
 import {
   AssetUtil,
   ConnectionsController,
-  RouterController,
   SwapController,
+  type SwapControllerState,
+  type SwapInputTarget,
   type SwapTokenWithBalance
 } from '@reown/appkit-core-react-native';
 
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import { Placeholder } from '../../partials/w3m-placeholder';
+import { useCustomDimensions } from '../../../../hooks/useCustomDimensions';
+import { Placeholder } from '../../../../partials/w3m-placeholder';
 import styles from './styles';
 import { createSections } from './utils';
 
-export function SwapSelectTokenView() {
+interface Props {
+  onClose: () => void;
+  type?: SwapInputTarget;
+}
+
+export function SwapSelectTokenView({ onClose, type }: Props) {
   const { padding } = useCustomDimensions();
   const Theme = useTheme();
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
-  const { sourceToken, suggestedTokens } = useSnapshot(SwapController.state);
+  const { sourceToken, suggestedTokens, myTokensWithBalance } = useSnapshot(
+    SwapController.state
+  ) as SwapControllerState;
+
   const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
   const [tokenSearch, setTokenSearch] = useState<string>('');
-  const isSourceToken = RouterController.state.data?.swapTarget === 'sourceToken';
+  const isSourceToken = type === 'sourceToken';
 
-  const [filteredTokens, setFilteredTokens] = useState(createSections(isSourceToken, tokenSearch));
+  const [filteredTokens, setFilteredTokens] = useState(
+    createSections(isSourceToken, tokenSearch, myTokensWithBalance)
+  );
   const suggestedList = suggestedTokens
     ?.filter(token => token.address !== SwapController.state.sourceToken?.address)
     .slice(0, 8);
 
   const onSearchChange = (value: string) => {
     setTokenSearch(value);
-    setFilteredTokens(createSections(isSourceToken, value));
+    setFilteredTokens(createSections(isSourceToken, value, myTokensWithBalance));
   };
 
   const onTokenPress = (token: SwapTokenWithBalance) => {
@@ -53,14 +65,30 @@ export function SwapSelectTokenView() {
         SwapController.swapTokens();
       }
     }
-    RouterController.goBack();
+    onClose();
   };
 
   return (
     <FlexView
-      margin={['l', '0', '2xl', '0']}
-      style={[styles.container, { paddingHorizontal: padding }]}
+      padding={['xl', '0', '0', '0']}
+      style={[
+        styles.container,
+        {
+          paddingHorizontal: padding,
+          backgroundColor: Theme['bg-100']
+        }
+      ]}
     >
+      <FlexView
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+        padding={['0', 'm', 'm', 'm']}
+      >
+        <IconLink icon="chevronLeft" size="md" onPress={onClose} />
+        <Text variant="paragraph-600">Select token</Text>
+        <View style={styles.iconPlaceholder} />
+      </FlexView>
       <FlexView>
         <InputText
           value={tokenSearch}

@@ -16,5 +16,8 @@ export default StyleSheet.create({
   sendValue: {
     flex: 1,
     marginRight: Spacing.xs
+  },
+  valueLoader: {
+    marginBottom: Spacing.xs
   }
 });

@@ -21,6 +21,7 @@ export interface SwapInputProps {
   gasPrice?: number;
   style?: StyleProp<ViewStyle>;
   loading?: boolean;
+  loadingValues?: boolean;
   onTokenPress?: () => void;
   onMaxPress?: () => void;
   onChange?: (value: string) => void;
@@ -37,6 +38,7 @@ export function SwapInput({
   value,
   style,
   loading,
+  loadingValues,
   onTokenPress,
   onMaxPress,
   onChange,
@@ -48,11 +50,11 @@ export function SwapInput({
   const valueInputRef = useRef<TextInput | null>(null);
   const isMarketValueGreaterThanZero =
     !!marketValue && NumberUtil.bigNumber(marketValue).isGreaterThan('0');
-  const maxAmount = UiUtil.formatNumberToLocalString(token?.quantity.numeric, 3);
-  const maxError = Number(value) > Number(token?.quantity.numeric);
+  const maxAmount = UiUtil.formatNumberToLocalString(token?.quantity?.numeric, 3);
+  const maxError = Number(value) > Number(token?.quantity?.numeric);
   const showMax =
     onMaxPress &&
-    !!token?.quantity.numeric &&
+    !!token?.quantity?.numeric &&
     NumberUtil.multiply(token?.quantity.numeric, token?.price).isGreaterThan(
       MINIMUM_USD_VALUE_TO_CONVERT
     );
@@ -85,33 +87,40 @@ export function SwapInput({
     >
       {loading ? (
         <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
-          <Shimmer height={36} width={80} borderRadius={12} />
+          <FlexView alignItems="flex-start">
+            <Shimmer height={36} width={80} borderRadius={12} style={styles.valueLoader} />
+            <Shimmer height={20} width={120} borderRadius={8} />
+          </FlexView>
           <Shimmer height={36} width={80} borderRadius={18} />
         </FlexView>
       ) : (
         <>
           <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
-            <TextInput
-              ref={valueInputRef}
-              placeholder="0"
-              placeholderTextColor={Theme['fg-275']}
-              returnKeyType="done"
-              style={[styles.input, { color: Theme['fg-100'] }]}
-              autoCapitalize="none"
-              autoCorrect={false}
-              value={value}
-              onChangeText={handleInputChange}
-              keyboardType="decimal-pad"
-              inputMode="decimal"
-              autoComplete="off"
-              spellCheck={false}
-              selectionColor={Theme['accent-100']}
-              underlineColorAndroid="transparent"
-              selectTextOnFocus={false}
-              numberOfLines={1}
-              editable={editable}
-              autoFocus={autoFocus}
-            />
+            {loadingValues ? (
+              <Shimmer height={36} width={80} borderRadius={12} style={styles.valueLoader} />
+            ) : (
+              <TextInput
+                ref={valueInputRef}
+                placeholder="0"
+                placeholderTextColor={Theme['fg-275']}
+                returnKeyType="done"
+                style={[styles.input, { color: Theme['fg-100'] }]}
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={value}
+                onChangeText={handleInputChange}
+                keyboardType="decimal-pad"
+                inputMode="decimal"
+                autoComplete="off"
+                spellCheck={false}
+                selectionColor={Theme['accent-100']}
+                underlineColorAndroid="transparent"
+                selectTextOnFocus={false}
+                numberOfLines={1}
+                editable={editable}
+                autoFocus={autoFocus}
+              />
+            )}
             <TokenButton
               text={token?.symbol}
               imageUrl={token?.logoUri}
@@ -119,7 +128,9 @@ export function SwapInput({
               chevron
             />
           </FlexView>
-          {(showMax || isMarketValueGreaterThanZero) && (
+          {loadingValues ? (
+            <Shimmer height={20} width={120} borderRadius={8} />
+          ) : showMax || isMarketValueGreaterThanZero ? (
             <FlexView
               flexDirection="row"
               alignItems="center"
@@ -144,7 +155,7 @@ export function SwapInput({
                 </FlexView>
               )}
             </FlexView>
-          )}
+          ) : null}
         </>
       )}
     </FlexView>

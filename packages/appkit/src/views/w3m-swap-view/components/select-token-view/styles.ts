@@ -1,10 +1,15 @@
 import { StyleSheet } from 'react-native';
-import { Spacing } from '@reown/appkit-ui-react-native';
+import { BorderRadius, Spacing } from '@reown/appkit-ui-react-native';
 
 export default StyleSheet.create({
   container: {
-    minHeight: 250,
-    maxHeight: 600
+    borderRadius: BorderRadius.l,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    overflow: 'hidden',
+    marginTop: 80,
+    flex: 1
   },
   title: {
     paddingTop: Spacing['2xs']
@@ -26,5 +31,9 @@ export default StyleSheet.create({
   },
   suggestedSeparator: {
     marginVertical: Spacing.s
+  },
+  iconPlaceholder: {
+    height: 32,
+    width: 32
   }
 });

@@ -1,12 +1,7 @@
 import { proxy } from 'valtio';
 import type { CaipNetwork, SocialProvider } from '@reown/appkit-common-react-native';
 
-import type {
-  WcWallet,
-  Connector,
-  SwapInputTarget,
-  OnRampTransactionResult
-} from '../utils/TypeUtil';
+import type { WcWallet, Connector, OnRampTransactionResult } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
 export interface RouterControllerState {
@@ -29,7 +24,6 @@ export interface RouterControllerState {
     | 'OnRampTransaction'
     | 'SwitchNetwork'
     | 'Swap'
-    | 'SwapSelectToken'
     | 'SwapPreview'
     | 'Transactions'
     | 'UnsupportedChain'
@@ -48,7 +42,6 @@ export interface RouterControllerState {
     network?: CaipNetwork;
     email?: string;
     newEmail?: string;
-    swapTarget?: SwapInputTarget;
     onrampResult?: OnRampTransactionResult;
     socialProvider?: SocialProvider;
   };
