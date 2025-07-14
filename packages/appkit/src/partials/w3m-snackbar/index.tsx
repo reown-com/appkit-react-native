@@ -37,6 +37,7 @@ export function Snackbar() {
             duration: 300,
             useNativeDriver: true
           }).start(() => {
+            // eslint-disable-next-line valtio/state-snapshot-rule
             SnackController.hide();
           });
         },
@@ -50,7 +51,7 @@ export function Snackbar() {
         timeoutRef.current = null;
       }
 
-      if (open) {
+      if (SnackController.state.open) {
         SnackController.hide();
         componentOpacity.setValue(0);
       }
