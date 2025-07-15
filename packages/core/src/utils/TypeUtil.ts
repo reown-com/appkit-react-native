@@ -335,6 +335,7 @@ export type CustomWallet = Pick<
   | 'name'
   | 'homepage'
   | 'image_url'
+  | 'image_id'
   | 'mobile_link'
   | 'desktop_link'
   | 'webapp_link'

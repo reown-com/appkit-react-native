@@ -526,9 +526,9 @@ export class AppKit {
     OptionsController.setMetadata(options.metadata);
     OptionsController.setIncludeWalletIds(options.includeWalletIds);
     this.setExcludedWallets(options);
+    this.setCustomWallets(options);
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
     OptionsController.setTokens(options.tokens);
-    OptionsController.setCustomWallets(options.customWallets);
     OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setDebug(options.debug);
     OptionsController.setFeatures(options.features);
@@ -603,6 +603,24 @@ export class AppKit {
     }
 
     OptionsController.setExcludeWalletIds(excludedWallets);
+  }
+
+  private setCustomWallets(options: AppKitConfig) {
+    const { customWallets, extraConnectors, adapters } = options;
+
+    const customList = [...(customWallets ?? [])];
+
+    const supportsPhantom =
+      adapters.some(adapter => adapter.getSupportedNamespace() === 'solana') &&
+      extraConnectors?.some(connector => connector.type.toLowerCase() === 'phantom');
+
+    if (supportsPhantom) {
+      customList.push(ConstantsUtil.PHANTOM_CUSTOM_WALLET);
+    }
+
+    if (customList.length > 0) {
+      OptionsController.setCustomWallets(customList);
+    }
   }
 
   private async initAsyncValues(options: AppKitConfig) {
