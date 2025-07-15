@@ -610,17 +610,16 @@ export class AppKit {
 
     const customList = [...(customWallets ?? [])];
 
-    const supportsPhantom =
+    const addPhantom =
       adapters.some(adapter => adapter.getSupportedNamespace() === 'solana') &&
-      extraConnectors?.some(connector => connector.type.toLowerCase() === 'phantom');
+      extraConnectors?.some(connector => connector.type.toLowerCase() === 'phantom') &&
+      !customList.some(wallet => wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id);
 
-    if (supportsPhantom) {
+    if (addPhantom) {
       customList.push(ConstantsUtil.PHANTOM_CUSTOM_WALLET);
     }
 
-    if (customList.length > 0) {
-      OptionsController.setCustomWallets(customList);
-    }
+    OptionsController.setCustomWallets(customList);
   }
 
   private async initAsyncValues(options: AppKitConfig) {
