@@ -16,7 +16,7 @@ import {
   OnRampController,
   ConnectionsController
 } from '@reown/appkit-core-react-native';
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common-react-native';
+// import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common-react-native';
 import {
   Avatar,
   Button,
@@ -146,19 +146,16 @@ export function AccountDefaultView() {
   };
 
   const onEmailPress = async () => {
-    const email = ConnectionsController.state.connection?.properties?.email;
-    const provider = ConnectionsController.state.connection?.properties?.provider;
-    if (provider !== 'email' || !email) return;
-
-    const sessionTopic = ConnectionsController.state.connection?.properties?.sessionTopic;
-
-    if (!sessionTopic) {
-      throw new Error('Session topic not found');
-    }
-
-    const link = `${CommonConstantsUtil.WEB_WALLET_URL}/emailUpdate/${sessionTopic}`;
-    await CoreHelperUtil.openLink(link);
-
+    // TODO: Uncomment when email update is enabled
+    // const email = ConnectionsController.state.connection?.properties?.email;
+    // const provider = ConnectionsController.state.connection?.properties?.provider;
+    // if (provider !== 'email' || !email) return;
+    // const sessionTopic = ConnectionsController.state.connection?.properties?.sessionTopic;
+    // if (!sessionTopic) {
+    //   throw new Error('Session topic not found');
+    // }
+    // const link = `${CommonConstantsUtil.WEB_WALLET_URL}/emailUpdate/${sessionTopic}`;
+    // await CoreHelperUtil.openLink(link);
     // Subscribe to email update event
   };
 

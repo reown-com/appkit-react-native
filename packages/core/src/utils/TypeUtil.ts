@@ -1,5 +1,5 @@
 import type { AccountType, CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
-import type { SocialProvider, Transaction, ConnectorType } from '@reown/appkit-common-react-native';
+import type { SocialProvider, Transaction } from '@reown/appkit-common-react-native';
 
 import { OnRampErrorType } from './ConstantsUtil';
 
@@ -31,18 +31,6 @@ export interface LinkingRecord {
 export type ProjectId = string;
 
 export type Platform = 'mobile' | 'web' | 'qrcode' | 'email' | 'unsupported';
-
-export type Connector = {
-  id: string;
-  type: ConnectorType;
-  name?: string;
-  imageId?: string;
-  explorerId?: string;
-  imageUrl?: string;
-  info?: { rdns?: string };
-  provider?: unknown;
-  installed?: boolean;
-};
 
 export type CaipNamespaces = Record<
   string,

@@ -10,7 +10,7 @@ import type {
 import {
   DateUtil,
   type SocialProvider,
-  type New_ConnectorType,
+  type ConnectorType,
   type ChainNamespace
 } from '@reown/appkit-common-react-native';
 
@@ -106,7 +106,7 @@ export const StorageUtil = {
     type,
     namespaces
   }: {
-    type: New_ConnectorType;
+    type: ConnectorType;
     namespaces: string[];
   }) {
     try {
@@ -121,7 +121,7 @@ export const StorageUtil = {
     }
   },
 
-  async getConnectedConnectors(): Promise<{ type: New_ConnectorType; namespaces: string[] }[]> {
+  async getConnectedConnectors(): Promise<{ type: ConnectorType; namespaces: string[] }[]> {
     try {
       const connectors = await AsyncStorage.getItem(CONNECTED_CONNECTORS);
 
@@ -133,7 +133,7 @@ export const StorageUtil = {
     return [];
   },
 
-  async removeConnectedConnectors(type: New_ConnectorType) {
+  async removeConnectedConnectors(type: ConnectorType) {
     try {
       const currentConnectors = await StorageUtil.getConnectedConnectors();
       const updatedConnectors = currentConnectors.filter(c => c.type !== type);

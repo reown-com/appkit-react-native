@@ -156,9 +156,6 @@ export interface Token {
 
 export type Tokens = Record<CaipNetworkId, Token>;
 
-//TODO: remove this
-export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
-
 export type Metadata = {
   name: string;
   description: string;
@@ -234,7 +231,7 @@ export type ConnectorInitOptions = {
 };
 
 export abstract class WalletConnector extends EventEmitter {
-  public type: New_ConnectorType;
+  public type: ConnectorType;
   protected provider?: Provider;
   protected namespaces?: Namespaces;
   protected wallet?: WalletInfo;
@@ -242,7 +239,7 @@ export abstract class WalletConnector extends EventEmitter {
   protected metadata?: Metadata;
   protected properties?: ConnectionProperties;
 
-  constructor({ type }: { type: New_ConnectorType }) {
+  constructor({ type }: { type: ConnectorType }) {
     super();
     this.type = type;
   }
@@ -292,8 +289,7 @@ export interface RequestArguments {
   params?: unknown[] | Record<string, unknown> | object | undefined;
 }
 
-//TODO: rename this and remove the old one ConnectorType
-export type New_ConnectorType = 'walletconnect' | 'coinbase' | 'auth' | 'phantom';
+export type ConnectorType = 'walletconnect' | 'coinbase' | 'auth' | 'phantom';
 
 //********** Others **********//
 

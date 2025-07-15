@@ -22,7 +22,8 @@ import styles from './styles';
 //TODO: check if this view is needed with Coinbase
 export function ConnectingExternalView() {
   const { data } = RouterController.state;
-  const connector = data?.connector;
+  // const connector = data?.connector;
+  const connector = undefined;
   const { maxWidth: width } = useCustomDimensions();
   const [errorType, setErrorType] = useState<BodyErrorType>();
   const bodyMessage = getMessage({ walletName: data?.wallet?.name, errorType });
@@ -60,9 +61,9 @@ export function ConnectingExternalView() {
           type: 'track',
           event: 'CONNECT_SUCCESS',
           properties: {
-            name: data.wallet?.name ?? 'Unknown',
+            name: data?.wallet?.name ?? 'Unknown',
             method: 'mobile',
-            explorer_id: data.wallet?.id
+            explorer_id: data?.wallet?.id
           }
         });
       }

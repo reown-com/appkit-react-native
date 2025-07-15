@@ -19,7 +19,7 @@ import {
   type WalletConnector,
   type BlockchainAdapter,
   type ProposalNamespaces,
-  type New_ConnectorType,
+  type ConnectorType,
   type Namespaces,
   type Metadata,
   type CaipNetworkId,
@@ -113,7 +113,7 @@ export class AppKit {
    * @param type - The type of connector to use.
    * @param options - Optional connection options.
    */
-  async connect(type: New_ConnectorType, options?: AppKitConnectOptions): Promise<void> {
+  async connect(type: ConnectorType, options?: AppKitConnectOptions): Promise<void> {
     try {
       const { namespaces, defaultChain, universalLink } = options ?? {};
       const connector = await this.createConnector(type);
@@ -296,7 +296,7 @@ export class AppKit {
     });
   }
 
-  private async createConnector(type: New_ConnectorType): Promise<WalletConnector> {
+  private async createConnector(type: ConnectorType): Promise<WalletConnector> {
     // Check if an extra connector was provided by the developer
     const CustomConnector = this.extraConnectors.find(
       connector => connector.type.toLowerCase() === type.toLowerCase()

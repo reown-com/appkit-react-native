@@ -4,28 +4,19 @@ import type { SocialProvider } from '@reown/appkit-common-react-native';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type {
-  Connector,
   EstimateGasTransactionArgs,
   SendTransactionArgs,
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil';
-// import { ConnectorController } from './ConnectorController';
 
 // -- Types --------------------------------------------- //
-export interface ConnectExternalOptions {
-  id: Connector['id'];
-  type: Connector['type'];
-  provider?: Connector['provider'];
-  info?: Connector['info'];
-}
 
 export interface ConnectionControllerClient {
   connectWalletConnect: (
     onUri: (uri: string) => void,
     walletUniversalLink?: string
   ) => Promise<void>;
-  connectExternal?: (options: ConnectExternalOptions) => Promise<void>;
   signMessage: (message: string) => Promise<string>;
   sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>;
   parseUnits: (value: string, decimals: number) => bigint;
@@ -88,11 +79,6 @@ export const ConnectionController = {
       state.wcUri = uri;
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry();
     }, walletUniversalLink);
-  },
-
-  async connectExternal(options: ConnectExternalOptions) {
-    await this._getClient().connectExternal?.(options);
-    // ConnectorController.setConnectedConnector(options.type);
   },
 
   async signMessage(message: string) {
