@@ -15,7 +15,7 @@ export type Metadata = {
 type AuthConnectorOptions = {
   /**
    * Reown Cloud Project ID.
-   * @link https://cloud.reown.com/sign-in.
+   * @link https://dashboard.reown.com/sign-in.
    */
   projectId: string;
   metadata: Metadata;

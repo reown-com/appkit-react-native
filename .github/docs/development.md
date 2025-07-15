@@ -8,7 +8,7 @@ Install dependencies from the repository's root directory (this will also set up
 yarn
 ```
 
-To create your ProjectID, head to [cloud.reown.com](https://cloud.reown.com/)
+To create your ProjectID, head to [dashboard.reown.com](https://dashboard.reown.com/)
 
 ## Commands
 
