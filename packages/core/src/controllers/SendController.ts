@@ -1,8 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils';
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla';
 import { ContractUtil, type Balance } from '@reown/appkit-common-react-native';
-import { AccountController } from './AccountController';
-import { ConnectionController } from './ConnectionController';
+
 import { SnackController } from './SnackController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { EventsController } from './EventsController';
@@ -97,7 +96,7 @@ export const SendController = {
         type: 'track',
         event: 'SEND_INITIATED',
         properties: {
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
+          isSmartAccount: ConnectionsController.state.accountType === 'smartAccount',
           token: this.state.token.address,
           amount: this.state.sendTokenAmount,
           network: ConnectionsController.state.activeNetwork?.caipNetworkId || ''
@@ -107,20 +106,20 @@ export const SendController = {
         receiverAddress: this.state.receiverAddress,
         tokenAddress: this.state.token.address,
         sendTokenAmount: this.state.sendTokenAmount,
-        decimals: this.state.token.quantity.decimals
+        decimals: this.state.token.quantity?.decimals || '0'
       });
     } else if (
       this.state.receiverAddress &&
       this.state.sendTokenAmount &&
       this.state.gasPrice &&
-      this.state.token?.quantity.decimals
+      this.state.token?.quantity?.decimals
     ) {
       state.loading = true;
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_INITIATED',
         properties: {
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
+          isSmartAccount: ConnectionsController.state.accountType === 'smartAccount',
           token: this.state.token?.symbol,
           amount: this.state.sendTokenAmount,
           network: ConnectionsController.state.activeNetwork?.caipNetworkId || ''
@@ -136,21 +135,24 @@ export const SendController = {
   },
 
   async sendNativeToken(params: TxParams) {
-    RouterController.pushTransactionStack({
-      view: 'Account',
-      goBack: false
-    });
+    const isAuth = !!ConnectionsController.state.connection?.properties?.provider;
 
     const to = params.receiverAddress as `0x${string}`;
-    const address = AccountController.state.address as `0x${string}`;
-    const value = ConnectionController.parseUnits(
+    const address = CoreHelperUtil.getPlainAddress(
+      ConnectionsController.state.activeAddress
+    ) as `0x${string}`;
+    if (!address) {
+      throw new Error('Invalid address');
+    }
+
+    const value = ConnectionsController.parseUnits(
       params.sendTokenAmount.toString(),
       Number(params.decimals)
     );
     const data = '0x';
 
     try {
-      await ConnectionController.sendTransaction({
+      await ConnectionsController.sendTransaction({
         to,
         address,
         data,
@@ -162,12 +164,13 @@ export const SendController = {
         type: 'track',
         event: 'SEND_SUCCESS',
         properties: {
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
+          isSmartAccount: ConnectionsController.state.accountType === 'smartAccount',
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
           network: ConnectionsController.state.activeNetwork?.caipNetworkId || ''
         }
       });
+      RouterController.reset(isAuth ? 'Account' : 'AccountDefault');
       this.resetSend();
     } catch (error) {
       state.loading = false;
@@ -175,7 +178,7 @@ export const SendController = {
         type: 'track',
         event: 'SEND_ERROR',
         properties: {
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
+          isSmartAccount: ConnectionsController.state.accountType === 'smartAccount',
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
           network: ConnectionsController.state.activeNetwork?.caipNetworkId || ''
@@ -186,19 +189,16 @@ export const SendController = {
   },
 
   async sendERC20Token(params: ContractWriteParams) {
-    RouterController.pushTransactionStack({
-      view: 'Account',
-      goBack: false
-    });
+    const isAuth = !!ConnectionsController.state.connection?.properties?.provider;
 
-    const amount = ConnectionController.parseUnits(
+    const amount = ConnectionsController.parseUnits(
       params.sendTokenAmount.toString(),
       Number(params.decimals)
     );
 
     try {
       if (
-        AccountController.state.address &&
+        ConnectionsController.state.activeAddress &&
         params.sendTokenAmount &&
         params.receiverAddress &&
         params.tokenAddress
@@ -206,14 +206,23 @@ export const SendController = {
         const tokenAddress = CoreHelperUtil.getPlainAddress(
           params.tokenAddress as `${string}:${string}:${string}`
         ) as `0x${string}`;
-        await ConnectionController.writeContract({
-          fromAddress: AccountController.state.address as `0x${string}`,
+
+        const fromAddress = CoreHelperUtil.getPlainAddress(
+          ConnectionsController.state.activeAddress
+        ) as `0x${string}`;
+        if (!fromAddress) {
+          throw new Error('Invalid address');
+        }
+
+        await ConnectionsController.writeContract({
+          fromAddress,
           tokenAddress,
           receiverAddress: params.receiverAddress as `0x${string}`,
           tokenAmount: amount,
           method: 'transfer',
           abi: ContractUtil.getERC20Abi(tokenAddress)
         });
+        RouterController.reset(isAuth ? 'Account' : 'AccountDefault');
         SnackController.showSuccess('Transaction started');
         this.resetSend();
       }

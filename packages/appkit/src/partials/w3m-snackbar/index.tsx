@@ -13,7 +13,7 @@ const getIcon = (variant: SnackControllerState['variant']) => {
 };
 
 export function Snackbar() {
-  const { open, message, variant, long } = useSnapshot(SnackController.state);
+  const { open, message, variant } = useSnapshot(SnackController.state);
   const componentOpacity = useMemo(() => new Animated.Value(0), []);
 
   useEffect(() => {
@@ -23,20 +23,14 @@ export function Snackbar() {
         duration: 150,
         useNativeDriver: true
       }).start();
-      setTimeout(
-        () => {
-          Animated.timing(componentOpacity, {
-            toValue: 0,
-            duration: 300,
-            useNativeDriver: true
-          }).start(() => {
-            SnackController.hide();
-          });
-        },
-        long ? 15000 : 2200
-      );
+    } else {
+      Animated.timing(componentOpacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true
+      }).start();
     }
-  }, [open, long, componentOpacity]);
+  }, [open, componentOpacity]);
 
   return (
     <SnackbarComponent

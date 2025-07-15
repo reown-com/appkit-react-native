@@ -16,7 +16,7 @@ type CoinbaseConnectorParameters = WalletMobileSDKProviderOptions & {
 
 type Provider = WalletMobileSDKEVMProvider;
 
-coinbaseConnector.type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.COINBASE_CONNECTOR_ID]!;
+coinbaseConnector.type = 'COINBASE';
 export function coinbaseConnector(parameters: CoinbaseConnectorParameters) {
   let _provider: Provider;
 

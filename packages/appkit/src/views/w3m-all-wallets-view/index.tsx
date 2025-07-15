@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {
   ConnectionController,
-  ConnectorController,
   EventsController,
   RouterController,
   type WcWallet
@@ -25,12 +24,13 @@ export function AllWalletsView() {
   const { debouncedCallback: onInputChange } = useDebounceCallback({ callback: setSearchQuery });
 
   const onWalletPress = (wallet: WcWallet) => {
-    const connector = ConnectorController.state.connectors.find(c => c.explorerId === wallet.id);
-    if (connector) {
-      RouterController.push('ConnectingExternal', { connector, wallet });
-    } else {
-      RouterController.push('ConnectingWalletConnect', { wallet });
-    }
+    //TODO: check this
+    // const connector = ConnectorController.state.connectors.find(c => c.explorerId === wallet.id);
+    // if (connector) {
+    //   RouterController.push('ConnectingExternal', { connector, wallet });
+    // } else {
+    RouterController.push('ConnectingWalletConnect', { wallet });
+    // }
 
     EventsController.sendEvent({
       type: 'track',

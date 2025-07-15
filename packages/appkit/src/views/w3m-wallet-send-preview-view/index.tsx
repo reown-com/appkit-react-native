@@ -3,7 +3,7 @@ import { ScrollView } from 'react-native';
 import { Avatar, Button, FlexView, Icon, Image, Text, UiUtil } from '@reown/appkit-ui-react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
 import {
-  NetworkController,
+  ConnectionsController,
   RouterController,
   SendController
 } from '@reown/appkit-core-react-native';
@@ -14,7 +14,7 @@ import { PreviewSendDetails } from './components/preview-send-details';
 
 export function WalletSendPreviewView() {
   const { padding } = useCustomDimensions();
-  const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const {
     token,
     receiverAddress,
@@ -25,7 +25,7 @@ export function WalletSendPreviewView() {
   } = useSnapshot(SendController.state);
 
   const getSendValue = () => {
-    if (SendController.state.token && SendController.state.sendTokenAmount) {
+    if (SendController.state.token?.price && SendController.state.sendTokenAmount) {
       const price = SendController.state.token.price;
       const totalValue = price * SendController.state.sendTokenAmount;
 
@@ -112,7 +112,7 @@ export function WalletSendPreviewView() {
           networkFee={gasPriceInUSD}
           address={receiverAddress}
           name={receiverProfileName}
-          caipNetwork={caipNetwork}
+          activeNetwork={activeNetwork}
         />
         <FlexView flexDirection="row" alignItems="center" justifyContent="center">
           <Icon name="warningCircle" size="sm" color="fg-200" style={styles.reviewIcon} />

@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import { useSnapshot } from 'valtio';
 import {
-  AccountController,
   AssetUtil,
   ConnectionsController,
   RouterController
@@ -19,23 +18,24 @@ import {
   Text,
   ListToken,
   useTheme,
-  Spacing
+  Spacing,
+  LoadingSpinner
 } from '@reown/appkit-ui-react-native';
 
 interface Props {
   style?: StyleProp<ViewStyle>;
+  isLoading?: boolean;
 }
 
-export function AccountTokens({ style }: Props) {
+export function AccountTokens({ style, isLoading }: Props) {
   const Theme = useTheme();
   const [refreshing, setRefreshing] = useState(false);
-  const { tokenBalance } = useSnapshot(AccountController.state);
-  const { activeNetwork } = useSnapshot(ConnectionsController.state);
+  const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
 
-  const onRefresh = useCallback(async () => {
+  const getBalance = useCallback(async () => {
     setRefreshing(true);
-    AccountController.fetchTokenBalance();
+    await ConnectionsController.fetchBalance();
     setRefreshing(false);
   }, []);
 
@@ -43,23 +43,26 @@ export function AccountTokens({ style }: Props) {
     RouterController.push('WalletReceive');
   };
 
-  if (!tokenBalance?.length) {
+  if (!balances?.length) {
     return (
-      <ListItem
-        icon="arrowBottomCircle"
-        iconColor="magenta-100"
-        onPress={onReceivePress}
-        style={styles.receiveButton}
-      >
-        <FlexView flexDirection="column" alignItems="flex-start">
-          <Text variant="paragraph-500" color="fg-100">
-            Receive funds
-          </Text>
-          <Text variant="small-400" color="fg-200">
-            Transfer tokens on your wallet
-          </Text>
-        </FlexView>
-      </ListItem>
+      <>
+        <ListItem
+          icon="arrowBottomCircle"
+          iconColor="magenta-100"
+          onPress={onReceivePress}
+          style={styles.receiveButton}
+        >
+          <FlexView flexDirection="column" alignItems="flex-start">
+            <Text variant="paragraph-500" color="fg-100">
+              Receive funds
+            </Text>
+            <Text variant="small-400" color="fg-200">
+              Transfer tokens on your wallet
+            </Text>
+          </FlexView>
+        </ListItem>
+        {isLoading && <LoadingSpinner size="sm" style={styles.loadingSpinner} />}
+      </>
     );
   }
 
@@ -70,24 +73,25 @@ export function AccountTokens({ style }: Props) {
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
-          onRefresh={onRefresh}
+          onRefresh={getBalance}
           tintColor={Theme['accent-100']}
           colors={[Theme['accent-100']]}
         />
       }
     >
-      {tokenBalance.map(token => (
+      {balances.map(token => (
         <ListToken
-          key={token.name}
-          name={token.name}
+          key={token.symbol}
+          name={token.name || 'Unknown'}
           imageSrc={token.iconUrl}
           networkSrc={networkImage}
           value={token.value}
-          amount={token.quantity.numeric}
+          amount={token.quantity?.numeric}
           currency={token.symbol}
           pressable={false}
         />
       ))}
+      {isLoading && <LoadingSpinner size="sm" style={styles.loadingSpinner} />}
     </ScrollView>
   );
 }
@@ -96,5 +100,8 @@ const styles = StyleSheet.create({
   receiveButton: {
     width: 'auto',
     marginHorizontal: Spacing.s
+  },
+  loadingSpinner: {
+    marginTop: Spacing.m
   }
 });

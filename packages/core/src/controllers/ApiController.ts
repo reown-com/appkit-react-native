@@ -13,7 +13,7 @@ import type {
 } from '../utils/TypeUtil';
 import { AssetController } from './AssetController';
 import { OptionsController } from './OptionsController';
-import { ConnectorController } from './ConnectorController';
+// import { ConnectorController } from './ConnectorController';
 import { ConnectionController } from './ConnectionController';
 import { ApiUtil } from '../utils/ApiUtil';
 import { SnackController } from './SnackController';
@@ -107,7 +107,8 @@ export const ApiController = {
   },
 
   async fetchConnectorImages() {
-    const { connectors } = ConnectorController.state;
+    //TODO: check this with coinbase
+    const connectors = [{ imageId: PresetsUtil.ConnectorImageIds['WALLET_CONNECT'] }];
     const ids = connectors.map(({ imageId }) => imageId).filter(Boolean);
     await CoreHelperUtil.allSettled(
       (ids as string[]).map(id => ApiController._fetchConnectorImage(id))

@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { Platform, ScrollView } from 'react-native';
 import { useSnapshot } from 'valtio';
 import {
-  AccountController,
+  ConnectionsController,
   CoreHelperUtil,
   RouterController,
   SendController,
@@ -20,7 +20,7 @@ export function WalletSendView() {
   const { keyboardShown, keyboardHeight } = useKeyboard();
   const { token, sendTokenAmount, receiverAddress, receiverProfileName, loading, gasPrice } =
     useSnapshot(SendController.state);
-  const { tokenBalance } = useSnapshot(AccountController.state);
+  const { balances } = useSnapshot(ConnectionsController.state);
 
   const paddingBottom = Platform.select({
     android: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
@@ -47,7 +47,7 @@ export function WalletSendView() {
 
     if (
       SendController.state.sendTokenAmount &&
-      SendController.state.token &&
+      SendController.state.token?.quantity &&
       SendController.state.sendTokenAmount > Number(SendController.state.token.quantity.numeric)
     ) {
       return 'Insufficient funds';
@@ -80,10 +80,10 @@ export function WalletSendView() {
 
   useEffect(() => {
     if (!token) {
-      SendController.setToken(tokenBalance?.[0]);
+      SendController.setToken(balances?.[0]);
     }
     fetchNetworkPrice();
-  }, [token, tokenBalance, fetchNetworkPrice]);
+  }, [token, balances, fetchNetworkPrice]);
 
   const actionText = getActionText();
 

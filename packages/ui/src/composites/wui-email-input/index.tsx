@@ -93,7 +93,7 @@ export function EmailInput({
   return (
     <View style={style}>
       <InputText
-        icon="mail"
+        icon="email"
         placeholder="Email"
         size="md"
         onSubmitEditing={handleSubmitEditing}

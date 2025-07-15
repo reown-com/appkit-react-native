@@ -12,7 +12,6 @@ import {
 } from '@reown/appkit-ui-react-native';
 import { type Transaction, type TransactionImage } from '@reown/appkit-common-react-native';
 import {
-  AccountController,
   AssetUtil,
   ConnectionsController,
   ConstantsUtil,
@@ -40,7 +39,7 @@ export function AccountActivity({ style }: Props) {
     ConstantsUtil.ACTIVITY_SUPPORTED_CHAINS.includes(activeNetwork.caipNetworkId);
 
   const handleLoadMore = () => {
-    const address = ConnectionsController.state.activeAddress?.split(':')[2];
+    const address = ConnectionsController.state.activeAddress;
     TransactionsController.fetchTransactions(address);
     EventsController.sendEvent({
       type: 'track',
@@ -49,14 +48,14 @@ export function AccountActivity({ style }: Props) {
         address,
         projectId: OptionsController.state.projectId,
         cursor: TransactionsController.state.next,
-        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+        isSmartAccount: ConnectionsController.state.accountType === 'smartAccount'
       }
     });
   };
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    const address = ConnectionsController.state.activeAddress?.split(':')[2];
+    const address = ConnectionsController.state.activeAddress;
     await TransactionsController.fetchTransactions(address, true);
     setRefreshing(false);
   }, []);
@@ -67,7 +66,7 @@ export function AccountActivity({ style }: Props) {
 
   useEffect(() => {
     if (!TransactionsController.state.transactions.length) {
-      const address = ConnectionsController.state.activeAddress?.split(':')[2];
+      const address = ConnectionsController.state.activeAddress;
       TransactionsController.fetchTransactions(address, true);
     }
     // Set initial load to false after first fetch

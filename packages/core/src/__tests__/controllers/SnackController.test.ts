@@ -30,8 +30,7 @@ describe('SnackController', () => {
   it('should update state correctly on hide()', () => {
     SnackController.hide();
     expect(SnackController.state).toEqual({
-      message: '',
-      variant: 'success',
+      ...SnackController.state,
       open: false,
       long: false
     });

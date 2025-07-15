@@ -1,5 +1,4 @@
 ---
-'@reown/appkit-scaffold-utils-react-native': patch
 '@reown/appkit-bitcoin-react-native': patch
 '@reown/appkit-react-native': patch
 '@reown/appkit-common-react-native': patch

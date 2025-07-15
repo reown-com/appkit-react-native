@@ -3,7 +3,6 @@ import { useSnapshot } from 'valtio';
 import { ScrollView } from 'react-native';
 import { FlexView, InputText, ListToken, Text } from '@reown/appkit-ui-react-native';
 import {
-  AccountController,
   AssetUtil,
   ConnectionsController,
   RouterController,
@@ -17,17 +16,16 @@ import styles from './styles';
 
 export function WalletSendSelectTokenView() {
   const { padding } = useCustomDimensions();
-  const { tokenBalance } = useSnapshot(AccountController.state);
-  const { activeNetwork } = useSnapshot(ConnectionsController.state);
+  const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
   const { token } = useSnapshot(SendController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
   const [tokenSearch, setTokenSearch] = useState<string>('');
-  const [filteredTokens, setFilteredTokens] = useState(tokenBalance ?? []);
+  const [filteredTokens, setFilteredTokens] = useState(balances ?? []);
 
   const onSearchChange = (value: string) => {
     setTokenSearch(value);
-    const filtered = AccountController.state.tokenBalance?.filter(_token =>
-      _token.name.toLowerCase().includes(value.toLowerCase())
+    const filtered = ConnectionsController.state.balances?.filter(
+      _token => _token.name?.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredTokens(filtered ?? []);
   };
@@ -60,11 +58,11 @@ export function WalletSendSelectTokenView() {
           filteredTokens.map((_token, index) => (
             <ListToken
               key={`${_token.name}${index}`}
-              name={_token.name}
+              name={_token.name || ''}
               imageSrc={_token.iconUrl}
               networkSrc={networkImage}
               value={_token.value}
-              amount={_token.quantity.numeric}
+              amount={_token.quantity?.numeric || '0'}
               currency={_token.symbol}
               onPress={() => onTokenPress(_token)}
               disabled={_token.address === token?.address}

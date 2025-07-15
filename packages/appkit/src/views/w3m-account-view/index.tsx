@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import {
   AccountPill,
@@ -7,16 +7,14 @@ import {
   Icon,
   IconLink,
   NetworkButton,
-  useTheme,
-  Promo
+  useTheme
 } from '@reown/appkit-ui-react-native';
 import {
-  AccountController,
   ApiController,
   AssetUtil,
   ConnectionsController,
+  CoreHelperUtil,
   ModalController,
-  NetworkController,
   RouterController,
   SendController
 } from '@reown/appkit-core-react-native';
@@ -27,13 +25,10 @@ import styles from './styles';
 
 export function AccountView() {
   const Theme = useTheme();
+  const [isLoading, setIsLoading] = useState(false);
   const { padding } = useCustomDimensions();
-  const { activeNetwork } = useSnapshot(ConnectionsController.state);
-  const { address, profileName, profileImage, preferredAccountType } = useSnapshot(
-    AccountController.state
-  );
-  const showActivate =
-    preferredAccountType === 'eoa' && NetworkController.checkIfSmartAccountEnabled();
+  const { activeNetwork, activeAddress } = useSnapshot(ConnectionsController.state);
+  const address = CoreHelperUtil.getPlainAddress(activeAddress);
 
   const onProfilePress = () => {
     RouterController.push('AccountDefault');
@@ -43,20 +38,18 @@ export function AccountView() {
     RouterController.push('Networks');
   };
 
-  const onActivatePress = () => {
-    RouterController.push('UpgradeToSmartAccount');
-  };
-
   useEffect(() => {
-    AccountController.fetchTokenBalance();
+    async function fetchBalance() {
+      setIsLoading(true);
+      await ConnectionsController.fetchBalance();
+      setIsLoading(false);
+    }
+
+    fetchBalance();
     SendController.resetSend();
-  }, []);
-
-  useEffect(() => {
-    AccountController.fetchTokenBalance();
 
     const balanceInterval = setInterval(() => {
-      AccountController.fetchTokenBalance();
+      fetchBalance();
     }, 10000);
 
     return () => {
@@ -85,21 +78,14 @@ export function AccountView() {
       </NetworkButton>
       <IconLink icon="close" style={styles.closeIcon} onPress={ModalController.close} />
       <FlexView padding={['3xl', '0', '0', '0']} style={[{ backgroundColor: Theme['bg-100'] }]}>
-        {showActivate && (
-          <Promo
-            style={styles.promoPill}
-            text="Switch to your smart account"
-            onPress={onActivatePress}
-          />
-        )}
         <AccountPill
           address={address}
-          profileName={profileName}
-          profileImage={profileImage}
+          // profileName={profileName}
+          // profileImage={profileImage}
           onPress={onProfilePress}
           style={styles.accountPill}
         />
-        <AccountWalletFeatures />
+        <AccountWalletFeatures isBalanceLoading={isLoading} />
       </FlexView>
     </ScrollView>
   );

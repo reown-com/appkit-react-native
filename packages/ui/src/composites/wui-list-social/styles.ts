@@ -16,6 +16,9 @@ export default StyleSheet.create({
     height: 40,
     borderRadius: BorderRadius.full
   },
+  rightIcon: {
+    marginRight: Spacing['2xs']
+  },
   disabledLogo: {
     opacity: 0.4
   },

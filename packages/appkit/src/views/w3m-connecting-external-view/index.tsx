@@ -3,11 +3,8 @@ import { ScrollView } from 'react-native';
 import {
   RouterController,
   ApiController,
-  AssetUtil,
-  ConnectionController,
   ModalController,
   EventsController,
-  StorageUtil,
   type WcWallet
 } from '@reown/appkit-core-react-native';
 import {
@@ -22,9 +19,11 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w3m-connecting-body';
 import styles from './styles';
 
+//TODO: check if this view is needed with Coinbase
 export function ConnectingExternalView() {
   const { data } = RouterController.state;
-  const connector = data?.connector;
+  // const connector = data?.connector;
+  const connector = undefined;
   const { maxWidth: width } = useCustomDimensions();
   const [errorType, setErrorType] = useState<BodyErrorType>();
   const bodyMessage = getMessage({ walletName: data?.wallet?.name, errorType });
@@ -35,34 +34,36 @@ export function ConnectingExternalView() {
   };
 
   const storeConnectedWallet = useCallback(
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async (wallet?: WcWallet) => {
-      if (wallet) {
-        const recentWallets = await StorageUtil.addRecentWallet(wallet);
-        if (recentWallets) {
-          ConnectionController.setRecentWallets(recentWallets);
-        }
-      }
-      if (connector) {
-        const url = AssetUtil.getConnectorImage(connector);
-        ConnectionController.setConnectedWalletImageUrl(url);
-      }
+      // if (wallet) {
+      //   const recentWallets = await StorageUtil.addRecentWallet(wallet);
+      //   if (recentWallets) {
+      //     ConnectionController.setRecentWallets(recentWallets);
+      //   }
+      // }
+      // if (connector) {
+      //   const url = AssetUtil.getConnectorImage(connector);
+      //   ConnectionController.setConnectedWalletImageUrl(url);
+      // }
     },
-    [connector]
+    []
   );
 
   const onConnect = useCallback(async () => {
     try {
       if (connector) {
-        await ConnectionController.connectExternal(connector);
+        // await ConnectionController.connectExternal(connector);
         storeConnectedWallet(data?.wallet);
         ModalController.close();
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
           properties: {
-            name: data.wallet?.name ?? 'Unknown',
+            name: data?.wallet?.name ?? 'Unknown',
             method: 'mobile',
-            explorer_id: data.wallet?.id
+            explorer_id: data?.wallet?.id
           }
         });
       }
@@ -97,7 +98,7 @@ export function ConnectingExternalView() {
         <LoadingThumbnail paused={!!errorType}>
           <WalletImage
             size="xl"
-            imageSrc={AssetUtil.getConnectorImage(connector)}
+            // imageSrc={AssetUtil.getConnectorImage(connector)}
             imageHeaders={ApiController._getApiHeaders()}
           />
           {errorType && (

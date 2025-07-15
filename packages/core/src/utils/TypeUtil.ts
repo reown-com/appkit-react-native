@@ -1,14 +1,5 @@
-import { type EventEmitter } from 'events';
-import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
-
-import type {
-  Balance,
-  SocialProvider,
-  ThemeMode,
-  Transaction,
-  ConnectorType,
-  Metadata
-} from '@reown/appkit-common-react-native';
+import type { AccountType, CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
+import type { SocialProvider, Transaction } from '@reown/appkit-common-react-native';
 
 import { OnRampErrorType } from './ConstantsUtil';
 
@@ -41,18 +32,6 @@ export type ProjectId = string;
 
 export type Platform = 'mobile' | 'web' | 'qrcode' | 'email' | 'unsupported';
 
-export type Connector = {
-  id: string;
-  type: ConnectorType;
-  name?: string;
-  imageId?: string;
-  explorerId?: string;
-  imageUrl?: string;
-  info?: { rdns?: string };
-  provider?: unknown;
-  installed?: boolean;
-};
-
 export type CaipNamespaces = Record<
   string,
   {
@@ -64,12 +43,13 @@ export type CaipNamespaces = Record<
 
 export type SdkType = 'appkit';
 
+//TODO: check this
 export type SdkVersion =
   | `react-native-wagmi-${string}`
   | `react-native-ethers5-${string}`
   | `react-native-ethers-${string}`;
 
-type EnabledSocials = Exclude<SocialProvider, 'farcaster'>;
+type EnabledSocials = SocialProvider;
 
 export type Features = {
   /**
@@ -83,15 +63,10 @@ export type Features = {
    */
   onramp?: boolean;
   /**
-   * @description Enable or disable the email feature. Enabled by default.
+   * @description Show or hide the regular wallet options when socials are enabled. Enabled by default.
    * @type {boolean}
    */
-  email?: boolean;
-  /**
-   * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
-   * @type {boolean}
-   */
-  emailShowWallets?: boolean;
+  showWallets?: boolean;
   /**
    * @description Enable or disable the socials feature. Enabled by default.
    * @type {EnabledSocials[]}
@@ -161,8 +136,22 @@ export interface BlockchainApiIdentityResponse {
   name: string;
 }
 
+export interface BlockchainApiBalance {
+  name: string;
+  symbol: string;
+  chainId: string;
+  address?: CaipAddress;
+  value?: number;
+  price: number;
+  quantity: {
+    decimals: string;
+    numeric: string;
+  };
+  iconUrl: string;
+}
+
 export interface BlockchainApiBalanceResponse {
-  balances: Balance[];
+  balances: BlockchainApiBalance[];
 }
 
 export interface BlockchainApiTransactionsRequest {
@@ -371,9 +360,6 @@ export type EventName =
   | 'CLICK_NETWORK_HELP'
   | 'CLICK_GET_WALLET'
   | 'EMAIL_LOGIN_SELECTED'
-  | 'EMAIL_SUBMITTED'
-  | 'DEVICE_REGISTERED_FOR_EMAIL'
-  | 'EMAIL_VERIFICATION_CODE_SENT'
   | 'EMAIL_VERIFICATION_CODE_PASS'
   | 'EMAIL_VERIFICATION_CODE_FAIL'
   | 'EMAIL_EDIT'
@@ -487,18 +473,6 @@ export type Event =
   | {
       type: 'track';
       event: 'EMAIL_LOGIN_SELECTED';
-    }
-  | {
-      type: 'track';
-      event: 'EMAIL_SUBMITTED';
-    }
-  | {
-      type: 'track';
-      event: 'DEVICE_REGISTERED_FOR_EMAIL';
-    }
-  | {
-      type: 'track';
-      event: 'EMAIL_VERIFICATION_CODE_SENT';
     }
   | {
       type: 'track';
@@ -701,7 +675,7 @@ export type Event =
       type: 'track';
       event: 'SET_PREFERRED_ACCOUNT_TYPE';
       properties: {
-        accountType: AppKitFrameAccountType;
+        accountType: AccountType;
         network: string;
       };
     }
@@ -904,92 +878,3 @@ export type OnRampTransactionResult = {
   status: string | null;
   network: string | null;
 };
-
-// -- Email Types ------------------------------------------------
-/**
- * Matches type defined for packages/wallet/src/AppKitFrameProvider.ts
- * It's duplicated in order to decouple scaffold from email package
- */
-
-export type AppKitFrameAccountType = 'eoa' | 'smartAccount';
-
-export interface AppKitFrameProvider {
-  readonly id: string;
-  readonly name: string;
-  getEventEmitter(): EventEmitter;
-  getSecureSiteURL(): string;
-  getSecureSiteDashboardURL(): string;
-  getSecureSiteIconURL(): string;
-  getEmail(): string | undefined;
-  getUsername(): string | undefined;
-  getLastUsedChainId(): Promise<number | undefined>;
-  rejectRpcRequest(): void;
-  connectEmail(payload: { email: string }): Promise<{
-    action: 'VERIFY_DEVICE' | 'VERIFY_OTP';
-  }>;
-  connectDevice(): Promise<unknown>;
-  connectSocial(uri: string): Promise<{
-    chainId: string | number;
-    email: string;
-    address: string;
-    accounts?: {
-      type: AppKitFrameAccountType;
-      address: string;
-    }[];
-    userName?: string;
-  }>;
-  getSocialRedirectUri(payload: { provider: SocialProvider }): Promise<{
-    uri: string;
-  }>;
-  connectOtp(payload: { otp: string }): Promise<unknown>;
-  connectFarcaster: () => Promise<{ userName: string }>;
-  getFarcasterUri(): Promise<{ url: string }>;
-  isConnected(): Promise<{
-    isConnected: boolean;
-  }>;
-  getChainId(): Promise<{
-    chainId: number;
-  }>;
-  updateEmail(payload: { email: string }): Promise<{
-    action: 'VERIFY_PRIMARY_OTP' | 'VERIFY_SECONDARY_OTP';
-  }>;
-  updateEmailPrimaryOtp(payload: { otp: string }): Promise<unknown>;
-  updateEmailSecondaryOtp(payload: { otp: string }): Promise<{
-    newEmail: string;
-  }>;
-  syncTheme(payload: {
-    themeMode: ThemeMode | undefined;
-    themeVariables: Record<string, string | number> | undefined;
-  }): Promise<unknown>;
-  syncDappData(payload: {
-    projectId: string;
-    sdkVersion: SdkVersion;
-    sdkType: SdkType;
-    metadata?: Metadata;
-  }): Promise<unknown>;
-  connect(payload?: { chainId: number | undefined }): Promise<{
-    chainId: number;
-    email?: string | null;
-    address: string;
-    smartAccountDeployed: boolean;
-    preferredAccountType: AppKitFrameAccountType;
-  }>;
-  switchNetwork(chainId: number): Promise<{
-    chainId: number;
-  }>;
-  setPreferredAccount(type: AppKitFrameAccountType): Promise<{
-    type: AppKitFrameAccountType;
-    address: string;
-  }>;
-  setOnTimeout(callback: () => void): void;
-  getSmartAccountEnabledNetworks(): Promise<{
-    smartAccountEnabledNetworks: number[];
-  }>;
-  disconnect(): Promise<unknown>;
-  request(req: any): Promise<any>;
-  AuthView: () => React.JSX.Element | null;
-  Webview: () => React.JSX.Element | null;
-  onSetPreferredAccount: (
-    callback: (values: { type: AppKitFrameAccountType; address: string }) => void
-  ) => void;
-}

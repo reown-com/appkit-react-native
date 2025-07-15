@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { Balance, FlexView, IconLink, Tabs } from '@reown/appkit-ui-react-native';
 import {
-  AccountController,
   ConnectionsController,
   ConstantsUtil,
   CoreHelperUtil,
@@ -18,15 +17,16 @@ import { AccountTokens } from '../w3m-account-tokens';
 import styles from './styles';
 
 export interface AccountWalletFeaturesProps {
-  value: string;
+  isBalanceLoading: boolean;
 }
 
-export function AccountWalletFeatures() {
+export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeaturesProps) {
   const [activeTab, setActiveTab] = useState(0);
-  const { tokenBalance } = useSnapshot(AccountController.state);
   const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
-  const { activeNetwork } = useSnapshot(ConnectionsController.state);
-  const balance = CoreHelperUtil.calculateAndFormatBalance(tokenBalance as BalanceType[]);
+  const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
+  const balance = CoreHelperUtil.calculateAndFormatBalance(balances as BalanceType[]);
+  const network = ConnectionsController.state.activeNetwork?.caipNetworkId || '';
+  const isSmartAccount = ConnectionsController.state.accountType === 'smartAccount';
   const isSwapsEnabled =
     features?.swaps &&
     activeNetwork?.caipNetworkId &&
@@ -43,9 +43,7 @@ export function AccountWalletFeatures() {
     EventsController.sendEvent({
       type: 'track',
       event: 'CLICK_TRANSACTIONS',
-      properties: {
-        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
-      }
+      properties: { isSmartAccount }
     });
   };
 
@@ -54,10 +52,7 @@ export function AccountWalletFeatures() {
     EventsController.sendEvent({
       type: 'track',
       event: 'OPEN_SWAP',
-      properties: {
-        network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
-        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
-      }
+      properties: { network, isSmartAccount }
     });
     RouterController.push('Swap');
   };
@@ -66,10 +61,7 @@ export function AccountWalletFeatures() {
     EventsController.sendEvent({
       type: 'track',
       event: 'OPEN_SEND',
-      properties: {
-        network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
-        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
-      }
+      properties: { network, isSmartAccount }
     });
     RouterController.push('WalletSend');
   };
@@ -145,7 +137,9 @@ export function AccountWalletFeatures() {
         <Tabs tabs={['Tokens', 'Activity']} onTabChange={onTabChange} />
       </FlexView>
       <FlexView padding={['m', '0', '0', '0']} style={styles.tabContainer}>
-        {activeTab === 0 && <AccountTokens style={styles.tabContent} />}
+        {activeTab === 0 && (
+          <AccountTokens style={styles.tabContent} isLoading={isBalanceLoading} />
+        )}
         {activeTab === 1 && <AccountActivity style={styles.tabContent} />}
       </FlexView>
     </FlexView>

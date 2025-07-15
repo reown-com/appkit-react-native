@@ -2,7 +2,7 @@ import { type Balance, NumberUtil } from '@reown/appkit-common-react-native';
 import { UiUtil } from '@reown/appkit-ui-react-native';
 
 export function getSendValue(token?: Balance, sendTokenAmount?: number) {
-  if (token && sendTokenAmount) {
+  if (token?.price && sendTokenAmount) {
     const price = token.price;
     const totalValue = price * sendTokenAmount;
 
@@ -13,7 +13,7 @@ export function getSendValue(token?: Balance, sendTokenAmount?: number) {
 }
 
 export function getMaxAmount(token?: Balance) {
-  if (token) {
+  if (token?.quantity?.numeric) {
     return NumberUtil.roundNumber(Number(token.quantity.numeric), 6, 5);
   }
 

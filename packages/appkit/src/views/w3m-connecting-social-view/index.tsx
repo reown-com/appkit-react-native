@@ -1,121 +1,73 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
-import { Platform } from 'react-native';
 import {
   ConnectionController,
-  ConnectorController,
+  CoreHelperUtil,
   EventsController,
-  ModalController,
   RouterController,
-  SnackController,
-  WebviewController,
-  type AppKitFrameProvider
+  SnackController
 } from '@reown/appkit-core-react-native';
 import { FlexView, LoadingThumbnail, IconBox, Logo, Text } from '@reown/appkit-ui-react-native';
-import { StringUtil } from '@reown/appkit-common-react-native';
+import { ConstantsUtil, StringUtil } from '@reown/appkit-common-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { useAppKit } from '../../AppKitContext';
+import { UiUtil } from '../../utils/UiUtil';
 import styles from './styles';
 
 export function ConnectingSocialView() {
   const { maxWidth: width } = useCustomDimensions();
-  const { processingAuth } = useSnapshot(WebviewController.state);
-  const { selectedSocialProvider } = useSnapshot(ConnectionController.state);
-  const authConnector = ConnectorController.getAuthConnector();
+  const { connect } = useAppKit();
+  const { data } = useSnapshot(RouterController.state);
+  const { wcUri } = useSnapshot(ConnectionController.state);
   const [error, setError] = useState(false);
-  const provider = authConnector?.provider as AppKitFrameProvider;
 
   const onConnect = useCallback(async () => {
     try {
-      if (
-        !WebviewController.state.connecting &&
-        provider &&
-        ConnectionController.state.selectedSocialProvider
-      ) {
-        const { uri } = await provider.getSocialRedirectUri({
-          provider: ConnectionController.state.selectedSocialProvider
+      if (wcUri) {
+        const { redirect, href } = CoreHelperUtil.formatUniversalUrl(
+          ConstantsUtil.WEB_WALLET_URL,
+          wcUri,
+          RouterController.state.data?.socialProvider
+        );
+        const wcLinking = { name: 'Reown Wallet', href };
+        ConnectionController.setWcLinking(wcLinking);
+        await CoreHelperUtil.openLink(redirect);
+        await ConnectionController.state.wcPromise;
+        //todo: rename this. its not just UI
+        UiUtil.storeConnectedWallet(wcLinking);
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SOCIAL_LOGIN_SUCCESS',
+          properties: { provider: RouterController.state.data?.socialProvider! }
         });
-        WebviewController.setWebviewUrl(uri);
-
-        const isNativeApple =
-          ConnectionController.state.selectedSocialProvider === 'apple' && Platform.OS === 'ios';
-
-        WebviewController.setWebviewVisible(!isNativeApple);
-        WebviewController.setConnecting(true);
-        WebviewController.setConnectingProvider(ConnectionController.state.selectedSocialProvider);
       }
     } catch (e) {
-      WebviewController.setWebviewVisible(false);
-      WebviewController.setWebviewUrl(undefined);
-      WebviewController.setConnecting(false);
-      WebviewController.setConnectingProvider(undefined);
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SOCIAL_LOGIN_ERROR',
+        properties: { provider: RouterController.state.data?.socialProvider! }
+      });
       SnackController.showError('Something went wrong');
       setError(true);
     }
-  }, [provider]);
+  }, [wcUri]);
 
-  const socialMessageHandler = useCallback(
-    async (url: string) => {
-      try {
-        if (
-          url.includes('/sdk/oauth') &&
-          ConnectionController.state.selectedSocialProvider &&
-          authConnector &&
-          !WebviewController.state.processingAuth
-        ) {
-          WebviewController.setProcessingAuth(true);
-          WebviewController.setWebviewVisible(false);
-          const parsedUrl = new URL(url);
-
-          EventsController.sendEvent({
-            type: 'track',
-            event: 'SOCIAL_LOGIN_REQUEST_USER_DATA',
-            properties: { provider: ConnectionController.state.selectedSocialProvider }
-          });
-
-          await provider?.connectSocial(parsedUrl.search);
-          await ConnectionController.connectExternal(authConnector);
-          ConnectionController.setConnectedSocialProvider(
-            ConnectionController.state.selectedSocialProvider
-          );
-          WebviewController.setConnecting(false);
-
-          EventsController.sendEvent({
-            type: 'track',
-            event: 'SOCIAL_LOGIN_SUCCESS',
-            properties: { provider: ConnectionController.state.selectedSocialProvider }
-          });
-
-          ModalController.close();
-          WebviewController.reset();
-        }
-      } catch (e) {
-        EventsController.sendEvent({
-          type: 'track',
-          event: 'SOCIAL_LOGIN_ERROR',
-          properties: { provider: ConnectionController.state.selectedSocialProvider! }
-        });
-        WebviewController.reset();
-        RouterController.goBack();
-        SnackController.showError('Something went wrong');
-      }
-    },
-    [authConnector, provider]
-  );
+  const initializeConnection = useCallback(async () => {
+    const connectPromise = connect('walletconnect');
+    ConnectionController.setWcPromise(connectPromise);
+  }, [connect]);
 
   useEffect(() => {
-    onConnect();
-  }, [onConnect]);
+    initializeConnection();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    if (!provider) return;
-
-    const unsubscribe = provider?.getEventEmitter().addListener('social', socialMessageHandler);
-
-    return () => {
-      unsubscribe.removeListener('social', socialMessageHandler);
-    };
-  }, [socialMessageHandler, provider]);
+    if (wcUri) {
+      onConnect();
+    }
+  }, [wcUri, onConnect]);
 
   return (
     <FlexView
@@ -125,7 +77,7 @@ export function ConnectingSocialView() {
       style={{ width }}
     >
       <LoadingThumbnail paused={!!error}>
-        <Logo logo={selectedSocialProvider ?? 'more'} height={72} width={72} />
+        <Logo logo={data?.socialProvider ?? 'more'} height={72} width={72} />
         {error && (
           <IconBox
             icon={'close'}
@@ -139,14 +91,10 @@ export function ConnectingSocialView() {
         )}
       </LoadingThumbnail>
       <Text style={styles.continueText} variant="paragraph-500">
-        {processingAuth
-          ? 'Loading user data'
-          : `Continue with ${StringUtil.capitalize(selectedSocialProvider)}`}
+        Continue with {StringUtil.capitalize(data?.socialProvider ?? 'Login')}
       </Text>
       <Text variant="small-400" color="fg-200">
-        {processingAuth
-          ? 'Please wait a moment while we load your data'
-          : 'Connect in the provider window'}
+        Continue in your browser
       </Text>
     </FlexView>
   );

@@ -10,7 +10,8 @@ import {
   type CaipNetworkId,
   type ConnectOptions,
   type ConnectorInitOptions,
-  type Metadata
+  type Metadata,
+  type ConnectionProperties
 } from '@reown/appkit-common-react-native';
 import { getDidAddress, getDidChainId, SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -39,7 +40,7 @@ export class WalletConnectConnector extends WalletConnector {
     await this.restoreSession();
   }
 
-  private async restoreSession(): Promise<boolean> {
+  override async restoreSession(): Promise<boolean> {
     const provider = this.getProvider() as IUniversalProvider;
     if (!provider) {
       return false;
@@ -47,6 +48,16 @@ export class WalletConnectConnector extends WalletConnector {
 
     if (provider.session?.namespaces) {
       this.namespaces = provider.session.namespaces as Namespaces;
+    }
+
+    if (provider.session?.sessionProperties) {
+      this.properties = {
+        ...provider.session.sessionProperties,
+        smartAccounts: provider.session.sessionProperties['smartAccounts']
+          ? JSON.parse(provider.session.sessionProperties['smartAccounts'])
+          : [],
+        sessionTopic: provider.session.topic
+      };
     }
 
     if (provider.session?.peer?.metadata) {
@@ -81,10 +92,6 @@ export class WalletConnectConnector extends WalletConnector {
     return this.provider as IUniversalProvider;
   }
 
-  override disconnect(): Promise<void> {
-    return this.getProvider().disconnect();
-  }
-
   override async connect(opts: ConnectOptions) {
     const { siweConfig, namespaces, defaultChain, universalLink } = opts;
     function onUri(uri: string) {
@@ -96,7 +103,7 @@ export class WalletConnectConnector extends WalletConnector {
     // @ts-ignore
     provider.on('display_uri', onUri);
 
-    let session;
+    let session: IUniversalProvider['session'];
 
     // SIWE
     const isEVMOnly = Object.keys(namespaces ?? {}).length === 1 && namespaces?.['eip155'];
@@ -177,6 +184,16 @@ export class WalletConnectConnector extends WalletConnector {
       (this.provider as IUniversalProvider).setDefaultChain(defaultChain);
     }
 
+    if (session?.sessionProperties) {
+      this.properties = {
+        ...session.sessionProperties,
+        smartAccounts: session.sessionProperties['smartAccounts']
+          ? JSON.parse(session.sessionProperties['smartAccounts'])
+          : [],
+        sessionTopic: session.topic
+      };
+    }
+
     this.namespaces = session?.namespaces as Namespaces;
 
     provider.off('display_uri', onUri);
@@ -194,6 +211,10 @@ export class WalletConnectConnector extends WalletConnector {
 
   override getNamespaces(): Namespaces {
     return this.namespaces ?? {};
+  }
+
+  override getProperties(): ConnectionProperties | undefined {
+    return this.properties;
   }
 
   override switchNetwork(network: AppKitNetwork): Promise<void> {

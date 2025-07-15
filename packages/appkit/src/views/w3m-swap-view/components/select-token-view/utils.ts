@@ -1,25 +1,30 @@
 import { SwapController, type SwapTokenWithBalance } from '@reown/appkit-core-react-native';
 
-export function filterTokens(tokens: SwapTokenWithBalance[], searchValue?: string) {
+export function filterTokens(tokens?: SwapTokenWithBalance[], searchValue?: string) {
+  if (!tokens) {
+    return [];
+  }
+
   if (!searchValue) {
     return tokens;
   }
 
   return tokens.filter(
     token =>
-      token.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      token.name?.toLowerCase().includes(searchValue.toLowerCase()) ||
       token.symbol.toLowerCase().includes(searchValue.toLowerCase())
   );
 }
 
-export function createSections(isSourceToken: boolean, searchValue: string) {
-  const myTokensFiltered = filterTokens(
-    SwapController.state.myTokensWithBalance ?? [],
-    searchValue
-  );
+export function createSections(
+  isSourceToken: boolean,
+  searchValue: string,
+  balances?: SwapTokenWithBalance[]
+) {
+  const myTokensFiltered = filterTokens(balances ?? [], searchValue);
   const popularFiltered = isSourceToken
     ? []
-    : filterTokens(SwapController.getFilteredPopularTokens() ?? [], searchValue);
+    : filterTokens(SwapController.getFilteredPopularTokens(balances), searchValue);
 
   const sections = [];
   if (myTokensFiltered.length > 0) {

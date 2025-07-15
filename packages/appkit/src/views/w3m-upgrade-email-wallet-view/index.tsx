@@ -1,14 +1,10 @@
-import { useSnapshot } from 'valtio';
 import { Linking, StyleSheet } from 'react-native';
 import { Chip, FlexView, Spacing, Text } from '@reown/appkit-ui-react-native';
-import { ConnectorController, type AppKitFrameProvider } from '@reown/appkit-core-react-native';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
 
 export function UpgradeEmailWalletView() {
-  const { connectors } = useSnapshot(ConnectorController.state);
-  const authProvider = connectors.find(c => c.type === 'AUTH')?.provider as AppKitFrameProvider;
-
   const onLinkPress = () => {
-    const link = authProvider.getSecureSiteDashboardURL();
+    const link = ConstantsUtil.SECURE_SITE_DASHBOARD;
     Linking.canOpenURL(link).then(supported => {
       if (supported) Linking.openURL(link);
     });
@@ -20,7 +16,7 @@ export function UpgradeEmailWalletView() {
       <Chip
         label="secure.reown.com"
         rightIcon="externalLink"
-        imageSrc={authProvider.getSecureSiteIconURL()}
+        imageSrc={ConstantsUtil.SECURE_SITE_ICON}
         style={styles.chip}
         onPress={onLinkPress}
       />

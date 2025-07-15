@@ -5,9 +5,8 @@ import type { Features } from './TypeUtil';
 const defaultFeatures: Features = {
   swaps: true,
   onramp: false,
-  email: false,
-  emailShowWallets: false,
-  socials: ['x', 'discord', 'apple']
+  socials: ['email', 'google', 'x', 'discord', 'apple', 'facebook', 'github', 'farcaster'],
+  showWallets: true
 };
 
 export const OnRampErrorType = {

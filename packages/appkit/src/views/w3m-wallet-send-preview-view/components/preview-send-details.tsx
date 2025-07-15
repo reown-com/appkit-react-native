@@ -1,5 +1,5 @@
 import { AssetUtil } from '@reown/appkit-core-react-native';
-import type { CaipNetwork } from '@reown/appkit-common-react-native';
+import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 import {
   BorderRadius,
   FlexView,
@@ -14,7 +14,7 @@ import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 export interface PreviewSendDetailsProps {
   address?: string;
   name?: string;
-  caipNetwork?: CaipNetwork;
+  activeNetwork?: AppKitNetwork;
   networkFee?: number;
   style?: StyleProp<ViewStyle>;
 }
@@ -22,7 +22,7 @@ export interface PreviewSendDetailsProps {
 export function PreviewSendDetails({
   address,
   name,
-  caipNetwork,
+  activeNetwork,
   networkFee,
   style
 }: PreviewSendDetailsProps) {
@@ -42,7 +42,7 @@ export function PreviewSendDetails({
     truncate: 'middle'
   });
 
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork?.id);
+  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
 
   return (
     <FlexView

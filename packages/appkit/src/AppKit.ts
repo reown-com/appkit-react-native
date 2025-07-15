@@ -10,27 +10,32 @@ import {
   StorageUtil,
   type OptionsControllerState,
   ThemeController,
-  ConnectionController
+  ConnectionController,
+  SwapController,
+  OnRampController
 } from '@reown/appkit-core-react-native';
 
-import type {
-  WalletConnector,
-  BlockchainAdapter,
-  ProposalNamespaces,
-  New_ConnectorType,
-  Namespaces,
-  Metadata,
-  CaipNetworkId,
-  AppKitNetwork,
-  Provider,
-  ThemeVariables,
-  ThemeMode,
-  WalletInfo,
-  Network,
-  ChainNamespace,
-  Storage,
-  AppKitConnectOptions,
-  AppKitSIWEClient
+import {
+  type WalletConnector,
+  type BlockchainAdapter,
+  type ProposalNamespaces,
+  type ConnectorType,
+  type Namespaces,
+  type Metadata,
+  type CaipNetworkId,
+  type AppKitNetwork,
+  type Provider,
+  type ThemeVariables,
+  type ThemeMode,
+  type WalletInfo,
+  type Network,
+  type ChainNamespace,
+  type Storage,
+  type AppKitConnectOptions,
+  type AppKitSIWEClient,
+  type ConnectionProperties,
+  type AccountType,
+  ConstantsUtil
 } from '@reown/appkit-common-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
@@ -108,7 +113,7 @@ export class AppKit {
    * @param type - The type of connector to use.
    * @param options - Optional connection options.
    */
-  async connect(type: New_ConnectorType, options?: AppKitConnectOptions): Promise<void> {
+  async connect(type: ConnectorType, options?: AppKitConnectOptions): Promise<void> {
     try {
       const { namespaces, defaultChain, universalLink } = options ?? {};
       const connector = await this.createConnector(type);
@@ -121,6 +126,7 @@ export class AppKit {
       });
 
       const walletInfo = connector.getWalletInfo();
+      const properties = connector.getProperties();
 
       if (!approvedNamespaces || Object.keys(approvedNamespaces).length === 0) {
         throw new Error('Connection cancelled or failed: No approved namespaces returned.');
@@ -139,7 +145,7 @@ export class AppKit {
       }
 
       // Store the connection details for the successfully connected adapters
-      this.storeConnectionDetails(approvedAdapters, approvedNamespaces, walletInfo);
+      this.setConnection(approvedAdapters, approvedNamespaces, walletInfo, properties);
 
       // Store connector type and namespaces in storage
       await StorageUtil.setConnectedConnectors({
@@ -151,6 +157,15 @@ export class AppKit {
 
       //TODO: Replace this
       AccountController.setIsConnected(true);
+
+      if (
+        OptionsController.state.isSiweEnabled &&
+        ConnectionsController.state.activeNamespace === 'eip155'
+      ) {
+        this.handleSiweChange();
+      } else {
+        ModalController.close();
+      }
     } catch (error) {
       console.warn('Connection failed:', error);
       throw error;
@@ -185,7 +200,9 @@ export class AppKit {
 
       AccountController.setIsConnected(false); // Might need adjustment based on multi-connection logic
       RouterController.reset('Connect');
-      TransactionsController.resetTransactions();
+      TransactionsController.resetState();
+      SwapController.resetState();
+      OnRampController.resetState();
       ConnectionController.disconnect();
 
       if (OptionsController.state.isSiweEnabled) {
@@ -257,7 +274,29 @@ export class AppKit {
     ModalController.close();
   }
 
-  private async createConnector(type: New_ConnectorType): Promise<WalletConnector> {
+  async switchAccountType(namespace: ChainNamespace, type: AccountType, network: AppKitNetwork) {
+    const adapter = this.getAdapterByNamespace(namespace);
+    if (!adapter) throw new Error('No active adapter');
+
+    ConnectionsController.setAccountType(namespace, type);
+
+    // Get balances from API
+    ConnectionsController.fetchBalance();
+
+    // Sync balances from adapter
+    this.syncBalances(adapter, network);
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SET_PREFERRED_ACCOUNT_TYPE',
+      properties: {
+        accountType: type,
+        network: network?.caipNetworkId || ''
+      }
+    });
+  }
+
+  private async createConnector(type: ConnectorType): Promise<WalletConnector> {
     // Check if an extra connector was provided by the developer
     const CustomConnector = this.extraConnectors.find(
       connector => connector.type.toLowerCase() === type.toLowerCase()
@@ -308,6 +347,7 @@ export class AppKit {
 
           const namespaces = connector.getNamespaces();
           const walletInfo = connector.getWalletInfo();
+          const properties = connector.getProperties();
 
           if (namespaces && Object.keys(namespaces).length > 0) {
             // Ensure namespaces is not empty
@@ -319,7 +359,7 @@ export class AppKit {
 
             // If adapters were successfully initialized, store the connection details
             if (initializedAdapters.length > 0) {
-              this.storeConnectionDetails(initializedAdapters, namespaces, walletInfo);
+              this.setConnection(initializedAdapters, namespaces, walletInfo, properties);
             }
 
             this.syncAccounts(initializedAdapters);
@@ -372,47 +412,54 @@ export class AppKit {
     adapters.forEach(async adapter => {
       const namespace = adapter.getSupportedNamespace();
       const connection = ConnectionsController.state.connections.get(namespace);
-      if (connection) {
-        const accounts = adapter.getAccounts();
-        if (accounts && accounts.length > 0) {
-          ConnectionsController.updateAccounts(namespace, accounts);
+      const network = this.networks.find(
+        n => n.id?.toString() === connection?.caipNetwork?.split(':')[1]
+      );
 
-          const network = this.networks.find(
-            n => n.id?.toString() === connection?.caipNetwork?.split(':')[1]
-          );
-
-          const address = accounts.find(
-            a => a.split(':')[1] === connection.caipNetwork?.split(':')[1]
-          );
-
-          if (address) {
-            adapter.getBalance({ address, network, tokens: this.config.tokens });
-          }
-        }
-      }
+      this.syncBalances(adapter, network);
     });
   }
 
-  private storeConnectionDetails(
+  private syncBalances(adapter: BlockchainAdapter, network?: AppKitNetwork) {
+    if (adapter && network) {
+      const accounts = adapter.getAccounts();
+      if (accounts && accounts.length > 0) {
+        const addresses = accounts.filter(a => a.split(':')[1] === network?.id?.toString());
+
+        if (addresses.length > 0) {
+          addresses.forEach(address => {
+            adapter.getBalance({ address, network, tokens: this.config.tokens });
+          });
+        }
+      }
+    }
+  }
+
+  private setConnection(
     adapters: BlockchainAdapter[],
     approvedNamespaces: Namespaces,
-    wallet?: WalletInfo
+    wallet?: WalletInfo,
+    properties?: ConnectionProperties
   ) {
     adapters.forEach(async adapter => {
       const namespace = adapter.getSupportedNamespace();
       const namespaceDetails = approvedNamespaces[namespace];
-      if (!namespaceDetails) return; // Should not happen if filtering is correct
+      if (!namespaceDetails) return;
 
       const accounts = namespaceDetails.accounts ?? [];
       const chains = namespaceDetails.chains ?? [];
       const caipNetwork = adapter?.connector?.getChainId(namespace);
+      const namespaceProperties = {
+        ...properties,
+        smartAccounts: properties?.smartAccounts?.filter(account => account.startsWith(namespace))
+      };
 
-      ConnectionsController.storeConnection({
-        namespace,
-        adapter,
+      ConnectionsController.setConnection({
         accounts,
-        chains,
-        caipNetwork,
+        adapter,
+        caipNetwork: caipNetwork ?? chains[0]!,
+        namespace,
+        properties: namespaceProperties,
         wallet
       });
     });
@@ -440,16 +487,17 @@ export class AppKit {
     });
 
     adapter.on('chainChanged', ({ chainId }) => {
+      //eslint-disable-next-line no-console
+      console.log('chainChanged', chainId);
       const namespace = adapter.getSupportedNamespace();
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
       ConnectionsController.setActiveNetwork(namespace, chain);
 
       const network = this.networks.find(n => n.id?.toString() === chainId);
-      if (network) {
-        adapter.getBalance({
-          network,
-          tokens: this.config.tokens
-        });
+      this.syncBalances(adapter, network);
+
+      if (OptionsController.state.features?.swaps) {
+        SwapController.fetchTokens();
       }
 
       if (namespace === 'eip155') {
@@ -462,7 +510,10 @@ export class AppKit {
       this.disconnect(namespace, false);
     });
 
+    //TODO: Add types to this events
     adapter.on('balanceChanged', ({ address, balance }) => {
+      //eslint-disable-next-line no-console
+      console.log('balanceChanged', address, balance);
       const namespace = adapter.getSupportedNamespace();
       ConnectionsController.updateBalance(namespace, address, balance);
     });
@@ -474,7 +525,7 @@ export class AppKit {
     OptionsController.setProjectId(options.projectId);
     OptionsController.setMetadata(options.metadata);
     OptionsController.setIncludeWalletIds(options.includeWalletIds);
-    OptionsController.setExcludeWalletIds(options.excludeWalletIds);
+    this.setExcludedWallets(options);
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
     OptionsController.setTokens(options.tokens);
     OptionsController.setCustomWallets(options.customWallets);
@@ -540,6 +591,20 @@ export class AppKit {
     }
   }
 
+  private setExcludedWallets(options: AppKitConfig) {
+    // Exclude Coinbase if the connector is not implemented
+    const excludedWallets = options.excludeWalletIds || [];
+
+    //TODO: check this when coinbase connector is implemented
+    const excludeCoinbase = true;
+
+    if (excludeCoinbase) {
+      excludedWallets.push(ConstantsUtil.COINBASE_EXPLORER_ID);
+    }
+
+    OptionsController.setExcludeWalletIds(excludedWallets);
+  }
+
   private async initAsyncValues(options: AppKitConfig) {
     await this.initActiveNamespace();
     await this.initRecentWallets(options);
@@ -554,8 +619,11 @@ export class AppKit {
     }
   };
 
-  private async handleSiweChange(params: { isNetworkChange?: boolean; isAccountChange?: boolean }) {
-    const { isNetworkChange, isAccountChange } = params;
+  private async handleSiweChange(params?: {
+    isNetworkChange?: boolean;
+    isAccountChange?: boolean;
+  }) {
+    const { isNetworkChange, isAccountChange } = params ?? {};
     const { enabled, signOutOnAccountChange, signOutOnNetworkChange } =
       SIWEController.state._client?.options ?? {};
 

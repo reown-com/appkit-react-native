@@ -33,6 +33,7 @@ export const useAppKit = () => {
     open: context.appKit.open.bind(context.appKit),
     close: context.appKit.close.bind(context.appKit),
     switchNetwork: context.appKit.switchNetwork.bind(context.appKit),
-    getProvider: context.appKit.getProvider.bind(context.appKit)
+    getProvider: context.appKit.getProvider.bind(context.appKit),
+    switchAccountType: context.appKit.switchAccountType.bind(context.appKit)
   };
 };

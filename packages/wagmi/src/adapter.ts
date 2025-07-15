@@ -105,7 +105,7 @@ export class WagmiAdapter extends EVMAdapter {
     const formattedBalance = {
       amount: formatUnits(balance.value, balance.decimals),
       symbol: balance.symbol,
-      contractAddress: token ? (`${network.caipNetworkId}:${token}` as CaipAddress) : undefined
+      address: token ? (`${network.caipNetworkId}:${token}` as CaipAddress) : undefined
     };
 
     this.emit('balanceChanged', { address: balanceAddress, balance: formattedBalance });

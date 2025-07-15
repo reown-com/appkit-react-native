@@ -16,10 +16,8 @@ import {
   bitcoin
 } from '@reown/appkit-react-native';
 
-// import { authConnector } from '@reown/appkit-auth-wagmi-react-native';
 import { Button, Text } from '@reown/appkit-ui-react-native';
 
-// import { siweConfig } from './src/utils/SiweUtils';
 // import { AccountView } from './src/views/AccountView';
 import { chains } from './src/utils/WagmiUtils';
 import { OpenButton } from './src/components/OpenButton';

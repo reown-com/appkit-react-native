@@ -2,7 +2,7 @@ import { useSnapshot } from 'valtio';
 import { useEffect } from 'react';
 import {
   AccountController,
-  ConnectorController,
+  ConnectionsController,
   OnRampController,
   RouterController
 } from '@reown/appkit-core-react-native';
@@ -15,7 +15,7 @@ export function OnRampTransactionView() {
   const { data } = useSnapshot(RouterController.state);
 
   const onClose = () => {
-    const isAuth = ConnectorController.state.connectedConnector === 'AUTH';
+    const isAuth = !!ConnectionsController.state.connection?.properties?.provider;
     RouterController.replace(isAuth ? 'Account' : 'AccountDefault');
   };
 

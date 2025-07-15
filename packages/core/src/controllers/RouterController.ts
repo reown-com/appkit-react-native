@@ -1,23 +1,9 @@
 import { proxy } from 'valtio';
-import type { CaipNetwork } from '@reown/appkit-common-react-native';
+import type { CaipNetwork, SocialProvider } from '@reown/appkit-common-react-native';
 
-import type {
-  WcWallet,
-  Connector,
-  SwapInputTarget,
-  OnRampTransactionResult
-} from '../utils/TypeUtil';
+import type { WcWallet, OnRampTransactionResult } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
-type TransactionAction = {
-  goBack: boolean;
-  view: RouterControllerState['view'] | null;
-  close?: boolean;
-  replace?: boolean;
-  onSuccess?: () => void;
-  onCancel?: () => void;
-};
-
 export interface RouterControllerState {
   view:
     | 'Account'
@@ -28,11 +14,7 @@ export interface RouterControllerState {
     | 'ConnectingExternal'
     | 'ConnectingSiwe'
     | 'ConnectingSocial'
-    | 'ConnectingFarcaster'
     | 'ConnectingWalletConnect'
-    | 'Create'
-    | 'EmailVerifyDevice'
-    | 'EmailVerifyOtp'
     | 'GetWallet'
     | 'Networks'
     | 'OnRamp'
@@ -42,15 +24,10 @@ export interface RouterControllerState {
     | 'OnRampTransaction'
     | 'SwitchNetwork'
     | 'Swap'
-    | 'SwapSelectToken'
     | 'SwapPreview'
     | 'Transactions'
     | 'UnsupportedChain'
-    | 'UpdateEmailPrimaryOtp'
-    | 'UpdateEmailSecondaryOtp'
-    | 'UpdateEmailWallet'
     | 'UpgradeEmailWallet'
-    | 'UpgradeToSmartAccount'
     | 'WalletCompatibleNetworks'
     | 'WalletReceive'
     | 'WalletSend'
@@ -60,22 +37,19 @@ export interface RouterControllerState {
     | 'WhatIsAWallet';
   history: RouterControllerState['view'][];
   data?: {
-    connector?: Connector;
     wallet?: WcWallet;
     network?: CaipNetwork;
     email?: string;
     newEmail?: string;
-    swapTarget?: SwapInputTarget;
     onrampResult?: OnRampTransactionResult;
+    socialProvider?: SocialProvider;
   };
-  transactionStack: TransactionAction[];
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<RouterControllerState>({
   view: 'Connect',
-  history: ['Connect'],
-  transactionStack: []
+  history: ['Connect']
 });
 
 // -- Controller ---------------------------------------- //
@@ -87,30 +61,6 @@ export const RouterController = {
       state.view = view;
       state.history = [...state.history, view];
       state.data = data;
-    }
-  },
-
-  pushTransactionStack(action: TransactionAction) {
-    state.transactionStack = [...state.transactionStack, action];
-  },
-
-  popTransactionStack(cancel?: boolean) {
-    const action = state.transactionStack.pop();
-
-    if (!action) {
-      return;
-    }
-
-    if (cancel) {
-      this.goBack();
-      action?.onCancel?.();
-    } else {
-      if (action.goBack) {
-        this.goBack();
-      } else if (action.view) {
-        this.reset(action.view);
-      }
-      action?.onSuccess?.();
     }
   },
 

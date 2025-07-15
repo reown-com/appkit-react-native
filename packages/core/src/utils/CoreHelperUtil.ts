@@ -5,7 +5,8 @@ import {
   ConstantsUtil as CommonConstants,
   type Balance,
   type CaipAddress,
-  type CaipNetwork
+  type CaipNetwork,
+  type SocialProvider
 } from '@reown/appkit-common-react-native';
 
 import * as ct from 'countries-and-timezones';
@@ -102,7 +103,7 @@ export const CoreHelperUtil = {
     };
   },
 
-  formatUniversalUrl(appUrl: string, wcUri: string): LinkingRecord {
+  formatUniversalUrl(appUrl: string, wcUri: string, provider?: SocialProvider): LinkingRecord {
     if (CoreHelperUtil.isLinkModeURL(wcUri)) {
       return {
         redirect: wcUri,
@@ -120,7 +121,9 @@ export const CoreHelperUtil = {
     const encodedWcUrl = encodeURIComponent(wcUri);
 
     return {
-      redirect: `${safeAppUrl}wc?uri=${encodedWcUrl}`,
+      redirect: provider
+        ? `${safeAppUrl}wc?uri=${encodedWcUrl}&provider=${provider}`
+        : `${safeAppUrl}wc?uri=${encodedWcUrl}`,
       href: safeAppUrl
     };
   },
@@ -282,7 +285,7 @@ export const CoreHelperUtil = {
 
     let sum = 0;
     for (const item of array) {
-      sum += item.value ?? 0;
+      sum += item?.value ?? 0;
     }
 
     const roundedNumber = sum.toFixed(2);

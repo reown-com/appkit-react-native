@@ -60,3 +60,6 @@ android.iml
 
 # vscode
 .vscode/launch.json
+
+# Cursor
+.cursor

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TextInput } from 'react-native';
 import { FlexView, useTheme } from '@reown/appkit-ui-react-native';
-import { ConnectionController, SendController } from '@reown/appkit-core-react-native';
+import { SendController } from '@reown/appkit-core-react-native';
 
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import styles from './styles';
@@ -15,20 +15,21 @@ export function SendInputAddress({ value }: SendInputAddressProps) {
   const [inputValue, setInputValue] = useState<string | undefined>(value);
 
   const onSearch = async (search: string) => {
-    SendController.setLoading(true);
-    const address = await ConnectionController.getEnsAddress(search);
-    SendController.setLoading(false);
+    // TODO: check when enabling ENS
+    // SendController.setLoading(true);
+    // const address = await ConnectionController.getEnsAddress(search);
+    // SendController.setLoading(false);
 
-    if (address) {
-      SendController.setReceiverProfileName(search);
-      SendController.setReceiverAddress(address);
-      const avatar = await ConnectionController.getEnsAvatar(search);
-      SendController.setReceiverProfileImageUrl(avatar || undefined);
-    } else {
-      SendController.setReceiverAddress(search);
-      SendController.setReceiverProfileName(undefined);
-      SendController.setReceiverProfileImageUrl(undefined);
-    }
+    // if (address) {
+    //   SendController.setReceiverProfileName(search);
+    //   SendController.setReceiverAddress(address);
+    //   const avatar = await ConnectionController.getEnsAvatar(search);
+    //   SendController.setReceiverProfileImageUrl(avatar || undefined);
+    // } else {
+    SendController.setReceiverAddress(search);
+    SendController.setReceiverProfileName(undefined);
+    SendController.setReceiverProfileImageUrl(undefined);
+    // }
   };
 
   const { debouncedCallback: onDebounceSearch } = useDebounceCallback({

@@ -47,20 +47,19 @@ export interface CaipNetwork {
 }
 
 export interface Balance {
-  name: string;
+  name?: string;
+  amount: string;
   symbol: string;
-  chainId: string;
-  address?: CaipAddress;
-  value?: number;
-  price: number;
-  quantity: BalanceQuantity;
-  iconUrl: string;
+  quantity?: {
+    decimals: string;
+    numeric: string;
+  };
+  chainId?: string;
+  address?: CaipAddress; // contract address
+  value?: number; //total value of the amount in currency
+  price?: number; //price of the token in currency
+  iconUrl?: string;
 }
-
-type BalanceQuantity = {
-  decimals: string;
-  numeric: string;
-};
 
 export type TransactionStatus = 'confirmed' | 'failed' | 'pending';
 export type TransactionDirection = 'in' | 'out' | 'self';
@@ -134,7 +133,15 @@ export interface TransactionQuantity {
   numeric: string;
 }
 
-export type SocialProvider = 'apple' | 'x' | 'discord' | 'farcaster';
+export type SocialProvider =
+  | 'google'
+  | 'facebook'
+  | 'github'
+  | 'apple'
+  | 'x'
+  | 'discord'
+  | 'email'
+  | 'farcaster';
 
 export type ThemeMode = 'dark' | 'light';
 
@@ -148,8 +155,6 @@ export interface Token {
 }
 
 export type Tokens = Record<CaipNetworkId, Token>;
-
-export type ConnectorType = 'WALLET_CONNECT' | 'COINBASE' | 'AUTH' | 'EXTERNAL';
 
 export type Metadata = {
   name: string;
@@ -176,11 +181,7 @@ export type DisconnectEvent = {};
 
 export type BalanceChangedEvent = {
   address: CaipAddress;
-  balance: {
-    amount: string;
-    symbol: string;
-    contractAddress?: ContractAddress;
-  };
+  balance: Balance;
 };
 
 //********** Adapter Event Map **********//
@@ -192,18 +193,12 @@ export interface AdapterEvents {
 }
 
 export interface GetBalanceParams {
+  network: AppKitNetwork;
   address?: CaipAddress;
-  network?: AppKitNetwork;
   tokens?: Tokens;
 }
 
-type ContractAddress = CaipAddress;
-
-export interface GetBalanceResponse {
-  amount: string;
-  symbol: string;
-  contractAddress?: ContractAddress;
-}
+export type GetBalanceResponse = Balance;
 
 //********** Connector Types **********//
 interface BaseNamespace {
@@ -236,14 +231,15 @@ export type ConnectorInitOptions = {
 };
 
 export abstract class WalletConnector extends EventEmitter {
-  public type: New_ConnectorType;
+  public type: ConnectorType;
   protected provider?: Provider;
   protected namespaces?: Namespaces;
   protected wallet?: WalletInfo;
   protected storage?: Storage;
   protected metadata?: Metadata;
+  protected properties?: ConnectionProperties;
 
-  constructor({ type }: { type: New_ConnectorType }) {
+  constructor({ type }: { type: ConnectorType }) {
     super();
     this.type = type;
   }
@@ -257,13 +253,21 @@ export abstract class WalletConnector extends EventEmitter {
     this.provider = provider;
   }
 
+  public async disconnect() {
+    await this.provider?.disconnect();
+    this.namespaces = undefined;
+    this.wallet = undefined;
+    this.properties = undefined;
+  }
+
   abstract connect(opts: ConnectOptions): Promise<Namespaces | undefined>;
-  abstract disconnect(): Promise<void>;
   abstract getProvider(): Provider;
   abstract getNamespaces(): Namespaces;
   abstract getChainId(namespace: ChainNamespace): CaipNetworkId | undefined;
   abstract getWalletInfo(): WalletInfo | undefined;
+  abstract getProperties(): ConnectionProperties | undefined;
   abstract switchNetwork(network: AppKitNetwork): Promise<void>;
+  abstract restoreSession(): Promise<boolean>;
 }
 
 //********** Provider Types **********//
@@ -285,8 +289,7 @@ export interface RequestArguments {
   params?: unknown[] | Record<string, unknown> | object | undefined;
 }
 
-//TODO: rename this and remove the old one ConnectorType
-export type New_ConnectorType = 'walletconnect' | 'coinbase' | 'auth' | 'phantom';
+export type ConnectorType = 'walletconnect' | 'coinbase' | 'auth' | 'phantom';
 
 //********** Others **********//
 
@@ -309,6 +312,16 @@ export interface WalletInfo {
   };
   [key: string]: unknown;
 }
+
+export interface ConnectionProperties {
+  email?: string;
+  username?: string;
+  smartAccounts?: CaipAddress[];
+  provider?: SocialProvider;
+  sessionTopic?: string;
+}
+
+export type AccountType = 'eoa' | 'smartAccount';
 
 export interface Storage {
   /**

@@ -3,7 +3,6 @@ import { useSnapshot } from 'valtio';
 import {
   AssetUtil,
   ConnectionController,
-  ConnectorController,
   EventsController,
   OptionsController,
   SnackController
@@ -11,6 +10,7 @@ import {
 import { FlexView, Link, QrCode, Text, Spacing } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
+import { PresetsUtil } from '@reown/appkit-common-react-native';
 
 export function ConnectingQrCode() {
   const { wcUri } = useSnapshot(ConnectionController.state);
@@ -37,9 +37,8 @@ export function ConnectingQrCode() {
       }
     });
 
-    const connectors = ConnectorController.state.connectors;
-    const connector = connectors.find(c => c.type === 'WALLET_CONNECT');
-    const url = AssetUtil.getConnectorImage(connector);
+    //TODO: check this
+    const url = AssetUtil.getConnectorImage(PresetsUtil.ConnectorImageIds['WALLET_CONNECT']);
     ConnectionController.setConnectedWalletImageUrl(url);
   };
 

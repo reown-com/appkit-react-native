@@ -11,6 +11,9 @@ export const ConstantsUtil = {
   BLOCKCHAIN_API_RPC_URL_STAGING: 'https://staging.rpc.walletconnect.org',
   PULSE_API_URL: 'https://pulse.walletconnect.org',
   API_URL: 'https://api.web3modal.org',
+  WEB_WALLET_URL: 'https://web-wallet.walletconnect.org',
+  SECURE_SITE_DASHBOARD: `https://secure.reown.com/dashboard`,
+  SECURE_SITE_ICON: `https://secure.reown.com/images/favicon.png`,
 
   WALLET_CONNECT_CONNECTOR_ID: 'walletConnect',
   COINBASE_CONNECTOR_ID: 'coinbaseWallet',

@@ -2,43 +2,22 @@ import { useSnapshot } from 'valtio';
 import { useState } from 'react';
 import { FlatList } from 'react-native';
 import { Icon, ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
-import {
-  ApiController,
-  AssetUtil,
-  ConnectionsController,
-  CoreHelperUtil,
-  EventsController,
-  NetworkController,
-  NetworkUtil,
-  type NetworkControllerState
-} from '@reown/appkit-core-react-native';
-import type { CaipNetwork } from '@reown/appkit-common-react-native';
+import { ApiController, AssetUtil, ConnectionsController } from '@reown/appkit-core-react-native';
+import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 import { useAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function UnsupportedChainView() {
-  const { supportsAllNetworks, approvedCaipNetworkIds, requestedCaipNetworks } = useSnapshot(
-    NetworkController.state
-  ) as NetworkControllerState;
-
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const [disconnecting, setDisconnecting] = useState(false);
-  const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
+  //TODO: should show requested networks disabled
+  // const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
+  const networks = ConnectionsController.getConnectedNetworks();
   const imageHeaders = ApiController._getApiHeaders();
-  const { disconnect } = useAppKit();
+  const { disconnect, switchNetwork } = useAppKit();
 
-  const onNetworkPress = async (network: CaipNetwork) => {
-    //TODO: change to appkit switchNetwork
-    const result = await NetworkUtil.handleNetworkSwitch(network);
-    if (result?.type === 'SWITCH_NETWORK') {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SWITCH_NETWORK',
-        properties: {
-          network: network.id
-        }
-      });
-    }
+  const onNetworkPress = async (network: AppKitNetwork) => {
+    switchNetwork(network);
   };
 
   const onDisconnect = async () => {
@@ -70,7 +49,6 @@ export function UnsupportedChainView() {
           testID="button-network"
           style={styles.networkItem}
           contentStyle={styles.networkItemContent}
-          disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(item.id)}
         >
           <Text numberOfLines={1} color="fg-100">
             {item.name ?? 'Unknown'}

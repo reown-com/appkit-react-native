@@ -1,13 +1,14 @@
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Platform, ScrollView } from 'react-native';
+import Modal from 'react-native-modal';
 import {
-  AccountController,
   ConnectionsController,
   ConstantsUtil,
   EventsController,
   RouterController,
-  SwapController
+  SwapController,
+  type SwapInputTarget
 } from '@reown/appkit-core-react-native';
 import { Button, FlexView, IconLink, Spacing, useTheme } from '@reown/appkit-ui-react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
@@ -18,10 +19,11 @@ import { SwapInput } from '../../partials/w3m-swap-input';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { SwapDetails } from '../../partials/w3m-swap-details';
 import styles from './styles';
+import { SwapSelectTokenView } from './components/select-token-view';
 
 export function SwapView() {
   const {
-    initializing,
+    loadingTokens,
     sourceToken,
     toToken,
     sourceTokenAmount,
@@ -36,7 +38,12 @@ export function SwapView() {
   const Theme = useTheme();
   const { padding } = useCustomDimensions();
   const { keyboardShown, keyboardHeight } = useKeyboard();
+  const [showModal, setShowModal] = useState<SwapInputTarget | undefined>();
   const showDetails = !!sourceToken && !!toToken && !inputError;
+
+  const onModalClose = () => {
+    setShowModal(undefined);
+  };
 
   const showSwitch =
     myTokensWithBalance &&
@@ -66,7 +73,7 @@ export function SwapView() {
   };
 
   const actionState = getActionButtonState();
-  const actionLoading = initializing || loadingPrices || loadingQuote;
+  const actionLoading = loadingTokens || loadingPrices || loadingQuote;
 
   const { debouncedCallback: onDebouncedSwap } = useDebounceCallback({
     callback: SwapController.swapTokens.bind(SwapController),
@@ -83,10 +90,6 @@ export function SwapView() {
     onDebouncedSwap();
   };
 
-  const onSourceTokenPress = () => {
-    RouterController.push('SwapSelectToken', { swapTarget: 'sourceToken' });
-  };
-
   const onReviewPress = () => {
     EventsController.sendEvent({
       type: 'track',
@@ -97,7 +100,7 @@ export function SwapView() {
         swapToToken: SwapController.state.toToken?.symbol || '',
         swapFromAmount: SwapController.state.sourceTokenAmount || '',
         swapToAmount: SwapController.state.toTokenAmount || '',
-        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+        isSmartAccount: ConnectionsController.state.accountType === 'smartAccount'
       }
     });
     RouterController.push('SwapPreview');
@@ -133,81 +136,90 @@ export function SwapView() {
     }
   };
 
-  const onToTokenPress = () => {
-    RouterController.push('SwapSelectToken', { swapTarget: 'toToken' });
-  };
-
   const onSwitchPress = () => {
     SwapController.switchTokens();
   };
 
-  const watchTokens = useCallback(() => {
-    SwapController.getNetworkTokenPrice();
-    SwapController.getMyTokensWithBalance();
-    SwapController.swapTokens();
-  }, []);
-
   useEffect(() => {
-    SwapController.initializeState();
+    SwapController.fetchTokens();
+
+    function watchTokens() {
+      SwapController.getNetworkTokenPrice();
+      SwapController.getMyTokensWithBalance();
+      SwapController.swapTokens();
+    }
 
     const interval = setInterval(watchTokens, 10000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [watchTokens]);
+  }, []);
 
   return (
-    <ScrollView
-      style={{ paddingHorizontal: padding }}
-      bounces={false}
-      keyboardShouldPersistTaps="always"
-    >
-      <FlexView padding="l" alignItems="center" justifyContent="center" style={{ paddingBottom }}>
-        <SwapInput
-          token={sourceToken}
-          value={sourceTokenAmount}
-          marketValue={parseFloat(sourceTokenAmount) * sourceTokenPriceInUSD}
-          style={styles.tokenInput}
-          loading={initializing}
-          onChange={onSourceTokenChange}
-          onTokenPress={onSourceTokenPress}
-          onMaxPress={onSourceMaxPress}
-        />
-        <FlexView alignItems="center" justifyContent="center" style={styles.bottomInputContainer}>
+    <>
+      <ScrollView
+        style={{ paddingHorizontal: padding }}
+        bounces={false}
+        keyboardShouldPersistTaps="always"
+      >
+        <FlexView padding="l" alignItems="center" justifyContent="center" style={{ paddingBottom }}>
           <SwapInput
-            token={toToken}
-            value={toTokenAmount}
-            marketValue={NumberUtil.parseLocalStringToNumber(toTokenAmount) * toTokenPriceInUSD}
+            token={sourceToken}
+            value={sourceTokenAmount}
+            marketValue={parseFloat(sourceTokenAmount) * sourceTokenPriceInUSD}
             style={styles.tokenInput}
-            loading={initializing}
-            onChange={onToTokenChange}
-            onTokenPress={onToTokenPress}
-            editable={false}
+            loading={loadingTokens}
+            onChange={onSourceTokenChange}
+            onTokenPress={() => setShowModal('sourceToken')}
+            onMaxPress={onSourceMaxPress}
           />
-          {showSwitch && (
-            <IconLink
-              icon="recycleHorizontal"
-              size="lg"
-              iconColor="fg-275"
-              background
-              backgroundColor="bg-175"
-              pressedColor="bg-250"
-              style={[styles.arrowIcon, { borderColor: Theme['bg-100'] }]}
-              onPress={onSwitchPress}
+          <FlexView alignItems="center" justifyContent="center" style={styles.bottomInputContainer}>
+            <SwapInput
+              token={toToken}
+              value={toTokenAmount}
+              marketValue={NumberUtil.parseLocalStringToNumber(toTokenAmount) * toTokenPriceInUSD}
+              style={styles.tokenInput}
+              loading={loadingTokens}
+              loadingValues={actionLoading}
+              onChange={onToTokenChange}
+              onTokenPress={() => setShowModal('toToken')}
+              editable={false}
             />
-          )}
+            {showSwitch && (
+              <IconLink
+                icon="recycleHorizontal"
+                size="lg"
+                iconColor="fg-275"
+                background
+                backgroundColor="bg-175"
+                pressedColor="bg-250"
+                style={[styles.arrowIcon, { borderColor: Theme['bg-100'] }]}
+                onPress={onSwitchPress}
+              />
+            )}
+          </FlexView>
+          {showDetails && <SwapDetails />}
+          <Button
+            style={styles.actionButton}
+            loading={actionLoading}
+            disabled={actionState.disabled || actionLoading}
+            onPress={onReviewPress}
+          >
+            {actionState.text}
+          </Button>
         </FlexView>
-        {showDetails && <SwapDetails />}
-        <Button
-          style={styles.actionButton}
-          loading={actionLoading}
-          disabled={actionState.disabled || actionLoading}
-          onPress={onReviewPress}
-        >
-          {actionState.text}
-        </Button>
-      </FlexView>
-    </ScrollView>
+      </ScrollView>
+      <Modal
+        isVisible={!!showModal}
+        useNativeDriver
+        useNativeDriverForBackdrop
+        onBackdropPress={onModalClose}
+        onDismiss={onModalClose}
+        style={styles.modal}
+      >
+        <SwapSelectTokenView onClose={onModalClose} type={showModal} />
+      </Modal>
+    </>
   );
 }

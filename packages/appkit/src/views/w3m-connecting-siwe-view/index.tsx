@@ -8,7 +8,6 @@ import {
   Text
 } from '@reown/appkit-ui-react-native';
 import {
-  AccountController,
   AssetUtil,
   ConnectionController,
   ConnectionsController,
@@ -35,16 +34,15 @@ export function ConnectingSiweView() {
   const dappName = metadata?.name || 'Dapp';
   const dappIcon = metadata?.icons[0] || '';
   const walletIcon = AssetUtil.getWalletImage(pressedWallet) || connectedWalletImageUrl;
+  const isSmartAccount = ConnectionsController.state.accountType === 'smartAccount';
+  const network = ConnectionsController.state.activeNetwork?.caipNetworkId || '';
 
   const onSign = async () => {
     setIsSigning(true);
     EventsController.sendEvent({
       event: 'CLICK_SIGN_SIWE_MESSAGE',
       type: 'track',
-      properties: {
-        network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
-        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
-      }
+      properties: { network, isSmartAccount }
     });
     try {
       const session = await SIWEController.signIn();
@@ -52,10 +50,7 @@ export function ConnectingSiweView() {
       EventsController.sendEvent({
         event: 'SIWE_AUTH_SUCCESS',
         type: 'track',
-        properties: {
-          network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
-        }
+        properties: { network, isSmartAccount }
       });
 
       return session;
@@ -67,10 +62,7 @@ export function ConnectingSiweView() {
       return EventsController.sendEvent({
         event: 'SIWE_AUTH_ERROR',
         type: 'track',
-        properties: {
-          network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
-        }
+        properties: { network, isSmartAccount }
       });
     } finally {
       setIsSigning(false);
@@ -89,10 +81,7 @@ export function ConnectingSiweView() {
     EventsController.sendEvent({
       event: 'CLICK_CANCEL_SIWE',
       type: 'track',
-      properties: {
-        network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
-        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
-      }
+      properties: { network, isSmartAccount }
     });
   };
 

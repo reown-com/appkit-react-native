@@ -10,8 +10,6 @@ import { SwapCalculationUtil } from '../utils/SwapCalculationUtil';
 import { SnackController } from './SnackController';
 import { RouterController } from './RouterController';
 import type { SwapInputTarget, SwapTokenWithBalance } from '../utils/TypeUtil';
-import { ConnectorController } from './ConnectorController';
-import { AccountController } from './AccountController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { TransactionsController } from './TransactionsController';
 import { EventsController } from './EventsController';
@@ -43,8 +41,7 @@ class TransactionError extends Error {
 
 export interface SwapControllerState {
   // Loading states
-  initializing: boolean;
-  initialized: boolean;
+  loadingTokens: boolean;
   loadingPrices: boolean;
   loadingQuote?: boolean;
   loadingApprovalTransaction?: boolean;
@@ -67,7 +64,6 @@ export interface SwapControllerState {
   toTokenAmount: string;
   toTokenPriceInUSD: number;
   networkPrice: string;
-  networkBalanceInUSD: string;
   networkTokenSymbol: string;
   inputError: string | undefined;
 
@@ -95,8 +91,7 @@ type StateKey = keyof SwapControllerState;
 // -- State --------------------------------------------- //
 const initialState: SwapControllerState = {
   // Loading states
-  initializing: false,
-  initialized: false,
+  loadingTokens: false,
   loadingPrices: false,
   loadingQuote: false,
   loadingApprovalTransaction: false,
@@ -119,7 +114,6 @@ const initialState: SwapControllerState = {
   toTokenAmount: '',
   toTokenPriceInUSD: 0,
   networkPrice: '0',
-  networkBalanceInUSD: '0',
   networkTokenSymbol: '',
   inputError: undefined,
 
@@ -157,7 +151,8 @@ export const SwapController = {
   },
 
   getParams() {
-    const { activeAddress, activeNamespace, activeNetwork } = ConnectionsController.state;
+    const { activeAddress, activeNamespace, activeNetwork, connection } =
+      ConnectionsController.state;
     const address = CoreHelperUtil.getPlainAddress(activeAddress);
 
     if (!activeNamespace || !activeNetwork) {
@@ -165,8 +160,6 @@ export const SwapController = {
     }
 
     const networkAddress: CaipAddress = `${activeNetwork.caipNetworkId}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS[activeNamespace]}`;
-
-    const type = ConnectorController.state.connectedConnector;
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.');
@@ -195,12 +188,12 @@ export const SwapController = {
       invalidSourceTokenAmount,
       availableToSwap:
         activeAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
-      isAuthConnector: type === 'AUTH'
+      isAuthConnector: !!connection?.properties?.provider
     };
   },
 
   switchTokens() {
-    if (state.initializing || !state.initialized) {
+    if (state.loadingTokens) {
       return;
     }
 
@@ -225,41 +218,36 @@ export const SwapController = {
     this.swapTokens();
   },
 
-  resetState() {
-    state.myTokensWithBalance = initialState.myTokensWithBalance;
-    state.tokensPriceMap = initialState.tokensPriceMap;
-    state.initialized = initialState.initialized;
-    state.sourceToken = initialState.sourceToken;
-    state.sourceTokenAmount = initialState.sourceTokenAmount;
-    state.sourceTokenPriceInUSD = initialState.sourceTokenPriceInUSD;
-    state.toToken = initialState.toToken;
-    state.toTokenAmount = initialState.toTokenAmount;
-    state.toTokenPriceInUSD = initialState.toTokenPriceInUSD;
-    state.networkPrice = initialState.networkPrice;
-    state.networkTokenSymbol = initialState.networkTokenSymbol;
-    state.networkBalanceInUSD = initialState.networkBalanceInUSD;
-    state.inputError = initialState.inputError;
-  },
-
   async fetchTokens() {
-    const { networkAddress } = this.getParams();
+    try {
+      const { networkAddress } = this.getParams();
 
-    await this.getTokenList();
-    await this.getNetworkTokenPrice();
-    await this.getMyTokensWithBalance();
+      state.loadingTokens = true;
+      await this.getTokenList();
+      await this.getNetworkTokenPrice();
+      await this.getMyTokensWithBalance();
 
-    const networkToken = state.tokens?.find(token => token.address === networkAddress);
+      const networkToken = state.tokens?.find(token => token.address === networkAddress);
 
-    if (networkToken) {
-      state.networkTokenSymbol = networkToken.symbol;
+      if (networkToken) {
+        state.networkTokenSymbol = networkToken.symbol;
+      }
+
+      // Set default source token if not set
+      if (!state.sourceToken && state.myTokensWithBalance?.length) {
+        const sourceToken =
+          state.myTokensWithBalance?.find(token => token.address.startsWith(networkAddress)) ||
+          state.myTokensWithBalance?.[0];
+
+        this.setSourceToken(sourceToken);
+        this.setSourceTokenAmount('1');
+      }
+    } catch (error) {
+      SnackController.showError('Failed to initialize swap');
+      RouterController.goBack();
+    } finally {
+      state.loadingTokens = false;
     }
-
-    const sourceToken =
-      state.myTokensWithBalance?.find(token => token.address.startsWith(networkAddress)) ||
-      state.myTokensWithBalance?.[0];
-
-    this.setSourceToken(sourceToken);
-    this.setSourceTokenAmount('1');
   },
 
   async getTokenList() {
@@ -285,20 +273,23 @@ export const SwapController = {
     }, {});
   },
 
-  async getMyTokensWithBalance(forceUpdate?: string) {
-    const balances = await SwapApiUtil.getMyTokensWithBalance(forceUpdate);
-    if (!balances) {
+  async getMyTokensWithBalance(forceUpdate?: CaipAddress[]) {
+    await ConnectionsController.fetchBalance(forceUpdate);
+    const swapBalances = SwapApiUtil.mapBalancesToSwapTokens(ConnectionsController.state.balances);
+    if (!swapBalances) {
       return;
     }
 
     await this.getInitialGasPrice();
-    this.setBalances(balances);
+    this.setBalances(swapBalances);
   },
 
-  getFilteredPopularTokens() {
-    return state.popularTokens?.filter(
-      token => !state.myTokensWithBalance?.some(t => t.address === token.address)
-    );
+  getFilteredPopularTokens(balances?: SwapTokenWithBalance[]) {
+    if (!balances) {
+      return state.popularTokens;
+    }
+
+    return state.popularTokens?.filter(token => !balances.some(t => t.address === token.address));
   },
 
   setSourceToken(sourceToken: SwapTokenWithBalance | undefined) {
@@ -320,25 +311,6 @@ export const SwapController = {
     if (amount === '') {
       state.toTokenAmount = '';
     }
-  },
-
-  async initializeState() {
-    if (state.initializing) {
-      return;
-    }
-
-    state.initializing = true;
-    if (!state.initialized) {
-      try {
-        await this.fetchTokens();
-        state.initialized = true;
-      } catch (error) {
-        state.initialized = false;
-        SnackController.showError('Failed to initialize swap');
-        RouterController.goBack();
-      }
-    }
-    state.initializing = false;
   },
 
   async getAddressPrice(address: string) {
@@ -404,26 +376,11 @@ export const SwapController = {
   },
 
   setBalances(balances: SwapTokenWithBalance[]) {
-    const { networkAddress } = this.getParams();
-    const caipNetwork = ConnectionsController.state.activeNetwork;
-
-    if (!caipNetwork) {
-      return;
-    }
-
-    const networkToken = balances.find(token => token.address === networkAddress);
+    state.myTokensWithBalance = balances;
 
     balances.forEach(token => {
       state.tokensPriceMap[token.address] = token.price || 0;
     });
-
-    state.myTokensWithBalance = balances.filter(
-      token => token.address?.startsWith(caipNetwork.caipNetworkId)
-    );
-
-    state.networkBalanceInUSD = networkToken
-      ? NumberUtil.multiply(networkToken.quantity.numeric, networkToken.price).toString()
-      : '0';
   },
 
   setToToken(toToken: SwapTokenWithBalance | undefined) {
@@ -495,11 +452,11 @@ export const SwapController = {
         amount: amountDecimal.toString()
       });
 
-      state.loadingQuote = false;
-
       const quoteToAmount = quoteResponse?.quotes?.[0]?.toAmount;
 
       if (!quoteToAmount) {
+        state.loadingQuote = false;
+
         return;
       }
 
@@ -522,6 +479,7 @@ export const SwapController = {
       }
     } catch (error) {
       SnackController.showError('Failed to get swap quote');
+    } finally {
       state.loadingQuote = false;
     }
   },
@@ -694,22 +652,10 @@ export const SwapController = {
   },
 
   async sendTransactionForApproval(data: TransactionParams) {
-    const { fromAddress, isAuthConnector } = this.getParams();
-
+    const { fromAddress } = this.getParams();
     state.loadingApprovalTransaction = true;
-    const approveLimitMessage = `Approve limit increase in your wallet`;
 
-    if (isAuthConnector) {
-      RouterController.pushTransactionStack({
-        view: null,
-        goBack: true,
-        onSuccess() {
-          SnackController.showLoading(approveLimitMessage);
-        }
-      });
-    } else {
-      SnackController.showLoading(approveLimitMessage);
-    }
+    SnackController.showLoading('Approve limit increase in your wallet');
 
     try {
       await ConnectionsController.sendTransaction({
@@ -724,12 +670,13 @@ export const SwapController = {
       await this.swapTokens();
       await this.getTransaction();
       state.approvalTransaction = undefined;
-      state.loadingApprovalTransaction = false;
     } catch (err) {
       const error = err as TransactionError;
       state.transactionError = error?.shortMessage as unknown as string;
-      state.loadingApprovalTransaction = false;
+
       SnackController.showError(error?.shortMessage ?? 'Transaction error');
+    } finally {
+      state.loadingApprovalTransaction = false;
     }
   },
 
@@ -737,32 +684,19 @@ export const SwapController = {
     if (!data) {
       return undefined;
     }
-    const { fromAddress, toTokenAmount, isAuthConnector } = this.getParams();
+    const { fromAddress, isAuthConnector } = this.getParams();
 
     state.loadingTransaction = true;
 
-    const snackbarPendingMessage = `Swapping ${state.sourceToken
-      ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
-      ?.symbol}`;
-    const snackbarSuccessMessage = `Swapped ${state.sourceToken
-      ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
-      ?.symbol}`;
+    const snackbarSuccessMessage = `Swapped ${state.sourceToken?.symbol} to ${state.toToken?.symbol}`;
 
-    if (isAuthConnector) {
-      RouterController.pushTransactionStack({
-        view: 'Account',
-        goBack: false,
-        onSuccess() {
-          SnackController.showLoading(snackbarPendingMessage);
-          SwapController.resetState();
-        }
-      });
-    } else {
-      SnackController.showLoading('Confirm transaction in your wallet');
-    }
+    SnackController.showLoading('Confirm transaction in your wallet');
 
     try {
-      const forceUpdateAddresses = [state.sourceToken?.address, state.toToken?.address].join(',');
+      const forceUpdateAddresses = [state.sourceToken?.address, state.toToken?.address].filter(
+        Boolean
+      ) as CaipAddress[];
+
       const transactionHash = await ConnectionsController.sendTransaction({
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
@@ -774,7 +708,8 @@ export const SwapController = {
       });
 
       state.loadingTransaction = false;
-      SnackController.showSuccess(snackbarSuccessMessage);
+
+      SnackController.showSuccess(snackbarSuccessMessage, true);
       EventsController.sendEvent({
         type: 'track',
         event: 'SWAP_SUCCESS',
@@ -784,20 +719,15 @@ export const SwapController = {
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+          isSmartAccount: ConnectionsController.state.accountType === 'smartAccount'
         }
       });
-      SwapController.resetState();
-
-      if (!isAuthConnector) {
-        RouterController.replace('AccountDefault');
-      }
-
+      RouterController.replace(isAuthConnector ? 'Account' : 'AccountDefault');
+      SwapController.clearTokens();
       SwapController.getMyTokensWithBalance(forceUpdateAddresses);
-      AccountController.fetchTokenBalance();
 
       setTimeout(() => {
-        TransactionsController.fetchTransactions(AccountController.state.address, true);
+        TransactionsController.fetchTransactions(ConnectionsController.state.activeAddress, true);
       }, 5000);
 
       return transactionHash;
@@ -816,7 +746,7 @@ export const SwapController = {
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+          isSmartAccount: ConnectionsController.state.accountType === 'smartAccount'
         }
       });
 
@@ -824,8 +754,45 @@ export const SwapController = {
     }
   },
 
+  clearTransactionLoaders() {
+    state.loadingApprovalTransaction = false;
+    state.loadingBuildTransaction = false;
+    state.loadingTransaction = false;
+  },
+
+  clearTokens() {
+    state.sourceToken = initialState.sourceToken;
+    state.sourceTokenAmount = initialState.sourceTokenAmount;
+    state.sourceTokenPriceInUSD = initialState.sourceTokenPriceInUSD;
+    state.toToken = initialState.toToken;
+    state.toTokenAmount = initialState.toTokenAmount;
+    state.toTokenPriceInUSD = initialState.toTokenPriceInUSD;
+    state.inputError = initialState.inputError;
+    state.loadingApprovalTransaction = initialState.loadingApprovalTransaction;
+    state.loadingBuildTransaction = initialState.loadingBuildTransaction;
+    state.loadingTransaction = initialState.loadingTransaction;
+    state.fetchError = initialState.fetchError;
+    state.transactionError = initialState.transactionError;
+    state.swapTransaction = initialState.swapTransaction;
+    state.approvalTransaction = initialState.approvalTransaction;
+  },
+
+  resetState() {
+    this.clearTokens();
+    state.myTokensWithBalance = initialState.myTokensWithBalance;
+    state.tokensPriceMap = initialState.tokensPriceMap;
+    state.networkPrice = initialState.networkPrice;
+    state.networkTokenSymbol = initialState.networkTokenSymbol;
+  },
+
   // -- Checks -------------------------------------------- //
   hasInsufficientToken(sourceTokenAmount: string, sourceTokenAddress: string) {
+    const { balances } = ConnectionsController.state;
+    const networkToken = balances?.find(t => t.address === undefined);
+    const networkBalanceInUSD = networkToken
+      ? NumberUtil.multiply(networkToken.quantity?.numeric ?? '0', networkToken.price).toString()
+      : '0';
+
     const isInsufficientSourceTokenForSwap = SwapCalculationUtil.isInsufficientSourceTokenForSwap(
       sourceTokenAmount,
       sourceTokenAddress,
@@ -833,12 +800,12 @@ export const SwapController = {
     );
 
     let insufficientNetworkTokenForGas = true;
-    if (AccountController.state.preferredAccountType === 'smartAccount') {
+    if (ConnectionsController.state.accountType === 'smartAccount') {
       // Smart Accounts may pay gas in any ERC20 token
       insufficientNetworkTokenForGas = false;
     } else {
       insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
-        state.networkBalanceInUSD,
+        networkBalanceInUSD,
         state.gasPriceInUSD
       );
     }

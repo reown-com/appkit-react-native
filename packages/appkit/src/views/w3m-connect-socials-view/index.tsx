@@ -1,13 +1,10 @@
-import { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import { ScrollView } from 'react-native';
 import { StringUtil, type SocialProvider } from '@reown/appkit-common-react-native';
 import {
-  ConnectionController,
   EventsController,
   OptionsController,
-  RouterController,
-  WebviewController
+  RouterController
 } from '@reown/appkit-core-react-native';
 import { FlexView, ListSocial, Text } from '@reown/appkit-ui-react-native';
 
@@ -20,22 +17,14 @@ export function ConnectSocialsView() {
   const socialProviders = (features?.socials ?? []) as SocialProvider[];
 
   const onItemPress = (provider: SocialProvider) => {
-    ConnectionController.setSelectedSocialProvider(provider);
     EventsController.sendEvent({
       type: 'track',
       event: 'SOCIAL_LOGIN_STARTED',
       properties: { provider }
     });
-    if (provider === 'farcaster') {
-      RouterController.push('ConnectingFarcaster');
-    } else {
-      RouterController.push('ConnectingSocial');
-    }
-  };
 
-  useEffect(() => {
-    WebviewController.setConnecting(false);
-  }, []);
+    RouterController.push('ConnectingSocial', { socialProvider: provider });
+  };
 
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
