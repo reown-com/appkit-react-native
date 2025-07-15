@@ -36,5 +36,12 @@ export const ConstantsUtil = {
     '0x55d398326f99059fF775485246999027B3197955',
     // Arbitrum
     '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
-  ]
+  ],
+
+  PHANTOM_CUSTOM_WALLET: {
+    id: 'phantom-wallet',
+    name: 'Phantom',
+    image_id: 'b6ec7b81-bb4f-427d-e290-7631e6e50d00',
+    mobile_link: 'phantom://'
+  }
 };

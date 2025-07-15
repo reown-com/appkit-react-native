@@ -29,7 +29,6 @@ import { WagmiAdapter } from '@reown/appkit-wagmi-react-native';
 import { ActionsView } from './src/views/ActionsView';
 import { WalletInfoView } from './src/views/WalletInfoView';
 import { EventsView } from './src/views/EventsView';
-import { getCustomWallets } from './src/utils/misc';
 import { storage } from './src/utils/StorageUtil';
 import { siweConfig } from './src/utils/SiweUtils';
 
@@ -81,7 +80,6 @@ const appKit = createAppKit({
   clipboardClient,
   debug: true,
   enableAnalytics: true,
-  customWallets: getCustomWallets(),
   storage,
   extraConnectors: [new PhantomConnector({ cluster: 'mainnet-beta' })]
   // tokens: {

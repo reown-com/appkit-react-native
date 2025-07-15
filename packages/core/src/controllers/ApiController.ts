@@ -207,6 +207,18 @@ export const ApiController = {
     }
   },
 
+  async fetchCustomWalletImages() {
+    const { customWallets } = OptionsController.state;
+    if (!customWallets?.length) {
+      return;
+    }
+
+    const images = customWallets.map(w => w.image_id).filter(Boolean);
+    await CoreHelperUtil.allSettled(
+      (images as string[]).map(id => ApiController._fetchWalletImage(id))
+    );
+  },
+
   async fetchRecommendedWallets() {
     const { installed } = ApiController.state;
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state;
@@ -345,7 +357,8 @@ export const ApiController = {
         ApiController.fetchFeaturedWallets(),
         ApiController.fetchRecommendedWallets(),
         ApiController.fetchNetworkImages(),
-        ApiController.fetchConnectorImages()
+        ApiController.fetchConnectorImages(),
+        ApiController.fetchCustomWalletImages()
       ];
       if (OptionsController.state.enableAnalytics === undefined) {
         promises.push(ApiController.fetchAnalyticsConfig());

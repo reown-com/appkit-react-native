@@ -6,7 +6,8 @@ import {
   type OptionsControllerState,
   ApiController,
   ConnectionController,
-  type ConnectionControllerState
+  type ConnectionControllerState,
+  AssetUtil
 } from '@reown/appkit-core-react-native';
 import { ListWallet } from '@reown/appkit-ui-react-native';
 import { filterOutRecentWallets } from '../utils';
@@ -19,6 +20,7 @@ interface Props {
 
 export function CustomWalletList({ itemStyle, onWalletPress, isWalletConnectEnabled }: Props) {
   const { installed } = useSnapshot(ApiController.state);
+  const imageHeaders = ApiController._getApiHeaders();
   const { recentWallets } = useSnapshot(ConnectionController.state) as ConnectionControllerState;
   const { customWallets } = useSnapshot(OptionsController.state) as OptionsControllerState;
   const RECENT_COUNT = recentWallets?.length && installed.length ? 1 : recentWallets?.length ?? 0;
@@ -32,7 +34,8 @@ export function CustomWalletList({ itemStyle, onWalletPress, isWalletConnectEnab
   return list.map(wallet => (
     <ListWallet
       key={wallet.id}
-      imageSrc={wallet.image_url}
+      imageSrc={AssetUtil.getWalletImage(wallet)}
+      imageHeaders={imageHeaders}
       name={wallet.name}
       onPress={() => onWalletPress(wallet)}
       style={itemStyle}
