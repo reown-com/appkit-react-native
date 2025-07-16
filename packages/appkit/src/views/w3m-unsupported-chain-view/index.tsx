@@ -48,7 +48,7 @@ export function UnsupportedChainView() {
           key={item.id}
           icon="networkPlaceholder"
           iconBackgroundColor="gray-glass-010"
-          imageSrc={item ? networkImages[item.id] : undefined}
+          imageSrc={networkImages[item.id]}
           imageHeaders={imageHeaders}
           onPress={() => onNetworkPress(item)}
           testID="button-network"

@@ -35,7 +35,7 @@ export function WalletCompatibleNetworks() {
             padding={['s', 's', 's', 's']}
           >
             <NetworkImage
-              imageSrc={network ? networkImages[network.id] : undefined}
+              imageSrc={networkImages[network.id]}
               imageHeaders={imageHeaders}
               size="sm"
               style={styles.image}

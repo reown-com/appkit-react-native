@@ -1,9 +1,8 @@
-import { Path, Svg, Image, Defs, Pattern } from 'react-native-svg';
+import { Path, Svg, Image, Defs, Pattern, G } from 'react-native-svg';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 import type { SizeType } from '../../utils/TypesUtil';
-import { Icon } from '../../components/wui-icon';
-import { FlexView } from '../../layout/wui-flex';
+import NetworkPlaceholderSvg from '../../assets/svg/NetworkPlaceholder';
 import { PathLg, PathNormal, PathSmall, PathXS } from './styles';
 
 export interface NetworkImageProps {
@@ -31,6 +30,13 @@ const sizeToHeight = {
   xs: 20
 };
 
+const sizeToIconSize = {
+  lg: 24,
+  md: 16,
+  sm: 14,
+  xs: 12
+};
+
 export function NetworkImage({
   imageSrc,
   imageHeaders,
@@ -44,42 +50,52 @@ export function NetworkImage({
   const Theme = useTheme();
   const svgStroke = selected ? Theme['accent-100'] : Theme['gray-glass-010'];
   const opacity = disabled ? 0.5 : 1;
+  const containerSize = sizeToHeight[size];
+  const iconSize = sizeToIconSize[size];
 
   return (
     <Svg
-      width={sizeToHeight[size]}
-      height={sizeToHeight[size]}
+      width={containerSize}
+      height={containerSize}
       stroke={borderColor ?? svgStroke}
       strokeWidth={borderWidth}
       style={style}
     >
-      <Defs>
-        <Pattern id="image-pattern">
-          {imageSrc ? (
-            <Image
-              height={sizeToHeight[size]}
-              width={sizeToHeight[size]}
-              opacity={opacity}
-              href={{ uri: imageSrc, headers: imageHeaders }}
-            />
-          ) : (
-            <FlexView
-              alignItems="center"
-              justifyContent="center"
-              // eslint-disable-next-line react-native/no-inline-styles
-              style={{
-                height: sizeToHeight[size],
-                width: sizeToHeight[size],
-                backgroundColor: 'transparent'
-              }}
+      {imageSrc ? (
+        <>
+          <Defs>
+            <Pattern
+              id="image-pattern"
+              width={containerSize}
+              height={containerSize}
+              patternUnits="userSpaceOnUse"
             >
-              <Icon name="networkPlaceholder" size={size} color="fg-200" />
-            </FlexView>
-          )}
-        </Pattern>
-      </Defs>
-      {!imageSrc && <Path d={sizeToPath[size]} opacity={opacity} fill={Theme['gray-glass-005']} />}
-      <Path d={sizeToPath[size]} opacity={opacity} fill="url(#image-pattern)" />
+              <Image
+                height={containerSize}
+                width={containerSize}
+                opacity={opacity}
+                href={{ uri: imageSrc, headers: imageHeaders }}
+              />
+            </Pattern>
+          </Defs>
+          <Path d={sizeToPath[size]} opacity={opacity} fill="url(#image-pattern)" />
+        </>
+      ) : (
+        <>
+          <Path d={sizeToPath[size]} opacity={opacity} fill={Theme['gray-glass-005']} />
+          <G
+            transform={`translate(${(containerSize - iconSize) / 2}, ${
+              (containerSize - iconSize) / 2
+            })`}
+          >
+            <NetworkPlaceholderSvg
+              fill={selected ? Theme['accent-100'] : Theme['fg-200']}
+              width={iconSize}
+              height={iconSize}
+            />
+          </G>
+        </>
+      )}
     </Svg>
   );
 }
