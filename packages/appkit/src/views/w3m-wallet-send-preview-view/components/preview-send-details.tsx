@@ -1,4 +1,4 @@
-import { AssetUtil } from '@reown/appkit-core-react-native';
+import { AssetController } from '@reown/appkit-core-react-native';
 import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 import {
   BorderRadius,
@@ -10,6 +10,7 @@ import {
   useTheme
 } from '@reown/appkit-ui-react-native';
 import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
+import { useSnapshot } from 'valtio';
 
 export interface PreviewSendDetailsProps {
   address?: string;
@@ -27,6 +28,7 @@ export function PreviewSendDetails({
   style
 }: PreviewSendDetailsProps) {
   const Theme = useTheme();
+  const { networkImages } = useSnapshot(AssetController.state);
 
   const formattedName = UiUtil.getTruncateString({
     string: name ?? '',
@@ -42,7 +44,7 @@ export function PreviewSendDetails({
     truncate: 'middle'
   });
 
-  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
+  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
 
   return (
     <FlexView

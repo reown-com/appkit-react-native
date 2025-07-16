@@ -14,16 +14,6 @@ export const AssetUtil = {
     return undefined;
   },
 
-  getNetworkImage(networkId?: string | number) {
-    //TODO: check if imageUrl case is needed
-
-    if (networkId) {
-      return AssetController.state.networkImages[networkId];
-    }
-
-    return undefined;
-  },
-
   getConnectorImage(imageId?: string) {
     if (imageId) {
       return AssetController.state.connectorImages[imageId];

@@ -1,5 +1,6 @@
 import { ConstantsUtil } from '@reown/appkit-common-react-native';
 import type { AppKitNetwork, CaipNetworkId, Network } from '@reown/appkit-common-react-native';
+import type { CaipNamespaces } from '@reown/appkit-core-react-native';
 
 export const NetworkUtil = {
   formatNetwork(network: Network, projectId: string): AppKitNetwork {
@@ -37,17 +38,19 @@ export const NetworkUtil = {
     return url.toString();
   },
 
-  getDefaultChainId(network?: AppKitNetwork): CaipNetworkId | undefined {
-    if (!network) return undefined;
+  getDefaultChainId(
+    namespaces: CaipNamespaces,
+    defaultNetwork?: AppKitNetwork
+  ): CaipNetworkId | undefined {
+    if (!defaultNetwork) return undefined;
 
-    if (network.caipNetworkId) {
-      return network.caipNetworkId;
+    const isValidDefaultNetwork = Object.values(namespaces).some(
+      namespace => namespace?.chains?.some(chain => chain === defaultNetwork.caipNetworkId)
+    );
+    if (isValidDefaultNetwork) {
+      return defaultNetwork.caipNetworkId;
     }
 
-    if (network.chainNamespace) {
-      return `${network.chainNamespace}:${network.id}`;
-    }
-
-    return `eip155:${network.id}`;
+    return undefined;
   }
 };

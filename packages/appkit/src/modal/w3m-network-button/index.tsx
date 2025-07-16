@@ -1,12 +1,12 @@
 import { useSnapshot } from 'valtio';
 import type { StyleProp, ViewStyle } from 'react-native';
 import {
-  AccountController,
   ApiController,
-  AssetUtil,
+  AssetController,
   ConnectionsController,
   EventsController,
   ModalController,
+  OptionsController,
   ThemeController
 } from '@reown/appkit-core-react-native';
 import { NetworkButton as NetworkButtonUI, ThemeProvider } from '@reown/appkit-ui-react-native';
@@ -17,10 +17,14 @@ export interface NetworkButtonProps {
 }
 
 export function NetworkButton({ disabled, style }: NetworkButtonProps) {
-  const { isConnected } = useSnapshot(AccountController.state);
-  const { activeNetwork } = useSnapshot(ConnectionsController.state);
+  const { activeNetwork, isConnected } = useSnapshot(ConnectionsController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
+  const { defaultNetwork } = useSnapshot(OptionsController.state);
   const { loading } = useSnapshot(ModalController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
+
+  const network = isConnected ? activeNetwork : defaultNetwork;
+  const networkImage = network ? networkImages[network.id] : undefined;
 
   const onNetworkPress = () => {
     ModalController.open({ view: 'Networks' });
@@ -33,7 +37,7 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
   return (
     <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
       <NetworkButtonUI
-        imageSrc={AssetUtil.getNetworkImage(activeNetwork?.id)}
+        imageSrc={networkImage}
         imageHeaders={ApiController._getApiHeaders()}
         disabled={disabled || loading}
         style={style}
@@ -41,7 +45,7 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
         loading={loading}
         testID="network-button"
       >
-        {activeNetwork?.name ?? (isConnected ? 'Unknown Network' : 'Select Network')}
+        {network?.name ?? (isConnected ? 'Unknown Network' : 'Select Network')}
       </NetworkButtonUI>
     </ThemeProvider>
   );

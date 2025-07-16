@@ -12,7 +12,7 @@ import {
 } from '@reown/appkit-ui-react-native';
 import { type Transaction, type TransactionImage } from '@reown/appkit-common-react-native';
 import {
-  AssetUtil,
+  AssetController,
   ConnectionsController,
   ConstantsUtil,
   EventsController,
@@ -33,7 +33,8 @@ export function AccountActivity({ style }: Props) {
   const [initialLoad, setInitialLoad] = useState(true);
   const { loading, transactions, next } = useSnapshot(TransactionsController.state);
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
-  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
+  const { networkImages } = useSnapshot(AssetController.state);
+  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
   const isSupported =
     activeNetwork?.caipNetworkId &&
     ConstantsUtil.ACTIVITY_SUPPORTED_CHAINS.includes(activeNetwork.caipNetworkId);

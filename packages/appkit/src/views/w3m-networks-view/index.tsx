@@ -10,19 +10,22 @@ import {
 } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
-  NetworkController,
   RouterController,
   EventsController,
   ConnectionsController,
-  AssetUtil
+  ModalController,
+  OptionsController,
+  AssetController
 } from '@reown/appkit-core-react-native';
 import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 import { useAppKit } from '../../AppKitContext';
+import { useSnapshot } from 'valtio';
 
 export function NetworksView() {
-  const { caipNetwork } = NetworkController.state;
+  const { networks, isConnected } = useSnapshot(ConnectionsController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const { maxWidth: width, padding } = useCustomDimensions();
   const numColumns = 4;
@@ -33,22 +36,31 @@ export function NetworksView() {
   );
   const { switchNetwork } = useAppKit();
 
+  const networkList = isConnected ? ConnectionsController.getConnectedNetworks() : networks;
+
   const onHelpPress = () => {
     RouterController.push('WhatIsANetwork');
     EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORK_HELP' });
   };
 
   const networksTemplate = () => {
-    //TODO: should show requested networks disabled
-    // const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
-    const networks = ConnectionsController.getConnectedNetworks();
-
     const onNetworkPress = async (network: AppKitNetwork) => {
       await switchNetwork(network);
-      RouterController.goBack();
+
+      if (RouterController.state.history.length > 1) {
+        RouterController.goBack();
+      } else {
+        ModalController.close();
+      }
     };
 
-    return networks.map(network => {
+    return networkList.map(network => {
+      const isSelected = ConnectionsController.state.isConnected
+        ? ConnectionsController.state.activeCaipNetworkId === network.caipNetworkId
+        : OptionsController.state.defaultNetwork?.caipNetworkId === network.caipNetworkId;
+      // eslint-disable-next-line valtio/state-snapshot-rule
+      const networkImage = network ? networkImages[network.id] : undefined;
+
       return (
         <View
           key={network.id}
@@ -64,10 +76,9 @@ export function NetworksView() {
             testID={`w3m-network-switch-${network.name ?? network.id}`}
             name={network.name ?? 'Unknown'}
             type="network"
-            imageSrc={AssetUtil.getNetworkImage(network.id)}
+            imageSrc={networkImage}
             imageHeaders={imageHeaders}
-            // disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.caipNetworkId)}
-            selected={caipNetwork?.id === network.id}
+            selected={isSelected}
             onPress={() => onNetworkPress(network)}
           />
         </View>

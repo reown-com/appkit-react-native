@@ -2,13 +2,18 @@ import { useSnapshot } from 'valtio';
 import { useState } from 'react';
 import { FlatList } from 'react-native';
 import { Icon, ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
-import { ApiController, AssetUtil, ConnectionsController } from '@reown/appkit-core-react-native';
+import {
+  ApiController,
+  AssetController,
+  ConnectionsController
+} from '@reown/appkit-core-react-native';
 import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 import { useAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function UnsupportedChainView() {
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const [disconnecting, setDisconnecting] = useState(false);
   //TODO: should show requested networks disabled
   // const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
@@ -43,7 +48,7 @@ export function UnsupportedChainView() {
           key={item.id}
           icon="networkPlaceholder"
           iconBackgroundColor="gray-glass-010"
-          imageSrc={AssetUtil.getNetworkImage(item.id)}
+          imageSrc={networkImages[item.id]}
           imageHeaders={imageHeaders}
           onPress={() => onNetworkPress(item)}
           testID="button-network"

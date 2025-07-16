@@ -3,7 +3,7 @@ import { useSnapshot } from 'valtio';
 import { ScrollView } from 'react-native';
 import { FlexView, InputText, ListToken, Text } from '@reown/appkit-ui-react-native';
 import {
-  AssetUtil,
+  AssetController,
   ConnectionsController,
   RouterController,
   SendController
@@ -17,8 +17,9 @@ import styles from './styles';
 export function WalletSendSelectTokenView() {
   const { padding } = useCustomDimensions();
   const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const { token } = useSnapshot(SendController.state);
-  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
+  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const [filteredTokens, setFilteredTokens] = useState(balances ?? []);
 

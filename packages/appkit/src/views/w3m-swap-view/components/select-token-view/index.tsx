@@ -14,7 +14,7 @@ import {
 } from '@reown/appkit-ui-react-native';
 
 import {
-  AssetUtil,
+  AssetController,
   ConnectionsController,
   SwapController,
   type SwapControllerState,
@@ -36,11 +36,12 @@ export function SwapSelectTokenView({ onClose, type }: Props) {
   const { padding } = useCustomDimensions();
   const Theme = useTheme();
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const { sourceToken, suggestedTokens, myTokensWithBalance } = useSnapshot(
     SwapController.state
   ) as SwapControllerState;
 
-  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
+  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const isSourceToken = type === 'sourceToken';
 

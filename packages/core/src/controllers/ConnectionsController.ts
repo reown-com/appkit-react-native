@@ -96,6 +96,11 @@ const updateConnection = (
 
 const derivedState = derive(
   {
+    isConnected: (get): boolean => {
+      const snap = get(baseState);
+
+      return !!snap.activeNamespace && !!snap.connections.size;
+    },
     activeAddress: (get): CaipAddress | undefined => {
       const snap = get(baseState);
       const connection = getActiveConnection(snap);

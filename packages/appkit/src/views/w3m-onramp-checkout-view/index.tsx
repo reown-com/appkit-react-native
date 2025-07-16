@@ -1,5 +1,5 @@
 import {
-  AssetUtil,
+  AssetController,
   ConnectionsController,
   OnRampController,
   RouterController,
@@ -23,12 +23,13 @@ import { NumberUtil, StringUtil } from '@reown/appkit-common-react-native';
 export function OnRampCheckoutView() {
   const Theme = useTheme();
   const { themeMode } = useSnapshot(ThemeController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const { selectedQuote, selectedPaymentMethod, purchaseCurrency } = useSnapshot(
     OnRampController.state
   );
 
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
-  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
+  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
 
   const value = NumberUtil.roundNumber(selectedQuote?.destinationAmount ?? 0, 6, 5);
   const symbol = selectedQuote?.destinationCurrencyCode;
