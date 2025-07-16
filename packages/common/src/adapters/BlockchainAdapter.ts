@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import type {
   AdapterEvents,
+  AdapterType,
   AppKitNetwork,
   CaipAddress,
   ChainNamespace,
@@ -14,6 +15,7 @@ export abstract class BlockchainAdapter extends EventEmitter {
   public projectId: string;
   public connector?: WalletConnector;
   public supportedNamespace: ChainNamespace;
+  public adapterType: AdapterType;
 
   // Typed emit method
   override emit<K extends keyof AdapterEvents>(
@@ -25,14 +27,17 @@ export abstract class BlockchainAdapter extends EventEmitter {
 
   constructor({
     projectId,
-    supportedNamespace
+    supportedNamespace,
+    adapterType
   }: {
     projectId: string;
     supportedNamespace: ChainNamespace;
+    adapterType: AdapterType;
   }) {
     super();
     this.projectId = projectId;
     this.supportedNamespace = supportedNamespace;
+    this.adapterType = adapterType;
   }
 
   setConnector(connector: WalletConnector) {

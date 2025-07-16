@@ -43,11 +43,7 @@ export type CaipNamespaces = Record<
 
 export type SdkType = 'appkit';
 
-//TODO: check this
-export type SdkVersion =
-  | `react-native-wagmi-${string}`
-  | `react-native-ethers5-${string}`
-  | `react-native-ethers-${string}`;
+export type SdkVersion = `react-native-${string}-${string}`;
 
 type EnabledSocials = SocialProvider;
 

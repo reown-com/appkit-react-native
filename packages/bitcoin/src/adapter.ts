@@ -16,7 +16,8 @@ export class BitcoinAdapter extends BlockchainAdapter {
   constructor(configParams: { projectId: string }) {
     super({
       projectId: configParams.projectId,
-      supportedNamespace: BitcoinAdapter.supportedNamespace
+      supportedNamespace: BitcoinAdapter.supportedNamespace,
+      adapterType: 'bip122'
     });
   }
 

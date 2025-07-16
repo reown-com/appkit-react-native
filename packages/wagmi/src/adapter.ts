@@ -37,7 +37,8 @@ export class WagmiAdapter extends EVMAdapter {
   constructor(configParams: ConfigParams) {
     super({
       projectId: configParams.projectId,
-      supportedNamespace: WagmiAdapter.supportedNamespace
+      supportedNamespace: WagmiAdapter.supportedNamespace,
+      adapterType: 'wagmi'
     });
     this.wagmiChains = configParams.networks;
     this.wagmiConfig = this.createWagmiInternalConfig(configParams);

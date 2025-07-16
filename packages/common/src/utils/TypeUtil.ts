@@ -6,6 +6,8 @@ export type CaipNetworkId = `${string}:${string}`;
 
 export type ChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122';
 
+export type AdapterType = 'solana' | 'wagmi' | 'ethers' | 'universal' | 'bip122';
+
 export type Network = {
   // Core viem/chain properties
   id: number | string;

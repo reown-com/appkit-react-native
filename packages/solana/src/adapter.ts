@@ -14,7 +14,8 @@ export class SolanaAdapter extends SolanaBaseAdapter {
   constructor(configParams: { projectId: string }) {
     super({
       projectId: configParams.projectId,
-      supportedNamespace: SolanaAdapter.supportedNamespace
+      supportedNamespace: SolanaAdapter.supportedNamespace,
+      adapterType: 'solana'
     });
   }
 

@@ -14,7 +14,8 @@ export class EthersAdapter extends EVMAdapter {
   constructor(configParams: { projectId: string }) {
     super({
       projectId: configParams.projectId,
-      supportedNamespace: EthersAdapter.supportedNamespace
+      supportedNamespace: EthersAdapter.supportedNamespace,
+      adapterType: 'ethers'
     });
   }
 

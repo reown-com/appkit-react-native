@@ -2,7 +2,9 @@
 
 import { Linking, Platform } from 'react-native';
 import {
+  BlockchainAdapter,
   ConstantsUtil as CommonConstants,
+  type AdapterType,
   type Balance,
   type CaipAddress,
   type CaipNetwork,
@@ -12,7 +14,7 @@ import {
 import * as ct from 'countries-and-timezones';
 
 import { ConstantsUtil } from './ConstantsUtil';
-import type { DataWallet, LinkingRecord } from './TypeUtil';
+import type { DataWallet, LinkingRecord, SdkVersion } from './TypeUtil';
 // -- Helpers -----------------------------------------------------------------
 async function isAppInstalledIos(deepLink?: string): Promise<boolean> {
   try {
@@ -325,5 +327,19 @@ export const CoreHelperUtil = {
         func(...args);
       }, wait);
     };
+  },
+
+  generateSdkVersion(adapters: BlockchainAdapter[], version: string): SdkVersion {
+    const hasNoAdapters = adapters.length === 0;
+    const universalType: AdapterType = 'universal';
+
+    const adapterNames = hasNoAdapters
+      ? universalType
+      : adapters
+          .sort((a, b) => a.adapterType.localeCompare(b.adapterType))
+          .map(adapter => adapter.adapterType)
+          .join(',');
+
+    return `react-native-${adapterNames}-${version}`;
   }
 };

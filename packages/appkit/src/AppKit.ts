@@ -12,7 +12,8 @@ import {
   ThemeController,
   ConnectionController,
   SwapController,
-  OnRampController
+  OnRampController,
+  CoreHelperUtil
 } from '@reown/appkit-core-react-native';
 
 import {
@@ -563,9 +564,9 @@ export class AppKit {
     ThemeController.setThemeMode(options.themeMode);
     ThemeController.setThemeVariables(options.themeVariables);
 
-    //TODO: function to get sdk version based on adapters
-    // @ts-ignore
-    OptionsController.setSdkVersion('appkit-react-native-multichain');
+    OptionsController.setSdkVersion(
+      CoreHelperUtil.generateSdkVersion(this.adapters, ConstantsUtil.VERSION)
+    );
 
     if (options.clipboardClient) {
       OptionsController.setClipboardClient(options.clipboardClient);
