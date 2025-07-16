@@ -365,6 +365,13 @@ export class AppKit {
             this.syncAccounts(initializedAdapters);
 
             AccountController.setIsConnected(true);
+
+            if (
+              OptionsController.state.isSiweEnabled &&
+              ConnectionsController.state.activeNamespace === 'eip155'
+            ) {
+              this.handleSiweChange();
+            }
           }
         } catch (error) {
           // Use console.warn for non-critical initialization failures

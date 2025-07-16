@@ -1,4 +1,4 @@
-import { RouterUtil, ConnectionsController } from '@reown/appkit-core-react-native';
+import { RouterUtil, ConnectionsController, CoreHelperUtil } from '@reown/appkit-core-react-native';
 import { NetworkUtil } from '@reown/appkit-common-react-native';
 
 import type {
@@ -84,11 +84,11 @@ export class AppKitSIWEClient {
   async signIn(): Promise<SIWESession | undefined> {
     const { activeAddress, activeCaipNetworkId } = ConnectionsController.state;
 
-    if (!activeCaipNetworkId || !activeCaipNetworkId.startsWith('eip155')) {
+    if (!activeAddress || !activeCaipNetworkId || !activeCaipNetworkId.startsWith('eip155')) {
       return Promise.resolve(undefined);
     }
 
-    const plainAddress = activeAddress?.split(':')[2];
+    const plainAddress = CoreHelperUtil.getPlainAddress(activeAddress);
 
     if (!plainAddress) {
       throw new Error('An address is required to create a SIWE message.');
@@ -104,8 +104,7 @@ export class AppKitSIWEClient {
 
     const messageParams = await this.getMessageParams?.();
     const message = this.createMessage({
-      address: plainAddress,
-      chainId,
+      address: activeAddress,
       nonce,
       version: '1',
       iat: messageParams?.iat || new Date().toISOString(),

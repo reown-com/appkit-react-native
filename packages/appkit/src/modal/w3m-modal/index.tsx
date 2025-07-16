@@ -46,7 +46,9 @@ export function AppKit() {
 
   const handleClose = async () => {
     if (OptionsController.state.isSiweEnabled) {
+      const session = await SIWEController.getSession();
       if (
+        !session &&
         SIWEController.state.status !== 'success' &&
         ConnectionsController.state.activeNamespace === 'eip155' &&
         !!ConnectionsController.state.activeAddress

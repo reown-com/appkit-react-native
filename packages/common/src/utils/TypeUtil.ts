@@ -365,11 +365,10 @@ interface CacaoHeader {
 }
 
 export interface SIWECreateMessageArgs {
-  chainId: number;
   domain: string;
   nonce: string;
   uri: string;
-  address: string;
+  address: CaipAddress;
   version: '1';
   type?: CacaoHeader['t'];
   nbf?: string;
@@ -383,7 +382,7 @@ export interface SIWECreateMessageArgs {
 export type SIWEMessageArgs = {
   chains: CaipNetworkId[];
   methods?: string[];
-} & Omit<SIWECreateMessageArgs, 'address' | 'chainId' | 'nonce' | 'version'>;
+} & Omit<SIWECreateMessageArgs, 'address' | 'nonce' | 'version'>;
 // Signed Cacao (CAIP-74)
 interface CacaoPayload {
   domain: string;
