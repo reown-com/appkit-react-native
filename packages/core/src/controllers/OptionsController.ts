@@ -1,5 +1,5 @@
 import { proxy, ref } from 'valtio';
-import type { Tokens, Storage, Metadata } from '@reown/appkit-common-react-native';
+import type { Tokens, Storage, Metadata, AppKitNetwork } from '@reown/appkit-common-react-native';
 import type { CustomWallet, Features, ProjectId, SdkType, SdkVersion } from '../utils/TypeUtil';
 
 import { ConstantsUtil } from '../utils/ConstantsUtil';
@@ -26,6 +26,7 @@ export interface OptionsControllerState {
   isOnRampEnabled?: boolean;
   features?: Features;
   debug?: boolean;
+  defaultNetwork?: AppKitNetwork;
 }
 
 // -- State --------------------------------------------- //
@@ -101,6 +102,10 @@ export const OptionsController = {
     if (storage) {
       state.storage = ref(storage);
     }
+  },
+
+  setDefaultNetwork(defaultNetwork?: OptionsControllerState['defaultNetwork']) {
+    state.defaultNetwork = defaultNetwork;
   },
 
   isClipboardAvailable() {

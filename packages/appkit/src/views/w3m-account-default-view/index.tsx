@@ -4,7 +4,6 @@ import { Linking, ScrollView } from 'react-native';
 import {
   AccountController,
   ApiController,
-  AssetUtil,
   CoreHelperUtil,
   EventsController,
   ModalController,
@@ -14,7 +13,8 @@ import {
   ConstantsUtil,
   SwapController,
   OnRampController,
-  ConnectionsController
+  ConnectionsController,
+  AssetController
 } from '@reown/appkit-core-react-native';
 // import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common-react-native';
 import {
@@ -50,7 +50,8 @@ export function AccountDefaultView() {
   const [disconnecting, setDisconnecting] = useState(false);
   const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
   const { history } = useSnapshot(RouterController.state);
-  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
+  const { networkImages } = useSnapshot(AssetController.state);
+  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
   const showCopy = OptionsController.isClipboardAvailable();
   const isAuth = !!connection?.properties?.provider;
   const showBalance = balance && !isAuth;

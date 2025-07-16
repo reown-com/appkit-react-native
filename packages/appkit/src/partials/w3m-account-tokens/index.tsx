@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { useSnapshot } from 'valtio';
 import {
-  AssetUtil,
+  AssetController,
   ConnectionsController,
   RouterController
 } from '@reown/appkit-core-react-native';
@@ -31,7 +31,8 @@ export function AccountTokens({ style, isLoading }: Props) {
   const Theme = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
-  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
+  const { networkImages } = useSnapshot(AssetController.state);
+  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
 
   const getBalance = useCallback(async () => {
     setRefreshing(true);

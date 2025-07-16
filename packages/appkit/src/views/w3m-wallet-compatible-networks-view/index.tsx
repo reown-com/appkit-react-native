@@ -1,13 +1,18 @@
 import { ScrollView } from 'react-native';
 import { useSnapshot } from 'valtio';
 import { FlexView, Text, Banner, NetworkImage } from '@reown/appkit-ui-react-native';
-import { ApiController, AssetUtil, ConnectionsController } from '@reown/appkit-core-react-native';
+import {
+  ApiController,
+  AssetController,
+  ConnectionsController
+} from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function WalletCompatibleNetworks() {
   const { padding } = useCustomDimensions();
   const { networks, accountType } = useSnapshot(ConnectionsController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const isSmartAccount = accountType === 'smartAccount';
 
   const approvedNetworks = isSmartAccount
@@ -30,7 +35,7 @@ export function WalletCompatibleNetworks() {
             padding={['s', 's', 's', 's']}
           >
             <NetworkImage
-              imageSrc={AssetUtil.getNetworkImage(network?.id)}
+              imageSrc={network ? networkImages[network.id] : undefined}
               imageHeaders={imageHeaders}
               size="sm"
               style={styles.image}

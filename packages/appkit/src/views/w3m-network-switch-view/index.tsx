@@ -2,7 +2,7 @@ import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
 import {
   ApiController,
-  AssetUtil,
+  AssetController,
   ConnectionController,
   ConnectionsController,
   RouterController,
@@ -24,10 +24,12 @@ export function NetworkSwitchView() {
   const { data } = useSnapshot(RouterController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const [error, setError] = useState<boolean>(false);
   const [showRetry, setShowRetry] = useState<boolean>(false);
   const network = data?.network;
   const wallet = recentWallets?.[0];
+  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
 
   const onSwitchNetwork = async () => {
     try {
@@ -105,7 +107,7 @@ export function NetworkSwitchView() {
     <FlexView alignItems="center" padding={['2xl', 's', '4xl', 's']}>
       <LoadingHexagon paused={error}>
         <NetworkImage
-          imageSrc={AssetUtil.getNetworkImage(network?.id)}
+          imageSrc={networkImage}
           imageHeaders={ApiController._getApiHeaders()}
           size="lg"
         />

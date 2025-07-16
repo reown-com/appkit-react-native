@@ -12,7 +12,7 @@ import {
 import {
   AccountController,
   ApiController,
-  AssetUtil,
+  AssetController,
   ConnectionsController,
   CoreHelperUtil,
   OptionsController,
@@ -23,11 +23,12 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function WalletReceiveView() {
   const { profileName } = useSnapshot(AccountController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const { activeNetwork, networks, activeAddress, accountType } = useSnapshot(
     ConnectionsController.state
   );
   const address = CoreHelperUtil.getPlainAddress(activeAddress);
-  const networkImage = AssetUtil.getNetworkImage(activeNetwork?.id);
+  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
   const { padding } = useCustomDimensions();
   const canCopy = OptionsController.isClipboardAvailable();
   const isSmartAccount = accountType === 'smartAccount';
@@ -41,7 +42,7 @@ export function WalletReceiveView() {
   const imagesArray = approvedNetworks
     .filter(network => network?.id)
     .slice(0, 5)
-    .map(network => AssetUtil.getNetworkImage(network?.id))
+    .map(network => AssetController.state.networkImages[network.id])
     .filter(Boolean) as string[];
 
   const label = UiUtil.getTruncateString({

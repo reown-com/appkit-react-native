@@ -11,7 +11,7 @@ import {
 } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
-  AssetUtil,
+  AssetController,
   ConnectionsController,
   CoreHelperUtil,
   ModalController,
@@ -28,7 +28,9 @@ export function AccountView() {
   const [isLoading, setIsLoading] = useState(false);
   const { padding } = useCustomDimensions();
   const { activeNetwork, activeAddress } = useSnapshot(ConnectionsController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const address = CoreHelperUtil.getPlainAddress(activeAddress);
+  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
 
   const onProfilePress = () => {
     RouterController.push('AccountDefault');
@@ -68,7 +70,7 @@ export function AccountView() {
       ]}
     >
       <NetworkButton
-        imageSrc={AssetUtil.getNetworkImage(activeNetwork?.id)}
+        imageSrc={networkImage}
         imageHeaders={ApiController._getApiHeaders()}
         onPress={onNetworkPress}
         style={styles.networkIcon}

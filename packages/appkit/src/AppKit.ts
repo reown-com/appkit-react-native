@@ -71,7 +71,6 @@ export class AppKit {
   private projectId: string;
   private adapters: BlockchainAdapter[];
   private networks: AppKitNetwork[];
-  private defaultNetwork?: AppKitNetwork;
   private namespaces: ProposalNamespaces;
   private config: AppKitConfig;
   private extraConnectors: WalletConnector[];
@@ -97,9 +96,6 @@ export class AppKit {
     }
 
     this.networks = NetworkUtil.formatNetworks(config.networks, this.projectId); //TODO: check this
-    this.defaultNetwork = config.defaultNetwork
-      ? NetworkUtil.formatNetwork(config.defaultNetwork, this.projectId)
-      : undefined;
     this.namespaces = WcHelpersUtil.createNamespaces(this.networks) as ProposalNamespaces;
     this.config = config;
     this.extraConnectors = config.extraConnectors || [];
@@ -118,9 +114,13 @@ export class AppKit {
       const { namespaces, defaultChain, universalLink } = options ?? {};
       const connector = await this.createConnector(type);
 
+      const chain =
+        defaultChain ??
+        NetworkUtil.getDefaultChainId(this.namespaces, OptionsController.state.defaultNetwork);
+
       const approvedNamespaces = await connector.connect({
         namespaces: namespaces ?? this.namespaces,
-        defaultChain,
+        defaultChain: chain,
         universalLink,
         siweConfig: this.config?.siweConfig
       });
@@ -205,6 +205,12 @@ export class AppKit {
       OnRampController.resetState();
       ConnectionController.disconnect();
 
+      if (ConnectionsController.state.activeNamespace === undefined) {
+        ConnectionsController.setActiveNamespace(
+          OptionsController.state.defaultNetwork?.chainNamespace
+        );
+      }
+
       if (OptionsController.state.isSiweEnabled) {
         await SIWEController.signOut();
       }
@@ -243,6 +249,14 @@ export class AppKit {
   }
 
   async switchNetwork(network: AppKitNetwork): Promise<void> {
+    const { isConnected } = ConnectionsController.state;
+
+    if (!isConnected) {
+      OptionsController.setDefaultNetwork(network);
+
+      return Promise.resolve();
+    }
+
     const adapter = this.getAdapterByNamespace(network.chainNamespace);
     if (!adapter) throw new Error('No active adapter');
 
@@ -471,8 +485,8 @@ export class AppKit {
       });
     });
 
-    const updateActiveNamespace = !Object.keys(approvedNamespaces).find(
-      n => n === ConnectionsController.state.activeNamespace
+    const updateActiveNamespace = !Object.keys(approvedNamespaces).some(
+      namespace => namespace === ConnectionsController.state.activeNamespace
     );
 
     // If the active namespace is not in the approved namespaces or is undefined, set the first connected adapter's namespace as active
@@ -541,6 +555,11 @@ export class AppKit {
     OptionsController.setFeatures(options.features);
     OptionsController.setStorage(options.storage);
 
+    if (options.defaultNetwork) {
+      const network = NetworkUtil.formatNetwork(options.defaultNetwork, this.projectId);
+      OptionsController.setDefaultNetwork(network);
+    }
+
     ThemeController.setThemeMode(options.themeMode);
     ThemeController.setThemeVariables(options.themeVariables);
 
@@ -570,8 +589,10 @@ export class AppKit {
     const activeNamespace = await StorageUtil.getActiveNamespace();
     if (activeNamespace) {
       ConnectionsController.setActiveNamespace(activeNamespace);
-    } else if (this.defaultNetwork) {
-      ConnectionsController.setActiveNamespace(this.defaultNetwork?.chainNamespace);
+    } else if (OptionsController.state.defaultNetwork) {
+      ConnectionsController.setActiveNamespace(
+        OptionsController.state.defaultNetwork?.chainNamespace
+      );
     }
   }
 
