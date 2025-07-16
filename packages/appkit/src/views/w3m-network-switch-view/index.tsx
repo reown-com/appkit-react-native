@@ -29,7 +29,7 @@ export function NetworkSwitchView() {
   const [showRetry, setShowRetry] = useState<boolean>(false);
   const network = data?.network;
   const wallet = recentWallets?.[0];
-  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
+  const networkImage = network ? networkImages[network.id] : undefined;
 
   const onSwitchNetwork = async () => {
     try {
