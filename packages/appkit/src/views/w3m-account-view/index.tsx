@@ -48,7 +48,7 @@ export function AccountView() {
     }
 
     fetchBalance();
-    SendController.resetSend();
+    SendController.resetState();
 
     const balanceInterval = setInterval(() => {
       fetchBalance();

@@ -1,5 +1,5 @@
 import { BlockchainAdapter } from './BlockchainAdapter';
 
 export abstract class SolanaBaseAdapter extends BlockchainAdapter {
-  // solana logic
+  abstract sendTransaction(data: any): Promise<string | null>;
 }

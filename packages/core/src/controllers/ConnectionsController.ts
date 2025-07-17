@@ -10,7 +10,8 @@ import {
   type Balance,
   type WalletInfo,
   type ConnectionProperties,
-  type AccountType
+  type AccountType,
+  SolanaBaseAdapter
 } from '@reown/appkit-common-react-native';
 import { StorageUtil } from '../utils/StorageUtil';
 import { BlockchainApiController } from './BlockchainApiController';
@@ -417,7 +418,7 @@ export const ConnectionsController = {
     if (!baseState.activeNamespace) return undefined;
 
     const adapter = baseState.connections.get(baseState.activeNamespace)?.adapter;
-    if (adapter instanceof EVMAdapter) {
+    if (adapter instanceof EVMAdapter || adapter instanceof SolanaBaseAdapter) {
       return adapter.sendTransaction(args);
     }
 

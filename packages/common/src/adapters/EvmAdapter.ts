@@ -1,5 +1,6 @@
 import { BlockchainAdapter } from './BlockchainAdapter';
 import { NumberUtil } from '../utils/NumberUtil';
+import type { AppKitNetwork } from '../utils/TypeUtil';
 
 // Type definitions for writeContract
 export interface WriteContractData {
@@ -10,6 +11,17 @@ export interface WriteContractData {
   method: 'transfer' | 'transferFrom' | 'approve';
   abi?: any; // Optional ABI for future extensibility
   spenderAddress?: `0x${string}`; // Required for transferFrom and approve
+  network: AppKitNetwork;
+}
+
+export interface SendTransactionData {
+  address: `0x${string}`;
+  network: AppKitNetwork;
+  to: `0x${string}`;
+  value: string;
+  gas: string;
+  gasPrice: string;
+  data: string;
 }
 
 // Simple ABI encoder for ERC20 functions
@@ -125,8 +137,8 @@ export abstract class EVMAdapter extends BlockchainAdapter {
     }
   }
 
-  async sendTransaction(data: any) {
-    const { address } = data || {};
+  async sendTransaction(data: SendTransactionData): Promise<`0x${string}` | null> {
+    const { address, network } = data || {};
 
     if (!this.getProvider()) {
       throw new Error('EVMAdapter:sendTransaction - provider is undefined');
@@ -134,6 +146,10 @@ export abstract class EVMAdapter extends BlockchainAdapter {
 
     if (!address) {
       throw new Error('EVMAdapter:sendTransaction - address is undefined');
+    }
+
+    if (!network) {
+      throw new Error('EVMAdapter:sendTransaction - network is undefined');
     }
 
     const txParams = {
@@ -146,54 +162,27 @@ export abstract class EVMAdapter extends BlockchainAdapter {
       type: '0x0' // optional: legacy transaction type
     };
 
-    const txHash = await this.getProvider().request({
-      method: 'eth_sendTransaction',
-      params: [txParams]
-    });
+    const txHash = await this.getProvider().request(
+      {
+        method: 'eth_sendTransaction',
+        params: [txParams]
+      },
+      network.caipNetworkId
+    );
 
-    return txHash || null;
+    return txHash as `0x${string}` | null;
   }
 
-  /**
-   * Executes a write operation on an ERC20 smart contract.
-   * This function is library-agnostic and uses only the provider for blockchain interactions.
-   *
-   * @param data - The contract interaction data
-   * @param data.tokenAddress - The ERC20 token contract address
-   * @param data.receiverAddress - The recipient address (required for transfer method)
-   * @param data.tokenAmount - The amount of tokens to transfer/approve
-   * @param data.fromAddress - The sender's address
-   * @param data.method - The ERC20 method to call: 'transfer', 'transferFrom', or 'approve'
-   * @param data.spenderAddress - The spender address (required for transferFrom and approve methods)
-   * @param data.abi - Optional ABI for future extensibility
-   *
-   * @returns Promise resolving to the transaction block hash or null if failed
-   *
-   * @example
-   * ```typescript
-   * // Transfer tokens
-   * const result = await adapter.writeContract({
-   *   tokenAddress: '0x1234567890123456789012345678901234567890',
-   *   receiverAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
-   *   tokenAmount: BigInt(1000000000000000000), // 1 token with 18 decimals
-   *   fromAddress: '0x1234567890123456789012345678901234567890',
-   *   method: 'transfer'
-   * });
-   *
-   * // Approve tokens
-   * const result = await adapter.writeContract({
-   *   tokenAddress: '0x1234567890123456789012345678901234567890',
-   *   receiverAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
-   *   tokenAmount: BigInt(1000000000000000000),
-   *   fromAddress: '0x1234567890123456789012345678901234567890',
-   *   method: 'approve',
-   *   spenderAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
-   * });
-   * ```
-   */
   async writeContract(data: WriteContractData): Promise<`0x${string}` | null> {
-    const { tokenAddress, receiverAddress, tokenAmount, method, fromAddress, spenderAddress } =
-      data;
+    const {
+      tokenAddress,
+      receiverAddress,
+      tokenAmount,
+      method,
+      fromAddress,
+      spenderAddress,
+      network
+    } = data;
 
     if (!this.getProvider()) {
       throw new Error('EVMAdapter:writeContract - provider is undefined');
@@ -256,38 +245,15 @@ export abstract class EVMAdapter extends BlockchainAdapter {
 
     try {
       // Send the transaction
-      const txHash = await this.getProvider().request({
-        method: 'eth_sendTransaction',
-        params: [txParams]
-      });
+      const txHash = await this.getProvider().request(
+        {
+          method: 'eth_sendTransaction',
+          params: [txParams]
+        },
+        network.caipNetworkId
+      );
 
-      // Wait for transaction receipt
-      let receipt = null;
-      let attempts = 0;
-      const maxAttempts = 60; // 60 seconds timeout
-
-      while (!receipt && attempts < maxAttempts) {
-        receipt = (await this.getProvider().request({
-          method: 'eth_getTransactionReceipt',
-          params: [txHash]
-        })) as { blockHash?: `0x${string}`; status?: string };
-
-        if (!receipt) {
-          await new Promise(r => setTimeout(r, 1000)); // wait 1s
-          attempts++;
-        }
-      }
-
-      if (!receipt) {
-        throw new Error('EVMAdapter:writeContract - transaction timeout');
-      }
-
-      // Check if transaction was successful
-      if (receipt.status === '0x0') {
-        throw new Error('EVMAdapter:writeContract - transaction failed');
-      }
-
-      return receipt?.blockHash || null;
+      return txHash as `0x${string}` | null;
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`EVMAdapter:writeContract - ${error.message}`);

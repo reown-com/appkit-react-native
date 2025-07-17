@@ -170,6 +170,12 @@ export type Metadata = {
   };
 };
 
+export type BlockchainAdapterConfig = {
+  projectId: string;
+  supportedNamespace: ChainNamespace;
+  adapterType: AdapterType;
+};
+
 //********** Adapter Event Payloads **********//
 export type AccountsChangedEvent = {
   accounts: string[];

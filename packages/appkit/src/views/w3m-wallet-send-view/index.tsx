@@ -1,12 +1,11 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Platform, ScrollView } from 'react-native';
 import { useSnapshot } from 'valtio';
 import {
   ConnectionsController,
   CoreHelperUtil,
   RouterController,
-  SendController,
-  SwapController
+  SendController
 } from '@reown/appkit-core-react-native';
 import { Button, FlexView, IconBox, Spacing } from '@reown/appkit-ui-react-native';
 import { SendInputToken } from '../../partials/w3m-send-input-token';
@@ -18,23 +17,15 @@ import styles from './styles';
 export function WalletSendView() {
   const { padding } = useCustomDimensions();
   const { keyboardShown, keyboardHeight } = useKeyboard();
-  const { token, sendTokenAmount, receiverAddress, receiverProfileName, loading, gasPrice } =
-    useSnapshot(SendController.state);
-  const { balances } = useSnapshot(ConnectionsController.state);
+  const [isBalanceLoading, setBalanceLoading] = useState(false);
+  const { token, sendTokenAmount, receiverAddress, receiverProfileName, loading } = useSnapshot(
+    SendController.state
+  );
 
   const paddingBottom = Platform.select({
     android: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
     default: Spacing['2xl']
   });
-
-  const fetchNetworkPrice = useCallback(async () => {
-    await SwapController.getNetworkTokenPrice();
-    const gas = await SwapController.getInitialGasPrice();
-    if (gas?.gasPrice && gas?.gasPriceInUSD) {
-      SendController.setGasPrice(gas.gasPrice);
-      SendController.setGasPriceInUsd(gas.gasPriceInUSD);
-    }
-  }, []);
 
   const onSendPress = () => {
     RouterController.push('WalletSendPreview');
@@ -66,7 +57,10 @@ export function WalletSendView() {
 
     if (
       SendController.state.receiverAddress &&
-      !CoreHelperUtil.isAddress(SendController.state.receiverAddress)
+      !CoreHelperUtil.isAddress(
+        SendController.state.receiverAddress,
+        ConnectionsController.state.activeNamespace
+      )
     ) {
       return 'Invalid address';
     }
@@ -79,11 +73,14 @@ export function WalletSendView() {
   };
 
   useEffect(() => {
-    if (!token) {
-      SendController.setToken(balances?.[0]);
+    async function fetchBalance() {
+      setBalanceLoading(true);
+      await ConnectionsController.fetchBalance();
+      setBalanceLoading(false);
     }
-    fetchNetworkPrice();
-  }, [token, balances, fetchNetworkPrice]);
+
+    fetchBalance();
+  }, []);
 
   const actionText = getActionText();
 
@@ -97,9 +94,9 @@ export function WalletSendView() {
         <SendInputToken
           token={token}
           sendTokenAmount={sendTokenAmount}
-          gasPrice={Number(gasPrice)}
           style={styles.tokenInput}
           onTokenPress={() => RouterController.push('WalletSendSelectToken')}
+          loading={isBalanceLoading}
         />
         <FlexView alignItems="center" justifyContent="center" style={styles.addressContainer}>
           <SendInputAddress value={receiverProfileName || receiverAddress} />
@@ -119,7 +116,7 @@ export function WalletSendView() {
           style={styles.sendButton}
           onPress={onSendPress}
           disabled={!actionText.includes('Preview send')}
-          loading={loading}
+          loading={loading || isBalanceLoading}
         >
           {actionText}
         </Button>
