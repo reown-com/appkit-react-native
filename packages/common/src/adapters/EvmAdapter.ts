@@ -19,8 +19,6 @@ export interface SendTransactionData {
   network: AppKitNetwork;
   to: `0x${string}`;
   value: string;
-  gas: string;
-  gasPrice: string;
   data: string;
 }
 
@@ -156,8 +154,6 @@ export abstract class EVMAdapter extends BlockchainAdapter {
       from: address,
       to: data.to,
       value: NumberUtil.convertNumericToHexString(data.value),
-      gas: NumberUtil.convertNumericToHexString(data.gas),
-      gasPrice: NumberUtil.convertNumericToHexString(data.gasPrice),
       data: data.data, // hex-encoded bytecode
       type: '0x0' // optional: legacy transaction type
     };
