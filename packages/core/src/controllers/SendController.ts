@@ -213,16 +213,19 @@ export const SendController = {
   },
 
   async sendSolanaToken() {
-    if (!SendController.state.sendTokenAmount || !SendController.state.receiverAddress) {
+    if (!this.state.sendTokenAmount || !this.state.receiverAddress) {
       throw new Error('An amount and receiver address are required');
     }
 
     const plainAddress = CoreHelperUtil.getPlainAddress(ConnectionsController.state.activeAddress);
+    if (!plainAddress) {
+      throw new Error('Invalid address');
+    }
 
     await ConnectionsController.sendTransaction({
       fromAddress: plainAddress,
-      toAddress: SendController.state.receiverAddress,
-      amount: SendController.state.sendTokenAmount,
+      toAddress: this.state.receiverAddress,
+      amount: this.state.sendTokenAmount,
       network: ConnectionsController.state.activeNetwork
     });
   },
