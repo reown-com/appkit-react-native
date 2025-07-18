@@ -26,6 +26,7 @@ import { BlockchainApiController } from './BlockchainApiController';
 // -- Helpers ------------------------------------------- //
 
 let quotesAbortController: AbortController | null = null;
+const excludeProviders = ['BINANCECONNECT', 'COINBASEPAY'];
 
 // -- Utils --------------------------------------------- //
 
@@ -50,6 +51,10 @@ const mapErrorMessage = (errorCode: string): OnRampError => {
     [OnRampErrorType.BAD_REQUEST]: {
       type: OnRampErrorType.BAD_REQUEST,
       message: 'Enter a valid amount'
+    },
+    [OnRampErrorType.NO_VALID_QUOTES]: {
+      type: OnRampErrorType.NO_VALID_QUOTES,
+      message: 'No quotes available'
     }
   };
 
@@ -418,13 +423,13 @@ export const OnRampController = {
         sourceAmount: state.paymentAmount,
         sourceCurrencyCode: state.paymentCurrency?.currencyCode!,
         walletAddress: AccountController.state.address!,
-        excludeProviders: ['BINANCECONNECT', 'COINBASEPAY']
+        excludeProviders
       };
 
       const response = await BlockchainApiController.getOnRampQuotes(body, currentSignal);
 
       if (!response || !response.length) {
-        throw new Error('No quotes available');
+        throw { code: OnRampErrorType.NO_VALID_QUOTES };
       }
 
       const quotes = response.sort((a, b) => b.customerScore - a.customerScore);
