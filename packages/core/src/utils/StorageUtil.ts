@@ -1,7 +1,18 @@
 /* eslint-disable no-console */
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { WcWallet } from './TypeUtil';
-import type { SocialProvider, ConnectorType } from '@reown/appkit-common-react-native';
+import type {
+  OnRampCountry,
+  OnRampCountryDefaults,
+  OnRampFiatCurrency,
+  OnRampFiatLimit,
+  OnRampServiceProvider,
+  WcWallet
+} from './TypeUtil';
+import {
+  DateUtil,
+  type SocialProvider,
+  type ConnectorType
+} from '@reown/appkit-common-react-native';
 
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE';
@@ -9,7 +20,13 @@ const RECENT_WALLET = '@w3m/recent';
 const CONNECTED_WALLET_IMAGE_URL = '@w3m/connected_wallet_image_url';
 const CONNECTED_CONNECTOR = '@w3m/connected_connector';
 const CONNECTED_SOCIAL = '@appkit/connected_social';
-
+const ONRAMP_PREFERRED_COUNTRY = '@appkit/onramp_preferred_country';
+const ONRAMP_COUNTRIES = '@appkit/onramp_countries';
+const ONRAMP_COUNTRIES_DEFAULTS = '@appkit/onramp_countries_defaults';
+const ONRAMP_SERVICE_PROVIDERS = '@appkit/onramp_service_providers';
+const ONRAMP_FIAT_LIMITS = '@appkit/onramp_fiat_limits';
+const ONRAMP_FIAT_CURRENCIES = '@appkit/onramp_fiat_currencies';
+const ONRAMP_PREFERRED_FIAT_CURRENCY = '@appkit/onramp_preferred_fiat_currency';
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
   setWalletConnectDeepLink({ href, name }: { href: string; name: string }) {
@@ -164,5 +181,210 @@ export const StorageUtil = {
     } catch {
       console.info('Unable to remove Connected Social Provider');
     }
+  },
+
+  async setOnRampPreferredCountry(country: OnRampCountry) {
+    try {
+      await AsyncStorage.setItem(ONRAMP_PREFERRED_COUNTRY, JSON.stringify(country));
+    } catch {
+      console.info('Unable to set OnRamp Preferred Country');
+    }
+  },
+
+  async getOnRampPreferredCountry() {
+    try {
+      const country = await AsyncStorage.getItem(ONRAMP_PREFERRED_COUNTRY);
+
+      return country ? (JSON.parse(country) as OnRampCountry) : undefined;
+    } catch {
+      console.info('Unable to get OnRamp Preferred Country');
+    }
+
+    return undefined;
+  },
+
+  async setOnRampPreferredFiatCurrency(currency: OnRampFiatCurrency) {
+    try {
+      await AsyncStorage.setItem(ONRAMP_PREFERRED_FIAT_CURRENCY, JSON.stringify(currency));
+    } catch {
+      console.info('Unable to set OnRamp Preferred Fiat Currency');
+    }
+  },
+
+  async getOnRampPreferredFiatCurrency() {
+    try {
+      const currency = await AsyncStorage.getItem(ONRAMP_PREFERRED_FIAT_CURRENCY);
+
+      return currency ? (JSON.parse(currency) as OnRampFiatCurrency) : undefined;
+    } catch {
+      console.info('Unable to get OnRamp Preferred Fiat Currency');
+    }
+
+    return undefined;
+  },
+
+  async setOnRampCountries(countries: OnRampCountry[]) {
+    try {
+      await AsyncStorage.setItem(ONRAMP_COUNTRIES, JSON.stringify(countries));
+    } catch {
+      console.info('Unable to set OnRamp Countries');
+    }
+  },
+
+  async getOnRampCountries() {
+    try {
+      const countries = await AsyncStorage.getItem(ONRAMP_COUNTRIES);
+
+      return countries ? (JSON.parse(countries) as OnRampCountry[]) : [];
+    } catch {
+      console.info('Unable to get OnRamp Countries');
+    }
+
+    return [];
+  },
+
+  async setOnRampCountriesDefaults(countriesDefaults: OnRampCountryDefaults[]) {
+    try {
+      const timestamp = Date.now();
+
+      await AsyncStorage.setItem(
+        ONRAMP_COUNTRIES_DEFAULTS,
+        JSON.stringify({ data: countriesDefaults, timestamp })
+      );
+    } catch {
+      console.info('Unable to set OnRamp Countries Defaults');
+    }
+  },
+
+  async getOnRampCountriesDefaults() {
+    try {
+      const result = await AsyncStorage.getItem(ONRAMP_COUNTRIES_DEFAULTS);
+
+      if (!result) {
+        return [];
+      }
+
+      const { data, timestamp } = JSON.parse(result);
+
+      // Cache for 1 week
+      if (timestamp && DateUtil.isMoreThanOneWeekAgo(timestamp)) {
+        return [];
+      }
+
+      return data ? (data as OnRampCountryDefaults[]) : [];
+    } catch {
+      console.info('Unable to get OnRamp Countries Defaults');
+    }
+
+    return [];
+  },
+
+  async setOnRampServiceProviders(serviceProviders: OnRampServiceProvider[]) {
+    try {
+      const timestamp = Date.now();
+
+      await AsyncStorage.setItem(
+        ONRAMP_SERVICE_PROVIDERS,
+        JSON.stringify({ data: serviceProviders, timestamp })
+      );
+    } catch {
+      console.info('Unable to set OnRamp Service Providers');
+    }
+  },
+
+  async getOnRampServiceProviders() {
+    try {
+      const result = await AsyncStorage.getItem(ONRAMP_SERVICE_PROVIDERS);
+
+      if (!result) {
+        return [];
+      }
+
+      const { data, timestamp } = JSON.parse(result);
+
+      // Cache for 1 week
+      if (timestamp && DateUtil.isMoreThanOneWeekAgo(timestamp)) {
+        return [];
+      }
+
+      return data ? (data as OnRampServiceProvider[]) : [];
+    } catch (err) {
+      console.error(err);
+      console.info('Unable to get OnRamp Service Providers');
+    }
+
+    return [];
+  },
+
+  async setOnRampFiatLimits(fiatLimits: OnRampFiatLimit[]) {
+    try {
+      const timestamp = Date.now();
+
+      await AsyncStorage.setItem(
+        ONRAMP_FIAT_LIMITS,
+        JSON.stringify({ data: fiatLimits, timestamp })
+      );
+    } catch {
+      console.info('Unable to set OnRamp Fiat Limits');
+    }
+  },
+
+  async getOnRampFiatLimits() {
+    try {
+      const result = await AsyncStorage.getItem(ONRAMP_FIAT_LIMITS);
+
+      if (!result) {
+        return [];
+      }
+
+      const { data, timestamp } = JSON.parse(result);
+
+      // Cache for 1 week
+      if (timestamp && DateUtil.isMoreThanOneWeekAgo(timestamp)) {
+        return [];
+      }
+
+      return data ? (data as OnRampFiatLimit[]) : [];
+    } catch {
+      console.info('Unable to get OnRamp Fiat Limits');
+    }
+
+    return [];
+  },
+
+  async setOnRampFiatCurrencies(fiatCurrencies: OnRampFiatCurrency[]) {
+    try {
+      const timestamp = Date.now();
+
+      await AsyncStorage.setItem(
+        ONRAMP_FIAT_CURRENCIES,
+        JSON.stringify({ data: fiatCurrencies, timestamp })
+      );
+    } catch {
+      console.info('Unable to set OnRamp Fiat Currencies');
+    }
+  },
+
+  async getOnRampFiatCurrencies() {
+    try {
+      const result = await AsyncStorage.getItem(ONRAMP_FIAT_CURRENCIES);
+
+      if (!result) {
+        return [];
+      }
+
+      const { data, timestamp } = JSON.parse(result);
+
+      // Cache for 1 week
+      if (timestamp && DateUtil.isMoreThanOneWeekAgo(timestamp)) {
+        return [];
+      }
+
+      return data ? (data as OnRampFiatCurrency[]) : [];
+    } catch {
+      console.info('Unable to get OnRamp Fiat Currencies');
+    }
+
+    return [];
   }
 };

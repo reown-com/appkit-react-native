@@ -18,6 +18,11 @@ import { EmailVerifyDeviceView } from '../../views/w3m-email-verify-device-view'
 import { GetWalletView } from '../../views/w3m-get-wallet-view';
 import { NetworksView } from '../../views/w3m-networks-view';
 import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
+import { OnRampLoadingView } from '../../views/w3m-onramp-loading-view';
+import { OnRampView } from '../../views/w3m-onramp-view';
+import { OnRampCheckoutView } from '../../views/w3m-onramp-checkout-view';
+import { OnRampSettingsView } from '../../views/w3m-onramp-settings-view';
+import { OnRampTransactionView } from '../../views/w3m-onramp-transaction-view';
 import { SwapView } from '../../views/w3m-swap-view';
 import { SwapPreviewView } from '../../views/w3m-swap-preview-view';
 import { SwapSelectTokenView } from '../../views/w3m-swap-select-token-view';
@@ -35,7 +40,6 @@ import { WalletSendPreviewView } from '../../views/w3m-wallet-send-preview-view'
 import { WalletSendSelectTokenView } from '../../views/w3m-wallet-send-select-token-view';
 import { WhatIsANetworkView } from '../../views/w3m-what-is-a-network-view';
 import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
-
 import { UiUtil } from '../../utils/UiUtil';
 
 export function AppKitRouter() {
@@ -77,8 +81,18 @@ export function AppKitRouter() {
         return GetWalletView;
       case 'Networks':
         return NetworksView;
+      case 'OnRamp':
+        return OnRampView;
+      case 'OnRampCheckout':
+        return OnRampCheckoutView;
+      case 'OnRampSettings':
+        return OnRampSettingsView;
+      case 'OnRampLoading':
+        return OnRampLoadingView;
       case 'SwitchNetwork':
         return NetworkSwitchView;
+      case 'OnRampTransaction':
+        return OnRampTransactionView;
       case 'Swap':
         return SwapView;
       case 'SwapPreview':
