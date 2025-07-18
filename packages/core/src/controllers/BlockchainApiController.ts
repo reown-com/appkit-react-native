@@ -318,7 +318,6 @@ export const BlockchainApiController = {
       headers: getHeaders(),
       body: {
         projectId: OptionsController.state.projectId,
-        excludedProviders: ['BINANCECONNECT', 'COINBASEPAY'],
         ...body
       },
       signal

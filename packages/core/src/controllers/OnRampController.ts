@@ -417,7 +417,8 @@ export const OnRampController = {
         destinationCurrencyCode: state.purchaseCurrency?.currencyCode!,
         sourceAmount: state.paymentAmount,
         sourceCurrencyCode: state.paymentCurrency?.currencyCode!,
-        walletAddress: AccountController.state.address!
+        walletAddress: AccountController.state.address!,
+        excludeProviders: ['BINANCECONNECT', 'COINBASEPAY']
       };
 
       const response = await BlockchainApiController.getOnRampQuotes(body, currentSignal);

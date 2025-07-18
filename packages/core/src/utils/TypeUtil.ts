@@ -324,6 +324,7 @@ export interface BlockchainApiOnRampQuotesRequest {
   sourceAmount: number;
   sourceCurrencyCode: string;
   walletAddress: string;
+  excludeProviders?: string[];
 }
 
 export interface BlockchainApiSwapTokensResponse {
