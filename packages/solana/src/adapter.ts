@@ -7,15 +7,14 @@ import {
   type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
 import { getSolanaNativeBalance, getSolanaTokenBalance } from './helpers';
-import { Connection } from '@solana/web3.js';
+import { Connection, Transaction, VersionedTransaction } from '@solana/web3.js';
 import base58 from 'bs58';
 import { createSendTransaction } from './utils/createSendTransaction';
 
-// Type definitions for Solana transaction data
 export interface SolanaTransactionData {
   fromAddress: string;
   toAddress: string;
-  amount: number; // in SOL (will be converted to lamports)
+  amount: number;
   network?: AppKitNetwork;
   rpcUrl?: string;
 }
@@ -77,29 +76,67 @@ export class SolanaAdapter extends SolanaBaseAdapter {
     }
   }
 
-  /**
-   * Sends a Solana transaction using the connected wallet.
-   * This function creates and sends a native SOL transfer transaction.
-   *
-   * @param data - The transaction data
-   * @param data.fromAddress - The sender's address (base58 format)
-   * @param data.toAddress - The recipient's address (base58 format)
-   * @param data.amount - The amount to send in SOL (will be converted to lamports)
-   * @param data.network - Optional network configuration for RPC URL
-   * @param data.rpcUrl - Optional custom RPC URL
-   *
-   * @returns Promise resolving to the transaction signature or null if failed
-   *
-   * @example
-   * ```typescript
-   * const result = await adapter.sendTransaction({
-   *   fromAddress: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
-   *   toAddress: 'ComputeBudget111111111111111111111111111111',
-   *   amount: 0.001, // 0.001 SOL
-   *   network: solanaNetwork
-   * });
-   * ```
-   */
+  async signTransaction<T extends Transaction | VersionedTransaction>(transaction: T): Promise<T> {
+    if (!this.connector) {
+      throw new Error('SolanaAdapter:signTransaction - no active connector');
+    }
+
+    const provider = this.connector.getProvider();
+    if (!provider) {
+      throw new Error('SolanaAdapter:signTransaction - provider is undefined');
+    }
+
+    try {
+      // Serialize transaction to base64 (following WalletConnect standard)
+      const serializedTransaction = Buffer.from(
+        new Uint8Array(transaction.serialize({ verifySignatures: false }))
+      ).toString('base64');
+
+      const result = (await provider.request(
+        {
+          method: 'solana_signTransaction',
+          params: {
+            transaction: serializedTransaction,
+            pubkey: this.getAccounts()?.[0]?.split(':')[2] || ''
+          }
+        },
+        undefined // Let the provider determine the chain
+      )) as { signature?: string; transaction?: string };
+
+      // Handle different response formats
+      if ('signature' in result && result.signature) {
+        // Old RPC response format - add signature to transaction
+        const decoded = base58.decode(result.signature);
+        if (transaction instanceof Transaction && transaction.feePayer) {
+          transaction.addSignature(
+            transaction.feePayer,
+            Buffer.from(decoded) as Buffer & Uint8Array
+          );
+        }
+
+        return transaction;
+      }
+
+      if ('transaction' in result && result.transaction) {
+        // New response format - deserialize the signed transaction
+        const decodedTransaction = Buffer.from(result.transaction, 'base64');
+
+        if (transaction instanceof VersionedTransaction) {
+          return VersionedTransaction.deserialize(new Uint8Array(decodedTransaction)) as T;
+        }
+
+        return Transaction.from(decodedTransaction) as T;
+      }
+
+      throw new Error('SolanaAdapter:signTransaction - invalid response format');
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`SolanaAdapter:signTransaction - ${error.message}`);
+      }
+      throw new Error('SolanaAdapter:signTransaction - unknown error occurred');
+    }
+  }
+
   async sendTransaction(data: SolanaTransactionData): Promise<string | null> {
     const { fromAddress, toAddress, amount, network, rpcUrl } = data;
 
@@ -148,22 +185,14 @@ export class SolanaAdapter extends SolanaBaseAdapter {
         value: amount
       });
 
-      // Encode to base58
-      const base58EncodedTransaction = base58.encode(
-        transaction.serialize({
-          requireAllSignatures: false,
-          verifySignatures: false
-        })
-      );
+      // Sign the transaction
+      const signedTransaction = await this.signTransaction(transaction);
 
-      // Send transaction through wallet
-      const { signature } = (await provider.request(
-        {
-          method: 'solana_signAndSendTransaction',
-          params: { transaction: base58EncodedTransaction }
-        },
-        network.caipNetworkId
-      )) as { signature: string };
+      // Send the signed transaction
+      const signature = await connection.sendRawTransaction(signedTransaction.serialize(), {
+        skipPreflight: false,
+        preflightCommitment: 'confirmed'
+      });
 
       if (!signature) {
         throw new Error('SolanaAdapter:sendTransaction - no signature returned');
