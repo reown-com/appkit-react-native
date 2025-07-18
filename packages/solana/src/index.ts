@@ -1,8 +1,8 @@
-// Connectors
-export { PhantomConnector } from './connectors/PhantomConnector';
+// Adapter
+export { SolanaAdapter } from './adapter';
 
 // Types
 export type { PhantomConnectorConfig } from './types';
 
-// Adapter
-export { SolanaAdapter } from './adapter';
+// Connectors
+export { PhantomConnector } from './connectors/PhantomConnector';

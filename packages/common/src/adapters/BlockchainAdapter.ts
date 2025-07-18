@@ -3,6 +3,7 @@ import type {
   AdapterEvents,
   AdapterType,
   AppKitNetwork,
+  BlockchainAdapterConfig,
   CaipAddress,
   ChainNamespace,
   GetBalanceParams,
@@ -25,15 +26,7 @@ export abstract class BlockchainAdapter extends EventEmitter {
     return super.emit(event, payload);
   }
 
-  constructor({
-    projectId,
-    supportedNamespace,
-    adapterType
-  }: {
-    projectId: string;
-    supportedNamespace: ChainNamespace;
-    adapterType: AdapterType;
-  }) {
+  constructor({ projectId, supportedNamespace, adapterType }: BlockchainAdapterConfig) {
     super();
     this.projectId = projectId;
     this.supportedNamespace = supportedNamespace;

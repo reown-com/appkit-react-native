@@ -23,10 +23,12 @@ export interface AccountWalletFeaturesProps {
 export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeaturesProps) {
   const [activeTab, setActiveTab] = useState(0);
   const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
-  const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
+  const { activeNetwork, balances, activeNamespace } = useSnapshot(ConnectionsController.state);
   const balance = CoreHelperUtil.calculateAndFormatBalance(balances as BalanceType[]);
   const network = ConnectionsController.state.activeNetwork?.caipNetworkId || '';
   const isSmartAccount = ConnectionsController.state.accountType === 'smartAccount';
+  const showSend =
+    activeNamespace && ConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(activeNamespace);
   const isSwapsEnabled =
     features?.swaps &&
     activeNetwork?.caipNetworkId &&
@@ -122,16 +124,18 @@ export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeature
           style={[styles.action, isSwapsEnabled ? styles.actionCenter : styles.actionLeft]}
           onPress={onReceivePress}
         />
-        <IconLink
-          icon="paperplane"
-          size="lg"
-          iconColor="accent-100"
-          background
-          backgroundColor="accent-glass-010"
-          pressedColor="accent-glass-020"
-          style={[styles.action, styles.actionRight]}
-          onPress={onSendPress}
-        />
+        {showSend && (
+          <IconLink
+            icon="paperplane"
+            size="lg"
+            iconColor="accent-100"
+            background
+            backgroundColor="accent-glass-010"
+            pressedColor="accent-glass-020"
+            style={[styles.action, styles.actionRight]}
+            onPress={onSendPress}
+          />
+        )}
       </FlexView>
       <FlexView style={styles.tab}>
         <Tabs tabs={['Tokens', 'Activity']} onTabChange={onTabChange} />

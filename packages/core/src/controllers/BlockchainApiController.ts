@@ -38,7 +38,7 @@ import { OptionsController } from './OptionsController';
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 import { ApiUtil } from '../utils/ApiUtil';
 import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
-import { ConnectionsController } from './ConnectionsController';
+
 import { SnackController } from './SnackController';
 
 // -- Helpers ------------------------------------------- //
@@ -57,6 +57,8 @@ const getHeaders = () => {
 };
 
 // -- Types --------------------------------------------- //
+type WithCaipNetworkId = { caipNetworkId: CaipNetworkId };
+
 export interface BlockchainApiControllerState {
   clientId: string | null;
   api: FetchUtil;
@@ -99,10 +101,9 @@ export const BlockchainApiController = {
     return supportedChains;
   },
 
-  async fetchIdentity({ address }: BlockchainApiIdentityRequest) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(
-      ConnectionsController.state.activeCaipNetworkId
-    );
+  async fetchIdentity(params: BlockchainApiIdentityRequest & WithCaipNetworkId) {
+    const { address, caipNetworkId } = params;
+    const isSupported = await BlockchainApiController.isNetworkSupported(caipNetworkId);
 
     if (!isSupported) {
       return { avatar: '', name: '' };
@@ -117,17 +118,9 @@ export const BlockchainApiController = {
     });
   },
 
-  async fetchTransactions({
-    account,
-    projectId,
-    cursor,
-    onramp,
-    signal,
-    cache,
-    chainId
-  }: BlockchainApiTransactionsRequest) {
-    const _chainId = chainId ?? ConnectionsController.state.activeCaipNetworkId;
-    const isSupported = await BlockchainApiController.isNetworkSupported(_chainId);
+  async fetchTransactions(params: BlockchainApiTransactionsRequest) {
+    const { account, projectId, cursor, onramp, signal, cache, chainId } = params;
+    const isSupported = await BlockchainApiController.isNetworkSupported(chainId);
 
     if (!isSupported) {
       return { data: [], next: undefined };
@@ -140,7 +133,7 @@ export const BlockchainApiController = {
         projectId,
         cursor,
         onramp,
-        chainId: _chainId
+        chainId
       },
       signal,
       cache
@@ -149,10 +142,9 @@ export const BlockchainApiController = {
     return response;
   },
 
-  async fetchTokenPrice({ projectId, addresses }: BlockchainApiTokenPriceRequest) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(
-      ConnectionsController.state.activeCaipNetworkId
-    );
+  async fetchTokenPrice(params: BlockchainApiTokenPriceRequest & WithCaipNetworkId) {
+    const { projectId, addresses, caipNetworkId } = params;
+    const isSupported = await BlockchainApiController.isNetworkSupported(caipNetworkId);
 
     if (!isSupported) {
       return { fungibles: [] };
@@ -171,14 +163,11 @@ export const BlockchainApiController = {
     return response;
   },
 
-  async fetchSwapAllowance({
-    projectId,
-    tokenAddress,
-    userAddress
-  }: BlockchainApiSwapAllowanceRequest) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(
-      ConnectionsController.state.activeCaipNetworkId
-    );
+  async fetchSwapAllowance(params: BlockchainApiSwapAllowanceRequest) {
+    const { projectId, tokenAddress, userAddress } = params;
+    const [namespace, chain] = userAddress.split(':');
+    const networkId: CaipNetworkId = `${namespace}:${chain}`;
+    const isSupported = await BlockchainApiController.isNetworkSupported(networkId);
 
     if (!isSupported) {
       return { allowance: '0' };
@@ -195,10 +184,9 @@ export const BlockchainApiController = {
     });
   },
 
-  async fetchGasPrice({ projectId, chainId }: BlockchainApiGasPriceRequest) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(
-      ConnectionsController.state.activeCaipNetworkId
-    );
+  async fetchGasPrice(params: BlockchainApiGasPriceRequest) {
+    const { projectId, chainId } = params;
+    const isSupported = await BlockchainApiController.isNetworkSupported(chainId);
 
     if (!isSupported) {
       throw new Error('Network not supported for Gas Price');
@@ -214,17 +202,11 @@ export const BlockchainApiController = {
     });
   },
 
-  async fetchSwapQuote({
-    projectId,
-    amount,
-    userAddress,
-    from,
-    to,
-    gasPrice
-  }: BlockchainApiSwapQuoteRequest) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(
-      ConnectionsController.state.activeCaipNetworkId
-    );
+  async fetchSwapQuote(params: BlockchainApiSwapQuoteRequest) {
+    const { projectId, amount, userAddress, from, to, gasPrice } = params;
+    const [namespace, chain] = userAddress.split(':');
+    const networkId: CaipNetworkId = `${namespace}:${chain}`;
+    const isSupported = await BlockchainApiController.isNetworkSupported(networkId);
 
     if (!isSupported) {
       return { quotes: [] };
@@ -244,10 +226,9 @@ export const BlockchainApiController = {
     });
   },
 
-  async fetchSwapTokens({ projectId, chainId }: BlockchainApiSwapTokensRequest) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(
-      ConnectionsController.state.activeCaipNetworkId
-    );
+  async fetchSwapTokens(params: BlockchainApiSwapTokensRequest) {
+    const { projectId, chainId } = params;
+    const isSupported = await BlockchainApiController.isNetworkSupported(chainId);
 
     if (!isSupported) {
       return { tokens: [] };
@@ -263,16 +244,11 @@ export const BlockchainApiController = {
     });
   },
 
-  async generateSwapCalldata({
-    amount,
-    from,
-    projectId,
-    to,
-    userAddress
-  }: BlockchainApiGenerateSwapCalldataRequest) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(
-      ConnectionsController.state.activeCaipNetworkId
-    );
+  async generateSwapCalldata(params: BlockchainApiGenerateSwapCalldataRequest) {
+    const { amount, from, projectId, to, userAddress } = params;
+    const [namespace, chain] = userAddress.split(':');
+    const networkId: CaipNetworkId = `${namespace}:${chain}`;
+    const isSupported = await BlockchainApiController.isNetworkSupported(networkId);
 
     if (!isSupported) {
       throw new Error('Network not supported for Swaps');
@@ -294,15 +270,11 @@ export const BlockchainApiController = {
     });
   },
 
-  async generateApproveCalldata({
-    from,
-    projectId,
-    to,
-    userAddress
-  }: BlockchainApiGenerateApproveCalldataRequest) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(
-      ConnectionsController.state.activeCaipNetworkId
-    );
+  async generateApproveCalldata(params: BlockchainApiGenerateApproveCalldataRequest) {
+    const { from, projectId, to, userAddress } = params;
+    const [namespace, chain] = userAddress.split(':');
+    const networkId: CaipNetworkId = `${namespace}:${chain}`;
+    const isSupported = await BlockchainApiController.isNetworkSupported(networkId);
 
     if (!isSupported) {
       throw new Error('Network not supported for Swaps');
@@ -321,19 +293,18 @@ export const BlockchainApiController = {
   },
 
   async getBalance(address?: CaipAddress, forceUpdate?: CaipAddress[]) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(
-      ConnectionsController.state.activeCaipNetworkId
-    );
-    if (!isSupported) {
-      SnackController.showError('Token Balance Unavailable');
-
-      return { balances: [] };
-    }
-
     const [namespace, chain, plainAddress] = address?.split(':') ?? [];
 
     if (!namespace || !chain || !plainAddress) {
       throw new Error('Invalid address');
+    }
+
+    const isSupported = await BlockchainApiController.isNetworkSupported(`${namespace}:${chain}`);
+
+    if (!isSupported) {
+      SnackController.showError('Token Balance Unavailable');
+
+      return { balances: [] };
     }
 
     return state.api.get<BlockchainApiBalanceResponse>({

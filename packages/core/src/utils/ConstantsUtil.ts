@@ -271,6 +271,8 @@ export const ConstantsUtil = {
     'eip155:1313161554'
   ],
 
+  SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'],
+
   CONVERT_SLIPPAGE_TOLERANCE: 1,
 
   DEFAULT_FEATURES: defaultFeatures,

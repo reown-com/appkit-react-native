@@ -13,7 +13,8 @@ import {
   ConnectionController,
   SwapController,
   OnRampController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  SendController
 } from '@reown/appkit-core-react-native';
 
 import {
@@ -79,7 +80,7 @@ export class AppKit {
 
   constructor(config: AppKitConfig) {
     this.projectId = config.projectId;
-    this.adapters = config.adapters;
+    this.adapters = config.adapters ?? [];
 
     // Validate adapters to ensure no duplicate chainNamespaces
     const namespaceMap = new Map<ChainNamespace, string>();
@@ -203,6 +204,7 @@ export class AppKit {
       RouterController.reset('Connect');
       TransactionsController.resetState();
       SwapController.resetState();
+      SendController.resetState();
       OnRampController.resetState();
       ConnectionController.disconnect();
 
@@ -271,10 +273,7 @@ export class AppKit {
       }
     });
 
-    ConnectionsController.setActiveNetwork(
-      adapter.getSupportedNamespace(),
-      `${adapter.getSupportedNamespace()}:${network.id}` as CaipNetworkId
-    );
+    ConnectionsController.setActiveNetwork(network.chainNamespace, network.caipNetworkId);
 
     if (ConnectionsController.state.activeNamespace !== network.chainNamespace) {
       ConnectionsController.setActiveNamespace(network.chainNamespace);
@@ -514,12 +513,15 @@ export class AppKit {
       const namespace = adapter.getSupportedNamespace();
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
       ConnectionsController.setActiveNetwork(namespace, chain);
+      const connection = ConnectionsController.state.connections.get(namespace);
+      const isAuth = !!connection?.properties?.provider;
 
       const network = this.networks.find(n => n.id?.toString() === chainId);
       this.syncBalances(adapter, network);
+      SendController.resetState();
 
-      if (OptionsController.state.features?.swaps) {
-        SwapController.fetchTokens();
+      if (isAuth) {
+        ConnectionsController.fetchBalance();
       }
 
       if (namespace === 'eip155') {

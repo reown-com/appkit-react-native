@@ -24,7 +24,6 @@ export function PreviewSendDetails({
   address,
   name,
   activeNetwork,
-  networkFee,
   style
 }: PreviewSendDetailsProps) {
   const Theme = useTheme();
@@ -54,14 +53,6 @@ export function PreviewSendDetails({
       <Text variant="small-400" color="fg-200" style={styles.title}>
         Details
       </Text>
-      <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
-        <Text variant="small-400" color="fg-150">
-          Network cost
-        </Text>
-        <Text variant="small-400" color="fg-100">
-          ${UiUtil.formatNumberToLocalString(networkFee, 2)}
-        </Text>
-      </FlexView>
       <FlexView style={[styles.item, { backgroundColor: Theme['gray-glass-002'] }]}>
         <Text variant="small-400" color="fg-150">
           {formattedName || 'Address'}

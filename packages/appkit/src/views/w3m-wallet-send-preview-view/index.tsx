@@ -15,14 +15,8 @@ import { PreviewSendDetails } from './components/preview-send-details';
 export function WalletSendPreviewView() {
   const { padding } = useCustomDimensions();
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
-  const {
-    token,
-    receiverAddress,
-    receiverProfileName,
-    receiverProfileImageUrl,
-    gasPriceInUSD,
-    loading
-  } = useSnapshot(SendController.state);
+  const { token, receiverAddress, receiverProfileName, receiverProfileImageUrl, loading } =
+    useSnapshot(SendController.state);
 
   const getSendValue = () => {
     if (SendController.state.token?.price && SendController.state.sendTokenAmount) {
@@ -109,7 +103,6 @@ export function WalletSendPreviewView() {
         </FlexView>
         <PreviewSendDetails
           style={styles.details}
-          networkFee={gasPriceInUSD}
           address={receiverAddress}
           name={receiverProfileName}
           activeNetwork={activeNetwork}

@@ -1,8 +1,15 @@
 import { useRef, useState } from 'react';
 import { TextInput, type StyleProp, type ViewStyle } from 'react-native';
-import { FlexView, Link, Text, useTheme, TokenButton } from '@reown/appkit-ui-react-native';
+import {
+  FlexView,
+  Link,
+  Text,
+  useTheme,
+  TokenButton,
+  Shimmer
+} from '@reown/appkit-ui-react-native';
 import { NumberUtil, type Balance } from '@reown/appkit-common-react-native';
-import { ConstantsUtil, SendController } from '@reown/appkit-core-react-native';
+import { SendController } from '@reown/appkit-core-react-native';
 
 import { getMaxAmount, getSendValue } from './utils';
 import styles from './styles';
@@ -10,17 +17,17 @@ import styles from './styles';
 export interface SendInputTokenProps {
   token?: Balance;
   sendTokenAmount?: number;
-  gasPrice?: number;
   style?: StyleProp<ViewStyle>;
   onTokenPress?: () => void;
+  loading?: boolean;
 }
 
 export function SendInputToken({
   token,
   sendTokenAmount,
-  gasPrice,
   style,
-  onTokenPress
+  onTokenPress,
+  loading
 }: SendInputTokenProps) {
   const Theme = useTheme();
   const valueInputRef = useRef<TextInput | null>(null);
@@ -39,26 +46,17 @@ export function SendInputToken({
   };
 
   const onMaxPress = () => {
-    if (token?.quantity?.numeric && gasPrice) {
-      const isNetworkToken =
-        token.address === undefined ||
-        Object.values(ConstantsUtil.NATIVE_TOKEN_ADDRESS).some(
-          nativeAddress => token?.address?.split(':')[2] === nativeAddress
-        );
-
-      const numericGas = NumberUtil.bigNumber(gasPrice).shiftedBy(-token.quantity.decimals);
-
-      const maxValue = isNetworkToken
-        ? NumberUtil.bigNumber(token.quantity.numeric).minus(numericGas)
-        : NumberUtil.bigNumber(token.quantity.numeric);
-
+    if (token?.quantity?.numeric) {
+      const maxValue = NumberUtil.bigNumber(token.quantity.numeric);
       SendController.setTokenAmount(Number(maxValue.toFixed(20)));
       setInputValue(maxValue.toFixed(20));
       valueInputRef.current?.blur();
     }
   };
 
-  return (
+  return loading ? (
+    <Shimmer width="100%" height={100} borderRadius={16} style={styles.inputLoading} />
+  ) : (
     <FlexView
       style={[
         styles.container,

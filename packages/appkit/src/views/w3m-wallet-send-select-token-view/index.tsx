@@ -18,7 +18,6 @@ export function WalletSendSelectTokenView() {
   const { padding } = useCustomDimensions();
   const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
-  const { token } = useSnapshot(SendController.state);
   const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const [filteredTokens, setFilteredTokens] = useState(balances ?? []);
@@ -66,7 +65,6 @@ export function WalletSendSelectTokenView() {
               amount={_token.quantity?.numeric || '0'}
               currency={_token.symbol}
               onPress={() => onTokenPress(_token)}
-              disabled={_token.address === token?.address}
             />
           ))
         ) : (
