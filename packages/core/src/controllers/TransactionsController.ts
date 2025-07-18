@@ -33,7 +33,7 @@ export const TransactionsController = {
     return sub(state, () => callback(state));
   },
 
-  async fetchTransactions(accountAddress?: CaipAddress, reset?: boolean) {
+  async fetchTransactions(accountAddress: CaipAddress, reset?: boolean) {
     try {
       const { projectId } = OptionsController.state;
 

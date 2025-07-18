@@ -89,7 +89,7 @@ export const SendController = {
     };
 
     try {
-      SendController.setLoading(true);
+      this.state.loading = true;
 
       EventsController.sendEvent({
         type: 'track',
@@ -126,7 +126,7 @@ export const SendController = {
       });
       SnackController.showError('Something went wrong');
     } finally {
-      SendController.setLoading(false);
+      this.state.loading = false;
     }
   },
 
