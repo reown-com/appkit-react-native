@@ -76,9 +76,16 @@ export class SolanaAdapter extends SolanaBaseAdapter {
     }
   }
 
-  async signTransaction<T extends Transaction | VersionedTransaction>(transaction: T): Promise<T> {
+  async signTransaction<T extends Transaction | VersionedTransaction>(
+    transaction: T,
+    network?: AppKitNetwork
+  ): Promise<T> {
     if (!this.connector) {
       throw new Error('SolanaAdapter:signTransaction - no active connector');
+    }
+
+    if (!network) {
+      throw new Error('SolanaAdapter:signTransaction - network is undefined');
     }
 
     const provider = this.connector.getProvider();
@@ -100,7 +107,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
             pubkey: this.getAccounts()?.[0]?.split(':')[2] || ''
           }
         },
-        undefined // Let the provider determine the chain
+        network.caipNetworkId
       )) as { signature?: string; transaction?: string };
 
       // Handle different response formats
@@ -186,7 +193,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
       });
 
       // Sign the transaction
-      const signedTransaction = await this.signTransaction(transaction);
+      const signedTransaction = await this.signTransaction(transaction, network);
 
       // Send the signed transaction
       const signature = await connection.sendRawTransaction(signedTransaction.serialize(), {
