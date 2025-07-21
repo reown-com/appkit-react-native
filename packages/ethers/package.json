@@ -41,7 +41,7 @@
     "@reown/appkit-common-react-native": "2.0.0-alpha.1",
     "@reown/appkit-react-native": "2.0.0-alpha.1",
     "@reown/appkit-siwe-react-native": "2.0.0-alpha.1",
-    "@walletconnect/ethereum-provider": "2.20.2"
+    "@walletconnect/ethereum-provider": "2.21.5"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": ">=1.17.0",

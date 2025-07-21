@@ -8,6 +8,7 @@ import {
   type Balance,
   type CaipAddress,
   type CaipNetwork,
+  type ChainNamespace,
   type SocialProvider
 } from '@reown/appkit-common-react-native';
 
@@ -154,8 +155,8 @@ export const CoreHelperUtil = {
     return formattedBalance ? `${formattedBalance} ${symbol}` : `0.000 ${symbol || ''}`;
   },
 
-  isAddress(address: string, chain = 'eip155'): boolean {
-    switch (chain) {
+  isAddress(address: string, namespace: ChainNamespace = 'eip155'): boolean {
+    switch (namespace) {
       case 'eip155':
         if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
           return false;

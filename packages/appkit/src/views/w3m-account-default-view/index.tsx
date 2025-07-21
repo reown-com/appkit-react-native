@@ -67,6 +67,10 @@ export function AccountDefaultView() {
     features?.swaps &&
     activeNetwork?.caipNetworkId &&
     ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(activeNetwork.caipNetworkId);
+
+  const showSend =
+    !isAuth && activeNamespace && ConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(activeNamespace);
+
   const { padding } = useCustomDimensions();
 
   async function onDisconnect() {
@@ -97,7 +101,7 @@ export function AccountDefaultView() {
   const onCopyAddress = () => {
     //TODO: Check ENS name
     if (OptionsController.isClipboardAvailable() && ConnectionsController.state.activeAddress) {
-      const _address = ConnectionsController.state.activeAddress.split(':')[2];
+      const _address = CoreHelperUtil.getPlainAddress(ConnectionsController.state.activeAddress);
       if (_address) {
         OptionsController.copyToClipboard(_address);
         SnackController.showSuccess('Address copied');
@@ -144,6 +148,18 @@ export function AccountDefaultView() {
   const onUpgradePress = () => {
     EventsController.sendEvent({ type: 'track', event: 'EMAIL_UPGRADE_FROM_MODAL' });
     RouterController.push('UpgradeEmailWallet');
+  };
+
+  const onSendPress = () => {
+    const network = ConnectionsController.state.activeNetwork?.caipNetworkId || '';
+    const isSmartAccount = ConnectionsController.state.accountType === 'smartAccount';
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'OPEN_SEND',
+      properties: { network, isSmartAccount }
+    });
+    RouterController.push('WalletSend');
   };
 
   const onEmailPress = async () => {
@@ -258,6 +274,19 @@ export function AccountDefaultView() {
                 style={styles.actionButton}
               >
                 <Text color="fg-100">Buy crypto</Text>
+              </ListItem>
+            )}
+            {showSend && (
+              <ListItem
+                chevron
+                icon="paperplane"
+                iconColor="accent-100"
+                iconBackgroundColor="accent-glass-015"
+                onPress={onSendPress}
+                testID="button-send"
+                style={styles.actionButton}
+              >
+                <Text color="fg-100">Send</Text>
               </ListItem>
             )}
             {showSwaps && (

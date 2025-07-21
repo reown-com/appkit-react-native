@@ -1,6 +1,10 @@
 import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy, subscribe as sub } from 'valtio';
-import { NumberUtil, type CaipAddress } from '@reown/appkit-common-react-native';
+import {
+  NumberUtil,
+  type CaipAddress,
+  type CaipNetworkId
+} from '@reown/appkit-common-react-native';
 
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 import { SwapApiUtil } from '../utils/SwapApiUtil';
@@ -175,6 +179,7 @@ export const SwapController = {
 
     return {
       networkAddress,
+      network: activeNetwork,
       fromAddress: address,
       fromCaipAddress: activeAddress,
       sourceTokenAddress: state.sourceToken?.address,
@@ -313,7 +318,10 @@ export const SwapController = {
     }
   },
 
-  async getAddressPrice(address: string) {
+  async getAddressPrice(address: CaipAddress) {
+    const [namespace, chain] = address.split(':');
+    const networkId: CaipNetworkId = `${namespace}:${chain}`;
+
     const existPrice = state.tokensPriceMap[address];
 
     if (existPrice) {
@@ -322,7 +330,8 @@ export const SwapController = {
 
     const response = await BlockchainApiController.fetchTokenPrice({
       projectId: OptionsController.state.projectId,
-      addresses: [address]
+      addresses: [address],
+      caipNetworkId: networkId
     });
     const fungibles = response?.fungibles || [];
     const allTokens = [...(state.tokens || []), ...(state.myTokensWithBalance || [])];
@@ -337,10 +346,13 @@ export const SwapController = {
 
   async getNetworkTokenPrice() {
     const { networkAddress } = this.getParams();
+    const [namespace, chain] = networkAddress.split(':');
+    const networkId: CaipNetworkId = `${namespace}:${chain}`;
 
     const response = await BlockchainApiController.fetchTokenPrice({
       projectId: OptionsController.state.projectId,
-      addresses: [networkAddress]
+      addresses: [networkAddress],
+      caipNetworkId: networkId
     });
 
     const token = response?.fungibles?.[0];
@@ -402,7 +414,7 @@ export const SwapController = {
       : '';
   },
 
-  async setTokenPrice(address: string, target: SwapInputTarget) {
+  async setTokenPrice(address: CaipAddress, target: SwapInputTarget) {
     let price = state.tokensPriceMap[address] || 0;
 
     if (!price) {
@@ -652,7 +664,7 @@ export const SwapController = {
   },
 
   async sendTransactionForApproval(data: TransactionParams) {
-    const { fromAddress } = this.getParams();
+    const { fromAddress, network } = this.getParams();
     state.loadingApprovalTransaction = true;
 
     SnackController.showLoading('Approve limit increase in your wallet');
@@ -664,7 +676,8 @@ export const SwapController = {
         data: data.data as `0x${string}`,
         value: BigInt(data.value),
         gasPrice: BigInt(data.gasPrice),
-        chainNamespace: ConnectionsController.state.activeNamespace
+        chainNamespace: ConnectionsController.state.activeNamespace,
+        network
       });
 
       await this.swapTokens();
@@ -684,7 +697,7 @@ export const SwapController = {
     if (!data) {
       return undefined;
     }
-    const { fromAddress, isAuthConnector } = this.getParams();
+    const { fromAddress, isAuthConnector, network } = this.getParams();
 
     state.loadingTransaction = true;
 
@@ -704,7 +717,8 @@ export const SwapController = {
         gas: data.gas,
         gasPrice: BigInt(data.gasPrice),
         value: data.value,
-        chainNamespace: ConnectionsController.state.activeNamespace
+        chainNamespace: ConnectionsController.state.activeNamespace,
+        network
       });
 
       state.loadingTransaction = false;
@@ -727,7 +741,9 @@ export const SwapController = {
       SwapController.getMyTokensWithBalance(forceUpdateAddresses);
 
       setTimeout(() => {
-        TransactionsController.fetchTransactions(ConnectionsController.state.activeAddress, true);
+        if (ConnectionsController.state.activeAddress) {
+          TransactionsController.fetchTransactions(ConnectionsController.state.activeAddress, true);
+        }
       }, 5000);
 
       return transactionHash;

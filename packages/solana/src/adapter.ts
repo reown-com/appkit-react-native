@@ -7,6 +7,17 @@ import {
   type GetBalanceResponse
 } from '@reown/appkit-common-react-native';
 import { getSolanaNativeBalance, getSolanaTokenBalance } from './helpers';
+import { Connection, Transaction, VersionedTransaction } from '@solana/web3.js';
+import base58 from 'bs58';
+import { createSendTransaction } from './utils/createSendTransaction';
+
+export interface SolanaTransactionData {
+  fromAddress: string;
+  toAddress: string;
+  amount: number;
+  network?: AppKitNetwork;
+  rpcUrl?: string;
+}
 
 export class SolanaAdapter extends SolanaBaseAdapter {
   private static supportedNamespace: ChainNamespace = 'solana';
@@ -62,6 +73,144 @@ export class SolanaAdapter extends SolanaBaseAdapter {
       return balance;
     } catch (error) {
       return { amount: '0.00', symbol: 'SOL' };
+    }
+  }
+
+  async signTransaction<T extends Transaction | VersionedTransaction>(
+    transaction: T,
+    network?: AppKitNetwork
+  ): Promise<T> {
+    if (!this.connector) {
+      throw new Error('SolanaAdapter:signTransaction - no active connector');
+    }
+
+    if (!network) {
+      throw new Error('SolanaAdapter:signTransaction - network is undefined');
+    }
+
+    const provider = this.connector.getProvider();
+    if (!provider) {
+      throw new Error('SolanaAdapter:signTransaction - provider is undefined');
+    }
+
+    try {
+      // Serialize transaction to base64 (following WalletConnect standard)
+      const serializedTransaction = Buffer.from(
+        new Uint8Array(transaction.serialize({ verifySignatures: false }))
+      ).toString('base64');
+
+      const result = (await provider.request(
+        {
+          method: 'solana_signTransaction',
+          params: {
+            transaction: serializedTransaction,
+            pubkey: this.getAccounts()?.[0]?.split(':')[2] || ''
+          }
+        },
+        network.caipNetworkId
+      )) as { signature?: string; transaction?: string };
+
+      // Handle different response formats
+      if ('signature' in result && result.signature) {
+        // Old RPC response format - add signature to transaction
+        const decoded = base58.decode(result.signature);
+        if (transaction instanceof Transaction && transaction.feePayer) {
+          transaction.addSignature(
+            transaction.feePayer,
+            Buffer.from(decoded) as Buffer & Uint8Array
+          );
+        }
+
+        return transaction;
+      }
+
+      if ('transaction' in result && result.transaction) {
+        // New response format - deserialize the signed transaction
+        const decodedTransaction = Buffer.from(result.transaction, 'base64');
+
+        if (transaction instanceof VersionedTransaction) {
+          return VersionedTransaction.deserialize(new Uint8Array(decodedTransaction)) as T;
+        }
+
+        return Transaction.from(decodedTransaction) as T;
+      }
+
+      throw new Error('SolanaAdapter:signTransaction - invalid response format');
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`SolanaAdapter:signTransaction - ${error.message}`);
+      }
+      throw new Error('SolanaAdapter:signTransaction - unknown error occurred');
+    }
+  }
+
+  async sendTransaction(data: SolanaTransactionData): Promise<string | null> {
+    const { fromAddress, toAddress, amount, network, rpcUrl } = data;
+
+    if (!this.connector) {
+      throw new Error('SolanaAdapter:sendTransaction - no active connector');
+    }
+
+    const provider = this.connector.getProvider();
+    if (!provider) {
+      throw new Error('SolanaAdapter:sendTransaction - provider is undefined');
+    }
+
+    if (!network) {
+      throw new Error('SolanaAdapter:sendTransaction - network is undefined');
+    }
+
+    if (!fromAddress) {
+      throw new Error('SolanaAdapter:sendTransaction - fromAddress is undefined');
+    }
+
+    if (!toAddress) {
+      throw new Error('SolanaAdapter:sendTransaction - toAddress is undefined');
+    }
+
+    if (!amount || amount <= 0) {
+      throw new Error('SolanaAdapter:sendTransaction - amount must be greater than 0');
+    }
+
+    try {
+      // Determine RPC URL
+      let connectionRpcUrl = rpcUrl;
+      if (!connectionRpcUrl && network) {
+        connectionRpcUrl = network.rpcUrls?.default?.http?.[0];
+      }
+      if (!connectionRpcUrl) {
+        throw new Error('SolanaAdapter:sendTransaction - no RPC URL available');
+      }
+
+      // Create connection
+      const connection = new Connection(connectionRpcUrl, 'confirmed');
+
+      const transaction = await createSendTransaction({
+        connection,
+        fromAddress,
+        toAddress,
+        value: amount
+      });
+
+      // Sign the transaction
+      const signedTransaction = await this.signTransaction(transaction, network);
+
+      // Send the signed transaction
+      const signature = await connection.sendRawTransaction(signedTransaction.serialize(), {
+        skipPreflight: false,
+        preflightCommitment: 'confirmed'
+      });
+
+      if (!signature) {
+        throw new Error('SolanaAdapter:sendTransaction - no signature returned');
+      }
+
+      return signature;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`SolanaAdapter:sendTransaction - ${error.message}`);
+      }
+      throw new Error('SolanaAdapter:sendTransaction - unknown error occurred');
     }
   }
 

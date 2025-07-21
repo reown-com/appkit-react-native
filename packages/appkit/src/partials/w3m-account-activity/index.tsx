@@ -41,6 +41,11 @@ export function AccountActivity({ style }: Props) {
 
   const handleLoadMore = () => {
     const address = ConnectionsController.state.activeAddress;
+
+    if (!address) {
+      return;
+    }
+
     TransactionsController.fetchTransactions(address);
     EventsController.sendEvent({
       type: 'track',
@@ -55,8 +60,13 @@ export function AccountActivity({ style }: Props) {
   };
 
   const onRefresh = useCallback(async () => {
-    setRefreshing(true);
     const address = ConnectionsController.state.activeAddress;
+
+    if (!address) {
+      return;
+    }
+
+    setRefreshing(true);
     await TransactionsController.fetchTransactions(address, true);
     setRefreshing(false);
   }, []);
@@ -66,8 +76,8 @@ export function AccountActivity({ style }: Props) {
   }, [transactions]);
 
   useEffect(() => {
-    if (!TransactionsController.state.transactions.length) {
-      const address = ConnectionsController.state.activeAddress;
+    const address = ConnectionsController.state.activeAddress;
+    if (!TransactionsController.state.transactions.length && address) {
       TransactionsController.fetchTransactions(address, true);
     }
     // Set initial load to false after first fetch

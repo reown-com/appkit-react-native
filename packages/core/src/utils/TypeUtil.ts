@@ -124,7 +124,7 @@ export type RequestCache =
 
 // -- BlockchainApiController Types ---------------------------------------------
 export interface BlockchainApiIdentityRequest {
-  address: string;
+  address: `0x${string}`;
 }
 
 export interface BlockchainApiIdentityResponse {
@@ -157,7 +157,7 @@ export interface BlockchainApiTransactionsRequest {
   onramp?: 'coinbase';
   signal?: AbortSignal;
   cache?: RequestCache;
-  chainId?: CaipNetworkId;
+  chainId: CaipNetworkId;
 }
 
 export interface BlockchainApiTransactionsResponse {
@@ -171,9 +171,9 @@ export interface BlockchainApiSwapAllowanceResponse {
 
 export interface BlockchainApiGenerateSwapCalldataRequest {
   projectId: string;
-  userAddress: string;
-  from: string;
-  to: string;
+  userAddress: CaipAddress;
+  from: CaipAddress;
+  to: CaipAddress;
   amount: string;
   eip155?: {
     slippage: string;
@@ -196,9 +196,9 @@ export interface BlockchainApiGenerateSwapCalldataResponse {
 
 export interface BlockchainApiGenerateApproveCalldataRequest {
   projectId: string;
-  userAddress: string;
-  from: string;
-  to: string;
+  userAddress: CaipAddress;
+  from: CaipAddress;
+  to: CaipAddress;
   amount?: number;
 }
 
@@ -218,7 +218,7 @@ export interface BlockchainApiGenerateApproveCalldataResponse {
 export interface BlockchainApiTokenPriceRequest {
   projectId: string;
   currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth';
-  addresses: string[];
+  addresses: CaipAddress[];
 }
 
 export interface BlockchainApiTokenPriceResponse {
@@ -232,13 +232,13 @@ export interface BlockchainApiTokenPriceResponse {
 
 export interface BlockchainApiSwapAllowanceRequest {
   projectId: string;
-  tokenAddress: string;
-  userAddress: string;
+  tokenAddress: CaipAddress;
+  userAddress: CaipAddress;
 }
 
 export interface BlockchainApiGasPriceRequest {
   projectId: string;
-  chainId: string;
+  chainId: CaipNetworkId;
 }
 
 export interface BlockchainApiGasPriceResponse {
@@ -273,11 +273,11 @@ export interface BlockchainApiLookupEnsName {
 
 export interface BlockchainApiSwapQuoteRequest {
   projectId: string;
-  chainId?: string;
+  chainId?: CaipNetworkId;
   amount: string;
-  userAddress: string;
-  from: string;
-  to: string;
+  userAddress: CaipAddress;
+  from: CaipAddress;
+  to: CaipAddress;
   gasPrice: string;
 }
 
@@ -293,7 +293,7 @@ export interface BlockchainApiSwapQuoteResponse {
 
 export interface BlockchainApiSwapTokensRequest {
   projectId: string;
-  chainId?: string;
+  chainId: CaipNetworkId;
 }
 
 export interface BlockchainApiOnRampQuotesRequest {
