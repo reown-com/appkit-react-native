@@ -54,6 +54,8 @@ const getHeaders = () => {
   };
 };
 
+export const EXCLUDED_ONRAMP_PROVIDERS = ['BINANCECONNECT', 'COINBASEPAY'];
+
 // -- Types --------------------------------------------- //
 export interface BlockchainApiControllerState {
   clientId: string | null;
@@ -234,17 +236,6 @@ export const BlockchainApiController = {
     });
   },
 
-  async fetchOnRampCountries() {
-    return await state.api.get<OnRampCountry[]>({
-      path: '/v1/onramp/providers/properties',
-      headers: getHeaders(),
-      params: {
-        projectId: OptionsController.state.projectId,
-        type: 'countries'
-      }
-    });
-  },
-
   async fetchOnRampServiceProviders() {
     return await state.api.get<OnRampServiceProvider[]>({
       path: '/v1/onramp/providers',
@@ -255,59 +246,39 @@ export const BlockchainApiController = {
     });
   },
 
+  async fetchOnRampCountries() {
+    return await this.fetchProperties<OnRampCountry[]>('countries');
+  },
+
   async fetchOnRampPaymentMethods(params: { countries?: string }) {
-    return await state.api.get<OnRampPaymentMethod[]>({
-      path: '/v1/onramp/providers/properties',
-      headers: getHeaders(),
-      params: {
-        projectId: OptionsController.state.projectId,
-        type: 'payment-methods',
-        ...params
-      }
-    });
+    return await this.fetchProperties<OnRampPaymentMethod[]>('payment-methods', params);
   },
 
   async fetchOnRampCryptoCurrencies(params: { countries?: string }) {
-    return await state.api.get<OnRampCryptoCurrency[]>({
-      path: '/v1/onramp/providers/properties',
-      headers: getHeaders(),
-      params: {
-        projectId: OptionsController.state.projectId,
-        type: 'crypto-currencies',
-        ...params
-      }
-    });
+    return await this.fetchProperties<OnRampCryptoCurrency[]>('crypto-currencies', params);
   },
 
   async fetchOnRampFiatCurrencies() {
-    return await state.api.get<OnRampFiatCurrency[]>({
-      path: '/v1/onramp/providers/properties',
-      headers: getHeaders(),
-      params: {
-        projectId: OptionsController.state.projectId,
-        type: 'fiat-currencies'
-      }
-    });
+    return await this.fetchProperties<OnRampFiatCurrency[]>('fiat-currencies');
   },
 
   async fetchOnRampFiatLimits() {
-    return await state.api.get<OnRampFiatLimit[]>({
-      path: '/v1/onramp/providers/properties',
-      headers: getHeaders(),
-      params: {
-        projectId: OptionsController.state.projectId,
-        type: 'fiat-purchases-limits'
-      }
-    });
+    return await this.fetchProperties<OnRampFiatLimit[]>('fiat-purchases-limits');
   },
 
   async fetchOnRampCountriesDefaults() {
-    return await state.api.get<OnRampCountryDefaults[]>({
+    return await this.fetchProperties<OnRampCountryDefaults[]>('countries-defaults');
+  },
+
+  async fetchProperties<T>(type: string, params?: Record<string, string>) {
+    return await state.api.get<T>({
       path: '/v1/onramp/providers/properties',
       headers: getHeaders(),
       params: {
         projectId: OptionsController.state.projectId,
-        type: 'countries-defaults'
+        type,
+        excludeProviders: EXCLUDED_ONRAMP_PROVIDERS.join(','),
+        ...params
       }
     });
   },

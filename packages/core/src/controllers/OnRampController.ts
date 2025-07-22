@@ -21,12 +21,11 @@ import { ConstantsUtil, OnRampErrorType } from '../utils/ConstantsUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import { SnackController } from './SnackController';
 import { EventsController } from './EventsController';
-import { BlockchainApiController } from './BlockchainApiController';
+import { BlockchainApiController, EXCLUDED_ONRAMP_PROVIDERS } from './BlockchainApiController';
 
 // -- Helpers ------------------------------------------- //
 
 let quotesAbortController: AbortController | null = null;
-const excludeProviders = ['BINANCECONNECT', 'COINBASEPAY'];
 
 // -- Utils --------------------------------------------- //
 
@@ -423,7 +422,7 @@ export const OnRampController = {
         sourceAmount: state.paymentAmount,
         sourceCurrencyCode: state.paymentCurrency?.currencyCode!,
         walletAddress: AccountController.state.address!,
-        excludeProviders
+        excludeProviders: EXCLUDED_ONRAMP_PROVIDERS
       };
 
       const response = await BlockchainApiController.getOnRampQuotes(body, currentSignal);
