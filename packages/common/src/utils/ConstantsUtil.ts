@@ -15,9 +15,9 @@ export const ConstantsUtil = {
   SECURE_SITE_DASHBOARD: `https://secure.reown.com/dashboard`,
   SECURE_SITE_ICON: `https://secure.reown.com/images/favicon.png`,
 
+  //TODO: remove this
   WALLET_CONNECT_CONNECTOR_ID: 'walletConnect',
   COINBASE_CONNECTOR_ID: 'coinbaseWallet',
-  AUTH_CONNECTOR_ID: 'appKitAuth',
 
   COINBASE_EXPLORER_ID: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
 

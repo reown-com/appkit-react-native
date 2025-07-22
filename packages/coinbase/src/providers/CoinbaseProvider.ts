@@ -1,12 +1,16 @@
 import EventEmitter from 'events';
 import type { Provider, RequestArguments } from '@reown/appkit-common-react-native';
 import { configure, WalletMobileSDKEVMProvider } from '@coinbase/wallet-mobile-sdk';
-import { isValidMethod } from '../utils';
+import { hexToString, isValidMethod } from '../utils';
 import type { CoinbaseProviderConfig } from '../types';
 
 export class CoinbaseProvider extends EventEmitter implements Provider {
   private readonly config: CoinbaseProviderConfig;
   private provider: WalletMobileSDKEVMProvider;
+  private chainChangedListeners = new Map<
+    (args?: any) => void,
+    (hexChainId: `0x${string}`) => void
+  >();
 
   constructor(config: CoinbaseProviderConfig) {
     super();
@@ -38,8 +42,6 @@ export class CoinbaseProvider extends EventEmitter implements Provider {
         accounts = this.provider.selectedAddress ? [this.provider.selectedAddress] : [];
       }
 
-      //TODO: check switch chain
-
       return accounts as T;
     } catch (error) {
       console.warn('CoinbaseProvider: connect error', error);
@@ -65,11 +67,42 @@ export class CoinbaseProvider extends EventEmitter implements Provider {
     return this.provider.chainId as `0x${string}`;
   }
 
+  onChainChanged(hexChainId: `0x${string}`): void {
+    const chainId = hexToString(hexChainId);
+    this.emit('chainChanged', { chainId });
+  }
+
   override on(event: string, listener: (args?: any) => void): any {
+    if (event === 'chainChanged') {
+      // Create middleware that formats the chain ID before calling the original listener
+      const chainChangedMiddleware = (hexChainId: `0x${string}`) => {
+        const chainId = hexToString(hexChainId);
+        listener(chainId);
+      };
+
+      // Store the mapping between original listener and middleware
+      this.chainChangedListeners.set(listener, chainChangedMiddleware);
+
+      return this.provider.on('chainChanged', chainChangedMiddleware);
+    }
+
     return this.provider.on(event, listener);
   }
 
   override off(event: string, listener: (args?: any) => void): any {
+    if (event === 'chainChanged') {
+      // Get the middleware wrapper for this listener
+      const middleware = this.chainChangedListeners.get(listener);
+      if (middleware) {
+        // Remove the middleware from the provider
+        this.provider.off('chainChanged', middleware);
+        // Remove the mapping
+        this.chainChangedListeners.delete(listener);
+
+        return this;
+      }
+    }
+
     return this.provider.off(event, listener);
   }
 }

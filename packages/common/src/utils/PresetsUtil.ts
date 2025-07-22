@@ -82,8 +82,7 @@ export const PresetsUtil = {
 
   ConnectorNamesMap: {
     [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WalletConnect',
-    [ConstantsUtil.COINBASE_CONNECTOR_ID]: 'Coinbase Wallet',
-    [ConstantsUtil.AUTH_CONNECTOR_ID]: 'AppKit Universal Wallet'
+    [ConstantsUtil.COINBASE_CONNECTOR_ID]: 'Coinbase Wallet'
   } as Record<string, string>,
 
   ConnectorImageIds: {

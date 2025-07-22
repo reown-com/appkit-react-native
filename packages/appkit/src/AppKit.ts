@@ -623,11 +623,10 @@ export class AppKit {
   }
 
   private setExcludedWallets(options: AppKitConfig) {
-    // Exclude Coinbase if the connector is not implemented
     const excludedWallets = options.excludeWalletIds || [];
 
-    //TODO: check this when coinbase connector is implemented
-    const excludeCoinbase = true;
+    // Exclude Coinbase if the connector is not implemented
+    const excludeCoinbase = !this.extraConnectors.some(connector => connector.type === 'coinbase');
 
     if (excludeCoinbase) {
       excludedWallets.push(ConstantsUtil.COINBASE_EXPLORER_ID);
