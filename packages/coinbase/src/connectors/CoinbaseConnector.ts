@@ -20,9 +20,9 @@ export class CoinbaseConnector extends WalletConnector {
   private static readonly SUPPORTED_NAMESPACE: ChainNamespace = 'eip155';
   private config: CoinbaseConnectorConfig;
 
-  constructor(config: CoinbaseConnectorConfig) {
+  constructor(config?: CoinbaseConnectorConfig) {
     super({ type: 'coinbase' });
-    this.config = config;
+    this.config = config ?? {};
   }
 
   override async init(ops: ConnectorInitOptions) {
@@ -134,17 +134,17 @@ export class CoinbaseConnector extends WalletConnector {
 
   private saveSession(namespaces: Namespaces): void {
     const storage = this.getStorage();
-    storage.setItem(SESSION_KEY, JSON.stringify({ namespaces }));
+    storage.setItem<CoinbaseSession>(SESSION_KEY, { namespaces });
   }
 
   override async restoreSession(): Promise<boolean> {
     const storage = this.getStorage();
-    const session = await storage.getItem<string>(SESSION_KEY);
+    const session = await storage.getItem<CoinbaseSession>(SESSION_KEY);
     if (!session) {
       return false;
     }
 
-    const { namespaces } = JSON.parse(session) as CoinbaseSession;
+    const { namespaces } = session;
     this.namespaces = namespaces;
 
     return true;

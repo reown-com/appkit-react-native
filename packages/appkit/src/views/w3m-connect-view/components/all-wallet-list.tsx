@@ -14,10 +14,9 @@ import { filterOutRecentWallets } from '../utils';
 interface Props {
   itemStyle: StyleProp<ViewStyle>;
   onWalletPress: (wallet: WcWallet) => void;
-  isWalletConnectEnabled: boolean;
 }
 
-export function AllWalletList({ itemStyle, onWalletPress, isWalletConnectEnabled }: Props) {
+export function AllWalletList({ itemStyle, onWalletPress }: Props) {
   const { installed, featured, recommended, prefetchLoading } = useSnapshot(ApiController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state) as ConnectionControllerState;
   const imageHeaders = ApiController._getApiHeaders();
@@ -35,7 +34,7 @@ export function AllWalletList({ itemStyle, onWalletPress, isWalletConnectEnabled
     UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT
   );
 
-  if (!isWalletConnectEnabled || !list?.length) {
+  if (!list?.length) {
     return null;
   }
 

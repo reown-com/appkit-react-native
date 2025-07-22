@@ -1,3 +1,4 @@
+import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import {
@@ -5,7 +6,9 @@ import {
   ApiController,
   ModalController,
   EventsController,
-  type WcWallet
+  type WcWallet,
+  ConnectionController,
+  AssetUtil
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -18,12 +21,13 @@ import {
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w3m-connecting-body';
 import styles from './styles';
+import { useAppKit } from '../../AppKitContext';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
+import { UiUtil } from '../../utils/UiUtil';
 
-//TODO: check if this view is needed with Coinbase
 export function ConnectingExternalView() {
-  const { data } = RouterController.state;
-  // const connector = data?.connector;
-  const connector = undefined;
+  const { data } = useSnapshot(RouterController.state);
+  const { connect } = useAppKit();
   const { maxWidth: width } = useCustomDimensions();
   const [errorType, setErrorType] = useState<BodyErrorType>();
   const bodyMessage = getMessage({ walletName: data?.wallet?.name, errorType });
@@ -33,37 +37,25 @@ export function ConnectingExternalView() {
     onConnect();
   };
 
-  const storeConnectedWallet = useCallback(
-    // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async (wallet?: WcWallet) => {
-      // if (wallet) {
-      //   const recentWallets = await StorageUtil.addRecentWallet(wallet);
-      //   if (recentWallets) {
-      //     ConnectionController.setRecentWallets(recentWallets);
-      //   }
-      // }
-      // if (connector) {
-      //   const url = AssetUtil.getConnectorImage(connector);
-      //   ConnectionController.setConnectedWalletImageUrl(url);
-      // }
-    },
-    []
-  );
-
   const onConnect = useCallback(async () => {
     try {
-      if (connector) {
-        // await ConnectionController.connectExternal(connector);
-        storeConnectedWallet(data?.wallet);
+      const wallet = RouterController.state.data?.wallet;
+      if (wallet) {
+        if (wallet.id === ConstantsUtil.PHANTOM_EXPLORER_ID) {
+          await connect('phantom');
+        } else if (wallet.id === ConstantsUtil.COINBASE_EXPLORER_ID) {
+          await connect('coinbase');
+        }
+        UiUtil.storeRecentWallet(wallet);
+        ConnectionController.setPressedWallet(wallet);
         ModalController.close();
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
           properties: {
-            name: data?.wallet?.name ?? 'Unknown',
+            name: wallet?.name ?? 'Unknown',
             method: 'mobile',
-            explorer_id: data?.wallet?.id
+            explorer_id: wallet?.id
           }
         });
       }
@@ -81,7 +73,7 @@ export function ConnectingExternalView() {
         properties: { message: (error as Error)?.message ?? 'Unknown' }
       });
     }
-  }, [connector, storeConnectedWallet, data?.wallet]);
+  }, [connect]);
 
   useEffect(() => {
     onConnect();
@@ -98,7 +90,7 @@ export function ConnectingExternalView() {
         <LoadingThumbnail paused={!!errorType}>
           <WalletImage
             size="xl"
-            // imageSrc={AssetUtil.getConnectorImage(connector)}
+            imageSrc={AssetUtil.getWalletImage(data?.wallet)}
             imageHeaders={ApiController._getApiHeaders()}
           />
           {errorType && (

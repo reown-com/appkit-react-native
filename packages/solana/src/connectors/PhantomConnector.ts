@@ -12,7 +12,8 @@ import {
   solana,
   solanaDevnet,
   solanaTestnet,
-  type ConnectionProperties
+  type ConnectionProperties,
+  ConstantsUtil
 } from '@reown/appkit-common-react-native';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
@@ -120,10 +121,7 @@ export class PhantomConnector extends WalletConnector {
       }
       this.currentCaipNetworkId = `solana:${solanaChainIdPart}` as CaipNetworkId;
 
-      this.wallet = {
-        name: 'Phantom Wallet',
-        id: 'phantom-wallet'
-      };
+      this.wallet = ConstantsUtil.PHANTOM_CUSTOM_WALLET;
 
       const userPublicKey = this.getProvider().getUserPublicKey();
       if (!userPublicKey) {

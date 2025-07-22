@@ -6,15 +6,10 @@ import type { StyleProp, ViewStyle } from 'react-native';
 interface Props {
   itemStyle: StyleProp<ViewStyle>;
   onPress: () => void;
-  isWalletConnectEnabled: boolean;
 }
 
-export function AllWalletsButton({ itemStyle, onPress, isWalletConnectEnabled }: Props) {
+export function AllWalletsButton({ itemStyle, onPress }: Props) {
   const { installed, count } = useSnapshot(ApiController.state);
-
-  if (!isWalletConnectEnabled) {
-    return null;
-  }
 
   const total = installed.length + count;
   const label = total > 10 ? `${Math.floor(total / 10) * 10}+` : total;

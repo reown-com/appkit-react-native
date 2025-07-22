@@ -20,6 +20,7 @@ export const ConstantsUtil = {
   COINBASE_CONNECTOR_ID: 'coinbaseWallet',
 
   COINBASE_EXPLORER_ID: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+  PHANTOM_EXPLORER_ID: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
 
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet
@@ -39,8 +40,8 @@ export const ConstantsUtil = {
   ],
 
   PHANTOM_CUSTOM_WALLET: {
-    id: 'phantom-wallet',
-    name: 'Phantom',
+    id: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+    name: 'Phantom Wallet',
     image_id: 'b6ec7b81-bb4f-427d-e290-7631e6e50d00',
     mobile_link: 'phantom://'
   }

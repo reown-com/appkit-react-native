@@ -25,12 +25,16 @@ export const UiUtil = {
     StorageUtil.setWalletConnectDeepLink(wcLinking);
 
     if (pressedWallet) {
-      const recentWallets = await StorageUtil.addRecentWallet(pressedWallet);
-      if (recentWallets) {
-        ConnectionController.setRecentWallets(recentWallets);
-      }
+      UiUtil.storeRecentWallet(pressedWallet);
       const url = AssetUtil.getWalletImage(pressedWallet);
       ConnectionController.setConnectedWalletImageUrl(url);
+    }
+  },
+
+  storeRecentWallet: async (wallet: WcWallet) => {
+    const recentWallets = await StorageUtil.addRecentWallet(wallet);
+    if (recentWallets) {
+      ConnectionController.setRecentWallets(recentWallets);
     }
   }
 };

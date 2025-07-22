@@ -11,7 +11,6 @@ import {
   ApiController,
   EventsController
 } from '@reown/appkit-core-react-native';
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common-react-native';
 import { useAppKit } from '../../AppKitContext';
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
 import { ConnectingMobile } from '../../partials/w3m-connecting-mobile';
@@ -47,16 +46,9 @@ export function ConnectingView() {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.setWcError(false);
 
-        let connectPromise: Promise<void>;
-        if (data?.wallet?.id === 'phantom-wallet') {
-          connectPromise = connect('phantom');
-        } else if (data?.wallet?.id === CommonConstantsUtil.COINBASE_EXPLORER_ID) {
-          connectPromise = connect('coinbase');
-        } else {
-          connectPromise = connect('walletconnect', {
-            universalLink: routeData?.wallet?.link_mode ?? undefined
-          });
-        }
+        const connectPromise = connect('walletconnect', {
+          universalLink: routeData?.wallet?.link_mode ?? undefined
+        });
         ConnectionController.setWcPromise(connectPromise);
       }
     } catch (error) {
