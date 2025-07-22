@@ -6,7 +6,6 @@ import {
   ApiController,
   ModalController,
   EventsController,
-  type WcWallet,
   ConnectionController,
   AssetUtil
 } from '@reown/appkit-core-react-native';
