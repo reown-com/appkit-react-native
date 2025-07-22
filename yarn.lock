@@ -6702,6 +6702,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@reown/appkit-coinbase-react-native@workspace:packages/coinbase":
+  version: 0.0.0-use.local
+  resolution: "@reown/appkit-coinbase-react-native@workspace:packages/coinbase"
+  dependencies:
+    "@reown/appkit-common-react-native": "npm:2.0.0-alpha.1"
+  peerDependencies:
+    "@coinbase/wallet-mobile-sdk": ">=1.1.2"
+  languageName: unknown
+  linkType: soft
+
 "@reown/appkit-common-react-native@npm:2.0.0-alpha.1, @reown/appkit-common-react-native@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-common-react-native@workspace:packages/common"

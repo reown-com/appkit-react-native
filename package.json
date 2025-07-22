@@ -12,6 +12,7 @@
     "packages/solana",
     "packages/bitcoin",
     "packages/wagmi",
+    "packages/coinbase",
     "apps/*"
   ],
   "scripts": {

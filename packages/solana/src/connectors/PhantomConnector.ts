@@ -150,11 +150,10 @@ export class PhantomConnector extends WalletConnector {
   }
 
   override async disconnect(): Promise<void> {
-    if (!this.isConnected()) {
-      return Promise.resolve();
-    }
     try {
-      await this.getProvider().disconnect();
+      if (this.isConnected()) {
+        await super.disconnect();
+      }
     } catch (error: any) {
       // console.warn(`PhantomConnector: Error during provider disconnect: ${error.message}. Proceeding with local clear.`);
     }
@@ -239,9 +238,7 @@ export class PhantomConnector extends WalletConnector {
       return Promise.resolve();
     }
 
-    // For deeplink wallets, switching network effectively means re-connecting to the new cluster.
-    // We can try to disconnect the current session and then initiate a new connection.
-    // console.log(`Attempting to switch network to: ${targetClusterName}`);
+    // Phantom doesn't provide a way to switch network, so we need to disconnect and reconnect.
     await this.disconnect(); // Clear current session
 
     // Create a temporary options object to guide the new connection
@@ -252,6 +249,7 @@ export class PhantomConnector extends WalletConnector {
     // Attempt to connect to the new cluster
     // The connect method will use the defaultChain from opts to determine the cluster.
     await this.connect(tempConnectOpts);
+    this.getProvider().emit('chainChanged', network.id);
 
     // Verify if the connection was successful and to the correct new network
     if (
