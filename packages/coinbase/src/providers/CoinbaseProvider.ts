@@ -1,7 +1,11 @@
 import EventEmitter from 'events';
-import type { Provider, RequestArguments } from '@reown/appkit-common-react-native';
+import {
+  type Provider,
+  type RequestArguments,
+  StringUtil
+} from '@reown/appkit-common-react-native';
 import { configure, WalletMobileSDKEVMProvider } from '@coinbase/wallet-mobile-sdk';
-import { hexToString, isValidMethod } from '../utils';
+import { isValidMethod } from '../utils';
 import type { CoinbaseProviderConfig } from '../types';
 
 export class CoinbaseProvider extends EventEmitter implements Provider {
@@ -68,7 +72,7 @@ export class CoinbaseProvider extends EventEmitter implements Provider {
   }
 
   onChainChanged(hexChainId: `0x${string}`): void {
-    const chainId = hexToString(hexChainId);
+    const chainId = StringUtil.hexToString(hexChainId);
     this.emit('chainChanged', { chainId });
   }
 
@@ -76,7 +80,7 @@ export class CoinbaseProvider extends EventEmitter implements Provider {
     if (event === 'chainChanged') {
       // Create middleware that formats the chain ID before calling the original listener
       const chainChangedMiddleware = (hexChainId: `0x${string}`) => {
-        const chainId = hexToString(hexChainId);
+        const chainId = StringUtil.hexToString(hexChainId);
         listener(chainId);
       };
 

@@ -51,18 +51,3 @@ export function getCoinbaseNamespace(
     }
   };
 }
-
-export function numberToHex(value: string | number) {
-  // Convert string to number first, then to hex
-  const num = typeof value === 'string' ? parseInt(value, 10) : value;
-
-  return `0x${num.toString(16)}`;
-}
-
-export function hexToString(hexValue: string) {
-  // Remove 0x prefix if present
-  const cleanHex = hexValue.startsWith('0x') ? hexValue.slice(2) : hexValue;
-  // Convert hex to decimal number, then to string
-
-  return parseInt(cleanHex, 16).toString();
-}

@@ -8,9 +8,11 @@ import {
   type ConnectorInitOptions,
   type Namespaces,
   type WalletInfo,
-  type Storage
+  type Storage,
+  NumberUtil,
+  StringUtil
 } from '@reown/appkit-common-react-native';
-import { getCoinbaseNamespace, hexToString, numberToHex } from '../utils';
+import { getCoinbaseNamespace } from '../utils';
 import { CoinbaseProvider } from '../providers/CoinbaseProvider';
 import type { CoinbaseConnectorConfig, CoinbaseSession } from '../types';
 
@@ -74,7 +76,7 @@ export class CoinbaseConnector extends WalletConnector {
 
   override getChainId(): CaipNetworkId | undefined {
     const hexChainId = this.getProvider().getChainId();
-    const chainId = hexToString(hexChainId);
+    const chainId = StringUtil.hexToString(hexChainId);
 
     return `${CoinbaseConnector.SUPPORTED_NAMESPACE}:${chainId}` as CaipNetworkId;
   }
@@ -94,7 +96,7 @@ export class CoinbaseConnector extends WalletConnector {
 
   override async switchNetwork(network: AppKitNetwork): Promise<void> {
     const provider = this.getProvider();
-    const chainId_ = numberToHex(network.id);
+    const chainId_ = NumberUtil.convertNumericToHexString(network.id);
 
     try {
       await provider.request({
