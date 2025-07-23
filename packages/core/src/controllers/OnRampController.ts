@@ -661,8 +661,3 @@ export const OnRampController = {
     this.updateSelectedPurchaseCurrency();
   }
 };
-
-// Add getQuotesDebounced to the controller after definition to avoid circular reference
-(OnRampController as any).getQuotesDebounced = CoreHelperUtil.debounce(function () {
-  OnRampController.getQuotes();
-}, 500);

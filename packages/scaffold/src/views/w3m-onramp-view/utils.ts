@@ -1,4 +1,8 @@
-import { OnRampController, NetworkController } from '@reown/appkit-core-react-native';
+import {
+  OnRampController,
+  NetworkController,
+  CoreHelperUtil
+} from '@reown/appkit-core-react-native';
 
 // -------------------------- Utils --------------------------
 export const getPurchaseCurrencies = (searchValue?: string, filterSelected?: boolean) => {
@@ -20,3 +24,7 @@ export const getPurchaseCurrencies = (searchValue?: string, filterSelected?: boo
       )
     : networkTokens;
 };
+
+export const getQuotesDebounced = CoreHelperUtil.debounce(function () {
+  OnRampController.getQuotes();
+}, 500);

@@ -23,7 +23,7 @@ import {
 import { NumberUtil, StringUtil } from '@reown/appkit-common-react-native';
 import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Currency, ITEM_HEIGHT as CURRENCY_ITEM_HEIGHT } from './components/Currency';
-import { getPurchaseCurrencies } from './utils';
+import { getPurchaseCurrencies, getQuotesDebounced } from './utils';
 import { CurrencyInput } from './components/CurrencyInput';
 import { SelectPaymentModal } from './components/SelectPaymentModal';
 import { Header } from './components/Header';
@@ -108,7 +108,7 @@ export function OnRampView() {
     }
 
     OnRampController.setPaymentAmount(value);
-    OnRampController.getQuotesDebounced();
+    getQuotesDebounced();
   };
 
   const handleSearch = (value: string) => {
