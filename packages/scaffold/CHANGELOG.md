@@ -1,5 +1,23 @@
 # @reown/appkit-scaffold-react-native
 
+## 1.2.6
+
+### Patch Changes
+
+- [#361](https://github.com/reown-com/appkit-react-native/pull/361) [`fc2fda7`](https://github.com/reown-com/appkit-react-native/commit/fc2fda728443965578c3d471f928d4604adda55c) Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)! - Update author field in package.json files to use Discord link
+
+- [#369](https://github.com/reown-com/appkit-react-native/pull/369) [`5e95cb1`](https://github.com/reown-com/appkit-react-native/commit/5e95cb1e6d783ebe1d4c5a64d23c365a13320c95) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: replace internal URL usage with custom logic to avoid polyfill issues
+
+- [#375](https://github.com/reown-com/appkit-react-native/pull/375) [`ae8a386`](https://github.com/reown-com/appkit-react-native/commit/ae8a386a7ad3ffac78281491b82e2a9b31c418ff) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: disable layout animations on ios new arch projects
+
+- [#368](https://github.com/reown-com/appkit-react-native/pull/368) [`c425b73`](https://github.com/reown-com/appkit-react-native/commit/c425b738fcb934f23bbc7b5a10043b4ce7546e91) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: bump valtio to 1.13.2
+
+- Updated dependencies [[`fc2fda7`](https://github.com/reown-com/appkit-react-native/commit/fc2fda728443965578c3d471f928d4604adda55c), [`5e95cb1`](https://github.com/reown-com/appkit-react-native/commit/5e95cb1e6d783ebe1d4c5a64d23c365a13320c95), [`ae8a386`](https://github.com/reown-com/appkit-react-native/commit/ae8a386a7ad3ffac78281491b82e2a9b31c418ff), [`c425b73`](https://github.com/reown-com/appkit-react-native/commit/c425b738fcb934f23bbc7b5a10043b4ce7546e91)]:
+  - @reown/appkit-core-react-native@1.2.6
+  - @reown/appkit-ui-react-native@1.2.6
+  - @reown/appkit-common-react-native@1.2.6
+  - @reown/appkit-siwe-react-native@1.2.6
+
 ## 1.2.5
 
 ### Patch Changes
