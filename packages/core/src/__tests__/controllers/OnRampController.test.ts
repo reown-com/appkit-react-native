@@ -1,4 +1,5 @@
 import {
+  AccountController,
   OnRampController,
   BlockchainApiController,
   ConstantsUtil,
@@ -16,7 +17,18 @@ import type {
 
 // Mock dependencies
 jest.mock('../../utils/StorageUtil');
-jest.mock('../../controllers/BlockchainApiController');
+jest.mock('../../controllers/BlockchainApiController', () => ({
+  BlockchainApiController: {
+    fetchOnRampCountries: jest.fn(),
+    fetchOnRampServiceProviders: jest.fn(),
+    fetchOnRampPaymentMethods: jest.fn(),
+    fetchOnRampFiatCurrencies: jest.fn(),
+    fetchOnRampCryptoCurrencies: jest.fn(),
+    fetchOnRampFiatLimits: jest.fn(),
+    fetchOnRampCountriesDefaults: jest.fn(),
+    getOnRampQuotes: jest.fn()
+  }
+}));
 jest.mock('../../controllers/EventsController', () => ({
   EventsController: {
     sendEvent: jest.fn()
@@ -36,7 +48,8 @@ jest.mock('../../utils/CoreHelperUtil', () => ({
     getCountryFromTimezone: jest.fn(),
     getBlockchainApiUrl: jest.fn(),
     getApiUrl: jest.fn(),
-    debounce: jest.fn()
+    debounce: jest.fn(),
+    getPlainAddress: jest.fn(caipAddress => caipAddress?.split(':')[2])
   }
 }));
 
@@ -329,16 +342,28 @@ describe('OnRampController', () => {
       OnRampController.setPaymentCurrency(mockFiatCurrency);
       OnRampController.setPurchaseCurrency(mockCryptoCurrency);
       OnRampController.setPaymentAmount(100);
+      AccountController.setCaipAddress('eip155:1:0x1234567890123456789012345678901234567890');
 
       // Mock API response
       (BlockchainApiController.fetchOnRampPaymentMethods as jest.Mock).mockResolvedValue([
         mockPaymentMethod
+      ]);
+      (BlockchainApiController.fetchOnRampCryptoCurrencies as jest.Mock).mockResolvedValue([
+        mockCryptoCurrency
       ]);
       (BlockchainApiController.getOnRampQuotes as jest.Mock).mockResolvedValue([mockQuote]);
 
       // Execute
       expect(OnRampController.state.quotesLoading).toBe(false);
       await OnRampController.fetchPaymentMethods();
+      await OnRampController.fetchCryptoCurrencies();
+
+      // Set loading to false to allow canGenerateQuote to return true
+      OnRampController.state.loading = false;
+
+      // Verify that canGenerateQuote returns true before calling getQuotes
+      expect(OnRampController.canGenerateQuote()).toBe(true);
+
       await OnRampController.getQuotes();
 
       // Verify
@@ -353,7 +378,8 @@ describe('OnRampController', () => {
       OnRampController.setSelectedPaymentMethod(mockPaymentMethod);
       OnRampController.setPaymentCurrency(mockFiatCurrency);
       OnRampController.setPurchaseCurrency(mockCryptoCurrency);
-      OnRampController.setPaymentAmount(100);
+      OnRampController.setPaymentAmount(10);
+      AccountController.setCaipAddress('eip155:1:0x1234567890123456789012345678901234567890');
 
       // Mock API error
       (BlockchainApiController.getOnRampQuotes as jest.Mock).mockRejectedValue({
@@ -362,6 +388,12 @@ describe('OnRampController', () => {
       });
 
       // Execute
+      // Set loading to false to allow canGenerateQuote to return true
+      OnRampController.state.loading = false;
+
+      // Verify that canGenerateQuote returns true before calling getQuotes
+      expect(OnRampController.canGenerateQuote()).toBe(true);
+
       await OnRampController.getQuotes();
 
       // Verify
