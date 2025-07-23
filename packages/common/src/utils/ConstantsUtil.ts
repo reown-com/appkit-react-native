@@ -44,5 +44,22 @@ export const ConstantsUtil = {
     name: 'Phantom Wallet',
     image_id: 'b6ec7b81-bb4f-427d-e290-7631e6e50d00',
     mobile_link: 'phantom://'
+  },
+
+  // Storage Keys
+  STORAGE_KEYS: {
+    WC_DEEPLINK: 'WALLETCONNECT_DEEPLINK_CHOICE', //dont change this one
+    RECENT_WALLET: '@appkit/recent_wallet',
+    CONNECTED_WALLET_IMAGE_URL: '@appkit/connected_wallet_image_url',
+    CONNECTED_CONNECTORS: '@appkit/connected_connectors',
+    CONNECTED_SOCIAL: '@appkit/connected_social',
+    ONRAMP_PREFERRED_COUNTRY: '@appkit/onramp_preferred_country',
+    ONRAMP_COUNTRIES: '@appkit/onramp_countries',
+    ONRAMP_SERVICE_PROVIDERS: '@appkit/onramp_service_providers',
+    ONRAMP_FIAT_LIMITS: '@appkit/onramp_fiat_limits',
+    ONRAMP_FIAT_CURRENCIES: '@appkit/onramp_fiat_currencies',
+    ONRAMP_PREFERRED_FIAT_CURRENCY: '@appkit/onramp_preferred_fiat_currency',
+    ACTIVE_NAMESPACE: '@appkit/active_namespace',
+    COINBASE_CONNECTOR_SESSION: '@appkit/coinbase_connector/session'
   }
 };
