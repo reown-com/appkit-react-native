@@ -18,7 +18,7 @@ import { ConnectionController } from './ConnectionController';
 import { ApiUtil } from '../utils/ApiUtil';
 import { SnackController } from './SnackController';
 import { ConnectionsController } from './ConnectionsController';
-import { PresetsUtil } from '@reown/appkit-common-react-native';
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-common-react-native';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl();
@@ -107,8 +107,7 @@ export const ApiController = {
   },
 
   async fetchConnectorImages() {
-    //TODO: check this with coinbase
-    const connectors = [{ imageId: PresetsUtil.ConnectorImageIds['WALLET_CONNECT'] }];
+    const connectors = [{ imageId: ConstantsUtil.WALLET_CONNECT_IMAGE_ID }];
     const ids = connectors.map(({ imageId }) => imageId).filter(Boolean);
     await CoreHelperUtil.allSettled(
       (ids as string[]).map(id => ApiController._fetchConnectorImage(id))

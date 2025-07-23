@@ -1,11 +1,4 @@
-import { ConstantsUtil } from './ConstantsUtil';
-
 export const PresetsUtil = {
-  ConnectorExplorerIds: {
-    [ConstantsUtil.COINBASE_CONNECTOR_ID]:
-      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'
-  } as Record<string, string>,
-
   NetworkImageIds: {
     // Ethereum
     1: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
@@ -78,16 +71,6 @@ export const PresetsUtil = {
     '000000000019d6689c085ae165831e93': '0b4838db-0161-4ffe-022d-532bf03dba00',
     // Bitcoin Testnet
     '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200'
-  } as Record<string, string>,
-
-  ConnectorNamesMap: {
-    [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WalletConnect',
-    [ConstantsUtil.COINBASE_CONNECTOR_ID]: 'Coinbase Wallet'
-  } as Record<string, string>,
-
-  ConnectorImageIds: {
-    [ConstantsUtil.COINBASE_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
-    [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400'
   } as Record<string, string>,
 
   RpcChainIds: [

@@ -15,12 +15,10 @@ export const ConstantsUtil = {
   SECURE_SITE_DASHBOARD: `https://secure.reown.com/dashboard`,
   SECURE_SITE_ICON: `https://secure.reown.com/images/favicon.png`,
 
-  //TODO: remove this
-  WALLET_CONNECT_CONNECTOR_ID: 'walletConnect',
-  COINBASE_CONNECTOR_ID: 'coinbaseWallet',
-
   COINBASE_EXPLORER_ID: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
   PHANTOM_EXPLORER_ID: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+
+  WALLET_CONNECT_IMAGE_ID: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
 
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet
