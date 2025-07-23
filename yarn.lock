@@ -6753,7 +6753,6 @@ __metadata:
     countries-and-timezones: "npm:3.7.2"
     valtio: "npm:1.11.2"
   peerDependencies:
-    "@react-native-async-storage/async-storage": ">=1.17.0"
     "@walletconnect/react-native-compat": ">=2.13.1"
     react: ">=17"
     react-native: ">=0.68.5"
@@ -6769,7 +6768,6 @@ __metadata:
     "@reown/appkit-siwe-react-native": "npm:2.0.0-alpha.1"
     "@walletconnect/ethereum-provider": "npm:2.21.5"
   peerDependencies:
-    "@react-native-async-storage/async-storage": ">=1.17.0"
     "@react-native-community/netinfo": "*"
     "@walletconnect/react-native-compat": ">=2.13.1"
     react: ">=17"
@@ -6909,7 +6907,6 @@ __metadata:
     "@reown/appkit-react-native": "npm:2.0.0-alpha.1"
     "@reown/appkit-siwe-react-native": "npm:2.0.0-alpha.1"
   peerDependencies:
-    "@react-native-async-storage/async-storage": ">=1.17.0"
     "@react-native-community/netinfo": "*"
     "@walletconnect/react-native-compat": ">=2.13.1"
     react: ">=17"

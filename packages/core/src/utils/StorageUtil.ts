@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {
   OnRampCountry,
   OnRampFiatCurrency,
@@ -12,14 +11,19 @@ import {
   type SocialProvider,
   type ConnectorType,
   type ChainNamespace,
+  type WalletDeepLink,
   ConstantsUtil
 } from '@reown/appkit-common-react-native';
+import { OptionsController } from '../controllers/OptionsController';
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
-  setWalletConnectDeepLink({ href, name }: { href: string; name: string }) {
+  setWalletConnectDeepLink({ href, name }: WalletDeepLink) {
     try {
-      AsyncStorage.setItem(ConstantsUtil.STORAGE_KEYS.WC_DEEPLINK, JSON.stringify({ href, name }));
+      OptionsController.getStorage().setItem(ConstantsUtil.STORAGE_KEYS.WC_DEEPLINK, {
+        href,
+        name
+      });
     } catch {
       console.info('Unable to set WalletConnect deep link');
     }
@@ -27,9 +31,11 @@ export const StorageUtil = {
 
   async getWalletConnectDeepLink() {
     try {
-      const deepLink = await AsyncStorage.getItem(ConstantsUtil.STORAGE_KEYS.WC_DEEPLINK);
+      const deepLink = await OptionsController.getStorage().getItem<WalletDeepLink>(
+        ConstantsUtil.STORAGE_KEYS.WC_DEEPLINK
+      );
       if (deepLink) {
-        return JSON.parse(deepLink);
+        return deepLink;
       }
     } catch {
       console.info('Unable to get WalletConnect deep link');
@@ -40,7 +46,7 @@ export const StorageUtil = {
 
   async removeWalletConnectDeepLink() {
     try {
-      await AsyncStorage.removeItem(ConstantsUtil.STORAGE_KEYS.WC_DEEPLINK);
+      await OptionsController.getStorage().removeItem(ConstantsUtil.STORAGE_KEYS.WC_DEEPLINK);
     } catch {
       console.info('Unable to delete WalletConnect deep link');
     }
@@ -59,7 +65,10 @@ export const StorageUtil = {
       if (recentWallets.length > 2) {
         recentWallets.pop();
       }
-      AsyncStorage.setItem(ConstantsUtil.STORAGE_KEYS.RECENT_WALLET, JSON.stringify(recentWallets));
+      OptionsController.getStorage().setItem(
+        ConstantsUtil.STORAGE_KEYS.RECENT_WALLET,
+        JSON.stringify(recentWallets)
+      );
 
       return recentWallets;
     } catch {
@@ -71,7 +80,10 @@ export const StorageUtil = {
 
   async setRecentWallets(wallets: WcWallet[]) {
     try {
-      await AsyncStorage.setItem(ConstantsUtil.STORAGE_KEYS.RECENT_WALLET, JSON.stringify(wallets));
+      await OptionsController.getStorage().setItem(
+        ConstantsUtil.STORAGE_KEYS.RECENT_WALLET,
+        JSON.stringify(wallets)
+      );
     } catch {
       console.info('Unable to set recent wallets');
     }
@@ -79,7 +91,9 @@ export const StorageUtil = {
 
   async getRecentWallets(): Promise<WcWallet[]> {
     try {
-      const recent = await AsyncStorage.getItem(ConstantsUtil.STORAGE_KEYS.RECENT_WALLET);
+      const recent = await OptionsController.getStorage().getItem(
+        ConstantsUtil.STORAGE_KEYS.RECENT_WALLET
+      );
 
       return recent ? JSON.parse(recent) : [];
     } catch {
@@ -101,9 +115,9 @@ export const StorageUtil = {
       // Only add if it doesn't exist already
       if (!currentConnectors.some(c => c.type === type)) {
         const updatedConnectors = [...currentConnectors, { type, namespaces }];
-        await AsyncStorage.setItem(
+        await OptionsController.getStorage().setItem(
           ConstantsUtil.STORAGE_KEYS.CONNECTED_CONNECTORS,
-          JSON.stringify(updatedConnectors)
+          updatedConnectors
         );
       }
     } catch {
@@ -113,12 +127,12 @@ export const StorageUtil = {
 
   async getConnectedConnectors(): Promise<{ type: ConnectorType; namespaces: string[] }[]> {
     try {
-      const connectors = await AsyncStorage.getItem(
-        ConstantsUtil.STORAGE_KEYS.CONNECTED_CONNECTORS
-      );
+      const connectors = await OptionsController.getStorage().getItem<
+        { type: ConnectorType; namespaces: string[] }[]
+      >(ConstantsUtil.STORAGE_KEYS.CONNECTED_CONNECTORS);
 
-      return connectors ? JSON.parse(connectors) : [];
-    } catch {
+      return connectors ?? [];
+    } catch (err) {
       console.info('Unable to get Connected Connector');
     }
 
@@ -129,9 +143,9 @@ export const StorageUtil = {
     try {
       const currentConnectors = await StorageUtil.getConnectedConnectors();
       const updatedConnectors = currentConnectors.filter(c => c.type !== type);
-      await AsyncStorage.setItem(
+      await OptionsController.getStorage().setItem(
         ConstantsUtil.STORAGE_KEYS.CONNECTED_CONNECTORS,
-        JSON.stringify(updatedConnectors)
+        updatedConnectors
       );
     } catch {
       console.info('Unable to remove Connected Connector');
@@ -140,7 +154,10 @@ export const StorageUtil = {
 
   async setConnectedWalletImageUrl(url: string) {
     try {
-      await AsyncStorage.setItem(ConstantsUtil.STORAGE_KEYS.CONNECTED_WALLET_IMAGE_URL, url);
+      await OptionsController.getStorage().setItem(
+        ConstantsUtil.STORAGE_KEYS.CONNECTED_WALLET_IMAGE_URL,
+        url
+      );
     } catch {
       console.info('Unable to set Connected Wallet Image URL');
     }
@@ -148,7 +165,9 @@ export const StorageUtil = {
 
   async getConnectedWalletImageUrl() {
     try {
-      return await AsyncStorage.getItem(ConstantsUtil.STORAGE_KEYS.CONNECTED_WALLET_IMAGE_URL);
+      return await OptionsController.getStorage().getItem(
+        ConstantsUtil.STORAGE_KEYS.CONNECTED_WALLET_IMAGE_URL
+      );
     } catch {
       console.info('Unable to get Connected Wallet Image URL');
     }
@@ -158,7 +177,9 @@ export const StorageUtil = {
 
   async removeConnectedWalletImageUrl() {
     try {
-      await AsyncStorage.removeItem(ConstantsUtil.STORAGE_KEYS.CONNECTED_WALLET_IMAGE_URL);
+      await OptionsController.getStorage().removeItem(
+        ConstantsUtil.STORAGE_KEYS.CONNECTED_WALLET_IMAGE_URL
+      );
     } catch {
       console.info('Unable to remove Connected Wallet Image URL');
     }
@@ -166,22 +187,22 @@ export const StorageUtil = {
 
   async setConnectedSocialProvider(provider: SocialProvider) {
     try {
-      await AsyncStorage.setItem(
+      await OptionsController.getStorage().setItem(
         ConstantsUtil.STORAGE_KEYS.CONNECTED_SOCIAL,
-        JSON.stringify(provider)
+        provider
       );
     } catch {
       console.info('Unable to set Connected Social Provider');
     }
   },
 
-  async getConnectedSocialProvider() {
+  async getConnectedSocialProvider(): Promise<SocialProvider | undefined> {
     try {
-      const provider = (await AsyncStorage.getItem(
+      const provider = await OptionsController.getStorage().getItem<SocialProvider>(
         ConstantsUtil.STORAGE_KEYS.CONNECTED_SOCIAL
-      )) as SocialProvider;
+      );
 
-      return provider ? JSON.parse(provider) : undefined;
+      return provider ?? undefined;
     } catch {
       console.info('Unable to get Connected Social Provider');
     }
@@ -191,7 +212,7 @@ export const StorageUtil = {
 
   async removeConnectedSocialProvider() {
     try {
-      await AsyncStorage.removeItem(ConstantsUtil.STORAGE_KEYS.CONNECTED_SOCIAL);
+      await OptionsController.getStorage().removeItem(ConstantsUtil.STORAGE_KEYS.CONNECTED_SOCIAL);
     } catch {
       console.info('Unable to remove Connected Social Provider');
     }
@@ -199,9 +220,9 @@ export const StorageUtil = {
 
   async setOnRampPreferredCountry(country: OnRampCountry) {
     try {
-      await AsyncStorage.setItem(
+      await OptionsController.getStorage().setItem(
         ConstantsUtil.STORAGE_KEYS.ONRAMP_PREFERRED_COUNTRY,
-        JSON.stringify(country)
+        country
       );
     } catch {
       console.info('Unable to set OnRamp Preferred Country');
@@ -210,11 +231,11 @@ export const StorageUtil = {
 
   async getOnRampPreferredCountry() {
     try {
-      const country = await AsyncStorage.getItem(
+      const country = await OptionsController.getStorage().getItem<OnRampCountry>(
         ConstantsUtil.STORAGE_KEYS.ONRAMP_PREFERRED_COUNTRY
       );
 
-      return country ? (JSON.parse(country) as OnRampCountry) : undefined;
+      return country ?? undefined;
     } catch {
       console.info('Unable to get OnRamp Preferred Country');
     }
@@ -224,9 +245,9 @@ export const StorageUtil = {
 
   async setOnRampPreferredFiatCurrency(currency: OnRampFiatCurrency) {
     try {
-      await AsyncStorage.setItem(
+      await OptionsController.getStorage().setItem(
         ConstantsUtil.STORAGE_KEYS.ONRAMP_PREFERRED_FIAT_CURRENCY,
-        JSON.stringify(currency)
+        currency
       );
     } catch {
       console.info('Unable to set OnRamp Preferred Fiat Currency');
@@ -235,11 +256,11 @@ export const StorageUtil = {
 
   async getOnRampPreferredFiatCurrency() {
     try {
-      const currency = await AsyncStorage.getItem(
+      const currency = await OptionsController.getStorage().getItem<OnRampFiatCurrency>(
         ConstantsUtil.STORAGE_KEYS.ONRAMP_PREFERRED_FIAT_CURRENCY
       );
 
-      return currency ? (JSON.parse(currency) as OnRampFiatCurrency) : undefined;
+      return currency ?? undefined;
     } catch {
       console.info('Unable to get OnRamp Preferred Fiat Currency');
     }
@@ -249,9 +270,9 @@ export const StorageUtil = {
 
   async setOnRampCountries(countries: OnRampCountry[]) {
     try {
-      await AsyncStorage.setItem(
+      await OptionsController.getStorage().setItem(
         ConstantsUtil.STORAGE_KEYS.ONRAMP_COUNTRIES,
-        JSON.stringify(countries)
+        countries
       );
     } catch {
       console.info('Unable to set OnRamp Countries');
@@ -260,9 +281,11 @@ export const StorageUtil = {
 
   async getOnRampCountries() {
     try {
-      const countries = await AsyncStorage.getItem(ConstantsUtil.STORAGE_KEYS.ONRAMP_COUNTRIES);
+      const countries = await OptionsController.getStorage().getItem<OnRampCountry[]>(
+        ConstantsUtil.STORAGE_KEYS.ONRAMP_COUNTRIES
+      );
 
-      return countries ? (JSON.parse(countries) as OnRampCountry[]) : [];
+      return countries ?? [];
     } catch {
       console.info('Unable to get OnRamp Countries');
     }
@@ -274,9 +297,9 @@ export const StorageUtil = {
     try {
       const timestamp = Date.now();
 
-      await AsyncStorage.setItem(
+      await OptionsController.getStorage().setItem(
         ConstantsUtil.STORAGE_KEYS.ONRAMP_SERVICE_PROVIDERS,
-        JSON.stringify({ data: serviceProviders, timestamp })
+        { data: serviceProviders, timestamp }
       );
     } catch {
       console.info('Unable to set OnRamp Service Providers');
@@ -285,7 +308,7 @@ export const StorageUtil = {
 
   async getOnRampServiceProviders() {
     try {
-      const result = await AsyncStorage.getItem(
+      const result = await OptionsController.getStorage().getItem(
         ConstantsUtil.STORAGE_KEYS.ONRAMP_SERVICE_PROVIDERS
       );
 
@@ -293,14 +316,14 @@ export const StorageUtil = {
         return [];
       }
 
-      const { data, timestamp } = JSON.parse(result);
+      const { data, timestamp } = result;
 
       // Cache for 1 week
       if (timestamp && DateUtil.isMoreThanOneWeekAgo(timestamp)) {
         return [];
       }
 
-      return data ? (data as OnRampServiceProvider[]) : [];
+      return (data as OnRampServiceProvider[]) ?? [];
     } catch (err) {
       console.error(err);
       console.info('Unable to get OnRamp Service Providers');
@@ -313,10 +336,10 @@ export const StorageUtil = {
     try {
       const timestamp = Date.now();
 
-      await AsyncStorage.setItem(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_FIAT_LIMITS,
-        JSON.stringify({ data: fiatLimits, timestamp })
-      );
+      await OptionsController.getStorage().setItem(ConstantsUtil.STORAGE_KEYS.ONRAMP_FIAT_LIMITS, {
+        data: fiatLimits,
+        timestamp
+      });
     } catch {
       console.info('Unable to set OnRamp Fiat Limits');
     }
@@ -324,20 +347,22 @@ export const StorageUtil = {
 
   async getOnRampFiatLimits() {
     try {
-      const result = await AsyncStorage.getItem(ConstantsUtil.STORAGE_KEYS.ONRAMP_FIAT_LIMITS);
+      const result = await OptionsController.getStorage().getItem(
+        ConstantsUtil.STORAGE_KEYS.ONRAMP_FIAT_LIMITS
+      );
 
       if (!result) {
         return [];
       }
 
-      const { data, timestamp } = JSON.parse(result);
+      const { data, timestamp } = result;
 
       // Cache for 1 week
       if (timestamp && DateUtil.isMoreThanOneWeekAgo(timestamp)) {
         return [];
       }
 
-      return data ? (data as OnRampFiatLimit[]) : [];
+      return (data as OnRampFiatLimit[]) ?? [];
     } catch {
       console.info('Unable to get OnRamp Fiat Limits');
     }
@@ -349,9 +374,9 @@ export const StorageUtil = {
     try {
       const timestamp = Date.now();
 
-      await AsyncStorage.setItem(
+      await OptionsController.getStorage().setItem(
         ConstantsUtil.STORAGE_KEYS.ONRAMP_FIAT_CURRENCIES,
-        JSON.stringify({ data: fiatCurrencies, timestamp })
+        { data: fiatCurrencies, timestamp }
       );
     } catch {
       console.info('Unable to set OnRamp Fiat Currencies');
@@ -360,20 +385,22 @@ export const StorageUtil = {
 
   async getOnRampFiatCurrencies() {
     try {
-      const result = await AsyncStorage.getItem(ConstantsUtil.STORAGE_KEYS.ONRAMP_FIAT_CURRENCIES);
+      const result = await OptionsController.getStorage().getItem(
+        ConstantsUtil.STORAGE_KEYS.ONRAMP_FIAT_CURRENCIES
+      );
 
       if (!result) {
         return [];
       }
 
-      const { data, timestamp } = JSON.parse(result);
+      const { data, timestamp } = result;
 
       // Cache for 1 week
       if (timestamp && DateUtil.isMoreThanOneWeekAgo(timestamp)) {
         return [];
       }
 
-      return data ? (data as OnRampFiatCurrency[]) : [];
+      return (data as OnRampFiatCurrency[]) ?? [];
     } catch {
       console.info('Unable to get OnRamp Fiat Currencies');
     }
@@ -384,12 +411,17 @@ export const StorageUtil = {
   async setActiveNamespace(namespace?: ChainNamespace) {
     try {
       if (!namespace) {
-        await AsyncStorage.removeItem(ConstantsUtil.STORAGE_KEYS.ACTIVE_NAMESPACE);
+        await OptionsController.getStorage().removeItem(
+          ConstantsUtil.STORAGE_KEYS.ACTIVE_NAMESPACE
+        );
 
         return;
       }
 
-      await AsyncStorage.setItem(ConstantsUtil.STORAGE_KEYS.ACTIVE_NAMESPACE, namespace);
+      await OptionsController.getStorage().setItem(
+        ConstantsUtil.STORAGE_KEYS.ACTIVE_NAMESPACE,
+        namespace
+      );
     } catch {
       console.info('Unable to set Active Namespace');
     }
@@ -397,12 +429,13 @@ export const StorageUtil = {
 
   async getActiveNamespace() {
     try {
-      const namespace = (await AsyncStorage.getItem(
+      const namespace = (await OptionsController.getStorage().getItem(
         ConstantsUtil.STORAGE_KEYS.ACTIVE_NAMESPACE
       )) as ChainNamespace;
 
       return namespace ?? undefined;
     } catch (err) {
+      console.error(err);
       console.info('Unable to get Active Namespace');
     }
 
@@ -411,7 +444,7 @@ export const StorageUtil = {
 
   async removeActiveNamespace() {
     try {
-      await AsyncStorage.removeItem(ConstantsUtil.STORAGE_KEYS.ACTIVE_NAMESPACE);
+      await OptionsController.getStorage().removeItem(ConstantsUtil.STORAGE_KEYS.ACTIVE_NAMESPACE);
     } catch {
       console.info('Unable to remove Active Namespace');
     }

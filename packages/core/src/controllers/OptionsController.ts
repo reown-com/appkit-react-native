@@ -112,6 +112,14 @@ export const OptionsController = {
     return !!state.clipboardClient;
   },
 
+  getStorage() {
+    if (!state.storage) {
+      throw new Error('AppKit: Storage is not set');
+    }
+
+    return state.storage;
+  },
+
   copyToClipboard(value: string) {
     const client = state.clipboardClient;
     if (client) {

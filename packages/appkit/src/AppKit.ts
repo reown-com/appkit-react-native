@@ -544,7 +544,7 @@ export class AppKit {
   }
 
   private async initControllers(options: AppKitConfig) {
-    await this.initAsyncValues(options);
+    await this.initStorageAndValues(options);
 
     OptionsController.setProjectId(options.projectId);
     OptionsController.setMetadata(options.metadata);
@@ -556,7 +556,6 @@ export class AppKit {
     OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setDebug(options.debug);
     OptionsController.setFeatures(options.features);
-    OptionsController.setStorage(options.storage);
 
     if (options.defaultNetwork) {
       const network = NetworkUtil.formatNetwork(options.defaultNetwork, this.projectId);
@@ -652,10 +651,14 @@ export class AppKit {
     OptionsController.setCustomWallets(customList);
   }
 
-  private async initAsyncValues(options: AppKitConfig) {
+  private async initStorageAndValues(options: AppKitConfig) {
+    if (!options.storage) {
+      throw new Error('AppKit: Storage is not set');
+    }
+
+    OptionsController.setStorage(options.storage);
     await this.initActiveNamespace();
     await this.initRecentWallets(options);
-    //disable coinbase if connector is not set
   }
 
   private onSiweNavigation = () => {

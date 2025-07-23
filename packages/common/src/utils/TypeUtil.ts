@@ -329,6 +329,16 @@ export interface ConnectionProperties {
   sessionTopic?: string;
 }
 
+export interface LinkingRecord {
+  redirect: string;
+  href: string;
+}
+
+export interface WalletDeepLink {
+  href: string;
+  name: string;
+}
+
 export type AccountType = 'eoa' | 'smartAccount';
 
 export interface Storage {
