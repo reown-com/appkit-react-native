@@ -27,7 +27,7 @@ export class WalletValidator {
   async expectSessionCard({ visible = true }: { visible?: boolean }) {
     if (visible) {
       await expect(
-        this.page.getByTestId('session-card'),
+        this.page.getByTestId('session-card').first(),
         'Session card should be visible'
       ).toBeVisible({
         timeout: MAX_WAIT

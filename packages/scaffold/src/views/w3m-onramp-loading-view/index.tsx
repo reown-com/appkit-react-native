@@ -45,7 +45,7 @@ export function OnRampLoadingView() {
         quote: OnRampController.state.selectedQuote
       });
       if (response?.widgetUrl) {
-        Linking.openURL(response?.widgetUrl);
+        Linking.openURL(response.widgetUrl);
       }
     }
   }, []);

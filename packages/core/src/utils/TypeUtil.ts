@@ -346,6 +346,15 @@ export type BlockchainApiOnRampWidgetResponse = {
   widgetUrl: string;
 };
 
+export class BlockchainOnRampError extends Error {
+  code: string;
+  constructor(code: string, message: string) {
+    super(message);
+    this.code = code;
+    this.message = message;
+  }
+}
+
 // -- OptionsController Types ---------------------------------------------------
 export interface Token {
   address: string;

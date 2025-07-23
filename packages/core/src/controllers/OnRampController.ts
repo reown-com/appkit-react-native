@@ -1,16 +1,17 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils';
 import { proxy, subscribe as sub } from 'valtio/vanilla';
-import type {
-  OnRampPaymentMethod,
-  OnRampCountry,
-  OnRampFiatCurrency,
-  OnRampQuote,
-  OnRampFiatLimit,
-  OnRampCryptoCurrency,
-  OnRampServiceProvider,
-  OnRampError,
-  OnRampErrorTypeValues,
-  OnRampCountryDefaults
+import {
+  type OnRampPaymentMethod,
+  type OnRampCountry,
+  type OnRampFiatCurrency,
+  type OnRampQuote,
+  type OnRampFiatLimit,
+  type OnRampCryptoCurrency,
+  type OnRampServiceProvider,
+  type OnRampError,
+  type OnRampErrorTypeValues,
+  type OnRampCountryDefaults,
+  BlockchainOnRampError
 } from '../utils/TypeUtil';
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
@@ -115,27 +116,35 @@ export const OnRampController = {
   },
 
   async setSelectedCountry(country: OnRampCountry, updateCurrency = true) {
-    state.selectedCountry = country;
-    state.loading = true;
+    try {
+      state.selectedCountry = country;
+      state.loading = true;
 
-    if (updateCurrency) {
-      const currencyCode =
-        state.countriesDefaults?.find(d => d.countryCode === country.countryCode)
-          ?.defaultCurrencyCode || 'USD';
+      if (updateCurrency) {
+        const currencyCode =
+          state.countriesDefaults?.find(d => d.countryCode === country.countryCode)
+            ?.defaultCurrencyCode || 'USD';
 
-      const currency = state.paymentCurrencies?.find(c => c.currencyCode === currencyCode);
+        const currency = state.paymentCurrencies?.find(c => c.currencyCode === currencyCode);
 
-      if (currency) {
-        this.setPaymentCurrency(currency);
+        if (currency) {
+          this.setPaymentCurrency(currency);
+        }
       }
+
+      await Promise.all([this.fetchPaymentMethods(), this.fetchCryptoCurrencies()]);
+      this.clearQuotes();
+
+      state.loading = false;
+
+      StorageUtil.setOnRampPreferredCountry(country);
+    } catch (error) {
+      state.loading = false;
+      state.error = {
+        type: OnRampErrorType.FAILED_TO_LOAD_COUNTRIES,
+        message: 'Failed to load countries'
+      };
     }
-
-    await Promise.all([this.fetchPaymentMethods(), this.fetchCryptoCurrencies()]);
-    this.clearQuotes();
-
-    state.loading = false;
-
-    StorageUtil.setOnRampPreferredCountry(country);
   },
 
   setSelectedPaymentMethod(paymentMethod: OnRampPaymentMethod) {
@@ -395,40 +404,45 @@ export const OnRampController = {
     }
   },
 
-  getQuotesDebounced: CoreHelperUtil.debounce(function () {
-    OnRampController.getQuotes();
-  }, 500),
-
   async getQuotes() {
-    if (!state.paymentAmount || state.paymentAmount <= 0) {
+    if (!this.canGenerateQuote()) {
       this.clearQuotes();
 
       return;
     }
-
-    state.quotesLoading = true;
-    state.selectedQuote = undefined;
-    state.selectedServiceProvider = undefined;
-    state.error = undefined;
 
     this.abortGetQuotes(false);
     quotesAbortController = new AbortController();
     const currentSignal = quotesAbortController.signal;
 
     try {
+      if (
+        !state.selectedCountry?.countryCode ||
+        !state.purchaseCurrency?.currencyCode ||
+        !state.paymentCurrency?.currencyCode ||
+        !AccountController.state.address
+      ) {
+        throw new BlockchainOnRampError(OnRampErrorType.UNKNOWN, 'Invalid quote parameters');
+      }
+
+      state.quotesLoading = true;
+      state.selectedQuote = undefined;
+      state.selectedServiceProvider = undefined;
+      state.error = undefined;
+
       const body = {
-        countryCode: state.selectedCountry?.countryCode!,
-        destinationCurrencyCode: state.purchaseCurrency?.currencyCode!,
-        sourceAmount: state.paymentAmount,
-        sourceCurrencyCode: state.paymentCurrency?.currencyCode!,
-        walletAddress: AccountController.state.address!,
+        countryCode: state.selectedCountry.countryCode,
+        destinationCurrencyCode: state.purchaseCurrency.currencyCode,
+        sourceAmount: state.paymentAmount!,
+        sourceCurrencyCode: state.paymentCurrency.currencyCode,
+        walletAddress: AccountController.state.address,
         excludeProviders: EXCLUDED_ONRAMP_PROVIDERS
       };
 
       const response = await BlockchainApiController.getOnRampQuotes(body, currentSignal);
 
       if (!response || !response.length) {
-        throw { code: OnRampErrorType.NO_VALID_QUOTES };
+        throw new BlockchainOnRampError(OnRampErrorType.NO_VALID_QUOTES, 'No valid quotes');
       }
 
       const quotes = response.sort((a, b) => b.customerScore - a.customerScore);
@@ -647,3 +661,8 @@ export const OnRampController = {
     this.updateSelectedPurchaseCurrency();
   }
 };
+
+// Add getQuotesDebounced to the controller after definition to avoid circular reference
+(OnRampController as any).getQuotesDebounced = CoreHelperUtil.debounce(function () {
+  OnRampController.getQuotes();
+}, 500);

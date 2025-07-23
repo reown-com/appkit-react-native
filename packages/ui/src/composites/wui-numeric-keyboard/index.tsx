@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import { Text } from '../../components/wui-text';
 import { FlexView } from '../../layout/wui-flex';
@@ -7,7 +8,7 @@ export interface NumericKeyboardProps {
   onKeyPress: (value: string) => void;
 }
 
-export function NumericKeyboard({ onKeyPress }: NumericKeyboardProps) {
+function _NumericKeyboard({ onKeyPress }: NumericKeyboardProps) {
   const Theme = useTheme();
   const keys = [
     ['1', '2', '3'],
@@ -47,6 +48,8 @@ export function NumericKeyboard({ onKeyPress }: NumericKeyboardProps) {
     </FlexView>
   );
 }
+
+export const NumericKeyboard = memo(_NumericKeyboard);
 
 const styles = StyleSheet.create({
   row: {
