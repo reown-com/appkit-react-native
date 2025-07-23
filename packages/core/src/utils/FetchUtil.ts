@@ -128,7 +128,16 @@ export class FetchUtil {
   private async processResponse<T>(response: Response) {
     if (!response.ok) {
       if (response.headers.get('content-type')?.includes('application/json')) {
-        return Promise.reject((await response.json()) as T);
+        try {
+          const errorData = await response.json();
+
+          return Promise.reject(errorData);
+        } catch (jsonError) {
+          // If JSON parsing fails, fall back to text
+          const errorText = await response.text();
+
+          return Promise.reject(`Code: ${response.status} - ${response.statusText} - ${errorText}`);
+        }
       }
 
       const errorText = await response.text();
