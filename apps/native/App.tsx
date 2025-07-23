@@ -73,8 +73,8 @@ createAppKit({
     email: true,
     socials: ['x', 'discord', 'apple'],
     emailShowWallets: true,
-    swaps: true
-    // onramp: true
+    swaps: true,
+    onramp: true
   }
 });
 
