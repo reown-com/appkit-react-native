@@ -1,5 +1,5 @@
 import Svg, { Path, type SvgProps } from 'react-native-svg';
-const SvgSettings = (props: SvgProps) => (
+const SvgCurrencyDollar = (props: SvgProps) => (
   <Svg viewBox="0 0 20 20" fill="none" {...props}>
     <Path
       fill={props.fill ?? '#fff'}
@@ -9,4 +9,4 @@ const SvgSettings = (props: SvgProps) => (
     />
   </Svg>
 );
-export default SvgSettings;
+export default SvgCurrencyDollar;
