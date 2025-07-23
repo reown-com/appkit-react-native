@@ -133,10 +133,7 @@ export class FetchUtil {
 
           return Promise.reject(errorData);
         } catch (jsonError) {
-          // If JSON parsing fails, fall back to text
-          const errorText = await response.text();
-
-          return Promise.reject(`Code: ${response.status} - ${response.statusText} - ${errorText}`);
+          return Promise.reject(`Code: ${response.status} - ${response.statusText}`);
         }
       }
 
