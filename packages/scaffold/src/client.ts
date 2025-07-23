@@ -1,22 +1,19 @@
 import './config/animations';
 
-import type {
-  AccountControllerState,
-  ConnectionControllerClient,
-  ModalControllerState,
-  NetworkControllerClient,
-  NetworkControllerState,
-  OptionsControllerState,
-  EventsControllerState,
-  PublicStateControllerState,
-  ThemeControllerState,
-  Connector,
-  ConnectedWalletInfo,
-  Features,
-  EventName
-} from '@reown/appkit-core-react-native';
-import { SIWEController, type SIWEControllerClient } from '@reown/appkit-siwe-react-native';
 import {
+  type AccountControllerState,
+  type ConnectionControllerClient,
+  type ModalControllerState,
+  type NetworkControllerClient,
+  type NetworkControllerState,
+  type OptionsControllerState,
+  type EventsControllerState,
+  type PublicStateControllerState,
+  type ThemeControllerState,
+  type Connector,
+  type ConnectedWalletInfo,
+  type Features,
+  type EventName,
   AccountController,
   BlockchainApiController,
   ConnectionController,
@@ -32,16 +29,19 @@ import {
   ThemeController,
   TransactionsController
 } from '@reown/appkit-core-react-native';
+import { SIWEController, type SIWEControllerClient } from '@reown/appkit-siwe-react-native';
 import {
   ConstantsUtil,
   ErrorUtil,
   type ThemeMode,
   type ThemeVariables
 } from '@reown/appkit-common-react-native';
+import { Appearance } from 'react-native';
 
 // -- Types ---------------------------------------------------------------------
 export interface LibraryOptions {
   projectId: OptionsControllerState['projectId'];
+  metadata: OptionsControllerState['metadata'];
   themeMode?: ThemeMode;
   themeVariables?: ThemeVariables;
   includeWalletIds?: OptionsControllerState['includeWalletIds'];
@@ -53,7 +53,6 @@ export interface LibraryOptions {
   clipboardClient?: OptionsControllerState['_clipboardClient'];
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
   _sdkVersion: OptionsControllerState['sdkVersion'];
-  metadata?: OptionsControllerState['metadata'];
   debug?: OptionsControllerState['debug'];
   features?: Features;
 }
@@ -65,7 +64,7 @@ export interface ScaffoldOptions extends LibraryOptions {
 }
 
 export interface OpenOptions {
-  view: 'Account' | 'Connect' | 'Networks' | 'Swap';
+  view: 'Account' | 'Connect' | 'Networks' | 'Swap' | 'OnRamp';
 }
 
 // -- Client --------------------------------------------------------------------
@@ -298,7 +297,10 @@ export class AppKitScaffold {
 
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode);
+    } else {
+      ThemeController.setThemeMode(Appearance.getColorScheme() as ThemeMode);
     }
+
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables);
     }
@@ -312,6 +314,13 @@ export class AppKitScaffold {
 
     if (options.features) {
       OptionsController.setFeatures(options.features);
+    }
+
+    if (
+      (options.features?.onramp === true || options.features?.onramp === undefined) &&
+      (options.metadata?.redirect?.universal || options.metadata?.redirect?.native)
+    ) {
+      OptionsController.setIsOnRampEnabled(true);
     }
   }
 

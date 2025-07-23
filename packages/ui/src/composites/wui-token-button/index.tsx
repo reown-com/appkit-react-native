@@ -1,8 +1,12 @@
-import type { StyleProp, ViewStyle } from 'react-native';
+import React from 'react';
+import { View, type StyleProp, type ViewStyle } from 'react-native';
+
 import { Image } from '../../components/wui-image';
 import { Text } from '../../components/wui-text';
 import { Button } from '../wui-button';
+import { Icon } from '../../components/wui-icon';
 import styles from './styles';
+import { useTheme } from '../../context/ThemeContext';
 
 export interface TokenButtonProps {
   onPress?: () => void;
@@ -11,6 +15,10 @@ export interface TokenButtonProps {
   inverse?: boolean;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
+  placeholder?: string;
+  chevron?: boolean;
+  renderClip?: React.ReactNode;
+  testID?: string;
 }
 
 export function TokenButton({
@@ -19,8 +27,14 @@ export function TokenButton({
   inverse,
   onPress,
   style,
-  disabled = false
+  disabled = false,
+  placeholder = 'Select token',
+  chevron,
+  renderClip,
+  testID
 }: TokenButtonProps) {
+  const Theme = useTheme();
+
   if (!text) {
     return (
       <Button
@@ -31,7 +45,7 @@ export function TokenButton({
         disabled={disabled}
       >
         <Text variant="small-600" color="accent-100">
-          Select token
+          {placeholder}
         </Text>
       </Button>
     );
@@ -39,7 +53,14 @@ export function TokenButton({
 
   const content = [
     imageUrl && (
-      <Image key="image" source={imageUrl} style={[styles.image, inverse && styles.imageInverse]} />
+      <View key="image-container" style={[styles.imageContainer, inverse && styles.imageInverse]}>
+        <Image
+          key="image"
+          source={imageUrl}
+          style={[styles.image, { backgroundColor: Theme['inverse-100'] }]}
+        />
+        {renderClip && <View style={styles.clipContainer}>{renderClip}</View>}
+      </View>
     ),
     <Text key="text">{text}</Text>
   ];
@@ -51,8 +72,10 @@ export function TokenButton({
       size="sm"
       onPress={onPress}
       disabled={disabled}
+      testID={testID}
     >
       {inverse ? content.reverse() : content}
+      {chevron && <Icon name="chevronBottom" size="xxs" color="fg-150" style={styles.chevron} />}
     </Button>
   );
 }

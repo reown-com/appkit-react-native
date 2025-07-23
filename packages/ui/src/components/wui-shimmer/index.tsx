@@ -5,8 +5,8 @@ import { useTheme } from '../../hooks/useTheme';
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
 export interface ShimmerProps {
-  width?: number;
-  height?: number;
+  width?: number | string;
+  height?: number | string;
   duration?: number;
   borderRadius?: number;
   backgroundColor?: string;

@@ -24,6 +24,7 @@ export interface FlexViewProps {
   padding?: SpacingType | SpacingType[];
   margin?: SpacingType | SpacingType[];
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
 export function FlexView(props: FlexViewProps) {
@@ -46,7 +47,7 @@ export function FlexView(props: FlexViewProps) {
   };
 
   return (
-    <View onLayout={props.onLayout} style={[styles, props.style]}>
+    <View onLayout={props.onLayout} style={[styles, props.style]} testID={props.testID}>
       {props.children}
     </View>
   );

@@ -28,6 +28,7 @@ export type ButtonProps = NativeProps & {
   style?: StyleProp<ViewStyle>;
   iconStyle?: SvgProps['style'];
   loading?: boolean;
+  testID?: string;
 };
 
 export function Button({
@@ -41,6 +42,7 @@ export function Button({
   iconRight,
   iconStyle,
   loading,
+  testID,
   ...rest
 }: ButtonProps) {
   const Theme = useTheme();
@@ -84,6 +86,7 @@ export function Button({
       onPressIn={onPressIn}
       onPressOut={onPressOut}
       onPress={onPress}
+      testID={testID}
       {...rest}
     >
       <FlexView flexDirection="row" alignItems="center" justifyContent="center">
