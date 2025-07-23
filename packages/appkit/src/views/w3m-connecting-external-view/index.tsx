@@ -4,7 +4,6 @@ import { ScrollView } from 'react-native';
 import {
   RouterController,
   ApiController,
-  ModalController,
   EventsController,
   ConnectionController,
   AssetUtil
@@ -47,7 +46,6 @@ export function ConnectingExternalView() {
         }
         UiUtil.storeRecentWallet(wallet);
         ConnectionController.setPressedWallet(wallet);
-        ModalController.close();
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
