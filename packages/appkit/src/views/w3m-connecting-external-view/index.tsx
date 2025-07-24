@@ -43,6 +43,9 @@ export function ConnectingExternalView() {
           await connect('phantom');
         } else if (wallet.id === ConstantsUtil.COINBASE_EXPLORER_ID) {
           await connect('coinbase');
+        } else {
+          // All other wallets are handled by WalletConnect connector
+          return;
         }
         UiUtil.storeRecentWallet(wallet);
         ConnectionController.setPressedWallet(wallet);
