@@ -8,11 +8,12 @@ import {
   EventsController
 } from '@reown/appkit-core-react-native';
 import { FlexView, DoubleImageLoader, IconLink, Button, Text } from '@reown/appkit-ui-react-native';
+import { StringUtil } from '@reown/appkit-common-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectingBody } from '../../partials/w3m-connecting-body';
+import { parseOnRampRedirectUrl, createEmptyOnRampResult } from './utils';
 import styles from './styles';
-import { NumberUtil, StringUtil } from '@reown/appkit-common-react-native';
 
 export function OnRampLoadingView() {
   const { maxWidth: width } = useCustomDimensions();
@@ -58,52 +59,29 @@ export function OnRampLoadingView() {
         (metadata?.redirect?.universal && url.startsWith(metadata?.redirect?.universal)) ||
         (metadata?.redirect?.native && url.startsWith(metadata?.redirect?.native))
       ) {
-        const parsedUrl = new URL(url);
-        const searchParams = new URLSearchParams(parsedUrl.search);
-        const asset =
-          searchParams.get('cryptoCurrency') ??
-          OnRampController.state.purchaseCurrency?.currencyCode ??
-          null;
-        const network =
-          searchParams.get('network') ?? OnRampController.state.purchaseCurrency?.chainName ?? null;
-        const purchaseAmount =
-          searchParams.get('cryptoAmount') ??
-          OnRampController.state.selectedQuote?.destinationAmount ??
-          null;
-        const amount =
-          searchParams.get('fiatAmount') ?? OnRampController.state.paymentAmount ?? null;
-        const currency =
-          searchParams.get('fiatCurrency') ??
-          OnRampController.state.paymentCurrency?.currencyCode ??
-          null;
-        const orderId = searchParams.get('orderId');
-        const status = searchParams.get('status');
+        const urlData = parseOnRampRedirectUrl(url);
 
-        EventsController.sendEvent({
-          type: 'track',
-          event: 'BUY_SUCCESS',
-          properties: {
-            asset,
-            network,
-            amount: amount?.toString(),
-            currency,
-            orderId
-          }
-        });
+        if (urlData) {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'BUY_SUCCESS',
+            properties: {
+              asset: urlData.purchaseCurrency,
+              network: urlData.network,
+              amount: urlData.paymentAmount,
+              currency: urlData.paymentCurrency,
+              orderId: urlData.orderId
+            }
+          });
 
-        RouterController.reset('OnRampTransaction', {
-          onrampResult: {
-            purchaseCurrency: asset,
-            purchaseAmount: purchaseAmount
-              ? NumberUtil.formatNumberToLocalString(purchaseAmount)
-              : null,
-            purchaseImageUrl: OnRampController.state.purchaseCurrency?.symbolImageUrl ?? '',
-            paymentCurrency: currency,
-            paymentAmount: amount ? NumberUtil.formatNumberToLocalString(amount) : null,
-            network,
-            status
-          }
-        });
+          RouterController.reset('OnRampTransaction', {
+            onrampResult: urlData
+          });
+        } else {
+          RouterController.reset('OnRampTransaction', {
+            onrampResult: createEmptyOnRampResult()
+          });
+        }
       }
     });
 

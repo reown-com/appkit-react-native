@@ -17,5 +17,12 @@ export default StyleSheet.create({
   },
   button: {
     marginTop: Spacing['2xl']
+  },
+  errorTitle: {
+    textAlign: 'center'
+  },
+  errorDescription: {
+    textAlign: 'center',
+    marginTop: Spacing.xs
   }
 });
