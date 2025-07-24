@@ -1,6 +1,6 @@
 import { proxy, ref } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
-import type { SocialProvider } from '@reown/appkit-common-react-native';
+import type { SocialProvider, WalletDeepLink } from '@reown/appkit-common-react-native';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type {
@@ -33,10 +33,7 @@ export interface ConnectionControllerState {
   wcUri?: string;
   wcPromise?: Promise<void>;
   wcPairingExpiry?: number;
-  wcLinking?: {
-    href: string;
-    name: string;
-  };
+  wcLinking?: WalletDeepLink;
   wcError?: boolean;
   pressedWallet?: WcWallet;
   recentWallets?: WcWallet[];

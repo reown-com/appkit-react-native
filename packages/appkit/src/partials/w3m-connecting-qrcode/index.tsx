@@ -8,9 +8,9 @@ import {
   SnackController
 } from '@reown/appkit-core-react-native';
 import { FlexView, Link, QrCode, Text, Spacing } from '@reown/appkit-ui-react-native';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
-import { PresetsUtil } from '@reown/appkit-common-react-native';
 
 export function ConnectingQrCode() {
   const { wcUri } = useSnapshot(ConnectionController.state);
@@ -38,7 +38,7 @@ export function ConnectingQrCode() {
     });
 
     //TODO: check this
-    const url = AssetUtil.getConnectorImage(PresetsUtil.ConnectorImageIds['WALLET_CONNECT']);
+    const url = AssetUtil.getConnectorImage(ConstantsUtil.WALLET_CONNECT_IMAGE_ID);
     ConnectionController.setConnectedWalletImageUrl(url);
   };
 

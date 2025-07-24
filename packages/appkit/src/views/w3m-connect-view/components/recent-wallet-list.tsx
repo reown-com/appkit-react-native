@@ -11,16 +11,15 @@ import type { StyleProp, ViewStyle } from 'react-native';
 interface Props {
   itemStyle: StyleProp<ViewStyle>;
   onWalletPress: (wallet: WcWallet, installed: boolean) => void;
-  isWalletConnectEnabled: boolean;
 }
 
-export function RecentWalletList({ itemStyle, onWalletPress, isWalletConnectEnabled }: Props) {
+export function RecentWalletList({ itemStyle, onWalletPress }: Props) {
   const installed = ApiController.state.installed;
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const RECENT_COUNT = recentWallets?.length && installed.length ? 1 : recentWallets?.length ?? 0;
 
-  if (!isWalletConnectEnabled || !recentWallets?.length) {
+  if (!recentWallets?.length) {
     return null;
   }
 

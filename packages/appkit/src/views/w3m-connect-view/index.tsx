@@ -9,6 +9,7 @@ import {
   type WcWallet
 } from '@reown/appkit-core-react-native';
 import { FlexView, Icon, ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { Placeholder } from '../../partials/w3m-placeholder';
 import { CustomWalletList } from './components/custom-wallet-list';
@@ -23,23 +24,20 @@ export function ConnectView() {
   const { features } = useSnapshot(OptionsController.state);
   const { padding } = useCustomDimensions();
 
-  //TODO: check this with Coinbase
-  const isWalletConnectEnabled = true;
-  const isCoinbaseEnabled = false;
   const isSocialEnabled = features?.socials && features?.socials.length > 0;
-  const showConnectWalletsButton =
-    isWalletConnectEnabled && isSocialEnabled && !features?.showWallets;
-  const showSeparator = isSocialEnabled && (isWalletConnectEnabled || isCoinbaseEnabled);
+  const showConnectWalletsButton = isSocialEnabled && !features?.showWallets;
   const showLoadingError = !showConnectWalletsButton && prefetchError;
   const showList = !showConnectWalletsButton && !showLoadingError;
 
   const onWalletPress = (wallet: WcWallet, isInstalled?: boolean) => {
-    // const connector = connectors.find(c => c.explorerId === wallet.id);
-    // if (connector) {
-    //   RouterController.push('ConnectingExternal', { connector, wallet });
-    // } else {
-    RouterController.push('ConnectingWalletConnect', { wallet });
-    // }
+    const isExternal =
+      wallet.id === ConstantsUtil.PHANTOM_EXPLORER_ID ||
+      wallet.id === ConstantsUtil.COINBASE_EXPLORER_ID;
+    if (isExternal) {
+      RouterController.push('ConnectingExternal', { wallet });
+    } else {
+      RouterController.push('ConnectingWalletConnect', { wallet });
+    }
 
     const platform = EventUtil.getWalletPlatform(wallet, isInstalled);
     EventsController.sendEvent({
@@ -61,8 +59,12 @@ export function ConnectView() {
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
       <FlexView padding={['xs', '0', '2xl', '0']}>
-        {isSocialEnabled && <SocialLoginList options={features?.socials} />}
-        {showSeparator && <Separator text="or" style={styles.socialSeparator} />}
+        {isSocialEnabled && (
+          <>
+            <SocialLoginList options={features?.socials} />
+            <Separator text="or" style={styles.socialSeparator} />
+          </>
+        )}
 
         <FlexView padding={['0', 's', 'xs', 's']}>
           {showConnectWalletsButton && (
@@ -88,26 +90,10 @@ export function ConnectView() {
           )}
           {showList && (
             <>
-              <RecentWalletList
-                itemStyle={styles.item}
-                onWalletPress={onWalletPress}
-                isWalletConnectEnabled={isWalletConnectEnabled}
-              />
-              <AllWalletList
-                itemStyle={styles.item}
-                onWalletPress={onWalletPress}
-                isWalletConnectEnabled={isWalletConnectEnabled}
-              />
-              <CustomWalletList
-                itemStyle={styles.item}
-                onWalletPress={onWalletPress}
-                isWalletConnectEnabled={isWalletConnectEnabled}
-              />
-              <AllWalletsButton
-                itemStyle={styles.item}
-                onPress={onViewAllPress}
-                isWalletConnectEnabled={isWalletConnectEnabled}
-              />
+              <RecentWalletList itemStyle={styles.item} onWalletPress={onWalletPress} />
+              <AllWalletList itemStyle={styles.item} onWalletPress={onWalletPress} />
+              <CustomWalletList itemStyle={styles.item} onWalletPress={onWalletPress} />
+              <AllWalletsButton itemStyle={styles.item} onPress={onViewAllPress} />
             </>
           )}
         </FlexView>

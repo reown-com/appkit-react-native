@@ -4,6 +4,7 @@ import {
   StorageUtil,
   type WcWallet
 } from '@reown/appkit-core-react-native';
+import type { WalletDeepLink } from '@reown/appkit-common-react-native';
 
 export const UiUtil = {
   TOTAL_VISIBLE_WALLETS: 4,
@@ -18,19 +19,20 @@ export const UiUtil = {
     // LayoutAnimation.configureNext(LayoutAnimation.create(150, type, creationProp));
   },
 
-  storeConnectedWallet: async (
-    wcLinking: { name: string; href: string },
-    pressedWallet?: WcWallet
-  ) => {
+  storeConnectedWallet: async (wcLinking: WalletDeepLink, pressedWallet?: WcWallet) => {
     StorageUtil.setWalletConnectDeepLink(wcLinking);
 
     if (pressedWallet) {
-      const recentWallets = await StorageUtil.addRecentWallet(pressedWallet);
-      if (recentWallets) {
-        ConnectionController.setRecentWallets(recentWallets);
-      }
+      UiUtil.storeRecentWallet(pressedWallet);
       const url = AssetUtil.getWalletImage(pressedWallet);
       ConnectionController.setConnectedWalletImageUrl(url);
+    }
+  },
+
+  storeRecentWallet: async (wallet: WcWallet) => {
+    const recentWallets = await StorageUtil.addRecentWallet(wallet);
+    if (recentWallets) {
+      ConnectionController.setRecentWallets(recentWallets);
     }
   }
 };

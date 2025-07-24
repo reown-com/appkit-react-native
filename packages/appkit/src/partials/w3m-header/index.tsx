@@ -18,9 +18,6 @@ export function Header() {
   };
 
   const headings = (_data: RouterControllerState['data'], _view: RouterControllerState['view']) => {
-    // TODO: check if this is needed wiht Coinbase
-    // const connectorName = _data?.connector?.name;
-    const connectorName = undefined;
     const walletName = _data?.wallet?.name;
     const networkName = _data?.network?.name;
     const socialName = _data?.socialProvider
@@ -33,7 +30,7 @@ export function Header() {
       AllWallets: 'All wallets',
       Connect: 'Connect wallet',
       ConnectSocials: 'All socials',
-      ConnectingExternal: connectorName ?? 'Connect wallet',
+      ConnectingExternal: walletName ?? 'Connect wallet',
       ConnectingSiwe: undefined,
       ConnectingSocial: socialName ?? 'Connecting Social',
       ConnectingWalletConnect: walletName ?? 'WalletConnect',

@@ -305,21 +305,6 @@ export class AppKitScaffold {
     }
   }
 
-  // private async setConnectorExcludedWallets(connectors: Connector[]) {
-  //   const excludedWallets = OptionsController.state.excludeWalletIds || [];
-
-  //   // Exclude Coinbase if the connector is not implemented
-  //   const excludeCoinbase =
-  //     connectors.findIndex(connector => connector.id === ConstantsUtil.COINBASE_CONNECTOR_ID) ===
-  //     -1;
-
-  //   if (excludeCoinbase) {
-  //     excludedWallets.push(ConstantsUtil.COINBASE_EXPLORER_ID);
-  //   }
-
-  //   OptionsController.setExcludeWalletIds(excludedWallets);
-  // }
-
   private async initRecentWallets(options: ScaffoldOptions) {
     const wallets = await StorageUtil.getRecentWallets();
 

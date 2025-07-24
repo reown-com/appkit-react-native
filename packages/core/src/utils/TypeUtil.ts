@@ -23,11 +23,6 @@ export type ConnectedWalletInfo =
     }
   | undefined;
 
-export interface LinkingRecord {
-  redirect: string;
-  href: string;
-}
-
 export type ProjectId = string;
 
 export type Platform = 'mobile' | 'web' | 'qrcode' | 'email' | 'unsupported';

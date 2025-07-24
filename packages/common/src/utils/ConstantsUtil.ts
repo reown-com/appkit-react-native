@@ -15,11 +15,10 @@ export const ConstantsUtil = {
   SECURE_SITE_DASHBOARD: `https://secure.reown.com/dashboard`,
   SECURE_SITE_ICON: `https://secure.reown.com/images/favicon.png`,
 
-  WALLET_CONNECT_CONNECTOR_ID: 'walletConnect',
-  COINBASE_CONNECTOR_ID: 'coinbaseWallet',
-  AUTH_CONNECTOR_ID: 'appKitAuth',
-
   COINBASE_EXPLORER_ID: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+  PHANTOM_EXPLORER_ID: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+
+  WALLET_CONNECT_IMAGE_ID: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
 
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet
@@ -39,9 +38,26 @@ export const ConstantsUtil = {
   ],
 
   PHANTOM_CUSTOM_WALLET: {
-    id: 'phantom-wallet',
-    name: 'Phantom',
+    id: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+    name: 'Phantom Wallet',
     image_id: 'b6ec7b81-bb4f-427d-e290-7631e6e50d00',
     mobile_link: 'phantom://'
+  },
+
+  // Storage Keys
+  STORAGE_KEYS: {
+    WC_DEEPLINK: 'WALLETCONNECT_DEEPLINK_CHOICE', //dont change this one
+    RECENT_WALLET: '@appkit/recent_wallet',
+    CONNECTED_WALLET_IMAGE_URL: '@appkit/connected_wallet_image_url',
+    CONNECTED_CONNECTORS: '@appkit/connected_connectors',
+    CONNECTED_SOCIAL: '@appkit/connected_social',
+    ONRAMP_PREFERRED_COUNTRY: '@appkit/onramp_preferred_country',
+    ONRAMP_COUNTRIES: '@appkit/onramp_countries',
+    ONRAMP_SERVICE_PROVIDERS: '@appkit/onramp_service_providers',
+    ONRAMP_FIAT_LIMITS: '@appkit/onramp_fiat_limits',
+    ONRAMP_FIAT_CURRENCIES: '@appkit/onramp_fiat_currencies',
+    ONRAMP_PREFERRED_FIAT_CURRENCY: '@appkit/onramp_preferred_fiat_currency',
+    ACTIVE_NAMESPACE: '@appkit/active_namespace',
+    COINBASE_CONNECTOR_SESSION: '@appkit/coinbase_connector/session'
   }
 };

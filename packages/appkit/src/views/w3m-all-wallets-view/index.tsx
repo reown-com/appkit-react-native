@@ -6,6 +6,7 @@ import {
   type WcWallet
 } from '@reown/appkit-core-react-native';
 import { FlexView, IconLink, SearchBar, Spacing, useTheme } from '@reown/appkit-ui-react-native';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
 
 import styles from './styles';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
@@ -24,13 +25,14 @@ export function AllWalletsView() {
   const { debouncedCallback: onInputChange } = useDebounceCallback({ callback: setSearchQuery });
 
   const onWalletPress = (wallet: WcWallet) => {
-    //TODO: check this
-    // const connector = ConnectorController.state.connectors.find(c => c.explorerId === wallet.id);
-    // if (connector) {
-    //   RouterController.push('ConnectingExternal', { connector, wallet });
-    // } else {
-    RouterController.push('ConnectingWalletConnect', { wallet });
-    // }
+    const isExternal =
+      wallet.id === ConstantsUtil.PHANTOM_EXPLORER_ID ||
+      wallet.id === ConstantsUtil.COINBASE_EXPLORER_ID;
+    if (isExternal) {
+      RouterController.push('ConnectingExternal', { wallet });
+    } else {
+      RouterController.push('ConnectingWalletConnect', { wallet });
+    }
 
     EventsController.sendEvent({
       type: 'track',

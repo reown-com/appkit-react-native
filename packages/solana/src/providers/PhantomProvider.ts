@@ -172,7 +172,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
       cluster: this.currentCluster
     };
     try {
-      await this.storage.setItem(PHANTOM_PROVIDER_STORAGE_KEY, JSON.stringify(session));
+      await this.storage.setItem(PHANTOM_PROVIDER_STORAGE_KEY, session);
     } catch (error) {
       // console.error('PhantomProvider: Failed to save session.', error);
     }
@@ -271,6 +271,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
   public async disconnect(): Promise<void> {
     if (!this.sessionToken || !this.phantomEncryptionPublicKeyBs58) {
       await this.clearSession();
+      this.emit('disconnect');
 
       return Promise.resolve();
     }
@@ -284,6 +285,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
     if (!encryptedDisconnectPayload) {
       // console.warn('PhantomProvider: Failed to encrypt disconnect payload. Clearing session locally.');
       await this.clearSession();
+      this.emit('disconnect');
 
       return Promise.resolve(); // Or reject, depending on desired strictness
     }

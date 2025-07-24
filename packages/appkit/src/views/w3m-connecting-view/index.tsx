@@ -46,15 +46,9 @@ export function ConnectingView() {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.setWcError(false);
 
-        let connectPromise: Promise<void>;
-        // TODO: check phantom wallet id from cloud
-        if (data?.wallet?.id === 'phantom-wallet') {
-          connectPromise = connect('phantom');
-        } else {
-          connectPromise = connect('walletconnect', {
-            universalLink: routeData?.wallet?.link_mode ?? undefined
-          });
-        }
+        const connectPromise = connect('walletconnect', {
+          universalLink: routeData?.wallet?.link_mode ?? undefined
+        });
         ConnectionController.setWcPromise(connectPromise);
       }
     } catch (error) {
