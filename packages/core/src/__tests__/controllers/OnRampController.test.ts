@@ -36,7 +36,8 @@ jest.mock('../../controllers/EventsController', () => ({
 jest.mock('../../controllers/ConnectionsController', () => ({
   ConnectionsController: {
     state: {
-      activeNetwork: { caipNetworkId: 'eip155:1' }
+      activeNetwork: { caipNetworkId: 'eip155:1' },
+      activeAddress: 'eip155:1:0x1234567890123456789012345678901234567890'
     }
   }
 }));

@@ -13,3 +13,4 @@ test-results/
 .env*
 __mocks__/
 scripts/
+CHANGELOG.md

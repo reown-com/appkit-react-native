@@ -15,6 +15,7 @@
 ### Patch Changes
 
 - 5f71dfb: feat: phantom wallet support
+
 ## 1.2.6
 
 ### Patch Changes
