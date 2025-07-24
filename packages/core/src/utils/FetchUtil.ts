@@ -88,26 +88,53 @@ export class FetchUtil {
   }
 
   private createUrl({ path, params }: RequestArguments) {
-    const url = new URL(path, this.baseUrl);
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value) {
-          url.searchParams.append(key, value);
-        }
-      });
+    let fullUrl: string;
+
+    const isAbsoluteUrl = path.startsWith('http://') || path.startsWith('https://');
+
+    if (isAbsoluteUrl) {
+      fullUrl = path;
+    } else {
+      const baseUrl = this.baseUrl.endsWith('/') ? this.baseUrl : `${this.baseUrl}/`;
+      const pathUrl = path.startsWith('/') ? path.substring(1) : path;
+      fullUrl = `${baseUrl}${pathUrl}`;
     }
 
+    const allParams: Record<string, string | undefined> = { ...params };
     if (this.clientId) {
-      url.searchParams.append('clientId', this.clientId);
+      allParams['clientId'] = this.clientId;
     }
 
-    return url.toString();
+    const queryParams: string[] = [];
+    for (const key in allParams) {
+      const value = allParams[key];
+      if (value !== undefined && value !== null && value !== '') {
+        queryParams.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+      }
+    }
+
+    if (queryParams.length > 0) {
+      const queryString = queryParams.join('&');
+      if (fullUrl.includes('?')) {
+        fullUrl = `${fullUrl}&${queryString}`;
+      } else {
+        fullUrl = `${fullUrl}?${queryString}`;
+      }
+    }
+
+    return fullUrl;
   }
 
   private async processResponse<T>(response: Response) {
     if (!response.ok) {
       if (response.headers.get('content-type')?.includes('application/json')) {
-        return Promise.reject((await response.json()) as T);
+        try {
+          const errorData = await response.json();
+
+          return Promise.reject(errorData);
+        } catch (jsonError) {
+          return Promise.reject(`Code: ${response.status} - ${response.statusText}`);
+        }
       }
 
       const errorText = await response.text();

@@ -9,3 +9,7 @@
 .yarn.lock
 playwright-report/
 test-results/
+/apps
+.env*
+__mocks__/
+scripts/

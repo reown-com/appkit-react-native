@@ -15,7 +15,6 @@ export {
 export { AppKit } from './modal/w3m-modal';
 
 /********** Types **********/
-export type { LibraryOptions, ScaffoldOptions } from './client';
 export type * from '@reown/appkit-core-react-native';
 export type { AppKitNetwork, Storage } from '@reown/appkit-common-react-native';
 
@@ -33,7 +32,3 @@ export { bitcoin, bitcoinTestnet } from '@reown/appkit-common-react-native';
 /********** Main **********/
 export { createAppKit } from './AppKit';
 export { AppKitProvider } from './AppKitContext';
-
-// TODO: REMOVE
-/********** To be removed **********/
-export { CoreHelperUtil } from '@reown/appkit-core-react-native';

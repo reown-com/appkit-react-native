@@ -1,5 +1,4 @@
-import type { Locator, Page } from '@playwright/test';
-import { expect } from '@playwright/test';
+import { type Locator, type Page, expect } from '@playwright/test';
 import { TIMEOUTS } from '../constants';
 
 export class OnRampPage {
@@ -64,12 +63,12 @@ export class OnRampPage {
     await this.page.waitForTimeout(500);
   }
 
-  async selectSuggestedValue() {
-    const suggestedValue = this.page.getByTestId(new RegExp('suggested-value-.')).last();
-    await expect(suggestedValue).toBeVisible({ timeout: 5000 });
-    await suggestedValue.click();
-    // Wait for quote generation
-    await this.page.waitForTimeout(1000);
+  async selectQuote(index: number) {
+    const quote = this.page.getByTestId(`quote-item-${index}`);
+    await expect(quote).toBeVisible({ timeout: 5000 });
+    await quote.click();
+    // Wait for UI updates
+    await this.page.waitForTimeout(500);
   }
 
   async clickContinue() {
@@ -95,6 +94,31 @@ export class OnRampPage {
     await expect(settingsButton).toBeVisible({ timeout: 5000 });
     await settingsButton.click();
     // Wait for navigation
+    await this.page.waitForTimeout(TIMEOUTS.ANIMATION);
+  }
+
+  async getPaymentCurrency() {
+    const currencyInput = this.page.getByTestId('currency-input-symbol');
+    await expect(currencyInput).toBeVisible({ timeout: 5000 });
+    
+return currencyInput.innerText();
+  }
+
+  async clickSelectCountry() {
+    await this.page.getByText('Select Country', { exact: true }).click();
+    await this.page.waitForTimeout(TIMEOUTS.ANIMATION);
+  }
+
+  async searchCountry(country: string) {
+    const searchInput = this.page.getByPlaceholder('Search country');
+    await searchInput.type(country);
+    await this.page.waitForTimeout(TIMEOUTS.ANIMATION);
+  }
+
+  async selectCountry(countryCode: string) {
+    const countryItem = this.page.getByTestId(`country-item-${countryCode}`);
+    await expect(countryItem).toBeVisible({ timeout: 5000 });
+    await countryItem.click();
     await this.page.waitForTimeout(TIMEOUTS.ANIMATION);
   }
 

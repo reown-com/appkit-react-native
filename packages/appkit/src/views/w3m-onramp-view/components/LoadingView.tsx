@@ -20,11 +20,11 @@ export function LoadingView() {
 
           {/* Currency Input Area */}
           <FlexView margin={['m', '0', 'm', '0']}>
-            <Shimmer width="100%" height={370} borderRadius={16} />
+            <Shimmer width="100%" height={323} borderRadius={16} />
           </FlexView>
 
           {/* Payment Method Button */}
-          <Shimmer width="100%" height={64} borderRadius={16} style={styles.paymentMethodButton} />
+          <Shimmer width="100%" height={64} borderRadius={16} style={styles.paymentButtonMock} />
 
           {/* Action Buttons */}
           <FlexView

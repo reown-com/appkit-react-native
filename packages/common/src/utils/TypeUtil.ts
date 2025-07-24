@@ -36,6 +36,10 @@ export type AppKitNetwork = Network & {
   deprecatedCaipNetworkId?: CaipNetworkId; // for Solana deprecated id
 };
 
+export interface AppKitOpenOptions {
+  view: 'Account' | 'Connect' | 'Networks' | 'Swap' | 'OnRamp';
+}
+
 export type AppKitConnectOptions = Pick<
   ConnectOptions,
   'namespaces' | 'defaultChain' | 'universalLink'

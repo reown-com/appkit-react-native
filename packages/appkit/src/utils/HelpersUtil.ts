@@ -1,10 +1,11 @@
 import type { Namespace, NamespaceConfig } from '@walletconnect/universal-provider';
-import type {
-  AppKitNetwork,
-  CaipNetworkId,
-  ChainNamespace
+import {
+  type AppKitNetwork,
+  type CaipNetworkId,
+  type ChainNamespace,
+  solana,
+  solanaDevnet
 } from '@reown/appkit-common-react-native';
-import { solana, solanaDevnet } from '@reown/appkit-common-react-native';
 
 export const DEFAULT_METHODS = {
   solana: [

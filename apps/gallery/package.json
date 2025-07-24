@@ -1,8 +1,8 @@
 {
-  "name": "@apps/gallery",
   "version": "1.0.8",
   "main": "index.js",
   "private": true,
+  "name": "@apps/gallery",
   "devDependencies": {
     "@babel/core": "*",
     "@babel/preset-env": "^7.22.10",

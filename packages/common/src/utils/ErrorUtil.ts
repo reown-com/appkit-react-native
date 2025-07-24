@@ -16,12 +16,12 @@ export const ErrorUtil = {
   ALERT_ERRORS: {
     INVALID_APP_CONFIGURATION: {
       shortMessage: 'Invalid App Configuration',
-      longMessage: `Bundle ID not found on Allowlist - Please verify that your bundle ID is allowed at https://cloud.reown.com`
+      longMessage: `Bundle ID not found on Allowlist - Please verify that your bundle ID is allowed at https://dashboard.reown.com`
     },
     SOCIALS_TIMEOUT: {
       shortMessage: 'Invalid App Configuration',
       longMessage:
-        'There was an issue loading the embedded wallet. Please verify that your bundle ID is allowed at https://cloud.reown.com'
+        'There was an issue loading the embedded wallet. Please verify that your bundle ID is allowed at https://dashboard.reown.com'
     },
     JWT_TOKEN_NOT_VALID: {
       shortMessage: 'Session Expired',

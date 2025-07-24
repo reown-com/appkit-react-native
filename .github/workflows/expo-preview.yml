@@ -1,4 +1,8 @@
-name: expo-preview
+name: Expo Preview
+
+permissions:
+  contents: read
+
 on:
   workflow_call:
   workflow_dispatch:

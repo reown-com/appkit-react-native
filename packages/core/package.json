@@ -27,7 +27,7 @@
     "react-native"
   ],
   "repository": "https://github.com/reown-com/appkit-react-native",
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "homepage": "https://reown.com/appkit",
   "license": "Apache-2.0",
   "bugs": {
@@ -40,7 +40,7 @@
   "dependencies": {
     "@reown/appkit-common-react-native": "2.0.0-alpha.1",
     "countries-and-timezones": "3.7.2",
-    "valtio": "1.11.2"
+    "valtio": "1.13.2"
   },
   "peerDependencies": {
     "@walletconnect/react-native-compat": ">=2.13.1",

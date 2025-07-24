@@ -1,5 +1,9 @@
-import { ConstantsUtil } from '@reown/appkit-common-react-native';
-import type { AppKitNetwork, CaipNetworkId, Network } from '@reown/appkit-common-react-native';
+import {
+  type AppKitNetwork,
+  type CaipNetworkId,
+  ConstantsUtil,
+  type Network
+} from '@reown/appkit-common-react-native';
 import type { CaipNamespaces } from '@reown/appkit-core-react-native';
 
 export const NetworkUtil = {

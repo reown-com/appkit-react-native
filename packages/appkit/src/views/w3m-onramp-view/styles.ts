@@ -37,5 +37,9 @@ export default StyleSheet.create({
     width: 14,
     borderRadius: BorderRadius.full,
     borderWidth: 1
+  },
+  paymentButtonMock: {
+    borderRadius: BorderRadius.s,
+    height: 64
   }
 });

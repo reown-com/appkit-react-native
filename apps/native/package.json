@@ -1,8 +1,8 @@
 {
-  "name": "@apps/native",
   "version": "1.0.8",
   "main": "index.js",
   "private": true,
+  "name": "@apps/native",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -13,7 +13,7 @@
     "eas:build": "eas build --platform all",
     "eas:build:local": "eas build --local --platform all",
     "eas:update": "eas update --branch preview",
-    "playwright:test": "playwright test",
+    "playwright:test": "./scripts/replace-ep-test.sh && playwright test tests/basic-tests.spec.ts && playwright test tests/wallet.spec.ts && playwright test tests/onramp.spec.ts",
     "playwright:install": "playwright install chromium",
     "deploy": "gh-pages --nojekyll -d dist",
     "build:web": "expo export -p web"
@@ -45,7 +45,7 @@
     "react-native": "0.76.7",
     "react-native-get-random-values": "~1.11.0",
     "react-native-modal": "14.0.0-rc.0",
-    "react-native-svg": "15.8.0",
+    "react-native-svg": "15.12.0",
     "react-native-toast-message": "2.2.1",
     "react-native-web": "~0.19.13",
     "uuid": "^11.1.0"

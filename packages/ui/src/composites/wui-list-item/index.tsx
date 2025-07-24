@@ -5,7 +5,8 @@ import {
   Animated,
   type StyleProp,
   type ViewStyle,
-  type ImageStyle
+  type ImageStyle,
+  type ImageProps
 } from 'react-native';
 import { Icon } from '../../components/wui-icon';
 import { Image } from '../../components/wui-image';
@@ -27,6 +28,7 @@ export interface ListItemProps {
   imageSrc?: string;
   imageHeaders?: Record<string, string>;
   imageStyle?: StyleProp<ImageStyle>;
+  imageProps?: ImageProps;
   imageContainerStyle?: StyleProp<ViewStyle>;
   chevron?: boolean;
   disabled?: boolean;
@@ -42,6 +44,7 @@ export function ListItem({
   children,
   icon,
   imageSrc,
+  imageProps,
   imageHeaders,
   imageStyle,
   imageContainerStyle,
@@ -74,8 +77,9 @@ export function ListItem({
           ]}
         >
           <Image
-            source={imageSrc}
+            {...imageProps}
             headers={imageHeaders}
+            source={imageSrc}
             style={[styles.image, (disabled || loading) && styles.disabledImage, imageStyle]}
           />
         </View>

@@ -21,6 +21,32 @@
 - Updated dependencies [40d26c1]
   - @reown/appkit-common-react-native@2.0.0
 
+## 1.2.6
+
+### Patch Changes
+
+- [#361](https://github.com/reown-com/appkit-react-native/pull/361) [`fc2fda7`](https://github.com/reown-com/appkit-react-native/commit/fc2fda728443965578c3d471f928d4604adda55c) Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)! - Update author field in package.json files to use Discord link
+
+- [#369](https://github.com/reown-com/appkit-react-native/pull/369) [`5e95cb1`](https://github.com/reown-com/appkit-react-native/commit/5e95cb1e6d783ebe1d4c5a64d23c365a13320c95) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: replace internal URL usage with custom logic to avoid polyfill issues
+
+- [#375](https://github.com/reown-com/appkit-react-native/pull/375) [`ae8a386`](https://github.com/reown-com/appkit-react-native/commit/ae8a386a7ad3ffac78281491b82e2a9b31c418ff) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: disable layout animations on ios new arch projects
+
+- [#368](https://github.com/reown-com/appkit-react-native/pull/368) [`c425b73`](https://github.com/reown-com/appkit-react-native/commit/c425b738fcb934f23bbc7b5a10043b4ce7546e91) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: bump valtio to 1.13.2
+
+## 1.2.5
+
+### Patch Changes
+
+- [#354](https://github.com/reown-com/appkit-react-native/pull/354) [`cb8ad43`](https://github.com/reown-com/appkit-react-native/commit/cb8ad43a859ea5ae7b8bf9febb2442a83d24ff59) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: set empty required chains for connections + updated ethereum provider version
+
+- [#355](https://github.com/reown-com/appkit-react-native/pull/355) [`279cb47`](https://github.com/reown-com/appkit-react-native/commit/279cb4741789d4a44506d99b4e11d2cdc685e178) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: solved issue with apple login on iOS
+
+## 1.2.4
+
+### Patch Changes
+
+- [#337](https://github.com/reown-com/appkit-react-native/pull/337) [`c121ae3`](https://github.com/reown-com/appkit-react-native/commit/c121ae3d52cb134e695df44d53eb548c1c934a14) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: disable coverscreen on root modal to solve issues with expo-router
+
 ## 1.2.3
 
 ### Patch Changes

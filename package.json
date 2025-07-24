@@ -1,5 +1,5 @@
 {
-  "name": "appkit-react-native",
+  "name": "ak-rn-monorepo",
   "version": "2.0.0-alpha.1",
   "private": true,
   "workspaces": [
@@ -24,7 +24,7 @@
     "build:gallery": "turbo run build:gallery",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "prettier": "prettier --check .",
-    "test": "turbo run test --parallel",
+    "test": "turbo build && turbo run test --parallel",
     "clean": "turbo clean && rm -rf node_modules && (watchman watch-del-all || true)",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
     "playwright:test": "cd apps/native && yarn playwright:test",
@@ -38,8 +38,8 @@
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-private-methods": "^7.18.6",
     "@babel/plugin-transform-flow-strip-types": "^7.26.5",
-    "@changesets/changelog-github": "0.5.0",
-    "@changesets/cli": "2.27.7",
+    "@changesets/changelog-github": "0.5.1",
+    "@changesets/cli": "2.29.5",
     "@coinbase/wallet-mobile-sdk": "1.1.2",
     "@react-native-async-storage/async-storage": "2.1.2",
     "@react-native/babel-preset": "0.76.7",

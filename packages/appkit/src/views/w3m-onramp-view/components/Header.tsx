@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { ModalController, RouterController } from '@reown/appkit-core-react-native';
-import { IconLink, Text } from '@reown/appkit-ui-react-native';
-import { FlexView } from '@reown/appkit-ui-react-native';
+import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
 
 interface HeaderProps {
   onSettingsPress: () => void;

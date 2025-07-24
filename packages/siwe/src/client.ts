@@ -1,16 +1,15 @@
-import { RouterUtil, ConnectionsController, CoreHelperUtil } from '@reown/appkit-core-react-native';
-import { NetworkUtil } from '@reown/appkit-common-react-native';
-
-import type {
-  SIWECreateMessageArgs,
-  SIWEVerifyMessageArgs,
-  SIWEConfig,
-  SIWEClientMethods,
-  SIWESession,
-  SIWEMessageArgs
+import {
+  NetworkUtil,
+  type SIWECreateMessageArgs,
+  type SIWEVerifyMessageArgs,
+  type SIWEConfig,
+  type SIWEClientMethods,
+  type SIWESession,
+  type SIWEMessageArgs
 } from '@reown/appkit-common-react-native';
-import type { SIWEControllerClient } from './controller/SIWEController';
+import { ConnectionsController, CoreHelperUtil, RouterUtil } from '@reown/appkit-core-react-native';
 
+import type { SIWEControllerClient } from './controller/SIWEController';
 import { ConstantsUtil } from './utils/ConstantsUtil';
 
 // -- Client -------------------------------------------------------------------- //

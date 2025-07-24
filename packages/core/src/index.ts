@@ -10,12 +10,6 @@ export { RouterController, type RouterControllerState } from './controllers/Rout
 export { AccountController, type AccountControllerState } from './controllers/AccountController';
 
 export {
-  NetworkController,
-  type NetworkControllerClient,
-  type NetworkControllerState
-} from './controllers/NetworkController';
-
-export {
   ConnectionController,
   type ConnectionControllerClient,
   type ConnectionControllerState
