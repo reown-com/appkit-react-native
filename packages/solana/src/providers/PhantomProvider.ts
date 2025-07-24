@@ -172,7 +172,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
       cluster: this.currentCluster
     };
     try {
-      await this.storage.setItem(PHANTOM_PROVIDER_STORAGE_KEY, JSON.stringify(session));
+      await this.storage.setItem(PHANTOM_PROVIDER_STORAGE_KEY, session);
     } catch (error) {
       // console.error('PhantomProvider: Failed to save session.', error);
     }

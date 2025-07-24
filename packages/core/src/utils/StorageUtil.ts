@@ -67,7 +67,7 @@ export const StorageUtil = {
       }
       OptionsController.getStorage().setItem(
         ConstantsUtil.STORAGE_KEYS.RECENT_WALLET,
-        JSON.stringify(recentWallets)
+        recentWallets
       );
 
       return recentWallets;
@@ -82,7 +82,7 @@ export const StorageUtil = {
     try {
       await OptionsController.getStorage().setItem(
         ConstantsUtil.STORAGE_KEYS.RECENT_WALLET,
-        JSON.stringify(wallets)
+        wallets
       );
     } catch {
       console.info('Unable to set recent wallets');
@@ -95,7 +95,7 @@ export const StorageUtil = {
         ConstantsUtil.STORAGE_KEYS.RECENT_WALLET
       );
 
-      return recent ? JSON.parse(recent) : [];
+      return recent ?? [];
     } catch {
       console.info('Unable to get recent wallets');
     }
