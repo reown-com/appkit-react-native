@@ -4321,10 +4321,10 @@ __metadata:
   dependencies:
     "@reown/appkit-common-react-native": 2.0.0-alpha.1
     "@solana/web3.js": 1.98.2
-    "@walletconnect/react-native-compat": ">=2.16.1"
     bs58: 6.0.0
     tweetnacl: 1.0.3
   peerDependencies:
+    "@walletconnect/react-native-compat": ">=2.16.1"
     react: ">=18"
     react-native: ">=0.72"
   languageName: unknown
@@ -6101,7 +6101,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/react-native-compat@npm:2.21.5, @walletconnect/react-native-compat@npm:>=2.16.1":
+"@walletconnect/react-native-compat@npm:2.21.5":
   version: 2.21.5
   resolution: "@walletconnect/react-native-compat@npm:2.21.5"
   dependencies:
