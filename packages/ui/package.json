@@ -43,9 +43,9 @@
     "qrcode": "1.5.3"
   },
   "peerDependencies": {
-    "react": ">=17",
-    "react-native": ">=0.68.5",
-    "react-native-svg": ">=13"
+    "react": ">=18",
+    "react-native": ">=0.72",
+    "react-native-svg": ">=13.10"
   },
   "react-native": "src/index.ts",
   "react-native-builder-bob": {
