@@ -4210,7 +4210,8 @@ __metadata:
   dependencies:
     "@reown/appkit-common-react-native": 2.0.0-alpha.1
     countries-and-timezones: 3.7.2
-    valtio: 1.13.2
+    derive-valtio: 0.2.0
+    valtio: 2.1.5
   peerDependencies:
     "@walletconnect/react-native-compat": ">=2.13.1"
     react: ">=17"
@@ -4268,7 +4269,7 @@ __metadata:
     "@reown/appkit-ui-react-native": 2.0.0-alpha.1
     "@walletconnect/universal-provider": 2.21.5
     react-native-modal: ">=13"
-    valtio: 1.13.2
+    valtio: 2.1.5
   peerDependencies:
     react: ">=17"
     react-native: ">=0.68.5"
@@ -4296,7 +4297,7 @@ __metadata:
     "@reown/appkit-common-react-native": 2.0.0-alpha.1
     "@reown/appkit-core-react-native": 2.0.0-alpha.1
     "@reown/appkit-ui-react-native": 2.0.0-alpha.1
-    valtio: 1.13.2
+    valtio: 2.1.5
   peerDependencies:
     "@walletconnect/utils": ">=2.16.1"
   languageName: unknown
@@ -6630,7 +6631,7 @@ __metadata:
     eslint: ^8.46.0
     eslint-plugin-ft-flow: 2.0.3
     eslint-plugin-prettier: 5.0.1
-    eslint-plugin-valtio: ^0.6.4
+    eslint-plugin-valtio: 0.8.0
     jest: 29.7.0
     metro-react-native-babel-preset: ^0.77.0
     prettier: 3.0.1
@@ -8707,6 +8708,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"derive-valtio@npm:0.2.0":
+  version: 0.2.0
+  resolution: "derive-valtio@npm:0.2.0"
+  peerDependencies:
+    valtio: ">=2.0.0-rc.0"
+  checksum: 69fb2243bc008fee807414b634a655874761d0a358825c906f3ab990c72648b59ae828a2c8a1dc5f56afd3899684af503ab7b2a06f81058d743629731b398786
+  languageName: node
+  linkType: hard
+
 "destr@npm:^2.0.3, destr@npm:^2.0.5":
   version: 2.0.5
   resolution: "destr@npm:2.0.5"
@@ -9594,10 +9604,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-valtio@npm:^0.6.4":
-  version: 0.6.4
-  resolution: "eslint-plugin-valtio@npm:0.6.4"
-  checksum: e5c813bef695e002076270fa6b14af358f89e69b26ae3038a29830a7911293624be040ba38ab1ac5ebaf1d64abcdfc63ad6f5d2cee685aa6d6acb7e08f1fb784
+"eslint-plugin-valtio@npm:0.8.0":
+  version: 0.8.0
+  resolution: "eslint-plugin-valtio@npm:0.8.0"
+  checksum: 0d4da06eaf0477af1188038c2431bf3cffaddd2c927dde55d7ceecc0c2a3c413fb93262103ea106644cd73e4ff605f1ce51661e6a8b0619f148d818174b91493
   languageName: node
   linkType: hard
 
@@ -15363,6 +15373,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"proxy-compare@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "proxy-compare@npm:3.0.1"
+  checksum: 25e4e552610f01e6d2cd67aef98f437cb54cb869df7f940799a8e83c6216db7de1c15747776ca810b120eae4f0dc3f653d4269a003548817c560ea9dfcae22d2
+  languageName: node
+  linkType: hard
+
 "pump@npm:^3.0.0":
   version: 3.0.3
   resolution: "pump@npm:3.0.3"
@@ -18478,6 +18495,23 @@ __metadata:
     react:
       optional: true
   checksum: eb0f12d85c90bd808379b30430cabb1a224749343d8b750bb88f69072825b3e2d6be057ef1d3952253357713871ff079ac9a3aa4f48265bc49c6e3949d8c0919
+  languageName: node
+  linkType: hard
+
+"valtio@npm:2.1.5":
+  version: 2.1.5
+  resolution: "valtio@npm:2.1.5"
+  dependencies:
+    proxy-compare: ^3.0.1
+  peerDependencies:
+    "@types/react": ">=18.0.0"
+    react: ">=18.0.0"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    react:
+      optional: true
+  checksum: a34c6fb46149599e6bc8284dc6b804ff1b45cbe7b9d173b229dff3badda5743ef941010cc70944bd691e6f1c3db6356424537944c6273ad4d2d72b8390b48c50
   languageName: node
   linkType: hard
 

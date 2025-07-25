@@ -1,5 +1,5 @@
 import { proxy, ref } from 'valtio';
-import { derive } from 'valtio/utils';
+import { derive } from 'derive-valtio';
 import {
   EVMAdapter,
   type AppKitNetwork,
