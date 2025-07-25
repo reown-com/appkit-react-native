@@ -76,12 +76,11 @@ export abstract class EVMAdapter extends BlockchainAdapter {
     const provider = this.getProvider();
     if (!provider) return;
 
-    provider.on('reown_updateEmail', (info: any) => {
-      // this.emit('updateEmail', email);
-      //TODO: check this
-      //eslint-disable-next-line no-console
-      console.log('reown_updateEmail', info);
-    });
+    // provider.on('reown_updateEmail', (info: any) => {
+    //   // this.emit('updateEmail', email);
+    //   //TODO: check this
+    //   // console.log('reown_updateEmail', info);
+    // });
   }
 
   async signMessage(address: string, message: string, chain?: string): Promise<string> {
