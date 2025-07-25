@@ -1,7 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect } from 'react';
 import {
-  AccountController,
   ConnectionsController,
   OnRampController,
   RouterController
@@ -25,7 +24,7 @@ export function OnRampTransactionView() {
   useEffect(() => {
     return () => {
       OnRampController.resetState();
-      AccountController.fetchTokenBalance();
+      ConnectionsController.fetchBalance();
     };
   }, []);
 

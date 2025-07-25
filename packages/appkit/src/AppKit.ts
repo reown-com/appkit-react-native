@@ -1,6 +1,5 @@
 import {
   type Features,
-  AccountController,
   EventsController,
   ModalController,
   ConnectionsController,
@@ -172,9 +171,6 @@ export class AppKit {
 
       this.syncAccounts(approvedAdapters);
 
-      //TODO: Replace this
-      AccountController.setIsConnected(true);
-
       if (
         OptionsController.state.isSiweEnabled &&
         ConnectionsController.state.activeNamespace === 'eip155'
@@ -215,7 +211,6 @@ export class AppKit {
 
       ModalController.close();
 
-      AccountController.setIsConnected(false); // Might need adjustment based on multi-connection logic
       RouterController.reset('Connect');
       TransactionsController.resetState();
       SwapController.resetState();
@@ -392,8 +387,6 @@ export class AppKit {
             }
 
             this.syncAccounts(initializedAdapters);
-
-            AccountController.setIsConnected(true);
 
             if (
               OptionsController.state.isSiweEnabled &&

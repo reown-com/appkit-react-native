@@ -49,7 +49,7 @@ export const StorageUtil = {
     try {
       await OptionsController.getStorage().removeItem(ConstantsUtil.STORAGE_KEYS.WC_DEEPLINK);
     } catch {
-      console.info('Unable to delete WalletConnect deep link');
+      console.info('Unable to remove WalletConnect deep link');
     }
   },
 
@@ -181,7 +181,8 @@ export const StorageUtil = {
       await OptionsController.getStorage().removeItem(
         ConstantsUtil.STORAGE_KEYS.CONNECTED_WALLET_IMAGE_URL
       );
-    } catch {
+    } catch (e) {
+      console.error(e);
       console.info('Unable to remove Connected Wallet Image URL');
     }
   },

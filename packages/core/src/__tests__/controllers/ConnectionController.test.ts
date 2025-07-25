@@ -35,6 +35,23 @@ const client: ConnectionControllerClient = {
   }
 };
 
+jest.mock('../../controllers/OptionsController', () => ({
+  OptionsController: {
+    state: {
+      storage: {
+        getItem: jest.fn(),
+        setItem: jest.fn(),
+        removeItem: jest.fn()
+      }
+    },
+    getStorage: () => ({
+      getItem: jest.fn(),
+      setItem: jest.fn(),
+      removeItem: jest.fn()
+    })
+  }
+}));
+
 // -- Tests --------------------------------------------------------------------
 describe('ConnectionController', () => {
   it('should throw if client not set', () => {

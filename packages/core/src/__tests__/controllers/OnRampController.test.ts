@@ -340,7 +340,6 @@ describe('OnRampController', () => {
       OnRampController.setPaymentCurrency(mockFiatCurrency);
       OnRampController.setPurchaseCurrency(mockCryptoCurrency);
       OnRampController.setPaymentAmount(100);
-      // AccountController.setCaipAddress('eip155:1:0x1234567890123456789012345678901234567890');
 
       // Mock API response
       (BlockchainApiController.fetchOnRampPaymentMethods as jest.Mock).mockResolvedValue([
@@ -377,7 +376,6 @@ describe('OnRampController', () => {
       OnRampController.setPaymentCurrency(mockFiatCurrency);
       OnRampController.setPurchaseCurrency(mockCryptoCurrency);
       OnRampController.setPaymentAmount(10);
-      // AccountController.setCaipAddress('eip155:1:0x1234567890123456789012345678901234567890');
 
       // Mock API error
       (BlockchainApiController.getOnRampQuotes as jest.Mock).mockRejectedValue({
