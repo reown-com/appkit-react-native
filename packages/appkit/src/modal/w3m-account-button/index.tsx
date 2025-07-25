@@ -1,4 +1,5 @@
 import { useSnapshot } from 'valtio';
+import type { StyleProp, ViewStyle } from 'react-native';
 import {
   AccountController,
   CoreHelperUtil,
@@ -7,10 +8,7 @@ import {
   ConnectionsController,
   AssetController
 } from '@reown/appkit-core-react-native';
-
 import { AccountButton as AccountButtonUI, ThemeProvider } from '@reown/appkit-ui-react-native';
-import { ApiController } from '@reown/appkit-core-react-native';
-import type { StyleProp, ViewStyle } from 'react-native';
 
 export interface AccountButtonProps {
   balance?: 'show' | 'hide';
@@ -39,7 +37,6 @@ export function AccountButton({ balance, disabled, style, testID }: AccountButto
         address={address?.split(':')[2] ?? ''}
         profileName={profileName}
         networkSrc={networkImage}
-        imageHeaders={ApiController._getApiHeaders()}
         avatarSrc={profileImage}
         disabled={disabled}
         style={style}

@@ -37,14 +37,14 @@ import {
   type AppKitSIWEClient,
   type ConnectionProperties,
   type AccountType,
+  type AppKitOpenOptions,
   ConstantsUtil
 } from '@reown/appkit-common-react-native';
+import { SIWEController } from '@reown/appkit-siwe-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
 import { WcHelpersUtil } from './utils/HelpersUtil';
 import { NetworkUtil } from './utils/NetworkUtil';
-import { SIWEController } from '@reown/appkit-siwe-react-native';
-import type { OpenOptions } from './client';
 
 interface AppKitConfig {
   projectId: string;
@@ -280,7 +280,7 @@ export class AppKit {
     }
   }
 
-  open(options?: OpenOptions) {
+  open(options?: AppKitOpenOptions) {
     ModalController.open(options);
   }
 
@@ -579,12 +579,12 @@ export class AppKit {
       SIWEController.setSIWEClient(options.siweConfig);
     }
 
-    // if (
-    //   (options.features?.onramp === true || options.features?.onramp === undefined) &&
-    //   (options.metadata?.redirect?.universal || options.metadata?.redirect?.native)
-    // ) {
-    //   OptionsController.setIsOnRampEnabled(true);
-    // }
+    if (
+      (options.features?.onramp === true || options.features?.onramp === undefined) &&
+      (options.metadata?.redirect?.universal || options.metadata?.redirect?.native)
+    ) {
+      OptionsController.setIsOnRampEnabled(true);
+    }
   }
 
   private async initActiveNamespace() {

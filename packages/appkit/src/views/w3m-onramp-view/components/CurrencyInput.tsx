@@ -10,8 +10,7 @@ import {
   Spacing,
   BorderRadius
 } from '@reown/appkit-ui-react-native';
-import { useEffect, useState } from 'react';
-import { useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export interface InputTokenProps {
   style?: StyleProp<ViewStyle>;
@@ -91,7 +90,11 @@ export function CurrencyInput({
       <FlexView alignItems="center" margin={['m', '0', '0', '0']}>
         <FlexView flexDirection="row" alignItems="center">
           <Text style={[styles.input, { color: Theme[amountColor] }]}>{displayValue}</Text>
-          <Text variant="large-400" color={isAmountError ? 'error-100' : 'fg-200'}>
+          <Text
+            variant="large-400"
+            color={isAmountError ? 'error-100' : 'fg-200'}
+            testID="currency-input-symbol"
+          >
             {symbol || ''}
           </Text>
         </FlexView>
@@ -114,32 +117,34 @@ export function CurrencyInput({
           )}
         </FlexView>
       </FlexView>
-      <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
-        {suggestedValues?.map((suggestion: number) => {
-          const isSelected = suggestion.toString() === value;
+      {suggestedValues && suggestedValues.length > 0 && (
+        <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
+          {suggestedValues?.map((suggestion: number) => {
+            const isSelected = suggestion.toString() === value;
 
-          return (
-            <Button
-              key={suggestion}
-              testID={`suggested-value-${suggestion}`}
-              style={[
-                styles.suggestedValue,
-                isSelected && {
-                  ...styles.selectedValue,
-                  backgroundColor: Theme['accent-glass-020'],
-                  borderColor: Theme['accent-100']
-                }
-              ]}
-              variant="shade"
-              onPress={() => onSuggestedValuePress?.(suggestion)}
-            >
-              <Text variant="small-400" color="fg-100">
-                {`${suggestion} ${symbol ?? ''}`}
-              </Text>
-            </Button>
-          );
-        })}
-      </FlexView>
+            return (
+              <Button
+                key={suggestion}
+                testID={`suggested-value-${suggestion}`}
+                style={[
+                  styles.suggestedValue,
+                  isSelected && {
+                    ...styles.selectedValue,
+                    backgroundColor: Theme['accent-glass-020'],
+                    borderColor: Theme['accent-100']
+                  }
+                ]}
+                variant="shade"
+                onPress={() => onSuggestedValuePress?.(suggestion)}
+              >
+                <Text variant="small-400" color="fg-100">
+                  {`${suggestion} ${symbol ?? ''}`}
+                </Text>
+              </Button>
+            );
+          })}
+        </FlexView>
+      )}
       <Separator color="gray-glass-020" style={styles.separator} />
       <NumericKeyboard onKeyPress={handleKeyPress} />
     </FlexView>

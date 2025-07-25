@@ -1,9 +1,9 @@
-import { DateUtil } from '@reown/appkit-common-react-native';
-import type {
-  TransactionTransfer,
-  Transaction,
-  TransactionImage,
-  TransactionMetadata
+import {
+  type TransactionTransfer,
+  type Transaction,
+  type TransactionImage,
+  type TransactionMetadata,
+  DateUtil
 } from '@reown/appkit-common-react-native';
 import type { TransactionType } from './TypesUtil';
 import { UiUtil } from './UiUtil';

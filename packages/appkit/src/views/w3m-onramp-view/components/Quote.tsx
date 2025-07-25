@@ -20,17 +20,19 @@ interface Props {
   logoURL?: string;
   onQuotePress: (item: OnRampQuote) => void;
   selected?: boolean;
+  testID?: string;
 }
 
 export const ITEM_HEIGHT = 64;
 
-export function Quote({ item, logoURL, onQuotePress, selected, tagText }: Props) {
+export function Quote({ item, logoURL, onQuotePress, selected, tagText, testID }: Props) {
   const Theme = useTheme();
 
   return (
     <Pressable
       style={[styles.container, selected && { borderColor: Theme['accent-100'] }]}
       onPress={() => onQuotePress(item)}
+      testID={testID}
     >
       <FlexView
         justifyContent="space-between"
@@ -60,7 +62,8 @@ export function Quote({ item, logoURL, onQuotePress, selected, tagText }: Props)
               )}
             </FlexView>
             <Text variant="tiny-500">
-              {NumberUtil.roundNumber(item.destinationAmount, 6, 5)} {item.destinationCurrencyCode}
+              {NumberUtil.roundNumber(item.destinationAmount, 6, 5)}{' '}
+              {item.destinationCurrencyCode?.split('_')[0]}
             </Text>
           </FlexView>
         </FlexView>

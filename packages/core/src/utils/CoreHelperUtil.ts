@@ -199,7 +199,7 @@ export const CoreHelperUtil = {
       const { timeZone } = new Intl.DateTimeFormat().resolvedOptions();
       const country = ct.getCountryForTimezone(timeZone);
 
-      return country ? country.id : 'US'; // 'id' is the ISO country code (e.g., "GB" for United Kingdom)
+      return country ? country.id : 'US'; // 'id' is the ISO country code (e.g., "US" for United States)
     } catch (error) {
       return 'US';
     }

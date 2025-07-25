@@ -1,5 +1,4 @@
-import { expect } from '@playwright/test';
-import type { Locator, Page } from '@playwright/test';
+import { type Locator, type Page, expect } from '@playwright/test';
 import { getMaximumWaitConnections } from '../utils/timeouts';
 
 const MAX_WAIT = getMaximumWaitConnections();
@@ -28,7 +27,7 @@ export class WalletValidator {
   async expectSessionCard({ visible = true }: { visible?: boolean }) {
     if (visible) {
       await expect(
-        this.page.getByTestId('session-card'),
+        this.page.getByTestId('session-card').first(),
         'Session card should be visible'
       ).toBeVisible({
         timeout: MAX_WAIT

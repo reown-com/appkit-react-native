@@ -1,5 +1,10 @@
-import type { AccountType, CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
-import type { SocialProvider, Transaction } from '@reown/appkit-common-react-native';
+import type {
+  AccountType,
+  CaipAddress,
+  CaipNetworkId,
+  SocialProvider,
+  Transaction
+} from '@reown/appkit-common-react-native';
 
 import { OnRampErrorType } from './ConstantsUtil';
 
@@ -293,11 +298,12 @@ export interface BlockchainApiSwapTokensRequest {
 
 export interface BlockchainApiOnRampQuotesRequest {
   countryCode: string;
-  paymentMethodType: string;
+  paymentMethodType?: string;
   destinationCurrencyCode: string;
   sourceAmount: number;
   sourceCurrencyCode: string;
   walletAddress: string;
+  excludeProviders?: string[];
 }
 
 export interface BlockchainApiSwapTokensResponse {
@@ -318,6 +324,21 @@ export interface BlockchainApiOnRampWidgetRequest {
 export type BlockchainApiOnRampWidgetResponse = {
   widgetUrl: string;
 };
+
+export class BlockchainOnRampError extends Error {
+  code: string;
+  constructor(code: string, message: string) {
+    super(message);
+    this.code = code;
+    this.message = message;
+  }
+}
+
+// -- OptionsController Types ---------------------------------------------------
+export interface Token {
+  address: string;
+  image?: string;
+}
 
 // -- OptionsController Types ---------------------------------------------------
 export type CustomWallet = Pick<
@@ -799,6 +820,12 @@ export type OnRampCountry = {
   countryCode: string;
   flagImageUrl: string;
   name: string;
+};
+
+export type OnRampCountryDefaults = {
+  countryCode: string;
+  defaultCurrencyCode: string;
+  defaultPaymentMethods: string[];
 };
 
 export type OnRampFiatCurrency = {

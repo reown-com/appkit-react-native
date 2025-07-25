@@ -33,8 +33,8 @@ export function DoubleImageLoader({
   const leftPosition = useAnimatedValue(10);
   const rightPosition = useAnimatedValue(-10);
 
-  const animateLeft = () => {
-    Animated.loop(
+  useEffect(() => {
+    const leftAnimation = Animated.loop(
       Animated.sequence([
         Animated.timing(leftPosition, {
           toValue: -5,
@@ -47,11 +47,9 @@ export function DoubleImageLoader({
           useNativeDriver: true
         })
       ])
-    ).start();
-  };
+    );
 
-  const animateRight = () => {
-    Animated.loop(
+    const rightAnimation = Animated.loop(
       Animated.sequence([
         Animated.timing(rightPosition, {
           toValue: 5,
@@ -64,12 +62,15 @@ export function DoubleImageLoader({
           useNativeDriver: true
         })
       ])
-    ).start();
-  };
+    );
 
-  useEffect(() => {
-    animateLeft();
-    animateRight();
+    leftAnimation.start();
+    rightAnimation.start();
+
+    return () => {
+      leftAnimation.stop();
+      rightAnimation.stop();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useSnapshot } from 'valtio';
 import {
   Avatar,
@@ -17,11 +18,10 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-core-react-native';
-
-import { useState } from 'react';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
-import styles from './styles';
+
 import { useAppKit } from '../../AppKitContext';
+import styles from './styles';
 
 export function ConnectingSiweView() {
   const { disconnect } = useAppKit();

@@ -1,26 +1,27 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils';
-import { proxy, subscribe as sub } from 'valtio/vanilla';
-import type {
-  OnRampPaymentMethod,
-  OnRampCountry,
-  OnRampFiatCurrency,
-  OnRampQuote,
-  OnRampFiatLimit,
-  OnRampCryptoCurrency,
-  OnRampServiceProvider,
-  OnRampError,
-  OnRampErrorTypeValues
+import { subscribeKey as subKey } from 'valtio/utils';
+import { proxy, subscribe as sub } from 'valtio';
+import {
+  type OnRampPaymentMethod,
+  type OnRampCountry,
+  type OnRampFiatCurrency,
+  type OnRampQuote,
+  type OnRampFiatLimit,
+  type OnRampCryptoCurrency,
+  type OnRampServiceProvider,
+  type OnRampError,
+  type OnRampErrorTypeValues,
+  type OnRampCountryDefaults,
+  BlockchainOnRampError
 } from '../utils/TypeUtil';
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
-import { NetworkController } from './NetworkController';
-import { AccountController } from './AccountController';
 import { OptionsController } from './OptionsController';
 import { ConstantsUtil, OnRampErrorType } from '../utils/ConstantsUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import { SnackController } from './SnackController';
 import { EventsController } from './EventsController';
-import { BlockchainApiController } from './BlockchainApiController';
+import { BlockchainApiController, EXCLUDED_ONRAMP_PROVIDERS } from './BlockchainApiController';
+import { ConnectionsController } from './ConnectionsController';
 
 // -- Helpers ------------------------------------------- //
 
@@ -32,23 +33,27 @@ const mapErrorMessage = (errorCode: string): OnRampError => {
   const errorMap: Record<string, { type: OnRampErrorTypeValues; message: string }> = {
     [OnRampErrorType.AMOUNT_TOO_LOW]: {
       type: OnRampErrorType.AMOUNT_TOO_LOW,
-      message: 'Amount is too low'
+      message: 'The amount is too low'
     },
     [OnRampErrorType.AMOUNT_TOO_HIGH]: {
       type: OnRampErrorType.AMOUNT_TOO_HIGH,
-      message: 'Amount is too high'
+      message: 'The amount is too high'
     },
     [OnRampErrorType.INVALID_AMOUNT]: {
       type: OnRampErrorType.INVALID_AMOUNT,
-      message: 'Please adjust amount'
+      message: 'Enter a valid amount'
     },
     [OnRampErrorType.INCOMPATIBLE_REQUEST]: {
       type: OnRampErrorType.INCOMPATIBLE_REQUEST,
-      message: 'Try different amount or payment method'
+      message: 'Enter a valid amount'
     },
     [OnRampErrorType.BAD_REQUEST]: {
       type: OnRampErrorType.BAD_REQUEST,
-      message: 'Try different amount or payment method'
+      message: 'Enter a valid amount'
+    },
+    [OnRampErrorType.NO_VALID_QUOTES]: {
+      type: OnRampErrorType.NO_VALID_QUOTES,
+      message: 'No quotes available'
     }
   };
 
@@ -63,6 +68,7 @@ const mapErrorMessage = (errorCode: string): OnRampError => {
 // -- Types --------------------------------------------- //
 export interface OnRampControllerState {
   countries: OnRampCountry[];
+  countriesDefaults?: OnRampCountryDefaults[];
   selectedCountry?: OnRampCountry;
   serviceProviders: OnRampServiceProvider[];
   selectedServiceProvider?: OnRampServiceProvider;
@@ -109,33 +115,39 @@ export const OnRampController = {
   },
 
   async setSelectedCountry(country: OnRampCountry, updateCurrency = true) {
-    state.selectedCountry = country;
-    state.loading = true;
+    try {
+      state.selectedCountry = country;
+      state.loading = true;
 
-    if (updateCurrency) {
-      const currencyCode =
-        ConstantsUtil.COUNTRY_CURRENCIES[
-          country.countryCode as keyof typeof ConstantsUtil.COUNTRY_CURRENCIES
-        ] || 'USD';
+      if (updateCurrency) {
+        const currencyCode =
+          state.countriesDefaults?.find(d => d.countryCode === country.countryCode)
+            ?.defaultCurrencyCode || 'USD';
 
-      const currency = state.paymentCurrencies?.find(c => c.currencyCode === currencyCode);
+        const currency = state.paymentCurrencies?.find(c => c.currencyCode === currencyCode);
 
-      if (currency) {
-        this.setPaymentCurrency(currency);
+        if (currency) {
+          this.setPaymentCurrency(currency);
+        }
       }
+
+      await Promise.all([this.fetchPaymentMethods(), this.fetchCryptoCurrencies()]);
+      this.clearQuotes();
+
+      state.loading = false;
+
+      StorageUtil.setOnRampPreferredCountry(country);
+    } catch (error) {
+      state.loading = false;
+      state.error = {
+        type: OnRampErrorType.FAILED_TO_LOAD_COUNTRIES,
+        message: 'Failed to load countries'
+      };
     }
-
-    await Promise.all([this.fetchPaymentMethods(), this.fetchCryptoCurrencies()]);
-
-    state.loading = false;
-
-    StorageUtil.setOnRampPreferredCountry(country);
   },
 
   setSelectedPaymentMethod(paymentMethod: OnRampPaymentMethod) {
     state.selectedPaymentMethod = paymentMethod;
-
-    this.clearQuotes();
   },
 
   setPurchaseCurrency(currency: OnRampCryptoCurrency) {
@@ -175,16 +187,16 @@ export const OnRampController = {
 
   updateSelectedPurchaseCurrency() {
     let selectedCurrency;
-    if (NetworkController.state.caipNetwork?.id) {
+    if (ConnectionsController.state.activeNetwork?.caipNetworkId) {
       const defaultCurrency =
         ConstantsUtil.NETWORK_DEFAULT_CURRENCIES[
-          NetworkController.state.caipNetwork
-            ?.id as keyof typeof ConstantsUtil.NETWORK_DEFAULT_CURRENCIES
+          ConnectionsController.state.activeNetwork
+            ?.caipNetworkId as keyof typeof ConstantsUtil.NETWORK_DEFAULT_CURRENCIES
         ];
       selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === defaultCurrency);
     }
 
-    state.purchaseCurrency = selectedCurrency || state.purchaseCurrencies?.[0] || undefined;
+    state.purchaseCurrency = selectedCurrency ?? undefined;
   },
 
   getServiceProviderImage(serviceProviderName?: string) {
@@ -231,6 +243,27 @@ export const OnRampController = {
     }
   },
 
+  async fetchCountriesDefaults() {
+    try {
+      let countriesDefaults = await StorageUtil.getOnRampCountriesDefaults();
+
+      if (!countriesDefaults.length) {
+        countriesDefaults = (await BlockchainApiController.fetchOnRampCountriesDefaults()) ?? [];
+
+        if (countriesDefaults.length) {
+          StorageUtil.setOnRampCountriesDefaults(countriesDefaults);
+        }
+      }
+
+      state.countriesDefaults = countriesDefaults;
+    } catch (error) {
+      state.error = {
+        type: OnRampErrorType.FAILED_TO_LOAD_COUNTRIES,
+        message: 'Failed to load countries defaults'
+      };
+    }
+  },
+
   async fetchServiceProviders() {
     try {
       let serviceProviders = await StorageUtil.getOnRampServiceProviders();
@@ -259,10 +292,8 @@ export const OnRampController = {
       });
 
       const defaultCountryPaymentMethods =
-        ConstantsUtil.COUNTRY_DEFAULT_PAYMENT_METHOD[
-          state.selectedCountry
-            ?.countryCode as keyof typeof ConstantsUtil.COUNTRY_DEFAULT_PAYMENT_METHOD
-        ];
+        state.countriesDefaults?.find(d => d.countryCode === state.selectedCountry?.countryCode)
+          ?.defaultPaymentMethods || [];
 
       state.paymentMethods =
         paymentMethods?.sort((a, b) => {
@@ -276,9 +307,7 @@ export const OnRampController = {
           return aIndex - bIndex;
         }) || [];
 
-      state.selectedPaymentMethod = paymentMethods?.[0] || undefined;
-
-      this.clearQuotes();
+      state.selectedPaymentMethod = state.paymentMethods[0];
     } catch (error) {
       state.error = {
         type: OnRampErrorType.FAILED_TO_LOAD_METHODS,
@@ -298,16 +327,16 @@ export const OnRampController = {
       state.purchaseCurrencies = cryptoCurrencies || [];
 
       let selectedCurrency;
-      if (NetworkController.state.caipNetwork?.id) {
+      if (ConnectionsController.state.activeNetwork?.caipNetworkId) {
         const defaultCurrency =
           ConstantsUtil.NETWORK_DEFAULT_CURRENCIES[
-            NetworkController.state.caipNetwork
-              ?.id as keyof typeof ConstantsUtil.NETWORK_DEFAULT_CURRENCIES
-          ] || 'ETH';
+            ConnectionsController.state.activeNetwork
+              ?.caipNetworkId as keyof typeof ConstantsUtil.NETWORK_DEFAULT_CURRENCIES
+          ];
         selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === defaultCurrency);
       }
 
-      state.purchaseCurrency = selectedCurrency || cryptoCurrencies?.[0] || undefined;
+      state.purchaseCurrency = selectedCurrency || undefined;
     } catch (error) {
       state.error = {
         type: OnRampErrorType.FAILED_TO_LOAD_CURRENCIES,
@@ -336,9 +365,8 @@ export const OnRampController = {
 
       if (countryCode) {
         currencyCode =
-          ConstantsUtil.COUNTRY_CURRENCIES[
-            countryCode as keyof typeof ConstantsUtil.COUNTRY_CURRENCIES
-          ];
+          state.countriesDefaults?.find(d => d.countryCode === countryCode)?.defaultCurrencyCode ||
+          'USD';
       }
 
       const preferredCurrency = await StorageUtil.getOnRampPreferredFiatCurrency();
@@ -375,48 +403,100 @@ export const OnRampController = {
     }
   },
 
-  getQuotesDebounced: CoreHelperUtil.debounce(function () {
-    OnRampController.getQuotes();
-  }, 500),
-
   async getQuotes() {
-    if (!state.paymentAmount || state.paymentAmount <= 0) {
+    if (!this.canGenerateQuote()) {
       this.clearQuotes();
 
       return;
     }
 
-    state.quotesLoading = true;
-    state.error = undefined;
-
     this.abortGetQuotes(false);
     quotesAbortController = new AbortController();
+    const currentSignal = quotesAbortController.signal;
 
     try {
-      const body = {
-        countryCode: state.selectedCountry?.countryCode!,
-        paymentMethodType: state.selectedPaymentMethod?.paymentMethod!,
-        destinationCurrencyCode: state.purchaseCurrency?.currencyCode!,
-        sourceAmount: state.paymentAmount,
-        sourceCurrencyCode: state.paymentCurrency?.currencyCode!,
-        walletAddress: AccountController.state.address!
-      };
+      if (
+        !state.selectedCountry?.countryCode ||
+        !state.purchaseCurrency?.currencyCode ||
+        !state.paymentCurrency?.currencyCode ||
+        !ConnectionsController.state.activeAddress
+      ) {
+        throw new BlockchainOnRampError(OnRampErrorType.UNKNOWN, 'Invalid quote parameters');
+      }
 
-      const response = await BlockchainApiController.getOnRampQuotes(
-        body,
-        quotesAbortController.signal
+      state.quotesLoading = true;
+      state.selectedQuote = undefined;
+      state.selectedServiceProvider = undefined;
+      state.error = undefined;
+
+      const plainAddress = CoreHelperUtil.getPlainAddress(
+        ConnectionsController.state.activeAddress
       );
 
+      if (!plainAddress) {
+        throw new Error('Invalid address');
+      }
+
+      const body = {
+        countryCode: state.selectedCountry.countryCode,
+        destinationCurrencyCode: state.purchaseCurrency.currencyCode,
+        sourceAmount: state.paymentAmount!,
+        sourceCurrencyCode: state.paymentCurrency.currencyCode,
+        walletAddress: plainAddress,
+        excludeProviders: EXCLUDED_ONRAMP_PROVIDERS
+      };
+
+      const response = await BlockchainApiController.getOnRampQuotes(body, currentSignal);
+
       if (!response || !response.length) {
-        throw new Error('No quotes available');
+        throw new BlockchainOnRampError(OnRampErrorType.NO_VALID_QUOTES, 'No valid quotes');
       }
 
       const quotes = response.sort((a, b) => b.customerScore - a.customerScore);
 
       state.quotes = quotes;
-      state.selectedQuote = quotes[0];
+
+      //Replace payment method if it's not in the quotes
+      const isValidPaymentMethod =
+        state.selectedPaymentMethod &&
+        quotes.some(
+          quote => quote.paymentMethodType === state.selectedPaymentMethod?.paymentMethod
+        );
+
+      if (!isValidPaymentMethod) {
+        const countryMethods =
+          state.countriesDefaults?.find(d => d.countryCode === state.selectedCountry?.countryCode)
+            ?.defaultPaymentMethods || [];
+
+        const availableQuoteMethods = new Set(quotes.map(q => q.paymentMethodType));
+
+        let newPaymentMethodType: string | undefined;
+        for (const dpm of countryMethods) {
+          if (availableQuoteMethods.has(dpm)) {
+            newPaymentMethodType = dpm;
+            break;
+          }
+        }
+
+        if (newPaymentMethodType) {
+          state.selectedPaymentMethod =
+            state.paymentMethods.find(m => m.paymentMethod === newPaymentMethodType) ||
+            state.paymentMethods.find(
+              method => method.paymentMethod === quotes[0]?.paymentMethodType
+            );
+        } else {
+          state.selectedPaymentMethod = state.paymentMethods.find(
+            method => method.paymentMethod === quotes[0]?.paymentMethodType
+          );
+        }
+      }
+
+      state.selectedQuote = quotes.find(
+        quote => quote.paymentMethodType === state.selectedPaymentMethod?.paymentMethod
+      );
+
       state.selectedServiceProvider = state.serviceProviders.find(
-        sp => sp.serviceProvider === quotes[0]?.serviceProvider
+        sp => sp.serviceProvider === state.selectedQuote?.serviceProvider
       );
     } catch (error: any) {
       if (error.name === 'AbortError') {
@@ -435,7 +515,9 @@ export const OnRampController = {
       this.clearQuotes();
       state.error = mapErrorMessage(error?.code || 'UNKNOWN_ERROR');
     } finally {
-      state.quotesLoading = false;
+      if (!currentSignal.aborted) {
+        state.quotesLoading = false;
+      }
     }
   },
 
@@ -449,7 +531,7 @@ export const OnRampController = {
       state.paymentCurrency?.currencyCode &&
       state.selectedCountry &&
       !state.loading &&
-      AccountController.state.address
+      ConnectionsController.state.activeAddress
     );
   },
 
@@ -476,6 +558,10 @@ export const OnRampController = {
   },
 
   async generateWidget({ quote }: { quote: OnRampQuote }) {
+    if (!ConnectionsController.state.activeAddress) {
+      throw new Error('No active address');
+    }
+
     const metadata = OptionsController.state.metadata;
     const eventProperties = {
       asset: quote.destinationCurrencyCode,
@@ -492,16 +578,26 @@ export const OnRampController = {
         throw new Error('Invalid quote');
       }
 
-      const widget = await BlockchainApiController.getOnRampWidget({
+      const plainAddress = CoreHelperUtil.getPlainAddress(
+        ConnectionsController.state.activeAddress
+      );
+
+      if (!plainAddress) {
+        throw new Error('Invalid address');
+      }
+
+      const body = {
         countryCode: quote.countryCode,
         destinationCurrencyCode: quote.destinationCurrencyCode,
         paymentMethodType: quote.paymentMethodType,
         serviceProvider: quote.serviceProvider,
         sourceAmount: quote.sourceAmount,
         sourceCurrencyCode: quote.sourceCurrencyCode,
-        walletAddress: AccountController.state.address!,
+        walletAddress: plainAddress,
         redirectUrl: metadata?.redirect?.universal ?? metadata?.redirect?.native
-      });
+      };
+
+      const widget = await BlockchainApiController.getOnRampWidget(body);
 
       if (!widget || !widget.widgetUrl) {
         throw new Error('Invalid widget response');
@@ -555,6 +651,7 @@ export const OnRampController = {
       await this.fetchServiceProviders();
 
       await Promise.all([
+        this.fetchCountriesDefaults(),
         this.fetchPaymentMethods(),
         this.fetchFiatLimits(),
         this.fetchCryptoCurrencies(),

@@ -4,6 +4,7 @@ import type {
   OnRampFiatCurrency,
   OnRampFiatLimit,
   OnRampServiceProvider,
+  OnRampCountryDefaults,
   WcWallet
 } from './TypeUtil';
 import {
@@ -288,6 +289,44 @@ export const StorageUtil = {
       return countries ?? [];
     } catch {
       console.info('Unable to get OnRamp Countries');
+    }
+
+    return [];
+  },
+
+  async setOnRampCountriesDefaults(countriesDefaults: OnRampCountryDefaults[]) {
+    try {
+      const timestamp = Date.now();
+
+      await OptionsController.getStorage().setItem(
+        ConstantsUtil.STORAGE_KEYS.ONRAMP_COUNTRIES_DEFAULTS,
+        { data: countriesDefaults, timestamp }
+      );
+    } catch {
+      console.info('Unable to set OnRamp Countries Defaults');
+    }
+  },
+
+  async getOnRampCountriesDefaults() {
+    try {
+      const result = await OptionsController.getStorage().getItem(
+        ConstantsUtil.STORAGE_KEYS.ONRAMP_COUNTRIES_DEFAULTS
+      );
+
+      if (!result) {
+        return [];
+      }
+
+      const { data, timestamp } = result;
+
+      // Cache for 1 week
+      if (timestamp && DateUtil.isMoreThanOneWeekAgo(timestamp)) {
+        return [];
+      }
+
+      return (data as OnRampCountryDefaults[]) ?? [];
+    } catch {
+      console.info('Unable to get OnRamp Countries Defaults');
     }
 
     return [];

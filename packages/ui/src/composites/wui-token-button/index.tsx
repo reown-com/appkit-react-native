@@ -1,12 +1,12 @@
-import type { StyleProp, ViewStyle } from 'react-native';
+import React from 'react';
+import { View, type StyleProp, type ViewStyle } from 'react-native';
+
 import { Image } from '../../components/wui-image';
 import { Text } from '../../components/wui-text';
 import { Button } from '../wui-button';
 import { Icon } from '../../components/wui-icon';
 import styles from './styles';
 import { useTheme } from '../../context/ThemeContext';
-import { View } from 'react-native';
-import React from 'react';
 
 export interface TokenButtonProps {
   onPress?: () => void;

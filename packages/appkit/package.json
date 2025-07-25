@@ -26,7 +26,7 @@
     "react-native"
   ],
   "repository": "https://github.com/reown-com/appkit-react-native",
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "homepage": "https://reown.com/appkit",
   "license": "Apache-2.0",
   "bugs": {
@@ -42,12 +42,12 @@
     "@reown/appkit-siwe-react-native": "2.0.0-alpha.1",
     "@reown/appkit-ui-react-native": "2.0.0-alpha.1",
     "@walletconnect/universal-provider": "2.21.5",
-    "valtio": "^1.13.2"
+    "react-native-modal": ">=13",
+    "valtio": "1.13.2"
   },
   "peerDependencies": {
     "react": ">=17",
-    "react-native": ">=0.68.5",
-    "react-native-modal": ">=13"
+    "react-native": ">=0.68.5"
   },
   "react-native": "src/index.ts",
   "react-native-builder-bob": {

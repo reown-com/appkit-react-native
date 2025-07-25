@@ -1,14 +1,13 @@
-import { CoreHelperUtil } from '@reown/appkit-react-native';
+import { http } from 'viem';
 import {
   PresetsUtil,
   ConstantsUtil,
   type AppKitNetwork,
   type Network
 } from '@reown/appkit-common-react-native';
-import { http } from 'viem';
 
 export function getTransport({ chainId, projectId }: { chainId: number; projectId: string }) {
-  const RPC_URL = CoreHelperUtil.getBlockchainApiUrl();
+  const RPC_URL = ConstantsUtil.BLOCKCHAIN_API_RPC_URL;
 
   if (!PresetsUtil.RpcChainIds.includes(chainId)) {
     return http();

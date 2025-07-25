@@ -57,6 +57,7 @@ export const ConstantsUtil = {
     ONRAMP_FIAT_LIMITS: '@appkit/onramp_fiat_limits',
     ONRAMP_FIAT_CURRENCIES: '@appkit/onramp_fiat_currencies',
     ONRAMP_PREFERRED_FIAT_CURRENCY: '@appkit/onramp_preferred_fiat_currency',
+    ONRAMP_COUNTRIES_DEFAULTS: '@appkit/onramp_countries_defaults',
     ACTIVE_NAMESPACE: '@appkit/active_namespace',
     COINBASE_CONNECTOR_SESSION: '@appkit/coinbase_connector/session'
   }
