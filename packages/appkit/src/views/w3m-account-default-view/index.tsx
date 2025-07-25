@@ -71,6 +71,12 @@ export function AccountDefaultView() {
   const showSend =
     !isAuth && activeNamespace && ConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(activeNamespace);
 
+  const showBuy =
+    !isAuth &&
+    isOnRampEnabled &&
+    activeNamespace &&
+    ConstantsUtil.ONRAMP_SUPPORTED_NAMESPACES.includes(activeNamespace);
+
   const { padding } = useCustomDimensions();
 
   async function onDisconnect() {
@@ -263,7 +269,7 @@ export function AccountDefaultView() {
                 {activeNetwork?.name}
               </Text>
             </ListItem>
-            {!isAuth && isOnRampEnabled && (
+            {showBuy && (
               <ListItem
                 chevron
                 icon="card"

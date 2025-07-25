@@ -179,7 +179,7 @@ export class AppKit {
         OptionsController.state.isSiweEnabled &&
         ConnectionsController.state.activeNamespace === 'eip155'
       ) {
-        this.handleSiweChange();
+        this.handleSiweChange({ isConnection: true });
       } else {
         ModalController.close();
       }
@@ -399,7 +399,7 @@ export class AppKit {
               OptionsController.state.isSiweEnabled &&
               ConnectionsController.state.activeNamespace === 'eip155'
             ) {
-              this.handleSiweChange();
+              this.handleSiweChange({ isConnection: true });
             }
           }
         } catch (error) {
@@ -685,28 +685,35 @@ export class AppKit {
   };
 
   private async handleSiweChange(params?: {
+    isConnection?: boolean;
     isNetworkChange?: boolean;
     isAccountChange?: boolean;
   }) {
-    const { isNetworkChange, isAccountChange } = params ?? {};
+    const { isNetworkChange, isAccountChange, isConnection } = params ?? {};
     const { enabled, signOutOnAccountChange, signOutOnNetworkChange } =
       SIWEController.state._client?.options ?? {};
 
     if (enabled) {
       const session = await SIWEController.getSession();
-      if (session && isAccountChange && signOutOnAccountChange) {
-        // If the address has changed and signOnAccountChange is enabled, sign out
-        await SIWEController.signOut();
-        this.onSiweNavigation();
-      } else if (isNetworkChange && signOutOnNetworkChange) {
-        // If the network has changed and signOnNetworkChange is enabled, sign out
-        await SIWEController.signOut();
-        this.onSiweNavigation();
+      if (session && isAccountChange) {
+        if (signOutOnAccountChange) {
+          // If the address has changed and signOnAccountChange is enabled, sign out
+          await SIWEController.signOut();
+
+          return this.onSiweNavigation();
+        }
+      } else if (isNetworkChange) {
+        if (signOutOnNetworkChange) {
+          // If the network has changed and signOnNetworkChange is enabled, sign out
+          await SIWEController.signOut();
+
+          return this.onSiweNavigation();
+        }
       } else if (!session) {
         // If it's connected but there's no session, show sign view
-        this.onSiweNavigation();
-      } else {
-        //1CA case
+        return this.onSiweNavigation();
+      } else if (isConnection) {
+        //Connected with 1CA
         ModalController.close();
       }
     }

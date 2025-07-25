@@ -273,6 +273,8 @@ export const ConstantsUtil = {
 
   SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'],
 
+  ONRAMP_SUPPORTED_NAMESPACES: ['eip155', 'solana', 'bip122'],
+
   CONVERT_SLIPPAGE_TOLERANCE: 1,
 
   DEFAULT_FEATURES: defaultFeatures,

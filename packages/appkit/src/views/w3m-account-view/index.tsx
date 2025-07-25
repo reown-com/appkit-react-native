@@ -14,6 +14,7 @@ import {
   AssetController,
   ConnectionsController,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   RouterController,
   SendController
@@ -38,6 +39,10 @@ export function AccountView() {
 
   const onNetworkPress = () => {
     RouterController.push('Networks');
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CLICK_NETWORKS'
+    });
   };
 
   useEffect(() => {
