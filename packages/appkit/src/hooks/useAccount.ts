@@ -16,6 +16,7 @@ export function useAccount() {
   return {
     address: address?.split(':')[2],
     isConnected: !!address,
-    chainId: connection?.caipNetwork
+    chainId: connection?.caipNetwork,
+    namespace: activeNamespace
   };
 }

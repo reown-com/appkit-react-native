@@ -53,10 +53,10 @@ export class PhantomConnector extends WalletConnector {
     this.storage = ops.storage;
     await this.initializeKeyPair();
 
-    const appScheme = ops.metadata.redirect?.universal;
+    const appScheme = ops.metadata.redirect?.universal ?? ops.metadata.redirect?.native;
     if (!appScheme) {
       throw new Error(
-        'Phantom Connector: No universal link found in metadata. Please add redirect.universal to the metadata.'
+        'Phantom Connector: No redirect link found in metadata. Please add redirect.universal or redirect.native to the metadata.'
       );
     }
 

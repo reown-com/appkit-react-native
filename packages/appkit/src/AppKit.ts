@@ -97,7 +97,22 @@ export class AppKit {
       namespaceMap.set(chainNamespace, adapterName);
     }
 
-    this.networks = NetworkUtil.formatNetworks(config.networks, this.projectId); //TODO: check this
+    const formattedNetworks = NetworkUtil.formatNetworks(config.networks, this.projectId);
+
+    // Use only networks that have adapters
+    const networksWithAdapters = formattedNetworks.filter(network => {
+      return this.adapters.some(
+        adapter => adapter.getSupportedNamespace() === network.chainNamespace
+      );
+    });
+
+    config.networks.forEach(network => {
+      if (!networksWithAdapters.some(n => n.id === network.id)) {
+        console.warn(`AppKit: missing adapter for network ${network.name} - ${network.id}`);
+      }
+    });
+
+    this.networks = networksWithAdapters;
     this.namespaces = WcHelpersUtil.createNamespaces(this.networks) as ProposalNamespaces;
     this.config = config;
     this.extraConnectors = config.extraConnectors || [];
@@ -690,6 +705,9 @@ export class AppKit {
       } else if (!session) {
         // If it's connected but there's no session, show sign view
         this.onSiweNavigation();
+      } else {
+        //1CA case
+        ModalController.close();
       }
     }
   }

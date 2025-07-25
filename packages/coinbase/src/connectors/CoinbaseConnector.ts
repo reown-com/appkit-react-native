@@ -30,13 +30,14 @@ export class CoinbaseConnector extends WalletConnector {
   override async init(ops: ConnectorInitOptions) {
     super.init(ops);
 
-    if (!ops.metadata.redirect?.universal) {
-      throw new Error('CoinbaseConnector: Universal link not found in metadata');
+    const redirect = ops.metadata.redirect?.universal ?? ops.metadata.redirect?.native;
+    if (!redirect) {
+      throw new Error('CoinbaseConnector: Redirect link not found in metadata');
     }
 
     this.provider = new CoinbaseProvider({
-      redirect: ops.metadata.redirect.universal,
-      // use config storage only, as it needs to be mmkv-compatible
+      redirect,
+      // use config storage, as it needs to be mmkv-compatible
       storage: this.config.storage
     });
 
