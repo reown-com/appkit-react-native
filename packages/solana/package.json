@@ -41,7 +41,12 @@
   "dependencies": {
     "@reown/appkit-common-react-native": "2.0.0-alpha.1",
     "@solana/web3.js": "1.98.2",
+    "@walletconnect/react-native-compat": ">=2.16.1",
     "bs58": "6.0.0",
     "tweetnacl": "1.0.3"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-native": ">=0.72"
   }
 }

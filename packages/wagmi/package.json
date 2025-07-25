@@ -45,9 +45,9 @@
   },
   "peerDependencies": {
     "@react-native-community/netinfo": "*",
-    "@walletconnect/react-native-compat": ">=2.13.1",
-    "react": ">=17",
-    "react-native": ">=0.68.5",
+    "@walletconnect/react-native-compat": ">=2.16.1",
+    "react": ">=18",
+    "react-native": ">=0.72",
     "react-native-get-random-values": "*",
     "viem": ">=2.21.4",
     "wagmi": ">=2.12.10"

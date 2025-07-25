@@ -44,9 +44,9 @@
     "valtio": "2.1.5"
   },
   "peerDependencies": {
-    "@walletconnect/react-native-compat": ">=2.13.1",
-    "react": ">=17",
-    "react-native": ">=0.68.5"
+    "@walletconnect/react-native-compat": ">=2.16.1",
+    "react": ">=18",
+    "react-native": ">=0.72"
   },
   "react-native": "src/index.ts",
   "react-native-builder-bob": {

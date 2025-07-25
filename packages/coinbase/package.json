@@ -38,7 +38,9 @@
     "@reown/appkit-common-react-native": "2.0.0-alpha.1"
   },
   "peerDependencies": {
-    "@coinbase/wallet-mobile-sdk": ">=1.1.2"
+    "@coinbase/wallet-mobile-sdk": ">=1.1.2",
+    "react": ">=18",
+    "react-native": ">=0.72"
   },
   "react-native": "src/index.ts",
   "react-native-builder-bob": {

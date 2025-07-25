@@ -4158,6 +4158,10 @@ __metadata:
   resolution: "@reown/appkit-bitcoin-react-native@workspace:packages/bitcoin"
   dependencies:
     "@reown/appkit-common-react-native": 2.0.0-alpha.1
+  peerDependencies:
+    "@walletconnect/react-native-compat": ">=2.16.1"
+    react: ">=18"
+    react-native: ">=0.72"
   languageName: unknown
   linkType: soft
 
@@ -4168,6 +4172,8 @@ __metadata:
     "@reown/appkit-common-react-native": 2.0.0-alpha.1
   peerDependencies:
     "@coinbase/wallet-mobile-sdk": ">=1.1.2"
+    react: ">=18"
+    react-native: ">=0.72"
   languageName: unknown
   linkType: soft
 
@@ -4177,6 +4183,9 @@ __metadata:
   dependencies:
     bignumber.js: 9.1.2
     dayjs: 1.11.10
+  peerDependencies:
+    react: ">=18"
+    react-native: ">=0.72"
   languageName: unknown
   linkType: soft
 
@@ -4213,9 +4222,9 @@ __metadata:
     derive-valtio: 0.2.0
     valtio: 2.1.5
   peerDependencies:
-    "@walletconnect/react-native-compat": ">=2.13.1"
-    react: ">=17"
-    react-native: ">=0.68.5"
+    "@walletconnect/react-native-compat": ">=2.16.1"
+    react: ">=18"
+    react-native: ">=0.72"
   languageName: unknown
   linkType: soft
 
@@ -4229,9 +4238,9 @@ __metadata:
     "@walletconnect/ethereum-provider": 2.21.5
   peerDependencies:
     "@react-native-community/netinfo": "*"
-    "@walletconnect/react-native-compat": ">=2.13.1"
-    react: ">=17"
-    react-native: ">=0.68.5"
+    "@walletconnect/react-native-compat": ">=2.16.1"
+    react: ">=18"
+    react-native: ">=0.72"
     react-native-get-random-values: "*"
   languageName: unknown
   linkType: soft
@@ -4271,8 +4280,11 @@ __metadata:
     react-native-modal: ">=13"
     valtio: 2.1.5
   peerDependencies:
-    react: ">=17"
-    react-native: ">=0.68.5"
+    "@walletconnect/react-native-compat": ">=2.16.1"
+    "@walletconnect/utils": ">=2.16.1"
+    react: ">=18"
+    react-native: ">=0.72"
+    react-native-svg: ">=13.10"
   languageName: unknown
   linkType: soft
 
@@ -4309,8 +4321,12 @@ __metadata:
   dependencies:
     "@reown/appkit-common-react-native": 2.0.0-alpha.1
     "@solana/web3.js": 1.98.2
+    "@walletconnect/react-native-compat": ">=2.16.1"
     bs58: 6.0.0
     tweetnacl: 1.0.3
+  peerDependencies:
+    react: ">=18"
+    react-native: ">=0.72"
   languageName: unknown
   linkType: soft
 
@@ -4322,9 +4338,9 @@ __metadata:
     polished: 4.3.1
     qrcode: 1.5.3
   peerDependencies:
-    react: ">=17"
-    react-native: ">=0.68.5"
-    react-native-svg: ">=13"
+    react: ">=18"
+    react-native: ">=0.72"
+    react-native-svg: ">=13.10"
   languageName: unknown
   linkType: soft
 
@@ -4368,9 +4384,9 @@ __metadata:
     "@reown/appkit-siwe-react-native": 2.0.0-alpha.1
   peerDependencies:
     "@react-native-community/netinfo": "*"
-    "@walletconnect/react-native-compat": ">=2.13.1"
-    react: ">=17"
-    react-native: ">=0.68.5"
+    "@walletconnect/react-native-compat": ">=2.16.1"
+    react: ">=18"
+    react-native: ">=0.72"
     react-native-get-random-values: "*"
     viem: ">=2.21.4"
     wagmi: ">=2.12.10"
@@ -6085,7 +6101,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/react-native-compat@npm:2.21.5":
+"@walletconnect/react-native-compat@npm:2.21.5, @walletconnect/react-native-compat@npm:>=2.16.1":
   version: 2.21.5
   resolution: "@walletconnect/react-native-compat@npm:2.21.5"
   dependencies:
@@ -6616,6 +6632,7 @@ __metadata:
     "@changesets/cli": 2.29.5
     "@coinbase/wallet-mobile-sdk": 1.1.2
     "@react-native-async-storage/async-storage": 2.1.2
+    "@react-native-community/netinfo": 11.4.1
     "@react-native/babel-preset": 0.76.7
     "@react-native/eslint-config": 0.76.7
     "@react-native/metro-config": 0.76.7
@@ -6638,6 +6655,7 @@ __metadata:
     react: 18.3.1
     react-native: 0.76.7
     react-native-builder-bob: 0.23.2
+    react-native-get-random-values: ^1.11.0
     react-native-modal: 14.0.0-rc.0
     react-native-svg: 15.8.0
     react-test-renderer: 18.3.1
@@ -15671,7 +15689,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-get-random-values@npm:~1.11.0":
+"react-native-get-random-values@npm:^1.11.0, react-native-get-random-values@npm:~1.11.0":
   version: 1.11.0
   resolution: "react-native-get-random-values@npm:1.11.0"
   dependencies:
