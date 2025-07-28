@@ -76,7 +76,7 @@ const appKit = createAppKit({
   metadata,
   siweConfig,
   networks: [...chains, solana, bitcoin],
-  defaultNetwork: chains[2],
+  defaultNetwork: chains[0],
   clipboardClient,
   debug: true,
   enableAnalytics: true,

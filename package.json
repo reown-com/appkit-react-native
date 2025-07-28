@@ -64,7 +64,7 @@
     "prettier": "3.0.1",
     "react": "18.3.1",
     "react-native": "0.76.7",
-    "react-native-builder-bob": "0.23.2",
+    "react-native-builder-bob": "0.40.13",
     "react-native-get-random-values": "^1.11.0",
     "react-native-modal": "14.0.0-rc.0",
     "react-native-svg": "15.8.0",
