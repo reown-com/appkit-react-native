@@ -11,24 +11,17 @@ import {
   type WalletInfo,
   type ConnectionProperties,
   type AccountType,
-  SolanaBaseAdapter
+  type Connection,
+  SolanaBaseAdapter,
+  type Identity
 } from '@reown/appkit-common-react-native';
 import { StorageUtil } from '../utils/StorageUtil';
 import { BlockchainApiController } from './BlockchainApiController';
 import { SnackController } from './SnackController';
 import { OptionsController } from './OptionsController';
+import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 
 // -- Types --------------------------------------------- //
-interface Connection {
-  accounts: CaipAddress[];
-  balances: Map<CaipAddress, Balance[]>;
-  adapter: BlockchainAdapter;
-  caipNetwork: CaipNetworkId;
-  wallet?: WalletInfo;
-  properties?: ConnectionProperties;
-  type?: AccountType;
-}
-
 export interface ConnectionsControllerState {
   activeNamespace?: ChainNamespace;
   connections: Map<ChainNamespace, Connection>;
@@ -95,6 +88,13 @@ const updateConnection = (
   baseState.connections = newConnectionsMap;
 };
 
+const getActiveIdentity = (connection: Connection): Identity | undefined => {
+  const activeAddress = getActiveAddress(connection);
+  if (!activeAddress) return undefined;
+
+  return connection.identities?.get(activeAddress);
+};
+
 const derivedState = derive(
   {
     isConnected: (get): boolean => {
@@ -107,6 +107,12 @@ const derivedState = derive(
       const connection = getActiveConnection(snap);
 
       return connection ? getActiveAddress(connection) : undefined;
+    },
+    identity: (get): Identity | undefined => {
+      const snap = get(baseState);
+      const connection = getActiveConnection(snap);
+
+      return connection ? getActiveIdentity(connection) : undefined;
     },
     activeBalance: (get): Balance | undefined => {
       const snap = get(baseState);
@@ -306,6 +312,34 @@ export const ConnectionsController = {
     }
     newBalances.set(address, updatedBalances);
     updateConnection(namespace, connection, { balances: newBalances });
+  },
+
+  updateIdentity(
+    namespace: ChainNamespace,
+    connection: Connection,
+    plainAddress: string,
+    identity: Identity
+  ) {
+    const accounts = connection.accounts.filter(
+      account => CoreHelperUtil.getPlainAddress(account) === plainAddress
+    );
+
+    if (accounts.length > 0) {
+      const newIdentities = new Map(connection.identities);
+      let hasChanges = false;
+
+      accounts.forEach(account => {
+        const existingIdentity = newIdentities.get(account);
+        if (!existingIdentity || existingIdentity.name !== identity.name) {
+          newIdentities.set(account, identity);
+          hasChanges = true;
+        }
+      });
+
+      if (hasChanges) {
+        updateConnection(namespace, connection, { identities: newIdentities });
+      }
+    }
   },
 
   setActiveNetwork(namespace: ChainNamespace, networkId: CaipNetworkId) {

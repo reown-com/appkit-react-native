@@ -15,21 +15,9 @@ export function SendInputAddress({ value }: SendInputAddressProps) {
   const [inputValue, setInputValue] = useState<string | undefined>(value);
 
   const onSearch = async (search: string) => {
-    // TODO: check when enabling ENS
-    // SendController.setLoading(true);
-    // const address = await ConnectionController.getEnsAddress(search);
-    // SendController.setLoading(false);
-
-    // if (address) {
-    //   SendController.setReceiverProfileName(search);
-    //   SendController.setReceiverAddress(address);
-    //   const avatar = await ConnectionController.getEnsAvatar(search);
-    //   SendController.setReceiverProfileImageUrl(avatar || undefined);
-    // } else {
     SendController.setReceiverAddress(search);
     SendController.setReceiverProfileName(undefined);
     SendController.setReceiverProfileImageUrl(undefined);
-    // }
   };
 
   const { debouncedCallback: onDebounceSearch } = useDebounceCallback({

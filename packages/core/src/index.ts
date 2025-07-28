@@ -7,8 +7,6 @@ export {
 
 export { RouterController, type RouterControllerState } from './controllers/RouterController';
 
-export { AccountController, type AccountControllerState } from './controllers/AccountController';
-
 export {
   ConnectionController,
   type ConnectionControllerClient,

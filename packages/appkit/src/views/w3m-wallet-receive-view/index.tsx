@@ -10,7 +10,6 @@ import {
   UiUtil
 } from '@reown/appkit-ui-react-native';
 import {
-  AccountController,
   ApiController,
   AssetController,
   ConnectionsController,
@@ -22,9 +21,8 @@ import {
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function WalletReceiveView() {
-  const { profileName } = useSnapshot(AccountController.state);
   const { networkImages } = useSnapshot(AssetController.state);
-  const { activeNetwork, networks, activeAddress, accountType } = useSnapshot(
+  const { activeNetwork, networks, activeAddress, accountType, identity } = useSnapshot(
     ConnectionsController.state
   );
   const address = CoreHelperUtil.getPlainAddress(activeAddress);
@@ -46,10 +44,10 @@ export function WalletReceiveView() {
     .filter(Boolean) as string[];
 
   const label = UiUtil.getTruncateString({
-    string: profileName ?? address ?? '',
-    charsStart: profileName ? 30 : 4,
-    charsEnd: profileName ? 0 : 4,
-    truncate: profileName ? 'end' : 'middle'
+    string: identity?.name ?? address ?? '',
+    charsStart: identity?.name ? 30 : 4,
+    charsEnd: identity?.name ? 0 : 4,
+    truncate: identity?.name ? 'end' : 'middle'
   });
 
   const onNetworkPress = () => {
