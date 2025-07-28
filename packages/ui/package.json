@@ -4,6 +4,7 @@
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
+  "react-native": "src/index.ts",
   "source": "src/index.ts",
   "scripts": {
     "build": "bob build",
@@ -46,21 +47,6 @@
     "react": ">=18",
     "react-native": ">=0.72",
     "react-native-svg": ">=13.10"
-  },
-  "react-native": "src/index.ts",
-  "react-native-builder-bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      "commonjs",
-      "module",
-      [
-        "typescript",
-        {
-          "tsc": "../../node_modules/.bin/tsc"
-        }
-      ]
-    ]
   },
   "eslintIgnore": [
     "node_modules/",
