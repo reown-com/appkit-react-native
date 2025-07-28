@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@reown/appkit-common-react-native": "1.2.6",
+    "countries-and-timezones": "3.7.2",
     "valtio": "1.13.2"
   },
   "peerDependencies": {

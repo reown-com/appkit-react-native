@@ -67,7 +67,7 @@ export function SwapView() {
   const actionState = getActionButtonState();
   const actionLoading = initializing || loadingPrices || loadingQuote;
 
-  const onDebouncedSwap = useDebounceCallback({
+  const { debouncedCallback: onDebouncedSwap } = useDebounceCallback({
     callback: SwapController.swapTokens.bind(SwapController),
     delay: 400
   });

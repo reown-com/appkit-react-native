@@ -21,7 +21,6 @@ import { siweConfig } from './src/utils/SiweUtils';
 
 import { AccountView } from './src/views/AccountView';
 import { ActionsView } from './src/views/ActionsView';
-import { getCustomWallets } from './src/utils/misc';
 import { chains } from './src/utils/WagmiUtils';
 import { OpenButton } from './src/components/OpenButton';
 import { DisconnectButton } from './src/components/DisconnectButton';
@@ -34,9 +33,8 @@ const metadata = {
   url: 'https://reown.com/appkit',
   icons: ['https://avatars.githubusercontent.com/u/179229932'],
   redirect: {
-    native: 'redirect://',
-    universal: 'https://appkit-lab.reown.com/rn_appkit',
-    linkMode: true
+    native: 'host.exp.exponent://',
+    universal: 'https://appkit-lab.reown.com/rn_appkit'
   }
 };
 
@@ -63,14 +61,11 @@ const wagmiConfig = defaultWagmiConfig({
 
 const queryClient = new QueryClient();
 
-const customWallets = getCustomWallets();
-
 createAppKit({
   projectId,
   wagmiConfig,
   siweConfig,
   clipboardClient,
-  customWallets,
   enableAnalytics: true,
   metadata,
   debug: true,
@@ -78,7 +73,8 @@ createAppKit({
     email: true,
     socials: ['x', 'discord', 'apple'],
     emailShowWallets: true,
-    swaps: true
+    swaps: true,
+    onramp: true
   }
 });
 

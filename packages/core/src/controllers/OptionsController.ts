@@ -28,6 +28,7 @@ export interface OptionsControllerState {
   sdkVersion: SdkVersion;
   metadata?: Metadata;
   isSiweEnabled?: boolean;
+  isOnRampEnabled?: boolean;
   features?: Features;
   debug?: boolean;
 }
@@ -95,6 +96,10 @@ export const OptionsController = {
 
   setDebug(debug: OptionsControllerState['debug']) {
     state.debug = debug;
+  },
+
+  setIsOnRampEnabled(isOnRampEnabled: OptionsControllerState['isOnRampEnabled']) {
+    state.isOnRampEnabled = isOnRampEnabled;
   },
 
   isClipboardAvailable() {

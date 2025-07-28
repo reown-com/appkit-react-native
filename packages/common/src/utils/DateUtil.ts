@@ -43,5 +43,9 @@ export const DateUtil = {
 
   getMonth(month: number) {
     return dayjs().month(month).format('MMMM');
+  },
+
+  isMoreThanOneWeekAgo(date: string | number) {
+    return dayjs(date).isBefore(dayjs().subtract(1, 'week'));
   }
 };

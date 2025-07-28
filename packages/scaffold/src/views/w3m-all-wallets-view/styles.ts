@@ -14,5 +14,8 @@ export default StyleSheet.create({
   icon: {
     marginLeft: 8,
     borderWidth: StyleSheet.hairlineWidth
+  },
+  searchBar: {
+    flex: 1
   }
 });

@@ -12,8 +12,7 @@ import { ConstantsUtil } from '@reown/appkit-common-react-native';
 
 export { defaultConfig } from './utils/defaultConfig';
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import type { AppKitOptions } from './client';
-import { AppKit } from './client';
+import { AppKit, type AppKitOptions } from './client';
 
 // -- Types -------------------------------------------------------------------
 export type { AppKitOptions } from './client';

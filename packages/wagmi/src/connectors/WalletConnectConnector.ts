@@ -30,7 +30,7 @@ type WalletConnectConnector = Connector & {
 export type WalletConnectParameters = {
   /**
    * Reown Cloud Project ID.
-   * @link https://cloud.reown.com/sign-in.
+   * @link https://dashboard.reown.com/sign-in.
    */
   projectId: EthereumProviderOptions['projectId'];
   /**

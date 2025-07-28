@@ -31,7 +31,10 @@ export function SendInputAddress({ value }: SendInputAddressProps) {
     }
   };
 
-  const onDebounceSearch = useDebounceCallback({ callback: onSearch, delay: 800 });
+  const { debouncedCallback: onDebounceSearch } = useDebounceCallback({
+    callback: onSearch,
+    delay: 800
+  });
 
   const onInputChange = (address: string) => {
     setInputValue(address);

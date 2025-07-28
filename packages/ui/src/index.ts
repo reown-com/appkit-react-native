@@ -32,6 +32,7 @@ export {
   type CompatibleNetworkProps
 } from './composites/wui-compatible-network';
 export { ConnectButton, type ConnectButtonProps } from './composites/wui-connect-button';
+export { DoubleImageLoader } from './composites/wui-double-image-loader';
 export { EmailInput, type EmailInputProps } from './composites/wui-email-input';
 export { IconBox, type IconBoxProps } from './composites/wui-icon-box';
 export { IconLink, type IconLinkProps } from './composites/wui-icon-link';
@@ -49,6 +50,7 @@ export { Logo, type LogoProps } from './composites/wui-logo';
 export { LogoSelect, type LogoSelectProps } from './composites/wui-logo-select';
 export { NetworkButton, type NetworkButtonProps } from './composites/wui-network-button';
 export { NetworkImage, type NetworkImageProps } from './composites/wui-network-image';
+export { NumericKeyboard, type NumericKeyboardProps } from './composites/wui-numeric-keyboard';
 export { Otp, type OtpProps } from './composites/wui-otp';
 export { Pressable, type PressableProps } from './components/wui-pressable';
 export { Promo, type PromoProps } from './composites/wui-promo';

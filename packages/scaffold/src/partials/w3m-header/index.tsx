@@ -44,6 +44,11 @@ export function Header() {
       EmailVerifyOtp: 'Confirm email',
       GetWallet: 'Get a wallet',
       Networks: 'Select network',
+      OnRamp: undefined,
+      OnRampCheckout: 'Checkout',
+      OnRampSettings: 'Preferences',
+      OnRampLoading: undefined,
+      OnRampTransaction: ' ',
       SwitchNetwork: networkName ?? 'Switch network',
       Swap: 'Swap',
       SwapSelectToken: 'Select token',
@@ -65,6 +70,8 @@ export function Header() {
     }[_view];
   };
 
+  const noCloseViews = ['OnRampSettings'];
+  const showClose = !noCloseViews.includes(view);
   const header = headings(data, view);
 
   const checkSocial = () => {
@@ -100,19 +107,18 @@ export function Header() {
   };
 
   const dynamicButtonTemplate = () => {
-    const noButtonViews = ['ConnectingSiwe'];
+    const showBack = RouterController.state.history.length > 1;
+    const showHelp = RouterController.state.view === 'Connect';
 
-    if (noButtonViews.includes(RouterController.state.view)) {
-      return <FlexView style={styles.iconPlaceholder} />;
+    if (showHelp) {
+      return <IconLink icon="helpCircle" size="md" onPress={onHelpPress} testID="help-button" />;
     }
 
-    const showBack = RouterController.state.history.length > 1;
+    if (showBack) {
+      return <IconLink icon="chevronLeft" size="md" onPress={handleGoBack} testID="button-back" />;
+    }
 
-    return showBack ? (
-      <IconLink icon="chevronLeft" size="md" onPress={handleGoBack} testID="button-back" />
-    ) : (
-      <IconLink icon="helpCircle" size="md" onPress={onHelpPress} testID="help-button" />
-    );
+    return <FlexView style={styles.iconPlaceholder} />;
   };
 
   if (!header) return null;
@@ -130,7 +136,11 @@ export function Header() {
       <Text variant="paragraph-600" numberOfLines={1} testID="header-text">
         {header}
       </Text>
-      <IconLink icon="close" size="md" onPress={handleClose} testID="header-close" />
+      {showClose ? (
+        <IconLink icon="close" size="md" onPress={handleClose} testID="header-close" />
+      ) : (
+        <FlexView style={styles.iconPlaceholder} />
+      )}
     </FlexView>
   );
 }

@@ -9,6 +9,11 @@ function zType<K extends keyof typeof AppKitFrameConstants>(key: K) {
 }
 
 // -- Responses --------------------------------------------------------------
+const AccountTypeEnum = z.enum([
+  AppKitFrameRpcConstants.ACCOUNT_TYPES.EOA,
+  AppKitFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+]);
+
 export const GetTransactionByHashResponse = z.object({
   accessList: z.array(z.string()),
   blockHash: z.string().nullable(),
@@ -36,7 +41,10 @@ export const AppConnectSocialRequest = z.object({ uri: z.string() });
 export const AppGetSocialRedirectUriRequest = z.object({
   provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord', 'farcaster'])
 });
-export const AppGetUserRequest = z.object({ chainId: z.optional(z.number()) });
+export const AppGetUserRequest = z.object({
+  chainId: z.optional(z.number()),
+  preferredAccountType: z.optional(AccountTypeEnum)
+});
 export const AppUpdateEmailRequest = z.object({ email: z.string().email() });
 export const AppUpdateEmailPrimaryOtpRequest = z.object({ otp: z.string() });
 export const AppUpdateEmailSecondaryOtpRequest = z.object({ otp: z.string() });
@@ -63,11 +71,6 @@ export const AppSyncDappDataRequest = z.object({
   projectId: z.string()
 });
 export const AppSetPreferredAccountRequest = z.object({ type: z.string() });
-
-const AccountTypeEnum = z.enum([
-  AppKitFrameRpcConstants.ACCOUNT_TYPES.EOA,
-  AppKitFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-]);
 
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
