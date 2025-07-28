@@ -75,9 +75,10 @@ export function AccountDefaultView() {
           AccountController.state.preferredAccountType === 'eoa' ? 'smartAccount' : 'eoa';
         const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
         await provider?.setPreferredAccount(accountType);
-        const chainId = NetworkController.state.caipNetwork?.id?.split(':')[1];
+        const chainIdString = NetworkController.state.caipNetwork?.id?.split(':')[1];
+        const chainId = chainIdString ? Number(chainIdString) : undefined;
         // eslint-disable-next-line valtio/state-snapshot-rule
-        await provider?.connect({ chainId: Number(chainId), preferredAccountType: accountType });
+        await provider?.connect({ chainId, preferredAccountType: accountType });
         EventsController.sendEvent({
           type: 'track',
           event: 'SET_PREFERRED_ACCOUNT_TYPE',
