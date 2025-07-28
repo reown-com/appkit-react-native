@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-auth-ethers-react-native",
-  "version": "1.2.6",
+  "version": "1.3.0",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -36,8 +36,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@reown/appkit-common-react-native": "1.2.6",
-    "@reown/appkit-wallet-react-native": "1.2.6"
+    "@reown/appkit-common-react-native": "1.3.0",
+    "@reown/appkit-wallet-react-native": "1.3.0"
   },
   "peerDependencies": {
     "ethers": ">=5"
