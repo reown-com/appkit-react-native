@@ -325,7 +325,7 @@ export const ConnectionsController = {
     );
 
     if (accounts.length > 0) {
-      const newIdentities = new Map(connection.identities);
+      const newIdentities = new Map(connection.identities || []);
       let hasChanges = false;
 
       accounts.forEach(account => {

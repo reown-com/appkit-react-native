@@ -474,20 +474,31 @@ export class AppKit {
       ...new Set(connection.accounts.map(account => CoreHelperUtil.getPlainAddress(account)))
     ];
 
-    uniqueAddresses.forEach(async plainAddress => {
-      const identity = await BlockchainApiController.fetchIdentity({
-        address: plainAddress as `0x${string}`
-      });
+    // Process addresses sequentially to avoid race conditions
+    for (const plainAddress of uniqueAddresses) {
+      try {
+        // Validate address format before type assertion
+        if (!plainAddress || !CoreHelperUtil.isAddress(plainAddress, 'eip155')) {
+          console.warn(`Invalid Ethereum address format: ${plainAddress}`);
+          continue;
+        }
 
-      if (identity?.name) {
-        ConnectionsController.updateIdentity(
-          namespace,
-          connection,
-          plainAddress as `0x${string}`,
-          identity
-        );
+        const identity = await BlockchainApiController.fetchIdentity({
+          address: plainAddress as `0x${string}`
+        });
+
+        if (identity?.name) {
+          ConnectionsController.updateIdentity(
+            namespace,
+            connection,
+            plainAddress as `0x${string}`,
+            identity
+          );
+        }
+      } catch (error) {
+        // Continue processing other addresses even if one fails
       }
-    });
+    }
   }
 
   private setConnection(
