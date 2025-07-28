@@ -128,6 +128,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@ark/schema@npm:0.46.0":
+  version: 0.46.0
+  resolution: "@ark/schema@npm:0.46.0"
+  dependencies:
+    "@ark/util": 0.46.0
+  checksum: a4e7bc0e1c23009c7702ada7cfcbb1638af76f9721c43f96432844ec8616da6fc8121057fb87b0b80142558cf5c3e6141f40443cf43dd026ada8fd4acd635565
+  languageName: node
+  linkType: hard
+
+"@ark/util@npm:0.46.0":
+  version: 0.46.0
+  resolution: "@ark/util@npm:0.46.0"
+  checksum: 0c0ceeb10aa0806860f7a7922586a05cda2945f7f598b414b4ebf268a6b45b00f9a854d6afd6b59df58c733e90d00b230194dd6a180a3a23d0eb64612be1b0e0
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:7.10.4, @babel/code-frame@npm:~7.10.4":
   version: 7.10.4
   resolution: "@babel/code-frame@npm:7.10.4"
@@ -155,7 +171,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:*, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.13.16, @babel/core@npm:^7.18.5, @babel/core@npm:^7.18.9, @babel/core@npm:^7.20.0, @babel/core@npm:^7.23.9, @babel/core@npm:^7.25.2, @babel/core@npm:^7.26.0":
+"@babel/core@npm:*, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.13.16, @babel/core@npm:^7.18.9, @babel/core@npm:^7.20.0, @babel/core@npm:^7.23.9, @babel/core@npm:^7.25.2, @babel/core@npm:^7.26.0":
   version: 7.28.0
   resolution: "@babel/core@npm:7.28.0"
   dependencies:
@@ -534,7 +550,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-class-properties@npm:7.18.6, @babel/plugin-proposal-class-properties@npm:^7.13.0, @babel/plugin-proposal-class-properties@npm:^7.17.12, @babel/plugin-proposal-class-properties@npm:^7.18.0":
+"@babel/plugin-proposal-class-properties@npm:7.18.6, @babel/plugin-proposal-class-properties@npm:^7.13.0, @babel/plugin-proposal-class-properties@npm:^7.18.0":
   version: 7.18.6
   resolution: "@babel/plugin-proposal-class-properties@npm:7.18.6"
   dependencies:
@@ -1124,7 +1140,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-flow-strip-types@npm:^7.20.0, @babel/plugin-transform-flow-strip-types@npm:^7.25.2, @babel/plugin-transform-flow-strip-types@npm:^7.27.1":
+"@babel/plugin-transform-flow-strip-types@npm:^7.20.0, @babel/plugin-transform-flow-strip-types@npm:^7.25.2, @babel/plugin-transform-flow-strip-types@npm:^7.26.5, @babel/plugin-transform-flow-strip-types@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/plugin-transform-flow-strip-types@npm:7.27.1"
   dependencies:
@@ -1552,6 +1568,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/plugin-transform-strict-mode@npm:^7.24.7":
+  version: 7.27.1
+  resolution: "@babel/plugin-transform-strict-mode@npm:7.27.1"
+  dependencies:
+    "@babel/helper-plugin-utils": ^7.27.1
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 0c5bbc9f913b2cea1a1f5697bac320f11575016eed2eee16d2430af5ddceff5382ad3f1b70bf7158ff458db38568a903fab03b308150753453354785365667ec
+  languageName: node
+  linkType: hard
+
 "@babel/plugin-transform-template-literals@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/plugin-transform-template-literals@npm:7.27.1"
@@ -1636,7 +1663,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:^7.18.2, @babel/preset-env@npm:^7.22.10":
+"@babel/preset-env@npm:^7.22.10, @babel/preset-env@npm:^7.25.2":
   version: 7.28.0
   resolution: "@babel/preset-env@npm:7.28.0"
   dependencies:
@@ -1716,7 +1743,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-flow@npm:^7.13.13, @babel/preset-flow@npm:^7.17.12":
+"@babel/preset-flow@npm:^7.13.13":
   version: 7.27.1
   resolution: "@babel/preset-flow@npm:7.27.1"
   dependencies:
@@ -1742,7 +1769,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:^7.17.12, @babel/preset-react@npm:^7.22.15, @babel/preset-react@npm:^7.22.5":
+"@babel/preset-react@npm:^7.22.15, @babel/preset-react@npm:^7.22.5, @babel/preset-react@npm:^7.24.7":
   version: 7.27.1
   resolution: "@babel/preset-react@npm:7.27.1"
   dependencies:
@@ -1773,7 +1800,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-typescript@npm:^7.13.0, @babel/preset-typescript@npm:^7.17.12, @babel/preset-typescript@npm:^7.23.0":
+"@babel/preset-typescript@npm:^7.13.0, @babel/preset-typescript@npm:^7.23.0, @babel/preset-typescript@npm:^7.24.7":
   version: 7.27.1
   resolution: "@babel/preset-typescript@npm:7.27.1"
   dependencies:
@@ -6654,7 +6681,7 @@ __metadata:
     prettier: 3.0.1
     react: 18.3.1
     react-native: 0.76.7
-    react-native-builder-bob: 0.23.2
+    react-native-builder-bob: 0.40.13
     react-native-get-random-values: ^1.11.0
     react-native-modal: 14.0.0-rc.0
     react-native-svg: 15.8.0
@@ -6662,7 +6689,7 @@ __metadata:
     ts-jest: 29.1.1
     ts-node: 10.9.1
     tsconfig: "*"
-    turbo: 2.1.1
+    turbo: 2.5.5
     typescript: 5.2.2
     viem: 2.31.3
     wagmi: 2.15.6
@@ -6821,6 +6848,16 @@ __metadata:
   version: 5.3.2
   resolution: "aria-query@npm:5.3.2"
   checksum: d971175c85c10df0f6d14adfe6f1292409196114ab3c62f238e208b53103686f46cc70695a4f775b73bc65f6a09b6a092fd963c4f3a5a7d690c8fc5094925717
+  languageName: node
+  linkType: hard
+
+"arktype@npm:^2.1.15":
+  version: 2.1.20
+  resolution: "arktype@npm:2.1.20"
+  dependencies:
+    "@ark/schema": 0.46.0
+    "@ark/util": 0.46.0
+  checksum: 5c02dda98606b83b35bbc66934259e3f30c4b4486c32e470e199da533c0af568951502173d7d7a5e64a2e53667eb36d10d772ce46c0bff204fab759430614c9b
   languageName: node
   linkType: hard
 
@@ -7148,7 +7185,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-syntax-hermes-parser@npm:0.28.1":
+"babel-plugin-syntax-hermes-parser@npm:0.28.1, babel-plugin-syntax-hermes-parser@npm:^0.28.0":
   version: 0.28.1
   resolution: "babel-plugin-syntax-hermes-parser@npm:0.28.1"
   dependencies:
@@ -9494,6 +9531,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"escape-string-regexp@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "escape-string-regexp@npm:5.0.0"
+  checksum: 20daabe197f3cb198ec28546deebcf24b3dbb1a5a269184381b3116d12f0532e06007f4bc8da25669d6a7f8efb68db0758df4cd981f57bc5b57f521a3e12c59e
+  languageName: node
+  linkType: hard
+
 "eslint-config-prettier@npm:^8.5.0":
   version: 8.10.2
   resolution: "eslint-config-prettier@npm:8.10.2"
@@ -10258,7 +10302,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.5, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.2":
+"fast-glob@npm:^3.2.5, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.2, fast-glob@npm:^3.3.3":
   version: 3.3.3
   resolution: "fast-glob@npm:3.3.3"
   dependencies:
@@ -15660,32 +15704,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-builder-bob@npm:0.23.2":
-  version: 0.23.2
-  resolution: "react-native-builder-bob@npm:0.23.2"
+"react-native-builder-bob@npm:0.40.13":
+  version: 0.40.13
+  resolution: "react-native-builder-bob@npm:0.40.13"
   dependencies:
-    "@babel/core": ^7.18.5
-    "@babel/plugin-proposal-class-properties": ^7.17.12
-    "@babel/preset-env": ^7.18.2
-    "@babel/preset-flow": ^7.17.12
-    "@babel/preset-react": ^7.17.12
-    "@babel/preset-typescript": ^7.17.12
+    "@babel/core": ^7.25.2
+    "@babel/plugin-transform-flow-strip-types": ^7.26.5
+    "@babel/plugin-transform-strict-mode": ^7.24.7
+    "@babel/preset-env": ^7.25.2
+    "@babel/preset-react": ^7.24.7
+    "@babel/preset-typescript": ^7.24.7
+    arktype: ^2.1.15
+    babel-plugin-syntax-hermes-parser: ^0.28.0
     browserslist: ^4.20.4
-    cosmiconfig: ^7.0.1
     cross-spawn: ^7.0.3
     dedent: ^0.7.0
     del: ^6.1.1
+    escape-string-regexp: ^4.0.0
     fs-extra: ^10.1.0
     glob: ^8.0.3
     is-git-dirty: ^2.0.1
     json5: ^2.2.1
     kleur: ^4.1.4
     prompts: ^2.4.2
+    react-native-monorepo-config: ^0.1.8
     which: ^2.0.2
     yargs: ^17.5.1
   bin:
     bob: bin/bob
-  checksum: 1bee701c21f28f10c5737c8000e7fd6d8f641cf46fe7de03f5086d9951d2c5f3cb45375e292519b85f44a28f907e37f6c7bff324cfb1913b3bee0cb4db2efeb7
+  checksum: 3140749ce4c2b4362502b2074ef2a6de92e03ab1a49bdbfc8058fbea0335a000d0554d012d9ce857b18bc395a2d6796c011d922725089e4688d6760f0b56b519
   languageName: node
   linkType: hard
 
@@ -15732,6 +15779,16 @@ __metadata:
     react: "*"
     react-native: ">=0.65.0"
   checksum: 15985fd6aaae7a2134ec1003c63abd384f4a17beabd0a80b74033c98eccee29161aa07150f479373fb43106cfb33b5837b7a4f1d2b721ff03b3727490c830a07
+  languageName: node
+  linkType: hard
+
+"react-native-monorepo-config@npm:^0.1.8":
+  version: 0.1.9
+  resolution: "react-native-monorepo-config@npm:0.1.9"
+  dependencies:
+    escape-string-regexp: ^5.0.0
+    fast-glob: ^3.3.3
+  checksum: 6356c362c517c49e17d54ee764c3566ba71491fa0d755618ecf2ca548348668e84fe448c24066645983acbc2bd4c0ed47594f9b3ec9dcc0558c0fd9594d2391e
   languageName: node
   linkType: hard
 
@@ -17848,58 +17905,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo-darwin-64@npm:2.1.1":
-  version: 2.1.1
-  resolution: "turbo-darwin-64@npm:2.1.1"
+"turbo-darwin-64@npm:2.5.5":
+  version: 2.5.5
+  resolution: "turbo-darwin-64@npm:2.5.5"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-darwin-arm64@npm:2.1.1":
-  version: 2.1.1
-  resolution: "turbo-darwin-arm64@npm:2.1.1"
+"turbo-darwin-arm64@npm:2.5.5":
+  version: 2.5.5
+  resolution: "turbo-darwin-arm64@npm:2.5.5"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-linux-64@npm:2.1.1":
-  version: 2.1.1
-  resolution: "turbo-linux-64@npm:2.1.1"
+"turbo-linux-64@npm:2.5.5":
+  version: 2.5.5
+  resolution: "turbo-linux-64@npm:2.5.5"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-linux-arm64@npm:2.1.1":
-  version: 2.1.1
-  resolution: "turbo-linux-arm64@npm:2.1.1"
+"turbo-linux-arm64@npm:2.5.5":
+  version: 2.5.5
+  resolution: "turbo-linux-arm64@npm:2.5.5"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-windows-64@npm:2.1.1":
-  version: 2.1.1
-  resolution: "turbo-windows-64@npm:2.1.1"
+"turbo-windows-64@npm:2.5.5":
+  version: 2.5.5
+  resolution: "turbo-windows-64@npm:2.5.5"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-windows-arm64@npm:2.1.1":
-  version: 2.1.1
-  resolution: "turbo-windows-arm64@npm:2.1.1"
+"turbo-windows-arm64@npm:2.5.5":
+  version: 2.5.5
+  resolution: "turbo-windows-arm64@npm:2.5.5"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo@npm:2.1.1":
-  version: 2.1.1
-  resolution: "turbo@npm:2.1.1"
+"turbo@npm:2.5.5":
+  version: 2.5.5
+  resolution: "turbo@npm:2.5.5"
   dependencies:
-    turbo-darwin-64: 2.1.1
-    turbo-darwin-arm64: 2.1.1
-    turbo-linux-64: 2.1.1
-    turbo-linux-arm64: 2.1.1
-    turbo-windows-64: 2.1.1
-    turbo-windows-arm64: 2.1.1
+    turbo-darwin-64: 2.5.5
+    turbo-darwin-arm64: 2.5.5
+    turbo-linux-64: 2.5.5
+    turbo-linux-arm64: 2.5.5
+    turbo-windows-64: 2.5.5
+    turbo-windows-arm64: 2.5.5
   dependenciesMeta:
     turbo-darwin-64:
       optional: true
@@ -17915,7 +17972,7 @@ __metadata:
       optional: true
   bin:
     turbo: bin/turbo
-  checksum: 8125906a92ccd9e44db8c55448060cbeaf3e95e4dca4cc9a9ae752c37c30c5a9b18bf3f05aa7855d8164209d6e3182c9c1d529bff6aa12d3b54ca7e162c66427
+  checksum: 8da6525097ba17bb59571eb512f216362b046bbf88765ddb05fb9937a44e04eeba3bb883c55fca53a7e8a104e02366b4f6f99ef90d12078d0dc95d4659004af6
   languageName: node
   linkType: hard
 

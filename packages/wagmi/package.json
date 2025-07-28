@@ -4,6 +4,7 @@
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
+  "react-native": "src/index.tsx",
   "source": "src/index.tsx",
   "scripts": {
     "build": "bob build",
@@ -51,21 +52,6 @@
     "react-native-get-random-values": "*",
     "viem": ">=2.21.4",
     "wagmi": ">=2.12.10"
-  },
-  "react-native": "src/index.tsx",
-  "react-native-builder-bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      "commonjs",
-      "module",
-      [
-        "typescript",
-        {
-          "tsc": "../../node_modules/.bin/tsc"
-        }
-      ]
-    ]
   },
   "eslintIgnore": [
     "node_modules/",
