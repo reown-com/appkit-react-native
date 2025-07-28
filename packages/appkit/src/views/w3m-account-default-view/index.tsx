@@ -2,7 +2,6 @@ import { useSnapshot } from 'valtio';
 import { useState } from 'react';
 import { Linking, ScrollView } from 'react-native';
 import {
-  AccountController,
   ApiController,
   CoreHelperUtil,
   EventsController,
@@ -36,7 +35,6 @@ import styles from './styles';
 
 export function AccountDefaultView() {
   const { switchAccountType, disconnect } = useAppKit();
-  const { profileName, profileImage } = useSnapshot(AccountController.state);
   const { loading } = useSnapshot(ModalController.state);
   const {
     activeAddress: address,
@@ -44,7 +42,8 @@ export function AccountDefaultView() {
     activeNetwork,
     activeNamespace,
     connection,
-    accountType
+    accountType,
+    identity
   } = useSnapshot(ConnectionsController.state);
   const account = address?.split(':')[2];
   const [disconnecting, setDisconnecting] = useState(false);
@@ -105,7 +104,6 @@ export function AccountDefaultView() {
   };
 
   const onCopyAddress = () => {
-    //TODO: Check ENS name
     if (OptionsController.isClipboardAvailable() && ConnectionsController.state.activeAddress) {
       const _address = CoreHelperUtil.getPlainAddress(ConnectionsController.state.activeAddress);
       if (_address) {
@@ -195,12 +193,12 @@ export function AccountDefaultView() {
       />
       <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
         <FlexView alignItems="center" padding={['3xl', 's', '3xl', 's']}>
-          <Avatar imageSrc={profileImage} address={account ?? ''} />
+          <Avatar imageSrc={identity?.avatar} address={account ?? ''} />
           <FlexView flexDirection="row" alignItems="center" margin={['s', '0', '0', '0']}>
             <Text variant="medium-title-600">
-              {profileName
+              {identity?.name
                 ? UiUtil.getTruncateString({
-                    string: profileName,
+                    string: identity?.name,
                     charsStart: 20,
                     charsEnd: 0,
                     truncate: 'end'

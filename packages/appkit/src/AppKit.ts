@@ -13,7 +13,8 @@ import {
   SwapController,
   OnRampController,
   CoreHelperUtil,
-  SendController
+  SendController,
+  BlockchainApiController
 } from '@reown/appkit-core-react-native';
 
 import {
@@ -37,7 +38,8 @@ import {
   type ConnectionProperties,
   type AccountType,
   type AppKitOpenOptions,
-  ConstantsUtil
+  ConstantsUtil,
+  type Connection
 } from '@reown/appkit-common-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -446,6 +448,7 @@ export class AppKit {
       );
 
       this.syncBalances(adapter, network);
+      this.syncIdentity(namespace, connection);
     });
   }
 
@@ -460,6 +463,40 @@ export class AppKit {
             adapter.getBalance({ address, network, tokens: this.config.tokens });
           });
         }
+      }
+    }
+  }
+
+  private async syncIdentity(namespace?: ChainNamespace, connection?: Connection) {
+    if (namespace !== 'eip155' || !connection?.accounts?.length) return;
+
+    const uniqueAddresses = [
+      ...new Set(connection.accounts.map(account => CoreHelperUtil.getPlainAddress(account)))
+    ];
+
+    // Process addresses sequentially to avoid race conditions
+    for (const plainAddress of uniqueAddresses) {
+      try {
+        // Validate address format before type assertion
+        if (!plainAddress || !CoreHelperUtil.isAddress(plainAddress, 'eip155')) {
+          console.warn(`Invalid Ethereum address format: ${plainAddress}`);
+          continue;
+        }
+
+        const identity = await BlockchainApiController.fetchIdentity({
+          address: plainAddress as `0x${string}`
+        });
+
+        if (identity?.name) {
+          ConnectionsController.updateIdentity(
+            namespace,
+            connection,
+            plainAddress as `0x${string}`,
+            identity
+          );
+        }
+      } catch (error) {
+        // Continue processing other addresses even if one fails
       }
     }
   }

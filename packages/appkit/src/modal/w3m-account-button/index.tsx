@@ -1,7 +1,6 @@
 import { useSnapshot } from 'valtio';
 import type { StyleProp, ViewStyle } from 'react-native';
 import {
-  AccountController,
   CoreHelperUtil,
   ModalController,
   ThemeController,
@@ -18,13 +17,13 @@ export interface AccountButtonProps {
 }
 
 export function AccountButton({ balance, disabled, style, testID }: AccountButtonProps) {
-  const { profileImage, profileName } = useSnapshot(AccountController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const {
     activeAddress: address,
     activeBalance,
-    activeNetwork
+    activeNetwork,
+    identity
   } = useSnapshot(ConnectionsController.state);
 
   const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
@@ -35,9 +34,9 @@ export function AccountButton({ balance, disabled, style, testID }: AccountButto
       <AccountButtonUI
         onPress={() => ModalController.open()}
         address={address?.split(':')[2] ?? ''}
-        profileName={profileName}
+        profileName={identity?.name}
         networkSrc={networkImage}
-        avatarSrc={profileImage}
+        avatarSrc={identity?.avatar}
         disabled={disabled}
         style={style}
         balance={

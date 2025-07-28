@@ -28,7 +28,7 @@ export function AccountView() {
   const Theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const { padding } = useCustomDimensions();
-  const { activeNetwork, activeAddress } = useSnapshot(ConnectionsController.state);
+  const { activeNetwork, activeAddress, identity } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const address = CoreHelperUtil.getPlainAddress(activeAddress);
   const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
@@ -87,8 +87,8 @@ export function AccountView() {
       <FlexView padding={['3xl', '0', '0', '0']} style={[{ backgroundColor: Theme['bg-100'] }]}>
         <AccountPill
           address={address}
-          // profileName={profileName}
-          // profileImage={profileImage}
+          profileName={identity?.name}
+          profileImage={identity?.avatar}
           onPress={onProfilePress}
           style={styles.accountPill}
         />

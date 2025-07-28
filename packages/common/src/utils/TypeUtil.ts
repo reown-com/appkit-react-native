@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import type { BlockchainAdapter } from '../adapters/BlockchainAdapter';
 
 export type CaipAddress = `${string}:${string}:${string}`;
 
@@ -174,6 +175,22 @@ export type Metadata = {
   };
 };
 
+export interface Identity {
+  name: string;
+  avatar?: string;
+}
+
+export interface Connection {
+  accounts: CaipAddress[];
+  balances: Map<CaipAddress, Balance[]>;
+  adapter: BlockchainAdapter;
+  caipNetwork: CaipNetworkId;
+  wallet?: WalletInfo;
+  properties?: ConnectionProperties;
+  type?: AccountType;
+  identities?: Map<CaipAddress, Identity>;
+}
+
 export type BlockchainAdapterConfig = {
   projectId: string;
   supportedNamespace: ChainNamespace;
@@ -282,6 +299,8 @@ export abstract class WalletConnector extends EventEmitter {
   abstract restoreSession(): Promise<boolean>;
 }
 
+export type ConnectorType = 'walletconnect' | 'coinbase' | 'auth' | 'phantom';
+
 //********** Provider Types **********//
 
 export interface Provider {
@@ -300,8 +319,6 @@ export interface RequestArguments {
   method: string;
   params?: unknown[] | Record<string, unknown> | object | undefined;
 }
-
-export type ConnectorType = 'walletconnect' | 'coinbase' | 'auth' | 'phantom';
 
 //********** Others **********//
 

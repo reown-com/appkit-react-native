@@ -47,8 +47,7 @@ describe('BlockchainApiController', () => {
 
   it('fetch identity of account', async () => {
     let identity = await BlockchainApiController.fetchIdentity({
-      address: '0x00000',
-      caipNetworkId: 'eip155:1'
+      address: '0x00000'
     });
     expect(identity).toEqual(MOCK_IDENTITY);
   });

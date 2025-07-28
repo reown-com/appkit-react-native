@@ -104,13 +104,8 @@ export const BlockchainApiController = {
     return supportedChains;
   },
 
-  async fetchIdentity(params: BlockchainApiIdentityRequest & WithCaipNetworkId) {
-    const { address, caipNetworkId } = params;
-    const isSupported = await BlockchainApiController.isNetworkSupported(caipNetworkId);
-
-    if (!isSupported) {
-      return { avatar: '', name: '' };
-    }
+  async fetchIdentity(params: BlockchainApiIdentityRequest) {
+    const { address } = params;
 
     return state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
