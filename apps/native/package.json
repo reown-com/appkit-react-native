@@ -13,7 +13,7 @@
     "eas:build": "eas build --platform all",
     "eas:build:local": "eas build --local --platform all",
     "eas:update": "eas update --branch preview",
-    "playwright:test": "./scripts/replace-ep-test.sh && playwright test tests/basic-tests.spec.ts && playwright test tests/wallet.spec.ts && playwright test tests/onramp.spec.ts",
+    "playwright:test": "playwright test tests/basic-tests.spec.ts && playwright test tests/wallet.spec.ts && playwright test tests/onramp.spec.ts",
     "playwright:install": "playwright install chromium",
     "deploy": "gh-pages --nojekyll -d dist",
     "build:web": "expo export -p web"
