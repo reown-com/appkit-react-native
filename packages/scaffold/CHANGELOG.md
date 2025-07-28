@@ -1,5 +1,25 @@
 # @reown/appkit-scaffold-react-native
 
+## 1.3.0
+
+### Minor Changes
+
+- [#395](https://github.com/reown-com/appkit-react-native/pull/395) [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - feat: added onramp feature
+
+### Patch Changes
+
+- [#395](https://github.com/reown-com/appkit-react-native/pull/395) [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: switch universal account type
+
+- [#395](https://github.com/reown-com/appkit-react-native/pull/395) [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: bump ethereum-provider version to 2.21.5
+
+- [#395](https://github.com/reown-com/appkit-react-native/pull/395) [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: update cloud.reown.com to dashboard.reown.com
+
+- Updated dependencies [[`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3), [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3), [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3), [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3)]:
+  - @reown/appkit-common-react-native@1.3.0
+  - @reown/appkit-core-react-native@1.3.0
+  - @reown/appkit-siwe-react-native@1.3.0
+  - @reown/appkit-ui-react-native@1.3.0
+
 ## 1.2.6
 
 ### Patch Changes
