@@ -1008,7 +1008,10 @@ export interface AppKitFrameProvider {
     sdkType: SdkType;
     metadata?: Metadata;
   }): Promise<unknown>;
-  connect(payload?: { chainId: number | undefined }): Promise<{
+  connect(payload?: {
+    chainId: number | undefined;
+    preferredAccountType?: AppKitFrameAccountType;
+  }): Promise<{
     chainId: number;
     email?: string | null;
     address: string;
