@@ -76,7 +76,8 @@ export function AccountDefaultView() {
         const provider = ConnectorController.getAuthConnector()?.provider as AppKitFrameProvider;
         await provider?.setPreferredAccount(accountType);
         const chainIdString = NetworkController.state.caipNetwork?.id?.split(':')[1];
-        const chainId = chainIdString ? Number(chainIdString) : undefined;
+        const chainId =
+          chainIdString && !isNaN(Number(chainIdString)) ? Number(chainIdString) : undefined;
         // eslint-disable-next-line valtio/state-snapshot-rule
         await provider?.connect({ chainId, preferredAccountType: accountType });
         EventsController.sendEvent({
