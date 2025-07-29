@@ -1,7 +1,13 @@
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect } from 'react';
-import { useWindowDimensions, StatusBar } from 'react-native';
-import Modal from 'react-native-modal';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useWindowDimensions,
+  StatusBar,
+  Modal,
+  TouchableOpacity,
+  Animated,
+  View
+} from 'react-native';
 import { Card, ThemeProvider } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
@@ -18,8 +24,8 @@ import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
 import { Snackbar } from '../../partials/w3m-snackbar';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import styles from './styles';
 import { useAppKit } from '../../AppKitContext';
+import styles from './styles';
 
 export function AppKit() {
   const { disconnect } = useAppKit();
@@ -30,6 +36,9 @@ export function AppKit() {
   const { isLandscape } = useCustomDimensions();
   const portraitHeight = height - 80;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
+
+  const backdropOpacity = useRef(new Animated.Value(0)).current;
+  const [showBackdrop, setShowBackdrop] = useState(false);
 
   const onBackButtonPress = () => {
     if (RouterController.state.history.length > 1) {
@@ -71,29 +80,64 @@ export function AppKit() {
     }
   }, [projectId, prefetch]);
 
+  useEffect(() => {
+    let animation: Animated.CompositeAnimation;
+
+    if (open) {
+      setShowBackdrop(true);
+      animation = Animated.timing(backdropOpacity, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true
+      });
+      animation.start();
+    } else {
+      animation = Animated.timing(backdropOpacity, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true
+      });
+      animation.start(() => {
+        setShowBackdrop(false);
+      });
+    }
+
+    return () => {
+      animation?.stop();
+    };
+  }, [open, backdropOpacity]);
+
   return (
     <>
       <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
+        {showBackdrop && (
+          <Animated.View style={[styles.outerBackdrop, { opacity: backdropOpacity }]} />
+        )}
         <Modal
-          style={styles.modal}
-          isVisible={open}
-          useNativeDriver
-          useNativeDriverForBackdrop
+          visible={open}
+          transparent
+          animationType="slide"
           statusBarTranslucent
-          hideModalContentWhileAnimating
-          propagateSwipe
-          onModalHide={handleClose}
-          onBackdropPress={ModalController.close}
-          onBackButtonPress={onBackButtonPress}
+          onDismiss={handleClose}
+          onRequestClose={onBackButtonPress}
           testID="w3m-modal"
         >
-          <Card
-            style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}
-          >
-            <Header />
-            <AppKitRouter />
-            <Snackbar />
-          </Card>
+          {showBackdrop && (
+            <TouchableOpacity
+              style={styles.innerBackdropTouchable}
+              activeOpacity={1}
+              onPress={ModalController.close}
+            />
+          )}
+          <View style={styles.modal}>
+            <Card
+              style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}
+            >
+              <Header />
+              <AppKitRouter />
+              <Snackbar />
+            </Card>
+          </View>
         </Modal>
       </ThemeProvider>
     </>
