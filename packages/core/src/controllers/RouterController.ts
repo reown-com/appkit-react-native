@@ -36,6 +36,7 @@ export interface RouterControllerState {
     | 'WhatIsANetwork'
     | 'WhatIsAWallet';
   history: RouterControllerState['view'][];
+  navigationDirection: 'forward' | 'backward' | 'none';
   data?: {
     wallet?: WcWallet;
     network?: CaipNetwork;
@@ -49,7 +50,8 @@ export interface RouterControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<RouterControllerState>({
   view: 'Connect',
-  history: ['Connect']
+  history: ['Connect'],
+  navigationDirection: 'none'
 });
 
 // -- Controller ---------------------------------------- //
@@ -60,6 +62,7 @@ export const RouterController = {
     if (view !== state.view) {
       state.view = view;
       state.history = [...state.history, view];
+      state.navigationDirection = 'forward';
       state.data = data;
     }
   },
@@ -67,6 +70,7 @@ export const RouterController = {
   reset(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     state.view = view;
     state.history = [view];
+    state.navigationDirection = 'none';
     state.data = data;
   },
 
@@ -74,6 +78,7 @@ export const RouterController = {
     if (state.history.length >= 1 && state.history.at(-1) !== view) {
       state.view = view;
       state.history[state.history.length - 1] = view;
+      state.navigationDirection = 'none';
       state.data = data;
     }
   },
@@ -84,6 +89,7 @@ export const RouterController = {
       const [last] = state.history.slice(-1);
       if (last) {
         state.view = last;
+        state.navigationDirection = 'backward';
       }
     }
   },
@@ -94,6 +100,7 @@ export const RouterController = {
       const [last] = state.history.slice(-1);
       if (last) {
         state.view = last;
+        state.navigationDirection = 'backward';
       }
     }
   }

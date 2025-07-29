@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useLayoutEffect, useMemo } from 'react';
+import { useEffect, useLayoutEffect, useMemo } from 'react';
 import { RouterController } from '@reown/appkit-core-react-native';
 
 import { AccountDefaultView } from '../../views/w3m-account-default-view';
@@ -32,9 +32,20 @@ import { WalletSendSelectTokenView } from '../../views/w3m-wallet-send-select-to
 import { WhatIsANetworkView } from '../../views/w3m-what-is-a-network-view';
 import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
 import { UiUtil } from '../../utils/UiUtil';
+import { useRouteTransition } from '../../hooks/useRouteTransition';
+
+import { Animated } from 'react-native';
 
 export function AppKitRouter() {
   const { view } = useSnapshot(RouterController.state);
+  const { animateTransition, getAnimatedStyle } = useRouteTransition({
+    duration: 300,
+    useNativeDriver: true
+  });
+
+  useEffect(() => {
+    UiUtil.setRouteTransition(animateTransition);
+  }, [animateTransition]);
 
   useLayoutEffect(() => {
     UiUtil.createViewTransition();
@@ -105,5 +116,9 @@ export function AppKitRouter() {
     }
   }, [view]);
 
-  return <ViewComponent />;
+  return (
+    <Animated.View style={[getAnimatedStyle()]}>
+      <ViewComponent />
+    </Animated.View>
+  );
 }

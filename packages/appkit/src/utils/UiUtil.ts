@@ -1,22 +1,32 @@
 import {
   AssetUtil,
   ConnectionController,
+  RouterController,
   StorageUtil,
   type WcWallet
 } from '@reown/appkit-core-react-native';
 import type { WalletDeepLink } from '@reown/appkit-common-react-native';
 
+// Global animation instance to coordinate transitions
+let currentRouteTransition: ((direction: 'forward' | 'backward' | 'none') => Promise<void>) | null =
+  null;
+
 export const UiUtil = {
   TOTAL_VISIBLE_WALLETS: 4,
 
-  createViewTransition: () => {
-    //TODO: replace this with reanimated
-    // LayoutAnimation.configureNext(LayoutAnimation.create(200, 'easeInEaseOut', 'opacity'));
+  setRouteTransition: (
+    transitionFn: (direction: 'forward' | 'backward' | 'none') => Promise<void>
+  ) => {
+    currentRouteTransition = transitionFn;
   },
 
-  animateChange: () => {
-    //TODO: replace this with reanimated
-    // LayoutAnimation.configureNext(LayoutAnimation.create(150, type, creationProp));
+  createViewTransition: async () => {
+    if (currentRouteTransition) {
+      const { navigationDirection } = RouterController.state;
+      await currentRouteTransition(navigationDirection);
+
+      RouterController.state.navigationDirection = 'none';
+    }
   },
 
   storeConnectedWallet: async (wcLinking: WalletDeepLink, pressedWallet?: WcWallet) => {
