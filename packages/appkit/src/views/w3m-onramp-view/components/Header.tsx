@@ -1,18 +1,16 @@
 import { StyleSheet } from 'react-native';
-import { ModalController, RouterController } from '@reown/appkit-core-react-native';
 import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
+import { useAppKit } from '../../../AppKitContext';
 
 interface HeaderProps {
   onSettingsPress: () => void;
 }
 
 export function Header({ onSettingsPress }: HeaderProps) {
+  const { back } = useAppKit();
+
   const handleGoBack = () => {
-    if (RouterController.state.history.length > 1) {
-      RouterController.goBack();
-    } else {
-      ModalController.close();
-    }
+    back();
   };
 
   return (

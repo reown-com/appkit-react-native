@@ -8,10 +8,8 @@ import {
   ModalController,
   OptionsController,
   RouterController,
-  ThemeController,
-  ConnectionsController
+  ThemeController
 } from '@reown/appkit-core-react-native';
-import { SIWEController } from '@reown/appkit-siwe-react-native';
 
 import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
@@ -21,7 +19,7 @@ import { useAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function AppKit() {
-  const { disconnect } = useAppKit();
+  const { close } = useAppKit();
   const { open } = useSnapshot(ModalController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const { projectId } = useSnapshot(OptionsController.state);
@@ -30,13 +28,12 @@ export function AppKit() {
   const portraitHeight = height - 80;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
 
-  const handleModalClose = () => {
-    ModalController.close();
+  const handleBackPress = () => {
     if (RouterController.state.history.length > 1) {
       return RouterController.goBack();
     }
 
-    return handleDismissed();
+    return handleModalClose();
   };
 
   const prefetch = useCallback(async () => {
@@ -44,27 +41,10 @@ export function AppKit() {
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' });
   }, []);
 
-  const handleDismissed = async () => {
-    if (OptionsController.state.isSiweEnabled) {
-      const session = await SIWEController.getSession();
-      if (
-        !session &&
-        SIWEController.state.status !== 'success' &&
-        ConnectionsController.state.activeNamespace === 'eip155' &&
-        !!ConnectionsController.state.activeAddress
-      ) {
-        await disconnect();
-      }
-    }
-
-    if (
-      RouterController.state.view === 'OnRampLoading' &&
-      EventsController.state.data.event === 'BUY_SUBMITTED'
-    ) {
-      // Send event only if the onramp url was already created
-      EventsController.sendEvent({ type: 'track', event: 'BUY_CANCEL' });
-    }
+  const handleModalClose = async () => {
+    await close();
   };
+
   useEffect(() => {
     if (projectId) {
       prefetch();
@@ -76,7 +56,7 @@ export function AppKit() {
       <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
         <Modal
           visible={open}
-          onDismiss={handleDismissed}
+          onRequestClose={handleBackPress}
           onBackdropPress={handleModalClose}
           testID="w3m-modal"
         >

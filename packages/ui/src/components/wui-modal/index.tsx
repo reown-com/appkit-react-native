@@ -9,12 +9,15 @@ import {
 import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
 
-export type ModalProps = Pick<RNModalProps, 'visible' | 'onDismiss' | 'testID'> & {
+export type ModalProps = Pick<
+  RNModalProps,
+  'visible' | 'onDismiss' | 'testID' | 'onRequestClose'
+> & {
   children: React.ReactNode;
   onBackdropPress?: () => void;
 };
 
-export function Modal({ visible, onDismiss, onBackdropPress, testID, children }: ModalProps) {
+export function Modal({ visible, onBackdropPress, onRequestClose, testID, children }: ModalProps) {
   const Theme = useTheme();
   const { height } = useWindowDimensions();
 
@@ -117,8 +120,7 @@ export function Modal({ visible, onDismiss, onBackdropPress, testID, children }:
         transparent
         animationType="none"
         statusBarTranslucent
-        onDismiss={onDismiss}
-        onRequestClose={onBackdropPress}
+        onRequestClose={onRequestClose}
         testID={testID}
       >
         {showBackdrop && (

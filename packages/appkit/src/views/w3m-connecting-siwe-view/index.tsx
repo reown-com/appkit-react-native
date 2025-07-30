@@ -13,7 +13,6 @@ import {
   ConnectionController,
   ConnectionsController,
   EventsController,
-  ModalController,
   OptionsController,
   RouterController,
   SnackController
@@ -73,7 +72,6 @@ export function ConnectingSiweView() {
     if (ConnectionsController.state.activeAddress) {
       setIsDisconnecting(true);
       await disconnect();
-      ModalController.close();
       setIsDisconnecting(false);
     } else {
       RouterController.push('Connect');
