@@ -60,25 +60,25 @@ export const RouterController = {
 
   push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     if (view !== state.view) {
+      state.navigationDirection = 'forward';
       state.view = view;
       state.history = [...state.history, view];
-      state.navigationDirection = 'forward';
       state.data = data;
     }
   },
 
   reset(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
+    state.navigationDirection = 'none';
     state.view = view;
     state.history = [view];
-    state.navigationDirection = 'none';
     state.data = data;
   },
 
   replace(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     if (state.history.length >= 1 && state.history.at(-1) !== view) {
+      state.navigationDirection = 'none';
       state.view = view;
       state.history[state.history.length - 1] = view;
-      state.navigationDirection = 'none';
       state.data = data;
     }
   },
@@ -88,8 +88,8 @@ export const RouterController = {
       state.history.pop();
       const [last] = state.history.slice(-1);
       if (last) {
-        state.view = last;
         state.navigationDirection = 'backward';
+        state.view = last;
       }
     }
   },
@@ -99,8 +99,8 @@ export const RouterController = {
       state.history = state.history.slice(0, historyIndex + 1);
       const [last] = state.history.slice(-1);
       if (last) {
-        state.view = last;
         state.navigationDirection = 'backward';
+        state.view = last;
       }
     }
   }

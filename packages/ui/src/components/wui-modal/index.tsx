@@ -1,17 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
-import { useWindowDimensions, Modal as RNModal, TouchableOpacity, Animated } from 'react-native';
+import {
+  useWindowDimensions,
+  Modal as RNModal,
+  type ModalProps as RNModalProps,
+  TouchableOpacity,
+  Animated
+} from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
 
-export interface ModalProps {
-  visible: boolean;
-  onDismiss: () => void;
-  onRequestClose: () => void;
-  testID: string;
+export type ModalProps = Pick<RNModalProps, 'visible' | 'onDismiss' | 'testID'> & {
   children: React.ReactNode;
-}
+  onBackdropPress?: () => void;
+};
 
-export function Modal({ visible, onDismiss, onRequestClose, testID, children }: ModalProps) {
+export function Modal({ visible, onDismiss, onBackdropPress, testID, children }: ModalProps) {
   const Theme = useTheme();
   const { height } = useWindowDimensions();
 
@@ -115,14 +118,14 @@ export function Modal({ visible, onDismiss, onRequestClose, testID, children }: 
         animationType="none"
         statusBarTranslucent
         onDismiss={onDismiss}
-        onRequestClose={onRequestClose}
+        onRequestClose={onBackdropPress}
         testID={testID}
       >
         {showBackdrop && (
           <TouchableOpacity
             style={styles.innerBackdropTouchable}
             activeOpacity={1}
-            onPress={onDismiss}
+            onPress={onBackdropPress}
           />
         )}
         <Animated.View

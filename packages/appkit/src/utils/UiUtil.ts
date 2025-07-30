@@ -24,8 +24,6 @@ export const UiUtil = {
     if (currentRouteTransition) {
       const { navigationDirection } = RouterController.state;
       await currentRouteTransition(navigationDirection);
-
-      RouterController.state.navigationDirection = 'none';
     }
   },
 

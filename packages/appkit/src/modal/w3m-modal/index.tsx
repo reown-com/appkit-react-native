@@ -30,12 +30,13 @@ export function AppKit() {
   const portraitHeight = height - 80;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
 
-  const onBackButtonPress = () => {
+  const handleModalClose = () => {
+    ModalController.close();
     if (RouterController.state.history.length > 1) {
       return RouterController.goBack();
     }
 
-    return handleClose();
+    return handleDismissed();
   };
 
   const prefetch = useCallback(async () => {
@@ -43,8 +44,7 @@ export function AppKit() {
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' });
   }, []);
 
-  const handleClose = async () => {
-    ModalController.close();
+  const handleDismissed = async () => {
     if (OptionsController.state.isSiweEnabled) {
       const session = await SIWEController.getSession();
       if (
@@ -76,8 +76,8 @@ export function AppKit() {
       <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
         <Modal
           visible={open}
-          onDismiss={handleClose}
-          onRequestClose={onBackButtonPress}
+          onDismiss={handleDismissed}
+          onBackdropPress={handleModalClose}
           testID="w3m-modal"
         >
           <Card
