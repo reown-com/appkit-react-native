@@ -44,6 +44,7 @@ export function AppKit() {
   }, []);
 
   const handleClose = async () => {
+    ModalController.close();
     if (OptionsController.state.isSiweEnabled) {
       const session = await SIWEController.getSession();
       if (

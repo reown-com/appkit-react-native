@@ -17,11 +17,11 @@ export function Modal({ visible, onDismiss, onRequestClose, testID, children }: 
   const translateY = useRef(new Animated.Value(height)).current;
   const [showBackdrop, setShowBackdrop] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [cardHeight, setCardHeight] = useState(0);
+  const [contentHeight, setContentHeight] = useState(0);
 
   const onContentLayout = (event: any) => {
     const { height: measuredHeight } = event.nativeEvent.layout;
-    setCardHeight(measuredHeight);
+    setContentHeight(measuredHeight);
   };
 
   // Handle modal visibility
@@ -32,7 +32,7 @@ export function Modal({ visible, onDismiss, onRequestClose, testID, children }: 
     }
   }, [visible]);
 
-  // Handle backdrop animation separately
+  // Handle backdrop animation
   useEffect(() => {
     let backdropAnimation: Animated.CompositeAnimation;
 
@@ -59,13 +59,13 @@ export function Modal({ visible, onDismiss, onRequestClose, testID, children }: 
     };
   }, [visible, modalVisible, backdropOpacity]);
 
-  // Handle modal position animation separately
+  // Handle modal position animation
   useEffect(() => {
     let modalAnimation: Animated.CompositeAnimation;
 
     if (visible && modalVisible) {
       // Calculate the target position (screen height - card height)
-      const targetY = cardHeight > 0 ? height - cardHeight : height * 0.2; // fallback to 20% from bottom
+      const targetY = contentHeight > 0 ? height - contentHeight : height * 0.2; // fallback to 20% from bottom
 
       modalAnimation = Animated.spring(translateY, {
         toValue: targetY,
@@ -91,21 +91,7 @@ export function Modal({ visible, onDismiss, onRequestClose, testID, children }: 
     return () => {
       modalAnimation?.stop();
     };
-  }, [visible, modalVisible, translateY, height, cardHeight]);
-
-  // Update position when card height changes (e.g., during navigation)
-  useEffect(() => {
-    if (visible && cardHeight > 0) {
-      const targetY = height - cardHeight;
-      Animated.spring(translateY, {
-        toValue: targetY,
-        damping: 20,
-        stiffness: 200,
-        mass: 1,
-        useNativeDriver: true
-      }).start();
-    }
-  }, [cardHeight, visible, translateY, height]);
+  }, [visible, modalVisible, translateY, height, contentHeight]);
 
   // Reset animation values when modal is fully closed
   useEffect(() => {

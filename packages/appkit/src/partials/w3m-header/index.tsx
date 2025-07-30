@@ -62,6 +62,7 @@ export function Header() {
   const header = headings(data, view);
 
   const checkSocial = () => {
+    //TODO: unify close functions in AppKit
     if (RouterController.state.view === 'ConnectingSocial') {
       EventsController.sendEvent({
         type: 'track',
