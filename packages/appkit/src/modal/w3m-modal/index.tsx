@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useWindowDimensions, StatusBar, Modal, TouchableOpacity, Animated } from 'react-native';
-import { Card, ThemeProvider } from '@reown/appkit-ui-react-native';
+import { useCallback, useEffect } from 'react';
+import { useWindowDimensions, StatusBar } from 'react-native';
+import { Card, Modal, ThemeProvider } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
   EventsController,
@@ -29,17 +29,6 @@ export function AppKit() {
   const { isLandscape } = useCustomDimensions();
   const portraitHeight = height - 80;
   const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
-
-  const backdropOpacity = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(height)).current;
-  const [showBackdrop, setShowBackdrop] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [cardHeight, setCardHeight] = useState(0);
-
-  const onCardLayout = (event: any) => {
-    const { height: measuredHeight } = event.nativeEvent.layout;
-    setCardHeight(measuredHeight);
-  };
 
   const onBackButtonPress = () => {
     if (RouterController.state.history.length > 1) {
@@ -81,130 +70,22 @@ export function AppKit() {
     }
   }, [projectId, prefetch]);
 
-  // Handle modal visibility
-  useEffect(() => {
-    if (open) {
-      setModalVisible(true);
-      setShowBackdrop(true);
-    }
-  }, [open]);
-
-  // Handle backdrop animation separately
-  useEffect(() => {
-    let backdropAnimation: Animated.CompositeAnimation;
-
-    if (open) {
-      backdropAnimation = Animated.timing(backdropOpacity, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true
-      });
-      backdropAnimation.start();
-    } else if (modalVisible) {
-      backdropAnimation = Animated.timing(backdropOpacity, {
-        toValue: 0,
-        duration: 250,
-        useNativeDriver: true
-      });
-      backdropAnimation.start(() => {
-        setShowBackdrop(false);
-      });
-    }
-
-    return () => {
-      backdropAnimation?.stop();
-    };
-  }, [open, modalVisible, backdropOpacity]);
-
-  // Handle modal position animation separately
-  useEffect(() => {
-    let modalAnimation: Animated.CompositeAnimation;
-
-    if (open && modalVisible) {
-      // Calculate the target position (screen height - card height)
-      const targetY = cardHeight > 0 ? height - cardHeight : height * 0.2; // fallback to 20% from bottom
-
-      modalAnimation = Animated.spring(translateY, {
-        toValue: targetY,
-        damping: 18,
-        stiffness: 220,
-        mass: 1,
-        useNativeDriver: true
-      });
-      modalAnimation.start();
-    } else if (!open && modalVisible) {
-      modalAnimation = Animated.spring(translateY, {
-        toValue: height,
-        damping: 16,
-        stiffness: 260,
-        mass: 1,
-        useNativeDriver: true
-      });
-      modalAnimation.start(() => {
-        setModalVisible(false);
-      });
-    }
-
-    return () => {
-      modalAnimation?.stop();
-    };
-  }, [open, modalVisible, translateY, height, cardHeight]);
-
-  // Update position when card height changes (e.g., during navigation)
-  useEffect(() => {
-    if (open && cardHeight > 0) {
-      const targetY = height - cardHeight;
-      Animated.spring(translateY, {
-        toValue: targetY,
-        damping: 20,
-        stiffness: 200,
-        mass: 1,
-        useNativeDriver: true
-      }).start();
-    }
-  }, [cardHeight, open, translateY, height]);
-
-  // Reset animation values when modal is fully closed
-  useEffect(() => {
-    if (!modalVisible) {
-      translateY.setValue(height);
-      backdropOpacity.setValue(0);
-    }
-  }, [modalVisible, translateY, backdropOpacity, height]);
-
   return (
     <>
       <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
-        {showBackdrop && (
-          <Animated.View style={[styles.outerBackdrop, { opacity: backdropOpacity }]} />
-        )}
         <Modal
-          visible={modalVisible}
-          transparent
-          animationType="none"
-          statusBarTranslucent
+          visible={open}
           onDismiss={handleClose}
           onRequestClose={onBackButtonPress}
           testID="w3m-modal"
         >
-          {showBackdrop && (
-            <TouchableOpacity
-              style={styles.innerBackdropTouchable}
-              activeOpacity={1}
-              onPress={ModalController.close}
-            />
-          )}
-          <Animated.View style={[styles.modal, { transform: [{ translateY }] }]}>
-            <Animated.View onLayout={onCardLayout}>
-              <Card
-                style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}
-              >
-                <Header />
-                <AppKitRouter />
-                <Snackbar />
-              </Card>
-            </Animated.View>
-          </Animated.View>
+          <Card
+            style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}
+          >
+            <Header />
+            <AppKitRouter />
+            <Snackbar />
+          </Card>
         </Modal>
       </ThemeProvider>
     </>

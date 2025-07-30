@@ -48,6 +48,7 @@ export { ListTransaction, type ListTransactionProps } from './composites/wui-lis
 export { ListWallet, type ListWalletProps } from './composites/wui-list-wallet';
 export { Logo, type LogoProps } from './composites/wui-logo';
 export { LogoSelect, type LogoSelectProps } from './composites/wui-logo-select';
+export { Modal, type ModalProps } from './components/wui-modal';
 export { NetworkButton, type NetworkButtonProps } from './composites/wui-network-button';
 export { NetworkImage, type NetworkImageProps } from './composites/wui-network-image';
 export { NumericKeyboard, type NumericKeyboardProps } from './composites/wui-numeric-keyboard';
