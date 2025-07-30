@@ -1,8 +1,7 @@
 /* eslint-disable valtio/state-snapshot-rule */
 import { useSnapshot } from 'valtio';
 import { useRef, useState, useMemo, useEffect } from 'react';
-import Modal from 'react-native-modal';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View, Modal } from 'react-native';
 import {
   FlexView,
   IconLink,
@@ -135,69 +134,63 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
   }, [visible]);
 
   return (
-    <Modal
-      isVisible={visible}
-      useNativeDriver
-      useNativeDriverForBackdrop
-      statusBarTranslucent
-      hideModalContentWhileAnimating
-      onBackdropPress={onClose}
-      onDismiss={onClose}
-      style={styles.modal}
-    >
-      <FlexView style={[styles.container, { backgroundColor: Theme['bg-100'] }]}>
-        <FlexView
-          alignItems="center"
-          justifyContent="space-between"
-          flexDirection="row"
-          style={styles.header}
-        >
-          <IconLink icon="arrowLeft" onPress={onClose} testID="payment-modal-button-back" />
-          {!!title && <Text variant="paragraph-600">{title}</Text>}
-          <View style={styles.iconPlaceholder} />
-        </FlexView>
-        <Text variant="small-500" color="fg-150" style={styles.subtitle}>
-          Pay with
-        </Text>
-        <FlexView>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <View style={styles.modal}>
+        <FlexView style={[styles.container, { backgroundColor: Theme['bg-100'] }]}>
+          <FlexView
+            alignItems="center"
+            justifyContent="space-between"
+            flexDirection="row"
+            style={styles.header}
+          >
+            <IconLink icon="arrowLeft" onPress={onClose} testID="payment-modal-button-back" />
+            {!!title && <Text variant="paragraph-600">{title}</Text>}
+            <View style={styles.iconPlaceholder} />
+          </FlexView>
+          <Text variant="small-500" color="fg-150" style={styles.subtitle}>
+            Pay with
+          </Text>
+          <FlexView>
+            <FlatList
+              data={availablePaymentMethods}
+              renderItem={renderPaymentMethod}
+              ref={paymentMethodsRef}
+              style={styles.paymentMethodsContainer}
+              contentContainerStyle={styles.paymentMethodsContent}
+              fadingEdgeLength={20}
+              keyExtractor={item => item.paymentMethod}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            />
+          </FlexView>
+          <Separator style={styles.separator} color="gray-glass-010" />
+          <Text variant="small-500" color="fg-150" style={styles.subtitle}>
+            Providers
+          </Text>
           <FlatList
-            data={availablePaymentMethods}
-            renderItem={renderPaymentMethod}
-            ref={paymentMethodsRef}
-            style={styles.paymentMethodsContainer}
-            contentContainerStyle={styles.paymentMethodsContent}
+            data={sortedQuotes}
+            bounces={false}
+            renderItem={renderQuote}
+            extraData={selectedPaymentMethod}
+            contentContainerStyle={styles.listContent}
+            ItemSeparatorComponent={renderSeparator}
             fadingEdgeLength={20}
-            keyExtractor={item => item.paymentMethod}
-            horizontal
-            showsHorizontalScrollIndicator={false}
+            keyExtractor={item => `${item.serviceProvider}-${item.paymentMethodType}`}
+            getItemLayout={(_, index) => ({
+              length: QUOTE_ITEM_HEIGHT + SEPARATOR_HEIGHT,
+              offset: (QUOTE_ITEM_HEIGHT + SEPARATOR_HEIGHT) * index,
+              index
+            })}
           />
         </FlexView>
-        <Separator style={styles.separator} color="gray-glass-010" />
-        <Text variant="small-500" color="fg-150" style={styles.subtitle}>
-          Providers
-        </Text>
-        <FlatList
-          data={sortedQuotes}
-          bounces={false}
-          renderItem={renderQuote}
-          extraData={selectedPaymentMethod}
-          contentContainerStyle={styles.listContent}
-          ItemSeparatorComponent={renderSeparator}
-          fadingEdgeLength={20}
-          keyExtractor={item => `${item.serviceProvider}-${item.paymentMethodType}`}
-          getItemLayout={(_, index) => ({
-            length: QUOTE_ITEM_HEIGHT + SEPARATOR_HEIGHT,
-            offset: (QUOTE_ITEM_HEIGHT + SEPARATOR_HEIGHT) * index,
-            index
-          })}
-        />
-      </FlexView>
+      </View>
     </Modal>
   );
 }
 const styles = StyleSheet.create({
   modal: {
     margin: 0,
+    flex: 1,
     justifyContent: 'flex-end'
   },
   header: {

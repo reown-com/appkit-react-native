@@ -22,6 +22,7 @@ export default StyleSheet.create({
   },
   modal: {
     margin: 0,
+    flex: 1,
     justifyContent: 'flex-end'
   }
 });

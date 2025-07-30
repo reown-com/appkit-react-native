@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { ScrollView, SectionList, View, type SectionListData } from 'react-native';
+import {
+  ScrollView,
+  SectionList,
+  View,
+  type SectionListData,
+  type StyleProp,
+  type ViewStyle
+} from 'react-native';
 import {
   FlexView,
   IconLink,
@@ -30,9 +37,10 @@ import { createSections } from './utils';
 interface Props {
   onClose: () => void;
   type?: SwapInputTarget;
+  style?: StyleProp<ViewStyle>;
 }
 
-export function SwapSelectTokenView({ onClose, type }: Props) {
+export function SwapSelectTokenView({ onClose, type, style }: Props) {
   const { padding } = useCustomDimensions();
   const Theme = useTheme();
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
@@ -77,7 +85,8 @@ export function SwapSelectTokenView({ onClose, type }: Props) {
         {
           paddingHorizontal: padding,
           backgroundColor: Theme['bg-100']
-        }
+        },
+        style
       ]}
     >
       <FlexView

@@ -1,6 +1,5 @@
 import { useSnapshot } from 'valtio';
-import Modal from 'react-native-modal';
-import { FlatList, View } from 'react-native';
+import { FlatList, View, Modal } from 'react-native';
 import {
   FlexView,
   IconBox,
@@ -54,72 +53,69 @@ export function SelectorModal({
   };
 
   return (
-    <Modal
-      isVisible={visible}
-      useNativeDriver
-      useNativeDriverForBackdrop
-      statusBarTranslucent
-      hideModalContentWhileAnimating
-      onBackdropPress={onClose}
-      onDismiss={onClose}
-      style={styles.modal}
-    >
-      <FlexView style={[styles.container, { backgroundColor: Theme['bg-100'] }]}>
-        <FlexView
-          alignItems="center"
-          justifyContent="space-between"
-          flexDirection="row"
-          style={styles.header}
-        >
-          <IconLink icon="chevronLeft" onPress={onClose} testID="selector-modal-button-back" />
-          {!!title && <Text variant="paragraph-600">{title}</Text>}
-          {showNetwork ? (
-            networkImage ? (
-              <FlexView alignItems="center" justifyContent="center" style={styles.iconPlaceholder}>
-                <Image source={networkImage} style={styles.networkImage} />
-              </FlexView>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <View style={styles.modal}>
+        <FlexView style={[styles.container, { backgroundColor: Theme['bg-100'] }]}>
+          <FlexView
+            alignItems="center"
+            justifyContent="space-between"
+            flexDirection="row"
+            style={styles.header}
+          >
+            <IconLink icon="chevronLeft" onPress={onClose} testID="selector-modal-button-back" />
+            {!!title && <Text variant="paragraph-600">{title}</Text>}
+            {showNetwork ? (
+              networkImage ? (
+                <FlexView
+                  alignItems="center"
+                  justifyContent="center"
+                  style={styles.iconPlaceholder}
+                >
+                  <Image source={networkImage} style={styles.networkImage} />
+                </FlexView>
+              ) : (
+                <IconBox
+                  style={styles.iconPlaceholder}
+                  icon="networkPlaceholder"
+                  background
+                  iconColor="fg-200"
+                  size="sm"
+                />
+              )
             ) : (
-              <IconBox
-                style={styles.iconPlaceholder}
-                icon="networkPlaceholder"
-                background
-                iconColor="fg-200"
-                size="sm"
-              />
-            )
-          ) : (
-            <View style={styles.iconPlaceholder} />
-          )}
-        </FlexView>
-        <SearchBar
-          onChangeText={onSearch}
-          style={styles.searchBar}
-          placeholder={searchPlaceholder}
-        />
-        {selectedItem && (
-          <FlexView style={styles.selectedContainer}>
-            {renderItem({ item: selectedItem })}
-            <Separator style={styles.separator} color="gray-glass-020" />
+              <View style={styles.iconPlaceholder} />
+            )}
           </FlexView>
-        )}
-        <FlatList
-          data={items}
-          renderItem={renderItem}
-          fadingEdgeLength={20}
-          contentContainerStyle={styles.listContent}
-          ItemSeparatorComponent={renderSeparator}
-          keyExtractor={keyExtractor}
-          getItemLayout={
-            itemHeight
-              ? (_, index) => ({
-                  length: itemHeight + SEPARATOR_HEIGHT,
-                  offset: (itemHeight + SEPARATOR_HEIGHT) * index,
-                  index
-                })
-              : undefined
-          }
-        />
-      </FlexView>
+          <SearchBar
+            onChangeText={onSearch}
+            style={styles.searchBar}
+            placeholder={searchPlaceholder}
+          />
+          {selectedItem && (
+            <FlexView style={styles.selectedContainer}>
+              {renderItem({ item: selectedItem })}
+              <Separator style={styles.separator} color="gray-glass-020" />
+            </FlexView>
+          )}
+          <FlatList
+            data={items}
+            renderItem={renderItem}
+            fadingEdgeLength={20}
+            contentContainerStyle={styles.listContent}
+            ItemSeparatorComponent={renderSeparator}
+            keyExtractor={keyExtractor}
+            getItemLayout={
+              itemHeight
+                ? (_, index) => ({
+                    length: itemHeight + SEPARATOR_HEIGHT,
+                    offset: (itemHeight + SEPARATOR_HEIGHT) * index,
+                    index
+                  })
+                : undefined
+            }
+          />
+        </FlexView>
+      </View>
     </Modal>
   );
 }

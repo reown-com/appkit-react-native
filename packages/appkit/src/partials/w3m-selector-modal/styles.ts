@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   modal: {
+    flex: 1,
     margin: 0,
     justifyContent: 'flex-end'
   },

@@ -33,7 +33,7 @@ export function InformationModal({
           style={[
             styles.content,
             {
-              backgroundColor: Theme['bg-200'],
+              backgroundColor: Theme['bg-100'],
               borderColor: Theme['gray-glass-015']
             }
           ]}

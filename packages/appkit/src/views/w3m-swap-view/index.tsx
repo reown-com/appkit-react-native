@@ -1,7 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
-import { Platform, ScrollView } from 'react-native';
-import Modal from 'react-native-modal';
+import { Platform, ScrollView, Modal } from 'react-native';
 import {
   ConnectionsController,
   ConstantsUtil,
@@ -210,15 +209,8 @@ export function SwapView() {
           </Button>
         </FlexView>
       </ScrollView>
-      <Modal
-        isVisible={!!showModal}
-        useNativeDriver
-        useNativeDriverForBackdrop
-        onBackdropPress={onModalClose}
-        onDismiss={onModalClose}
-        style={styles.modal}
-      >
-        <SwapSelectTokenView onClose={onModalClose} type={showModal} />
+      <Modal visible={!!showModal} transparent animationType="slide" onRequestClose={onModalClose}>
+        <SwapSelectTokenView style={styles.modal} onClose={onModalClose} type={showModal} />
       </Modal>
     </>
   );
