@@ -24,5 +24,8 @@ export default StyleSheet.create({
     margin: 0,
     flex: 1,
     justifyContent: 'flex-end'
+  },
+  withKeyboard: {
+    height: '100%'
   }
 });

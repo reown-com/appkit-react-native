@@ -1,25 +1,15 @@
 import { useSnapshot } from 'valtio';
 import { useEffect } from 'react';
-import { Platform, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
 import { RouterController, SwapController } from '@reown/appkit-core-react-native';
-import {
-  Button,
-  FlexView,
-  Icon,
-  Spacing,
-  Text,
-  TokenButton,
-  UiUtil
-} from '@reown/appkit-ui-react-native';
+import { Button, FlexView, Icon, Text, TokenButton, UiUtil } from '@reown/appkit-ui-react-native';
 import { SwapDetails } from '../../partials/w3m-swap-details';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import { useKeyboard } from '../../hooks/useKeyboard';
 import styles from './styles';
 
 export function SwapPreviewView() {
   const { padding } = useCustomDimensions();
-  const { keyboardShown, keyboardHeight } = useKeyboard();
   const {
     sourceToken,
     sourceTokenAmount,
@@ -36,11 +26,6 @@ export function SwapPreviewView() {
   const sourceTokenMarketValue =
     NumberUtil.parseLocalStringToNumber(sourceTokenAmount) * sourceTokenPriceInUSD;
   const toTokenMarketValue = NumberUtil.parseLocalStringToNumber(toTokenAmount) * toTokenPriceInUSD;
-
-  const paddingBottom = Platform.select({
-    android: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
-    default: Spacing['2xl']
-  });
 
   const loading =
     loadingQuote || loadingBuildTransaction || loadingTransaction || loadingApprovalTransaction;
@@ -75,12 +60,8 @@ export function SwapPreviewView() {
   }, []);
 
   return (
-    <ScrollView
-      style={{ paddingHorizontal: padding }}
-      bounces={false}
-      keyboardShouldPersistTaps="always"
-    >
-      <FlexView padding="l" justifyContent="center" style={{ paddingBottom }}>
+    <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
+      <FlexView padding={['l', 'l', '2xl', 'l']} justifyContent="center">
         <FlexView flexDirection="row" justifyContent="space-between">
           <FlexView>
             <Text variant="small-400" color="fg-150">

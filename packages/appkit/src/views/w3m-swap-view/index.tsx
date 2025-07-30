@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
-import { Platform, ScrollView, Modal } from 'react-native';
+import { ScrollView, Modal } from 'react-native';
 import {
   ConnectionsController,
   ConstantsUtil,
@@ -9,7 +9,7 @@ import {
   SwapController,
   type SwapInputTarget
 } from '@reown/appkit-core-react-native';
-import { Button, FlexView, IconLink, Spacing, useTheme } from '@reown/appkit-ui-react-native';
+import { Button, FlexView, IconLink, useTheme } from '@reown/appkit-ui-react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
 
 import { useKeyboard } from '../../hooks/useKeyboard';
@@ -36,7 +36,7 @@ export function SwapView() {
   } = useSnapshot(SwapController.state);
   const Theme = useTheme();
   const { padding } = useCustomDimensions();
-  const { keyboardShown, keyboardHeight } = useKeyboard();
+  const { keyboardShown } = useKeyboard();
   const [showModal, setShowModal] = useState<SwapInputTarget | undefined>();
   const showDetails = !!sourceToken && !!toToken && !inputError;
 
@@ -49,11 +49,6 @@ export function SwapView() {
     myTokensWithBalance.findIndex(
       token => token.address === SwapController.state.toToken?.address
     ) >= 0;
-
-  const paddingBottom = Platform.select({
-    android: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
-    default: Spacing['2xl']
-  });
 
   const getActionButtonState = () => {
     if (!SwapController.state.sourceToken || !SwapController.state.toToken) {
@@ -158,11 +153,11 @@ export function SwapView() {
   return (
     <>
       <ScrollView
-        style={{ paddingHorizontal: padding }}
+        style={[{ paddingHorizontal: padding }, keyboardShown && styles.withKeyboard]}
         bounces={false}
         keyboardShouldPersistTaps="always"
       >
-        <FlexView padding="l" alignItems="center" justifyContent="center" style={{ paddingBottom }}>
+        <FlexView padding={['l', 'l', '2xl', 'l']} alignItems="center" justifyContent="center">
           <SwapInput
             token={sourceToken}
             value={sourceTokenAmount}

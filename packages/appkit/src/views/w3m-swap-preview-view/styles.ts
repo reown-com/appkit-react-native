@@ -14,5 +14,8 @@ export default StyleSheet.create({
   sendButton: {
     marginLeft: Spacing.s,
     flex: 3
+  },
+  withKeyboard: {
+    height: '100%'
   }
 });
