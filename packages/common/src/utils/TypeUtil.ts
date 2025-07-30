@@ -268,7 +268,7 @@ export abstract class WalletConnector extends EventEmitter {
   protected metadata?: Metadata;
   protected properties?: ConnectionProperties;
 
-  constructor({ type }: { type: ConnectorType }) {
+  constructor({ type }: WalletConnectorConfig) {
     super();
     this.type = type;
   }
@@ -299,7 +299,11 @@ export abstract class WalletConnector extends EventEmitter {
   abstract restoreSession(): Promise<boolean>;
 }
 
-export type ConnectorType = 'walletconnect' | 'coinbase' | 'auth' | 'phantom';
+export type WalletConnectorConfig = {
+  type: ConnectorType;
+};
+
+export type ConnectorType = 'walletconnect' | 'coinbase' | 'auth' | 'phantom' | 'solflare';
 
 //********** Provider Types **********//
 

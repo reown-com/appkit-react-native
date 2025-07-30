@@ -39,8 +39,10 @@ export function ConnectingExternalView() {
     try {
       const wallet = RouterController.state.data?.wallet;
       if (wallet) {
-        if (wallet.id === ConstantsUtil.PHANTOM_EXPLORER_ID) {
+        if (wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id) {
           await connect('phantom');
+        } else if (wallet.id === ConstantsUtil.SOLFLARE_CUSTOM_WALLET.id) {
+          await connect('solflare');
         } else if (wallet.id === ConstantsUtil.COINBASE_EXPLORER_ID) {
           await connect('coinbase');
         } else {

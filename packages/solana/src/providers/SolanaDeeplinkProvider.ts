@@ -9,26 +9,23 @@ import type {
   Storage
 } from '@reown/appkit-common-react-native';
 import type {
-  PhantomProviderConfig,
-  PhantomConnectResult,
-  PhantomSession,
+  SolanaDeeplinkProviderConfig,
+  SolanaConnectResult,
+  SolanaWalletSession,
   DecryptedConnectData,
-  PhantomDeeplinkResponse,
+  SolanaDeeplinkResponse,
   SignAllTransactionsRequestParams,
   SignMessageRequestParams,
   SignTransactionRequestParams,
-  PhantomRpcMethod,
-  PhantomConnectParams,
-  PhantomDisconnectParams,
-  PhantomSignTransactionParams,
-  PhantomSignMessageParams,
-  PhantomSignAllTransactionsParams,
-  PhantomCluster
+  SolanaRpcMethod,
+  SolanaConnectParams,
+  SolanaDisconnectParams,
+  SolanaSignTransactionParams,
+  SolanaSignMessageParams,
+  SolanaSignAllTransactionsParams,
+  SolanaCluster
 } from '../types';
 import EventEmitter from 'events';
-
-const PHANTOM_BASE_URL = 'https://phantom.app/ul/v1';
-const PHANTOM_PROVIDER_STORAGE_KEY = '@appkit/phantom-provider-session';
 
 export const SOLANA_SIGNING_METHODS = {
   SOLANA_SIGN_TRANSACTION: 'solana_signTransaction',
@@ -43,22 +40,26 @@ function isValidSolanaSigningMethod(method: string): method is SolanaSigningMeth
   return Object.values(SOLANA_SIGNING_METHODS).includes(method as SolanaSigningMethod);
 }
 
-export class PhantomProvider extends EventEmitter implements Provider {
-  private readonly config: PhantomProviderConfig;
+export class SolanaDeeplinkProvider extends EventEmitter implements Provider {
+  private readonly config: SolanaDeeplinkProviderConfig;
   private dappEncryptionKeyPair: nacl.BoxKeyPair;
-  private currentCluster: PhantomCluster = 'mainnet-beta';
+  private currentCluster: SolanaCluster = 'mainnet-beta';
 
   private storage: Storage;
 
   private sessionToken: string | null = null;
   private userPublicKey: string | null = null;
-  private phantomEncryptionPublicKeyBs58: string | null = null;
+  private walletEncryptionPublicKeyBs58: string | null = null;
 
-  constructor(config: PhantomProviderConfig) {
+  constructor(config: SolanaDeeplinkProviderConfig) {
     super();
     this.config = config;
     this.dappEncryptionKeyPair = config.dappEncryptionKeyPair;
     this.storage = config.storage;
+  }
+
+  private getStorageKey(): string {
+    return `@appkit/${this.config.walletType}-provider-session`;
   }
 
   getUserPublicKey(): string | null {
@@ -69,13 +70,13 @@ export class PhantomProvider extends EventEmitter implements Provider {
     return !!this.sessionToken && !!this.userPublicKey && !!this.dappEncryptionKeyPair;
   }
 
-  private buildUrl(rpcMethod: PhantomRpcMethod, params: Record<string, string>): string {
+  private buildUrl(rpcMethod: SolanaRpcMethod, params: Record<string, string>): string {
     const query = new URLSearchParams(params).toString();
 
-    return `${PHANTOM_BASE_URL}/${rpcMethod}?${query}`;
+    return `${this.config.baseUrl}/${rpcMethod}?${query}`;
   }
 
-  private getRpcMethodName(method: SolanaSigningMethod): PhantomRpcMethod {
+  private getRpcMethodName(method: SolanaSigningMethod): SolanaRpcMethod {
     switch (method) {
       case SOLANA_SIGNING_METHODS.SOLANA_SIGN_TRANSACTION:
         return 'signTransaction';
@@ -93,19 +94,19 @@ export class PhantomProvider extends EventEmitter implements Provider {
 
   private encryptPayload(
     payload: Record<string, unknown>,
-    phantomPublicKeyBs58ToEncryptFor: string
+    walletPublicKeyBs58ToEncryptFor: string
   ): { nonce: string; encryptedPayload: string } | null {
-    if (!phantomPublicKeyBs58ToEncryptFor) {
+    if (!walletPublicKeyBs58ToEncryptFor) {
       return null;
     }
     try {
-      const phantomPublicKeyBytes = bs58.decode(phantomPublicKeyBs58ToEncryptFor);
+      const walletPublicKeyBytes = bs58.decode(walletPublicKeyBs58ToEncryptFor);
       const nonce = nacl.randomBytes(nacl.box.nonceLength);
       const payloadBytes = Buffer.from(JSON.stringify(payload), 'utf8');
       const encryptedPayload = nacl.box(
         payloadBytes,
         nonce,
-        phantomPublicKeyBytes,
+        walletPublicKeyBytes,
         this.dappEncryptionKeyPair.secretKey
       );
 
@@ -121,16 +122,16 @@ export class PhantomProvider extends EventEmitter implements Provider {
   private decryptPayload<T>(
     encryptedDataBs58: string,
     nonceBs58: string,
-    phantomSenderPublicKeyBs58: string
+    walletSenderPublicKeyBs58: string
   ): T | null {
     try {
       const encryptedDataBytes = bs58.decode(encryptedDataBs58);
       const nonceBytes = bs58.decode(nonceBs58);
-      const phantomSenderPublicKeyBytes = bs58.decode(phantomSenderPublicKeyBs58);
+      const walletSenderPublicKeyBytes = bs58.decode(walletSenderPublicKeyBs58);
       const decryptedPayloadBytes = nacl.box.open(
         encryptedDataBytes,
         nonceBytes,
-        phantomSenderPublicKeyBytes,
+        walletSenderPublicKeyBytes,
         this.dappEncryptionKeyPair.secretKey
       );
       if (!decryptedPayloadBytes) {
@@ -145,7 +146,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
 
   public async restoreSession(): Promise<boolean> {
     try {
-      const session = await this.storage.getItem<PhantomSession>(PHANTOM_PROVIDER_STORAGE_KEY);
+      const session = await this.storage.getItem<SolanaWalletSession>(this.getStorageKey());
       if (session) {
         this.setSession(session);
 
@@ -154,7 +155,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
 
       return false;
     } catch (error) {
-      // console.error('PhantomProvider: Failed to restore session.', error);
+      // console.error(`${this.config.walletType}Provider: Failed to restore session.`, error);
       await this.clearSessionStorage(); // Clear potentially corrupt data
 
       return false;
@@ -162,36 +163,34 @@ export class PhantomProvider extends EventEmitter implements Provider {
   }
 
   private async saveSession(): Promise<void> {
-    if (!this.sessionToken || !this.userPublicKey || !this.phantomEncryptionPublicKeyBs58) {
+    if (!this.sessionToken || !this.userPublicKey || !this.walletEncryptionPublicKeyBs58) {
       return; // Cannot save incomplete session
     }
-    const session: PhantomSession = {
+    const session: SolanaWalletSession = {
       sessionToken: this.sessionToken,
       userPublicKey: this.userPublicKey,
-      phantomEncryptionPublicKeyBs58: this.phantomEncryptionPublicKeyBs58,
+      walletEncryptionPublicKeyBs58: this.walletEncryptionPublicKeyBs58,
       cluster: this.currentCluster
     };
     try {
-      await this.storage.setItem(PHANTOM_PROVIDER_STORAGE_KEY, session);
+      await this.storage.setItem(this.getStorageKey(), session);
     } catch (error) {
-      // console.error('PhantomProvider: Failed to save session.', error);
+      // console.error(`${this.config.walletType}Provider: Failed to save session.`, error);
     }
   }
 
   private async clearSessionStorage(): Promise<void> {
     try {
-      await this.storage.removeItem(PHANTOM_PROVIDER_STORAGE_KEY);
+      await this.storage.removeItem(this.getStorageKey());
     } catch (error) {
-      // console.error('PhantomProvider: Failed to clear session storage.', error);
+      // console.error(`${this.config.walletType}Provider: Failed to clear session storage.`, error);
     }
   }
 
-  public async connect<T = PhantomConnectResult>(params?: {
-    cluster?: PhantomCluster;
-  }): Promise<T> {
+  public async connect<T = SolanaConnectResult>(params?: { cluster?: SolanaCluster }): Promise<T> {
     const cluster = params?.cluster ?? 'mainnet-beta';
     this.currentCluster = cluster;
-    const connectDeeplinkParams: PhantomConnectParams = {
+    const connectDeeplinkParams: SolanaConnectParams = {
       app_url: this.config.dappUrl,
       dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
       redirect_link: this.config.appScheme,
@@ -199,7 +198,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
     };
     const url = this.buildUrl('connect', connectDeeplinkParams as any);
 
-    return new Promise<PhantomConnectResult>((resolve, reject) => {
+    return new Promise<SolanaConnectResult>((resolve, reject) => {
       let subscription: { remove: () => void } | null = null;
       const handleDeepLink = async (event: { url: string }) => {
         if (subscription) {
@@ -215,35 +214,45 @@ export class PhantomProvider extends EventEmitter implements Provider {
           if (errorCode) {
             return reject(
               new Error(
-                `Phantom Connection Failed: ${errorMessage || 'Unknown error'} (Code: ${errorCode})`
+                `${this.config.walletType} Connection Failed: ${
+                  errorMessage || 'Unknown error'
+                } (Code: ${errorCode})`
               )
             );
           }
-          const responsePayload: PhantomDeeplinkResponse = {
-            phantom_encryption_public_key: responseUrlParams.get('phantom_encryption_public_key')!,
+          const walletEncryptionPublicKey = responseUrlParams.get(
+            this.config.encryptionKeyFieldName
+          );
+
+          const responsePayload: SolanaDeeplinkResponse = {
+            wallet_encryption_public_key: walletEncryptionPublicKey!,
             nonce: responseUrlParams.get('nonce')!,
             data: responseUrlParams.get('data')!
           };
           if (
-            !responsePayload.phantom_encryption_public_key ||
+            !responsePayload.wallet_encryption_public_key ||
             !responsePayload.nonce ||
             !responsePayload.data
           ) {
-            return reject(new Error('Phantom Connect: Invalid response - missing parameters.'));
+            return reject(
+              new Error(`${this.config.walletType} Connect: Invalid response - missing parameters.`)
+            );
           }
           const decryptedData = this.decryptPayload<DecryptedConnectData>(
             responsePayload.data,
             responsePayload.nonce,
-            responsePayload.phantom_encryption_public_key
+            responsePayload.wallet_encryption_public_key
           );
           if (!decryptedData || !decryptedData.public_key || !decryptedData.session) {
             return reject(
-              new Error('Phantom Connect: Failed to decrypt or invalid decrypted data.')
+              new Error(
+                `${this.config.walletType} Connect: Failed to decrypt or invalid decrypted data.`
+              )
             );
           }
           this.userPublicKey = decryptedData.public_key;
           this.sessionToken = decryptedData.session;
-          this.phantomEncryptionPublicKeyBs58 = responsePayload.phantom_encryption_public_key;
+          this.walletEncryptionPublicKeyBs58 = responsePayload.wallet_encryption_public_key;
 
           // Save session on successful connect
           this.saveSession();
@@ -251,11 +260,11 @@ export class PhantomProvider extends EventEmitter implements Provider {
           resolve({
             userPublicKey: this.userPublicKey,
             sessionToken: this.sessionToken,
-            phantomEncryptionPublicKeyBs58: this.phantomEncryptionPublicKeyBs58,
+            walletEncryptionPublicKeyBs58: this.walletEncryptionPublicKeyBs58,
             cluster
           });
         } else {
-          reject(new Error('Phantom Connect: Unexpected redirect URI.'));
+          reject(new Error(`${this.config.walletType} Connect: Unexpected redirect URI.`));
         }
       };
       subscription = Linking.addEventListener('url', handleDeepLink);
@@ -263,13 +272,17 @@ export class PhantomProvider extends EventEmitter implements Provider {
         if (subscription) {
           subscription.remove();
         }
-        reject(new Error(`Failed to open Phantom wallet: ${err.message}. Is it installed?`));
+        reject(
+          new Error(
+            `Failed to open ${this.config.walletType} wallet: ${err.message}. Is it installed?`
+          )
+        );
       });
     }) as Promise<T>;
   }
 
   public async disconnect(): Promise<void> {
-    if (!this.sessionToken || !this.phantomEncryptionPublicKeyBs58) {
+    if (!this.sessionToken || !this.walletEncryptionPublicKeyBs58) {
       await this.clearSession();
       this.emit('disconnect');
 
@@ -279,18 +292,18 @@ export class PhantomProvider extends EventEmitter implements Provider {
     const payloadToEncrypt = { session: this.sessionToken };
     const encryptedDisconnectPayload = this.encryptPayload(
       payloadToEncrypt,
-      this.phantomEncryptionPublicKeyBs58
+      this.walletEncryptionPublicKeyBs58
     );
 
     if (!encryptedDisconnectPayload) {
-      // console.warn('PhantomProvider: Failed to encrypt disconnect payload. Clearing session locally.');
+      // console.warn(`${this.config.walletType}Provider: Failed to encrypt disconnect payload. Clearing session locally.`);
       await this.clearSession();
       this.emit('disconnect');
 
       return Promise.resolve(); // Or reject, depending on desired strictness
     }
 
-    const disconnectDeeplinkParams: PhantomDisconnectParams = {
+    const disconnectDeeplinkParams: SolanaDisconnectParams = {
       dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
       redirect_link: this.config.appScheme,
       payload: encryptedDisconnectPayload.encryptedPayload,
@@ -309,7 +322,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
           resolve();
         } else {
           this.clearSession();
-          reject(new Error('Phantom Disconnect: Unexpected redirect URI.'));
+          reject(new Error(`${this.config.walletType} Disconnect: Unexpected redirect URI.`));
         }
       };
       subscription = Linking.addEventListener('url', handleDeepLink);
@@ -318,7 +331,9 @@ export class PhantomProvider extends EventEmitter implements Provider {
           subscription.remove();
         }
         this.clearSession();
-        reject(new Error(`Failed to open Phantom for disconnection: ${err.message}.`));
+        reject(
+          new Error(`Failed to open ${this.config.walletType} for disconnection: ${err.message}.`)
+        );
       });
     });
   }
@@ -326,29 +341,29 @@ export class PhantomProvider extends EventEmitter implements Provider {
   public async clearSession(): Promise<void> {
     this.sessionToken = null;
     this.userPublicKey = null;
-    this.phantomEncryptionPublicKeyBs58 = null;
+    this.walletEncryptionPublicKeyBs58 = null;
     await this.clearSessionStorage();
   }
 
-  public setSession(session: PhantomSession): void {
+  public setSession(session: SolanaWalletSession): void {
     this.sessionToken = session.sessionToken;
     this.userPublicKey = session.userPublicKey;
-    this.phantomEncryptionPublicKeyBs58 = session.phantomEncryptionPublicKeyBs58;
+    this.walletEncryptionPublicKeyBs58 = session.walletEncryptionPublicKeyBs58;
     this.currentCluster = session.cluster;
   }
 
   public async request<T>(args: RequestArguments, _chainId?: CaipNetworkId): Promise<T> {
     if (!isValidSolanaSigningMethod(args.method)) {
       throw new Error(
-        `PhantomProvider: Unsupported method: ${args.method}. Only Solana signing methods are supported.`
+        `${this.config.walletType}Provider: Unsupported method: ${args.method}. Only Solana signing methods are supported.`
       );
     }
     const signingMethod = args.method as SolanaSigningMethod;
     const requestParams = args.params as any;
 
-    if (!this.isConnected() || !this.sessionToken || !this.phantomEncryptionPublicKeyBs58) {
+    if (!this.isConnected() || !this.sessionToken || !this.walletEncryptionPublicKeyBs58) {
       throw new Error(
-        'PhantomProvider: Not connected or session details missing. Cannot process request.'
+        `${this.config.walletType}Provider: Not connected or session details missing. Cannot process request.`
       );
     }
 
@@ -371,13 +386,15 @@ export class PhantomProvider extends EventEmitter implements Provider {
         };
         const encryptedData = this.encryptPayload(
           dataToEncrypt,
-          this.phantomEncryptionPublicKeyBs58!
+          this.walletEncryptionPublicKeyBs58!
         );
         if (!encryptedData) {
-          throw new Error(`PhantomProvider: Failed to encrypt payload for ${signingMethod}.`);
+          throw new Error(
+            `${this.config.walletType}Provider: Failed to encrypt payload for ${signingMethod}.`
+          );
         }
 
-        const signTxDeeplinkParams: PhantomSignTransactionParams = {
+        const signTxDeeplinkParams: SolanaSignTransactionParams = {
           dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
           redirect_link: this.config.appScheme,
           cluster: this.currentCluster,
@@ -415,14 +432,16 @@ export class PhantomProvider extends EventEmitter implements Provider {
 
         const encryptedPayloadData = this.encryptPayload(
           dataToEncrypt,
-          this.phantomEncryptionPublicKeyBs58!
+          this.walletEncryptionPublicKeyBs58!
         );
 
         if (!encryptedPayloadData) {
-          throw new Error('PhantomProvider: Failed to encrypt payload for signMessage.');
+          throw new Error(
+            `${this.config.walletType}Provider: Failed to encrypt payload for signMessage.`
+          );
         }
 
-        const signMsgDeeplinkQueryPayload: PhantomSignMessageParams = {
+        const signMsgDeeplinkQueryPayload: SolanaSignMessageParams = {
           dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
           redirect_link: this.config.appScheme,
           payload: encryptedPayloadData.encryptedPayload,
@@ -449,13 +468,15 @@ export class PhantomProvider extends EventEmitter implements Provider {
         };
         const encryptedData = this.encryptPayload(
           dataToEncrypt,
-          this.phantomEncryptionPublicKeyBs58!
+          this.walletEncryptionPublicKeyBs58!
         );
         if (!encryptedData) {
-          throw new Error(`PhantomProvider: Failed to encrypt payload for ${signingMethod}.`);
+          throw new Error(
+            `${this.config.walletType}Provider: Failed to encrypt payload for ${signingMethod}.`
+          );
         }
 
-        const signAllTxDeeplinkParams: PhantomSignAllTransactionsParams = {
+        const signAllTxDeeplinkParams: SolanaSignAllTransactionsParams = {
           dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
           redirect_link: this.config.appScheme,
           cluster: this.currentCluster,
@@ -466,7 +487,9 @@ export class PhantomProvider extends EventEmitter implements Provider {
         break;
       }
       default: {
-        throw new Error(`PhantomProvider: Unhandled signing method: ${signingMethod}`);
+        throw new Error(
+          `${this.config.walletType}Provider: Unhandled signing method: ${signingMethod}`
+        );
       }
     }
 
@@ -486,7 +509,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
           if (errorCode) {
             return reject(
               new Error(
-                `Phantom ${signingMethod} Failed: ${
+                `${this.config.walletType} ${signingMethod} Failed: ${
                   errorMessage || 'Unknown error'
                 } (Code: ${errorCode})`
               )
@@ -496,24 +519,26 @@ export class PhantomProvider extends EventEmitter implements Provider {
           const responseData = responseUrlParams.get('data');
           if (!responseNonce || !responseData) {
             return reject(
-              new Error(`Phantom ${signingMethod}: Invalid response - missing nonce or data.`)
+              new Error(
+                `${this.config.walletType} ${signingMethod}: Invalid response - missing nonce or data.`
+              )
             );
           }
           const decryptedResult = this.decryptPayload<any>(
             responseData,
             responseNonce,
-            this.phantomEncryptionPublicKeyBs58!
+            this.walletEncryptionPublicKeyBs58!
           );
           if (!decryptedResult) {
             return reject(
               new Error(
-                `Phantom ${signingMethod}: Failed to decrypt response or invalid decrypted data.`
+                `${this.config.walletType} ${signingMethod}: Failed to decrypt response or invalid decrypted data.`
               )
             );
           }
           resolve(decryptedResult as T);
         } else {
-          reject(new Error(`Phantom ${signingMethod}: Unexpected redirect URI.`));
+          reject(new Error(`${this.config.walletType} ${signingMethod}: Unexpected redirect URI.`));
         }
       };
       subscription = Linking.addEventListener('url', handleDeepLink);
@@ -522,7 +547,9 @@ export class PhantomProvider extends EventEmitter implements Provider {
           subscription.remove();
         }
         reject(
-          new Error(`Failed to open Phantom for ${signingMethod}: ${err.message}. Is it installed?`)
+          new Error(
+            `Failed to open ${this.config.walletType} for ${signingMethod}: ${err.message}. Is it installed?`
+          )
         );
       });
     });

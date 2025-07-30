@@ -16,7 +16,6 @@ export const ConstantsUtil = {
   SECURE_SITE_ICON: `https://secure.reown.com/images/favicon.png`,
 
   COINBASE_EXPLORER_ID: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
-  PHANTOM_EXPLORER_ID: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
 
   WALLET_CONNECT_IMAGE_ID: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
 
@@ -41,7 +40,14 @@ export const ConstantsUtil = {
     id: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
     name: 'Phantom Wallet',
     image_id: 'b6ec7b81-bb4f-427d-e290-7631e6e50d00',
-    mobile_link: 'phantom://'
+    mobile_link: 'https://phantom.app/ul'
+  },
+
+  SOLFLARE_CUSTOM_WALLET: {
+    id: '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
+    name: 'Solflare Wallet',
+    image_id: '34c0e38d-66c4-470e-1aed-a6fabe2d1e00',
+    mobile_link: 'https://solflare.com/ul'
   },
 
   // Storage Keys

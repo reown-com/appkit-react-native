@@ -16,39 +16,53 @@ export interface TokenInfo {
   logoURI?: string;
 }
 
-// --- From PhantomProvider ---
+// --- Wallet Types ---
+export type SolanaWalletType = 'phantom' | 'solflare';
 
-export type PhantomCluster = 'mainnet-beta' | 'testnet' | 'devnet';
+// --- Generic Solana Types ---
+export type SolanaCluster = 'mainnet-beta' | 'testnet' | 'devnet';
 
-export interface PhantomProviderConfig {
+// --- Generic Provider Types ---
+export interface SolanaDeeplinkProviderConfig {
   appScheme: string;
   dappUrl: string;
   storage: Storage;
   dappEncryptionKeyPair: nacl.BoxKeyPair;
+  walletType: SolanaWalletType;
+  baseUrl: string;
+  encryptionKeyFieldName: string;
 }
 
-export type PhantomConnectResult = PhantomSession;
-
-export interface PhantomSession {
+export interface SolanaWalletSession {
   sessionToken: string;
   userPublicKey: string;
-  phantomEncryptionPublicKeyBs58: string;
-  cluster: PhantomCluster;
+  walletEncryptionPublicKeyBs58: string;
+  cluster: SolanaCluster;
 }
 
+export type SolanaConnectResult = SolanaWalletSession;
+
+export interface SolanaDeeplinkConnectorConfig {
+  walletType: SolanaWalletType;
+}
+
+// --- Request Parameter Types ---
 export interface SignTransactionRequestParams {
   transaction: string;
 }
+
 export interface SignMessageRequestParams {
   message: Uint8Array | string;
   display?: 'utf8' | 'hex';
 }
+
 export interface SignAllTransactionsRequestParams {
   transactions: string[];
 }
 
-export interface PhantomDeeplinkResponse {
-  phantom_encryption_public_key?: string;
+// --- Deeplink Response Types ---
+export interface SolanaDeeplinkResponse {
+  wallet_encryption_public_key?: string; // Generic field name - actual field name is wallet-specific
   nonce: string;
   data: string;
 }
@@ -58,22 +72,8 @@ export interface DecryptedConnectData {
   session: string;
 }
 
-export interface PhantomProviderConfig {
-  appScheme: string;
-  dappUrl: string;
-  storage: Storage;
-  dappEncryptionKeyPair: nacl.BoxKeyPair;
-}
-
-export interface PhantomSession {
-  sessionToken: string;
-  userPublicKey: string;
-  phantomEncryptionPublicKeyBs58: string;
-  cluster: PhantomCluster;
-}
-
-// Actual method names used in Phantom deeplink URLs
-export type PhantomRpcMethod =
+// --- RPC Method Types ---
+export type SolanaRpcMethod =
   | 'connect'
   | 'disconnect'
   | 'signTransaction'
@@ -81,50 +81,49 @@ export type PhantomRpcMethod =
   | 'signAllTransactions'
   | 'signMessage';
 
-export interface PhantomSignTransactionParams {
-  dapp_encryption_public_key: string;
-  redirect_link: string;
-  payload: string; // Encrypted JSON: { session: string, transaction: string }
-  nonce: string;
-  cluster?: PhantomCluster;
-}
-
-export interface PhantomSignAllTransactionsParams {
-  dapp_encryption_public_key: string;
-  redirect_link: string;
-  payload: string; // Encrypted JSON: { session: string, transactions: string[] }
-  nonce: string;
-  cluster?: PhantomCluster;
-}
-
-export interface PhantomSignMessageParams {
-  dapp_encryption_public_key: string;
-  redirect_link: string;
-  payload: string; // Encrypted JSON string: { message: string, session: string, display: 'utf8'|'hex' }
-  nonce: string;
-}
-
-export interface PhantomConnectParams {
+// --- Generic Deeplink Parameter Types ---
+export interface SolanaConnectParams {
   app_url: string;
   dapp_encryption_public_key: string;
   redirect_link: string;
-  cluster?: PhantomCluster;
+  cluster?: SolanaCluster;
 }
 
-export interface PhantomDisconnectParams {
+export interface SolanaDisconnectParams {
   dapp_encryption_public_key: string;
   redirect_link: string;
   payload: string; // Encrypted { session: string }
   nonce: string;
 }
 
-// --- From PhantomConnector ---
-
-export interface PhantomConnectorConfig {
-  cluster?: PhantomCluster;
+export interface SolanaSignTransactionParams {
+  dapp_encryption_public_key: string;
+  redirect_link: string;
+  payload: string; // Encrypted JSON: { session: string, transaction: string }
+  nonce: string;
+  cluster?: SolanaCluster;
 }
 
-export interface PhantomConnectorSessionData {
+export interface SolanaSignAllTransactionsParams {
+  dapp_encryption_public_key: string;
+  redirect_link: string;
+  payload: string; // Encrypted JSON: { session: string, transactions: string[] }
+  nonce: string;
+  cluster?: SolanaCluster;
+}
+
+export interface SolanaSignMessageParams {
+  dapp_encryption_public_key: string;
+  redirect_link: string;
+  payload: string; // Encrypted JSON string: { message: string, session: string, display: 'utf8'|'hex' }
+  nonce: string;
+}
+
+export interface SolanaConnectorConfig {
+  cluster?: SolanaCluster;
+}
+
+export interface SolanaConnectorSessionData {
   namespaces: Namespaces;
   wallet: WalletInfo;
   currentCaipNetworkId: CaipNetworkId;
