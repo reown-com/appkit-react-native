@@ -46,7 +46,7 @@ import { SIWEController } from '@reown/appkit-siwe-react-native';
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
 import { WcHelpersUtil } from './utils/HelpersUtil';
 import { NetworkUtil } from './utils/NetworkUtil';
-import { EventsUtil } from './utils/EventsUtil';
+import { RouterUtil } from './utils/RouterUtil';
 
 interface AppKitConfig {
   projectId: string;
@@ -312,14 +312,13 @@ export class AppKit {
       }
     }
 
-    EventsUtil.checkOnRampCanceled();
-    EventsUtil.checkSocialLoginCanceled();
+    RouterUtil.checkOnRampBack();
+    RouterUtil.checkSocialLoginBack();
   }
 
   back() {
     if (RouterController.state.history.length > 1) {
-      EventsUtil.checkOnRampCanceled();
-      EventsUtil.checkSocialLoginCanceled();
+      RouterUtil.checkBack();
 
       return RouterController.goBack();
     }

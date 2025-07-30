@@ -140,7 +140,7 @@ const initialState: SwapControllerState = {
   providerFee: undefined
 };
 
-const state = proxy<SwapControllerState>(initialState);
+const state = proxy<SwapControllerState>({ ...initialState });
 
 // -- Controller ---------------------------------------- //
 export const SwapController = {
