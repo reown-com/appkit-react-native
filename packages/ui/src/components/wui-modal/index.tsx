@@ -71,7 +71,7 @@ export function Modal({ visible, onDismiss, onRequestClose, testID, children }: 
 
       modalAnimation = Animated.spring(translateY, {
         toValue: targetY,
-        damping: 18,
+        damping: 20,
         stiffness: 220,
         mass: 1,
         useNativeDriver: true
@@ -81,7 +81,7 @@ export function Modal({ visible, onDismiss, onRequestClose, testID, children }: 
       // Hide modal to the bottom of the screen
       modalAnimation = Animated.spring(translateY, {
         toValue: height,
-        damping: 16,
+        damping: 18,
         stiffness: 260,
         mass: 1,
         useNativeDriver: true
