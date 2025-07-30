@@ -135,7 +135,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <View style={styles.modal}>
+      <View style={styles.modalContent}>
         <FlexView style={[styles.container, { backgroundColor: Theme['bg-100'] }]}>
           <FlexView
             alignItems="center"
@@ -188,7 +188,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
   );
 }
 const styles = StyleSheet.create({
-  modal: {
+  modalContent: {
     margin: 0,
     flex: 1,
     justifyContent: 'flex-end'

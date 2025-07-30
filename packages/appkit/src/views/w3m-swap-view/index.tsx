@@ -205,7 +205,7 @@ export function SwapView() {
         </FlexView>
       </ScrollView>
       <Modal visible={!!showModal} transparent animationType="slide" onRequestClose={onModalClose}>
-        <SwapSelectTokenView style={styles.modal} onClose={onModalClose} type={showModal} />
+        <SwapSelectTokenView style={styles.modalContent} onClose={onModalClose} type={showModal} />
       </Modal>
     </>
   );
