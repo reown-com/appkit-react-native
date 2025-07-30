@@ -31,8 +31,8 @@ export function useRouteTransition(config: RouteTransitionConfig = {}) {
       return new Promise<void>(resolve => {
         const startPosition =
           direction === 'forward'
-            ? screenWidth * 0.01 // Start from right for forward
-            : -screenWidth * 0.01; // Start from left for backward
+            ? screenWidth * 0.02 // Start from right for forward
+            : -screenWidth * 0.02; // Start from left for backward
 
         // Immediately set starting position and fade out
         fadeAnim.setValue(0);
@@ -79,7 +79,6 @@ export function useRouteTransition(config: RouteTransitionConfig = {}) {
     slideAnim.setValue(0);
 
     return () => {
-      // Cleanup: stop any running animations
       if (currentAnimation.current) {
         currentAnimation.current.stop();
         currentAnimation.current = null;
