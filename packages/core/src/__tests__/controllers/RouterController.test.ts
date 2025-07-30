@@ -5,7 +5,8 @@ describe('RouterController', () => {
   it('should have valid default state', () => {
     expect(RouterController.state).toEqual({
       view: 'Connect',
-      history: ['Connect']
+      history: ['Connect'],
+      navigationDirection: 'none'
     });
   });
 
@@ -13,7 +14,8 @@ describe('RouterController', () => {
     RouterController.push('Account');
     expect(RouterController.state).toEqual({
       view: 'Account',
-      history: ['Connect', 'Account']
+      history: ['Connect', 'Account'],
+      navigationDirection: 'forward'
     });
   });
 
@@ -21,7 +23,8 @@ describe('RouterController', () => {
     RouterController.push('Account');
     expect(RouterController.state).toEqual({
       view: 'Account',
-      history: ['Connect', 'Account']
+      history: ['Connect', 'Account'],
+      navigationDirection: 'forward'
     });
   });
 
@@ -29,7 +32,8 @@ describe('RouterController', () => {
     RouterController.goBack();
     expect(RouterController.state).toEqual({
       view: 'Connect',
-      history: ['Connect']
+      history: ['Connect'],
+      navigationDirection: 'backward'
     });
   });
 
@@ -37,7 +41,8 @@ describe('RouterController', () => {
     RouterController.goBack();
     expect(RouterController.state).toEqual({
       view: 'Connect',
-      history: ['Connect']
+      history: ['Connect'],
+      navigationDirection: 'backward'
     });
   });
 
@@ -45,7 +50,8 @@ describe('RouterController', () => {
     RouterController.reset('Account');
     expect(RouterController.state).toEqual({
       view: 'Account',
-      history: ['Account']
+      history: ['Account'],
+      navigationDirection: 'none'
     });
   });
 
@@ -54,7 +60,8 @@ describe('RouterController', () => {
     RouterController.replace('Networks');
     expect(RouterController.state).toEqual({
       view: 'Networks',
-      history: ['Account', 'Networks']
+      history: ['Account', 'Networks'],
+      navigationDirection: 'none'
     });
   });
 
@@ -65,6 +72,7 @@ describe('RouterController', () => {
     expect(RouterController.state).toEqual({
       view: 'ConnectingWalletConnect',
       history: ['Account', 'Networks', 'ConnectingWalletConnect'],
+      navigationDirection: 'forward',
       data: {
         wallet: { id: 'test', name: 'TestWallet' }
       }

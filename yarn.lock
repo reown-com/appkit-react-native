@@ -119,7 +119,6 @@ __metadata:
     react-dom: 18.3.1
     react-native: 0.76.7
     react-native-get-random-values: ~1.11.0
-    react-native-modal: 14.0.0-rc.0
     react-native-svg: 15.12.0
     react-native-toast-message: 2.2.1
     react-native-web: ~0.19.13
@@ -4304,7 +4303,6 @@ __metadata:
     "@reown/appkit-siwe-react-native": 2.0.0-alpha.1
     "@reown/appkit-ui-react-native": 2.0.0-alpha.1
     "@walletconnect/universal-provider": 2.21.5
-    react-native-modal: ">=13"
     valtio: 2.1.5
   peerDependencies:
     "@walletconnect/react-native-compat": ">=2.16.1"
@@ -6683,7 +6681,6 @@ __metadata:
     react-native: 0.76.7
     react-native-builder-bob: 0.40.13
     react-native-get-random-values: ^1.11.0
-    react-native-modal: 14.0.0-rc.0
     react-native-svg: 15.8.0
     react-test-renderer: 18.3.1
     ts-jest: 29.1.1
@@ -15417,7 +15414,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -15686,24 +15683,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-animatable@npm:1.3.3":
-  version: 1.3.3
-  resolution: "react-native-animatable@npm:1.3.3"
-  dependencies:
-    prop-types: ^15.7.2
-  checksum: eb35821de36ae4eb00f97d99fc22ed79bd017248092ff1299f9d46a7ab946de16d2e6d6bfbf4cab5ef77d0d3bf47684aec761a7670ec7d36aae8d77ab8ddd171
-  languageName: node
-  linkType: hard
-
-"react-native-animatable@npm:1.4.0":
-  version: 1.4.0
-  resolution: "react-native-animatable@npm:1.4.0"
-  dependencies:
-    prop-types: ^15.8.1
-  checksum: a1b211aff745b97351d78643d641fa298f7d71524eaf22fee8a69257ce52e85d6b3caf8e7fd26a521af34984fba7402b7c632c35ea69d618769387d1dcb6b32a
-  languageName: node
-  linkType: hard
-
 "react-native-builder-bob@npm:0.40.13":
   version: 0.40.13
   resolution: "react-native-builder-bob@npm:0.40.13"
@@ -15754,31 +15733,6 @@ __metadata:
     react: "*"
     react-native: ">=0.71.0"
   checksum: 8c79504a89fefd7f9c290a4a6bb24f1f9ef9e2a69d20d0f7d882b89f3943556e9c919c9d46583e44ab698f25213489277fccb6d4c856cce310267c5f907388f1
-  languageName: node
-  linkType: hard
-
-"react-native-modal@npm:14.0.0-rc.0":
-  version: 14.0.0-rc.0
-  resolution: "react-native-modal@npm:14.0.0-rc.0"
-  dependencies:
-    react-native-animatable: 1.4.0
-  peerDependencies:
-    react: "*"
-    react-native: ">=0.70.0"
-  checksum: 596dfec00d6f9c0bba1f2c6632cf10e307425be8ccb1de81a6bf7213cceaf6fd4204eb165d8a1450a65ea4b19b70433f3b5123fff44a13d253bd1ae774a9e085
-  languageName: node
-  linkType: hard
-
-"react-native-modal@npm:>=13":
-  version: 13.0.1
-  resolution: "react-native-modal@npm:13.0.1"
-  dependencies:
-    prop-types: ^15.6.2
-    react-native-animatable: 1.3.3
-  peerDependencies:
-    react: "*"
-    react-native: ">=0.65.0"
-  checksum: 15985fd6aaae7a2134ec1003c63abd384f4a17beabd0a80b74033c98eccee29161aa07150f479373fb43106cfb33b5837b7a4f1d2b721ff03b3727490c830a07
   languageName: node
   linkType: hard
 

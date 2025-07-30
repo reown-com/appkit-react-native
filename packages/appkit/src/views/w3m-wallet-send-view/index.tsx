@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Platform, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useSnapshot } from 'valtio';
 import {
   ConnectionsController,
@@ -7,7 +7,7 @@ import {
   RouterController,
   SendController
 } from '@reown/appkit-core-react-native';
-import { Button, FlexView, IconBox, Spacing } from '@reown/appkit-ui-react-native';
+import { Button, FlexView, IconBox } from '@reown/appkit-ui-react-native';
 import { SendInputToken } from '../../partials/w3m-send-input-token';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { useKeyboard } from '../../hooks/useKeyboard';
@@ -16,16 +16,11 @@ import styles from './styles';
 
 export function WalletSendView() {
   const { padding } = useCustomDimensions();
-  const { keyboardShown, keyboardHeight } = useKeyboard();
+  const { keyboardShown } = useKeyboard();
   const [isBalanceLoading, setBalanceLoading] = useState(false);
   const { token, sendTokenAmount, receiverAddress, receiverProfileName, loading } = useSnapshot(
     SendController.state
   );
-
-  const paddingBottom = Platform.select({
-    android: keyboardShown ? keyboardHeight + Spacing['2xl'] : Spacing['2xl'],
-    default: Spacing['2xl']
-  });
 
   const onSendPress = () => {
     RouterController.push('WalletSendPreview');
@@ -86,11 +81,11 @@ export function WalletSendView() {
 
   return (
     <ScrollView
-      style={{ paddingHorizontal: padding }}
+      style={[{ paddingHorizontal: padding }, keyboardShown && styles.withKeyboard]}
       bounces={false}
       keyboardShouldPersistTaps="always"
     >
-      <FlexView padding="l" alignItems="center" justifyContent="center" style={{ paddingBottom }}>
+      <FlexView padding={['l', 'l', '2xl', 'l']} alignItems="center" justifyContent="center">
         <SendInputToken
           token={token}
           sendTokenAmount={sendTokenAmount}

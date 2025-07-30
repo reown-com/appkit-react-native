@@ -17,5 +17,8 @@ export default StyleSheet.create({
   },
   addressContainer: {
     width: '100%'
+  },
+  withKeyboard: {
+    height: '100%'
   }
 });

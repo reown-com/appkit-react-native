@@ -8,8 +8,7 @@ export default StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     overflow: 'hidden',
-    marginTop: 80,
-    flex: 1
+    marginTop: 80
   },
   title: {
     paddingTop: Spacing['2xs']

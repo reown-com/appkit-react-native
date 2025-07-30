@@ -46,6 +46,7 @@ import { SIWEController } from '@reown/appkit-siwe-react-native';
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
 import { WcHelpersUtil } from './utils/HelpersUtil';
 import { NetworkUtil } from './utils/NetworkUtil';
+import { RouterUtil } from './utils/RouterUtil';
 
 interface AppKitConfig {
   projectId: string;
@@ -296,8 +297,33 @@ export class AppKit {
     ModalController.open(options);
   }
 
-  close() {
+  async close() {
     ModalController.close();
+
+    if (OptionsController.state.isSiweEnabled && ConnectionsController.state.isConnected) {
+      const session = await SIWEController.getSession();
+      if (
+        !session &&
+        SIWEController.state.status !== 'success' &&
+        ConnectionsController.state.activeNamespace === 'eip155' &&
+        !!ConnectionsController.state.activeAddress
+      ) {
+        await this.disconnect();
+      }
+    }
+
+    RouterUtil.checkOnRampBack();
+    RouterUtil.checkSocialLoginBack();
+  }
+
+  back() {
+    if (RouterController.state.history.length > 1) {
+      RouterUtil.checkBack();
+
+      return RouterController.goBack();
+    }
+
+    return this.close();
   }
 
   async switchAccountType(namespace: ChainNamespace, type: AccountType, network: AppKitNetwork) {
@@ -743,7 +769,7 @@ export class AppKit {
         // If it's connected but there's no session, show sign view
         return this.onSiweNavigation();
       } else if (isConnection) {
-        //Connected with 1CA
+        // Connected with 1CA
         ModalController.close();
       }
     }

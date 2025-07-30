@@ -1,15 +1,17 @@
-import { Spacing } from '@reown/appkit-ui-react-native';
+import { BorderRadius, Spacing } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   modal: {
     margin: 0,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    flex: 1
   },
   content: {
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    alignItems: 'center'
+    borderTopLeftRadius: BorderRadius.l,
+    borderTopRightRadius: BorderRadius.l,
+    alignItems: 'center',
+    borderWidth: StyleSheet.hairlineWidth
   },
   title: {
     marginTop: Spacing.s,

@@ -32,6 +32,7 @@ export const useAppKit = () => {
     disconnect: context.appKit.disconnect.bind(context.appKit),
     open: context.appKit.open.bind(context.appKit),
     close: context.appKit.close.bind(context.appKit),
+    back: context.appKit.back.bind(context.appKit),
     switchNetwork: context.appKit.switchNetwork.bind(context.appKit),
     getProvider: context.appKit.getProvider.bind(context.appKit),
     switchAccountType: context.appKit.switchAccountType.bind(context.appKit)

@@ -13,7 +13,6 @@ import {
   RouterController,
   EventsController,
   ConnectionsController,
-  ModalController,
   OptionsController,
   AssetController
 } from '@reown/appkit-core-react-native';
@@ -34,7 +33,7 @@ export function NetworksView() {
   const itemGap = Math.abs(
     Math.trunc((usableWidth - numColumns * CardSelectWidth) / numColumns) / 2
   );
-  const { switchNetwork } = useAppKit();
+  const { switchNetwork, back } = useAppKit();
 
   const networkList = isConnected ? ConnectionsController.getConnectedNetworks() : networks;
 
@@ -46,12 +45,7 @@ export function NetworksView() {
   const networksTemplate = () => {
     const onNetworkPress = async (network: AppKitNetwork) => {
       await switchNetwork(network);
-
-      if (RouterController.state.history.length > 1) {
-        RouterController.goBack();
-      } else {
-        ModalController.close();
-      }
+      back();
     };
 
     return networkList.map(network => {

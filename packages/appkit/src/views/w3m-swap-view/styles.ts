@@ -20,8 +20,12 @@ export default StyleSheet.create({
     marginTop: Spacing.xs,
     width: '100%'
   },
-  modal: {
+  modalContent: {
     margin: 0,
+    flex: 1,
     justifyContent: 'flex-end'
+  },
+  withKeyboard: {
+    height: '100%'
   }
 });

@@ -1,7 +1,6 @@
 import { useSnapshot } from 'valtio';
 import {
   RouterController,
-  ModalController,
   EventsController,
   type RouterControllerState
 } from '@reown/appkit-core-react-native';
@@ -9,8 +8,10 @@ import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
 import { StringUtil } from '@reown/appkit-common-react-native';
 
 import styles from './styles';
+import { useAppKit } from '../../AppKitContext';
 
 export function Header() {
+  const { close, back } = useAppKit();
   const { data, view } = useSnapshot(RouterController.state);
   const onHelpPress = () => {
     RouterController.push('WhatIsAWallet');
@@ -61,24 +62,12 @@ export function Header() {
   const showClose = !noCloseViews.includes(view);
   const header = headings(data, view);
 
-  const checkSocial = () => {
-    if (RouterController.state.view === 'ConnectingSocial') {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SOCIAL_LOGIN_CANCELED',
-        properties: { provider: RouterController.state.data?.socialProvider! }
-      });
-    }
-  };
-
   const handleGoBack = () => {
-    checkSocial();
-    RouterController.goBack();
+    back();
   };
 
   const handleClose = () => {
-    checkSocial();
-    ModalController.close();
+    close();
   };
 
   const dynamicButtonTemplate = () => {
