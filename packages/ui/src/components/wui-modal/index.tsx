@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useWindowDimensions, Modal as RNModal, TouchableOpacity, Animated } from 'react-native';
+import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
 
 export interface ModalProps {
@@ -11,6 +12,7 @@ export interface ModalProps {
 }
 
 export function Modal({ visible, onDismiss, onRequestClose, testID, children }: ModalProps) {
+  const Theme = useTheme();
   const { height } = useWindowDimensions();
 
   const backdropOpacity = useRef(new Animated.Value(0)).current;
@@ -59,7 +61,7 @@ export function Modal({ visible, onDismiss, onRequestClose, testID, children }: 
     };
   }, [visible, modalVisible, backdropOpacity]);
 
-  // Handle modal position animation
+  // Handle modal position animation + visibility
   useEffect(() => {
     let modalAnimation: Animated.CompositeAnimation;
 
@@ -76,6 +78,7 @@ export function Modal({ visible, onDismiss, onRequestClose, testID, children }: 
       });
       modalAnimation.start();
     } else if (!visible && modalVisible) {
+      // Hide modal to the bottom of the screen
       modalAnimation = Animated.spring(translateY, {
         toValue: height,
         damping: 16,
@@ -122,7 +125,9 @@ export function Modal({ visible, onDismiss, onRequestClose, testID, children }: 
             onPress={onDismiss}
           />
         )}
-        <Animated.View style={[styles.modal, { transform: [{ translateY }] }]}>
+        <Animated.View
+          style={[styles.modal, { backgroundColor: Theme['bg-100'], transform: [{ translateY }] }]}
+        >
           <Animated.View onLayout={onContentLayout}>{children}</Animated.View>
         </Animated.View>
       </RNModal>

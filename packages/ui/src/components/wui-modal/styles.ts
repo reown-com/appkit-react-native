@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { BorderRadius } from '../../utils/ThemeUtil';
 
 export default StyleSheet.create({
   outerBackdrop: {
@@ -13,6 +14,8 @@ export default StyleSheet.create({
     flexGrow: 1
   },
   modal: {
+    borderTopLeftRadius: BorderRadius.l,
+    borderTopRightRadius: BorderRadius.l,
     position: 'absolute',
     top: 0,
     left: 0,
