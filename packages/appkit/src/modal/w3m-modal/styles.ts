@@ -10,11 +10,13 @@ export default StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
   innerBackdropTouchable: {
-    flexGrow: 2
+    flexGrow: 1
   },
   modal: {
-    flexGrow: 1,
-    justifyContent: 'flex-end'
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0
   },
   card: {
     borderBottomLeftRadius: 0,
