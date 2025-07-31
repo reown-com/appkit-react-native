@@ -125,7 +125,10 @@ export class SolanaDeeplinkProvider extends EventEmitter implements Provider {
     walletSenderPublicKeyBs58: string
   ): T | null {
     try {
-      const encryptedDataBytes = bs58.decode(encryptedDataBs58);
+      // Clean the encrypted data by removing any trailing non-base58 characters (like #)
+      const cleanedEncryptedData = encryptedDataBs58.replace(/[^A-Za-z0-9]/g, '');
+
+      const encryptedDataBytes = bs58.decode(cleanedEncryptedData);
       const nonceBytes = bs58.decode(nonceBs58);
       const walletSenderPublicKeyBytes = bs58.decode(walletSenderPublicKeyBs58);
       const decryptedPayloadBytes = nacl.box.open(
