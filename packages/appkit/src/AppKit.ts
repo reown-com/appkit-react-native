@@ -39,7 +39,8 @@ import {
   type AccountType,
   type AppKitOpenOptions,
   ConstantsUtil,
-  type Connection
+  type Connection,
+  type Tokens
 } from '@reown/appkit-common-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -60,7 +61,7 @@ interface AppKitConfig {
   excludeWalletIds?: OptionsControllerState['excludeWalletIds'];
   featuredWalletIds?: OptionsControllerState['featuredWalletIds'];
   customWallets?: OptionsControllerState['customWallets'];
-  tokens?: OptionsControllerState['tokens']; //TODO: check if needed in OptionsController
+  tokens?: Tokens;
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
   debug?: OptionsControllerState['debug'];
   themeMode?: ThemeMode;
@@ -623,7 +624,6 @@ export class AppKit {
     this.setExcludedWallets(options);
     this.setCustomWallets(options);
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
-    OptionsController.setTokens(options.tokens);
     OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setDebug(options.debug);
     OptionsController.setFeatures(options.features);
