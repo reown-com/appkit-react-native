@@ -570,9 +570,7 @@ export class AppKit {
   private subscribeToAdapterEvents(adapter: BlockchainAdapter): void {
     adapter.on('accountsChanged', ({ accounts }) => {
       const namespace = adapter.getSupportedNamespace();
-      //eslint-disable-next-line no-console
-      console.log('accountsChanged', accounts, namespace);
-      //TODO: check this
+      ConnectionsController.updateAccounts(namespace, accounts);
 
       if (namespace === 'eip155') {
         this.handleSiweChange({ isAccountChange: true });

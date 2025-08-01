@@ -15,7 +15,8 @@ import {
   switchChain as switchChainWagmi,
   disconnect as disconnectWagmiCore,
   connect as connectWagmi,
-  type Connector
+  type Connector,
+  watchAccount
 } from '@wagmi/core';
 import type { Chain } from 'wagmi/chains';
 import { getTransport } from './utils/helpers';
@@ -177,5 +178,21 @@ export class WagmiAdapter extends EVMAdapter {
         }
       }
     }
+
+    this.setupWatchers();
+  }
+
+  setupWatchers() {
+    watchAccount(this.wagmiConfig, {
+      onChange: (accountData, prevAccountData) => {
+        if (accountData.status === 'disconnected' && prevAccountData.address) {
+          this.onDisconnect();
+        }
+
+        if (accountData?.chainId && accountData?.chainId !== prevAccountData?.chainId) {
+          this.onChainChanged(accountData.chainId?.toString());
+        }
+      }
+    });
   }
 }

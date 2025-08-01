@@ -206,7 +206,7 @@ export type ChainChangedEvent = {
   chainId: string;
 };
 
-export type DisconnectEvent = {};
+export type DisconnectEvent = undefined;
 
 export type BalanceChangedEvent = {
   address: CaipAddress;

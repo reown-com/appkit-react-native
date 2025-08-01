@@ -11,6 +11,7 @@ import type {
   Provider,
   WalletConnector
 } from '../utils/TypeUtil';
+import { NetworkUtil } from '../utils/NetworkUtil';
 
 export abstract class BlockchainAdapter extends EventEmitter {
   public projectId: string;
@@ -68,19 +69,27 @@ export abstract class BlockchainAdapter extends EventEmitter {
 
   onAccountsChanged(accounts: string[]): void {
     const _accounts = this.getAccounts();
-    const shouldEmit = _accounts?.some(account => {
-      const accountAddress = account.split(':')[2];
+    const updatedAccounts =
+      _accounts
+        ?.filter(account => {
+          const accountAddress = NetworkUtil.getPlainAddress(account);
 
-      return accountAddress !== undefined && accounts.includes(accountAddress);
-    });
+          return accountAddress !== undefined && accounts.includes(accountAddress);
+        })
+        ?.sort((a, b) => {
+          const aIndex = accounts.indexOf(NetworkUtil.getPlainAddress(a) ?? '');
+          const bIndex = accounts.indexOf(NetworkUtil.getPlainAddress(b) ?? '');
 
-    if (shouldEmit) {
-      this.emit('accountsChanged', { accounts });
+          return aIndex - bIndex;
+        }) ?? [];
+
+    if (updatedAccounts.length > 0) {
+      this.emit('accountsChanged', { accounts: updatedAccounts });
     }
   }
 
   onDisconnect(): void {
-    this.emit('disconnect', { namespace: this.getSupportedNamespace() });
+    this.emit('disconnect', undefined);
 
     const provider = this.connector?.getProvider();
     if (provider) {

@@ -44,7 +44,13 @@ export class EthersAdapter extends EVMAdapter {
       const wei = await getEthBalance(rpcUrl, account);
       balance.amount = formatEther(wei);
 
-      this.emit('balanceChanged', { address: balanceAddress, balance });
+      this.emit('balanceChanged', {
+        address: balanceAddress,
+        balance: {
+          amount: balance.amount,
+          symbol: balance.symbol
+        }
+      });
 
       return balance;
     } catch {
