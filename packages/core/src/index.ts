@@ -7,10 +7,7 @@ export {
 
 export { RouterController, type RouterControllerState } from './controllers/RouterController';
 
-export {
-  ConnectionController,
-  type ConnectionControllerState
-} from './controllers/ConnectionController';
+export { WcController, type WcControllerState } from './controllers/WcController';
 
 export {
   ConnectionsController,

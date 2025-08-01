@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
 import {
-  ConnectionController,
+  WcController,
   ConstantsUtil,
   CoreHelperUtil,
   RouterController,
@@ -32,7 +32,7 @@ export function ConnectingView() {
   const onRetry = () => {
     if (CoreHelperUtil.isAllowedRetry(lastRetry)) {
       setLastRetry(Date.now());
-      ConnectionController.clearUri();
+      WcController.clearUri();
       initializeConnection(true);
     } else {
       SnackController.showError('Please wait a second before retrying');
@@ -41,19 +41,19 @@ export function ConnectingView() {
 
   const initializeConnection = async (retry = false) => {
     try {
-      const { wcPairingExpiry } = ConnectionController.state;
+      const { wcPairingExpiry } = WcController.state;
       const { data: routeData } = RouterController.state;
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
-        ConnectionController.setWcError(false);
+        WcController.setWcError(false);
 
         const connectPromise = connect('walletconnect', {
           universalLink: routeData?.wallet?.link_mode ?? undefined
         });
-        ConnectionController.setWcPromise(connectPromise);
+        WcController.setWcPromise(connectPromise);
       }
     } catch (error) {
-      ConnectionController.setWcError(true);
-      ConnectionController.clearUri();
+      WcController.setWcError(true);
+      WcController.clearUri();
       SnackController.showError('Declined');
       if (isQr && CoreHelperUtil.isAllowedRetry(lastRetry)) {
         setLastRetry(Date.now());

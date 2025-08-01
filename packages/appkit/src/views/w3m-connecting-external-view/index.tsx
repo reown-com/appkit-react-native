@@ -5,7 +5,7 @@ import {
   RouterController,
   ApiController,
   EventsController,
-  ConnectionController,
+  WcController,
   AssetUtil
 } from '@reown/appkit-core-react-native';
 import {
@@ -46,8 +46,8 @@ export function ConnectingExternalView() {
           // All other wallets are handled by WalletConnect connector
           return;
         }
-        ConnectionController.addRecentWallet(wallet);
-        ConnectionController.setPressedWallet(wallet);
+        WcController.addRecentWallet(wallet);
+        WcController.setPressedWallet(wallet);
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',

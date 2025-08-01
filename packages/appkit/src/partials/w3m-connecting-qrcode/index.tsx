@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import {
-  ConnectionController,
+  WcController,
   EventsController,
   OptionsController,
   SnackController
@@ -11,20 +11,20 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function ConnectingQrCode() {
-  const { wcUri } = useSnapshot(ConnectionController.state);
+  const { wcUri } = useSnapshot(WcController.state);
   const showCopy = OptionsController.isClipboardAvailable();
   const { maxWidth: windowSize, isPortrait } = useCustomDimensions();
   const qrSize = (windowSize - Spacing.xl * 2) / (isPortrait ? 1 : 1.5);
 
   const onCopyAddress = () => {
-    if (ConnectionController.state.wcUri) {
-      OptionsController.copyToClipboard(ConnectionController.state.wcUri);
+    if (WcController.state.wcUri) {
+      OptionsController.copyToClipboard(WcController.state.wcUri);
       SnackController.showSuccess('Link copied');
     }
   };
 
   const onConnect = async () => {
-    await ConnectionController.state.wcPromise;
+    await WcController.state.wcPromise;
 
     EventsController.sendEvent({
       type: 'track',

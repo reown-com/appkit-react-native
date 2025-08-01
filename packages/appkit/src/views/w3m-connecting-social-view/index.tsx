@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
 import {
-  ConnectionController,
+  WcController,
   CoreHelperUtil,
   EventsController,
   RouterController,
@@ -18,7 +18,7 @@ export function ConnectingSocialView() {
   const { maxWidth: width } = useCustomDimensions();
   const { connect } = useInternalAppKit();
   const { data } = useSnapshot(RouterController.state);
-  const { wcUri } = useSnapshot(ConnectionController.state);
+  const { wcUri } = useSnapshot(WcController.state);
   const [error, setError] = useState(false);
 
   const onConnect = useCallback(async () => {
@@ -30,10 +30,10 @@ export function ConnectingSocialView() {
           RouterController.state.data?.socialProvider
         );
         const wcLinking = { name: 'Reown Wallet', href };
-        ConnectionController.setWcLinking(wcLinking);
+        WcController.setWcLinking(wcLinking);
         await CoreHelperUtil.openLink(redirect);
-        await ConnectionController.state.wcPromise;
-        ConnectionController.setConnectedWallet(wcLinking);
+        await WcController.state.wcPromise;
+        WcController.setConnectedWallet(wcLinking);
         EventsController.sendEvent({
           type: 'track',
           event: 'SOCIAL_LOGIN_SUCCESS',
@@ -53,7 +53,7 @@ export function ConnectingSocialView() {
 
   const initializeConnection = useCallback(async () => {
     const connectPromise = connect('walletconnect');
-    ConnectionController.setWcPromise(connectPromise);
+    WcController.setWcPromise(connectPromise);
   }, [connect]);
 
   useEffect(() => {

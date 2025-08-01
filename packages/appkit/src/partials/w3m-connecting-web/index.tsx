@@ -5,7 +5,7 @@ import {
   RouterController,
   ApiController,
   AssetUtil,
-  ConnectionController,
+  WcController,
   CoreHelperUtil,
   OptionsController,
   EventsController
@@ -28,7 +28,7 @@ interface ConnectingWebProps {
 
 export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
   const { data } = RouterController.state;
-  const { wcUri, wcError } = useSnapshot(ConnectionController.state);
+  const { wcUri, wcError } = useSnapshot(WcController.state);
   const showCopy = OptionsController.isClipboardAvailable();
   const bodyMessage = getMessage({
     walletName: data?.wallet?.name,
@@ -40,14 +40,14 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
     try {
       const { name, webapp_link } = data?.wallet ?? {};
       if (name && webapp_link && wcUri) {
-        ConnectionController.setWcError(false);
+        WcController.setWcError(false);
         const { redirect, href } = CoreHelperUtil.formatUniversalUrl(webapp_link, wcUri);
         const wcLinking = { name, href };
-        ConnectionController.setWcLinking(wcLinking);
-        ConnectionController.setPressedWallet(data?.wallet);
+        WcController.setWcLinking(wcLinking);
+        WcController.setPressedWallet(data?.wallet);
         await Linking.openURL(redirect);
-        await ConnectionController.state.wcPromise;
-        ConnectionController.setConnectedWallet(wcLinking, data?.wallet);
+        await WcController.state.wcPromise;
+        WcController.setConnectedWallet(wcLinking, data?.wallet);
 
         EventsController.sendEvent({
           type: 'track',

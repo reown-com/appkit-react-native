@@ -9,7 +9,7 @@ import {
   StorageUtil,
   type OptionsControllerState,
   ThemeController,
-  ConnectionController,
+  WcController,
   SwapController,
   OnRampController,
   CoreHelperUtil,
@@ -220,7 +220,7 @@ export class AppKit {
       SwapController.resetState();
       SendController.resetState();
       OnRampController.resetState();
-      ConnectionController.disconnect();
+      WcController.resetState();
 
       if (ConnectionsController.state.activeNamespace === undefined) {
         ConnectionsController.setActiveNamespace(
@@ -681,7 +681,7 @@ export class AppKit {
       return true;
     });
 
-    ConnectionController.setRecentWallets(filteredWallets);
+    WcController.setRecentWallets(filteredWallets);
   }
 
   private setExcludedWallets(options: AppKitConfig) {

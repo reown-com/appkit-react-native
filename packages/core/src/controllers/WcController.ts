@@ -6,7 +6,7 @@ import { StorageUtil } from '../utils/StorageUtil';
 import type { WcWallet } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
-export interface ConnectionControllerState {
+export interface WcControllerState {
   wcUri?: string;
   wcPromise?: Promise<void>;
   wcPairingExpiry?: number;
@@ -16,25 +16,22 @@ export interface ConnectionControllerState {
   recentWallets?: WcWallet[];
 }
 
-type StateKey = keyof ConnectionControllerState;
+type StateKey = keyof WcControllerState;
 
 // -- State --------------------------------------------- //
-const state = proxy<ConnectionControllerState>({
+const state = proxy<WcControllerState>({
   wcError: false
 });
 
 // -- Controller ---------------------------------------- //
-export const ConnectionController = {
+export const WcController = {
   state,
 
-  subscribeKey<K extends StateKey>(
-    key: K,
-    callback: (value: ConnectionControllerState[K]) => void
-  ) {
+  subscribeKey<K extends StateKey>(key: K, callback: (value: WcControllerState[K]) => void) {
     return subKey(state, key, callback);
   },
 
-  setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {
+  setWcLinking(wcLinking: WcControllerState['wcLinking']) {
     state.wcLinking = wcLinking;
   },
 
@@ -42,11 +39,11 @@ export const ConnectionController = {
     state.wcLinking = undefined;
   },
 
-  setWcError(wcError: ConnectionControllerState['wcError']) {
+  setWcError(wcError: WcControllerState['wcError']) {
     state.wcError = wcError;
   },
 
-  setPressedWallet(wallet: ConnectionControllerState['pressedWallet']) {
+  setPressedWallet(wallet: WcControllerState['pressedWallet']) {
     state.pressedWallet = wallet;
   },
 
@@ -54,23 +51,23 @@ export const ConnectionController = {
     state.pressedWallet = undefined;
   },
 
-  setWcPromise(wcPromise: ConnectionControllerState['wcPromise']) {
+  setWcPromise(wcPromise: WcControllerState['wcPromise']) {
     state.wcPromise = wcPromise;
   },
 
-  setWcUri(wcUri: ConnectionControllerState['wcUri']) {
+  setWcUri(wcUri: WcControllerState['wcUri']) {
     state.wcUri = wcUri;
     state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry();
   },
 
-  setRecentWallets(wallets: ConnectionControllerState['recentWallets']) {
+  setRecentWallets(wallets: WcControllerState['recentWallets']) {
     state.recentWallets = wallets;
   },
 
   async addRecentWallet(wallet: WcWallet) {
     const recentWallets = await StorageUtil.addRecentWallet(wallet);
     if (recentWallets) {
-      ConnectionController.setRecentWallets(recentWallets);
+      WcController.setRecentWallets(recentWallets);
     }
   },
 
@@ -78,7 +75,7 @@ export const ConnectionController = {
     StorageUtil.setWalletConnectDeepLink(wcLinking);
 
     if (pressedWallet) {
-      ConnectionController.addRecentWallet(pressedWallet);
+      WcController.addRecentWallet(pressedWallet);
     }
   },
 
@@ -89,15 +86,9 @@ export const ConnectionController = {
     state.wcLinking = undefined;
   },
 
-  resetWcConnection() {
+  resetState() {
     this.clearUri();
     state.pressedWallet = undefined;
     StorageUtil.removeWalletConnectDeepLink();
-  },
-
-  async disconnect() {
-    this.resetWcConnection();
-    // remove transactions
-    // RouterController.reset('Connect');
   }
 };

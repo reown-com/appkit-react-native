@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import {
   ApiController,
   AssetController,
-  ConnectionController,
+  WcController,
   ConnectionsController,
   RouterController,
   RouterUtil
@@ -22,7 +22,7 @@ import styles from './styles';
 export function NetworkSwitchView() {
   const { switchNetwork } = useInternalAppKit();
   const { data } = useSnapshot(RouterController.state);
-  const { recentWallets } = useSnapshot(ConnectionController.state);
+  const { recentWallets } = useSnapshot(WcController.state);
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const [error, setError] = useState<boolean>(false);

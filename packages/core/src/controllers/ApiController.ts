@@ -14,7 +14,7 @@ import type {
 import { AssetController } from './AssetController';
 import { OptionsController } from './OptionsController';
 // import { ConnectorController } from './ConnectorController';
-import { ConnectionController } from './ConnectionController';
+import { WcController } from './WcController';
 import { ApiUtil } from '../utils/ApiUtil';
 import { SnackController } from './SnackController';
 import { ConnectionsController } from './ConnectionsController';
@@ -325,7 +325,7 @@ export const ApiController = {
 
     if (update) {
       await StorageUtil.setRecentWallets(updatedRecent);
-      ConnectionController.setRecentWallets(updatedRecent);
+      WcController.setRecentWallets(updatedRecent);
     }
   },
 

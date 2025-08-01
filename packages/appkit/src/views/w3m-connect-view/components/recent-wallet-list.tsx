@@ -3,7 +3,7 @@ import {
   ApiController,
   AssetUtil,
   type WcWallet,
-  ConnectionController
+  WcController
 } from '@reown/appkit-core-react-native';
 import { ListWallet } from '@reown/appkit-ui-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
@@ -15,7 +15,7 @@ interface Props {
 
 export function RecentWalletList({ itemStyle, onWalletPress }: Props) {
   const installed = ApiController.state.installed;
-  const { recentWallets } = useSnapshot(ConnectionController.state);
+  const { recentWallets } = useSnapshot(WcController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const RECENT_COUNT = recentWallets?.length && installed.length ? 1 : recentWallets?.length ?? 0;
 

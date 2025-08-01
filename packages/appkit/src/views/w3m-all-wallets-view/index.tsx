@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  ConnectionController,
+  WcController,
   EventsController,
   RouterController,
   type WcWallet
@@ -42,8 +42,8 @@ export function AllWalletsView() {
   };
 
   const onQrCodePress = () => {
-    ConnectionController.removePressedWallet();
-    ConnectionController.removeWcLinking();
+    WcController.removePressedWallet();
+    WcController.removeWcLinking();
     RouterController.push('ConnectingWalletConnect');
 
     EventsController.sendEvent({
