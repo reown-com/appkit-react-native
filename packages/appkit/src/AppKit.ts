@@ -604,7 +604,6 @@ export class AppKit {
       this.disconnect(namespace, false);
     });
 
-    //TODO: Add types to this events
     adapter.on('balanceChanged', ({ address, balance }) => {
       //eslint-disable-next-line no-console
       console.log('balanceChanged', address, balance);

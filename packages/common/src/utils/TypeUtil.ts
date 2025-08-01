@@ -199,7 +199,7 @@ export type BlockchainAdapterConfig = {
 
 //********** Adapter Event Payloads **********//
 export type AccountsChangedEvent = {
-  accounts: string[];
+  accounts: CaipAddress[];
 };
 
 export type ChainChangedEvent = {

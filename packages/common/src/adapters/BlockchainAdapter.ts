@@ -27,6 +27,16 @@ export abstract class BlockchainAdapter extends EventEmitter {
     return super.emit(event, payload);
   }
 
+  // Typed on method
+  override on<K extends keyof AdapterEvents>(event: K, listener: AdapterEvents[K]): this {
+    return super.on(event, listener);
+  }
+
+  // Typed off method for consistency
+  override off<K extends keyof AdapterEvents>(event: K, listener: AdapterEvents[K]): this {
+    return super.off(event, listener);
+  }
+
   constructor({ projectId, supportedNamespace, adapterType }: BlockchainAdapterConfig) {
     super();
     this.projectId = projectId;
