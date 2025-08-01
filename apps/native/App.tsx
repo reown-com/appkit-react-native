@@ -68,7 +68,7 @@ const appKit = createAppKit({
   projectId,
   adapters: [wagmiAdapter, solanaAdapter, bitcoinAdapter],
   metadata,
-  // siweConfig,
+  siweConfig,
   networks: [...chains, solana, bitcoin],
   defaultNetwork: chains[0],
   clipboardClient,
