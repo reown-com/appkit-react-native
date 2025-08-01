@@ -18,7 +18,6 @@ import {
 import { StorageUtil } from '../utils/StorageUtil';
 import { BlockchainApiController } from './BlockchainApiController';
 import { SnackController } from './SnackController';
-import { OptionsController } from './OptionsController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 
 // -- Types --------------------------------------------- //
@@ -130,27 +129,6 @@ const derivedState = derive(
       const addressBalances = connection.balances.get(activeAddress);
       if (!addressBalances || addressBalances.length === 0) {
         return undefined;
-      }
-
-      // Check if there's a specific token configured in OptionsController
-      const configuredTokens = OptionsController.state.tokens;
-      const activeNetwork = snap.networks.find(
-        network =>
-          network.chainNamespace === snap.activeNamespace &&
-          network.id?.toString() === connection.caipNetwork?.split(':')[1]
-      );
-
-      if (configuredTokens && activeNetwork) {
-        const configuredToken = configuredTokens[activeNetwork.caipNetworkId];
-        if (configuredToken) {
-          // Find the configured token in the balances
-          const specificToken = addressBalances.find(
-            balance => balance.address === configuredToken.address
-          );
-          if (specificToken) {
-            return specificToken;
-          }
-        }
       }
 
       // Return the native token (first balance without address)
