@@ -145,7 +145,6 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
 
       const chainId = await this.getChainId();
 
-      //TODO: Review this with gancho
       const _provider = {
         ...provider,
         request: (args: RequestArguments) => {

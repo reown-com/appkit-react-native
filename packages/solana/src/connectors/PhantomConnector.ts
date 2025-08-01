@@ -121,7 +121,9 @@ export class PhantomConnector extends WalletConnector {
       }
       this.currentCaipNetworkId = `solana:${solanaChainIdPart}` as CaipNetworkId;
 
-      this.wallet = ConstantsUtil.PHANTOM_CUSTOM_WALLET;
+      this.wallet = {
+        name: ConstantsUtil.PHANTOM_CUSTOM_WALLET.name
+      };
 
       const userPublicKey = this.getProvider().getUserPublicKey();
       if (!userPublicKey) {

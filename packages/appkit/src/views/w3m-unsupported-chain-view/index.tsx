@@ -15,8 +15,6 @@ export function UnsupportedChainView() {
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const [disconnecting, setDisconnecting] = useState(false);
-  //TODO: should show requested networks disabled
-  // const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
   const networks = ConnectionsController.getConnectedNetworks();
   const imageHeaders = ApiController._getApiHeaders();
   const { disconnect, switchNetwork } = useAppKit();

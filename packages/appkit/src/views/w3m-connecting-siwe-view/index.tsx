@@ -26,7 +26,7 @@ export function ConnectingSiweView() {
   const { disconnect } = useAppKit();
   const { metadata } = useSnapshot(OptionsController.state);
   const { connectedWalletImageUrl, pressedWallet } = useSnapshot(ConnectionController.state);
-  const { activeAddress } = useSnapshot(ConnectionsController.state);
+  const { activeAddress, identity } = useSnapshot(ConnectionsController.state);
   const [isSigning, setIsSigning] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
 
@@ -83,7 +83,6 @@ export function ConnectingSiweView() {
     });
   };
 
-  //TODO: Add profile image in Avatar
   return (
     <FlexView padding={['2xl', 's', '3xl', 's']}>
       <IconLink
@@ -101,7 +100,7 @@ export function ConnectingSiweView() {
         leftImage={dappIcon}
         rightImage={walletIcon}
         renderRightPlaceholder={() => (
-          <Avatar imageSrc={undefined} address={activeAddress} size={60} borderWidth={0} />
+          <Avatar imageSrc={identity?.avatar} address={activeAddress} size={60} borderWidth={0} />
         )}
         rightItemStyle={!walletIcon && styles.walletAvatar}
       />

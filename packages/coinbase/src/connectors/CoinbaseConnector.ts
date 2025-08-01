@@ -83,7 +83,6 @@ export class CoinbaseConnector extends WalletConnector {
   }
 
   override getWalletInfo(): WalletInfo | undefined {
-    // TODO: Add icon
     return {
       name: 'Coinbase Wallet',
       description: 'Your home to everything onchain',

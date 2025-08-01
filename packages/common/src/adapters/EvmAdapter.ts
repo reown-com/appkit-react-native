@@ -71,18 +71,6 @@ function encodeERC20Function(method: string, params: any[]): string {
 }
 
 export abstract class EVMAdapter extends BlockchainAdapter {
-  override subscribeToEvents(): void {
-    super.subscribeToEvents();
-    const provider = this.getProvider();
-    if (!provider) return;
-
-    // provider.on('reown_updateEmail', (info: any) => {
-    //   // this.emit('updateEmail', email);
-    //   //TODO: check this
-    //   // console.log('reown_updateEmail', info);
-    // });
-  }
-
   async signMessage(address: string, message: string, chain?: string): Promise<string> {
     const provider = this.getProvider();
 

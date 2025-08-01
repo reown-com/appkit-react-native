@@ -44,6 +44,13 @@ export const ConstantsUtil = {
     mobile_link: 'phantom://'
   },
 
+  COINBASE_CUSTOM_WALLET: {
+    id: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+    name: 'Coinbase Wallet',
+    image_id: 'a5ebc364-8f91-4200-fcc6-be81310a0000',
+    mobile_link: 'https://wallet.coinbase.com/wsegue'
+  },
+
   // Storage Keys
   STORAGE_KEYS: {
     WC_DEEPLINK: 'WALLETCONNECT_DEEPLINK_CHOICE', //dont change this one
