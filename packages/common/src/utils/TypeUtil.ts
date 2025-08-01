@@ -191,10 +191,13 @@ export interface Connection {
 }
 
 export type BlockchainAdapterConfig = {
-  projectId: string;
   supportedNamespace: ChainNamespace;
   adapterType: AdapterType;
 };
+
+export interface BlockchainAdapterInitParams {
+  connector: WalletConnector;
+}
 
 //********** Adapter Event Payloads **********//
 export type AccountsChangedEvent = {

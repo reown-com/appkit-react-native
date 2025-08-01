@@ -12,9 +12,8 @@ import { formatEther, getEthBalance } from './helpers';
 export class EthersAdapter extends EVMAdapter {
   private static supportedNamespace: ChainNamespace = 'eip155';
 
-  constructor(configParams: { projectId: string }) {
+  constructor() {
     super({
-      projectId: configParams.projectId,
       supportedNamespace: EthersAdapter.supportedNamespace,
       adapterType: 'ethers'
     });

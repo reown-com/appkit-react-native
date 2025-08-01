@@ -22,9 +22,8 @@ export interface SolanaTransactionData {
 export class SolanaAdapter extends SolanaBaseAdapter {
   private static supportedNamespace: ChainNamespace = 'solana';
 
-  constructor(configParams: { projectId: string }) {
+  constructor() {
     super({
-      projectId: configParams.projectId,
       supportedNamespace: SolanaAdapter.supportedNamespace,
       adapterType: 'solana'
     });

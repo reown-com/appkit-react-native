@@ -442,7 +442,7 @@ export class AppKit {
     }
 
     adapters.forEach(adapter => {
-      adapter.setConnector(connector);
+      adapter.init({ connector });
       this.subscribeToAdapterEvents(adapter);
     });
 

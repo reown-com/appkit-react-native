@@ -4,6 +4,7 @@ import type {
   AdapterType,
   AppKitNetwork,
   BlockchainAdapterConfig,
+  BlockchainAdapterInitParams,
   CaipAddress,
   ChainNamespace,
   GetBalanceParams,
@@ -14,7 +15,6 @@ import type {
 import { NetworkUtil } from '../utils/NetworkUtil';
 
 export abstract class BlockchainAdapter extends EventEmitter {
-  public projectId: string;
   public connector?: WalletConnector;
   public supportedNamespace: ChainNamespace;
   public adapterType: AdapterType;
@@ -37,15 +37,15 @@ export abstract class BlockchainAdapter extends EventEmitter {
     return super.off(event, listener);
   }
 
-  constructor({ projectId, supportedNamespace, adapterType }: BlockchainAdapterConfig) {
+  constructor({ supportedNamespace, adapterType }: BlockchainAdapterConfig) {
     super();
-    this.projectId = projectId;
     this.supportedNamespace = supportedNamespace;
     this.adapterType = adapterType;
   }
 
-  setConnector(connector: WalletConnector) {
+  init({ connector }: BlockchainAdapterInitParams) {
     this.connector = connector;
+
     this.subscribeToEvents();
   }
 

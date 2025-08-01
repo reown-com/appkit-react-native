@@ -25,7 +25,7 @@ class MockEVMAdapter extends EVMAdapter {
   private mockProvider: any;
 
   constructor() {
-    super({ projectId: 'test', supportedNamespace: 'eip155', adapterType: 'ethers' });
+    super({ supportedNamespace: 'eip155', adapterType: 'ethers' });
     this.mockProvider = {
       request: jest.fn(),
       on: jest.fn(),

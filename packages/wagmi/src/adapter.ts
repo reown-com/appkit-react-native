@@ -1,7 +1,7 @@
 import {
   EVMAdapter,
-  WalletConnector,
   type AppKitNetwork,
+  type BlockchainAdapterInitParams,
   type CaipAddress,
   type ChainNamespace,
   type GetBalanceParams,
@@ -37,7 +37,6 @@ export class WagmiAdapter extends EVMAdapter {
 
   constructor(configParams: ConfigParams) {
     super({
-      projectId: configParams.projectId,
       supportedNamespace: WagmiAdapter.supportedNamespace,
       adapterType: 'wagmi'
     });
@@ -150,8 +149,8 @@ export class WagmiAdapter extends EVMAdapter {
     return WagmiAdapter.supportedNamespace;
   }
 
-  override setConnector(_connector: WalletConnector): void {
-    super.setConnector(_connector);
+  override init({ connector: _connector }: BlockchainAdapterInitParams): void {
+    super.init({ connector: _connector });
 
     if (_connector && this.wagmiChains) {
       if (!this.wagmiConfigConnector) {

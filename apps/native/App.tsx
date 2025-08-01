@@ -53,35 +53,29 @@ const clipboardClient = {
 
 const queryClient = new QueryClient();
 
-// const ethersAdapter = new EthersAdapter({
-//   projectId
-// });
+// const ethersAdapter = new EthersAdapter();
 
 const wagmiAdapter = new WagmiAdapter({
   projectId,
   networks: chains
 });
 
-const solanaAdapter = new SolanaAdapter({
-  projectId
-});
+const solanaAdapter = new SolanaAdapter();
 
-const bitcoinAdapter = new BitcoinAdapter({
-  projectId
-});
+const bitcoinAdapter = new BitcoinAdapter();
 
 const appKit = createAppKit({
   projectId,
   adapters: [wagmiAdapter, solanaAdapter, bitcoinAdapter],
   metadata,
-  siweConfig,
+  // siweConfig,
   networks: [...chains, solana, bitcoin],
   defaultNetwork: chains[0],
   clipboardClient,
   debug: true,
   enableAnalytics: true,
   storage,
-  extraConnectors: [new PhantomConnector({ cluster: 'mainnet-beta' })]
+  extraConnectors: [new PhantomConnector()],
   // tokens: {
   //   'eip155:1': {
   //     address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
