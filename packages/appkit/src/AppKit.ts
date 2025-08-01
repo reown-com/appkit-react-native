@@ -149,47 +149,59 @@ export class AppKit {
         siweConfig: this.config?.siweConfig
       });
 
-      const walletInfo = connector.getWalletInfo();
-      const properties = connector.getProperties();
+      this.processConnection(connector, approvedNamespaces);
 
-      if (!approvedNamespaces || Object.keys(approvedNamespaces).length === 0) {
-        throw new Error('Connection cancelled or failed: No approved namespaces returned.');
-      }
-
-      // Setup adapters and subscribe to adapter events
-      const approvedAdapters = this.setupAdaptersAndSubscribe(
-        connector,
-        Object.keys(approvedNamespaces)
-      );
-
-      // Check if any compatible adapters were found for the *approved* namespaces
-      if (approvedAdapters.length === 0) {
-        //TODO: handle case where devs want to connect to a namespace that has no adapters. Could use the provider directly.
-        throw new Error('No compatible adapters found for the approved namespaces');
-      }
-
-      // Store the connection details for the successfully connected adapters
-      this.setConnection(approvedAdapters, approvedNamespaces, walletInfo, properties);
-
-      // Store connector type and namespaces in storage
-      await StorageUtil.setConnectedConnectors({
-        type: connector.type,
-        namespaces: Object.keys(approvedNamespaces)
-      });
-
-      this.syncAccounts(approvedAdapters);
-
-      if (
-        OptionsController.state.isSiweEnabled &&
-        ConnectionsController.state.activeNamespace === 'eip155'
-      ) {
-        this.handleSiweChange({ isConnection: true });
-      } else {
-        ModalController.close();
+      // Save connector type and namespaces in storage
+      if (approvedNamespaces && Object.keys(approvedNamespaces).length > 0) {
+        await StorageUtil.setConnectedConnectors({
+          type: connector.type,
+          namespaces: Object.keys(approvedNamespaces)
+        });
       }
     } catch (error) {
       console.warn('Connection failed:', error);
       throw error;
+    }
+  }
+
+  private processConnection(
+    connector: WalletConnector,
+    namespaces?: Namespaces,
+    shouldCloseModal: boolean = true
+  ) {
+    if (!namespaces || Object.keys(namespaces).length === 0) {
+      throw new Error('No namespaces provided');
+    }
+
+    const walletInfo = connector.getWalletInfo();
+    const properties = connector.getProperties();
+
+    const initializedAdapters = this.setupAdaptersAndSubscribe(connector, Object.keys(namespaces));
+
+    if (initializedAdapters.length === 0) {
+      console.warn('No compatible adapters found for namespaces:', Object.keys(namespaces));
+
+      return;
+    }
+
+    // Store the connection details
+    this.setConnection(initializedAdapters, namespaces, walletInfo, properties);
+
+    // Sync accounts
+    this.syncAccounts(initializedAdapters);
+
+    // Handle SIWE if enabled
+    this.handleSiweConnectionIfEnabled(shouldCloseModal);
+  }
+
+  private handleSiweConnectionIfEnabled(shouldCloseModal: boolean = true): void {
+    if (
+      OptionsController.state.isSiweEnabled &&
+      ConnectionsController.state.activeNamespace === 'eip155'
+    ) {
+      this.handleSiweChange({ isConnection: true });
+    } else if (shouldCloseModal) {
+      ModalController.close();
     }
   }
 
@@ -388,13 +400,12 @@ export class AppKit {
     return this.walletConnectConnector;
   }
 
-  //TODO: reuse logic with connect method
   /**
    * Initializes connectors based on stored connection data.
    * This attempts to restore previous sessions.
    */
   private async initConnectors() {
-    const connectedConnectors = await StorageUtil.getConnectedConnectors(); // Fetch stored connectors
+    const connectedConnectors = await StorageUtil.getConnectedConnectors();
     if (connectedConnectors.length > 0) {
       ModalController.setLoading(true);
 
@@ -403,31 +414,8 @@ export class AppKit {
           const connector = await this.createConnector(connected.type);
 
           const namespaces = connector.getNamespaces();
-          const walletInfo = connector.getWalletInfo();
-          const properties = connector.getProperties();
 
-          if (namespaces && Object.keys(namespaces).length > 0) {
-            // Ensure namespaces is not empty
-            // Setup adapters and subscribe to events
-            const initializedAdapters = this.setupAdaptersAndSubscribe(
-              connector,
-              Object.keys(namespaces)
-            );
-
-            // If adapters were successfully initialized, store the connection details
-            if (initializedAdapters.length > 0) {
-              this.setConnection(initializedAdapters, namespaces, walletInfo, properties);
-            }
-
-            this.syncAccounts(initializedAdapters);
-
-            if (
-              OptionsController.state.isSiweEnabled &&
-              ConnectionsController.state.activeNamespace === 'eip155'
-            ) {
-              this.handleSiweChange({ isConnection: true });
-            }
-          }
+          this.processConnection(connector, namespaces, false);
         } catch (error) {
           // Use console.warn for non-critical initialization failures
           console.warn(`Failed to initialize connector type ${connected.type}:`, error);
