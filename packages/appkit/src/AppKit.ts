@@ -71,7 +71,6 @@ interface AppKitConfig {
   defaultNetwork?: Network;
   features?: Features;
   universalProviderConfigOverride?: UniversalProviderConfigOverride;
-  // chainImages?: Record<number, string>; //TODO: rename to networkImages
 }
 
 export class AppKit {

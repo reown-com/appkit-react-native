@@ -22,6 +22,7 @@ import {
 
 import {
   AssetController,
+  AssetUtil,
   ConnectionsController,
   SwapController,
   type SwapControllerState,
@@ -49,7 +50,7 @@ export function SwapSelectTokenView({ onClose, type, style }: Props) {
     SwapController.state
   ) as SwapControllerState;
 
-  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
+  const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const isSourceToken = type === 'sourceToken';
 

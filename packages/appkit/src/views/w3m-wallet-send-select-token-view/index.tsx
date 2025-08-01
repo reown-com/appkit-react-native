@@ -4,6 +4,7 @@ import { ScrollView } from 'react-native';
 import { FlexView, InputText, ListToken, Text } from '@reown/appkit-ui-react-native';
 import {
   AssetController,
+  AssetUtil,
   ConnectionsController,
   RouterController,
   SendController
@@ -18,7 +19,7 @@ export function WalletSendSelectTokenView() {
   const { padding } = useCustomDimensions();
   const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
-  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
+  const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const [filteredTokens, setFilteredTokens] = useState(balances ?? []);
 

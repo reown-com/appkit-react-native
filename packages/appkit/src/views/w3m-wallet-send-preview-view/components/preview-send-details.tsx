@@ -1,4 +1,4 @@
-import { AssetController } from '@reown/appkit-core-react-native';
+import { AssetController, AssetUtil } from '@reown/appkit-core-react-native';
 import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 import {
   BorderRadius,
@@ -43,7 +43,7 @@ export function PreviewSendDetails({
     truncate: 'middle'
   });
 
-  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
+  const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
 
   return (
     <FlexView

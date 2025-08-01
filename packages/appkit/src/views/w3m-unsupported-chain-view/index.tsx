@@ -5,6 +5,7 @@ import { Icon, ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
   AssetController,
+  AssetUtil,
   ConnectionsController
 } from '@reown/appkit-core-react-native';
 import type { AppKitNetwork } from '@reown/appkit-common-react-native';
@@ -46,7 +47,7 @@ export function UnsupportedChainView() {
           key={item.id}
           icon="networkPlaceholder"
           iconBackgroundColor="gray-glass-010"
-          imageSrc={networkImages[item.id]}
+          imageSrc={AssetUtil.getNetworkImage(item, networkImages)}
           imageHeaders={imageHeaders}
           onPress={() => onNetworkPress(item)}
           testID="button-network"

@@ -3,6 +3,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import {
   ApiController,
   AssetController,
+  AssetUtil,
   ConnectionsController,
   EventsController,
   ModalController,
@@ -24,7 +25,7 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
 
   const network = isConnected ? activeNetwork : defaultNetwork;
-  const networkImage = network ? networkImages[network.id] : undefined;
+  const networkImage = AssetUtil.getNetworkImage(network, networkImages);
 
   const onNetworkPress = () => {
     ModalController.open({ view: 'Networks' });

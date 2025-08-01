@@ -28,13 +28,12 @@ export type Network = {
   caipNetworkId?: CaipNetworkId; // e.g., 'eip155:1'
   testnet?: boolean;
   deprecatedCaipNetworkId?: CaipNetworkId; // for Solana deprecated id
+  imageUrl?: string;
 };
 
 export type AppKitNetwork = Network & {
-  chainNamespace: ChainNamespace; // e.g., 'eip155'
-  caipNetworkId: CaipNetworkId; // e.g., 'eip155:1'
-  testnet?: boolean;
-  deprecatedCaipNetworkId?: CaipNetworkId; // for Solana deprecated id
+  chainNamespace: ChainNamespace; // mandatory for AppKitNetwork
+  caipNetworkId: CaipNetworkId; // mandatory for AppKitNetwork
 };
 
 export interface AppKitOpenOptions {

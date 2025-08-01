@@ -1,5 +1,6 @@
 import {
   AssetController,
+  AssetUtil,
   ConnectionsController,
   OnRampController,
   RouterController,
@@ -29,7 +30,7 @@ export function OnRampCheckoutView() {
   );
 
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
-  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
+  const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
 
   const value = NumberUtil.roundNumber(selectedQuote?.destinationAmount ?? 0, 6, 5);
   const symbol = selectedQuote?.destinationCurrencyCode;

@@ -13,7 +13,9 @@ export const solana: AppKitNetwork = {
   chainNamespace: 'solana',
   caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   deprecatedCaipNetworkId: 'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ',
-  testnet: false
+  testnet: false,
+  imageUrl:
+    'https://i.ytimg.com/vi/Yj7ja6BANLM/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD2SqD0MFpMqIa2iUska-TaLfUwHw'
 };
 
 export const solanaDevnet: AppKitNetwork = {

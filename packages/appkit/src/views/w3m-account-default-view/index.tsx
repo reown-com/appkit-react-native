@@ -13,7 +13,8 @@ import {
   SwapController,
   OnRampController,
   ConnectionsController,
-  AssetController
+  AssetController,
+  AssetUtil
 } from '@reown/appkit-core-react-native';
 // import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common-react-native';
 import {
@@ -50,7 +51,7 @@ export function AccountDefaultView() {
   const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
   const { history } = useSnapshot(RouterController.state);
   const { networkImages } = useSnapshot(AssetController.state);
-  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
+  const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
   const showCopy = OptionsController.isClipboardAvailable();
   const isAuth = !!connection?.properties?.provider;
   const showBalance = balance && !isAuth;

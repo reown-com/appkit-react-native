@@ -5,7 +5,8 @@ import {
   ModalController,
   ThemeController,
   ConnectionsController,
-  AssetController
+  AssetController,
+  AssetUtil
 } from '@reown/appkit-core-react-native';
 import { AccountButton as AccountButtonUI, ThemeProvider } from '@reown/appkit-ui-react-native';
 
@@ -26,7 +27,7 @@ export function AccountButton({ balance, disabled, style, testID }: AccountButto
     identity
   } = useSnapshot(ConnectionsController.state);
 
-  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
+  const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
   const showBalance = balance === 'show';
 
   return (

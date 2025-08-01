@@ -4,6 +4,7 @@ import { FlexView, Text, Banner, NetworkImage } from '@reown/appkit-ui-react-nat
 import {
   ApiController,
   AssetController,
+  AssetUtil,
   ConnectionsController
 } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
@@ -35,7 +36,7 @@ export function WalletCompatibleNetworks() {
             padding={['s', 's', 's', 's']}
           >
             <NetworkImage
-              imageSrc={networkImages[network.id]}
+              imageSrc={AssetUtil.getNetworkImage(network, networkImages)}
               imageHeaders={imageHeaders}
               size="sm"
               style={styles.image}
