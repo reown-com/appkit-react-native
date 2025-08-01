@@ -9,8 +9,6 @@ import {
   Text
 } from '@reown/appkit-ui-react-native';
 import {
-  AssetUtil,
-  ConnectionController,
   ConnectionsController,
   EventsController,
   OptionsController,
@@ -25,14 +23,13 @@ import styles from './styles';
 export function ConnectingSiweView() {
   const { disconnect } = useAppKit();
   const { metadata } = useSnapshot(OptionsController.state);
-  const { connectedWalletImageUrl, pressedWallet } = useSnapshot(ConnectionController.state);
-  const { activeAddress, identity } = useSnapshot(ConnectionsController.state);
+  const { activeAddress, identity, walletInfo } = useSnapshot(ConnectionsController.state);
   const [isSigning, setIsSigning] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
 
   const dappName = metadata?.name || 'Dapp';
   const dappIcon = metadata?.icons[0] || '';
-  const walletIcon = AssetUtil.getWalletImage(pressedWallet) || connectedWalletImageUrl;
+  const walletIcon = walletInfo?.icon;
   const isSmartAccount = ConnectionsController.state.accountType === 'smartAccount';
   const network = ConnectionsController.state.activeNetwork?.caipNetworkId || '';
 

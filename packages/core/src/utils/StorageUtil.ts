@@ -153,40 +153,6 @@ export const StorageUtil = {
     }
   },
 
-  async setConnectedWalletImageUrl(url: string) {
-    try {
-      await OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.CONNECTED_WALLET_IMAGE_URL,
-        url
-      );
-    } catch {
-      console.info('Unable to set Connected Wallet Image URL');
-    }
-  },
-
-  async getConnectedWalletImageUrl() {
-    try {
-      return await OptionsController.getStorage().getItem(
-        ConstantsUtil.STORAGE_KEYS.CONNECTED_WALLET_IMAGE_URL
-      );
-    } catch {
-      console.info('Unable to get Connected Wallet Image URL');
-    }
-
-    return undefined;
-  },
-
-  async removeConnectedWalletImageUrl() {
-    try {
-      await OptionsController.getStorage().removeItem(
-        ConstantsUtil.STORAGE_KEYS.CONNECTED_WALLET_IMAGE_URL
-      );
-    } catch (e) {
-      console.error(e);
-      console.info('Unable to remove Connected Wallet Image URL');
-    }
-  },
-
   async setConnectedSocialProvider(provider: SocialProvider) {
     try {
       await OptionsController.getStorage().setItem(

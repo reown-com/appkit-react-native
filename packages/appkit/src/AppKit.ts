@@ -669,8 +669,6 @@ export class AppKit {
 
   private async initRecentWallets(options: AppKitConfig) {
     const wallets = await StorageUtil.getRecentWallets();
-    const connectedWalletImage = await StorageUtil.getConnectedWalletImageUrl();
-
     const filteredWallets = wallets.filter(wallet => {
       const { includeWalletIds, excludeWalletIds } = options;
       if (includeWalletIds) {
@@ -684,10 +682,6 @@ export class AppKit {
     });
 
     ConnectionController.setRecentWallets(filteredWallets);
-
-    if (connectedWalletImage) {
-      ConnectionController.setConnectedWalletImageUrl(connectedWalletImage);
-    }
   }
 
   private setExcludedWallets(options: AppKitConfig) {
@@ -697,7 +691,7 @@ export class AppKit {
     const excludeCoinbase = !this.extraConnectors.some(connector => connector.type === 'coinbase');
 
     if (excludeCoinbase) {
-      excludedWallets.push(ConstantsUtil.COINBASE_EXPLORER_ID);
+      excludedWallets.push(ConstantsUtil.COINBASE_CUSTOM_WALLET.id);
     }
 
     OptionsController.setExcludeWalletIds(excludedWallets);

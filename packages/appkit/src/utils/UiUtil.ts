@@ -1,5 +1,4 @@
 import {
-  AssetUtil,
   ConnectionController,
   RouterController,
   StorageUtil,
@@ -32,8 +31,6 @@ export const UiUtil = {
 
     if (pressedWallet) {
       UiUtil.storeRecentWallet(pressedWallet);
-      const url = AssetUtil.getWalletImage(pressedWallet);
-      ConnectionController.setConnectedWalletImageUrl(url);
     }
   },
 

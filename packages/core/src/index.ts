@@ -9,7 +9,6 @@ export { RouterController, type RouterControllerState } from './controllers/Rout
 
 export {
   ConnectionController,
-  type ConnectionControllerClient,
   type ConnectionControllerState
 } from './controllers/ConnectionController';
 

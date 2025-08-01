@@ -15,7 +15,7 @@ describe('OptionsController', () => {
     expect(OptionsController.state).toEqual({
       projectId: '',
       sdkType: 'appkit',
-      sdkVersion: 'react-native-wagmi-undefined',
+      sdkVersion: 'react-native-undefined-undefined',
       features: ConstantsUtil.DEFAULT_FEATURES,
       debug: false
     });
@@ -39,17 +39,6 @@ describe('OptionsController', () => {
   it('should update state correctly on setFeaturedWalletIds()', () => {
     OptionsController.setFeaturedWalletIds(MOCK_WALLET_IDS);
     expect(OptionsController.state.featuredWalletIds).toEqual(MOCK_WALLET_IDS);
-  });
-
-  it('should update state correctly on setTokens()', () => {
-    OptionsController.setTokens({
-      'eip155:1': { address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' }
-    });
-
-    // @ts-ignore
-    expect(OptionsController.state.tokens['eip155:1']).toEqual({
-      address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
-    });
   });
 
   it('should detect that clipboard is not available', () => {

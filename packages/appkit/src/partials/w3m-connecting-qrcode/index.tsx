@@ -1,14 +1,12 @@
 import { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import {
-  AssetUtil,
   ConnectionController,
   EventsController,
   OptionsController,
   SnackController
 } from '@reown/appkit-core-react-native';
 import { FlexView, Link, QrCode, Text, Spacing } from '@reown/appkit-ui-react-native';
-import { ConstantsUtil } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
@@ -36,10 +34,6 @@ export function ConnectingQrCode() {
         name: 'WalletConnect'
       }
     });
-
-    //TODO: check this
-    const url = AssetUtil.getConnectorImage(ConstantsUtil.WALLET_CONNECT_IMAGE_ID);
-    ConnectionController.setConnectedWalletImageUrl(url);
   };
 
   useEffect(() => {

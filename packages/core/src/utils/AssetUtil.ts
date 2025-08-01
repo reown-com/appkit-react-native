@@ -12,13 +12,5 @@ export const AssetUtil = {
     }
 
     return undefined;
-  },
-
-  getConnectorImage(imageId?: string) {
-    if (imageId) {
-      return AssetController.state.connectorImages[imageId];
-    }
-
-    return undefined;
   }
 };
