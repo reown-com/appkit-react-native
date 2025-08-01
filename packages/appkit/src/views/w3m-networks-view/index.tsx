@@ -19,7 +19,7 @@ import {
 import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import { useSnapshot } from 'valtio';
 
 export function NetworksView() {
@@ -33,7 +33,7 @@ export function NetworksView() {
   const itemGap = Math.abs(
     Math.trunc((usableWidth - numColumns * CardSelectWidth) / numColumns) / 2
   );
-  const { switchNetwork, back } = useAppKit();
+  const { switchNetwork, back } = useInternalAppKit();
 
   const networkList = isConnected ? ConnectionsController.getConnectedNetworks() : networks;
 

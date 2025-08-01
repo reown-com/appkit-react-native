@@ -16,8 +16,7 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children, instan
   return <AppKitContext.Provider value={{ appKit: instance }}>{children}</AppKitContext.Provider>;
 };
 
-//TODO: rename this so it doesn't conflict with the useAppKit hook in the hooks folder
-export const useAppKit = () => {
+export const useInternalAppKit = () => {
   const context = useContext(AppKitContext);
   if (context === undefined) {
     throw new Error('useAppKit must be used within an AppKitProvider');

@@ -19,13 +19,13 @@ import {
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w3m-connecting-body';
 import styles from './styles';
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import { ConstantsUtil } from '@reown/appkit-common-react-native';
 import { UiUtil } from '../../utils/UiUtil';
 
 export function ConnectingExternalView() {
   const { data } = useSnapshot(RouterController.state);
-  const { connect } = useAppKit();
+  const { connect } = useInternalAppKit();
   const { maxWidth: width } = useCustomDimensions();
   const [errorType, setErrorType] = useState<BodyErrorType>();
   const bodyMessage = getMessage({ walletName: data?.wallet?.name, errorType });

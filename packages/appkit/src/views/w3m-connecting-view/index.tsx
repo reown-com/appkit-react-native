@@ -11,7 +11,7 @@ import {
   ApiController,
   EventsController
 } from '@reown/appkit-core-react-native';
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
 import { ConnectingMobile } from '../../partials/w3m-connecting-mobile';
 import { ConnectingWeb } from '../../partials/w3m-connecting-web';
@@ -19,7 +19,7 @@ import { ConnectingHeader } from '../../partials/w3m-connecting-header';
 import { UiUtil } from '../../utils/UiUtil';
 
 export function ConnectingView() {
-  const { connect } = useAppKit();
+  const { connect } = useInternalAppKit();
   const { installed } = useSnapshot(ApiController.state);
   const { data } = RouterController.state;
   const [lastRetry, setLastRetry] = useState(Date.now());

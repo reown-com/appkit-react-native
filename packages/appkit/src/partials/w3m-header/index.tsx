@@ -8,10 +8,10 @@ import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
 import { StringUtil } from '@reown/appkit-common-react-native';
 
 import styles from './styles';
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 
 export function Header() {
-  const { close, back } = useAppKit();
+  const { close, back } = useInternalAppKit();
   const { data, view } = useSnapshot(RouterController.state);
   const onHelpPress = () => {
     RouterController.push('WhatIsAWallet');

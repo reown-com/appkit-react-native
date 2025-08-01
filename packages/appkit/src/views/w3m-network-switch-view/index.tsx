@@ -16,11 +16,11 @@ import {
   NetworkImage,
   Text
 } from '@reown/appkit-ui-react-native';
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function NetworkSwitchView() {
-  const { switchNetwork } = useAppKit();
+  const { switchNetwork } = useInternalAppKit();
   const { data } = useSnapshot(RouterController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const { activeNetwork } = useSnapshot(ConnectionsController.state);

@@ -27,14 +27,14 @@ import {
   ListItem
 } from '@reown/appkit-ui-react-native';
 
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { AuthButtons } from './components/auth-buttons';
 import styles from './styles';
 
 export function AccountDefaultView() {
-  const { switchAccountType, disconnect } = useAppKit();
+  const { switchAccountType, disconnect } = useInternalAppKit();
   const { loading } = useSnapshot(ModalController.state);
   const {
     activeAddress: address,

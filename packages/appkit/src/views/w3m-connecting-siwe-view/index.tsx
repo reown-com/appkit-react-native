@@ -17,11 +17,11 @@ import {
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function ConnectingSiweView() {
-  const { disconnect } = useAppKit();
+  const { disconnect } = useInternalAppKit();
   const { metadata } = useSnapshot(OptionsController.state);
   const { activeAddress, identity, walletInfo } = useSnapshot(ConnectionsController.state);
   const [isSigning, setIsSigning] = useState(false);

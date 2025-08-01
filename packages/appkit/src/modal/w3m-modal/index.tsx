@@ -15,11 +15,11 @@ import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
 import { Snackbar } from '../../partials/w3m-snackbar';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function AppKit() {
-  const { close } = useAppKit();
+  const { close } = useInternalAppKit();
   const { open } = useSnapshot(ModalController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const { projectId } = useSnapshot(OptionsController.state);

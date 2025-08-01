@@ -8,7 +8,7 @@ import {
   ConnectionsController
 } from '@reown/appkit-core-react-native';
 import type { AppKitNetwork } from '@reown/appkit-common-react-native';
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function UnsupportedChainView() {
@@ -17,7 +17,7 @@ export function UnsupportedChainView() {
   const [disconnecting, setDisconnecting] = useState(false);
   const networks = ConnectionsController.getConnectedNetworks();
   const imageHeaders = ApiController._getApiHeaders();
-  const { disconnect, switchNetwork } = useAppKit();
+  const { disconnect, switchNetwork } = useInternalAppKit();
 
   const onNetworkPress = async (network: AppKitNetwork) => {
     switchNetwork(network);

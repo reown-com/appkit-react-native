@@ -11,13 +11,13 @@ import { FlexView, LoadingThumbnail, IconBox, Logo, Text } from '@reown/appkit-u
 import { ConstantsUtil, StringUtil } from '@reown/appkit-common-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import { UiUtil } from '../../utils/UiUtil';
 import styles from './styles';
 
 export function ConnectingSocialView() {
   const { maxWidth: width } = useCustomDimensions();
-  const { connect } = useAppKit();
+  const { connect } = useInternalAppKit();
   const { data } = useSnapshot(RouterController.state);
   const { wcUri } = useSnapshot(ConnectionController.state);
   const [error, setError] = useState(false);
