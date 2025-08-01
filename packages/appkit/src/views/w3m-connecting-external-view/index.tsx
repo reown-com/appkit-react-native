@@ -5,7 +5,7 @@ import {
   RouterController,
   ApiController,
   EventsController,
-  ConnectionController,
+  WcController,
   AssetUtil
 } from '@reown/appkit-core-react-native';
 import {
@@ -19,13 +19,12 @@ import {
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w3m-connecting-body';
 import styles from './styles';
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import { ConstantsUtil } from '@reown/appkit-common-react-native';
-import { UiUtil } from '../../utils/UiUtil';
 
 export function ConnectingExternalView() {
   const { data } = useSnapshot(RouterController.state);
-  const { connect } = useAppKit();
+  const { connect } = useInternalAppKit();
   const { maxWidth: width } = useCustomDimensions();
   const [errorType, setErrorType] = useState<BodyErrorType>();
   const bodyMessage = getMessage({ walletName: data?.wallet?.name, errorType });
@@ -39,16 +38,16 @@ export function ConnectingExternalView() {
     try {
       const wallet = RouterController.state.data?.wallet;
       if (wallet) {
-        if (wallet.id === ConstantsUtil.PHANTOM_EXPLORER_ID) {
+        if (wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id) {
           await connect('phantom');
-        } else if (wallet.id === ConstantsUtil.COINBASE_EXPLORER_ID) {
+        } else if (wallet.id === ConstantsUtil.COINBASE_CUSTOM_WALLET.id) {
           await connect('coinbase');
         } else {
           // All other wallets are handled by WalletConnect connector
           return;
         }
-        UiUtil.storeRecentWallet(wallet);
-        ConnectionController.setPressedWallet(wallet);
+        WcController.addRecentWallet(wallet);
+        WcController.setPressedWallet(wallet);
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',

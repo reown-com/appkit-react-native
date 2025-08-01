@@ -9,8 +9,6 @@ import {
   Text
 } from '@reown/appkit-ui-react-native';
 import {
-  AssetUtil,
-  ConnectionController,
   ConnectionsController,
   EventsController,
   OptionsController,
@@ -19,20 +17,19 @@ import {
 } from '@reown/appkit-core-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function ConnectingSiweView() {
-  const { disconnect } = useAppKit();
+  const { disconnect } = useInternalAppKit();
   const { metadata } = useSnapshot(OptionsController.state);
-  const { connectedWalletImageUrl, pressedWallet } = useSnapshot(ConnectionController.state);
-  const { activeAddress } = useSnapshot(ConnectionsController.state);
+  const { activeAddress, identity, walletInfo } = useSnapshot(ConnectionsController.state);
   const [isSigning, setIsSigning] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
 
   const dappName = metadata?.name || 'Dapp';
   const dappIcon = metadata?.icons[0] || '';
-  const walletIcon = AssetUtil.getWalletImage(pressedWallet) || connectedWalletImageUrl;
+  const walletIcon = walletInfo?.icon;
   const isSmartAccount = ConnectionsController.state.accountType === 'smartAccount';
   const network = ConnectionsController.state.activeNetwork?.caipNetworkId || '';
 
@@ -83,7 +80,6 @@ export function ConnectingSiweView() {
     });
   };
 
-  //TODO: Add profile image in Avatar
   return (
     <FlexView padding={['2xl', 's', '3xl', 's']}>
       <IconLink
@@ -101,7 +97,7 @@ export function ConnectingSiweView() {
         leftImage={dappIcon}
         rightImage={walletIcon}
         renderRightPlaceholder={() => (
-          <Avatar imageSrc={undefined} address={activeAddress} size={60} borderWidth={0} />
+          <Avatar imageSrc={identity?.avatar} address={activeAddress} size={60} borderWidth={0} />
         )}
         rightItemStyle={!walletIcon && styles.walletAvatar}
       />

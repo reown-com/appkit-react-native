@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react';
 import {
   ApiController,
   AssetController,
-  ConnectionController,
+  WcController,
   ConnectionsController,
   RouterController,
-  RouterUtil
+  RouterUtil,
+  AssetUtil
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -16,20 +17,21 @@ import {
   NetworkImage,
   Text
 } from '@reown/appkit-ui-react-native';
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
+//TODO: is this used?
 export function NetworkSwitchView() {
-  const { switchNetwork } = useAppKit();
+  const { switchNetwork } = useInternalAppKit();
   const { data } = useSnapshot(RouterController.state);
-  const { recentWallets } = useSnapshot(ConnectionController.state);
+  const { recentWallets } = useSnapshot(WcController.state);
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const [error, setError] = useState<boolean>(false);
   const [showRetry, setShowRetry] = useState<boolean>(false);
   const network = data?.network;
   const wallet = recentWallets?.[0];
-  const networkImage = network ? networkImages[network.id] : undefined;
+  const networkImage = AssetUtil.getNetworkImage(network, networkImages);
 
   const onSwitchNetwork = async () => {
     try {

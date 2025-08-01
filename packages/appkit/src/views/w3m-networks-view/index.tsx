@@ -14,12 +14,13 @@ import {
   EventsController,
   ConnectionsController,
   OptionsController,
-  AssetController
+  AssetController,
+  AssetUtil
 } from '@reown/appkit-core-react-native';
 import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import { useSnapshot } from 'valtio';
 
 export function NetworksView() {
@@ -33,7 +34,7 @@ export function NetworksView() {
   const itemGap = Math.abs(
     Math.trunc((usableWidth - numColumns * CardSelectWidth) / numColumns) / 2
   );
-  const { switchNetwork, back } = useAppKit();
+  const { switchNetwork, back } = useInternalAppKit();
 
   const networkList = isConnected ? ConnectionsController.getConnectedNetworks() : networks;
 
@@ -53,7 +54,7 @@ export function NetworksView() {
         ? ConnectionsController.state.activeCaipNetworkId === network.caipNetworkId
         : OptionsController.state.defaultNetwork?.caipNetworkId === network.caipNetworkId;
       // eslint-disable-next-line valtio/state-snapshot-rule
-      const networkImage = network ? networkImages[network.id] : undefined;
+      const networkImage = AssetUtil.getNetworkImage(network, networkImages);
 
       return (
         <View

@@ -14,11 +14,11 @@ import type {
 import { AssetController } from './AssetController';
 import { OptionsController } from './OptionsController';
 // import { ConnectorController } from './ConnectorController';
-import { ConnectionController } from './ConnectionController';
+import { WcController } from './WcController';
 import { ApiUtil } from '../utils/ApiUtil';
 import { SnackController } from './SnackController';
 import { ConnectionsController } from './ConnectionsController';
-import { ConstantsUtil, PresetsUtil } from '@reown/appkit-common-react-native';
+import { PresetsUtil } from '@reown/appkit-common-react-native';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl();
@@ -85,14 +85,6 @@ export const ApiController = {
     }
   },
 
-  async _fetchConnectorImage(imageId: string) {
-    const headers = ApiController._getApiHeaders();
-    const url = await api.fetchImage(`/public/getAssetImage/${imageId}`, headers);
-    if (url) {
-      AssetController.setConnectorImage(imageId, url);
-    }
-  },
-
   async _fetchNetworkImage(networkId: string) {
     const imageId = PresetsUtil.NetworkImageIds[networkId];
     if (!imageId) {
@@ -104,14 +96,6 @@ export const ApiController = {
     if (url) {
       AssetController.setNetworkImage(networkId, url);
     }
-  },
-
-  async fetchConnectorImages() {
-    const connectors = [{ imageId: ConstantsUtil.WALLET_CONNECT_IMAGE_ID }];
-    const ids = connectors.map(({ imageId }) => imageId).filter(Boolean);
-    await CoreHelperUtil.allSettled(
-      (ids as string[]).map(id => ApiController._fetchConnectorImage(id))
-    );
   },
 
   async fetchNetworkImages() {
@@ -341,7 +325,7 @@ export const ApiController = {
 
     if (update) {
       await StorageUtil.setRecentWallets(updatedRecent);
-      ConnectionController.setRecentWallets(updatedRecent);
+      WcController.setRecentWallets(updatedRecent);
     }
   },
 
@@ -356,7 +340,6 @@ export const ApiController = {
         ApiController.fetchFeaturedWallets(),
         ApiController.fetchRecommendedWallets(),
         ApiController.fetchNetworkImages(),
-        ApiController.fetchConnectorImages(),
         ApiController.fetchCustomWalletImages()
       ];
       if (OptionsController.state.enableAnalytics === undefined) {

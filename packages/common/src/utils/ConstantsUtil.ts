@@ -15,11 +15,6 @@ export const ConstantsUtil = {
   SECURE_SITE_DASHBOARD: `https://secure.reown.com/dashboard`,
   SECURE_SITE_ICON: `https://secure.reown.com/images/favicon.png`,
 
-  COINBASE_EXPLORER_ID: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
-  PHANTOM_EXPLORER_ID: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
-
-  WALLET_CONNECT_IMAGE_ID: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
-
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet
     '0xdac17f958d2ee523a2206206994597c13d831ec7',
@@ -44,13 +39,18 @@ export const ConstantsUtil = {
     mobile_link: 'phantom://'
   },
 
+  COINBASE_CUSTOM_WALLET: {
+    id: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+    name: 'Coinbase Wallet',
+    image_id: 'a5ebc364-8f91-4200-fcc6-be81310a0000',
+    mobile_link: 'https://wallet.coinbase.com/wsegue'
+  },
+
   // Storage Keys
   STORAGE_KEYS: {
     WC_DEEPLINK: 'WALLETCONNECT_DEEPLINK_CHOICE', //dont change this one
     RECENT_WALLET: '@appkit/recent_wallet',
-    CONNECTED_WALLET_IMAGE_URL: '@appkit/connected_wallet_image_url',
     CONNECTED_CONNECTORS: '@appkit/connected_connectors',
-    CONNECTED_SOCIAL: '@appkit/connected_social',
     ONRAMP_PREFERRED_COUNTRY: '@appkit/onramp_preferred_country',
     ONRAMP_COUNTRIES: '@appkit/onramp_countries',
     ONRAMP_SERVICE_PROVIDERS: '@appkit/onramp_service_providers',

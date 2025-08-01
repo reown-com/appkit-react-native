@@ -3,8 +3,8 @@ import { useSnapshot } from 'valtio';
 import {
   ApiController,
   AssetUtil,
-  ConnectionController,
-  type ConnectionControllerState,
+  WcController,
+  type WcControllerState,
   type WcWallet
 } from '@reown/appkit-core-react-native';
 import { ListItemLoader, ListWallet } from '@reown/appkit-ui-react-native';
@@ -18,7 +18,7 @@ interface Props {
 
 export function AllWalletList({ itemStyle, onWalletPress }: Props) {
   const { installed, featured, recommended, prefetchLoading } = useSnapshot(ApiController.state);
-  const { recentWallets } = useSnapshot(ConnectionController.state) as ConnectionControllerState;
+  const { recentWallets } = useSnapshot(WcController.state) as WcControllerState;
   const imageHeaders = ApiController._getApiHeaders();
   const RECENT_COUNT = recentWallets?.length && installed.length ? 1 : recentWallets?.length ?? 0;
 

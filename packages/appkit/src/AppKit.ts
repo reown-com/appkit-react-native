@@ -9,12 +9,13 @@ import {
   StorageUtil,
   type OptionsControllerState,
   ThemeController,
-  ConnectionController,
+  WcController,
   SwapController,
   OnRampController,
   CoreHelperUtil,
   SendController,
-  BlockchainApiController
+  BlockchainApiController,
+  type UniversalProviderConfigOverride
 } from '@reown/appkit-core-react-native';
 
 import {
@@ -39,7 +40,8 @@ import {
   type AccountType,
   type AppKitOpenOptions,
   ConstantsUtil,
-  type Connection
+  type Connection,
+  type Tokens
 } from '@reown/appkit-common-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -60,7 +62,7 @@ interface AppKitConfig {
   excludeWalletIds?: OptionsControllerState['excludeWalletIds'];
   featuredWalletIds?: OptionsControllerState['featuredWalletIds'];
   customWallets?: OptionsControllerState['customWallets'];
-  tokens?: OptionsControllerState['tokens']; //TODO: check if needed in OptionsController
+  tokens?: Tokens;
   enableAnalytics?: OptionsControllerState['enableAnalytics'];
   debug?: OptionsControllerState['debug'];
   themeMode?: ThemeMode;
@@ -68,7 +70,7 @@ interface AppKitConfig {
   siweConfig?: AppKitSIWEClient;
   defaultNetwork?: Network;
   features?: Features;
-  // chainImages?: Record<number, string>; //TODO: rename to networkImages
+  universalProviderConfigOverride?: UniversalProviderConfigOverride;
 }
 
 export class AppKit {
@@ -115,7 +117,10 @@ export class AppKit {
     });
 
     this.networks = networksWithAdapters;
-    this.namespaces = WcHelpersUtil.createNamespaces(this.networks) as ProposalNamespaces;
+    this.namespaces = WcHelpersUtil.createNamespaces(
+      this.networks,
+      config.universalProviderConfigOverride
+    ) as ProposalNamespaces;
     this.config = config;
     this.extraConnectors = config.extraConnectors || [];
 
@@ -144,47 +149,59 @@ export class AppKit {
         siweConfig: this.config?.siweConfig
       });
 
-      const walletInfo = connector.getWalletInfo();
-      const properties = connector.getProperties();
+      this.processConnection(connector, approvedNamespaces);
 
-      if (!approvedNamespaces || Object.keys(approvedNamespaces).length === 0) {
-        throw new Error('Connection cancelled or failed: No approved namespaces returned.');
-      }
-
-      // Setup adapters and subscribe to adapter events
-      const approvedAdapters = this.setupAdaptersAndSubscribe(
-        connector,
-        Object.keys(approvedNamespaces)
-      );
-
-      // Check if any compatible adapters were found for the *approved* namespaces
-      if (approvedAdapters.length === 0) {
-        //TODO: handle case where devs want to connect to a namespace that has no adapters. Could use the provider directly.
-        throw new Error('No compatible adapters found for the approved namespaces');
-      }
-
-      // Store the connection details for the successfully connected adapters
-      this.setConnection(approvedAdapters, approvedNamespaces, walletInfo, properties);
-
-      // Store connector type and namespaces in storage
-      await StorageUtil.setConnectedConnectors({
-        type: connector.type,
-        namespaces: Object.keys(approvedNamespaces)
-      });
-
-      this.syncAccounts(approvedAdapters);
-
-      if (
-        OptionsController.state.isSiweEnabled &&
-        ConnectionsController.state.activeNamespace === 'eip155'
-      ) {
-        this.handleSiweChange({ isConnection: true });
-      } else {
-        ModalController.close();
+      // Save connector type and namespaces in storage
+      if (approvedNamespaces && Object.keys(approvedNamespaces).length > 0) {
+        await StorageUtil.setConnectedConnectors({
+          type: connector.type,
+          namespaces: Object.keys(approvedNamespaces)
+        });
       }
     } catch (error) {
       console.warn('Connection failed:', error);
       throw error;
+    }
+  }
+
+  private processConnection(
+    connector: WalletConnector,
+    namespaces?: Namespaces,
+    shouldCloseModal: boolean = true
+  ) {
+    if (!namespaces || Object.keys(namespaces).length === 0) {
+      throw new Error('No namespaces provided');
+    }
+
+    const walletInfo = connector.getWalletInfo();
+    const properties = connector.getProperties();
+
+    const initializedAdapters = this.setupAdaptersAndSubscribe(connector, Object.keys(namespaces));
+
+    if (initializedAdapters.length === 0) {
+      console.warn('No compatible adapters found for namespaces:', Object.keys(namespaces));
+
+      return;
+    }
+
+    // Store the connection details
+    this.setConnection(initializedAdapters, namespaces, walletInfo, properties);
+
+    // Sync accounts
+    this.syncAccounts(initializedAdapters);
+
+    // Handle SIWE if enabled
+    this.handleSiweConnectionIfEnabled(shouldCloseModal);
+  }
+
+  private handleSiweConnectionIfEnabled(shouldCloseModal: boolean = true): void {
+    if (
+      OptionsController.state.isSiweEnabled &&
+      ConnectionsController.state.activeNamespace === 'eip155'
+    ) {
+      this.handleSiweChange({ isConnection: true });
+    } else if (shouldCloseModal) {
+      ModalController.close();
     }
   }
 
@@ -219,7 +236,7 @@ export class AppKit {
       SwapController.resetState();
       SendController.resetState();
       OnRampController.resetState();
-      ConnectionController.disconnect();
+      WcController.resetState();
 
       if (ConnectionsController.state.activeNamespace === undefined) {
         ConnectionsController.setActiveNamespace(
@@ -383,13 +400,12 @@ export class AppKit {
     return this.walletConnectConnector;
   }
 
-  //TODO: reuse logic with connect method
   /**
    * Initializes connectors based on stored connection data.
    * This attempts to restore previous sessions.
    */
   private async initConnectors() {
-    const connectedConnectors = await StorageUtil.getConnectedConnectors(); // Fetch stored connectors
+    const connectedConnectors = await StorageUtil.getConnectedConnectors();
     if (connectedConnectors.length > 0) {
       ModalController.setLoading(true);
 
@@ -398,31 +414,8 @@ export class AppKit {
           const connector = await this.createConnector(connected.type);
 
           const namespaces = connector.getNamespaces();
-          const walletInfo = connector.getWalletInfo();
-          const properties = connector.getProperties();
 
-          if (namespaces && Object.keys(namespaces).length > 0) {
-            // Ensure namespaces is not empty
-            // Setup adapters and subscribe to events
-            const initializedAdapters = this.setupAdaptersAndSubscribe(
-              connector,
-              Object.keys(namespaces)
-            );
-
-            // If adapters were successfully initialized, store the connection details
-            if (initializedAdapters.length > 0) {
-              this.setConnection(initializedAdapters, namespaces, walletInfo, properties);
-            }
-
-            this.syncAccounts(initializedAdapters);
-
-            if (
-              OptionsController.state.isSiweEnabled &&
-              ConnectionsController.state.activeNamespace === 'eip155'
-            ) {
-              this.handleSiweChange({ isConnection: true });
-            }
-          }
+          this.processConnection(connector, namespaces, false);
         } catch (error) {
           // Use console.warn for non-critical initialization failures
           console.warn(`Failed to initialize connector type ${connected.type}:`, error);
@@ -449,7 +442,7 @@ export class AppKit {
     }
 
     adapters.forEach(adapter => {
-      adapter.setConnector(connector);
+      adapter.init({ connector });
       this.subscribeToAdapterEvents(adapter);
     });
 
@@ -569,9 +562,7 @@ export class AppKit {
   private subscribeToAdapterEvents(adapter: BlockchainAdapter): void {
     adapter.on('accountsChanged', ({ accounts }) => {
       const namespace = adapter.getSupportedNamespace();
-      //eslint-disable-next-line no-console
-      console.log('accountsChanged', accounts, namespace);
-      //TODO: check this
+      ConnectionsController.updateAccounts(namespace, accounts);
 
       if (namespace === 'eip155') {
         this.handleSiweChange({ isAccountChange: true });
@@ -605,7 +596,6 @@ export class AppKit {
       this.disconnect(namespace, false);
     });
 
-    //TODO: Add types to this events
     adapter.on('balanceChanged', ({ address, balance }) => {
       //eslint-disable-next-line no-console
       console.log('balanceChanged', address, balance);
@@ -623,7 +613,6 @@ export class AppKit {
     this.setExcludedWallets(options);
     this.setCustomWallets(options);
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
-    OptionsController.setTokens(options.tokens);
     OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setDebug(options.debug);
     OptionsController.setFeatures(options.features);
@@ -671,8 +660,6 @@ export class AppKit {
 
   private async initRecentWallets(options: AppKitConfig) {
     const wallets = await StorageUtil.getRecentWallets();
-    const connectedWalletImage = await StorageUtil.getConnectedWalletImageUrl();
-
     const filteredWallets = wallets.filter(wallet => {
       const { includeWalletIds, excludeWalletIds } = options;
       if (includeWalletIds) {
@@ -685,11 +672,7 @@ export class AppKit {
       return true;
     });
 
-    ConnectionController.setRecentWallets(filteredWallets);
-
-    if (connectedWalletImage) {
-      ConnectionController.setConnectedWalletImageUrl(connectedWalletImage);
-    }
+    WcController.setRecentWallets(filteredWallets);
   }
 
   private setExcludedWallets(options: AppKitConfig) {
@@ -699,7 +682,7 @@ export class AppKit {
     const excludeCoinbase = !this.extraConnectors.some(connector => connector.type === 'coinbase');
 
     if (excludeCoinbase) {
-      excludedWallets.push(ConstantsUtil.COINBASE_EXPLORER_ID);
+      excludedWallets.push(ConstantsUtil.COINBASE_CUSTOM_WALLET.id);
     }
 
     OptionsController.setExcludeWalletIds(excludedWallets);

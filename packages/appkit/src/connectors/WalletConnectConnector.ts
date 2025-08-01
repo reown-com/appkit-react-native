@@ -1,4 +1,4 @@
-import { ConnectionController } from '@reown/appkit-core-react-native';
+import { WcController } from '@reown/appkit-core-react-native';
 import { UniversalProvider, type IUniversalProvider } from '@walletconnect/universal-provider';
 import {
   WalletConnector,
@@ -95,7 +95,7 @@ export class WalletConnectConnector extends WalletConnector {
   override async connect(opts: ConnectOptions) {
     const { siweConfig, namespaces, defaultChain, universalLink } = opts;
     function onUri(uri: string) {
-      ConnectionController.setWcUri(uri);
+      WcController.setWcUri(uri);
     }
 
     const provider = this.getProvider() as IUniversalProvider;

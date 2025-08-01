@@ -31,8 +31,8 @@ export function ConnectView() {
 
   const onWalletPress = (wallet: WcWallet, isInstalled?: boolean) => {
     const isExternal =
-      wallet.id === ConstantsUtil.PHANTOM_EXPLORER_ID ||
-      wallet.id === ConstantsUtil.COINBASE_EXPLORER_ID;
+      wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id ||
+      wallet.id === ConstantsUtil.COINBASE_CUSTOM_WALLET.id;
     if (isExternal) {
       RouterController.push('ConnectingExternal', { wallet });
     } else {

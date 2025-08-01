@@ -1,3 +1,4 @@
+import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 import { AssetController } from '../controllers/AssetController';
 import type { WcWallet } from './TypeUtil';
 
@@ -14,11 +15,15 @@ export const AssetUtil = {
     return undefined;
   },
 
-  getConnectorImage(imageId?: string) {
-    if (imageId) {
-      return AssetController.state.connectorImages[imageId];
+  getNetworkImage(network?: AppKitNetwork, networkImages?: Record<string, string>) {
+    if (!network) {
+      return undefined;
     }
 
-    return undefined;
+    if (network?.imageUrl) {
+      return network.imageUrl;
+    }
+
+    return networkImages?.[network?.id];
   }
 };

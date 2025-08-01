@@ -5,7 +5,7 @@ import {
   RouterController,
   ApiController,
   AssetUtil,
-  ConnectionController,
+  WcController,
   CoreHelperUtil,
   OptionsController,
   EventsController,
@@ -21,7 +21,6 @@ import {
 } from '@reown/appkit-ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import { UiUtil } from '../../utils/UiUtil';
 import { StoreLink } from './components/StoreLink';
 import { ConnectingBody, getMessage, type BodyErrorType } from '../w3m-connecting-body';
 import styles from './styles';
@@ -35,7 +34,7 @@ interface Props {
 export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const { data } = RouterController.state;
   const { maxWidth: width } = useCustomDimensions();
-  const { wcUri, wcError } = useSnapshot(ConnectionController.state);
+  const { wcUri, wcError } = useSnapshot(WcController.state);
   const [errorType, setErrorType] = useState<BodyErrorType>();
   const showCopy =
     OptionsController.isClipboardAvailable() &&
@@ -52,7 +51,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
 
   const onRetryPress = () => {
     setErrorType(undefined);
-    ConnectionController.setWcError(false);
+    WcController.setWcError(false);
     onRetry?.();
   };
 
@@ -68,11 +67,11 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
       if (name && mobile_link && wcUri) {
         const { redirect, href } = CoreHelperUtil.formatNativeUrl(mobile_link, wcUri);
         const wcLinking = { name, href };
-        ConnectionController.setWcLinking(wcLinking);
-        ConnectionController.setPressedWallet(data?.wallet);
+        WcController.setWcLinking(wcLinking);
+        WcController.setPressedWallet(data?.wallet);
         await CoreHelperUtil.openLink(redirect);
-        await ConnectionController.state.wcPromise;
-        UiUtil.storeConnectedWallet(wcLinking, data?.wallet);
+        await WcController.state.wcPromise;
+        WcController.setConnectedWallet(wcLinking, data?.wallet);
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',

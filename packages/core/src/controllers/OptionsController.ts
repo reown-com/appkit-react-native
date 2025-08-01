@@ -1,5 +1,5 @@
 import { proxy, ref } from 'valtio';
-import type { Tokens, Storage, Metadata, AppKitNetwork } from '@reown/appkit-common-react-native';
+import type { Storage, Metadata, AppKitNetwork } from '@reown/appkit-common-react-native';
 import type { CustomWallet, Features, ProjectId, SdkType, SdkVersion } from '../utils/TypeUtil';
 
 import { ConstantsUtil } from '../utils/ConstantsUtil';
@@ -17,7 +17,6 @@ export interface OptionsControllerState {
   excludeWalletIds?: string[];
   featuredWalletIds?: string[];
   customWallets?: CustomWallet[];
-  tokens?: Tokens;
   enableAnalytics?: boolean;
   sdkType: SdkType;
   sdkVersion: SdkVersion;
@@ -33,7 +32,7 @@ export interface OptionsControllerState {
 const state = proxy<OptionsControllerState>({
   projectId: '',
   sdkType: 'appkit',
-  sdkVersion: 'react-native-wagmi-undefined',
+  sdkVersion: 'react-native-undefined-undefined',
   features: ConstantsUtil.DEFAULT_FEATURES,
   debug: false
 });
@@ -60,10 +59,6 @@ export const OptionsController = {
 
   setFeaturedWalletIds(featuredWalletIds: OptionsControllerState['featuredWalletIds']) {
     state.featuredWalletIds = featuredWalletIds;
-  },
-
-  setTokens(tokens: OptionsControllerState['tokens']) {
-    state.tokens = tokens;
   },
 
   setCustomWallets(customWallets: OptionsControllerState['customWallets']) {

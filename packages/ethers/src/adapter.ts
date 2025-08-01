@@ -12,9 +12,8 @@ import { formatEther, getEthBalance } from './helpers';
 export class EthersAdapter extends EVMAdapter {
   private static supportedNamespace: ChainNamespace = 'eip155';
 
-  constructor(configParams: { projectId: string }) {
+  constructor() {
     super({
-      projectId: configParams.projectId,
       supportedNamespace: EthersAdapter.supportedNamespace,
       adapterType: 'ethers'
     });
@@ -44,7 +43,13 @@ export class EthersAdapter extends EVMAdapter {
       const wei = await getEthBalance(rpcUrl, account);
       balance.amount = formatEther(wei);
 
-      this.emit('balanceChanged', { address: balanceAddress, balance });
+      this.emit('balanceChanged', {
+        address: balanceAddress,
+        balance: {
+          amount: balance.amount,
+          symbol: balance.symbol
+        }
+      });
 
       return balance;
     } catch {

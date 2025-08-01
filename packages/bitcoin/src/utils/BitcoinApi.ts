@@ -1,8 +1,8 @@
-import type { AppKitNetwork } from '@reown/appkit-common-react-native';
+import { type AppKitNetwork, bitcoinTestnet } from '@reown/appkit-common-react-native';
 
 export const BitcoinApi: BitcoinApi.Interface = {
   getUTXOs: async ({ network, address }: BitcoinApi.GetUTXOsParams): Promise<BitcoinApi.UTXO[]> => {
-    const isTestnet = network.caipNetworkId === 'bip122:000000000933ea01ad0ee984209779ba';
+    const isTestnet = network.caipNetworkId === bitcoinTestnet.caipNetworkId;
     // Make chain dynamic
 
     //TODO: Call rpc to get balance

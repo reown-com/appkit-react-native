@@ -28,13 +28,12 @@ export type Network = {
   caipNetworkId?: CaipNetworkId; // e.g., 'eip155:1'
   testnet?: boolean;
   deprecatedCaipNetworkId?: CaipNetworkId; // for Solana deprecated id
+  imageUrl?: string;
 };
 
 export type AppKitNetwork = Network & {
-  chainNamespace: ChainNamespace; // e.g., 'eip155'
-  caipNetworkId: CaipNetworkId; // e.g., 'eip155:1'
-  testnet?: boolean;
-  deprecatedCaipNetworkId?: CaipNetworkId; // for Solana deprecated id
+  chainNamespace: ChainNamespace; // mandatory for AppKitNetwork
+  caipNetworkId: CaipNetworkId; // mandatory for AppKitNetwork
 };
 
 export interface AppKitOpenOptions {
@@ -192,21 +191,24 @@ export interface Connection {
 }
 
 export type BlockchainAdapterConfig = {
-  projectId: string;
   supportedNamespace: ChainNamespace;
   adapterType: AdapterType;
 };
 
+export interface BlockchainAdapterInitParams {
+  connector: WalletConnector;
+}
+
 //********** Adapter Event Payloads **********//
 export type AccountsChangedEvent = {
-  accounts: string[];
+  accounts: CaipAddress[];
 };
 
 export type ChainChangedEvent = {
   chainId: string;
 };
 
-export type DisconnectEvent = {};
+export type DisconnectEvent = undefined;
 
 export type BalanceChangedEvent = {
   address: CaipAddress;
@@ -299,7 +301,7 @@ export abstract class WalletConnector extends EventEmitter {
   abstract restoreSession(): Promise<boolean>;
 }
 
-export type ConnectorType = 'walletconnect' | 'coinbase' | 'auth' | 'phantom';
+export type ConnectorType = 'walletconnect' | 'coinbase' | 'phantom';
 
 //********** Provider Types **********//
 

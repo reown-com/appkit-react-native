@@ -5,21 +5,20 @@ import { Icon, ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
   AssetController,
+  AssetUtil,
   ConnectionsController
 } from '@reown/appkit-core-react-native';
 import type { AppKitNetwork } from '@reown/appkit-common-react-native';
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function UnsupportedChainView() {
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const [disconnecting, setDisconnecting] = useState(false);
-  //TODO: should show requested networks disabled
-  // const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
   const networks = ConnectionsController.getConnectedNetworks();
   const imageHeaders = ApiController._getApiHeaders();
-  const { disconnect, switchNetwork } = useAppKit();
+  const { disconnect, switchNetwork } = useInternalAppKit();
 
   const onNetworkPress = async (network: AppKitNetwork) => {
     switchNetwork(network);
@@ -48,7 +47,7 @@ export function UnsupportedChainView() {
           key={item.id}
           icon="networkPlaceholder"
           iconBackgroundColor="gray-glass-010"
-          imageSrc={networkImages[item.id]}
+          imageSrc={AssetUtil.getNetworkImage(item, networkImages)}
           imageHeaders={imageHeaders}
           onPress={() => onNetworkPress(item)}
           testID="button-network"

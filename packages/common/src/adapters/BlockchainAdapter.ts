@@ -4,6 +4,7 @@ import type {
   AdapterType,
   AppKitNetwork,
   BlockchainAdapterConfig,
+  BlockchainAdapterInitParams,
   CaipAddress,
   ChainNamespace,
   GetBalanceParams,
@@ -11,9 +12,9 @@ import type {
   Provider,
   WalletConnector
 } from '../utils/TypeUtil';
+import { NetworkUtil } from '../utils/NetworkUtil';
 
 export abstract class BlockchainAdapter extends EventEmitter {
-  public projectId: string;
   public connector?: WalletConnector;
   public supportedNamespace: ChainNamespace;
   public adapterType: AdapterType;
@@ -26,15 +27,25 @@ export abstract class BlockchainAdapter extends EventEmitter {
     return super.emit(event, payload);
   }
 
-  constructor({ projectId, supportedNamespace, adapterType }: BlockchainAdapterConfig) {
+  // Typed on method
+  override on<K extends keyof AdapterEvents>(event: K, listener: AdapterEvents[K]): this {
+    return super.on(event, listener);
+  }
+
+  // Typed off method for consistency
+  override off<K extends keyof AdapterEvents>(event: K, listener: AdapterEvents[K]): this {
+    return super.off(event, listener);
+  }
+
+  constructor({ supportedNamespace, adapterType }: BlockchainAdapterConfig) {
     super();
-    this.projectId = projectId;
     this.supportedNamespace = supportedNamespace;
     this.adapterType = adapterType;
   }
 
-  setConnector(connector: WalletConnector) {
+  init({ connector }: BlockchainAdapterInitParams) {
     this.connector = connector;
+
     this.subscribeToEvents();
   }
 
@@ -68,19 +79,27 @@ export abstract class BlockchainAdapter extends EventEmitter {
 
   onAccountsChanged(accounts: string[]): void {
     const _accounts = this.getAccounts();
-    const shouldEmit = _accounts?.some(account => {
-      const accountAddress = account.split(':')[2];
+    const updatedAccounts =
+      _accounts
+        ?.filter(account => {
+          const accountAddress = NetworkUtil.getPlainAddress(account);
 
-      return accountAddress !== undefined && accounts.includes(accountAddress);
-    });
+          return accountAddress !== undefined && accounts.includes(accountAddress);
+        })
+        ?.sort((a, b) => {
+          const aIndex = accounts.indexOf(NetworkUtil.getPlainAddress(a) ?? '');
+          const bIndex = accounts.indexOf(NetworkUtil.getPlainAddress(b) ?? '');
 
-    if (shouldEmit) {
-      this.emit('accountsChanged', { accounts });
+          return aIndex - bIndex;
+        }) ?? [];
+
+    if (updatedAccounts.length > 0) {
+      this.emit('accountsChanged', { accounts: updatedAccounts });
     }
   }
 
   onDisconnect(): void {
-    this.emit('disconnect', { namespace: this.getSupportedNamespace() });
+    this.emit('disconnect', undefined);
 
     const provider = this.connector?.getProvider();
     if (provider) {

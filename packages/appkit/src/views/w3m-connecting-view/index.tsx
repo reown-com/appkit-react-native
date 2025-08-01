@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
 import {
-  ConnectionController,
+  WcController,
   ConstantsUtil,
   CoreHelperUtil,
   RouterController,
@@ -11,7 +11,7 @@ import {
   ApiController,
   EventsController
 } from '@reown/appkit-core-react-native';
-import { useAppKit } from '../../AppKitContext';
+import { useInternalAppKit } from '../../AppKitContext';
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
 import { ConnectingMobile } from '../../partials/w3m-connecting-mobile';
 import { ConnectingWeb } from '../../partials/w3m-connecting-web';
@@ -19,7 +19,7 @@ import { ConnectingHeader } from '../../partials/w3m-connecting-header';
 import { UiUtil } from '../../utils/UiUtil';
 
 export function ConnectingView() {
-  const { connect } = useAppKit();
+  const { connect } = useInternalAppKit();
   const { installed } = useSnapshot(ApiController.state);
   const { data } = RouterController.state;
   const [lastRetry, setLastRetry] = useState(Date.now());
@@ -32,7 +32,7 @@ export function ConnectingView() {
   const onRetry = () => {
     if (CoreHelperUtil.isAllowedRetry(lastRetry)) {
       setLastRetry(Date.now());
-      ConnectionController.clearUri();
+      WcController.clearUri();
       initializeConnection(true);
     } else {
       SnackController.showError('Please wait a second before retrying');
@@ -41,19 +41,19 @@ export function ConnectingView() {
 
   const initializeConnection = async (retry = false) => {
     try {
-      const { wcPairingExpiry } = ConnectionController.state;
+      const { wcPairingExpiry } = WcController.state;
       const { data: routeData } = RouterController.state;
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
-        ConnectionController.setWcError(false);
+        WcController.setWcError(false);
 
         const connectPromise = connect('walletconnect', {
           universalLink: routeData?.wallet?.link_mode ?? undefined
         });
-        ConnectionController.setWcPromise(connectPromise);
+        WcController.setWcPromise(connectPromise);
       }
     } catch (error) {
-      ConnectionController.setWcError(true);
-      ConnectionController.clearUri();
+      WcController.setWcError(true);
+      WcController.clearUri();
       SnackController.showError('Declined');
       if (isQr && CoreHelperUtil.isAllowedRetry(lastRetry)) {
         setLastRetry(Date.now());

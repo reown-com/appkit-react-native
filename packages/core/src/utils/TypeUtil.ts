@@ -340,7 +340,6 @@ export interface Token {
   image?: string;
 }
 
-// -- OptionsController Types ---------------------------------------------------
 export type CustomWallet = Pick<
   WcWallet,
   | 'id'
@@ -355,6 +354,13 @@ export type CustomWallet = Pick<
   | 'app_store'
   | 'play_store'
 >;
+
+export type UniversalProviderConfigOverride = {
+  methods?: Record<string, string[]>;
+  chains?: Record<string, string[]>;
+  events?: Record<string, string[]>;
+  rpcMap?: Record<string, string>;
+};
 
 // -- EventsController Types ----------------------------------------------------
 export type EventName =
@@ -749,33 +755,6 @@ export type Event =
         message?: string;
       };
     };
-
-// -- Send Controller Types -------------------------------------
-export type EstimateGasTransactionArgs = {
-  chainNamespace?: 'eip155';
-  address: `0x${string}`;
-  to: `0x${string}`;
-  data: `0x${string}`;
-};
-
-export interface SendTransactionArgs {
-  to: `0x${string}`;
-  data: `0x${string}`;
-  value: bigint;
-  gas?: bigint;
-  gasPrice: bigint;
-  address: `0x${string}`;
-  chainNamespace?: 'eip155';
-}
-
-export interface WriteContractArgs {
-  receiverAddress: `0x${string}`;
-  tokenAmount: bigint;
-  tokenAddress: `0x${string}`;
-  fromAddress: `0x${string}`;
-  method: 'send' | 'transfer' | 'call';
-  abi: any;
-}
 
 // -- Swap Controller Types -------------------------------------
 export type SwapToken = {

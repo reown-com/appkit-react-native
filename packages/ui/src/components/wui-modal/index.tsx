@@ -84,12 +84,10 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
       });
       modalAnimation.start();
     } else if (!visible && modalVisible) {
-      // Hide modal to the bottom of the screen
-      modalAnimation = Animated.spring(translateY, {
+      // Hide modal to the bottom of the screen. Not using spring as it blocks the UI for a bit when closed
+      modalAnimation = Animated.timing(translateY, {
         toValue: height,
-        damping: 23,
-        stiffness: 260,
-        mass: 1,
+        duration: 150,
         useNativeDriver: true
       });
       modalAnimation.start(() => {

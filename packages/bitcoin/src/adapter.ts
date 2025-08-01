@@ -13,9 +13,8 @@ export class BitcoinAdapter extends BlockchainAdapter {
   private static supportedNamespace: ChainNamespace = 'bip122';
   private static api = BitcoinApi;
 
-  constructor(configParams: { projectId: string }) {
+  constructor() {
     super({
-      projectId: configParams.projectId,
       supportedNamespace: BitcoinAdapter.supportedNamespace,
       adapterType: 'bip122'
     });

@@ -9,7 +9,6 @@ import type {
 } from './TypeUtil';
 import {
   DateUtil,
-  type SocialProvider,
   type ConnectorType,
   type ChainNamespace,
   type WalletDeepLink,
@@ -150,73 +149,6 @@ export const StorageUtil = {
       );
     } catch {
       console.info('Unable to remove Connected Connector');
-    }
-  },
-
-  async setConnectedWalletImageUrl(url: string) {
-    try {
-      await OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.CONNECTED_WALLET_IMAGE_URL,
-        url
-      );
-    } catch {
-      console.info('Unable to set Connected Wallet Image URL');
-    }
-  },
-
-  async getConnectedWalletImageUrl() {
-    try {
-      return await OptionsController.getStorage().getItem(
-        ConstantsUtil.STORAGE_KEYS.CONNECTED_WALLET_IMAGE_URL
-      );
-    } catch {
-      console.info('Unable to get Connected Wallet Image URL');
-    }
-
-    return undefined;
-  },
-
-  async removeConnectedWalletImageUrl() {
-    try {
-      await OptionsController.getStorage().removeItem(
-        ConstantsUtil.STORAGE_KEYS.CONNECTED_WALLET_IMAGE_URL
-      );
-    } catch (e) {
-      console.error(e);
-      console.info('Unable to remove Connected Wallet Image URL');
-    }
-  },
-
-  async setConnectedSocialProvider(provider: SocialProvider) {
-    try {
-      await OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.CONNECTED_SOCIAL,
-        provider
-      );
-    } catch {
-      console.info('Unable to set Connected Social Provider');
-    }
-  },
-
-  async getConnectedSocialProvider(): Promise<SocialProvider | undefined> {
-    try {
-      const provider = await OptionsController.getStorage().getItem<SocialProvider>(
-        ConstantsUtil.STORAGE_KEYS.CONNECTED_SOCIAL
-      );
-
-      return provider ?? undefined;
-    } catch {
-      console.info('Unable to get Connected Social Provider');
-    }
-
-    return undefined;
-  },
-
-  async removeConnectedSocialProvider() {
-    try {
-      await OptionsController.getStorage().removeItem(ConstantsUtil.STORAGE_KEYS.CONNECTED_SOCIAL);
-    } catch {
-      console.info('Unable to remove Connected Social Provider');
     }
   },
 

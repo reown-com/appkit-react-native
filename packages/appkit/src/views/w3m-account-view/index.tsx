@@ -12,6 +12,7 @@ import {
 import {
   ApiController,
   AssetController,
+  AssetUtil,
   ConnectionsController,
   CoreHelperUtil,
   EventsController,
@@ -31,7 +32,7 @@ export function AccountView() {
   const { activeNetwork, activeAddress, identity } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const address = CoreHelperUtil.getPlainAddress(activeAddress);
-  const networkImage = activeNetwork ? networkImages[activeNetwork.id] : undefined;
+  const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
 
   const onProfilePress = () => {
     RouterController.push('AccountDefault');

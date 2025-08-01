@@ -1,13 +1,13 @@
 import { StyleSheet } from 'react-native';
 import { IconLink, Text, FlexView } from '@reown/appkit-ui-react-native';
-import { useAppKit } from '../../../AppKitContext';
+import { useInternalAppKit } from '../../../AppKitContext';
 
 interface HeaderProps {
   onSettingsPress: () => void;
 }
 
 export function Header({ onSettingsPress }: HeaderProps) {
-  const { back } = useAppKit();
+  const { back } = useInternalAppKit();
 
   const handleGoBack = () => {
     back();
