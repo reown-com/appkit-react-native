@@ -19,7 +19,6 @@ import {
   IconBox
 } from '@reown/appkit-ui-react-native';
 
-import { UiUtil } from '../../utils/UiUtil';
 import { ConnectingBody, getMessage } from '../w3m-connecting-body';
 import styles from './styles';
 
@@ -48,8 +47,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
         ConnectionController.setPressedWallet(data?.wallet);
         await Linking.openURL(redirect);
         await ConnectionController.state.wcPromise;
-
-        UiUtil.storeConnectedWallet(wcLinking, data?.wallet);
+        ConnectionController.setConnectedWallet(wcLinking, data?.wallet);
 
         EventsController.sendEvent({
           type: 'track',

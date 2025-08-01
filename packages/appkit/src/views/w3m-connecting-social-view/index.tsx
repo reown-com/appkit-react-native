@@ -12,7 +12,6 @@ import { ConstantsUtil, StringUtil } from '@reown/appkit-common-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { useInternalAppKit } from '../../AppKitContext';
-import { UiUtil } from '../../utils/UiUtil';
 import styles from './styles';
 
 export function ConnectingSocialView() {
@@ -34,8 +33,7 @@ export function ConnectingSocialView() {
         ConnectionController.setWcLinking(wcLinking);
         await CoreHelperUtil.openLink(redirect);
         await ConnectionController.state.wcPromise;
-        //todo: rename this. its not just UI
-        UiUtil.storeConnectedWallet(wcLinking);
+        ConnectionController.setConnectedWallet(wcLinking);
         EventsController.sendEvent({
           type: 'track',
           event: 'SOCIAL_LOGIN_SUCCESS',

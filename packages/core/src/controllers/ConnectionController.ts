@@ -67,6 +67,21 @@ export const ConnectionController = {
     state.recentWallets = wallets;
   },
 
+  async addRecentWallet(wallet: WcWallet) {
+    const recentWallets = await StorageUtil.addRecentWallet(wallet);
+    if (recentWallets) {
+      ConnectionController.setRecentWallets(recentWallets);
+    }
+  },
+
+  setConnectedWallet: async (wcLinking: WalletDeepLink, pressedWallet?: WcWallet) => {
+    StorageUtil.setWalletConnectDeepLink(wcLinking);
+
+    if (pressedWallet) {
+      ConnectionController.addRecentWallet(pressedWallet);
+    }
+  },
+
   clearUri() {
     state.wcUri = undefined;
     state.wcPairingExpiry = undefined;

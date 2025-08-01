@@ -21,7 +21,6 @@ import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w
 import styles from './styles';
 import { useInternalAppKit } from '../../AppKitContext';
 import { ConstantsUtil } from '@reown/appkit-common-react-native';
-import { UiUtil } from '../../utils/UiUtil';
 
 export function ConnectingExternalView() {
   const { data } = useSnapshot(RouterController.state);
@@ -47,7 +46,7 @@ export function ConnectingExternalView() {
           // All other wallets are handled by WalletConnect connector
           return;
         }
-        UiUtil.storeRecentWallet(wallet);
+        ConnectionController.addRecentWallet(wallet);
         ConnectionController.setPressedWallet(wallet);
         EventsController.sendEvent({
           type: 'track',

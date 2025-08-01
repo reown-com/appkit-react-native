@@ -21,7 +21,6 @@ import {
 } from '@reown/appkit-ui-react-native';
 
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
-import { UiUtil } from '../../utils/UiUtil';
 import { StoreLink } from './components/StoreLink';
 import { ConnectingBody, getMessage, type BodyErrorType } from '../w3m-connecting-body';
 import styles from './styles';
@@ -72,7 +71,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         ConnectionController.setPressedWallet(data?.wallet);
         await CoreHelperUtil.openLink(redirect);
         await ConnectionController.state.wcPromise;
-        UiUtil.storeConnectedWallet(wcLinking, data?.wallet);
+        ConnectionController.setConnectedWallet(wcLinking, data?.wallet);
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
