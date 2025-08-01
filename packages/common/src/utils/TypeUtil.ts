@@ -299,7 +299,7 @@ export abstract class WalletConnector extends EventEmitter {
   abstract restoreSession(): Promise<boolean>;
 }
 
-export type ConnectorType = 'walletconnect' | 'coinbase' | 'auth' | 'phantom';
+export type ConnectorType = 'walletconnect' | 'coinbase' | 'phantom';
 
 //********** Provider Types **********//
 

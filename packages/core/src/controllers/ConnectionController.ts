@@ -1,6 +1,6 @@
 import { proxy } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
-import type { SocialProvider, WalletDeepLink } from '@reown/appkit-common-react-native';
+import type { WalletDeepLink } from '@reown/appkit-common-react-native';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import type { WcWallet } from '../utils/TypeUtil';
@@ -14,7 +14,6 @@ export interface ConnectionControllerState {
   wcError?: boolean;
   pressedWallet?: WcWallet;
   recentWallets?: WcWallet[];
-  connectedSocialProvider?: SocialProvider; // TODO: remove this
 }
 
 type StateKey = keyof ConnectionControllerState;
@@ -66,16 +65,6 @@ export const ConnectionController = {
 
   setRecentWallets(wallets: ConnectionControllerState['recentWallets']) {
     state.recentWallets = wallets;
-  },
-
-  setConnectedSocialProvider(provider: ConnectionControllerState['connectedSocialProvider']) {
-    state.connectedSocialProvider = provider;
-
-    if (provider) {
-      StorageUtil.setConnectedSocialProvider(provider);
-    } else {
-      StorageUtil.removeConnectedSocialProvider();
-    }
   },
 
   clearUri() {

@@ -51,7 +51,6 @@ export const ConstantsUtil = {
     WC_DEEPLINK: 'WALLETCONNECT_DEEPLINK_CHOICE', //dont change this one
     RECENT_WALLET: '@appkit/recent_wallet',
     CONNECTED_CONNECTORS: '@appkit/connected_connectors',
-    CONNECTED_SOCIAL: '@appkit/connected_social',
     ONRAMP_PREFERRED_COUNTRY: '@appkit/onramp_preferred_country',
     ONRAMP_COUNTRIES: '@appkit/onramp_countries',
     ONRAMP_SERVICE_PROVIDERS: '@appkit/onramp_service_providers',

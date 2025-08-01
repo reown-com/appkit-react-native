@@ -9,7 +9,6 @@ import type {
 } from './TypeUtil';
 import {
   DateUtil,
-  type SocialProvider,
   type ConnectorType,
   type ChainNamespace,
   type WalletDeepLink,
@@ -150,39 +149,6 @@ export const StorageUtil = {
       );
     } catch {
       console.info('Unable to remove Connected Connector');
-    }
-  },
-
-  async setConnectedSocialProvider(provider: SocialProvider) {
-    try {
-      await OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.CONNECTED_SOCIAL,
-        provider
-      );
-    } catch {
-      console.info('Unable to set Connected Social Provider');
-    }
-  },
-
-  async getConnectedSocialProvider(): Promise<SocialProvider | undefined> {
-    try {
-      const provider = await OptionsController.getStorage().getItem<SocialProvider>(
-        ConstantsUtil.STORAGE_KEYS.CONNECTED_SOCIAL
-      );
-
-      return provider ?? undefined;
-    } catch {
-      console.info('Unable to get Connected Social Provider');
-    }
-
-    return undefined;
-  },
-
-  async removeConnectedSocialProvider() {
-    try {
-      await OptionsController.getStorage().removeItem(ConstantsUtil.STORAGE_KEYS.CONNECTED_SOCIAL);
-    } catch {
-      console.info('Unable to remove Connected Social Provider');
     }
   },
 
