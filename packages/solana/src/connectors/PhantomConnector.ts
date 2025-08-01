@@ -26,10 +26,10 @@ import type {
   PhantomProviderConfig
 } from '../types';
 
-const SOLANA_CLUSTER_TO_CHAIN_ID_PART: Record<PhantomCluster, string> = {
-  'mainnet-beta': solana.id as string,
-  'testnet': solanaTestnet.id as string,
-  'devnet': solanaDevnet.id as string
+const SOLANA_CLUSTER_TO_CHAIN_ID: Record<PhantomCluster, CaipNetworkId> = {
+  'mainnet-beta': solana.caipNetworkId,
+  'testnet': solanaTestnet.caipNetworkId,
+  'devnet': solanaDevnet.caipNetworkId
 };
 
 const PHANTOM_CONNECTOR_STORAGE_KEY = '@appkit/phantom-connector-data';
@@ -37,7 +37,6 @@ const DAPP_KEYPAIR_STORAGE_KEY = '@appkit/phantom-dapp-secret-key';
 
 export class PhantomConnector extends WalletConnector {
   private readonly config: PhantomConnectorConfig;
-
   private currentCaipNetworkId: CaipNetworkId | null = null;
   private dappEncryptionKeyPair?: nacl.BoxKeyPair;
 
@@ -97,23 +96,21 @@ export class PhantomConnector extends WalletConnector {
       return this.namespaces;
     }
 
-    const defaultChain =
+    const defaultChain: CaipNetworkId | undefined =
       opts?.defaultChain?.split(':')?.[0] === 'solana'
-        ? opts?.defaultChain?.split(':')[1]
-        : opts?.namespaces?.['solana']?.chains?.[0]?.split(':')[1];
+        ? opts?.defaultChain
+        : opts?.namespaces?.['solana']?.chains?.[0];
 
     const requestedCluster =
       this.config.cluster ??
-      (Object.keys(SOLANA_CLUSTER_TO_CHAIN_ID_PART).find(
-        key =>
-          SOLANA_CLUSTER_TO_CHAIN_ID_PART[key as keyof typeof SOLANA_CLUSTER_TO_CHAIN_ID_PART] ===
-          defaultChain
+      (Object.keys(SOLANA_CLUSTER_TO_CHAIN_ID).find(
+        key => SOLANA_CLUSTER_TO_CHAIN_ID[key as PhantomCluster] === defaultChain
       ) as PhantomCluster | undefined);
 
     try {
       const connectResult = await this.getProvider().connect({ cluster: requestedCluster });
 
-      const solanaChainIdPart = SOLANA_CLUSTER_TO_CHAIN_ID_PART[connectResult.cluster];
+      const solanaChainIdPart = SOLANA_CLUSTER_TO_CHAIN_ID[connectResult.cluster];
       if (!solanaChainIdPart) {
         throw new Error(
           `Phantom Connect: Internal - Unknown cluster mapping for ${connectResult.cluster}`
@@ -217,21 +214,16 @@ export class PhantomConnector extends WalletConnector {
   }
 
   override async switchNetwork(network: AppKitNetwork): Promise<void> {
-    const targetClusterName = Object.keys(SOLANA_CLUSTER_TO_CHAIN_ID_PART).find(
-      key =>
-        SOLANA_CLUSTER_TO_CHAIN_ID_PART[key as keyof typeof SOLANA_CLUSTER_TO_CHAIN_ID_PART] ===
-        network.id
+    const targetClusterName = Object.keys(SOLANA_CLUSTER_TO_CHAIN_ID).find(
+      key => SOLANA_CLUSTER_TO_CHAIN_ID[key as PhantomCluster] === network.caipNetworkId
     ) as PhantomCluster | undefined;
 
     if (!targetClusterName) {
       throw new Error(`Cannot switch to unsupported network ID: ${network.id}`);
     }
 
-    const currentClusterName = Object.keys(SOLANA_CLUSTER_TO_CHAIN_ID_PART).find(
-      key =>
-        `solana:${
-          SOLANA_CLUSTER_TO_CHAIN_ID_PART[key as keyof typeof SOLANA_CLUSTER_TO_CHAIN_ID_PART]
-        }` === this.currentCaipNetworkId
+    const currentClusterName = Object.keys(SOLANA_CLUSTER_TO_CHAIN_ID).find(
+      key => SOLANA_CLUSTER_TO_CHAIN_ID[key as PhantomCluster] === this.currentCaipNetworkId
     ) as PhantomCluster | undefined;
 
     if (targetClusterName === currentClusterName && this.isConnected()) {
@@ -243,7 +235,7 @@ export class PhantomConnector extends WalletConnector {
 
     // Create a temporary options object to guide the new connection
     const tempConnectOpts: ConnectOptions = {
-      defaultChain: `solana:${SOLANA_CLUSTER_TO_CHAIN_ID_PART[targetClusterName]}` as CaipNetworkId
+      defaultChain: SOLANA_CLUSTER_TO_CHAIN_ID[targetClusterName]
     };
 
     // Attempt to connect to the new cluster
