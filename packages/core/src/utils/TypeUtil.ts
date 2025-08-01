@@ -340,7 +340,6 @@ export interface Token {
   image?: string;
 }
 
-// -- OptionsController Types ---------------------------------------------------
 export type CustomWallet = Pick<
   WcWallet,
   | 'id'
@@ -355,6 +354,13 @@ export type CustomWallet = Pick<
   | 'app_store'
   | 'play_store'
 >;
+
+export type UniversalProviderConfigOverride = {
+  methods?: Record<string, string[]>;
+  chains?: Record<string, string[]>;
+  events?: Record<string, string[]>;
+  rpcMap?: Record<string, string>;
+};
 
 // -- EventsController Types ----------------------------------------------------
 export type EventName =

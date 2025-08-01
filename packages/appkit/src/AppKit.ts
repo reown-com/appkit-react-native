@@ -14,7 +14,8 @@ import {
   OnRampController,
   CoreHelperUtil,
   SendController,
-  BlockchainApiController
+  BlockchainApiController,
+  type UniversalProviderConfigOverride
 } from '@reown/appkit-core-react-native';
 
 import {
@@ -69,6 +70,7 @@ interface AppKitConfig {
   siweConfig?: AppKitSIWEClient;
   defaultNetwork?: Network;
   features?: Features;
+  universalProviderConfigOverride?: UniversalProviderConfigOverride;
   // chainImages?: Record<number, string>; //TODO: rename to networkImages
 }
 
@@ -116,7 +118,10 @@ export class AppKit {
     });
 
     this.networks = networksWithAdapters;
-    this.namespaces = WcHelpersUtil.createNamespaces(this.networks) as ProposalNamespaces;
+    this.namespaces = WcHelpersUtil.createNamespaces(
+      this.networks,
+      config.universalProviderConfigOverride
+    ) as ProposalNamespaces;
     this.config = config;
     this.extraConnectors = config.extraConnectors || [];
 

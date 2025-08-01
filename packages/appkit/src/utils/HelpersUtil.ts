@@ -6,6 +6,7 @@ import {
   solana,
   solanaDevnet
 } from '@reown/appkit-common-react-native';
+import type { UniversalProviderConfigOverride } from '@reown/appkit-core-react-native';
 
 export const DEFAULT_METHODS = {
   solana: [
@@ -64,7 +65,7 @@ export const WcHelpersUtil = {
 
   applyNamespaceOverrides(
     baseNamespaces: NamespaceConfig,
-    overrides?: any //TODO: add OptionsControllerState['universalProviderConfigOverride']
+    overrides?: UniversalProviderConfigOverride
   ): NamespaceConfig {
     if (!overrides) {
       return { ...baseNamespaces };
@@ -160,7 +161,7 @@ export const WcHelpersUtil = {
 
   createNamespaces(
     caipNetworks: AppKitNetwork[],
-    configOverride?: any //TODO: fix this
+    configOverride?: UniversalProviderConfigOverride
   ): NamespaceConfig {
     const defaultNamespaces = caipNetworks.reduce<NamespaceConfig>((acc, chain) => {
       const { id, rpcUrls } = chain;
