@@ -14,6 +14,7 @@ export const ConstantsUtil = {
   WEB_WALLET_URL: 'https://web-wallet.walletconnect.org',
   SECURE_SITE_DASHBOARD: `https://secure.reown.com/dashboard`,
   SECURE_SITE_ICON: `https://secure.reown.com/images/favicon.png`,
+  REOWN_URL: `https://reown.com`,
 
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet

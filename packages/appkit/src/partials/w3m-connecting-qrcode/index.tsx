@@ -6,9 +6,11 @@ import {
   OptionsController,
   SnackController
 } from '@reown/appkit-core-react-native';
-import { FlexView, Link, QrCode, Text, Spacing } from '@reown/appkit-ui-react-native';
+import { ConstantsUtil } from '@reown/appkit-common-react-native';
+import { FlexView, Link, QrCode, Text, Spacing, Icon } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
+import { Linking, Pressable } from 'react-native';
 
 export function ConnectingQrCode() {
   const { wcUri } = useSnapshot(WcController.state);
@@ -50,7 +52,7 @@ export function ConnectingQrCode() {
       padding={['xl', 'xl', '2xl', 'xl']}
     >
       <QrCode size={qrSize} uri={wcUri} testID="qr-code" />
-      <FlexView alignItems="center" margin="m">
+      <FlexView alignItems="center" margin={['m', 'm', '3xl', 'm']}>
         <Text variant="paragraph-500">Scan this QR code with your phone</Text>
         {showCopy && (
           <Link
@@ -64,6 +66,14 @@ export function ConnectingQrCode() {
           </Link>
         )}
       </FlexView>
+      <Pressable onPress={() => Linking.openURL(ConstantsUtil.REOWN_URL)}>
+        <FlexView alignItems="center" justifyContent="center" flexDirection="row" columnGap="2xs">
+          <Text variant="small-500" color="fg-100">
+            UX by
+          </Text>
+          <Icon name="reown" color="fg-150" width={100} height={30} />
+        </FlexView>
+      </Pressable>
     </FlexView>
   );
 }
