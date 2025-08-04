@@ -1,6 +1,6 @@
 import { BlockchainAdapter } from './BlockchainAdapter';
 import { NumberUtil } from '../utils/NumberUtil';
-import type { AppKitNetwork } from '../utils/TypeUtil';
+import type { AppKitNetwork } from '../types';
 
 // Type definitions for writeContract
 export interface WriteContractData {

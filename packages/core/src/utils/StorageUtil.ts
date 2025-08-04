@@ -1,13 +1,11 @@
 /* eslint-disable no-console */
-import type {
-  OnRampCountry,
-  OnRampFiatCurrency,
-  OnRampFiatLimit,
-  OnRampServiceProvider,
-  OnRampCountryDefaults,
-  WcWallet
-} from './TypeUtil';
 import {
+  type OnRampCountry,
+  type OnRampFiatCurrency,
+  type OnRampFiatLimit,
+  type OnRampServiceProvider,
+  type OnRampCountryDefaults,
+  type WcWallet,
   DateUtil,
   type ConnectorType,
   type ChainNamespace,

@@ -3,10 +3,10 @@ import {
   type AppKitNetwork,
   type CaipNetworkId,
   type ChainNamespace,
+  type UniversalProviderConfigOverride,
   solana,
   solanaDevnet
 } from '@reown/appkit-common-react-native';
-import type { UniversalProviderConfigOverride } from '@reown/appkit-core-react-native';
 
 export const DEFAULT_METHODS = {
   solana: [

@@ -1,7 +1,7 @@
 import {
   type OnRampFiatCurrency,
   type OnRampCryptoCurrency
-} from '@reown/appkit-core-react-native';
+} from '@reown/appkit-common-react-native';
 import {
   Pressable,
   FlexView,

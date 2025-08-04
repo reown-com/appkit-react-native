@@ -1,6 +1,14 @@
 import { proxy, ref } from 'valtio';
-import type { Storage, Metadata, AppKitNetwork } from '@reown/appkit-common-react-native';
-import type { CustomWallet, Features, ProjectId, SdkType, SdkVersion } from '../utils/TypeUtil';
+import type {
+  Storage,
+  Metadata,
+  AppKitNetwork,
+  CustomWallet,
+  Features,
+  ProjectId,
+  SdkType,
+  SdkVersion
+} from '@reown/appkit-common-react-native';
 
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 

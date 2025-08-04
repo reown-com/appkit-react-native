@@ -1,4 +1,4 @@
-import type { AppKitNetwork } from '../utils/TypeUtil';
+import type { AppKitNetwork } from '../types';
 
 export const solana: AppKitNetwork = {
   id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',

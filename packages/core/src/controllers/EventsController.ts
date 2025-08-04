@@ -3,7 +3,7 @@ import { ApiController } from './ApiController';
 import { OptionsController } from './OptionsController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { FetchUtil } from '../utils/FetchUtil';
-import type { Event, EventName } from '../utils/TypeUtil';
+import type { Event, EventName } from '@reown/appkit-common-react-native';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getAnalyticsUrl();

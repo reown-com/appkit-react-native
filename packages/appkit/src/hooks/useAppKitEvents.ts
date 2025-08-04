@@ -1,10 +1,7 @@
 import { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
-import {
-  EventsController,
-  type EventName,
-  type EventsControllerState
-} from '@reown/appkit-core-react-native';
+import { EventsController, type EventsControllerState } from '@reown/appkit-core-react-native';
+import { type EventName } from '@reown/appkit-common-react-native';
 import { useAppKit } from './useAppKit';
 
 export function useAppKitEvents(callback?: (newEvent: EventsControllerState) => void) {

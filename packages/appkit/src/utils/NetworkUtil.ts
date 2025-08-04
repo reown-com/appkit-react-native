@@ -1,10 +1,10 @@
 import {
   type AppKitNetwork,
   type CaipNetworkId,
+  type CaipNamespaces,
   ConstantsUtil,
   type Network
 } from '@reown/appkit-common-react-native';
-import type { CaipNamespaces } from '@reown/appkit-core-react-native';
 
 export const NetworkUtil = {
   formatNetwork(network: Network, projectId: string): AppKitNetwork {

@@ -1,5 +1,4 @@
-import { NumberUtil } from '@reown/appkit-common-react-native';
-import { type OnRampQuote } from '@reown/appkit-core-react-native';
+import { NumberUtil, type OnRampQuote } from '@reown/appkit-common-react-native';
 import {
   FlexView,
   Image,

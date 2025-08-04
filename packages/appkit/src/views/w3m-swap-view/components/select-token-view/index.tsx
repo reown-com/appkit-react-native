@@ -25,10 +25,10 @@ import {
   AssetUtil,
   ConnectionsController,
   SwapController,
-  type SwapControllerState,
-  type SwapInputTarget,
-  type SwapTokenWithBalance
+  type SwapControllerState
 } from '@reown/appkit-core-react-native';
+
+import { type SwapInputTarget, type SwapTokenWithBalance } from '@reown/appkit-common-react-native';
 
 import { useCustomDimensions } from '../../../../hooks/useCustomDimensions';
 import { Placeholder } from '../../../../partials/w3m-placeholder';

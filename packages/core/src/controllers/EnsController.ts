@@ -1,7 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy, subscribe as sub } from 'valtio';
 import { BlockchainApiController } from './BlockchainApiController';
-import type { BlockchainApiEnsError } from '../utils/TypeUtil';
+import type { BlockchainApiEnsError } from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 

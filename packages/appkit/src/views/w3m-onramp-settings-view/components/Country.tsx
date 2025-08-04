@@ -1,4 +1,4 @@
-import type { OnRampCountry } from '@reown/appkit-core-react-native';
+import { type OnRampCountry } from '@reown/appkit-common-react-native';
 import {
   Pressable,
   FlexView,

@@ -2,11 +2,8 @@ import { useSnapshot } from 'valtio';
 import { memo, useState } from 'react';
 import { SvgUri } from 'react-native-svg';
 import { FlexView, ListItem, Text, useTheme, Icon, Image } from '@reown/appkit-ui-react-native';
-import {
-  OnRampController,
-  type OnRampCountry,
-  type OnRampFiatCurrency
-} from '@reown/appkit-core-react-native';
+import { OnRampController } from '@reown/appkit-core-react-native';
+import { type OnRampCountry, type OnRampFiatCurrency } from '@reown/appkit-common-react-native';
 
 import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Country } from './components/Country';

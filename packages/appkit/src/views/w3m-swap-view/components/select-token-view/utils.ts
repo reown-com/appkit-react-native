@@ -1,4 +1,5 @@
-import { SwapController, type SwapTokenWithBalance } from '@reown/appkit-core-react-native';
+import { type SwapTokenWithBalance } from '@reown/appkit-common-react-native';
+import { SwapController } from '@reown/appkit-core-react-native';
 
 export function filterTokens(tokens?: SwapTokenWithBalance[], searchValue?: string) {
   if (!tokens) {

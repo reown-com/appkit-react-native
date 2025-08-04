@@ -1,4 +1,4 @@
-import type { Platform } from '@reown/appkit-core-react-native';
+import type { Platform } from '@reown/appkit-common-react-native';
 import { FlexView, Tabs, type IconType } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 

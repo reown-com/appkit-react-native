@@ -2,13 +2,13 @@ import { useSnapshot } from 'valtio';
 import type { StyleProp, ViewStyle } from 'react-native';
 import {
   OptionsController,
-  type CustomWallet,
   type OptionsControllerState,
   ApiController,
   WcController,
   type WcControllerState,
   AssetUtil
 } from '@reown/appkit-core-react-native';
+import { type CustomWallet } from '@reown/appkit-common-react-native';
 import { ListWallet } from '@reown/appkit-ui-react-native';
 import { filterOutRecentWallets } from '../utils';
 

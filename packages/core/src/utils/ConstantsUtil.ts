@@ -1,5 +1,4 @@
-import type { ChainNamespace } from '@reown/appkit-common-react-native';
-import type { Features } from './TypeUtil';
+import type { ChainNamespace, Features } from '@reown/appkit-common-react-native';
 
 const defaultFeatures: Features = {
   swaps: true,

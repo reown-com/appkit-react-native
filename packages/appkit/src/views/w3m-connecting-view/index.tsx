@@ -6,7 +6,6 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController,
-  type Platform,
   OptionsController,
   ApiController,
   EventsController
@@ -17,6 +16,7 @@ import { ConnectingMobile } from '../../partials/w3m-connecting-mobile';
 import { ConnectingWeb } from '../../partials/w3m-connecting-web';
 import { ConnectingHeader } from '../../partials/w3m-connecting-header';
 import { UiUtil } from '../../utils/UiUtil';
+import { type Platform } from '@reown/appkit-common-react-native';
 
 export function ConnectingView() {
   const { connect } = useInternalAppKit();

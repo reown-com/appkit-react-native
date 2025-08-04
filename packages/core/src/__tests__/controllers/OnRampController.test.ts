@@ -12,7 +12,7 @@ import type {
   OnRampCryptoCurrency,
   OnRampPaymentMethod,
   OnRampServiceProvider
-} from '../../utils/TypeUtil';
+} from '@reown/appkit-common-react-native';
 
 // Mock dependencies
 jest.mock('../../utils/StorageUtil');

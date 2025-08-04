@@ -1,6 +1,5 @@
-import type { AppKitNetwork } from '@reown/appkit-common-react-native';
+import type { AppKitNetwork, WcWallet } from '@reown/appkit-common-react-native';
 import { AssetController } from '../controllers/AssetController';
-import type { WcWallet } from './TypeUtil';
 
 export const AssetUtil = {
   getWalletImage(wallet?: WcWallet) {

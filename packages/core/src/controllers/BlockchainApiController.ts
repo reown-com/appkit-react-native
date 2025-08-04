@@ -33,12 +33,13 @@ import type {
   BlockchainApiOnRampWidgetRequest,
   BlockchainApiOnRampQuotesRequest,
   OnRampFiatLimit,
-  OnRampCountryDefaults
-} from '../utils/TypeUtil';
+  OnRampCountryDefaults,
+  CaipAddress,
+  CaipNetworkId
+} from '@reown/appkit-common-react-native';
 import { OptionsController } from './OptionsController';
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 import { ApiUtil } from '../utils/ApiUtil';
-import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
 
 import { SnackController } from './SnackController';
 
@@ -117,7 +118,7 @@ export const BlockchainApiController = {
   },
 
   async fetchTransactions(params: BlockchainApiTransactionsRequest) {
-    const { account, projectId, cursor, onramp, signal, cache, chainId } = params;
+    const { account, projectId, cursor, signal, cache, chainId } = params;
     const isSupported = await BlockchainApiController.isNetworkSupported(chainId);
 
     if (!isSupported) {
@@ -130,7 +131,6 @@ export const BlockchainApiController = {
       params: {
         projectId,
         cursor,
-        onramp,
         chainId
       },
       signal,

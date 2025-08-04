@@ -3,7 +3,6 @@ import { memo, useCallback, useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import {
   OnRampController,
-  type OnRampCryptoCurrency,
   ThemeController,
   RouterController,
   type OnRampControllerState,
@@ -21,7 +20,11 @@ import {
   TokenButton,
   useTheme
 } from '@reown/appkit-ui-react-native';
-import { NumberUtil, StringUtil } from '@reown/appkit-common-react-native';
+import {
+  NumberUtil,
+  StringUtil,
+  type OnRampCryptoCurrency
+} from '@reown/appkit-common-react-native';
 import { SelectorModal } from '../../partials/w3m-selector-modal';
 import { Currency, ITEM_HEIGHT as CURRENCY_ITEM_HEIGHT } from './components/Currency';
 import { getPurchaseCurrencies, getQuotesDebounced } from './utils';

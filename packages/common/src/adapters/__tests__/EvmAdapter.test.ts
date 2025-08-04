@@ -1,5 +1,5 @@
 import { EVMAdapter } from '../EvmAdapter';
-import type { AppKitNetwork, CaipAddress } from '../../utils/TypeUtil';
+import type { AppKitNetwork, CaipAddress } from '../../types';
 
 const network: AppKitNetwork = {
   id: 1,

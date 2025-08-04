@@ -1,5 +1,6 @@
 import { useSnapshot } from 'valtio';
-import { ThemeController, type OnRampPaymentMethod } from '@reown/appkit-core-react-native';
+import { ThemeController } from '@reown/appkit-core-react-native';
+import { type OnRampPaymentMethod } from '@reown/appkit-common-react-native';
 import {
   Pressable,
   FlexView,
