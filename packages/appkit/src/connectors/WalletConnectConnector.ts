@@ -11,7 +11,8 @@ import {
   type ConnectOptions,
   type ConnectorInitOptions,
   type Metadata,
-  type ConnectionProperties
+  type ConnectionProperties,
+  type RequestArguments
 } from '@reown/appkit-common-react-native';
 import { getDidAddress, getDidChainId, SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -201,9 +202,23 @@ export class WalletConnectConnector extends WalletConnector {
     return this.namespaces;
   }
 
-  override getProvider(): Provider {
+  override getProvider(namespace?: ChainNamespace): Provider {
     if (!this.provider) {
       throw new Error('WalletConnectConnector: Provider not initialized. Call init() first.');
+    }
+
+    const provider = this.provider as IUniversalProvider;
+
+    if (namespace) {
+      const _chainId = this.getChainId(namespace);
+
+      // @ts-ignore
+      return {
+        ...provider,
+        request: (args: RequestArguments, chainId?: CaipNetworkId) => {
+          return provider.request(args, chainId || _chainId);
+        }
+      };
     }
 
     return this.provider;

@@ -49,6 +49,7 @@ import PaperplaneSvg from '../../assets/svg/Paperplane';
 import QrCodeSvg from '../../assets/svg/QrCode';
 import RecycleHorizontalSvg from '../../assets/svg/RecycleHorizontal';
 import RefreshSvg from '../../assets/svg/Refresh';
+import ReownSvg from '../../assets/svg/Reown';
 import SearchSvg from '../../assets/svg/Search';
 import SettingsSvg from '../../assets/svg/Settings';
 import SwapHorizontalSvg from '../../assets/svg/SwapHorizontal';
@@ -113,6 +114,7 @@ const svgOptions: Record<IconType, (props: SvgProps) => JSX.Element> = {
   qrCode: QrCodeSvg,
   recycleHorizontal: RecycleHorizontalSvg,
   refresh: RefreshSvg,
+  reown: ReownSvg,
   search: SearchSvg,
   settings: SettingsSvg,
   swapHorizontal: SwapHorizontalSvg,

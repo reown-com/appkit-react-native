@@ -4,8 +4,8 @@ import { Spacing } from './ThemeUtil';
 import type { SpacingType, TruncateOptions } from './TypesUtil';
 
 export const UiUtil = {
-  getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {
-    if (Array.isArray(spacing)) {
+  getSpacingStyles(spacing: SpacingType | SpacingType[], index?: number) {
+    if (Array.isArray(spacing) && index !== undefined) {
       return spacing[index] ? Spacing[spacing[index] as SpacingType] : undefined;
     } else if (typeof spacing === 'string') {
       return Spacing[spacing];

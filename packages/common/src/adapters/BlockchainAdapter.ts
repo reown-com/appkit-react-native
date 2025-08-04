@@ -56,7 +56,7 @@ export abstract class BlockchainAdapter extends EventEmitter {
   getProvider(): Provider {
     if (!this.connector) throw new Error('No active connector');
 
-    return this.connector.getProvider();
+    return this.connector.getProvider(this.getSupportedNamespace());
   }
 
   subscribeToEvents(): void {

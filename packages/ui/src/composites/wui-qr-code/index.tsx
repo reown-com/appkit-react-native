@@ -4,8 +4,6 @@ import Svg from 'react-native-svg';
 import { Icon } from '../../components/wui-icon';
 import { Image } from '../../components/wui-image';
 import { Shimmer } from '../../components/wui-shimmer';
-import { Text } from '../../components/wui-text';
-import { FlexView } from '../../layout/wui-flex';
 import { QRCodeUtil } from '../../utils/QRCodeUtil';
 import { BorderRadius, LightTheme, Spacing } from '../../utils/ThemeUtil';
 import type { IconType } from '../../utils/TypesUtil';
@@ -20,8 +18,6 @@ export interface QrCodeProps {
   arenaClear?: boolean;
   style?: StyleProp<ViewStyle>;
 }
-
-const LABEL_HEIGHT = 18;
 
 export function QrCode({ size, uri, imageSrc, testID, arenaClear, icon, style }: QrCodeProps) {
   const Theme = LightTheme;
@@ -71,20 +67,12 @@ export function QrCode({ size, uri, imageSrc, testID, arenaClear, icon, style }:
       ]}
       testID={testID}
     >
-      <FlexView alignItems="center" justifyContent="center">
-        <Svg height={qrSize} width={qrSize}>
-          {dots}
-        </Svg>
-        {logoTemplate()}
-      </FlexView>
-      <Text variant="small-500" color="fg-150" style={[styles.label, { height: LABEL_HEIGHT }]}>
-        UX by{' '}
-        <Text variant="small-500" color="inverse-000">
-          Reown
-        </Text>
-      </Text>
+      <Svg height={qrSize} width={qrSize}>
+        {dots}
+      </Svg>
+      {logoTemplate()}
     </View>
   ) : (
-    <Shimmer width={size} height={size + LABEL_HEIGHT} borderRadius={BorderRadius.l} />
+    <Shimmer width={size} height={size} borderRadius={BorderRadius.l} />
   );
 }

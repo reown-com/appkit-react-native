@@ -179,6 +179,7 @@ export type IconType =
   | 'qrCode'
   | 'recycleHorizontal'
   | 'refresh'
+  | 'reown'
   | 'search'
   | 'settings'
   | 'swapHorizontal'
