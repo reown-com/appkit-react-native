@@ -1,5 +1,4 @@
 import {
-  type Features,
   EventsController,
   ModalController,
   ConnectionsController,
@@ -7,15 +6,13 @@ import {
   RouterController,
   TransactionsController,
   StorageUtil,
-  type OptionsControllerState,
   ThemeController,
   WcController,
   SwapController,
   OnRampController,
   CoreHelperUtil,
   SendController,
-  BlockchainApiController,
-  type UniversalProviderConfigOverride
+  BlockchainApiController
 } from '@reown/appkit-core-react-native';
 
 import {
@@ -24,24 +21,17 @@ import {
   type ProposalNamespaces,
   type ConnectorType,
   type Namespaces,
-  type Metadata,
   type CaipNetworkId,
   type AppKitNetwork,
   type Provider,
-  type ThemeVariables,
-  type ThemeMode,
   type WalletInfo,
-  type Network,
   type ChainNamespace,
-  type Storage,
   type AppKitConnectOptions,
-  type AppKitSIWEClient,
   type ConnectionProperties,
   type AccountType,
   type AppKitOpenOptions,
   ConstantsUtil,
-  type Connection,
-  type Tokens
+  type Connection
 } from '@reown/appkit-common-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -49,29 +39,7 @@ import { WalletConnectConnector } from './connectors/WalletConnectConnector';
 import { WcHelpersUtil } from './utils/HelpersUtil';
 import { NetworkUtil } from './utils/NetworkUtil';
 import { RouterUtil } from './utils/RouterUtil';
-
-interface AppKitConfig {
-  projectId: string;
-  metadata: Metadata;
-  adapters: BlockchainAdapter[];
-  networks: Network[];
-  storage: Storage;
-  extraConnectors?: WalletConnector[];
-  clipboardClient?: OptionsControllerState['clipboardClient'];
-  includeWalletIds?: OptionsControllerState['includeWalletIds'];
-  excludeWalletIds?: OptionsControllerState['excludeWalletIds'];
-  featuredWalletIds?: OptionsControllerState['featuredWalletIds'];
-  customWallets?: OptionsControllerState['customWallets'];
-  tokens?: Tokens;
-  enableAnalytics?: OptionsControllerState['enableAnalytics'];
-  debug?: OptionsControllerState['debug'];
-  themeMode?: ThemeMode;
-  themeVariables?: ThemeVariables;
-  siweConfig?: AppKitSIWEClient;
-  defaultNetwork?: Network;
-  features?: Features;
-  universalProviderConfigOverride?: UniversalProviderConfigOverride;
-}
+import { type AppKitConfig } from './types';
 
 export class AppKit {
   private projectId: string;
