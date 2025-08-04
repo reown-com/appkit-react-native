@@ -1,8 +1,4 @@
-import type {
-  Provider,
-  RequestArguments,
-  WalletConnector
-} from '@reown/appkit-common-react-native';
+import type { Provider, WalletConnector } from '@reown/appkit-common-react-native';
 import {
   getAddress,
   numberToHex,
@@ -143,16 +139,7 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
         provider = appKitProvidedConnector.getProvider();
       }
 
-      const chainId = await this.getChainId();
-
-      const _provider = {
-        ...provider,
-        request: (args: RequestArguments) => {
-          return provider?.request(args, `eip155:${chainId}`);
-        }
-      };
-
-      return Promise.resolve(_provider as Provider);
+      return provider as Provider;
     },
 
     async isAuthorized() {

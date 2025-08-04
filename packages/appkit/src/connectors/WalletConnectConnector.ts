@@ -11,7 +11,8 @@ import {
   type ConnectOptions,
   type ConnectorInitOptions,
   type Metadata,
-  type ConnectionProperties
+  type ConnectionProperties,
+  type RequestArguments
 } from '@reown/appkit-common-react-native';
 import { getDidAddress, getDidChainId, SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -214,7 +215,7 @@ export class WalletConnectConnector extends WalletConnector {
       // @ts-ignore
       return {
         ...provider,
-        request: (args: any, chainId?: string) => {
+        request: (args: RequestArguments, chainId?: CaipNetworkId) => {
           return provider.request(args, chainId || _chainId);
         }
       };
