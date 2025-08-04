@@ -209,13 +209,13 @@ export class WalletConnectConnector extends WalletConnector {
     const provider = this.provider as IUniversalProvider;
 
     if (namespace) {
-      const chainId = this.getChainId(namespace);
+      const _chainId = this.getChainId(namespace);
 
       // @ts-ignore
       return {
         ...provider,
-        request: (args: any) => {
-          return provider.request(args, chainId);
+        request: (args: any, chainId?: string) => {
+          return provider.request(args, chainId || _chainId);
         }
       };
     }
