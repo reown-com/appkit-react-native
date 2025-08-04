@@ -5,11 +5,10 @@ import {
   EventUtil,
   EventsController,
   OptionsController,
-  RouterController,
-  type WcWallet
+  RouterController
 } from '@reown/appkit-core-react-native';
+import { type WcWallet, ConstantsUtil } from '@reown/appkit-common-react-native';
 import { FlexView, Icon, ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
-import { ConstantsUtil } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { Placeholder } from '../../partials/w3m-placeholder';
 import { CustomWalletList } from './components/custom-wallet-list';

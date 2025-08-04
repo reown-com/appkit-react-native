@@ -11,7 +11,7 @@ import type {
   GetBalanceResponse,
   Provider,
   WalletConnector
-} from '../utils/TypeUtil';
+} from '../types';
 import { NetworkUtil } from '../utils/NetworkUtil';
 
 export abstract class BlockchainAdapter extends EventEmitter {

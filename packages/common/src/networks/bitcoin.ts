@@ -1,4 +1,4 @@
-import type { AppKitNetwork } from '../utils/TypeUtil';
+import type { AppKitNetwork } from '../types';
 
 export const bitcoin: AppKitNetwork = {
   id: '000000000019d6689c085ae165831e93',

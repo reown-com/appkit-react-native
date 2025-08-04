@@ -1,7 +1,10 @@
 import { proxy } from 'valtio';
-import type { AppKitNetwork, SocialProvider } from '@reown/appkit-common-react-native';
-
-import type { WcWallet, OnRampTransactionResult } from '../utils/TypeUtil';
+import type {
+  AppKitNetwork,
+  SocialProvider,
+  WcWallet,
+  OnRampTransactionResult
+} from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 export interface RouterControllerState {

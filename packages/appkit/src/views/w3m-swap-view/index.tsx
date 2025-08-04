@@ -6,11 +6,10 @@ import {
   ConstantsUtil,
   EventsController,
   RouterController,
-  SwapController,
-  type SwapInputTarget
+  SwapController
 } from '@reown/appkit-core-react-native';
 import { Button, FlexView, IconLink, useTheme } from '@reown/appkit-ui-react-native';
-import { NumberUtil } from '@reown/appkit-common-react-native';
+import { NumberUtil, type SwapInputTarget } from '@reown/appkit-common-react-native';
 
 import { useKeyboard } from '../../hooks/useKeyboard';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';

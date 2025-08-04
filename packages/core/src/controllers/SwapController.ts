@@ -3,7 +3,9 @@ import { proxy, subscribe as sub } from 'valtio';
 import {
   NumberUtil,
   type CaipAddress,
-  type CaipNetworkId
+  type CaipNetworkId,
+  type SwapInputTarget,
+  type SwapTokenWithBalance
 } from '@reown/appkit-common-react-native';
 
 import { ConstantsUtil } from '../utils/ConstantsUtil';
@@ -13,7 +15,6 @@ import { OptionsController } from './OptionsController';
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil';
 import { SnackController } from './SnackController';
 import { RouterController } from './RouterController';
-import type { SwapInputTarget, SwapTokenWithBalance } from '../utils/TypeUtil';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { TransactionsController } from './TransactionsController';
 import { EventsController } from './EventsController';

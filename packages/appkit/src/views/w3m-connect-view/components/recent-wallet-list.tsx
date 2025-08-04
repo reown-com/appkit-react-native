@@ -1,10 +1,6 @@
 import { useSnapshot } from 'valtio';
-import {
-  ApiController,
-  AssetUtil,
-  type WcWallet,
-  WcController
-} from '@reown/appkit-core-react-native';
+import { ApiController, AssetUtil, WcController } from '@reown/appkit-core-react-native';
+import { type WcWallet } from '@reown/appkit-common-react-native';
 import { ListWallet } from '@reown/appkit-ui-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 

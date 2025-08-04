@@ -1,10 +1,7 @@
+import { type OptionsControllerState } from '@reown/appkit-core-react-native';
 import {
   type Features,
-  type OptionsControllerState,
-  type UniversalProviderConfigOverride
-} from '@reown/appkit-core-react-native';
-
-import {
+  type UniversalProviderConfigOverride,
   type WalletConnector,
   type BlockchainAdapter,
   type Metadata,

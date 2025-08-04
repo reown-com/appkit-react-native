@@ -6,9 +6,9 @@ import {
   AssetUtil,
   OptionsController,
   SnackController,
-  type OptionsControllerState,
-  type WcWallet
+  type OptionsControllerState
 } from '@reown/appkit-core-react-native';
+import { type WcWallet } from '@reown/appkit-common-react-native';
 import {
   CardSelect,
   CardSelectLoader,

@@ -55,4 +55,4 @@ export { StorageUtil } from './utils/StorageUtil';
 export { EventUtil } from './utils/EventUtil';
 export { RouterUtil } from './utils/RouterUtil';
 
-export type * from './utils/TypeUtil';
+// Types are now exported from @reown/appkit-common-react-native

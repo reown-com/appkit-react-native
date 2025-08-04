@@ -3,7 +3,7 @@ import { derive } from 'derive-valtio';
 import {
   EVMAdapter,
   type AppKitNetwork,
-  type BlockchainAdapter,
+  BlockchainAdapter,
   type CaipAddress,
   type CaipNetworkId,
   type ChainNamespace,

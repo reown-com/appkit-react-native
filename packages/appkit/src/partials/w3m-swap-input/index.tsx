@@ -10,10 +10,9 @@ import {
   UiUtil,
   Link
 } from '@reown/appkit-ui-react-native';
-import { type SwapTokenWithBalance } from '@reown/appkit-core-react-native';
 
 import styles from './styles';
-import { NumberUtil } from '@reown/appkit-common-react-native';
+import { NumberUtil, type SwapTokenWithBalance } from '@reown/appkit-common-react-native';
 
 export interface SwapInputProps {
   token?: SwapTokenWithBalance;

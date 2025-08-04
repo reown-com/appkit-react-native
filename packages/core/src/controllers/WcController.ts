@@ -1,9 +1,8 @@
 import { proxy } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
-import type { WalletDeepLink } from '@reown/appkit-common-react-native';
+import type { WalletDeepLink, WcWallet } from '@reown/appkit-common-react-native';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
-import type { WcWallet } from '../utils/TypeUtil';
 
 // -- Types --------------------------------------------- //
 export interface WcControllerState {

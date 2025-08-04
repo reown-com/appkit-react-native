@@ -4,13 +4,14 @@ import { proxy } from 'valtio';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { FetchUtil } from '../utils/FetchUtil';
 import { StorageUtil } from '../utils/StorageUtil';
-import type {
-  ApiGetAnalyticsConfigResponse,
-  ApiGetDataWalletsResponse,
-  ApiGetWalletsRequest,
-  ApiGetWalletsResponse,
-  WcWallet
-} from '../utils/TypeUtil';
+import {
+  type ApiGetAnalyticsConfigResponse,
+  type ApiGetDataWalletsResponse,
+  type ApiGetWalletsRequest,
+  type ApiGetWalletsResponse,
+  type WcWallet,
+  PresetsUtil
+} from '@reown/appkit-common-react-native';
 import { AssetController } from './AssetController';
 import { OptionsController } from './OptionsController';
 // import { ConnectorController } from './ConnectorController';
@@ -18,7 +19,6 @@ import { WcController } from './WcController';
 import { ApiUtil } from '../utils/ApiUtil';
 import { SnackController } from './SnackController';
 import { ConnectionsController } from './ConnectionsController';
-import { PresetsUtil } from '@reown/appkit-common-react-native';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl();

@@ -33,12 +33,13 @@ import type {
   BlockchainApiOnRampWidgetRequest,
   BlockchainApiOnRampQuotesRequest,
   OnRampFiatLimit,
-  OnRampCountryDefaults
-} from '../utils/TypeUtil';
+  OnRampCountryDefaults,
+  CaipAddress,
+  CaipNetworkId
+} from '@reown/appkit-common-react-native';
 import { OptionsController } from './OptionsController';
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 import { ApiUtil } from '../utils/ApiUtil';
-import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common-react-native';
 
 import { SnackController } from './SnackController';
 

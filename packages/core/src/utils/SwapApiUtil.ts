@@ -1,7 +1,11 @@
-import type { Balance, CaipNetworkId } from '@reown/appkit-common-react-native';
+import type {
+  Balance,
+  CaipNetworkId,
+  BlockchainApiSwapAllowanceRequest,
+  SwapTokenWithBalance
+} from '@reown/appkit-common-react-native';
 import { BlockchainApiController } from '../controllers/BlockchainApiController';
 import { OptionsController } from '../controllers/OptionsController';
-import type { BlockchainApiSwapAllowanceRequest, SwapTokenWithBalance } from './TypeUtil';
 import { ConnectionsController } from '../controllers/ConnectionsController';
 import { ConstantsUtil } from './ConstantsUtil';
 

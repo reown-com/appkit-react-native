@@ -1,4 +1,4 @@
-import type { RequestCache } from './TypeUtil';
+import type { RequestCache } from '@reown/appkit-common-react-native';
 
 // -- Types ----------------------------------------------------------------------
 interface Options {

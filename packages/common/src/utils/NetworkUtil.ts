@@ -1,4 +1,4 @@
-import type { CaipAddress } from './TypeUtil';
+import type { CaipAddress } from '../types';
 
 export const NetworkUtil = {
   caipNetworkIdToNumber(caipnetworkId?: `${string}:${string}`) {

@@ -12,7 +12,7 @@ import {
   type OnRampErrorTypeValues,
   type OnRampCountryDefaults,
   BlockchainOnRampError
-} from '../utils/TypeUtil';
+} from '@reown/appkit-common-react-native';
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { OptionsController } from './OptionsController';

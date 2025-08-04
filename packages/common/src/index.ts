@@ -13,4 +13,5 @@ export { bitcoin, bitcoinTestnet } from './networks/bitcoin';
 export { BlockchainAdapter } from './adapters/BlockchainAdapter';
 export { EVMAdapter } from './adapters/EvmAdapter';
 export { SolanaBaseAdapter } from './adapters/SolanaBaseAdapter';
-export * from './utils/TypeUtil';
+
+export * from './types';

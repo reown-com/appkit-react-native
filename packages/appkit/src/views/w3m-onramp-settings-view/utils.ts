@@ -1,10 +1,7 @@
 import { ITEM_HEIGHT as COUNTRY_ITEM_HEIGHT } from './components/Country';
 import { ITEM_HEIGHT as CURRENCY_ITEM_HEIGHT } from '../w3m-onramp-view/components/Currency';
-import {
-  OnRampController,
-  type OnRampCountry,
-  type OnRampFiatCurrency
-} from '@reown/appkit-core-react-native';
+import { OnRampController } from '@reown/appkit-core-react-native';
+import { type OnRampCountry, type OnRampFiatCurrency } from '@reown/appkit-common-react-native';
 
 // -------------------------- Types --------------------------
 type ModalType = 'country' | 'paymentCurrency';

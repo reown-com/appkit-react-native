@@ -10,13 +10,14 @@ import {
   type CaipNetwork,
   type ChainNamespace,
   type SocialProvider,
-  type LinkingRecord
+  type LinkingRecord,
+  type DataWallet,
+  type SdkVersion
 } from '@reown/appkit-common-react-native';
 
 import * as ct from 'countries-and-timezones';
 
 import { ConstantsUtil } from './ConstantsUtil';
-import type { DataWallet, SdkVersion } from './TypeUtil';
 
 // -- Helpers -----------------------------------------------------------------
 async function isAppInstalledIos(deepLink?: string): Promise<boolean> {

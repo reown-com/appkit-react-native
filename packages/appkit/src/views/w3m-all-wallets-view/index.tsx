@@ -1,12 +1,7 @@
 import { useState } from 'react';
-import {
-  WcController,
-  EventsController,
-  RouterController,
-  type WcWallet
-} from '@reown/appkit-core-react-native';
+import { WcController, EventsController, RouterController } from '@reown/appkit-core-react-native';
+import { type WcWallet, ConstantsUtil } from '@reown/appkit-common-react-native';
 import { FlexView, IconLink, SearchBar, Spacing, useTheme } from '@reown/appkit-ui-react-native';
-import { ConstantsUtil } from '@reown/appkit-common-react-native';
 
 import styles from './styles';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';

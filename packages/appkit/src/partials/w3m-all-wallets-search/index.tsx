@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
-import {
-  ApiController,
-  AssetUtil,
-  SnackController,
-  type WcWallet
-} from '@reown/appkit-core-react-native';
+import { ApiController, AssetUtil, SnackController } from '@reown/appkit-core-react-native';
+import { type WcWallet } from '@reown/appkit-common-react-native';
 import {
   CardSelect,
   CardSelectHeight,

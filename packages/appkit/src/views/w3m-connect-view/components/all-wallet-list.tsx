@@ -4,9 +4,9 @@ import {
   ApiController,
   AssetUtil,
   WcController,
-  type WcControllerState,
-  type WcWallet
+  type WcControllerState
 } from '@reown/appkit-core-react-native';
+import { type WcWallet } from '@reown/appkit-common-react-native';
 import { ListItemLoader, ListWallet } from '@reown/appkit-ui-react-native';
 import { UiUtil } from '../../../utils/UiUtil';
 import { filterOutRecentWallets } from '../utils';
