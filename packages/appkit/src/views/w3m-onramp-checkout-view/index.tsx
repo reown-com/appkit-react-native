@@ -60,7 +60,7 @@ export function OnRampCheckoutView() {
         </FlexView>
         <FlexView flexDirection="row" alignItems="center" justifyContent="center">
           <Text color="fg-200">via </Text>
-          {providerImage && <Image source={providerImage} style={styles.providerImage} />}
+          {providerImage ? <Image source={providerImage} style={styles.providerImage} /> : null}
           <Text color="fg-200">{StringUtil.capitalize(selectedQuote?.serviceProvider)}</Text>
         </FlexView>
       </FlexView>
@@ -87,12 +87,10 @@ export function OnRampCheckoutView() {
           <Text>
             {value} {symbol?.split('_')[0] ?? ''}
           </Text>
-          {purchaseCurrency?.symbolImageUrl && (
-            <Image
+          {purchaseCurrency?.symbolImageUrl ? <Image
               source={purchaseCurrency?.symbolImageUrl}
               style={[styles.tokenImage, { borderColor: Theme['gray-glass-010'] }]}
-            />
-          )}
+            /> : null}
         </FlexView>
       </FlexView>
       <FlexView
@@ -118,38 +116,32 @@ export function OnRampCheckoutView() {
           alignItems="center"
           style={[styles.paymentMethodContainer, { borderColor: Theme['gray-glass-020'] }]}
         >
-          {paymentLogo && (
-            <Image
+          {paymentLogo ? <Image
               source={paymentLogo}
               style={styles.paymentMethodImage}
               tintColor={Theme['fg-150']}
-            />
-          )}
+            /> : null}
           <Text variant="small-600" color="fg-150">
             {selectedPaymentMethod?.name}
           </Text>
         </FlexView>
       </FlexView>
 
-      {showFees && (
-        <Toggle
+      {showFees ? <Toggle
           title={
             <>
               <Text variant="paragraph-400" color="fg-200">
                 Fees{' '}
-                {showTotalFee && (
-                  <Text variant="paragraph-400">
+                {showTotalFee ? <Text variant="paragraph-400">
                     {selectedQuote?.totalFee} {selectedQuote?.sourceCurrencyCode}
-                  </Text>
-                )}
+                  </Text> : null}
               </Text>
             </>
           }
           style={[styles.feesToggle, { backgroundColor: Theme['gray-glass-002'] }]}
           contentContainerStyle={styles.feesToggleContent}
         >
-          {showNetworkFee && (
-            <FlexView
+          {showNetworkFee ? <FlexView
               flexDirection="row"
               justifyContent="space-between"
               style={[styles.toggleItem, { backgroundColor: Theme['gray-glass-002'] }]}
@@ -159,20 +151,16 @@ export function OnRampCheckoutView() {
                 Network Fees
               </Text>
               <FlexView flexDirection="row" alignItems="center">
-                {networkImage && (
-                  <Image
+                {networkImage ? <Image
                     source={networkImage}
                     style={[styles.networkImage, { borderColor: Theme['gray-glass-010'] }]}
-                  />
-                )}
+                  /> : null}
                 <Text variant="small-400">
                   {selectedQuote?.networkFee} {selectedQuote?.sourceCurrencyCode}
                 </Text>
               </FlexView>
-            </FlexView>
-          )}
-          {showTransactionFee && (
-            <FlexView
+            </FlexView> : null}
+          {showTransactionFee ? <FlexView
               flexDirection="row"
               justifyContent="space-between"
               style={[styles.toggleItem, { backgroundColor: Theme['gray-glass-002'] }]}
@@ -183,10 +171,8 @@ export function OnRampCheckoutView() {
               <Text variant="small-400">
                 {selectedQuote.transactionFee} {selectedQuote?.sourceCurrencyCode}
               </Text>
-            </FlexView>
-          )}
-        </Toggle>
-      )}
+            </FlexView> : null}
+        </Toggle> : null}
       <FlexView flexDirection="row" justifyContent="space-between" margin={['xl', '0', '0', '0']}>
         <Button
           variant="shade"

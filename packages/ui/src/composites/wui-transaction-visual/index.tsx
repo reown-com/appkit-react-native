@@ -32,14 +32,11 @@ export function TransactionVisual({ images, networkSrc, isAllNFT }: TransactionV
           <Icon name={isFirstNFT ? 'nftPlaceholder' : 'coinPlaceholder'} size="sm" color="fg-200" />
         </FlexView>
       )}
-      {hasOneImage && firstImage?.url && (
-        <Image
+      {hasOneImage && firstImage?.url ? <Image
           source={firstImage.url}
           style={[styles.image, firstImage?.type === 'NFT' && styles.imageNft, { backgroundColor }]}
-        />
-      )}
-      {hasTwoImages && firstImage?.url && secondImage?.url && (
-        <FlexView flexDirection="row" padding={['0', 's', '0', '0']}>
+        /> : null}
+      {hasTwoImages && firstImage?.url && secondImage?.url ? <FlexView flexDirection="row" padding={['0', 's', '0', '0']}>
           <FlexView style={styles.halfContainer}>
             <Image
               source={firstImage.url}
@@ -57,8 +54,7 @@ export function TransactionVisual({ images, networkSrc, isAllNFT }: TransactionV
               ]}
             />
           </FlexView>
-        </FlexView>
-      )}
+        </FlexView> : null}
       <FlexView
         alignItems="center"
         justifyContent="center"

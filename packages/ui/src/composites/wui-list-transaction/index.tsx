@@ -38,16 +38,14 @@ export function ListTransaction({
       <FlexView flexDirection="row" alignItems="center" style={styles.middleContainer}>
         <FlexView justifyContent="center" alignItems="flex-start">
           <FlexView flexDirection="row" alignItems="center">
-            {type && (
-              <IconBox
+            {type ? <IconBox
                 icon={getIcon(type)}
                 size="sm"
                 iconColor={getIconColor(status)}
                 background
                 border
                 borderColor="bg-100"
-              />
-            )}
+              /> : null}
             <Text variant="paragraph-500" color="fg-100">
               {getTypeLabel(type)}
             </Text>

@@ -91,12 +91,10 @@ export function SelectorModal({
             style={styles.searchBar}
             placeholder={searchPlaceholder}
           />
-          {selectedItem && (
-            <FlexView style={styles.selectedContainer}>
+          {selectedItem ? <FlexView style={styles.selectedContainer}>
               {renderItem({ item: selectedItem })}
               <Separator style={styles.separator} color="gray-glass-020" />
-            </FlexView>
-          )}
+            </FlexView> : null}
           <FlatList
             data={items}
             renderItem={renderItem}

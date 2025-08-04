@@ -15,10 +15,8 @@ export function WalletInfoView({ style }: Props) {
         Connected to
       </Text>
       <FlexView flexDirection="row" alignItems="center">
-        {walletInfo?.icons?.[0] && (
-          <Image style={styles.logo} source={{ uri: walletInfo?.icons?.[0] }} />
-        )}
-        {walletInfo?.name && <Text variant="small-400">{walletInfo?.name}</Text>}
+        {walletInfo?.icons?.[0] ? <Image style={styles.logo} source={{ uri: walletInfo?.icons?.[0] }} /> : null}
+        {walletInfo?.name ? <Text variant="small-400">{walletInfo?.name}</Text> : null}
       </FlexView>
     </FlexView>
   ) : null;

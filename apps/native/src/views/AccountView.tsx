@@ -11,17 +11,15 @@ export function AccountView() {
       <Text variant="medium-600">Wagmi Account Info</Text>
       <FlexView>
         <Text variant="small-600">Address:</Text>
-        {isConnected && <Text variant="small-400">{address}</Text>}
+        {isConnected ? <Text variant="small-400">{address}</Text> : null}
       </FlexView>
-      {isLoading && <Text variant="small-400">Fetching balance...</Text>}
-      {data && (
-        <FlexView>
+      {isLoading ? <Text variant="small-400">Fetching balance...</Text> : null}
+      {data ? <FlexView>
           <Text variant="small-600">Balance:</Text>
           <Text variant="small-400">
             {data?.formatted} {data?.symbol}
           </Text>
-        </FlexView>
-      )}
+        </FlexView> : null}
     </FlexView>
   ) : null;
 }

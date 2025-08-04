@@ -76,8 +76,7 @@ export function ConnectingSocialView() {
     >
       <LoadingThumbnail paused={!!error}>
         <Logo logo={data?.socialProvider ?? 'more'} height={72} width={72} />
-        {error && (
-          <IconBox
+        {error ? <IconBox
             icon={'close'}
             border
             background
@@ -85,8 +84,7 @@ export function ConnectingSocialView() {
             size="sm"
             iconColor="error-100"
             style={styles.errorIcon}
-          />
-        )}
+          /> : null}
       </LoadingThumbnail>
       <Text style={styles.continueText} variant="paragraph-500">
         Continue with {StringUtil.capitalize(data?.socialProvider ?? 'Login')}

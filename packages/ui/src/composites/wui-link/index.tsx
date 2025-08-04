@@ -54,15 +54,11 @@ export function Link({
       {...rest}
     >
       <FlexView flexDirection="row" alignItems="center" justifyContent="center">
-        {iconLeft && (
-          <Icon color={_color} name={iconLeft} size={iconSize} style={styles.iconLeft} />
-        )}
+        {iconLeft ? <Icon color={_color} name={iconLeft} size={iconSize} style={styles.iconLeft} /> : null}
         <Text variant={size === 'md' ? 'paragraph-600' : 'small-600'} color={_color}>
           {children}
         </Text>
-        {iconRight && (
-          <Icon color={_color} name={iconRight} size={iconSize} style={styles.iconRight} />
-        )}
+        {iconRight ? <Icon color={_color} name={iconRight} size={iconSize} style={styles.iconRight} /> : null}
       </FlexView>
     </AnimatedPressable>
   );

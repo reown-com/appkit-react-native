@@ -113,8 +113,7 @@ export function NetworkSwitchView() {
           imageHeaders={ApiController._getApiHeaders()}
           size="lg"
         />
-        {error && (
-          <IconBox
+        {error ? <IconBox
             icon="close"
             border
             background
@@ -122,8 +121,7 @@ export function NetworkSwitchView() {
             size="sm"
             iconColor="error-100"
             style={styles.errorIcon}
-          />
-        )}
+          /> : null}
       </LoadingHexagon>
       {textTemplate()}
       {retryTemplate()}

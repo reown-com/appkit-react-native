@@ -55,11 +55,11 @@ export function WagmiActionsView() {
       >
         Sign
       </Button>
-      {isGasError && <Text>Error estimating gas</Text>}
+      {isGasError ? <Text>Error estimating gas</Text> : null}
       <Button disabled={isSending} onPress={() => sendTransaction({ ...TX, gas })}>
         Send
       </Button>
-      {isSending && <Text>Check Wallet</Text>}
+      {isSending ? <Text>Check Wallet</Text> : null}
     </FlexView>
   ) : null;
 }

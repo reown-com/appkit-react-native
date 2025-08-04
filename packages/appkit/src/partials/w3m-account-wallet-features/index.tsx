@@ -90,8 +90,7 @@ export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeature
         justifyContent="space-around"
         padding={['0', 's', '0', 's']}
       >
-        {isOnRampEnabled && (
-          <IconLink
+        {isOnRampEnabled ? <IconLink
             icon="card"
             size="lg"
             iconColor="accent-100"
@@ -100,10 +99,8 @@ export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeature
             pressedColor="accent-glass-020"
             style={[styles.action, isSwapsEnabled ? styles.actionCenter : styles.actionLeft]}
             onPress={onBuyPress}
-          />
-        )}
-        {isSwapsEnabled && (
-          <IconLink
+          /> : null}
+        {isSwapsEnabled ? <IconLink
             icon="recycleHorizontal"
             size="lg"
             iconColor="accent-100"
@@ -112,8 +109,7 @@ export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeature
             pressedColor="accent-glass-020"
             style={[styles.action, styles.actionLeft]}
             onPress={onSwapPress}
-          />
-        )}
+          /> : null}
         <IconLink
           icon="arrowBottomCircle"
           size="lg"
@@ -124,8 +120,7 @@ export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeature
           style={[styles.action, isSwapsEnabled ? styles.actionCenter : styles.actionLeft]}
           onPress={onReceivePress}
         />
-        {showSend && (
-          <IconLink
+        {showSend ? <IconLink
             icon="paperplane"
             size="lg"
             iconColor="accent-100"
@@ -134,8 +129,7 @@ export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeature
             pressedColor="accent-glass-020"
             style={[styles.action, styles.actionRight]}
             onPress={onSendPress}
-          />
-        )}
+          /> : null}
       </FlexView>
       <FlexView style={styles.tab}>
         <Tabs tabs={['Tokens', 'Activity']} onTabChange={onTabChange} />

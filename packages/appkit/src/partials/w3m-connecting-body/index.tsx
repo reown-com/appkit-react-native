@@ -12,11 +12,9 @@ export function ConnectingBody({ title, description }: ConnectingBodyProps) {
   return (
     <FlexView padding={['3xs', '2xl', '0', '2xl']} alignItems="center" style={styles.textContainer}>
       <Text variant="paragraph-500">{title}</Text>
-      {description && (
-        <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
+      {description ? <Text center variant="small-400" color="fg-200" style={styles.descriptionText}>
           {description}
-        </Text>
-      )}
+        </Text> : null}
     </FlexView>
   );
 }

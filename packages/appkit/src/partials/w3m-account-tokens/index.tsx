@@ -63,7 +63,7 @@ export function AccountTokens({ style, isLoading }: Props) {
             </Text>
           </FlexView>
         </ListItem>
-        {isLoading && <LoadingSpinner size="sm" style={styles.loadingSpinner} />}
+        {isLoading ? <LoadingSpinner size="sm" style={styles.loadingSpinner} /> : null}
       </>
     );
   }
@@ -93,7 +93,7 @@ export function AccountTokens({ style, isLoading }: Props) {
           pressable={false}
         />
       ))}
-      {isLoading && <LoadingSpinner size="sm" style={styles.loadingSpinner} />}
+      {isLoading ? <LoadingSpinner size="sm" style={styles.loadingSpinner} /> : null}
     </ScrollView>
   );
 }

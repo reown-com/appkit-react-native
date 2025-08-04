@@ -71,8 +71,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
             imageSrc={AssetUtil.getWalletImage(data?.wallet)}
             imageHeaders={ApiController._getApiHeaders()}
           />
-          {wcError && (
-            <IconBox
+          {wcError ? <IconBox
               icon={'close'}
               border
               background
@@ -80,8 +79,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
               size="sm"
               iconColor="error-100"
               style={styles.errorIcon}
-            />
-          )}
+            /> : null}
         </LoadingThumbnail>
         <ConnectingBody title={bodyMessage.title} description={bodyMessage.description} />
         <Button
@@ -93,16 +91,14 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
         >
           Open
         </Button>
-        {showCopy && (
-          <Link
+        {showCopy ? <Link
             iconLeft="copySmall"
             color="fg-200"
             style={styles.copyButton}
             onPress={() => onCopyUri(wcUri)}
           >
             Copy link
-          </Link>
-        )}
+          </Link> : null}
       </FlexView>
     </ScrollView>
   );

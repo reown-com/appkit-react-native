@@ -72,14 +72,12 @@ export function Tabs({ tabs, onTabChange, style }: TabsProps) {
             key={isString ? option : option.label}
             style={[styles.tabItem, { width: tabWidth }]}
           >
-            {!isString && option.icon && (
-              <Icon
+            {!isString && option.icon ? <Icon
                 name={option.icon}
                 size="xs"
                 color={isActive ? 'fg-100' : 'fg-200'}
                 style={styles.tabIcon}
-              />
-            )}
+              /> : null}
             <Text variant="small-600" color={isActive ? 'fg-100' : 'fg-200'}>
               {isString ? option : option.label}
             </Text>
