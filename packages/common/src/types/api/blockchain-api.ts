@@ -33,7 +33,6 @@ export interface BlockchainApiTransactionsRequest {
   account: string;
   projectId: string;
   cursor?: string;
-  onramp?: 'meld';
   signal?: AbortSignal;
   cache?: RequestCache;
   chainId: CaipNetworkId;

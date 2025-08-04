@@ -118,7 +118,7 @@ export const BlockchainApiController = {
   },
 
   async fetchTransactions(params: BlockchainApiTransactionsRequest) {
-    const { account, projectId, cursor, onramp, signal, cache, chainId } = params;
+    const { account, projectId, cursor, signal, cache, chainId } = params;
     const isSupported = await BlockchainApiController.isNetworkSupported(chainId);
 
     if (!isSupported) {
@@ -131,7 +131,6 @@ export const BlockchainApiController = {
       params: {
         projectId,
         cursor,
-        onramp,
         chainId
       },
       signal,

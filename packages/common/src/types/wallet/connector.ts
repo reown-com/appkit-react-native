@@ -62,7 +62,10 @@ export abstract class WalletConnector extends EventEmitter {
   }
 
   public async disconnect() {
-    // Default implementation
+    await this.provider?.disconnect();
+    this.namespaces = undefined;
+    this.wallet = undefined;
+    this.properties = undefined;
   }
 
   abstract connect(opts: ConnectOptions): Promise<Namespaces | undefined>;
