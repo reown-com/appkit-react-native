@@ -8,7 +8,7 @@ import { ToastUtils } from '../utils/ToastUtils';
 export function EthersActionsView() {
   const isConnected = true;
   const { address, chainId } = useAccount();
-  const { provider } = useProvider('eip155');
+  const { provider } = useProvider();
 
   const onSignSuccess = (data: any) => {
     ToastUtils.showSuccessToast('Sign successful', data);

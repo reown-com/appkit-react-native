@@ -201,9 +201,23 @@ export class WalletConnectConnector extends WalletConnector {
     return this.namespaces;
   }
 
-  override getProvider(): Provider {
+  override getProvider(namespace?: ChainNamespace): Provider {
     if (!this.provider) {
       throw new Error('WalletConnectConnector: Provider not initialized. Call init() first.');
+    }
+
+    const provider = this.provider as IUniversalProvider;
+
+    if (namespace) {
+      const chainId = this.getChainId(namespace);
+
+      // @ts-ignore
+      return {
+        ...provider,
+        request: (args: any) => {
+          return provider.request(args, chainId);
+        }
+      };
     }
 
     return this.provider;

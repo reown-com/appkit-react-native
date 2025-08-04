@@ -292,7 +292,7 @@ export abstract class WalletConnector extends EventEmitter {
   }
 
   abstract connect(opts: ConnectOptions): Promise<Namespaces | undefined>;
-  abstract getProvider(): Provider;
+  abstract getProvider(namespace?: ChainNamespace): Provider;
   abstract getNamespaces(): Namespaces;
   abstract getChainId(namespace: ChainNamespace): CaipNetworkId | undefined;
   abstract getWalletInfo(): WalletInfo | undefined;
