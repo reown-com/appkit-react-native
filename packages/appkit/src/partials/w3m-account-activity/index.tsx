@@ -78,14 +78,14 @@ export function AccountActivity({ style }: Props) {
 
   useEffect(() => {
     const address = ConnectionsController.state.activeAddress;
-    if (!TransactionsController.state.transactions.length && address) {
+    if (!TransactionsController.state.transactions.length && address && isSupported) {
       TransactionsController.fetchTransactions(address, true);
     }
     // Set initial load to false after first fetch
     const timer = setTimeout(() => setInitialLoad(false), 100);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [isSupported]);
 
   // Show loading spinner during initial load or when loading with no transactions
   if ((initialLoad || loading) && !transactions.length) {
