@@ -54,6 +54,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Exit Pre-mode
+        run: yarn changeset pre exit
+        shell: bash
+
+      - name: Commit Version Changes
+        run: |
+          git add .
+          git commit -m "chore: update package versions after alpha release"
+        shell: bash
+
       - name: Push Changes and Tags
         run: |
           git push --follow-tags
