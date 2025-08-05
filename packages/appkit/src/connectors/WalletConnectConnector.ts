@@ -253,7 +253,7 @@ export class WalletConnectConnector extends WalletConnector {
 
     const chainId = (this.provider as IUniversalProvider).rpcProviders[
       namespace
-    ]?.getDefaultChain();
+    ]?.getDefaultChain?.();
 
     if (!chainId) {
       return undefined;
