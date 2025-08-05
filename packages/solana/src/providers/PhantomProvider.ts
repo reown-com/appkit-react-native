@@ -54,11 +54,46 @@ export class PhantomProvider extends EventEmitter implements Provider {
   private userPublicKey: string | null = null;
   private phantomEncryptionPublicKeyBs58: string | null = null;
 
+  // Single subscription management - deep links are sequential by nature
+  private activeSubscription: { remove: () => void } | null = null;
+  private isOperationPending = false;
+
   constructor(config: PhantomProviderConfig) {
     super();
     this.config = config;
     this.dappEncryptionKeyPair = config.dappEncryptionKeyPair;
     this.storage = config.storage;
+  }
+
+  /**
+   * Cleanup method to be called when the provider is destroyed
+   */
+  public destroy(): void {
+    this.cleanupActiveSubscription();
+    this.removeAllListeners();
+  }
+
+  /**
+   * Safely cleanup the active subscription
+   */
+  private cleanupActiveSubscription(): void {
+    if (this.activeSubscription) {
+      this.activeSubscription.remove();
+      this.activeSubscription = null;
+    }
+    this.isOperationPending = false;
+  }
+
+  /**
+   * Safely set a new subscription, ensuring no operation is pending
+   */
+  private setActiveSubscription(subscription: { remove: () => void }): void {
+    // If there's already a pending operation, reject it
+    if (this.isOperationPending) {
+      this.cleanupActiveSubscription();
+    }
+    this.activeSubscription = subscription;
+    this.isOperationPending = true;
   }
 
   getUserPublicKey(): string | null {
@@ -200,69 +235,76 @@ export class PhantomProvider extends EventEmitter implements Provider {
     const url = this.buildUrl('connect', connectDeeplinkParams as any);
 
     return new Promise<PhantomConnectResult>((resolve, reject) => {
-      let subscription: { remove: () => void } | null = null;
       const handleDeepLink = async (event: { url: string }) => {
-        if (subscription) {
-          subscription.remove();
-        }
-        const fullUrl = event.url;
-        if (fullUrl.startsWith(this.config.appScheme)) {
-          const responseUrlParams = new URLSearchParams(
-            fullUrl.substring(fullUrl.indexOf('?') + 1)
-          );
-          const errorCode = responseUrlParams.get('errorCode');
-          const errorMessage = responseUrlParams.get('errorMessage');
-          if (errorCode) {
-            return reject(
-              new Error(
-                `Phantom Connection Failed: ${errorMessage || 'Unknown error'} (Code: ${errorCode})`
-              )
+        try {
+          this.cleanupActiveSubscription();
+          const fullUrl = event.url;
+          if (fullUrl.startsWith(this.config.appScheme)) {
+            const responseUrlParams = new URLSearchParams(
+              fullUrl.substring(fullUrl.indexOf('?') + 1)
             );
-          }
-          const responsePayload: PhantomDeeplinkResponse = {
-            phantom_encryption_public_key: responseUrlParams.get('phantom_encryption_public_key')!,
-            nonce: responseUrlParams.get('nonce')!,
-            data: responseUrlParams.get('data')!
-          };
-          if (
-            !responsePayload.phantom_encryption_public_key ||
-            !responsePayload.nonce ||
-            !responsePayload.data
-          ) {
-            return reject(new Error('Phantom Connect: Invalid response - missing parameters.'));
-          }
-          const decryptedData = this.decryptPayload<DecryptedConnectData>(
-            responsePayload.data,
-            responsePayload.nonce,
-            responsePayload.phantom_encryption_public_key
-          );
-          if (!decryptedData || !decryptedData.public_key || !decryptedData.session) {
-            return reject(
-              new Error('Phantom Connect: Failed to decrypt or invalid decrypted data.')
+            const errorCode = responseUrlParams.get('errorCode');
+            const errorMessage = responseUrlParams.get('errorMessage');
+            if (errorCode) {
+              return reject(
+                new Error(
+                  `Phantom Connection Failed: ${
+                    errorMessage || 'Unknown error'
+                  } (Code: ${errorCode})`
+                )
+              );
+            }
+            const responsePayload: PhantomDeeplinkResponse = {
+              phantom_encryption_public_key: responseUrlParams.get(
+                'phantom_encryption_public_key'
+              )!,
+              nonce: responseUrlParams.get('nonce')!,
+              data: responseUrlParams.get('data')!
+            };
+            if (
+              !responsePayload.phantom_encryption_public_key ||
+              !responsePayload.nonce ||
+              !responsePayload.data
+            ) {
+              return reject(new Error('Phantom Connect: Invalid response - missing parameters.'));
+            }
+            const decryptedData = this.decryptPayload<DecryptedConnectData>(
+              responsePayload.data,
+              responsePayload.nonce,
+              responsePayload.phantom_encryption_public_key
             );
+            if (!decryptedData || !decryptedData.public_key || !decryptedData.session) {
+              return reject(
+                new Error('Phantom Connect: Failed to decrypt or invalid decrypted data.')
+              );
+            }
+            this.userPublicKey = decryptedData.public_key;
+            this.sessionToken = decryptedData.session;
+            this.phantomEncryptionPublicKeyBs58 = responsePayload.phantom_encryption_public_key;
+
+            // Save session on successful connect
+            this.saveSession();
+
+            resolve({
+              userPublicKey: this.userPublicKey,
+              sessionToken: this.sessionToken,
+              phantomEncryptionPublicKeyBs58: this.phantomEncryptionPublicKeyBs58,
+              cluster
+            });
+          } else {
+            reject(new Error('Phantom Connect: Unexpected redirect URI.'));
           }
-          this.userPublicKey = decryptedData.public_key;
-          this.sessionToken = decryptedData.session;
-          this.phantomEncryptionPublicKeyBs58 = responsePayload.phantom_encryption_public_key;
-
-          // Save session on successful connect
-          this.saveSession();
-
-          resolve({
-            userPublicKey: this.userPublicKey,
-            sessionToken: this.sessionToken,
-            phantomEncryptionPublicKeyBs58: this.phantomEncryptionPublicKeyBs58,
-            cluster
-          });
-        } else {
-          reject(new Error('Phantom Connect: Unexpected redirect URI.'));
+        } catch (error) {
+          this.cleanupActiveSubscription();
+          reject(error);
         }
       };
-      subscription = Linking.addEventListener('url', handleDeepLink);
+
+      const subscription = Linking.addEventListener('url', handleDeepLink);
+      this.setActiveSubscription(subscription);
+
       Linking.openURL(url).catch(err => {
-        if (subscription) {
-          subscription.remove();
-        }
+        this.cleanupActiveSubscription();
         reject(new Error(`Failed to open Phantom wallet: ${err.message}. Is it installed?`));
       });
     }) as Promise<T>;
@@ -299,24 +341,28 @@ export class PhantomProvider extends EventEmitter implements Provider {
     const url = this.buildUrl('disconnect', disconnectDeeplinkParams as any);
 
     return new Promise<void>((resolve, reject) => {
-      let subscription: { remove: () => void } | null = null;
       const handleDeepLink = (event: { url: string }) => {
-        if (subscription) {
-          subscription.remove();
-        }
-        if (event.url.startsWith(this.config.appScheme)) {
+        try {
+          this.cleanupActiveSubscription();
+          if (event.url.startsWith(this.config.appScheme)) {
+            this.clearSession();
+            resolve();
+          } else {
+            this.clearSession();
+            reject(new Error('Phantom Disconnect: Unexpected redirect URI.'));
+          }
+        } catch (error) {
+          this.cleanupActiveSubscription();
           this.clearSession();
-          resolve();
-        } else {
-          this.clearSession();
-          reject(new Error('Phantom Disconnect: Unexpected redirect URI.'));
+          reject(error);
         }
       };
-      subscription = Linking.addEventListener('url', handleDeepLink);
+
+      const subscription = Linking.addEventListener('url', handleDeepLink);
+      this.setActiveSubscription(subscription);
+
       Linking.openURL(url).catch(err => {
-        if (subscription) {
-          subscription.remove();
-        }
+        this.cleanupActiveSubscription();
         this.clearSession();
         reject(new Error(`Failed to open Phantom for disconnection: ${err.message}.`));
       });
@@ -327,6 +373,7 @@ export class PhantomProvider extends EventEmitter implements Provider {
     this.sessionToken = null;
     this.userPublicKey = null;
     this.phantomEncryptionPublicKeyBs58 = null;
+    this.cleanupActiveSubscription();
     await this.clearSessionStorage();
   }
 
@@ -471,56 +518,59 @@ export class PhantomProvider extends EventEmitter implements Provider {
     }
 
     return new Promise<T>((resolve, reject) => {
-      let subscription: { remove: () => void } | null = null;
       const handleDeepLink = async (event: { url: string }) => {
-        if (subscription) {
-          subscription.remove();
-        }
-        const fullUrl = event.url;
-        if (fullUrl.startsWith(this.config.appScheme)) {
-          const responseUrlParams = new URLSearchParams(
-            fullUrl.substring(fullUrl.indexOf('?') + 1)
-          );
-          const errorCode = responseUrlParams.get('errorCode');
-          const errorMessage = responseUrlParams.get('errorMessage');
-          if (errorCode) {
-            return reject(
-              new Error(
-                `Phantom ${signingMethod} Failed: ${
-                  errorMessage || 'Unknown error'
-                } (Code: ${errorCode})`
-              )
+        try {
+          this.cleanupActiveSubscription();
+          const fullUrl = event.url;
+          if (fullUrl.startsWith(this.config.appScheme)) {
+            const responseUrlParams = new URLSearchParams(
+              fullUrl.substring(fullUrl.indexOf('?') + 1)
             );
-          }
-          const responseNonce = responseUrlParams.get('nonce');
-          const responseData = responseUrlParams.get('data');
-          if (!responseNonce || !responseData) {
-            return reject(
-              new Error(`Phantom ${signingMethod}: Invalid response - missing nonce or data.`)
+            const errorCode = responseUrlParams.get('errorCode');
+            const errorMessage = responseUrlParams.get('errorMessage');
+            if (errorCode) {
+              return reject(
+                new Error(
+                  `Phantom ${signingMethod} Failed: ${
+                    errorMessage || 'Unknown error'
+                  } (Code: ${errorCode})`
+                )
+              );
+            }
+            const responseNonce = responseUrlParams.get('nonce');
+            const responseData = responseUrlParams.get('data');
+            if (!responseNonce || !responseData) {
+              return reject(
+                new Error(`Phantom ${signingMethod}: Invalid response - missing nonce or data.`)
+              );
+            }
+            const decryptedResult = this.decryptPayload<any>(
+              responseData,
+              responseNonce,
+              this.phantomEncryptionPublicKeyBs58!
             );
+            if (!decryptedResult) {
+              return reject(
+                new Error(
+                  `Phantom ${signingMethod}: Failed to decrypt response or invalid decrypted data.`
+                )
+              );
+            }
+            resolve(decryptedResult as T);
+          } else {
+            reject(new Error(`Phantom ${signingMethod}: Unexpected redirect URI.`));
           }
-          const decryptedResult = this.decryptPayload<any>(
-            responseData,
-            responseNonce,
-            this.phantomEncryptionPublicKeyBs58!
-          );
-          if (!decryptedResult) {
-            return reject(
-              new Error(
-                `Phantom ${signingMethod}: Failed to decrypt response or invalid decrypted data.`
-              )
-            );
-          }
-          resolve(decryptedResult as T);
-        } else {
-          reject(new Error(`Phantom ${signingMethod}: Unexpected redirect URI.`));
+        } catch (error) {
+          this.cleanupActiveSubscription();
+          reject(error);
         }
       };
-      subscription = Linking.addEventListener('url', handleDeepLink);
+
+      const subscription = Linking.addEventListener('url', handleDeepLink);
+      this.setActiveSubscription(subscription);
+
       Linking.openURL(deeplinkUrl).catch(err => {
-        if (subscription) {
-          subscription.remove();
-        }
+        this.cleanupActiveSubscription();
         reject(
           new Error(`Failed to open Phantom for ${signingMethod}: ${err.message}. Is it installed?`)
         );

@@ -154,6 +154,12 @@ export class PhantomConnector extends WalletConnector {
     } catch (error: any) {
       // console.warn(`PhantomConnector: Error during provider disconnect: ${error.message}. Proceeding with local clear.`);
     }
+
+    // Cleanup provider resources
+    if (this.provider) {
+      (this.provider as PhantomProvider).destroy();
+    }
+
     await this.clearSession();
   }
 
