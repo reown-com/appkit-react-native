@@ -94,7 +94,8 @@ export function SendInputToken({
           chevron
         />
       </FlexView>
-      {token ? <FlexView
+      {token ? (
+        <FlexView
           flexDirection="row"
           alignItems="center"
           justifyContent="space-between"
@@ -109,7 +110,8 @@ export function SendInputToken({
             </Text>
             <Link onPress={onMaxPress}>Max</Link>
           </FlexView>
-        </FlexView> : null}
+        </FlexView>
+      ) : null}
     </FlexView>
   );
 }

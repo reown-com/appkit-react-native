@@ -90,12 +90,14 @@ export function Button({
       {...rest}
     >
       <FlexView flexDirection="row" alignItems="center" justifyContent="center">
-        {iconLeft ? <Icon
+        {iconLeft ? (
+          <Icon
             color={iconColor}
             name={iconLeft}
             size={iconSize}
             style={[styles.iconLeft, iconStyle]}
-          /> : null}
+          />
+        ) : null}
         {loading ? <LoadingSpinner color={iconColor} size="md" /> : null}
         {!loading &&
           (typeof children === 'string' ? (
@@ -108,12 +110,14 @@ export function Button({
           ) : (
             children
           ))}
-        {iconRight ? <Icon
+        {iconRight ? (
+          <Icon
             color={iconColor}
             name={iconRight}
             size={iconSize}
             style={[styles.iconRight, iconStyle]}
-          /> : null}
+          />
+        ) : null}
       </FlexView>
     </AnimatedPressable>
   );

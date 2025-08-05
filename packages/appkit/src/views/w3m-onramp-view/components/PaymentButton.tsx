@@ -73,8 +73,10 @@ function PaymentButton({
           <Text variant="paragraph-400" color="fg-100">
             {title}
           </Text>
-          {subtitle ? <FlexView flexDirection="row" alignItems="center" margin={['4xs', '0', '0', '0']}>
-              {providerLogo ? <>
+          {subtitle ? (
+            <FlexView flexDirection="row" alignItems="center" margin={['4xs', '0', '0', '0']}>
+              {providerLogo ? (
+                <>
                   <Text variant="small-400" color="fg-150">
                     via
                   </Text>
@@ -84,11 +86,13 @@ function PaymentButton({
                     resizeMethod="resize"
                     resizeMode="contain"
                   />
-                </> : null}
+                </>
+              ) : null}
               <Text variant="small-400" color="fg-150">
                 {subtitle}
               </Text>
-            </FlexView> : null}
+            </FlexView>
+          ) : null}
         </FlexView>
         {loading ? (
           <LoadingSpinner size="md" color="fg-200" style={styles.rightIcon} />

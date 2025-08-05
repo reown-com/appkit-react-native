@@ -80,7 +80,8 @@ export function Chip({
       onPressOut={onPressOut}
       onPress={handlePress}
     >
-      {imageSrc ? <Image
+      {imageSrc ? (
+        <Image
           style={[
             styles.image,
             styles[`${size}Image`],
@@ -88,7 +89,8 @@ export function Chip({
             disabled && styles.disabledImage
           ]}
           source={imageSrc}
-        /> : null}
+        />
+      ) : null}
       {leftIcon ? <Icon name={leftIcon} color={themedTextColor as ColorType} /> : null}
       <Text
         variant={size === 'md' ? 'paragraph-600' : 'small-600'}
@@ -96,12 +98,14 @@ export function Chip({
       >
         {label}
       </Text>
-      {rightIcon ? <Icon
+      {rightIcon ? (
+        <Icon
           name={rightIcon}
           size={iconSize}
           color={themedTextColor as ColorType}
           style={styles.icon}
-        /> : null}
+        />
+      ) : null}
     </AnimatedPressable>
   );
 }

@@ -75,7 +75,9 @@ export function TokenButton({
       testID={testID}
     >
       {inverse ? content.reverse() : content}
-      {chevron ? <Icon name="chevronBottom" size="xxs" color="fg-150" style={styles.chevron} /> : null}
+      {chevron ? (
+        <Icon name="chevronBottom" size="xxs" color="fg-150" style={styles.chevron} />
+      ) : null}
     </Button>
   );
 }

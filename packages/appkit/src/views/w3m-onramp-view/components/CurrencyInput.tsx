@@ -117,7 +117,8 @@ export function CurrencyInput({
           )}
         </FlexView>
       </FlexView>
-      {suggestedValues && suggestedValues.length > 0 ? <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
+      {suggestedValues && suggestedValues.length > 0 ? (
+        <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
           {suggestedValues?.map((suggestion: number) => {
             const isSelected = suggestion.toString() === value;
 
@@ -142,7 +143,8 @@ export function CurrencyInput({
               </Button>
             );
           })}
-        </FlexView> : null}
+        </FlexView>
+      ) : null}
       <Separator color="gray-glass-020" style={styles.separator} />
       <NumericKeyboard onKeyPress={handleKeyPress} />
     </FlexView>

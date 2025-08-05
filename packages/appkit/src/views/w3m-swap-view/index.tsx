@@ -179,7 +179,8 @@ export function SwapView() {
               onTokenPress={() => setShowModal('toToken')}
               editable={false}
             />
-            {showSwitch ? <IconLink
+            {showSwitch ? (
+              <IconLink
                 icon="recycleHorizontal"
                 size="lg"
                 iconColor="fg-275"
@@ -188,7 +189,8 @@ export function SwapView() {
                 pressedColor="bg-250"
                 style={[styles.arrowIcon, { borderColor: Theme['bg-100'] }]}
                 onPress={onSwitchPress}
-              /> : null}
+              />
+            ) : null}
           </FlexView>
           {showDetails ? <SwapDetails /> : null}
           <Button

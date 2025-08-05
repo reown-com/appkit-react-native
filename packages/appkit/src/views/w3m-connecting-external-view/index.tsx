@@ -92,7 +92,8 @@ export function ConnectingExternalView() {
             imageSrc={AssetUtil.getWalletImage(data?.wallet)}
             imageHeaders={ApiController._getApiHeaders()}
           />
-          {errorType ? <IconBox
+          {errorType ? (
+            <IconBox
               icon={'close'}
               border
               background
@@ -100,7 +101,8 @@ export function ConnectingExternalView() {
               size="sm"
               iconColor="error-100"
               style={styles.errorIcon}
-            /> : null}
+            />
+          ) : null}
         </LoadingThumbnail>
         <ConnectingBody title={bodyMessage.title} description={bodyMessage.description} />
         {errorType !== 'not_installed' && (

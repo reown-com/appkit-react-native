@@ -40,11 +40,13 @@ export function SocialLoginList({ options, disabled }: SocialLoginListProps) {
 
   return (
     <FlexView padding={['xs', 's', '0', 's']}>
-      {topSocial ? <ListSocial logo={topSocial} disabled={disabled} onPress={() => onItemPress(topSocial)}>
+      {topSocial ? (
+        <ListSocial logo={topSocial} disabled={disabled} onPress={() => onItemPress(topSocial)}>
           <Text style={styles.topDescription} color={disabled ? 'fg-300' : 'fg-100'}>
             {`Continue with ${StringUtil.capitalize(topSocial)}`}
           </Text>
-        </ListSocial> : null}
+        </ListSocial>
+      ) : null}
       <FlexView flexDirection="row" justifyContent="space-between" margin={['xs', '0', '0', '0']}>
         {bottomSocials?.map((social: SocialProvider, index) => (
           <LogoSelect
@@ -59,12 +61,14 @@ export function SocialLoginList({ options, disabled }: SocialLoginListProps) {
             ]}
           />
         ))}
-        {showMoreButton ? <LogoSelect
+        {showMoreButton ? (
+          <LogoSelect
             logo="more"
             disabled={disabled}
             style={[styles.socialItem, styles.socialItemLast]}
             onPress={onMorePress}
-          /> : null}
+          />
+        ) : null}
       </FlexView>
     </FlexView>
   );

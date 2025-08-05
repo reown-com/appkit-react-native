@@ -186,12 +186,16 @@ export function AccountActivity({ style }: Props) {
               ))}
           </View>
         ))}
-      {(next || loading) && !refreshing ? <FlexView style={styles.footer} alignItems="center" justifyContent="center">
-          {next && !loading ? <Link size="md" style={styles.loadMoreButton} onPress={handleLoadMore}>
+      {(next || loading) && !refreshing ? (
+        <FlexView style={styles.footer} alignItems="center" justifyContent="center">
+          {next && !loading ? (
+            <Link size="md" style={styles.loadMoreButton} onPress={handleLoadMore}>
               Load more
-            </Link> : null}
+            </Link>
+          ) : null}
           {loading ? <LoadingSpinner color="accent-100" /> : null}
-        </FlexView> : null}
+        </FlexView>
+      ) : null}
     </ScrollView>
   );
 }

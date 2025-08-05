@@ -27,7 +27,9 @@ export function Country({ onPress, item, selected }: Props) {
     <Pressable onPress={handlePress} style={styles.container} backgroundColor="transparent">
       <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start" padding="s">
         <FlexView style={styles.imageContainer}>
-          {item.flagImageUrl && SvgUri ? <SvgUri uri={item.flagImageUrl} width={36} height={36} /> : null}
+          {item.flagImageUrl && SvgUri ? (
+            <SvgUri uri={item.flagImageUrl} width={36} height={36} />
+          ) : null}
         </FlexView>
         <FlexView style={styles.textContainer}>
           <Text variant="paragraph-400" color="fg-100" numberOfLines={1} ellipsizeMode="tail">
@@ -37,7 +39,9 @@ export function Country({ onPress, item, selected }: Props) {
             {item.countryCode}
           </Text>
         </FlexView>
-        {selected ? <Icon name="checkmark" size="md" color="accent-100" style={styles.checkmark} /> : null}
+        {selected ? (
+          <Icon name="checkmark" size="md" color="accent-100" style={styles.checkmark} />
+        ) : null}
       </FlexView>
     </Pressable>
   );

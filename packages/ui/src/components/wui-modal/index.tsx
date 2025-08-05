@@ -110,7 +110,9 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
 
   return (
     <>
-      {showBackdrop ? <Animated.View style={[styles.outerBackdrop, { opacity: backdropOpacity }]} /> : null}
+      {showBackdrop ? (
+        <Animated.View style={[styles.outerBackdrop, { opacity: backdropOpacity }]} />
+      ) : null}
       <RNModal
         visible={modalVisible}
         transparent
@@ -119,11 +121,13 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
         onRequestClose={onRequestClose}
         testID={testID}
       >
-        {showBackdrop ? <TouchableOpacity
+        {showBackdrop ? (
+          <TouchableOpacity
             style={styles.innerBackdropTouchable}
             activeOpacity={1}
             onPress={onBackdropPress}
-          /> : null}
+          />
+        ) : null}
         <Animated.View
           style={[styles.modal, { backgroundColor: Theme['bg-100'], transform: [{ translateY }] }]}
         >

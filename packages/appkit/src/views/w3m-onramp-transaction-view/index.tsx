@@ -76,13 +76,16 @@ export function OnRampTransactionView() {
                 {data?.onrampResult?.purchaseAmount}{' '}
                 {data?.onrampResult?.purchaseCurrency?.split('_')[0] ?? ''}
               </Text>
-              {data?.onrampResult?.purchaseImageUrl ? <Image
+              {data?.onrampResult?.purchaseImageUrl ? (
+                <Image
                   source={data?.onrampResult?.purchaseImageUrl}
                   style={[styles.tokenImage, { borderColor: Theme['gray-glass-010'] }]}
-                /> : null}
+                />
+              ) : null}
             </FlexView>
           </FlexView>
-          {showNetwork ? <FlexView
+          {showNetwork ? (
+            <FlexView
               flexDirection="row"
               alignItems="center"
               justifyContent="space-between"
@@ -94,15 +97,18 @@ export function OnRampTransactionView() {
               <Text variant="paragraph-500">
                 {StringUtil.capitalize(data?.onrampResult?.network)}
               </Text>
-            </FlexView> : null}
-          {showStatus ? <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
+            </FlexView>
+          ) : null}
+          {showStatus ? (
+            <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
               <Text variant="paragraph-400" color="fg-150">
                 Status
               </Text>
               <Text variant="paragraph-500">
                 {StringUtil.capitalize(data?.onrampResult?.status)}
               </Text>
-            </FlexView> : null}
+            </FlexView>
+          ) : null}
         </FlexView>
       </FlexView>
       <Button variant="fill" size="md" onPress={onClose}>

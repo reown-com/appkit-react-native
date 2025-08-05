@@ -183,7 +183,9 @@ export function AccountDefaultView() {
 
   return (
     <>
-      {showBack ? <IconLink icon="chevronLeft" style={styles.backIcon} onPress={RouterController.goBack} /> : null}
+      {showBack ? (
+        <IconLink icon="chevronLeft" style={styles.backIcon} onPress={RouterController.goBack} />
+      ) : null}
       <IconLink
         icon="close"
         style={styles.closeIcon}
@@ -209,18 +211,23 @@ export function AccountDefaultView() {
                     truncate: 'middle'
                   })}
             </Text>
-            {showCopy ? <IconLink
+            {showCopy ? (
+              <IconLink
                 icon="copy"
                 size="md"
                 iconColor="fg-275"
                 onPress={onCopyAddress}
                 style={styles.copyButton}
-              /> : null}
+              />
+            ) : null}
           </FlexView>
-          {showBalance ? <Text variant="paragraph-400" color="fg-200">
+          {showBalance ? (
+            <Text variant="paragraph-400" color="fg-200">
               {CoreHelperUtil.formatBalance(balance.amount, balance.symbol, 6)}
-            </Text> : null}
-          {showExplorer ? <Button
+            </Text>
+          ) : null}
+          {showExplorer ? (
+            <Button
               size="sm"
               variant="shade"
               iconLeft="compass"
@@ -229,9 +236,11 @@ export function AccountDefaultView() {
               style={{ marginVertical: Spacing.s }}
             >
               Block Explorer
-            </Button> : null}
+            </Button>
+          ) : null}
           <FlexView margin={['s', '0', '0', '0']}>
-            {isAuth ? <AuthButtons
+            {isAuth ? (
+              <AuthButtons
                 onUpgradePress={onUpgradePress}
                 socialProvider={connection?.properties?.provider}
                 onPress={onEmailPress}
@@ -242,7 +251,8 @@ export function AccountDefaultView() {
                   charsEnd: 0,
                   truncate: 'end'
                 })}
-              /> : null}
+              />
+            ) : null}
             <ListItem
               chevron
               icon="networkPlaceholder"
@@ -258,7 +268,8 @@ export function AccountDefaultView() {
                 {activeNetwork?.name}
               </Text>
             </ListItem>
-            {showBuy ? <ListItem
+            {showBuy ? (
+              <ListItem
                 chevron
                 icon="card"
                 iconColor="accent-100"
@@ -268,8 +279,10 @@ export function AccountDefaultView() {
                 style={styles.actionButton}
               >
                 <Text color="fg-100">Buy crypto</Text>
-              </ListItem> : null}
-            {showSend ? <ListItem
+              </ListItem>
+            ) : null}
+            {showSend ? (
+              <ListItem
                 chevron
                 icon="paperplane"
                 iconColor="accent-100"
@@ -279,8 +292,10 @@ export function AccountDefaultView() {
                 style={styles.actionButton}
               >
                 <Text color="fg-100">Send</Text>
-              </ListItem> : null}
-            {showSwaps ? <ListItem
+              </ListItem>
+            ) : null}
+            {showSwaps ? (
+              <ListItem
                 chevron
                 icon="recycleHorizontal"
                 iconColor="accent-100"
@@ -290,8 +305,10 @@ export function AccountDefaultView() {
                 style={styles.actionButton}
               >
                 <Text color="fg-100">Swap</Text>
-              </ListItem> : null}
-            {showActivity ? <ListItem
+              </ListItem>
+            ) : null}
+            {showActivity ? (
+              <ListItem
                 chevron
                 icon="clock"
                 iconColor="accent-100"
@@ -301,8 +318,10 @@ export function AccountDefaultView() {
                 style={styles.actionButton}
               >
                 <Text color="fg-100">Activity</Text>
-              </ListItem> : null}
-            {showSwitchAccountType ? <ListItem
+              </ListItem>
+            ) : null}
+            {showSwitchAccountType ? (
+              <ListItem
                 chevron
                 icon="swapHorizontal"
                 onPress={onSwitchAccountType}
@@ -315,7 +334,8 @@ export function AccountDefaultView() {
                 <Text color="fg-100">{`Switch to your ${
                   accountType === 'eoa' ? 'smart account' : 'EOA'
                 }`}</Text>
-              </ListItem> : null}
+              </ListItem>
+            ) : null}
             <ListItem
               icon="disconnect"
               onPress={onDisconnect}

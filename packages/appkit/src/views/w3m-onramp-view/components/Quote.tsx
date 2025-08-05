@@ -54,9 +54,11 @@ export function Quote({ item, logoURL, onQuotePress, selected, tagText, testID }
               <Text variant="paragraph-500" style={styles.providerText}>
                 {item.serviceProvider?.toLowerCase()}
               </Text>
-              {tagText ? <Tag variant="main" style={styles.tag}>
+              {tagText ? (
+                <Tag variant="main" style={styles.tag}>
                   {tagText}
-                </Tag> : null}
+                </Tag>
+              ) : null}
             </FlexView>
             <Text variant="tiny-500">
               {NumberUtil.roundNumber(item.destinationAmount, 6, 5)}{' '}

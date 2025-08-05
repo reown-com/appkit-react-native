@@ -66,7 +66,8 @@ export function WalletImage({
   return (
     <Animated.View style={style}>
       {templateVisual()}
-      {border ? <View
+      {border ? (
+        <View
           style={[
             styles.border,
             styles[`${size}Image`],
@@ -77,7 +78,8 @@ export function WalletImage({
               borderColor: Theme['accent-glass-010']
             }
           ]}
-        /> : null}
+        />
+      ) : null}
     </Animated.View>
   );
 }
