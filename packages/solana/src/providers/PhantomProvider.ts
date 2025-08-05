@@ -54,8 +54,9 @@ export class PhantomProvider extends EventEmitter implements Provider {
   private userPublicKey: string | null = null;
   private phantomEncryptionPublicKeyBs58: string | null = null;
 
-  // Global subscription tracking to prevent overwriting
+  // Single subscription management - deep links are sequential by nature
   private activeSubscription: { remove: () => void } | null = null;
+  private isOperationPending = false;
 
   constructor(config: PhantomProviderConfig) {
     super();
@@ -80,14 +81,19 @@ export class PhantomProvider extends EventEmitter implements Provider {
       this.activeSubscription.remove();
       this.activeSubscription = null;
     }
+    this.isOperationPending = false;
   }
 
   /**
-   * Safely set a new subscription, cleaning up any existing one first
+   * Safely set a new subscription, ensuring no operation is pending
    */
   private setActiveSubscription(subscription: { remove: () => void }): void {
-    this.cleanupActiveSubscription();
+    // If there's already a pending operation, reject it
+    if (this.isOperationPending) {
+      this.cleanupActiveSubscription();
+    }
     this.activeSubscription = subscription;
+    this.isOperationPending = true;
   }
 
   getUserPublicKey(): string | null {
