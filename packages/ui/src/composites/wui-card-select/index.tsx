@@ -86,7 +86,7 @@ function _CardSelect({
           imageSrc={imageSrc}
           imageHeaders={imageHeaders}
           size="md"
-          style={disabled && styles.disabledImage}
+          style={disabled ? styles.disabledImage : null}
           selected={selected}
           disabled={disabled}
         />

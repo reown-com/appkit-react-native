@@ -58,22 +58,22 @@ export function ConnectView() {
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
       <FlexView padding={['xs', '0', '2xl', '0']}>
-        {isSocialEnabled && (
+        {isSocialEnabled ? (
           <>
             <SocialLoginList options={features?.socials} />
             <Separator text="or" style={styles.socialSeparator} />
           </>
-        )}
+        ) : null}
 
         <FlexView padding={['0', 's', 'xs', 's']}>
-          {showConnectWalletsButton && (
+          {showConnectWalletsButton ? (
             <ListItem contentStyle={styles.connectWalletButton} onPress={onViewAllPress}>
               <Icon name="wallet" size="lg" />
               <Text variant="paragraph-500">Continue with a wallet</Text>
               <View style={styles.connectWalletEmpty} />
             </ListItem>
-          )}
-          {showLoadingError && (
+          ) : null}
+          {showLoadingError ? (
             <FlexView alignItems="center" justifyContent="center" margin={['l', '0', '0', '0']}>
               <Placeholder
                 icon="warningCircle"
@@ -86,15 +86,15 @@ export function ConnectView() {
               />
               <Separator style={styles.socialSeparator} />
             </FlexView>
-          )}
-          {showList && (
+          ) : null}
+          {showList ? (
             <>
               <RecentWalletList itemStyle={styles.item} onWalletPress={onWalletPress} />
               <AllWalletList itemStyle={styles.item} onWalletPress={onWalletPress} />
               <CustomWalletList itemStyle={styles.item} onWalletPress={onWalletPress} />
               <AllWalletsButton itemStyle={styles.item} onPress={onViewAllPress} />
             </>
-          )}
+          ) : null}
         </FlexView>
       </FlexView>
     </ScrollView>

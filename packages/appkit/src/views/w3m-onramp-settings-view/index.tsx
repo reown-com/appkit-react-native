@@ -94,11 +94,11 @@ export function OnRampSettingsView() {
           </FlexView>
           <FlexView>
             <Text color="fg-100">Select Country</Text>
-            {selectedCountry?.name && (
+            {selectedCountry?.name ? (
               <Text variant="small-400" color="fg-200">
                 {selectedCountry?.name}
               </Text>
-            )}
+            ) : null}
           </FlexView>
         </ListItem>
         <ListItem onPress={onPaymentCurrencyPress} chevron contentStyle={styles.itemContent}>
@@ -117,11 +117,11 @@ export function OnRampSettingsView() {
           </FlexView>
           <FlexView>
             <Text color="fg-100">Select Currency</Text>
-            {paymentCurrency?.name && (
+            {paymentCurrency?.name ? (
               <Text variant="small-400" color="fg-200">
                 {paymentCurrency?.name}
               </Text>
-            )}
+            ) : null}
           </FlexView>
         </ListItem>
       </FlexView>

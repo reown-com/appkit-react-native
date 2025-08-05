@@ -53,9 +53,9 @@ export function Currency({ onPress, item, selected, title, subtitle, testID }: P
             </Text>
           </FlexView>
         </FlexView>
-        {selected && (
+        {selected ? (
           <Icon name="checkmark" size="md" color="accent-100" style={styles.checkmark} />
-        )}
+        ) : null}
       </FlexView>
     </Pressable>
   );

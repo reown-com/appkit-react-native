@@ -54,7 +54,7 @@ export function ConnectingQrCode() {
       <QrCode size={qrSize} uri={wcUri} testID="qr-code" />
       <FlexView alignItems="center" margin={['m', 'm', '3xl', 'm']}>
         <Text variant="paragraph-500">Scan this QR code with your phone</Text>
-        {showCopy && (
+        {showCopy ? (
           <Link
             iconLeft="copySmall"
             color="fg-200"
@@ -64,7 +64,7 @@ export function ConnectingQrCode() {
           >
             Copy link
           </Link>
-        )}
+        ) : null}
       </FlexView>
       <Pressable onPress={() => Linking.openURL(ConstantsUtil.REOWN_URL)}>
         <FlexView alignItems="center" justifyContent="center" flexDirection="row" columnGap="2xs">

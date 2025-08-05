@@ -183,9 +183,9 @@ export function AccountDefaultView() {
 
   return (
     <>
-      {showBack && (
+      {showBack ? (
         <IconLink icon="chevronLeft" style={styles.backIcon} onPress={RouterController.goBack} />
-      )}
+      ) : null}
       <IconLink
         icon="close"
         style={styles.closeIcon}
@@ -211,7 +211,7 @@ export function AccountDefaultView() {
                     truncate: 'middle'
                   })}
             </Text>
-            {showCopy && (
+            {showCopy ? (
               <IconLink
                 icon="copy"
                 size="md"
@@ -219,14 +219,14 @@ export function AccountDefaultView() {
                 onPress={onCopyAddress}
                 style={styles.copyButton}
               />
-            )}
+            ) : null}
           </FlexView>
-          {showBalance && (
+          {showBalance ? (
             <Text variant="paragraph-400" color="fg-200">
               {CoreHelperUtil.formatBalance(balance.amount, balance.symbol, 6)}
             </Text>
-          )}
-          {showExplorer && (
+          ) : null}
+          {showExplorer ? (
             <Button
               size="sm"
               variant="shade"
@@ -237,9 +237,9 @@ export function AccountDefaultView() {
             >
               Block Explorer
             </Button>
-          )}
+          ) : null}
           <FlexView margin={['s', '0', '0', '0']}>
-            {isAuth && (
+            {isAuth ? (
               <AuthButtons
                 onUpgradePress={onUpgradePress}
                 socialProvider={connection?.properties?.provider}
@@ -252,7 +252,7 @@ export function AccountDefaultView() {
                   truncate: 'end'
                 })}
               />
-            )}
+            ) : null}
             <ListItem
               chevron
               icon="networkPlaceholder"
@@ -268,7 +268,7 @@ export function AccountDefaultView() {
                 {activeNetwork?.name}
               </Text>
             </ListItem>
-            {showBuy && (
+            {showBuy ? (
               <ListItem
                 chevron
                 icon="card"
@@ -280,8 +280,8 @@ export function AccountDefaultView() {
               >
                 <Text color="fg-100">Buy crypto</Text>
               </ListItem>
-            )}
-            {showSend && (
+            ) : null}
+            {showSend ? (
               <ListItem
                 chevron
                 icon="paperplane"
@@ -293,8 +293,8 @@ export function AccountDefaultView() {
               >
                 <Text color="fg-100">Send</Text>
               </ListItem>
-            )}
-            {showSwaps && (
+            ) : null}
+            {showSwaps ? (
               <ListItem
                 chevron
                 icon="recycleHorizontal"
@@ -306,8 +306,8 @@ export function AccountDefaultView() {
               >
                 <Text color="fg-100">Swap</Text>
               </ListItem>
-            )}
-            {showActivity && (
+            ) : null}
+            {showActivity ? (
               <ListItem
                 chevron
                 icon="clock"
@@ -319,8 +319,8 @@ export function AccountDefaultView() {
               >
                 <Text color="fg-100">Activity</Text>
               </ListItem>
-            )}
-            {showSwitchAccountType && (
+            ) : null}
+            {showSwitchAccountType ? (
               <ListItem
                 chevron
                 icon="swapHorizontal"
@@ -335,7 +335,7 @@ export function AccountDefaultView() {
                   accountType === 'eoa' ? 'smart account' : 'EOA'
                 }`}</Text>
               </ListItem>
-            )}
+            ) : null}
             <ListItem
               icon="disconnect"
               onPress={onDisconnect}

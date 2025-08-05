@@ -73,9 +73,9 @@ function PaymentButton({
           <Text variant="paragraph-400" color="fg-100">
             {title}
           </Text>
-          {subtitle && (
+          {subtitle ? (
             <FlexView flexDirection="row" alignItems="center" margin={['4xs', '0', '0', '0']}>
-              {providerLogo && (
+              {providerLogo ? (
                 <>
                   <Text variant="small-400" color="fg-150">
                     via
@@ -87,12 +87,12 @@ function PaymentButton({
                     resizeMode="contain"
                   />
                 </>
-              )}
+              ) : null}
               <Text variant="small-400" color="fg-150">
                 {subtitle}
               </Text>
             </FlexView>
-          )}
+          ) : null}
         </FlexView>
         {loading ? (
           <LoadingSpinner size="md" color="fg-200" style={styles.rightIcon} />

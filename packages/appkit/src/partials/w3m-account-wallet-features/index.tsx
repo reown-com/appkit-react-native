@@ -90,7 +90,7 @@ export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeature
         justifyContent="space-around"
         padding={['0', 's', '0', 's']}
       >
-        {isOnRampEnabled && (
+        {isOnRampEnabled ? (
           <IconLink
             icon="card"
             size="lg"
@@ -101,8 +101,8 @@ export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeature
             style={[styles.action, isSwapsEnabled ? styles.actionCenter : styles.actionLeft]}
             onPress={onBuyPress}
           />
-        )}
-        {isSwapsEnabled && (
+        ) : null}
+        {isSwapsEnabled ? (
           <IconLink
             icon="recycleHorizontal"
             size="lg"
@@ -113,7 +113,7 @@ export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeature
             style={[styles.action, styles.actionLeft]}
             onPress={onSwapPress}
           />
-        )}
+        ) : null}
         <IconLink
           icon="arrowBottomCircle"
           size="lg"
@@ -124,7 +124,7 @@ export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeature
           style={[styles.action, isSwapsEnabled ? styles.actionCenter : styles.actionLeft]}
           onPress={onReceivePress}
         />
-        {showSend && (
+        {showSend ? (
           <IconLink
             icon="paperplane"
             size="lg"
@@ -135,7 +135,7 @@ export function AccountWalletFeatures({ isBalanceLoading }: AccountWalletFeature
             style={[styles.action, styles.actionRight]}
             onPress={onSendPress}
           />
-        )}
+        ) : null}
       </FlexView>
       <FlexView style={styles.tab}>
         <Tabs tabs={['Tokens', 'Activity']} onTabChange={onTabChange} />

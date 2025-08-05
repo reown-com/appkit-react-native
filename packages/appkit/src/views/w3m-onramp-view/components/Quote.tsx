@@ -54,11 +54,11 @@ export function Quote({ item, logoURL, onQuotePress, selected, tagText, testID }
               <Text variant="paragraph-500" style={styles.providerText}>
                 {item.serviceProvider?.toLowerCase()}
               </Text>
-              {tagText && (
+              {tagText ? (
                 <Tag variant="main" style={styles.tag}>
                   {tagText}
                 </Tag>
-              )}
+              ) : null}
             </FlexView>
             <Text variant="tiny-500">
               {NumberUtil.roundNumber(item.destinationAmount, 6, 5)}{' '}
@@ -66,7 +66,7 @@ export function Quote({ item, logoURL, onQuotePress, selected, tagText, testID }
             </Text>
           </FlexView>
         </FlexView>
-        {selected && <Icon name="checkmark" color="accent-100" />}
+        {selected ? <Icon name="checkmark" color="accent-100" /> : null}
       </FlexView>
     </Pressable>
   );

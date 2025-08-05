@@ -21,7 +21,7 @@ export function AuthButtons({
   return (
     <>
       <UpgradeWalletButton onPress={onUpgradePress} style={styles.upgradeButton} />
-      {socialProvider && (
+      {socialProvider ? (
         <ListSocial
           logo={socialProvider}
           logoHeight={32}
@@ -34,7 +34,7 @@ export function AuthButtons({
             {text}
           </Text>
         </ListSocial>
-      )}
+      ) : null}
     </>
   );
 }

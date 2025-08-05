@@ -50,7 +50,7 @@ export function PaymentMethod({ onPress, item, selected, testID }: Props) {
           resizeMethod="resize"
           resizeMode="contain"
         />
-        {selected && (
+        {selected ? (
           <IconBox
             icon="checkmark"
             size="sm"
@@ -60,7 +60,7 @@ export function PaymentMethod({ onPress, item, selected, testID }: Props) {
             style={styles.checkmark}
             testID="payment-method-checkmark"
           />
-        )}
+        ) : null}
       </FlexView>
       <Text variant="tiny-400" color="fg-100" numberOfLines={2} style={styles.text}>
         {item.name}

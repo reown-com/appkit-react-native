@@ -141,7 +141,7 @@ export function SwapInput({
                   ? `~$${UiUtil.formatNumberToLocalString(marketValue, 6)}`
                   : ''}
               </Text>
-              {showMax && (
+              {showMax ? (
                 <FlexView flexDirection="row" alignItems="center" justifyContent="center">
                   <Text
                     variant="small-400"
@@ -152,7 +152,7 @@ export function SwapInput({
                   </Text>
                   <Link onPress={handleMaxPress}>Max</Link>
                 </FlexView>
-              )}
+              ) : null}
             </FlexView>
           ) : null}
         </>

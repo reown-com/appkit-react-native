@@ -111,7 +111,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
             imageSrc={AssetUtil.getWalletImage(RouterController.state.data?.wallet)}
             imageHeaders={ApiController._getApiHeaders()}
           />
-          {wcError && (
+          {wcError ? (
             <IconBox
               icon={'close'}
               border
@@ -121,10 +121,10 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
               iconColor="error-100"
               style={styles.errorIcon}
             />
-          )}
+          ) : null}
         </LoadingThumbnail>
         <ConnectingBody title={bodyMessage.title} description={bodyMessage.description} />
-        {showRetry && (
+        {showRetry ? (
           <Button
             size="sm"
             variant="accent"
@@ -135,9 +135,9 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
           >
             Try again
           </Button>
-        )}
+        ) : null}
       </FlexView>
-      {showCopy && (
+      {showCopy ? (
         <Link
           iconLeft="copySmall"
           color="fg-200"
@@ -146,7 +146,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         >
           Copy link
         </Link>
-      )}
+      ) : null}
       <StoreLink
         visible={!isInstalled && !!storeUrl}
         walletName={data?.wallet?.name}

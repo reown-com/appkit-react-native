@@ -32,20 +32,20 @@ export function Placeholder({
 }: Props) {
   return (
     <FlexView alignItems="center" justifyContent="center" style={[styles.container, style]}>
-      {icon && (
+      {icon ? (
         <IconBox icon={icon} size="xl" iconColor={iconColor} background style={styles.icon} />
-      )}
-      {title && (
+      ) : null}
+      {title ? (
         <Text variant="paragraph-500" style={styles.title}>
           {title}
         </Text>
-      )}
-      {description && (
+      ) : null}
+      {description ? (
         <Text variant="small-400" color="fg-200" center>
           {description}
         </Text>
-      )}
-      {actionPress && (
+      ) : null}
+      {actionPress ? (
         <Button
           style={styles.button}
           iconLeft={actionIcon}
@@ -55,7 +55,7 @@ export function Placeholder({
         >
           {actionTitle ?? ''}
         </Button>
-      )}
+      ) : null}
     </FlexView>
   );
 }

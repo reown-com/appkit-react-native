@@ -94,7 +94,7 @@ export function SendInputToken({
           chevron
         />
       </FlexView>
-      {token && (
+      {token ? (
         <FlexView
           flexDirection="row"
           alignItems="center"
@@ -111,7 +111,7 @@ export function SendInputToken({
             <Link onPress={onMaxPress}>Max</Link>
           </FlexView>
         </FlexView>
-      )}
+      ) : null}
     </FlexView>
   );
 }
