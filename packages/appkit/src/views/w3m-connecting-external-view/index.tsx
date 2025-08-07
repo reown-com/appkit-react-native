@@ -42,6 +42,8 @@ export function ConnectingExternalView() {
           await connect('phantom');
         } else if (wallet.id === ConstantsUtil.COINBASE_CUSTOM_WALLET.id) {
           await connect('coinbase');
+        } else if (wallet.id === ConstantsUtil.UNISAT_CUSTOM_WALLET.id) {
+          await connect('unisat');
         } else {
           // All other wallets are handled by WalletConnect connector
           return;

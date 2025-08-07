@@ -18,11 +18,9 @@ import {
 
 import { Button, Text } from '@reown/appkit-ui-react-native';
 
-// import { AccountView } from './src/views/AccountView';
 import { chains } from './src/utils/WagmiUtils';
 import { OpenButton } from './src/components/OpenButton';
 import { DisconnectButton } from './src/components/DisconnectButton';
-// import { EthersAdapter } from '@reown/appkit-ethers-react-native';
 import { SolanaAdapter, PhantomConnector } from '@reown/appkit-solana-react-native';
 import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
 import { WagmiAdapter } from '@reown/appkit-wagmi-react-native';
@@ -66,11 +64,11 @@ const bitcoinAdapter = new BitcoinAdapter();
 
 const appKit = createAppKit({
   projectId,
-  adapters: [wagmiAdapter, solanaAdapter, bitcoinAdapter],
+  adapters: [bitcoinAdapter],
   metadata,
   siweConfig,
-  networks: [...chains, solana, bitcoin],
-  defaultNetwork: chains[0],
+  networks: [bitcoin],
+  // defaultNetwork: chains[0],
   clipboardClient,
   debug: true,
   enableAnalytics: true,
@@ -108,7 +106,6 @@ export default function Native() {
             />
             <NetworkButton />
             <ActionsView />
-            {/* <AccountView /> */}
             <OpenButton />
             <DisconnectButton />
             <Button size="sm" onPress={() => appKit.disconnect()}>

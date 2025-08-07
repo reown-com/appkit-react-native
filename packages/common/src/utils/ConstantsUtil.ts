@@ -47,6 +47,14 @@ export const ConstantsUtil = {
     mobile_link: 'https://wallet.coinbase.com/wsegue'
   },
 
+  UNISAT_CUSTOM_WALLET: {
+    id: 'unisat-wallet',
+    name: 'UniSat Wallet',
+    image_url:
+      'https://play-lh.googleusercontent.com/rVuNcWoicDl12bo6pkrpUClzl-XONQ4rPjO7bt3OsD_frbVnAZo7krn02bqieMozJDo',
+    mobile_link: 'unisat://'
+  },
+
   // Storage Keys
   STORAGE_KEYS: {
     WC_DEEPLINK: 'WALLETCONNECT_DEEPLINK_CHOICE', //dont change this one

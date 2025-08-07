@@ -7,7 +7,7 @@ import type { ConnectionProperties } from './connection';
 import type { AppKitSIWEClient } from '../siwe';
 import type { Storage } from '../storage';
 
-export type ConnectorType = 'walletconnect' | 'coinbase' | 'phantom';
+export type ConnectorType = 'walletconnect' | 'coinbase' | 'phantom' | 'unisat';
 
 export interface BaseNamespace {
   chains?: CaipNetworkId[];

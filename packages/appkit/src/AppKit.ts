@@ -670,6 +670,15 @@ export class AppKit {
       customList.push(ConstantsUtil.PHANTOM_CUSTOM_WALLET);
     }
 
+    const addUnisat =
+      adapters.some(adapter => adapter.getSupportedNamespace() === 'bip122') &&
+      extraConnectors?.some(connector => connector.type.toLowerCase() === 'unisat') &&
+      !customList.some(wallet => wallet.id === ConstantsUtil.UNISAT_CUSTOM_WALLET.id);
+
+    if (addUnisat) {
+      customList.push(ConstantsUtil.UNISAT_CUSTOM_WALLET);
+    }
+
     OptionsController.setCustomWallets(customList);
   }
 

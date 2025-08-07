@@ -1,2 +1,4 @@
 import { BitcoinAdapter } from './adapter';
-export { BitcoinAdapter };
+import { UnisatConnector } from './connectors/UnisatConnector';
+
+export { BitcoinAdapter, UnisatConnector };
