@@ -13,9 +13,7 @@ import {
   OnRampController,
   CoreHelperUtil,
   SendController,
-  BlockchainApiController,
-  type RouterControllerState,
-  type ModalControllerState
+  BlockchainApiController
 } from '@reown/appkit-core-react-native';
 
 import {
