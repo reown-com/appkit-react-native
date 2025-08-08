@@ -546,14 +546,24 @@ export class AppKit {
       const connection = ConnectionsController.state.connections.get(namespace);
       const isAuth = !!connection?.properties?.provider;
 
+      const activeAddress = ConnectionsController.state.activeAddress;
+      const activeNamespace = ConnectionsController.state.activeNamespace;
+
       const network = this.networks.find(n => n.id?.toString() === chainId);
       this.syncBalances(adapter, network);
       SendController.resetState();
 
+      // Refresh balance for embedded wallets
       if (isAuth) {
         ConnectionsController.fetchBalance();
       }
 
+      // Refresh transactions only when the active network changes
+      if (namespace === activeNamespace && activeAddress) {
+        TransactionsController.fetchTransactions(activeAddress, true);
+      }
+
+      // Check if user needs to sign in again
       if (namespace === 'eip155') {
         this.handleSiweChange({ isNetworkChange: true });
       }
