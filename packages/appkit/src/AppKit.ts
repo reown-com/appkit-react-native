@@ -1,3 +1,4 @@
+import { subscribeKey } from 'valtio/utils';
 import {
   EventsController,
   ModalController,
@@ -49,6 +50,7 @@ export class AppKit {
   private config: AppKitConfig;
   private extraConnectors: WalletConnector[];
   private walletConnectConnector?: WalletConnector;
+  private balanceIntervalId?: ReturnType<typeof setInterval>;
 
   constructor(config: AppKitConfig) {
     this.projectId = config.projectId;
@@ -94,6 +96,7 @@ export class AppKit {
 
     this.initControllers(config);
     this.initConnectors();
+    this.watchBalance();
   }
 
   /**
@@ -321,7 +324,7 @@ export class AppKit {
     ConnectionsController.fetchBalance();
 
     // Sync balances from adapter
-    this.syncBalances(adapter, network);
+    this.syncNativeBalance(adapter, network);
 
     EventsController.sendEvent({
       type: 'track',
@@ -434,12 +437,12 @@ export class AppKit {
         n => n.id?.toString() === connection?.caipNetwork?.split(':')[1]
       );
 
-      this.syncBalances(adapter, network);
+      this.syncNativeBalance(adapter, network);
       this.syncIdentity(namespace, connection);
     });
   }
 
-  private syncBalances(adapter: BlockchainAdapter, network?: AppKitNetwork) {
+  private syncNativeBalance(adapter: BlockchainAdapter, network?: AppKitNetwork) {
     if (adapter && network) {
       const accounts = adapter.getAccounts();
       if (accounts && accounts.length > 0) {
@@ -486,6 +489,58 @@ export class AppKit {
         // Continue processing other addresses even if one fails
       }
     }
+  }
+
+  private async refreshBalance(fetchAllBalances: boolean = false) {
+    try {
+      if (fetchAllBalances) {
+        ConnectionsController.fetchBalance();
+      }
+      const ns = ConnectionsController.state.activeNamespace;
+      const network = ConnectionsController.state.activeNetwork;
+      if (ns && network) {
+        const adapter = this.getAdapterByNamespace(ns);
+        if (adapter) {
+          this.syncNativeBalance(adapter, network);
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  private startBalancePolling(fetchAllBalances: boolean = false) {
+    if (this.balanceIntervalId) return;
+    // immediate fetch
+    this.refreshBalance(fetchAllBalances);
+    this.balanceIntervalId = setInterval(() => this.refreshBalance(fetchAllBalances), 10000);
+  }
+
+  private stopBalancePolling() {
+    if (this.balanceIntervalId) {
+      clearInterval(this.balanceIntervalId);
+      this.balanceIntervalId = undefined;
+    }
+  }
+
+  private watchBalance() {
+    // watch balance when user is on account or account default view
+    const recomputePolling = () => {
+      const open = ModalController.state.open;
+      const view = RouterController.state.view;
+
+      if (open && (view === 'Account' || view === 'AccountDefault')) {
+        // fetch all balances when user is using embedded wallet
+        this.startBalancePolling(view === 'Account');
+      } else {
+        this.stopBalancePolling();
+      }
+    };
+
+    recomputePolling();
+
+    subscribeKey(RouterController.state, 'view', () => recomputePolling());
+    subscribeKey(ModalController.state, 'open', () => recomputePolling());
   }
 
   private setConnection(
@@ -538,22 +593,30 @@ export class AppKit {
     });
 
     adapter.on('chainChanged', ({ chainId }) => {
-      //eslint-disable-next-line no-console
-      console.log('chainChanged', chainId);
       const namespace = adapter.getSupportedNamespace();
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
       ConnectionsController.setActiveNetwork(namespace, chain);
       const connection = ConnectionsController.state.connections.get(namespace);
       const isAuth = !!connection?.properties?.provider;
 
+      const activeAddress = ConnectionsController.state.activeAddress;
+      const activeNamespace = ConnectionsController.state.activeNamespace;
+
       const network = this.networks.find(n => n.id?.toString() === chainId);
-      this.syncBalances(adapter, network);
+      this.syncNativeBalance(adapter, network);
       SendController.resetState();
 
+      // Refresh balance for embedded wallets
       if (isAuth) {
         ConnectionsController.fetchBalance();
       }
 
+      // Refresh transactions only when the active network changes
+      if (namespace === activeNamespace && activeAddress) {
+        TransactionsController.fetchTransactions(activeAddress, true);
+      }
+
+      // Check if user needs to sign in again
       if (namespace === 'eip155') {
         this.handleSiweChange({ isNetworkChange: true });
       }
@@ -565,8 +628,6 @@ export class AppKit {
     });
 
     adapter.on('balanceChanged', ({ address, balance }) => {
-      //eslint-disable-next-line no-console
-      console.log('balanceChanged', address, balance);
       const namespace = adapter.getSupportedNamespace();
       ConnectionsController.updateBalance(namespace, address, balance);
     });
