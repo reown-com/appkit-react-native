@@ -83,8 +83,12 @@ export function NetworksView() {
 
   return (
     <>
-      <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
-        <FlexView flexDirection="row" flexWrap="wrap" padding={['xs', 'xs', 's', 'xs']}>
+      <ScrollView
+        bounces={false}
+        fadingEdgeLength={20}
+        style={{ paddingHorizontal: padding, marginBottom: Spacing.xl }}
+      >
+        <FlexView flexDirection="row" flexWrap="wrap" padding={['xs', 'xs', '4xl', 'xs']}>
           {networksTemplate()}
         </FlexView>
       </ScrollView>
