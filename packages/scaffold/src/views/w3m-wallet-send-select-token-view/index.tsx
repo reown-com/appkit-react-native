@@ -4,6 +4,7 @@ import { ScrollView } from 'react-native';
 import { FlexView, InputText, ListToken, Text } from '@reown/appkit-ui-react-native';
 import {
   AccountController,
+  AssetController,
   AssetUtil,
   NetworkController,
   RouterController,
@@ -20,7 +21,8 @@ export function WalletSendSelectTokenView() {
   const { tokenBalance } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { token } = useSnapshot(SendController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const { networkImages } = useSnapshot(AssetController.state);
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork, networkImages);
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const [filteredTokens, setFilteredTokens] = useState(tokenBalance ?? []);
 

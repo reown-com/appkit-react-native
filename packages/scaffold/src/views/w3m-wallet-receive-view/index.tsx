@@ -12,6 +12,7 @@ import {
 import {
   AccountController,
   ApiController,
+  AssetController,
   AssetUtil,
   NetworkController,
   OptionsController,
@@ -23,7 +24,8 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 export function WalletReceiveView() {
   const { address, profileName, preferredAccountType } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const { networkImages } = useSnapshot(AssetController.state);
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork, networkImages);
   const { padding } = useCustomDimensions();
   const canCopy = OptionsController.isClipboardAvailable();
   const isSmartAccount =
@@ -35,7 +37,7 @@ export function WalletReceiveView() {
   const imagesArray = networks
     .filter(network => network?.imageId)
     .slice(0, 5)
-    .map(AssetUtil.getNetworkImage)
+    .map(network => AssetUtil.getNetworkImage(network, networkImages))
     .filter(Boolean) as string[];
 
   const label = UiUtil.getTruncateString({

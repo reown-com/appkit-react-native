@@ -13,6 +13,7 @@ import {
 } from '@reown/appkit-ui-react-native';
 
 import {
+  AssetController,
   AssetUtil,
   NetworkController,
   RouterController,
@@ -30,7 +31,8 @@ export function SwapSelectTokenView() {
   const Theme = useTheme();
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { sourceToken, suggestedTokens } = useSnapshot(SwapController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const { networkImages } = useSnapshot(AssetController.state);
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork, networkImages);
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const isSourceToken = RouterController.state.data?.swapTarget === 'sourceToken';
 

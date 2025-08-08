@@ -13,6 +13,7 @@ import {
 import {
   AccountController,
   ApiController,
+  AssetController,
   AssetUtil,
   ModalController,
   NetworkController,
@@ -28,6 +29,7 @@ export function AccountView() {
   const Theme = useTheme();
   const { padding } = useCustomDimensions();
   const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const { address, profileName, profileImage, preferredAccountType } = useSnapshot(
     AccountController.state
   );
@@ -74,7 +76,7 @@ export function AccountView() {
       ]}
     >
       <NetworkButton
-        imageSrc={AssetUtil.getNetworkImage(caipNetwork)}
+        imageSrc={AssetUtil.getNetworkImage(caipNetwork, networkImages)}
         imageHeaders={ApiController._getApiHeaders()}
         onPress={onNetworkPress}
         style={styles.networkIcon}

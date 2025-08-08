@@ -14,16 +14,16 @@ export const AssetUtil = {
     return undefined;
   },
 
-  getNetworkImage(network?: CaipNetwork) {
+  getNetworkImage(network?: CaipNetwork, networkImages?: Record<string, string>) {
+    if (!network || !network?.imageId) {
+      return undefined;
+    }
+
     if (network?.imageUrl) {
-      return network?.imageUrl;
+      return network.imageUrl;
     }
 
-    if (network?.imageId) {
-      return AssetController.state.networkImages[network.imageId];
-    }
-
-    return undefined;
+    return networkImages?.[network?.imageId];
   },
 
   getConnectorImage(connector?: Connector) {

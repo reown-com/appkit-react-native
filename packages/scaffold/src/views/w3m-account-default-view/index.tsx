@@ -18,7 +18,8 @@ import {
   type AppKitFrameProvider,
   ConstantsUtil,
   SwapController,
-  OnRampController
+  OnRampController,
+  AssetController
 } from '@reown/appkit-core-react-native';
 import {
   Avatar,
@@ -52,7 +53,8 @@ export function AccountDefaultView() {
   const { connectedSocialProvider } = useSnapshot(ConnectionController.state);
   const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
   const { history } = useSnapshot(RouterController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const { networkImages } = useSnapshot(AssetController.state);
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork, networkImages);
   const showCopy = OptionsController.isClipboardAvailable();
   const isAuth = connectedConnector === 'AUTH';
   const showBalance = balance && !isAuth;
