@@ -87,7 +87,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
       throw new Error('SolanaAdapter:signTransaction - network is undefined');
     }
 
-    const provider = this.connector.getProvider();
+    const provider = this.connector.getProvider('solana');
     if (!provider) {
       throw new Error('SolanaAdapter:signTransaction - provider is undefined');
     }
@@ -150,7 +150,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
       throw new Error('SolanaAdapter:sendTransaction - no active connector');
     }
 
-    const provider = this.connector.getProvider();
+    const provider = this.connector.getProvider('solana');
     if (!provider) {
       throw new Error('SolanaAdapter:sendTransaction - provider is undefined');
     }
@@ -216,7 +216,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
   async switchNetwork(network: AppKitNetwork): Promise<void> {
     if (!this.connector) throw new Error('No active connector');
 
-    const provider = this.connector.getProvider();
+    const provider = this.connector.getProvider('solana');
     if (!provider) throw new Error('No active provider');
 
     try {

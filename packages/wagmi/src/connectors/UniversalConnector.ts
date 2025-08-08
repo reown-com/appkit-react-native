@@ -22,10 +22,10 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
     id: 'walletconnect',
     name: 'WalletConnect',
     type: 'walletconnect' as const,
-    ready: !!appKitProvidedConnector.getProvider(),
+    ready: !!appKitProvidedConnector.getProvider('eip155'),
 
     async setup() {
-      provider = appKitProvidedConnector.getProvider();
+      provider = appKitProvidedConnector.getProvider('eip155');
       if (provider?.on) {
         accountsChangedHandler = (accounts: string[]) => {
           const hexAccounts = accounts.map(acc => getAddress(acc));
@@ -52,7 +52,7 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
 
     async connect({ chainId } = {}) {
       try {
-        const _provider = await this.getProvider();
+        const _provider = appKitProvidedConnector.getProvider('eip155');
         if (!_provider) throw new ProviderNotFoundError();
 
         // AppKit connector is already connected or handles its own connection.
@@ -136,7 +136,7 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
 
     async getProvider() {
       if (!provider) {
-        provider = appKitProvidedConnector.getProvider();
+        provider = appKitProvidedConnector.getProvider('eip155');
       }
 
       return provider as Provider;
@@ -153,7 +153,7 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
     },
 
     async switchChain({ chainId }) {
-      const _provider = await this.getProvider();
+      const _provider = appKitProvidedConnector.getProvider('eip155');
       if (!_provider) throw new Error('Provider not available for switching chain.');
       const newChain = config.chains.find(c => c.id === chainId);
 

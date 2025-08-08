@@ -60,7 +60,7 @@ export class EthersAdapter extends EVMAdapter {
   async switchNetwork(network: AppKitNetwork): Promise<void> {
     if (!this.connector) throw new Error('No active connector');
 
-    const provider = this.connector.getProvider();
+    const provider = this.connector.getProvider('eip155');
     if (!provider) throw new Error('No active provider');
 
     try {
