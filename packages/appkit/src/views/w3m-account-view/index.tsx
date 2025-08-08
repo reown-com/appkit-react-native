@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ScrollView } from 'react-native';
 import {
   AccountPill,
@@ -27,7 +27,6 @@ import styles from './styles';
 
 export function AccountView() {
   const Theme = useTheme();
-  const [isLoading, setIsLoading] = useState(false);
   const { padding } = useCustomDimensions();
   const { activeNetwork, activeAddress, identity } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
@@ -47,22 +46,7 @@ export function AccountView() {
   };
 
   useEffect(() => {
-    async function fetchBalance() {
-      setIsLoading(true);
-      await ConnectionsController.fetchBalance();
-      setIsLoading(false);
-    }
-
-    fetchBalance();
     SendController.resetState();
-
-    const balanceInterval = setInterval(() => {
-      fetchBalance();
-    }, 10000);
-
-    return () => {
-      clearInterval(balanceInterval);
-    };
   }, []);
 
   return (
@@ -93,7 +77,7 @@ export function AccountView() {
           onPress={onProfilePress}
           style={styles.accountPill}
         />
-        <AccountWalletFeatures isBalanceLoading={isLoading} />
+        <AccountWalletFeatures />
       </FlexView>
     </ScrollView>
   );
