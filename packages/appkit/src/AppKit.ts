@@ -527,20 +527,22 @@ export class AppKit {
 
   private watchBalance() {
     // watch balance when user is on account or account default view
-    subscribeKey(RouterController.state, 'view', (view: RouterControllerState['view']) => {
-      if (ModalController.state.open && (view === 'Account' || view === 'AccountDefault')) {
+    const recomputePolling = () => {
+      const open = ModalController.state.open;
+      const view = RouterController.state.view;
+
+      if (open && (view === 'Account' || view === 'AccountDefault')) {
         // fetch all balances when user is using embedded wallet
         this.startBalancePolling(view === 'Account');
       } else {
         this.stopBalancePolling();
       }
-    });
+    };
 
-    subscribeKey(ModalController.state, 'open', (open: ModalControllerState['open']) => {
-      if (!open) {
-        this.stopBalancePolling();
-      }
-    });
+    recomputePolling();
+
+    subscribeKey(RouterController.state, 'view', () => recomputePolling());
+    subscribeKey(ModalController.state, 'open', () => recomputePolling());
   }
 
   private setConnection(
