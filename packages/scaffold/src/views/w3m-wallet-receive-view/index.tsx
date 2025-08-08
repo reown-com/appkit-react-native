@@ -37,7 +37,7 @@ export function WalletReceiveView() {
   const imagesArray = networks
     .filter(network => network?.imageId)
     .slice(0, 5)
-    .map(network => AssetUtil.getNetworkImage(network, networkImages))
+    .map(network => AssetUtil.getNetworkImage(network, AssetController.state.networkImages))
     .filter(Boolean) as string[];
 
   const label = UiUtil.getTruncateString({
