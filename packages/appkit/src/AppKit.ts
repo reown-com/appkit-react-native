@@ -613,7 +613,6 @@ export class AppKit {
       const connection = ConnectionsController.state.connections.get(namespace);
       const isAuth = !!connection?.properties?.provider;
 
-      const activeAddress = ConnectionsController.state.activeAddress;
       const activeNamespace = ConnectionsController.state.activeNamespace;
 
       const network = this.networks.find(n => n.id?.toString() === chainId);
@@ -626,8 +625,13 @@ export class AppKit {
       }
 
       // Refresh transactions only when the active network changes
-      if (namespace === activeNamespace && activeAddress) {
-        TransactionsController.fetchTransactions(activeAddress, true);
+      if (namespace === activeNamespace) {
+        const address = connection?.accounts?.find(account =>
+          account.startsWith(`${namespace}:${chainId}`)
+        );
+        if (address) {
+          TransactionsController.fetchTransactions(address, true);
+        }
       }
 
       // Check if user needs to sign in again
