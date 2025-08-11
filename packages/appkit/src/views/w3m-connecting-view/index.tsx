@@ -46,8 +46,8 @@ export function ConnectingView() {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         WcController.setWcError(false);
 
-        const connectPromise = connect('walletconnect', {
-          universalLink: routeData?.wallet?.link_mode ?? undefined
+        const connectPromise = connect({
+          wallet: routeData?.wallet
         });
         WcController.setWcPromise(connectPromise);
       }

@@ -20,7 +20,6 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w3m-connecting-body';
 import styles from './styles';
 import { useInternalAppKit } from '../../AppKitContext';
-import { ConstantsUtil } from '@reown/appkit-common-react-native';
 
 export function ConnectingExternalView() {
   const { data } = useSnapshot(RouterController.state);
@@ -38,14 +37,7 @@ export function ConnectingExternalView() {
     try {
       const wallet = RouterController.state.data?.wallet;
       if (wallet) {
-        if (wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id) {
-          await connect('phantom');
-        } else if (wallet.id === ConstantsUtil.COINBASE_CUSTOM_WALLET.id) {
-          await connect('coinbase');
-        } else {
-          // All other wallets are handled by WalletConnect connector
-          return;
-        }
+        await connect({ walletId: wallet.id });
         WcController.addRecentWallet(wallet);
         WcController.setPressedWallet(wallet);
         EventsController.sendEvent({

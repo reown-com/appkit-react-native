@@ -13,7 +13,8 @@ import {
   OnRampController,
   CoreHelperUtil,
   SendController,
-  BlockchainApiController
+  BlockchainApiController,
+  WalletUtil
 } from '@reown/appkit-core-react-native';
 
 import {
@@ -32,7 +33,8 @@ import {
   type AccountType,
   type AppKitOpenOptions,
   ConstantsUtil,
-  type Connection
+  type Connection,
+  type WcWallet
 } from '@reown/appkit-common-react-native';
 import { SIWEController } from '@reown/appkit-siwe-react-native';
 
@@ -104,19 +106,31 @@ export class AppKit {
    * @param type - The type of connector to use.
    * @param options - Optional connection options.
    */
-  async connect(type: ConnectorType, options?: AppKitConnectOptions): Promise<void> {
+  async connect(options?: AppKitConnectOptions): Promise<void> {
     try {
-      const { namespaces, defaultNetwork, universalLink } = options ?? {};
-      const connector = await this.createConnector(type);
+      const { wallet, walletId } = options ?? {};
 
-      const chain =
-        defaultNetwork ??
-        NetworkUtil.getDefaultNetwork(this.namespaces, OptionsController.state.defaultNetwork);
+      let targetWallet: WcWallet | undefined;
+
+      if (walletId) {
+        targetWallet = WalletUtil.getWallet(walletId);
+      } else if (wallet) {
+        targetWallet = wallet;
+      }
+
+      const connectorType = WcHelpersUtil.getConnectorTypeByWallet(targetWallet);
+
+      const connector = await this.createConnector(connectorType);
+
+      const chain = NetworkUtil.getDefaultNetwork(
+        this.namespaces,
+        OptionsController.state.defaultNetwork
+      );
 
       const approvedNamespaces = await connector.connect({
-        namespaces: namespaces ?? this.namespaces,
+        namespaces: this.namespaces,
         defaultNetwork: chain,
-        universalLink,
+        universalLink: targetWallet?.link_mode ?? undefined,
         siweConfig: this.config?.siweConfig
       });
 

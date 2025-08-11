@@ -3,7 +3,9 @@ import {
   type AppKitNetwork,
   type CaipNetworkId,
   type ChainNamespace,
+  ConstantsUtil,
   type UniversalProviderConfigOverride,
+  type WcWallet,
   solana,
   solanaDevnet
 } from '@reown/appkit-common-react-native';
@@ -200,6 +202,20 @@ export const WcHelpersUtil = {
     }, {});
 
     return this.applyNamespaceOverrides(defaultNamespaces, configOverride);
+  },
+
+  getConnectorTypeByWallet(wallet?: WcWallet) {
+    if (!wallet) {
+      return 'walletconnect';
+    }
+
+    if (wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id) {
+      return 'phantom';
+    } else if (wallet.id === ConstantsUtil.COINBASE_CUSTOM_WALLET.id) {
+      return 'coinbase';
+    } else {
+      return 'walletconnect';
+    }
   }
 };
 
