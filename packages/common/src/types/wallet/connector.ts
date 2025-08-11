@@ -28,7 +28,7 @@ export type ProposalNamespaces = Record<
 
 export type ConnectOptions = {
   namespaces?: ProposalNamespaces;
-  defaultChain?: CaipNetworkId;
+  defaultNetwork?: AppKitNetwork;
   universalLink?: string;
   siweConfig?: AppKitSIWEClient;
 };
@@ -80,5 +80,5 @@ export abstract class WalletConnector extends EventEmitter {
 
 export type AppKitConnectOptions = Pick<
   ConnectOptions,
-  'namespaces' | 'defaultChain' | 'universalLink'
+  'namespaces' | 'defaultNetwork' | 'universalLink'
 >;

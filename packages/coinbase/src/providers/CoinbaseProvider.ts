@@ -26,7 +26,6 @@ export class CoinbaseProvider extends EventEmitter implements Provider {
     this.provider = new WalletMobileSDKEVMProvider({
       ...this.config,
       jsonRpcUrl: this.config.jsonRpcUrl,
-      chainId: this.config.defaultChain,
       storage: this.config.storage
     });
   }

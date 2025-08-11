@@ -26,10 +26,10 @@ import type {
   PhantomProviderConfig
 } from '../types';
 
-const SOLANA_CLUSTER_TO_CHAIN_ID: Record<PhantomCluster, CaipNetworkId> = {
-  'mainnet-beta': solana.caipNetworkId,
-  'testnet': solanaTestnet.caipNetworkId,
-  'devnet': solanaDevnet.caipNetworkId
+const SOLANA_CLUSTER_TO_NETWORK: Record<PhantomCluster, AppKitNetwork> = {
+  'mainnet-beta': solana,
+  'testnet': solanaTestnet,
+  'devnet': solanaDevnet
 };
 
 const PHANTOM_CONNECTOR_STORAGE_KEY = '@appkit/phantom-connector-data';
@@ -96,21 +96,21 @@ export class PhantomConnector extends WalletConnector {
       return this.namespaces;
     }
 
-    const defaultChain: CaipNetworkId | undefined =
-      opts?.defaultChain?.split(':')?.[0] === 'solana'
-        ? opts?.defaultChain
+    const defaultNetworkId: CaipNetworkId | undefined =
+      opts?.defaultNetwork?.caipNetworkId?.split(':')?.[0] === 'solana'
+        ? opts?.defaultNetwork?.caipNetworkId
         : opts?.namespaces?.['solana']?.chains?.[0];
 
     const requestedCluster =
       this.config.cluster ??
-      (Object.keys(SOLANA_CLUSTER_TO_CHAIN_ID).find(
-        key => SOLANA_CLUSTER_TO_CHAIN_ID[key as PhantomCluster] === defaultChain
+      (Object.keys(SOLANA_CLUSTER_TO_NETWORK).find(
+        key => SOLANA_CLUSTER_TO_NETWORK[key as PhantomCluster]?.caipNetworkId === defaultNetworkId
       ) as PhantomCluster | undefined);
 
     try {
       const connectResult = await this.getProvider().connect({ cluster: requestedCluster });
 
-      const solanaChainId = SOLANA_CLUSTER_TO_CHAIN_ID[connectResult.cluster];
+      const solanaChainId = SOLANA_CLUSTER_TO_NETWORK[connectResult.cluster]?.caipNetworkId;
       if (!solanaChainId) {
         throw new Error(
           `Phantom Connect: Internal - Unknown cluster mapping for ${connectResult.cluster}`
@@ -220,16 +220,19 @@ export class PhantomConnector extends WalletConnector {
   }
 
   override async switchNetwork(network: AppKitNetwork): Promise<void> {
-    const targetClusterName = Object.keys(SOLANA_CLUSTER_TO_CHAIN_ID).find(
-      key => SOLANA_CLUSTER_TO_CHAIN_ID[key as PhantomCluster] === network.caipNetworkId
+    const targetClusterName = Object.keys(SOLANA_CLUSTER_TO_NETWORK).find(
+      key =>
+        SOLANA_CLUSTER_TO_NETWORK[key as PhantomCluster]?.caipNetworkId === network.caipNetworkId
     ) as PhantomCluster | undefined;
 
     if (!targetClusterName) {
       throw new Error(`Cannot switch to unsupported network ID: ${network.id}`);
     }
 
-    const currentClusterName = Object.keys(SOLANA_CLUSTER_TO_CHAIN_ID).find(
-      key => SOLANA_CLUSTER_TO_CHAIN_ID[key as PhantomCluster] === this.currentCaipNetworkId
+    const currentClusterName = Object.keys(SOLANA_CLUSTER_TO_NETWORK).find(
+      key =>
+        SOLANA_CLUSTER_TO_NETWORK[key as PhantomCluster]?.caipNetworkId ===
+        this.currentCaipNetworkId
     ) as PhantomCluster | undefined;
 
     if (targetClusterName === currentClusterName && this.isConnected()) {
@@ -241,18 +244,19 @@ export class PhantomConnector extends WalletConnector {
 
     // Create a temporary options object to guide the new connection
     const tempConnectOpts: ConnectOptions = {
-      defaultChain: SOLANA_CLUSTER_TO_CHAIN_ID[targetClusterName]
+      defaultNetwork: SOLANA_CLUSTER_TO_NETWORK[targetClusterName]
     };
 
     // Attempt to connect to the new cluster
-    // The connect method will use the defaultChain from opts to determine the cluster.
+    // The connect method will use the defaultNetwork from opts to determine the cluster.
     await this.connect(tempConnectOpts);
     this.getProvider().emit('chainChanged', network.id);
 
     // Verify if the connection was successful and to the correct new network
     if (
       !this.isConnected() ||
-      this.getChainId(PhantomConnector.SUPPORTED_NAMESPACE) !== tempConnectOpts.defaultChain
+      this.getChainId(PhantomConnector.SUPPORTED_NAMESPACE) !==
+        tempConnectOpts.defaultNetwork?.caipNetworkId
     ) {
       throw new Error(
         `Failed to switch network to ${targetClusterName}. Please try connecting manually.`

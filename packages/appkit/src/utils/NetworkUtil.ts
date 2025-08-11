@@ -42,17 +42,17 @@ export const NetworkUtil = {
     return url.toString();
   },
 
-  getDefaultChainId(
+  getDefaultNetwork(
     namespaces: CaipNamespaces,
     defaultNetwork?: AppKitNetwork
-  ): CaipNetworkId | undefined {
+  ): AppKitNetwork | undefined {
     if (!defaultNetwork) return undefined;
 
     const isValidDefaultNetwork = Object.values(namespaces).some(
       namespace => namespace?.chains?.some(chain => chain === defaultNetwork.caipNetworkId)
     );
     if (isValidDefaultNetwork) {
-      return defaultNetwork.caipNetworkId;
+      return defaultNetwork;
     }
 
     return undefined;

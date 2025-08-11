@@ -106,16 +106,16 @@ export class AppKit {
    */
   async connect(type: ConnectorType, options?: AppKitConnectOptions): Promise<void> {
     try {
-      const { namespaces, defaultChain, universalLink } = options ?? {};
+      const { namespaces, defaultNetwork, universalLink } = options ?? {};
       const connector = await this.createConnector(type);
 
       const chain =
-        defaultChain ??
-        NetworkUtil.getDefaultChainId(this.namespaces, OptionsController.state.defaultNetwork);
+        defaultNetwork ??
+        NetworkUtil.getDefaultNetwork(this.namespaces, OptionsController.state.defaultNetwork);
 
       const approvedNamespaces = await connector.connect({
         namespaces: namespaces ?? this.namespaces,
-        defaultChain: chain,
+        defaultNetwork: chain,
         universalLink,
         siweConfig: this.config?.siweConfig
       });

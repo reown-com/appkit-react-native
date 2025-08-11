@@ -46,9 +46,16 @@ export class CoinbaseConnector extends WalletConnector {
   }
 
   override async connect(
-    opts?: Pick<ConnectOptions, 'namespaces'>
+    opts?: Pick<ConnectOptions, 'namespaces' | 'defaultNetwork'>
   ): Promise<Namespaces | undefined> {
     const accounts = await this.getProvider().connect();
+
+    if (
+      opts?.defaultNetwork &&
+      opts.defaultNetwork.chainNamespace === CoinbaseConnector.SUPPORTED_NAMESPACE
+    ) {
+      await this.switchNetwork(opts.defaultNetwork);
+    }
 
     const namespaces = getCoinbaseNamespace(opts?.namespaces, accounts);
     this.namespaces = namespaces;
@@ -64,7 +71,7 @@ export class CoinbaseConnector extends WalletConnector {
 
   override getProvider(): CoinbaseProvider {
     if (!this.provider) {
-      throw new Error('CoinbaseConnector: Provider not initialized');
+      throw new Error('CoinbaseConnector: Provider not initialized. Call init() first.');
     }
 
     return this.provider as CoinbaseProvider;

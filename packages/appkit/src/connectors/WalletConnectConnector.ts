@@ -94,7 +94,7 @@ export class WalletConnectConnector extends WalletConnector {
   }
 
   override async connect(opts: ConnectOptions) {
-    const { siweConfig, namespaces, defaultChain, universalLink } = opts;
+    const { siweConfig, namespaces, defaultNetwork, universalLink } = opts;
     function onUri(uri: string) {
       WcController.setWcUri(uri);
     }
@@ -181,8 +181,8 @@ export class WalletConnectConnector extends WalletConnector {
       this.wallet = undefined;
     }
 
-    if (defaultChain) {
-      (this.provider as IUniversalProvider).setDefaultChain(defaultChain);
+    if (defaultNetwork?.caipNetworkId) {
+      (this.provider as IUniversalProvider).setDefaultChain(defaultNetwork.caipNetworkId);
     }
 
     if (session?.sessionProperties) {
