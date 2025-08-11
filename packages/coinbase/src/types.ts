@@ -5,13 +5,9 @@ import type {
 } from '@coinbase/wallet-mobile-sdk/build/WalletMobileSDKEVMProvider';
 import type { COINBASE_METHODS } from './utils';
 
-export type CoinbaseProviderConfig = Omit<
-  WalletMobileSDKProviderOptions,
-  'chainId' | 'jsonRpcUrl' | 'address'
-> & {
+export type CoinbaseProviderConfig = Omit<WalletMobileSDKProviderOptions, 'chainId' | 'address'> & {
   defaultChain?: number;
   redirect: string;
-  rpcUrl?: string;
 };
 
 export type Values<T> = T[keyof T];
@@ -24,4 +20,5 @@ export type CoinbaseSession = {
 
 export type CoinbaseConnectorConfig = {
   storage?: KVStorage;
+  jsonRpcUrl?: string;
 };

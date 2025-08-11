@@ -3,7 +3,6 @@ import type {
   Namespaces,
   ProposalNamespaces
 } from '@reown/appkit-common-react-native';
-import type { CoinbaseMethod } from './types';
 
 export const COINBASE_METHODS = {
   REQUEST_ACCOUNTS: 'eth_requestAccounts',
@@ -16,10 +15,6 @@ export const COINBASE_METHODS = {
   ADD_ETHEREUM_CHAIN: 'wallet_addEthereumChain',
   WATCH_ASSET: 'wallet_watchAsset'
 } as const;
-
-export function isValidMethod(method: string): method is CoinbaseMethod {
-  return Object.values(COINBASE_METHODS).includes(method as CoinbaseMethod);
-}
 
 export function getCoinbaseNamespace(
   namespaces?: ProposalNamespaces,

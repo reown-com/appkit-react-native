@@ -5,7 +5,6 @@ import {
   StringUtil
 } from '@reown/appkit-common-react-native';
 import { configure, WalletMobileSDKEVMProvider } from '@coinbase/wallet-mobile-sdk';
-import { isValidMethod } from '../utils';
 import type { CoinbaseProviderConfig } from '../types';
 
 export class CoinbaseProvider extends EventEmitter implements Provider {
@@ -26,7 +25,7 @@ export class CoinbaseProvider extends EventEmitter implements Provider {
     });
     this.provider = new WalletMobileSDKEVMProvider({
       ...this.config,
-      jsonRpcUrl: this.config.rpcUrl,
+      jsonRpcUrl: this.config.jsonRpcUrl,
       chainId: this.config.defaultChain,
       storage: this.config.storage
     });
@@ -60,10 +59,6 @@ export class CoinbaseProvider extends EventEmitter implements Provider {
   }
 
   request<T = unknown>(args: RequestArguments): Promise<T> {
-    if (!isValidMethod(args.method)) {
-      throw new Error(`CoinbaseProvider: Invalid method: ${args.method}`);
-    }
-
     return this.provider.request(args);
   }
 

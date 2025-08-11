@@ -38,13 +38,16 @@ export class CoinbaseConnector extends WalletConnector {
     this.provider = new CoinbaseProvider({
       redirect,
       // use config storage, as it needs to be mmkv-compatible
-      storage: this.config.storage
+      storage: this.config.storage,
+      jsonRpcUrl: this.config.jsonRpcUrl
     });
 
     await this.restoreSession();
   }
 
-  override async connect(opts?: ConnectOptions): Promise<Namespaces | undefined> {
+  override async connect(
+    opts?: Pick<ConnectOptions, 'namespaces'>
+  ): Promise<Namespaces | undefined> {
     const accounts = await this.getProvider().connect();
 
     const namespaces = getCoinbaseNamespace(opts?.namespaces, accounts);
