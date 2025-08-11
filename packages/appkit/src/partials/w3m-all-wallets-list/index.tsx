@@ -3,6 +3,7 @@ import { useSnapshot } from 'valtio';
 import { FlatList, View } from 'react-native';
 import {
   ApiController,
+  AssetController,
   AssetUtil,
   OptionsController,
   SnackController,
@@ -33,6 +34,7 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const { maxWidth, padding } = useCustomDimensions();
   const { installed, featured, recommended, wallets } = useSnapshot(ApiController.state);
+  const { walletImages } = useSnapshot(AssetController.state);
   const { customWallets } = useSnapshot(OptionsController.state) as OptionsControllerState;
   const imageHeaders = ApiController._getApiHeaders();
   const preloadedWallets = installed.length + featured.length + recommended.length;
@@ -89,7 +91,7 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
     return (
       <View style={[styles.itemContainer, { width: itemWidth }]}>
         <CardSelect
-          imageSrc={AssetUtil.getWalletImage(item)}
+          imageSrc={AssetUtil.getWalletImage(item, walletImages)}
           imageHeaders={imageHeaders}
           name={item?.name ?? 'Unknown'}
           onPress={() => onItemPress(item)}

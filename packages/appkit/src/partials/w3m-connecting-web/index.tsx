@@ -8,7 +8,8 @@ import {
   WcController,
   CoreHelperUtil,
   OptionsController,
-  EventsController
+  EventsController,
+  AssetController
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -29,6 +30,7 @@ interface ConnectingWebProps {
 export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
   const { data } = RouterController.state;
   const { wcUri, wcError } = useSnapshot(WcController.state);
+  const { walletImages } = useSnapshot(AssetController.state);
   const showCopy = OptionsController.isClipboardAvailable();
   const bodyMessage = getMessage({
     walletName: data?.wallet?.name,
@@ -68,7 +70,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
         <LoadingThumbnail paused={wcError}>
           <WalletImage
             size="xl"
-            imageSrc={AssetUtil.getWalletImage(data?.wallet)}
+            imageSrc={AssetUtil.getWalletImage(data?.wallet, walletImages)}
             imageHeaders={ApiController._getApiHeaders()}
           />
           {wcError ? (

@@ -9,7 +9,8 @@ import {
   CoreHelperUtil,
   OptionsController,
   EventsController,
-  ConstantsUtil
+  ConstantsUtil,
+  AssetController
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -35,6 +36,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const { data } = RouterController.state;
   const { maxWidth: width } = useCustomDimensions();
   const { wcUri, wcError } = useSnapshot(WcController.state);
+  const { walletImages } = useSnapshot(AssetController.state);
   const [errorType, setErrorType] = useState<BodyErrorType>();
   const showCopy =
     OptionsController.isClipboardAvailable() &&
@@ -108,7 +110,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         <LoadingThumbnail paused={!!errorType || wcError}>
           <WalletImage
             size="xl"
-            imageSrc={AssetUtil.getWalletImage(RouterController.state.data?.wallet)}
+            imageSrc={AssetUtil.getWalletImage(RouterController.state.data?.wallet, walletImages)}
             imageHeaders={ApiController._getApiHeaders()}
           />
           {wcError ? (

@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
-import { ApiController, AssetUtil, SnackController } from '@reown/appkit-core-react-native';
+import {
+  ApiController,
+  AssetController,
+  AssetUtil,
+  SnackController
+} from '@reown/appkit-core-react-native';
 import { type WcWallet } from '@reown/appkit-common-react-native';
 import {
   CardSelect,
@@ -12,6 +17,7 @@ import {
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { Placeholder } from '../w3m-placeholder';
 import styles from './styles';
+import { useSnapshot } from 'valtio';
 
 export interface AllWalletsSearchProps {
   columns: number;
@@ -31,6 +37,7 @@ export function AllWalletsSearch({
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const imageHeaders = ApiController._getApiHeaders();
   const { maxWidth, padding, isLandscape } = useCustomDimensions();
+  const { walletImages } = useSnapshot(AssetController.state);
 
   const ITEM_HEIGHT = CardSelectHeight + Spacing.xs * 2;
 
@@ -40,7 +47,7 @@ export function AllWalletsSearch({
     return (
       <View key={item?.id} style={[styles.itemContainer, { width: itemWidth }]}>
         <CardSelect
-          imageSrc={AssetUtil.getWalletImage(item)}
+          imageSrc={AssetUtil.getWalletImage(item, walletImages)}
           imageHeaders={imageHeaders}
           name={item?.name ?? 'Unknown'}
           onPress={() => onItemPress(item)}

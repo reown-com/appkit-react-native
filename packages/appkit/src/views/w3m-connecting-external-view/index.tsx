@@ -6,7 +6,8 @@ import {
   ApiController,
   EventsController,
   WcController,
-  AssetUtil
+  AssetUtil,
+  AssetController
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -24,6 +25,7 @@ import { ConstantsUtil } from '@reown/appkit-common-react-native';
 
 export function ConnectingExternalView() {
   const { data } = useSnapshot(RouterController.state);
+  const { walletImages } = useSnapshot(AssetController.state);
   const { connect } = useInternalAppKit();
   const { maxWidth: width } = useCustomDimensions();
   const [errorType, setErrorType] = useState<BodyErrorType>();
@@ -90,7 +92,7 @@ export function ConnectingExternalView() {
         <LoadingThumbnail paused={!!errorType}>
           <WalletImage
             size="xl"
-            imageSrc={AssetUtil.getWalletImage(data?.wallet)}
+            imageSrc={AssetUtil.getWalletImage(data?.wallet, walletImages)}
             imageHeaders={ApiController._getApiHeaders()}
           />
           {errorType ? (

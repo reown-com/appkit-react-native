@@ -1,11 +1,13 @@
 import { Linking, Platform, ScrollView } from 'react-native';
 import { FlexView, ListWallet } from '@reown/appkit-ui-react-native';
-import { ApiController, AssetUtil } from '@reown/appkit-core-react-native';
+import { ApiController, AssetController, AssetUtil } from '@reown/appkit-core-react-native';
 import { type WcWallet } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
+import { useSnapshot } from 'valtio';
 
 export function GetWalletView() {
+  const { walletImages } = useSnapshot(AssetController.state);
   const { padding } = useCustomDimensions();
   const imageHeaders = ApiController._getApiHeaders();
 
@@ -22,7 +24,7 @@ export function GetWalletView() {
       <ListWallet
         key={wallet.id}
         name={wallet.name}
-        imageSrc={AssetUtil.getWalletImage(wallet)}
+        imageSrc={AssetUtil.getWalletImage(wallet, walletImages)}
         imageHeaders={imageHeaders}
         onPress={() => onWalletPress(wallet)}
         style={styles.item}

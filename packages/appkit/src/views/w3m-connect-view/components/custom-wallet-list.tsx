@@ -6,7 +6,8 @@ import {
   ApiController,
   WcController,
   type WcControllerState,
-  AssetUtil
+  AssetUtil,
+  AssetController
 } from '@reown/appkit-core-react-native';
 import { type CustomWallet } from '@reown/appkit-common-react-native';
 import { ListWallet } from '@reown/appkit-ui-react-native';
@@ -19,6 +20,7 @@ interface Props {
 
 export function CustomWalletList({ itemStyle, onWalletPress }: Props) {
   const { installed } = useSnapshot(ApiController.state);
+  const { walletImages } = useSnapshot(AssetController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const { recentWallets } = useSnapshot(WcController.state) as WcControllerState;
   const { customWallets } = useSnapshot(OptionsController.state) as OptionsControllerState;
@@ -33,7 +35,7 @@ export function CustomWalletList({ itemStyle, onWalletPress }: Props) {
   return list.map(wallet => (
     <ListWallet
       key={wallet.id}
-      imageSrc={AssetUtil.getWalletImage(wallet)}
+      imageSrc={AssetUtil.getWalletImage(wallet, walletImages)}
       imageHeaders={imageHeaders}
       name={wallet.name}
       onPress={() => onWalletPress(wallet)}

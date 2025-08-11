@@ -2,6 +2,7 @@ import { type StyleProp, type ViewStyle } from 'react-native';
 import { useSnapshot } from 'valtio';
 import {
   ApiController,
+  AssetController,
   AssetUtil,
   WcController,
   type WcControllerState
@@ -19,6 +20,7 @@ interface Props {
 export function AllWalletList({ itemStyle, onWalletPress }: Props) {
   const { installed, featured, recommended, prefetchLoading } = useSnapshot(ApiController.state);
   const { recentWallets } = useSnapshot(WcController.state) as WcControllerState;
+  const { walletImages } = useSnapshot(AssetController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const RECENT_COUNT = recentWallets?.length && installed.length ? 1 : recentWallets?.length ?? 0;
 
@@ -47,7 +49,7 @@ export function AllWalletList({ itemStyle, onWalletPress }: Props) {
     list.map(wallet => (
       <ListWallet
         key={wallet?.id}
-        imageSrc={AssetUtil.getWalletImage(wallet)}
+        imageSrc={AssetUtil.getWalletImage(wallet, walletImages)}
         imageHeaders={imageHeaders}
         name={wallet?.name ?? 'Unknown'}
         onPress={() => onWalletPress(wallet)}
