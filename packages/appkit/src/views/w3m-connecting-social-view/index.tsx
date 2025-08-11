@@ -52,7 +52,7 @@ export function ConnectingSocialView() {
   }, [wcUri]);
 
   const initializeConnection = useCallback(async () => {
-    const connectPromise = connect('walletconnect');
+    const connectPromise = connect();
     WcController.setWcPromise(connectPromise);
   }, [connect]);
 

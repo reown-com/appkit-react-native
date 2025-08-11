@@ -54,5 +54,6 @@ export { CoreHelperUtil } from './utils/CoreHelperUtil';
 export { StorageUtil } from './utils/StorageUtil';
 export { EventUtil } from './utils/EventUtil';
 export { RouterUtil } from './utils/RouterUtil';
+export { WalletUtil } from './utils/WalletUtil';
 
 // Types are now exported from @reown/appkit-common-react-native

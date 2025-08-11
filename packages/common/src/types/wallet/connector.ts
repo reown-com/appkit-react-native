@@ -6,6 +6,7 @@ import type { WalletInfo, Metadata } from './wallet-info';
 import type { ConnectionProperties } from './connection';
 import type { AppKitSIWEClient } from '../siwe';
 import type { Storage } from '../storage';
+import type { WcWallet } from '../api/wallet-api';
 
 export type ConnectorType = 'walletconnect' | 'coinbase' | 'phantom';
 
@@ -28,7 +29,7 @@ export type ProposalNamespaces = Record<
 
 export type ConnectOptions = {
   namespaces?: ProposalNamespaces;
-  defaultChain?: CaipNetworkId;
+  defaultNetwork?: AppKitNetwork;
   universalLink?: string;
   siweConfig?: AppKitSIWEClient;
 };
@@ -78,7 +79,7 @@ export abstract class WalletConnector extends EventEmitter {
   abstract restoreSession(): Promise<boolean>;
 }
 
-export type AppKitConnectOptions = Pick<
-  ConnectOptions,
-  'namespaces' | 'defaultChain' | 'universalLink'
->;
+export type AppKitConnectOptions = {
+  walletId?: string;
+  wallet?: WcWallet;
+};

@@ -6,7 +6,6 @@ import type {
 import type { COINBASE_METHODS } from './utils';
 
 export type CoinbaseProviderConfig = Omit<WalletMobileSDKProviderOptions, 'chainId' | 'address'> & {
-  defaultChain?: number;
   redirect: string;
 };
 
