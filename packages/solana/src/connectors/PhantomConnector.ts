@@ -110,8 +110,12 @@ export class PhantomConnector extends WalletConnector {
     try {
       const connectResult = await this.getProvider().connect({ cluster: requestedCluster });
 
-      const solanaChainId = SOLANA_CLUSTER_TO_NETWORK[connectResult.cluster].caipNetworkId;
-
+      const solanaChainId = SOLANA_CLUSTER_TO_NETWORK[connectResult.cluster]?.caipNetworkId;
+      if (!solanaChainId) {
+        throw new Error(
+          `Phantom Connect: Internal - Unknown cluster mapping for ${connectResult.cluster}`
+        );
+      }
       this.currentCaipNetworkId = solanaChainId;
 
       this.wallet = {
