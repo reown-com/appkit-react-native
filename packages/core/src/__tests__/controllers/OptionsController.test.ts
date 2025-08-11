@@ -17,6 +17,7 @@ describe('OptionsController', () => {
       sdkType: 'appkit',
       sdkVersion: 'react-native-undefined-undefined',
       features: ConstantsUtil.DEFAULT_FEATURES,
+      customWallets: [],
       debug: false
     });
   });
