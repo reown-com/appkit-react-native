@@ -749,6 +749,15 @@ export class AppKit {
       customList.push(ConstantsUtil.PHANTOM_CUSTOM_WALLET);
     }
 
+    const addSolflare =
+      adapters.some(adapter => adapter.getSupportedNamespace() === 'solana') &&
+      extraConnectors?.some(connector => connector.type.toLowerCase() === 'solflare') &&
+      !customList.some(wallet => wallet.id === ConstantsUtil.SOLFLARE_CUSTOM_WALLET.id);
+
+    if (addSolflare) {
+      customList.push(ConstantsUtil.SOLFLARE_CUSTOM_WALLET);
+    }
+
     OptionsController.setCustomWallets(customList);
   }
 

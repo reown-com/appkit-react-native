@@ -18,22 +18,15 @@ export interface TokenInfo {
 
 // --- From PhantomProvider ---
 
-export type PhantomCluster = 'mainnet-beta' | 'testnet' | 'devnet';
+export type Cluster = 'mainnet-beta' | 'testnet' | 'devnet';
 
-export interface PhantomProviderConfig {
-  appScheme: string;
-  dappUrl: string;
-  storage: Storage;
-  dappEncryptionKeyPair: nacl.BoxKeyPair;
-}
+export type DeeplinkConnectResult = DeeplinkSession;
 
-export type PhantomConnectResult = PhantomSession;
-
-export interface PhantomSession {
+export interface DeeplinkSession {
   sessionToken: string;
   userPublicKey: string;
-  phantomEncryptionPublicKeyBs58: string;
-  cluster: PhantomCluster;
+  walletEncryptionPublicKeyBs58: string;
+  cluster: Cluster;
 }
 
 export interface SignTransactionRequestParams {
@@ -47,8 +40,8 @@ export interface SignAllTransactionsRequestParams {
   transactions: string[];
 }
 
-export interface PhantomDeeplinkResponse {
-  phantom_encryption_public_key?: string;
+export interface DeeplinkResponse {
+  wallet_encryption_public_key?: string;
   nonce: string;
   data: string;
 }
@@ -58,22 +51,18 @@ export interface DecryptedConnectData {
   session: string;
 }
 
-export interface PhantomProviderConfig {
+export interface DeeplinkProviderConfig {
   appScheme: string;
   dappUrl: string;
   storage: Storage;
   dappEncryptionKeyPair: nacl.BoxKeyPair;
+  type: 'phantom' | 'solflare';
+  baseUrl: string;
+  encryptionKeyFieldName: string;
 }
 
-export interface PhantomSession {
-  sessionToken: string;
-  userPublicKey: string;
-  phantomEncryptionPublicKeyBs58: string;
-  cluster: PhantomCluster;
-}
-
-// Actual method names used in Phantom deeplink URLs
-export type PhantomRpcMethod =
+// Actual method names used in deeplink URLs
+export type DeeplinkRpcMethod =
   | 'connect'
   | 'disconnect'
   | 'signTransaction'
@@ -81,51 +70,53 @@ export type PhantomRpcMethod =
   | 'signAllTransactions'
   | 'signMessage';
 
-export interface PhantomSignTransactionParams {
+export interface DeeplinkSignTransactionParams {
   dapp_encryption_public_key: string;
   redirect_link: string;
   payload: string; // Encrypted JSON: { session: string, transaction: string }
   nonce: string;
-  cluster?: PhantomCluster;
+  cluster?: Cluster;
 }
 
-export interface PhantomSignAllTransactionsParams {
+export interface DeeplinkSignAllTransactionsParams {
   dapp_encryption_public_key: string;
   redirect_link: string;
   payload: string; // Encrypted JSON: { session: string, transactions: string[] }
   nonce: string;
-  cluster?: PhantomCluster;
+  cluster?: Cluster;
 }
 
-export interface PhantomSignMessageParams {
+export interface DeeplinkSignMessageParams {
   dapp_encryption_public_key: string;
   redirect_link: string;
   payload: string; // Encrypted JSON string: { message: string, session: string, display: 'utf8'|'hex' }
   nonce: string;
 }
 
-export interface PhantomConnectParams {
+export interface DeeplinkConnectParams {
   app_url: string;
   dapp_encryption_public_key: string;
   redirect_link: string;
-  cluster?: PhantomCluster;
+  cluster?: Cluster;
 }
 
-export interface PhantomDisconnectParams {
+export interface DeeplinkDisconnectParams {
   dapp_encryption_public_key: string;
   redirect_link: string;
   payload: string; // Encrypted { session: string }
   nonce: string;
 }
 
-// --- From PhantomConnector ---
-
-export interface PhantomConnectorConfig {
-  cluster?: PhantomCluster;
+export interface DeeplinkConnectorConfig {
+  type: 'phantom' | 'solflare';
+  cluster?: Cluster;
 }
 
-export interface PhantomConnectorSessionData {
+export interface DeeplinkConnectorSessionData {
   namespaces: Namespaces;
   wallet: WalletInfo;
   currentCaipNetworkId: CaipNetworkId;
 }
+
+export type PhantomConnectorConfig = Pick<DeeplinkConnectorConfig, 'cluster'>;
+export type SolflareConnectorConfig = Pick<DeeplinkConnectorConfig, 'cluster'>;

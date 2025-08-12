@@ -42,6 +42,7 @@ export function ConnectingExternalView() {
       if (wallet) {
         if (
           wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id ||
+          wallet.id === ConstantsUtil.SOLFLARE_CUSTOM_WALLET.id ||
           wallet.id === ConstantsUtil.COINBASE_CUSTOM_WALLET.id
         ) {
           await connect({ wallet });

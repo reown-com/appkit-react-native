@@ -47,6 +47,13 @@ export const ConstantsUtil = {
     mobile_link: 'https://wallet.coinbase.com/wsegue'
   },
 
+  SOLFLARE_CUSTOM_WALLET: {
+    id: '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
+    name: 'Solflare Wallet',
+    image_id: '34c0e38d-66c4-470e-1aed-a6fabe2d1e00',
+    mobile_link: 'solflare://'
+  },
+
   // Storage Keys
   STORAGE_KEYS: {
     WC_DEEPLINK: 'WALLETCONNECT_DEEPLINK_CHOICE', //dont change this one

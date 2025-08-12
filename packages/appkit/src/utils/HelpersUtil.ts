@@ -213,6 +213,8 @@ export const WcHelpersUtil = {
       return 'phantom';
     } else if (wallet.id === ConstantsUtil.COINBASE_CUSTOM_WALLET.id) {
       return 'coinbase';
+    } else if (wallet.id === ConstantsUtil.SOLFLARE_CUSTOM_WALLET.id) {
+      return 'solflare';
     } else {
       return 'walletconnect';
     }

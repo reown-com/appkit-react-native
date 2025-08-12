@@ -8,7 +8,7 @@ import type { AppKitSIWEClient } from '../siwe';
 import type { Storage } from '../storage';
 import type { WcWallet } from '../api/wallet-api';
 
-export type ConnectorType = 'walletconnect' | 'coinbase' | 'phantom';
+export type ConnectorType = 'walletconnect' | 'coinbase' | 'phantom' | 'solflare';
 
 export interface BaseNamespace {
   chains?: CaipNetworkId[];
