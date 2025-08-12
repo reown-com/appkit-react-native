@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { WcController, EventsController, RouterController } from '@reown/appkit-core-react-native';
-import { type WcWallet, ConstantsUtil } from '@reown/appkit-common-react-native';
+import { type WcWallet } from '@reown/appkit-common-react-native';
 import { FlexView, IconLink, SearchBar, Spacing, useTheme } from '@reown/appkit-ui-react-native';
 
 import styles from './styles';
@@ -8,6 +8,7 @@ import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { AllWalletsList } from '../../partials/w3m-all-wallets-list';
 import { AllWalletsSearch } from '../../partials/w3m-all-wallets-search';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { WcHelpersUtil } from '../../utils/HelpersUtil';
 
 export function AllWalletsView() {
   const Theme = useTheme();
@@ -20,10 +21,7 @@ export function AllWalletsView() {
   const { debouncedCallback: onInputChange } = useDebounceCallback({ callback: setSearchQuery });
 
   const onWalletPress = (wallet: WcWallet) => {
-    const isExternal =
-      wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id ||
-      wallet.id === ConstantsUtil.SOLFLARE_CUSTOM_WALLET.id ||
-      wallet.id === ConstantsUtil.COINBASE_CUSTOM_WALLET.id;
+    const isExternal = WcHelpersUtil.isExternalWallet(wallet);
     if (isExternal) {
       RouterController.push('ConnectingExternal', { wallet });
     } else {

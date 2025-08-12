@@ -22,8 +22,8 @@ import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w3m-connecting-body';
 import styles from './styles';
 import { useInternalAppKit } from '../../AppKitContext';
-import { ConstantsUtil } from '@reown/appkit-common-react-native';
 import { StoreLink } from '../../partials/w3m-connecting-mobile/components/StoreLink';
+import { WcHelpersUtil } from '../../utils/HelpersUtil';
 
 export function ConnectingExternalView() {
   const { data } = useSnapshot(RouterController.state);
@@ -53,11 +53,7 @@ export function ConnectingExternalView() {
     try {
       const wallet = RouterController.state.data?.wallet;
       if (wallet) {
-        if (
-          wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id ||
-          wallet.id === ConstantsUtil.SOLFLARE_CUSTOM_WALLET.id ||
-          wallet.id === ConstantsUtil.COINBASE_CUSTOM_WALLET.id
-        ) {
+        if (WcHelpersUtil.isExternalWallet(wallet)) {
           await connect({ wallet });
         } else {
           // All other wallets are handled by WalletConnect connector
