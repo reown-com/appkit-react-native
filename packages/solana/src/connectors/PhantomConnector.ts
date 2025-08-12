@@ -7,8 +7,8 @@ const PHANTOM_CONNECTOR_STORAGE_KEY = '@appkit/phantom-connector-data';
 const PHANTOM_DAPP_KEYPAIR_STORAGE_KEY = '@appkit/phantom-dapp-secret-key';
 
 export class PhantomConnector extends DeeplinkConnector {
-  constructor(config: PhantomConnectorConfig) {
-    super({ type: 'phantom', cluster: config.cluster });
+  constructor(config?: PhantomConnectorConfig) {
+    super({ type: 'phantom', cluster: config?.cluster });
   }
 
   override getWalletInfo(): WalletInfo | undefined {

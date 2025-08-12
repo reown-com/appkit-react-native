@@ -55,6 +55,7 @@ export interface DeeplinkProviderConfig {
   appScheme: string;
   dappUrl: string;
   storage: Storage;
+  cluster?: Cluster;
   dappEncryptionKeyPair: nacl.BoxKeyPair;
   type: 'phantom' | 'solflare';
   baseUrl: string;

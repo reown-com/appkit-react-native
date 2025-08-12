@@ -65,6 +65,7 @@ export abstract class DeeplinkConnector extends WalletConnector {
       dappUrl: ops.metadata.url,
       storage: ops.storage,
       type: this.type as 'phantom' | 'solflare',
+      cluster: this.config?.cluster ?? 'mainnet-beta',
       dappEncryptionKeyPair: this.dappEncryptionKeyPair!,
       baseUrl: this.getBaseUrl(),
       encryptionKeyFieldName: this.getEncryptionKeyFieldName()
@@ -106,7 +107,7 @@ export abstract class DeeplinkConnector extends WalletConnector {
         : opts?.namespaces?.['solana']?.chains?.[0];
 
     const requestedCluster =
-      this.config.cluster ??
+      this.config?.cluster ??
       (Object.keys(SOLANA_CLUSTER_TO_NETWORK).find(
         key => SOLANA_CLUSTER_TO_NETWORK[key as Cluster]?.caipNetworkId === defaultNetworkId
       ) as Cluster | undefined);

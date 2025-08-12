@@ -43,7 +43,7 @@ function isValidSolanaSigningMethod(method: string): method is SolanaSigningMeth
 export class DeeplinkProvider extends EventEmitter implements Provider {
   private readonly config: DeeplinkProviderConfig;
   private dappEncryptionKeyPair: nacl.BoxKeyPair;
-  private currentCluster: Cluster = 'mainnet-beta';
+  private currentCluster: Cluster;
   private sharedKey: Uint8Array | null = null;
 
   private storage: Storage;
@@ -59,6 +59,7 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
   constructor(config: DeeplinkProviderConfig) {
     super();
     this.config = config;
+    this.currentCluster = config.cluster ?? 'mainnet-beta';
     this.dappEncryptionKeyPair = config.dappEncryptionKeyPair;
     this.storage = config.storage;
   }

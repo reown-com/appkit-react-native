@@ -7,8 +7,8 @@ const SOLFLARE_CONNECTOR_STORAGE_KEY = '@appkit/solflare-connector-data';
 const SOLFLARE_DAPP_KEYPAIR_STORAGE_KEY = '@appkit/solflare-dapp-secret-key';
 
 export class SolflareConnector extends DeeplinkConnector {
-  constructor(config: SolflareConnectorConfig) {
-    super({ type: 'solflare', cluster: config.cluster });
+  constructor(config?: SolflareConnectorConfig) {
+    super({ type: 'solflare', cluster: config?.cluster });
   }
 
   override getWalletInfo(): WalletInfo | undefined {
