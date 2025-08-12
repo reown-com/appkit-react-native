@@ -14,7 +14,6 @@ import {
 } from '@reown/appkit-common-react-native';
 import { AssetController } from './AssetController';
 import { OptionsController } from './OptionsController';
-// import { ConnectorController } from './ConnectorController';
 import { WcController } from './WcController';
 import { ApiUtil } from '../utils/ApiUtil';
 import { SnackController } from './SnackController';
@@ -108,7 +107,7 @@ export const ApiController = {
   },
 
   async fetchInstalledWallets() {
-    const { includeWalletIds } = OptionsController.state;
+    const { includeWalletIds, customWallets } = OptionsController.state;
     const path = Platform.select({ default: 'getIosData', android: 'getAndroidData' });
     const response = await api.get<ApiGetDataWalletsResponse>({
       path,
@@ -124,6 +123,13 @@ export const ApiController = {
     }
 
     const promises = walletData.map(async item => {
+      return {
+        id: item.id,
+        isInstalled: await CoreHelperUtil.checkInstalled(item)
+      };
+    });
+
+    const customPromises = customWallets?.map(async item => {
       return {
         id: item.id,
         isInstalled: await CoreHelperUtil.checkInstalled(item)
@@ -155,6 +161,17 @@ export const ApiController = {
         state.installed = walletResponse.data;
         this.updateRecentWalletsInfo(walletResponse.data);
       }
+    }
+
+    if (customPromises?.length) {
+      const customResults = await Promise.all(customPromises);
+      const customInstalled = customResults
+        .filter(({ isInstalled }) => isInstalled)
+        .map(({ id }) => id);
+      const customInstalledWallets =
+        customWallets?.filter(wallet => customInstalled.includes(wallet.id)) ?? [];
+      state.installed = [...state.installed, ...customInstalledWallets];
+      this.updateRecentWalletsInfo(state.installed);
     }
   },
 

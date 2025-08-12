@@ -39,7 +39,9 @@ export const ConstantsUtil = {
     image_id: 'b6ec7b81-bb4f-427d-e290-7631e6e50d00',
     mobile_link: 'phantom://',
     play_store: 'https://play.google.com/store/apps/details?id=app.phantom',
-    app_store: 'https://apps.apple.com/app/id1598432977'
+    app_store: 'https://apps.apple.com/app/id1598432977',
+    android_app_id: 'app.phantom',
+    ios_schema: 'phantom://'
   },
 
   COINBASE_CUSTOM_WALLET: {
@@ -48,7 +50,9 @@ export const ConstantsUtil = {
     image_id: 'a5ebc364-8f91-4200-fcc6-be81310a0000',
     mobile_link: 'https://wallet.coinbase.com/wsegue',
     play_store: 'https://play.google.com/store/apps/details?id=org.toshi',
-    app_store: 'https://apps.apple.com/app/id1278383455'
+    app_store: 'https://apps.apple.com/app/id1278383455',
+    android_app_id: 'org.toshi',
+    ios_schema: 'cbwallet://'
   },
 
   SOLFLARE_CUSTOM_WALLET: {
@@ -57,7 +61,9 @@ export const ConstantsUtil = {
     image_id: '34c0e38d-66c4-470e-1aed-a6fabe2d1e00',
     mobile_link: 'solflare://',
     play_store: 'https://play.google.com/store/apps/details?id=com.solflare.mobile',
-    app_store: 'https://apps.apple.com/app/id1580902717'
+    app_store: 'https://apps.apple.com/app/id1580902717',
+    android_app_id: 'com.solflare.mobile',
+    ios_schema: 'solflare://'
   },
 
   // Storage Keys
