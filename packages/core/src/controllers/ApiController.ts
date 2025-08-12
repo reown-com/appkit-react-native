@@ -9,6 +9,7 @@ import {
   type ApiGetDataWalletsResponse,
   type ApiGetWalletsRequest,
   type ApiGetWalletsResponse,
+  type CustomWallet,
   type WcWallet,
   PresetsUtil
 } from '@reown/appkit-common-react-native';
@@ -140,6 +141,8 @@ export const ApiController = {
     const installed = results.filter(({ isInstalled }) => isInstalled).map(({ id }) => id);
     const { excludeWalletIds } = OptionsController.state;
 
+    // Collect API-sourced installed wallets
+    let apiInstalledWallets: WcWallet[] = [];
     if (installed.length > 0) {
       const walletResponse = await api.get<ApiGetWalletsResponse>({
         path: '/getWallets',
@@ -158,20 +161,32 @@ export const ApiController = {
         await CoreHelperUtil.allSettled(
           (walletImages as string[]).map(id => ApiController._fetchWalletImage(id))
         );
-        state.installed = walletResponse.data;
-        this.updateRecentWalletsInfo(walletResponse.data);
+        apiInstalledWallets = walletResponse.data;
       }
     }
 
+    // Collect custom installed wallets
+    let customInstalledWallets: CustomWallet[] = [];
     if (customPromises?.length) {
       const customResults = await Promise.all(customPromises);
       const customInstalled = customResults
         .filter(({ isInstalled }) => isInstalled)
         .map(({ id }) => id);
-      const customInstalledWallets =
+      customInstalledWallets =
         customWallets?.filter(wallet => customInstalled.includes(wallet.id)) ?? [];
-      state.installed = [...state.installed, ...customInstalledWallets];
-      this.updateRecentWalletsInfo(state.installed);
+    }
+
+    // Merge and de-duplicate by id, preserving order (API first, then custom)
+    const byId = new Map<string, WcWallet>();
+    [...apiInstalledWallets, ...customInstalledWallets].forEach(wallet => {
+      if (!byId.has(wallet.id)) {
+        byId.set(wallet.id, wallet);
+      }
+    });
+    const combinedInstalled = Array.from(byId.values());
+    state.installed = combinedInstalled;
+    if (combinedInstalled.length) {
+      this.updateRecentWalletsInfo(combinedInstalled);
     }
   },
 
