@@ -11,11 +11,7 @@ export class SolflareConnector extends DeeplinkConnector {
     super({ type: 'solflare', cluster: config?.cluster });
   }
 
-  override getWalletInfo(): WalletInfo | undefined {
-    if (!this.isConnected()) {
-      return undefined;
-    }
-
+  override getWalletInfo(): WalletInfo {
     return ConstantsUtil.SOLFLARE_CUSTOM_WALLET;
   }
 

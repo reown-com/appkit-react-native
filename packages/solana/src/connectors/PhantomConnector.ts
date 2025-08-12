@@ -11,11 +11,7 @@ export class PhantomConnector extends DeeplinkConnector {
     super({ type: 'phantom', cluster: config?.cluster });
   }
 
-  override getWalletInfo(): WalletInfo | undefined {
-    if (!this.isConnected()) {
-      return undefined;
-    }
-
+  override getWalletInfo(): WalletInfo {
     return ConstantsUtil.PHANTOM_CUSTOM_WALLET;
   }
 
