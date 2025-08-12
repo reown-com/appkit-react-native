@@ -22,6 +22,7 @@ export function AllWalletsView() {
   const onWalletPress = (wallet: WcWallet) => {
     const isExternal =
       wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id ||
+      wallet.id === ConstantsUtil.SOLFLARE_CUSTOM_WALLET.id ||
       wallet.id === ConstantsUtil.COINBASE_CUSTOM_WALLET.id;
     if (isExternal) {
       RouterController.push('ConnectingExternal', { wallet });

@@ -1,13 +1,14 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { Platform, ScrollView } from 'react-native';
 import {
   RouterController,
   ApiController,
   EventsController,
   WcController,
   AssetUtil,
-  AssetController
+  AssetController,
+  CoreHelperUtil
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -22,6 +23,7 @@ import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w
 import styles from './styles';
 import { useInternalAppKit } from '../../AppKitContext';
 import { ConstantsUtil } from '@reown/appkit-common-react-native';
+import { StoreLink } from '../../partials/w3m-connecting-mobile/components/StoreLink';
 
 export function ConnectingExternalView() {
   const { data } = useSnapshot(RouterController.state);
@@ -30,6 +32,17 @@ export function ConnectingExternalView() {
   const { maxWidth: width } = useCustomDimensions();
   const [errorType, setErrorType] = useState<BodyErrorType>();
   const bodyMessage = getMessage({ walletName: data?.wallet?.name, errorType });
+
+  const storeUrl = Platform.select({
+    ios: data?.wallet?.app_store,
+    android: data?.wallet?.play_store
+  });
+
+  const onStorePress = () => {
+    if (storeUrl) {
+      CoreHelperUtil.openLink(storeUrl);
+    }
+  };
 
   const onRetryPress = () => {
     setErrorType(undefined);
@@ -122,6 +135,7 @@ export function ConnectingExternalView() {
           </Button>
         )}
       </FlexView>
+      <StoreLink visible={!!storeUrl} walletName={data?.wallet?.name} onPress={onStorePress} />
     </ScrollView>
   );
 }

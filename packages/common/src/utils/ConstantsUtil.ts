@@ -37,21 +37,27 @@ export const ConstantsUtil = {
     id: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
     name: 'Phantom Wallet',
     image_id: 'b6ec7b81-bb4f-427d-e290-7631e6e50d00',
-    mobile_link: 'phantom://'
+    mobile_link: 'phantom://',
+    play_store: 'https://play.google.com/store/apps/details?id=app.phantom',
+    app_store: 'https://apps.apple.com/app/id1598432977'
   },
 
   COINBASE_CUSTOM_WALLET: {
     id: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
     name: 'Coinbase Wallet',
     image_id: 'a5ebc364-8f91-4200-fcc6-be81310a0000',
-    mobile_link: 'https://wallet.coinbase.com/wsegue'
+    mobile_link: 'https://wallet.coinbase.com/wsegue',
+    play_store: 'https://play.google.com/store/apps/details?id=org.toshi',
+    app_store: 'https://apps.apple.com/app/id1278383455'
   },
 
   SOLFLARE_CUSTOM_WALLET: {
     id: '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
     name: 'Solflare Wallet',
     image_id: '34c0e38d-66c4-470e-1aed-a6fabe2d1e00',
-    mobile_link: 'solflare://'
+    mobile_link: 'solflare://',
+    play_store: 'https://play.google.com/store/apps/details?id=com.solflare.mobile',
+    app_store: 'https://apps.apple.com/app/id1580902717'
   },
 
   // Storage Keys
