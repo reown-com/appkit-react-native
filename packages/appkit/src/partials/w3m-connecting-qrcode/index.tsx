@@ -51,7 +51,6 @@ export function ConnectingQrCode() {
       padding="xl"
     >
       <QrCode size={qrSize} uri={wcUri} testID="qr-code" />
-      {!isPortrait ? <ReownButton /> : null}
       <FlexView alignItems="center" margin={['m', 'm', '0', 'm']}>
         <Text variant="paragraph-500">Scan this QR code with your phone</Text>
         {showCopy ? (
