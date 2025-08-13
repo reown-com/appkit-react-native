@@ -7,7 +7,7 @@ import {
   OptionsController,
   RouterController
 } from '@reown/appkit-core-react-native';
-import { type WcWallet, ConstantsUtil } from '@reown/appkit-common-react-native';
+import { type WcWallet } from '@reown/appkit-common-react-native';
 import { FlexView, Icon, ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { Placeholder } from '../../partials/w3m-placeholder';
@@ -17,6 +17,7 @@ import { AllWalletList } from './components/all-wallet-list';
 import { RecentWalletList } from './components/recent-wallet-list';
 import { SocialLoginList } from './components/social-login-list';
 import styles from './styles';
+import { WcHelpersUtil } from '../../utils/HelpersUtil';
 
 export function ConnectView() {
   const { prefetchError } = useSnapshot(ApiController.state);
@@ -29,9 +30,7 @@ export function ConnectView() {
   const showList = !showConnectWalletsButton && !showLoadingError;
 
   const onWalletPress = (wallet: WcWallet, isInstalled?: boolean) => {
-    const isExternal =
-      wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id ||
-      wallet.id === ConstantsUtil.COINBASE_CUSTOM_WALLET.id;
+    const isExternal = WcHelpersUtil.isExternalWallet(wallet);
     if (isExternal) {
       RouterController.push('ConnectingExternal', { wallet });
     } else {

@@ -23,7 +23,7 @@ import { chains } from './src/utils/WagmiUtils';
 import { OpenButton } from './src/components/OpenButton';
 import { DisconnectButton } from './src/components/DisconnectButton';
 // import { EthersAdapter } from '@reown/appkit-ethers-react-native';
-import { SolanaAdapter, PhantomConnector } from '@reown/appkit-solana-react-native';
+import { SolanaAdapter, PhantomConnector, SolflareConnector } from '@reown/appkit-solana-react-native';
 import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
 import { WagmiAdapter } from '@reown/appkit-wagmi-react-native';
 import { ActionsView } from './src/views/ActionsView';
@@ -75,7 +75,7 @@ const appKit = createAppKit({
   debug: true,
   enableAnalytics: true,
   storage,
-  extraConnectors: [new PhantomConnector()],
+  extraConnectors: [new PhantomConnector(), new SolflareConnector()],
   // tokens: {
   //   'eip155:1': {
   //     address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'

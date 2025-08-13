@@ -17,6 +17,10 @@ export const UiUtil = {
     if (currentRouteTransition) {
       const { navigationDirection } = RouterController.state;
       await currentRouteTransition(navigationDirection);
+      // After the transition completes, ensure direction is reset to 'none'
+      if (RouterController.state.navigationDirection !== 'none') {
+        RouterController.state.navigationDirection = 'none';
+      }
     }
   }
 };

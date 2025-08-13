@@ -54,7 +54,10 @@ export type CustomWallet = Pick<
   | 'link_mode'
   | 'app_store'
   | 'play_store'
->;
+> & {
+  android_app_id?: string;
+  ios_schema?: string;
+};
 
 export type UniversalProviderConfigOverride = {
   methods?: Record<string, string[]>;

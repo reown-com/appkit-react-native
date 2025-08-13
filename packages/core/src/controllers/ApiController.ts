@@ -9,12 +9,12 @@ import {
   type ApiGetDataWalletsResponse,
   type ApiGetWalletsRequest,
   type ApiGetWalletsResponse,
+  type CustomWallet,
   type WcWallet,
   PresetsUtil
 } from '@reown/appkit-common-react-native';
 import { AssetController } from './AssetController';
 import { OptionsController } from './OptionsController';
-// import { ConnectorController } from './ConnectorController';
 import { WcController } from './WcController';
 import { ApiUtil } from '../utils/ApiUtil';
 import { SnackController } from './SnackController';
@@ -108,7 +108,7 @@ export const ApiController = {
   },
 
   async fetchInstalledWallets() {
-    const { includeWalletIds } = OptionsController.state;
+    const { includeWalletIds, customWallets } = OptionsController.state;
     const path = Platform.select({ default: 'getIosData', android: 'getAndroidData' });
     const response = await api.get<ApiGetDataWalletsResponse>({
       path,
@@ -130,10 +130,19 @@ export const ApiController = {
       };
     });
 
+    const customPromises = customWallets?.map(async item => {
+      return {
+        id: item.id,
+        isInstalled: await CoreHelperUtil.checkInstalled(item)
+      };
+    });
+
     const results = await Promise.all(promises);
     const installed = results.filter(({ isInstalled }) => isInstalled).map(({ id }) => id);
     const { excludeWalletIds } = OptionsController.state;
 
+    // Collect API-sourced installed wallets
+    let apiInstalledWallets: WcWallet[] = [];
     if (installed.length > 0) {
       const walletResponse = await api.get<ApiGetWalletsResponse>({
         path: '/getWallets',
@@ -152,9 +161,32 @@ export const ApiController = {
         await CoreHelperUtil.allSettled(
           (walletImages as string[]).map(id => ApiController._fetchWalletImage(id))
         );
-        state.installed = walletResponse.data;
-        this.updateRecentWalletsInfo(walletResponse.data);
+        apiInstalledWallets = walletResponse.data;
       }
+    }
+
+    // Collect custom installed wallets
+    let customInstalledWallets: CustomWallet[] = [];
+    if (customPromises?.length) {
+      const customResults = await Promise.all(customPromises);
+      const customInstalled = customResults
+        .filter(({ isInstalled }) => isInstalled)
+        .map(({ id }) => id);
+      customInstalledWallets =
+        customWallets?.filter(wallet => customInstalled.includes(wallet.id)) ?? [];
+    }
+
+    // Merge and de-duplicate by id, preserving order (API first, then custom)
+    const byId = new Map<string, WcWallet>();
+    [...apiInstalledWallets, ...customInstalledWallets].forEach(wallet => {
+      if (!byId.has(wallet.id)) {
+        byId.set(wallet.id, wallet);
+      }
+    });
+    const combinedInstalled = Array.from(byId.values());
+    state.installed = combinedInstalled;
+    if (combinedInstalled.length) {
+      this.updateRecentWalletsInfo(combinedInstalled);
     }
   },
 

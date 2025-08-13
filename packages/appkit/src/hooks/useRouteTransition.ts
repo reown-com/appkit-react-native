@@ -55,11 +55,18 @@ export function useRouteTransition(config: RouteTransitionConfig = {}) {
         currentAnimation.current = animation;
 
         animation.start(({ finished }) => {
-          if (finished) {
-            isAnimating.current = false;
-            currentAnimation.current = null;
-            resolve();
+          // Always clean up and resolve, even if the animation was interrupted
+          // Android often reports finished=false when interrupted, which otherwise
+          // would leave the view stuck at opacity 0 and block future animations.
+          if (!finished) {
+            // Ensure we end in the expected target state
+            fadeAnim.setValue(1);
+            slideAnim.setValue(0);
           }
+
+          isAnimating.current = false;
+          currentAnimation.current = null;
+          resolve();
         });
       });
     },

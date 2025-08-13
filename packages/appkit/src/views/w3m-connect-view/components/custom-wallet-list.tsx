@@ -30,7 +30,13 @@ export function CustomWalletList({ itemStyle, onWalletPress }: Props) {
     return null;
   }
 
-  const list = filterOutRecentWallets(recentWallets, customWallets, RECENT_COUNT);
+  let list = filterOutRecentWallets(recentWallets, customWallets, RECENT_COUNT);
+
+  // Filter out custom wallets that are already installed
+  list = list.filter(
+    wallet =>
+      !ApiController.state.installed.find(installedWallet => installedWallet.id === wallet.id)
+  );
 
   return list.map(wallet => (
     <ListWallet

@@ -204,6 +204,18 @@ export const WcHelpersUtil = {
     return this.applyNamespaceOverrides(defaultNamespaces, configOverride);
   },
 
+  isExternalWallet(wallet?: WcWallet) {
+    if (!wallet) {
+      return false;
+    }
+
+    return (
+      wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id ||
+      wallet.id === ConstantsUtil.SOLFLARE_CUSTOM_WALLET.id ||
+      wallet.id === ConstantsUtil.COINBASE_CUSTOM_WALLET.id
+    );
+  },
+
   getConnectorTypeByWallet(wallet?: WcWallet) {
     if (!wallet) {
       return 'walletconnect';
