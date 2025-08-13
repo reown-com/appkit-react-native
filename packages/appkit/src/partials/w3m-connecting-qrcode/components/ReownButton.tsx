@@ -8,7 +8,7 @@ interface Props {
 
 export function ReownButton({ style }: Props) {
   return (
-    <Pressable onPress={() => Linking.openURL(ConstantsUtil.REOWN_URL)} style={style}>
+    <Pressable transparent onPress={() => Linking.openURL(ConstantsUtil.REOWN_URL)} style={style}>
       <FlexView alignItems="center" justifyContent="center" flexDirection="row" columnGap="2xs">
         <Text variant="small-500" color="fg-100">
           UX by
