@@ -69,10 +69,11 @@ export const Shimmer = ({
 
   const onLayout = (event: any) => {
     const { width: w, height: h } = event.nativeEvent.layout;
-    if (!measuredWidth) {
+    // Update measurements whenever they change to adapt to dynamic layout/orientation
+    if (measuredWidth == null || Math.abs(w - measuredWidth) > 0.5) {
       setMeasuredWidth(w);
     }
-    if (!measuredHeight) {
+    if (measuredHeight == null || Math.abs(h - measuredHeight) > 0.5) {
       setMeasuredHeight(h);
     }
   };
