@@ -1,26 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { FlatList, View } from 'react-native';
+import { FlatList } from 'react-native';
 import {
   ApiController,
-  AssetController,
-  AssetUtil,
   OptionsController,
   SnackController,
   type OptionsControllerState
 } from '@reown/appkit-core-react-native';
 import { type WcWallet } from '@reown/appkit-common-react-native';
-import {
-  CardSelect,
-  CardSelectLoader,
-  CardSelectHeight,
-  FlexView,
-  Spacing,
-  useCustomDimensions
-} from '@reown/appkit-ui-react-native';
+import { CardSelectHeight, Spacing, useCustomDimensions } from '@reown/appkit-ui-react-native';
 import styles from './styles';
-import { UiUtil } from '../../utils/UiUtil';
 import { Placeholder } from '../w3m-placeholder';
+import { Loading } from './components/Loading';
+import { WalletItem } from './components/WalletItem';
 
 interface AllWalletsListProps {
   columns: number;
@@ -28,6 +20,8 @@ interface AllWalletsListProps {
   itemWidth?: number;
   headerHeight?: number;
 }
+
+const ITEM_HEIGHT = CardSelectHeight + Spacing.xs * 2;
 
 export function AllWalletsList({
   columns,
@@ -38,9 +32,8 @@ export function AllWalletsList({
   const [loading, setLoading] = useState<boolean>(ApiController.state.wallets.length === 0);
   const [loadingError, setLoadingError] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
-  const { maxWidth, maxHeight, padding } = useCustomDimensions();
+  const { maxHeight, padding } = useCustomDimensions();
   const { installed, featured, recommended, wallets } = useSnapshot(ApiController.state);
-  const { walletImages } = useSnapshot(AssetController.state);
   const { customWallets } = useSnapshot(OptionsController.state) as OptionsControllerState;
   const imageHeaders = ApiController._getApiHeaders();
   const preloadedWallets = installed.length + featured.length + recommended.length;
@@ -64,55 +57,11 @@ export function AllWalletsList({
     ...(pageLoading ? (Array.from({ length: loadingItems }) as WcWallet[]) : [])
   ];
 
-  const ITEM_HEIGHT = CardSelectHeight + Spacing.xs * 2;
-
-  const loadingTemplate = (items: number) => {
-    return (
-      <FlexView
-        flexDirection="row"
-        flexWrap="wrap"
-        alignSelf="center"
-        padding={['0', '0', 's', 'xs']}
-        style={{ maxWidth, maxHeight }}
-      >
-        {Array.from({ length: items }).map((_, index) => (
-          <View key={index} style={[styles.itemContainer, { width: itemWidth }]}>
-            <CardSelectLoader />
-          </View>
-        ))}
-      </FlexView>
-    );
-  };
-
-  const walletTemplate = ({ item }: { item: WcWallet; index: number }) => {
-    const isInstalled = ApiController.state.installed.find(wallet => wallet?.id === item?.id);
-    if (!item?.id) {
-      return (
-        <View style={[styles.itemContainer, { width: itemWidth }]}>
-          <CardSelectLoader />
-        </View>
-      );
-    }
-
-    return (
-      <View style={[styles.itemContainer, { width: itemWidth }]}>
-        <CardSelect
-          imageSrc={AssetUtil.getWalletImage(item, walletImages)}
-          imageHeaders={imageHeaders}
-          name={item?.name ?? 'Unknown'}
-          onPress={() => onItemPress(item)}
-          installed={!!isInstalled}
-        />
-      </View>
-    );
-  };
-
   const initialFetch = async () => {
     try {
       setLoading(true);
       setLoadingError(false);
       await ApiController.fetchWallets({ page: 1 });
-      UiUtil.createViewTransition();
       setLoading(false);
     } catch (error) {
       SnackController.showError('Failed to load wallets');
@@ -146,7 +95,7 @@ export function AllWalletsList({
   }, []);
 
   if (loading) {
-    return loadingTemplate(20);
+    return <Loading itemWidth={itemWidth} containerStyle={styles.itemContainer} />;
   }
 
   if (loadingError) {
@@ -171,7 +120,14 @@ export function AllWalletsList({
       bounces={false}
       numColumns={columns}
       data={walletList}
-      renderItem={walletTemplate}
+      renderItem={({ item }) => (
+        <WalletItem
+          item={item}
+          itemWidth={itemWidth}
+          imageHeaders={imageHeaders}
+          onItemPress={onItemPress}
+        />
+      )}
       style={{ maxHeight: maxHeight - headerHeight - Spacing['4xl'] }}
       contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding + Spacing.xs }]}
       onEndReached={fetchNextPage}

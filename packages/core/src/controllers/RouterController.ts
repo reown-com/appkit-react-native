@@ -59,9 +59,13 @@ const state = proxy<RouterControllerState>({
 export const RouterController = {
   state,
 
-  push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
+  push(
+    view: RouterControllerState['view'],
+    data?: RouterControllerState['data'],
+    direction: 'forward' | 'backward' = 'forward'
+  ) {
     if (view !== state.view) {
-      state.navigationDirection = 'forward';
+      state.navigationDirection = direction;
       state.view = view;
       state.history = [...state.history, view];
       state.data = data;

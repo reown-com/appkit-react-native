@@ -1,23 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
-import { FlatList, View } from 'react-native';
-import {
-  ApiController,
-  AssetController,
-  AssetUtil,
-  SnackController
-} from '@reown/appkit-core-react-native';
+import { FlatList } from 'react-native';
+import { ApiController, SnackController } from '@reown/appkit-core-react-native';
 import { type WcWallet } from '@reown/appkit-common-react-native';
-import {
-  CardSelect,
-  CardSelectHeight,
-  CardSelectLoader,
-  FlexView,
-  Spacing,
-  useCustomDimensions
-} from '@reown/appkit-ui-react-native';
+import { CardSelectHeight, Spacing, useCustomDimensions } from '@reown/appkit-ui-react-native';
 import { Placeholder } from '../w3m-placeholder';
 import styles from './styles';
-import { useSnapshot } from 'valtio';
+
+import { Loading } from '../w3m-all-wallets-list/components/Loading';
+import { WalletItem } from '../w3m-all-wallets-list/components/WalletItem';
 
 export interface AllWalletsSearchProps {
   columns: number;
@@ -26,6 +16,8 @@ export interface AllWalletsSearchProps {
   searchQuery?: string;
   headerHeight?: number;
 }
+
+const ITEM_HEIGHT = CardSelectHeight + Spacing.xs * 2;
 
 export function AllWalletsSearch({
   searchQuery,
@@ -38,45 +30,7 @@ export function AllWalletsSearch({
   const [loadingError, setLoadingError] = useState<boolean>(false);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const imageHeaders = ApiController._getApiHeaders();
-  const { maxWidth, maxHeight, padding, isLandscape } = useCustomDimensions();
-  const { walletImages } = useSnapshot(AssetController.state);
-
-  const ITEM_HEIGHT = CardSelectHeight + Spacing.xs * 2;
-
-  const walletTemplate = ({ item }: { item: WcWallet }) => {
-    const isInstalled = ApiController.state.installed.find(wallet => wallet?.id === item?.id);
-
-    return (
-      <View key={item?.id} style={[styles.itemContainer, { width: itemWidth }]}>
-        <CardSelect
-          imageSrc={AssetUtil.getWalletImage(item, walletImages)}
-          imageHeaders={imageHeaders}
-          name={item?.name ?? 'Unknown'}
-          onPress={() => onItemPress(item)}
-          installed={!!isInstalled}
-          testID={`wallet-search-item-${item?.id}`}
-        />
-      </View>
-    );
-  };
-
-  const loadingTemplate = (items: number) => {
-    return (
-      <FlexView
-        flexDirection="row"
-        flexWrap="wrap"
-        alignSelf="center"
-        padding={['0', '0', 's', 'xs']}
-        style={{ maxWidth, maxHeight: maxHeight - headerHeight }}
-      >
-        {Array.from({ length: items }).map((_, index) => (
-          <View key={index} style={[styles.itemContainer, { width: itemWidth }]}>
-            <CardSelectLoader />
-          </View>
-        ))}
-      </FlexView>
-    );
-  };
+  const { maxHeight, padding, isLandscape } = useCustomDimensions();
 
   const emptyTemplate = () => {
     return (
@@ -109,7 +63,7 @@ export function AllWalletsSearch({
   }, [searchQuery, prevSearchQuery, searchFetch]);
 
   if (loading) {
-    return loadingTemplate(20);
+    return <Loading itemWidth={itemWidth} containerStyle={styles.itemContainer} />;
   }
 
   if (loadingError) {
@@ -138,7 +92,14 @@ export function AllWalletsSearch({
       bounces={false}
       numColumns={columns}
       data={ApiController.state.search}
-      renderItem={walletTemplate}
+      renderItem={({ item }) => (
+        <WalletItem
+          item={item}
+          itemWidth={itemWidth}
+          imageHeaders={imageHeaders}
+          onItemPress={onItemPress}
+        />
+      )}
       style={{ maxHeight: maxHeight - headerHeight - Spacing['2xl'] }}
       contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding + Spacing.xs }]}
       keyExtractor={item => item.id}
