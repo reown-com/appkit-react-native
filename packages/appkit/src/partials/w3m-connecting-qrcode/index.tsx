@@ -6,8 +6,14 @@ import {
   OptionsController,
   SnackController
 } from '@reown/appkit-core-react-native';
-import { FlexView, Link, QrCode, Text, Spacing } from '@reown/appkit-ui-react-native';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import {
+  FlexView,
+  Link,
+  QrCode,
+  Text,
+  Spacing,
+  useCustomDimensions
+} from '@reown/appkit-ui-react-native';
 import styles from './styles';
 import { ReownButton } from './components/ReownButton';
 

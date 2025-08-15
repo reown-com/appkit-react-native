@@ -4,11 +4,11 @@ import {
   Modal as RNModal,
   type ModalProps as RNModalProps,
   TouchableOpacity,
-  Animated,
-  StatusBar
+  Animated
 } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
+import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export type ModalProps = Pick<
   RNModalProps,
@@ -21,6 +21,7 @@ export type ModalProps = Pick<
 export function Modal({ visible, onBackdropPress, onRequestClose, testID, children }: ModalProps) {
   const Theme = useTheme();
   const { height } = useWindowDimensions();
+  const { maxHeight } = useCustomDimensions();
 
   const backdropOpacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(height)).current;
@@ -30,7 +31,8 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
 
   const onContentLayout = (event: any) => {
     const { height: measuredHeight } = event.nativeEvent.layout;
-    setContentHeight(measuredHeight);
+
+    setContentHeight(measuredHeight > maxHeight ? maxHeight : measuredHeight);
   };
 
   // Handle modal visibility
@@ -74,8 +76,7 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
 
     if (visible && modalVisible) {
       // Calculate the target position (screen height - card height)
-      const targetY =
-        contentHeight > 0 ? height - contentHeight - (StatusBar.currentHeight ?? 0) : height * 0.2; // fallback to 20% from bottom
+      const targetY = contentHeight > 0 ? height - contentHeight : height * 0.2; // fallback to 20% from bottom
 
       modalAnimation = Animated.spring(translateY, {
         toValue: targetY,

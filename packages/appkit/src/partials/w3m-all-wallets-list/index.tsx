@@ -15,24 +15,30 @@ import {
   CardSelectLoader,
   CardSelectHeight,
   FlexView,
-  Spacing
+  Spacing,
+  useCustomDimensions
 } from '@reown/appkit-ui-react-native';
 import styles from './styles';
 import { UiUtil } from '../../utils/UiUtil';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { Placeholder } from '../w3m-placeholder';
 
 interface AllWalletsListProps {
   columns: number;
   onItemPress: (wallet: WcWallet) => void;
   itemWidth?: number;
+  headerHeight?: number;
 }
 
-export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsListProps) {
+export function AllWalletsList({
+  columns,
+  itemWidth,
+  onItemPress,
+  headerHeight = 0
+}: AllWalletsListProps) {
   const [loading, setLoading] = useState<boolean>(ApiController.state.wallets.length === 0);
   const [loadingError, setLoadingError] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
-  const { maxWidth, padding } = useCustomDimensions();
+  const { maxWidth, maxHeight, padding } = useCustomDimensions();
   const { installed, featured, recommended, wallets } = useSnapshot(ApiController.state);
   const { walletImages } = useSnapshot(AssetController.state);
   const { customWallets } = useSnapshot(OptionsController.state) as OptionsControllerState;
@@ -67,7 +73,7 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
         flexWrap="wrap"
         alignSelf="center"
         padding={['0', '0', 's', 'xs']}
-        style={[styles.container, { maxWidth }]}
+        style={{ maxWidth, maxHeight }}
       >
         {Array.from({ length: items }).map((_, index) => (
           <View key={index} style={[styles.itemContainer, { width: itemWidth }]}>
@@ -166,7 +172,7 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
       numColumns={columns}
       data={walletList}
       renderItem={walletTemplate}
-      style={styles.container}
+      style={{ maxHeight: maxHeight - headerHeight - Spacing['4xl'] }}
       contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding + Spacing.xs }]}
       onEndReached={fetchNextPage}
       onEndReachedThreshold={2}

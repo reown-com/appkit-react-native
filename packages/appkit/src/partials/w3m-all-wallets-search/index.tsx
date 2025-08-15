@@ -12,9 +12,9 @@ import {
   CardSelectHeight,
   CardSelectLoader,
   FlexView,
-  Spacing
+  Spacing,
+  useCustomDimensions
 } from '@reown/appkit-ui-react-native';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { Placeholder } from '../w3m-placeholder';
 import styles from './styles';
 import { useSnapshot } from 'valtio';
@@ -24,19 +24,21 @@ export interface AllWalletsSearchProps {
   onItemPress: (wallet: WcWallet) => void;
   itemWidth?: number;
   searchQuery?: string;
+  headerHeight?: number;
 }
 
 export function AllWalletsSearch({
   searchQuery,
   columns,
   itemWidth,
-  onItemPress
+  onItemPress,
+  headerHeight = 0
 }: AllWalletsSearchProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingError, setLoadingError] = useState<boolean>(false);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const imageHeaders = ApiController._getApiHeaders();
-  const { maxWidth, padding, isLandscape } = useCustomDimensions();
+  const { maxWidth, maxHeight, padding, isLandscape } = useCustomDimensions();
   const { walletImages } = useSnapshot(AssetController.state);
 
   const ITEM_HEIGHT = CardSelectHeight + Spacing.xs * 2;
@@ -65,7 +67,7 @@ export function AllWalletsSearch({
         flexWrap="wrap"
         alignSelf="center"
         padding={['0', '0', 's', 'xs']}
-        style={[styles.container, { maxWidth }]}
+        style={{ maxWidth, maxHeight: maxHeight - headerHeight }}
       >
         {Array.from({ length: items }).map((_, index) => (
           <View key={index} style={[styles.itemContainer, { width: itemWidth }]}>
@@ -137,7 +139,7 @@ export function AllWalletsSearch({
       numColumns={columns}
       data={ApiController.state.search}
       renderItem={walletTemplate}
-      style={styles.container}
+      style={{ maxHeight: maxHeight - headerHeight - Spacing['2xl'] }}
       contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding + Spacing.xs }]}
       keyExtractor={item => item.id}
       getItemLayout={(_, index) => ({

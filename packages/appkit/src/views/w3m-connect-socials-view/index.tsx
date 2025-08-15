@@ -6,9 +6,8 @@ import {
   OptionsController,
   RouterController
 } from '@reown/appkit-core-react-native';
-import { FlexView, ListSocial, Text } from '@reown/appkit-ui-react-native';
+import { FlexView, ListSocial, Text, useCustomDimensions } from '@reown/appkit-ui-react-native';
 
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function ConnectSocialsView() {

@@ -7,10 +7,16 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-core-react-native';
-import { FlexView, LoadingThumbnail, IconBox, Logo, Text } from '@reown/appkit-ui-react-native';
+import {
+  FlexView,
+  LoadingThumbnail,
+  IconBox,
+  Logo,
+  Text,
+  useCustomDimensions
+} from '@reown/appkit-ui-react-native';
 import { ConstantsUtil, StringUtil } from '@reown/appkit-common-react-native';
 
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 

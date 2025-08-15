@@ -8,11 +8,16 @@ import {
   RouterController,
   SwapController
 } from '@reown/appkit-core-react-native';
-import { Button, FlexView, IconLink, useTheme } from '@reown/appkit-ui-react-native';
+import {
+  Button,
+  FlexView,
+  IconLink,
+  useTheme,
+  useCustomDimensions
+} from '@reown/appkit-ui-react-native';
 import { NumberUtil, type SwapInputTarget } from '@reown/appkit-common-react-native';
 
 import { useKeyboard } from '../../hooks/useKeyboard';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { SwapInput } from '../../partials/w3m-swap-input';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { SwapDetails } from '../../partials/w3m-swap-details';
