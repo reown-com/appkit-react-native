@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { StatusBar, useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 
 /**
  * Hook used to get the width of the screen and the padding needed to accomplish portrait and landscape modes.
@@ -15,10 +15,9 @@ type CustomDimensionsType = {
 };
 
 const MAX_HEIGHT_PERCENTAGE = 0.9;
-const STATUS_BAR_HEIGHT = StatusBar.currentHeight ?? 0;
 
 const getMaxHeight = (width: number, height: number) => {
-  return Math.max(width, height) * MAX_HEIGHT_PERCENTAGE - STATUS_BAR_HEIGHT;
+  return Math.max(width, height) * MAX_HEIGHT_PERCENTAGE;
 };
 
 export function useCustomDimensions(): CustomDimensionsType {
