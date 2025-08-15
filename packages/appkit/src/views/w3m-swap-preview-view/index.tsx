@@ -3,9 +3,16 @@ import { useEffect } from 'react';
 import { ScrollView } from 'react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
 import { RouterController, SwapController } from '@reown/appkit-core-react-native';
-import { Button, FlexView, Icon, Text, TokenButton, UiUtil } from '@reown/appkit-ui-react-native';
+import {
+  Button,
+  FlexView,
+  Icon,
+  Text,
+  TokenButton,
+  UiUtil,
+  useCustomDimensions
+} from '@reown/appkit-ui-react-native';
 import { SwapDetails } from '../../partials/w3m-swap-details';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function SwapPreviewView() {

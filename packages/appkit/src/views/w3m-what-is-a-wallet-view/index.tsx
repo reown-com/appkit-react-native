@@ -1,7 +1,6 @@
 import { ScrollView } from 'react-native';
-import { Button, FlexView, Text, Visual } from '@reown/appkit-ui-react-native';
+import { Button, FlexView, Text, Visual, useCustomDimensions } from '@reown/appkit-ui-react-native';
 import { EventsController, RouterController } from '@reown/appkit-core-react-native';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function WhatIsAWalletView() {

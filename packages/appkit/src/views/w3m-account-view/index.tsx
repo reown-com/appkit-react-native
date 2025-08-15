@@ -7,7 +7,8 @@ import {
   Icon,
   IconLink,
   NetworkButton,
-  useTheme
+  useTheme,
+  useCustomDimensions
 } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
@@ -21,7 +22,6 @@ import {
   SendController
 } from '@reown/appkit-core-react-native';
 
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { AccountWalletFeatures } from '../../partials/w3m-account-wallet-features';
 import styles from './styles';
 

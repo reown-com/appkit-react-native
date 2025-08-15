@@ -62,7 +62,7 @@ export function QrCode({ size, uri, imageSrc, testID, arenaClear, icon, style }:
     <View
       style={[
         styles.container,
-        { width: size, backgroundColor: Theme['bg-100'], padding: containerPadding },
+        { width: size, backgroundColor: Theme['inverse-100'], padding: containerPadding },
         style
       ]}
       testID={testID}

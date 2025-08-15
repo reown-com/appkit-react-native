@@ -7,7 +7,8 @@ import {
   QrCode,
   Spacing,
   Text,
-  UiUtil
+  UiUtil,
+  useCustomDimensions
 } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
@@ -19,7 +20,6 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-core-react-native';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 
 export function WalletReceiveView() {
   const { networkImages } = useSnapshot(AssetController.state);

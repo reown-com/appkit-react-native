@@ -15,7 +15,6 @@ import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
 import { ConnectingMobile } from '../../partials/w3m-connecting-mobile';
 import { ConnectingWeb } from '../../partials/w3m-connecting-web';
 import { ConnectingHeader } from '../../partials/w3m-connecting-header';
-import { UiUtil } from '../../utils/UiUtil';
 import { type Platform } from '@reown/appkit-common-react-native';
 
 export function ConnectingView() {
@@ -77,7 +76,6 @@ export function ConnectingView() {
   };
 
   const onSelectPlatform = (tab: Platform) => {
-    UiUtil.createViewTransition();
     setPlatform(tab);
   };
 

@@ -6,8 +6,14 @@ import {
   OptionsController,
   SnackController
 } from '@reown/appkit-core-react-native';
-import { FlexView, Link, QrCode, Text, Spacing } from '@reown/appkit-ui-react-native';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import {
+  FlexView,
+  Link,
+  QrCode,
+  Text,
+  Spacing,
+  useCustomDimensions
+} from '@reown/appkit-ui-react-native';
 import styles from './styles';
 import { ReownButton } from './components/ReownButton';
 
@@ -51,7 +57,7 @@ export function ConnectingQrCode() {
       padding="xl"
     >
       <QrCode size={qrSize} uri={wcUri} testID="qr-code" />
-      <FlexView alignItems="center" margin={['m', 'm', '0', 'm']}>
+      <FlexView alignItems="center" margin="m">
         <Text variant="paragraph-500">Scan this QR code with your phone</Text>
         {showCopy ? (
           <Link

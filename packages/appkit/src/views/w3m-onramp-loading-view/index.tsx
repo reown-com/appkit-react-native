@@ -7,9 +7,15 @@ import {
   OptionsController,
   EventsController
 } from '@reown/appkit-core-react-native';
-import { FlexView, DoubleImageLoader, IconLink, Button, Text } from '@reown/appkit-ui-react-native';
+import {
+  FlexView,
+  DoubleImageLoader,
+  IconLink,
+  Button,
+  Text,
+  useCustomDimensions
+} from '@reown/appkit-ui-react-native';
 
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectingBody } from '../../partials/w3m-connecting-body';
 import styles from './styles';
 import { StringUtil } from '@reown/appkit-common-react-native';

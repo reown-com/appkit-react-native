@@ -1,6 +1,5 @@
 import { Linking, ScrollView } from 'react-native';
-import { Button, FlexView, Text, Visual } from '@reown/appkit-ui-react-native';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import { Button, FlexView, Text, Visual, useCustomDimensions } from '@reown/appkit-ui-react-native';
 import styles from './styles';
 
 export function WhatIsANetworkView() {

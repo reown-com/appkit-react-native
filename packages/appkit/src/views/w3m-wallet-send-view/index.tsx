@@ -7,9 +7,8 @@ import {
   RouterController,
   SendController
 } from '@reown/appkit-core-react-native';
-import { Button, FlexView, IconBox } from '@reown/appkit-ui-react-native';
+import { Button, FlexView, IconBox, useCustomDimensions } from '@reown/appkit-ui-react-native';
 import { SendInputToken } from '../../partials/w3m-send-input-token';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { useKeyboard } from '../../hooks/useKeyboard';
 import { SendInputAddress } from '../../partials/w3m-send-input-address';
 import styles from './styles';

@@ -1,5 +1,5 @@
 import { Animated, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { useTheme } from '../../hooks/useTheme';
 
 type PercentString = `${number}%`;
@@ -18,7 +18,7 @@ export interface ShimmerProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export const Shimmer = ({
+function _Shimmer({
   width = 200,
   height = 200,
   duration = 1000,
@@ -29,7 +29,7 @@ export const Shimmer = ({
   highlightOpacity = 0.5,
   angle = 20,
   style
-}: ShimmerProps) => {
+}: ShimmerProps) {
   const Theme = useTheme();
 
   const [measuredWidth, setMeasuredWidth] = useState<number | null>(null);
@@ -51,6 +51,7 @@ export const Shimmer = ({
     });
     const loop = Animated.loop(timing);
     loopRef.current = loop;
+
     loop.start();
 
     return () => {
@@ -124,4 +125,8 @@ export const Shimmer = ({
       ) : null}
     </View>
   );
-};
+}
+
+export const Shimmer = memo(_Shimmer, () => {
+  return true;
+});

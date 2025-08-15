@@ -25,12 +25,12 @@ import {
   Text,
   UiUtil,
   Spacing,
-  ListItem
+  ListItem,
+  useCustomDimensions
 } from '@reown/appkit-ui-react-native';
 
 import { useInternalAppKit } from '../../AppKitContext';
 
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { AuthButtons } from './components/auth-buttons';
 import styles from './styles';
 

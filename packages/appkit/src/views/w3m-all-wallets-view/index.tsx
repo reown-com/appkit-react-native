@@ -1,24 +1,37 @@
 import { useState } from 'react';
 import { WcController, EventsController, RouterController } from '@reown/appkit-core-react-native';
 import { type WcWallet } from '@reown/appkit-common-react-native';
-import { FlexView, IconLink, SearchBar, Spacing, useTheme } from '@reown/appkit-ui-react-native';
+import {
+  FlexView,
+  IconLink,
+  SearchBar,
+  Spacing,
+  useTheme,
+  useCustomDimensions
+} from '@reown/appkit-ui-react-native';
 
 import styles from './styles';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { AllWalletsList } from '../../partials/w3m-all-wallets-list';
 import { AllWalletsSearch } from '../../partials/w3m-all-wallets-search';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { WcHelpersUtil } from '../../utils/HelpersUtil';
+import type { LayoutChangeEvent } from 'react-native';
 
 export function AllWalletsView() {
   const Theme = useTheme();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { maxWidth } = useCustomDimensions();
+  const [headerHeight, setHeaderHeight] = useState<number>(0);
   const numColumns = 4;
   const usableWidth = maxWidth - Spacing.xs * 2;
   const itemWidth = Math.abs(Math.trunc(usableWidth / numColumns));
 
   const { debouncedCallback: onInputChange } = useDebounceCallback({ callback: setSearchQuery });
+
+  const onHeaderLayout = (event: LayoutChangeEvent) => {
+    const { height } = event.nativeEvent.layout;
+    setHeaderHeight(height);
+  };
 
   const onWalletPress = (wallet: WcWallet) => {
     const isExternal = WcHelpersUtil.isExternalWallet(wallet);
@@ -52,6 +65,7 @@ export function AllWalletsView() {
       <FlexView
         padding={['s', 'l', 'xs', 'l']}
         flexDirection="row"
+        onLayout={onHeaderLayout}
         alignItems="center"
         style={[
           styles.header,
@@ -85,12 +99,18 @@ export function AllWalletsView() {
           itemWidth={itemWidth}
           searchQuery={searchQuery}
           onItemPress={onWalletPress}
+          headerHeight={headerHeight}
         />
       );
     }
 
     return (
-      <AllWalletsList columns={numColumns} itemWidth={itemWidth} onItemPress={onWalletPress} />
+      <AllWalletsList
+        columns={numColumns}
+        itemWidth={itemWidth}
+        onItemPress={onWalletPress}
+        headerHeight={headerHeight}
+      />
     );
   };
 

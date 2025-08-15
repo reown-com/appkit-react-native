@@ -1,7 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect } from 'react';
-import { useWindowDimensions, StatusBar } from 'react-native';
-import { Card, Modal, ThemeProvider } from '@reown/appkit-ui-react-native';
+import { Card, Modal, ThemeProvider, useCustomDimensions } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
   EventsController,
@@ -14,7 +13,6 @@ import {
 import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
 import { Snackbar } from '../../partials/w3m-snackbar';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
@@ -23,10 +21,7 @@ export function AppKit() {
   const { open } = useSnapshot(ModalController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const { projectId } = useSnapshot(OptionsController.state);
-  const { height } = useWindowDimensions();
-  const { isLandscape } = useCustomDimensions();
-  const portraitHeight = height - 80;
-  const landScapeHeight = height * 0.95 - (StatusBar.currentHeight ?? 0);
+  const { maxHeight } = useCustomDimensions();
 
   const handleBackPress = () => {
     if (RouterController.state.history.length > 1) {
@@ -52,23 +47,19 @@ export function AppKit() {
   }, [projectId, prefetch]);
 
   return (
-    <>
-      <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
-        <Modal
-          visible={open}
-          onRequestClose={handleBackPress}
-          onBackdropPress={handleModalClose}
-          testID="w3m-modal"
-        >
-          <Card
-            style={[styles.card, { maxHeight: isLandscape ? landScapeHeight : portraitHeight }]}
-          >
-            <Header />
-            <AppKitRouter />
-            <Snackbar />
-          </Card>
-        </Modal>
-      </ThemeProvider>
-    </>
+    <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
+      <Modal
+        visible={open}
+        onRequestClose={handleBackPress}
+        onBackdropPress={handleModalClose}
+        testID="w3m-modal"
+      >
+        <Card style={[styles.card, { maxHeight }]}>
+          <Header />
+          <AppKitRouter />
+          <Snackbar />
+        </Card>
+      </Modal>
+    </ThemeProvider>
   );
 }

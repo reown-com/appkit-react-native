@@ -18,10 +18,10 @@ import {
   LoadingThumbnail,
   WalletImage,
   Link,
-  IconBox
+  IconBox,
+  useCustomDimensions
 } from '@reown/appkit-ui-react-native';
 
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { StoreLink } from './components/StoreLink';
 import { ConnectingBody, getMessage, type BodyErrorType } from '../w3m-connecting-body';
 import styles from './styles';

@@ -14,7 +14,7 @@ export function Header() {
   const { close, back } = useInternalAppKit();
   const { data, view } = useSnapshot(RouterController.state);
   const onHelpPress = () => {
-    RouterController.push('WhatIsAWallet');
+    RouterController.push('WhatIsAWallet', undefined, 'backward');
     EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' });
   };
 

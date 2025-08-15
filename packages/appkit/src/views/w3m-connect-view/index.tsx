@@ -8,8 +8,14 @@ import {
   RouterController
 } from '@reown/appkit-core-react-native';
 import { type WcWallet } from '@reown/appkit-common-react-native';
-import { FlexView, Icon, ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
+import {
+  FlexView,
+  Icon,
+  ListItem,
+  Separator,
+  Text,
+  useCustomDimensions
+} from '@reown/appkit-ui-react-native';
 import { Placeholder } from '../../partials/w3m-placeholder';
 import { CustomWalletList } from './components/custom-wallet-list';
 import { AllWalletsButton } from './components/all-wallets-button';

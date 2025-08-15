@@ -1,13 +1,18 @@
 import { ScrollView } from 'react-native';
 import { useSnapshot } from 'valtio';
-import { FlexView, Text, Banner, NetworkImage } from '@reown/appkit-ui-react-native';
+import {
+  FlexView,
+  Text,
+  Banner,
+  NetworkImage,
+  useCustomDimensions
+} from '@reown/appkit-ui-react-native';
 import {
   ApiController,
   AssetController,
   AssetUtil,
   ConnectionsController
 } from '@reown/appkit-core-react-native';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 
 export function WalletCompatibleNetworks() {
