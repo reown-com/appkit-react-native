@@ -710,6 +710,7 @@ export class AppKit {
     const wallets = await StorageUtil.getRecentWallets();
     const filteredWallets = wallets.filter(wallet => {
       const { includeWalletIds, excludeWalletIds } = options;
+
       if (includeWalletIds) {
         return includeWalletIds.includes(wallet.id);
       }
@@ -717,7 +718,9 @@ export class AppKit {
         return !excludeWalletIds.includes(wallet.id);
       }
 
-      return true;
+      return this.networks.some(
+        network => wallet.chains?.some(chain => network.caipNetworkId === chain)
+      );
     });
 
     WcController.setRecentWallets(filteredWallets);
