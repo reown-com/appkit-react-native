@@ -98,10 +98,14 @@ export function AllWalletsSearch({
           itemWidth={itemWidth}
           imageHeaders={imageHeaders}
           onItemPress={onItemPress}
+          style={styles.itemContainer}
         />
       )}
       style={{ maxHeight: maxHeight - headerHeight - Spacing['2xl'] }}
-      contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding + Spacing.xs }]}
+      contentContainerStyle={[
+        styles.contentContainer,
+        { paddingHorizontal: padding + Spacing['2xs'] }
+      ]}
       keyExtractor={item => item.id}
       getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT,

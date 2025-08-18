@@ -663,6 +663,7 @@ export class AppKit {
     OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setDebug(options.debug);
     OptionsController.setFeatures(options.features);
+    OptionsController.setRequestedNetworks(this.networks);
 
     if (options.defaultNetwork) {
       const network = NetworkUtil.formatNetwork(options.defaultNetwork, this.projectId);
@@ -740,8 +741,12 @@ export class AppKit {
 
     const customList = [...(customWallets ?? [])];
 
-    const addPhantom =
+    const isSolanaEnabled =
       adapters.some(adapter => adapter.getSupportedNamespace() === 'solana') &&
+      this.networks.some(network => network.chainNamespace === 'solana');
+
+    const addPhantom =
+      isSolanaEnabled &&
       extraConnectors?.some(connector => connector.type.toLowerCase() === 'phantom') &&
       !customList.some(wallet => wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id);
 
@@ -750,7 +755,7 @@ export class AppKit {
     }
 
     const addSolflare =
-      adapters.some(adapter => adapter.getSupportedNamespace() === 'solana') &&
+      isSolanaEnabled &&
       extraConnectors?.some(connector => connector.type.toLowerCase() === 'solflare') &&
       !customList.some(wallet => wallet.id === ConstantsUtil.SOLFLARE_CUSTOM_WALLET.id);
 

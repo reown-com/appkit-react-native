@@ -3,12 +3,13 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   contentContainer: {
-    paddingBottom: Spacing['2xl']
+    paddingBottom: Spacing['4xl'],
+    paddingTop: Spacing['3xs']
   },
   itemContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: Spacing.xs
+    margin: Spacing['4xs']
   },
   pageLoader: {
     marginTop: Spacing.xl

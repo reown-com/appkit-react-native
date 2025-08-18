@@ -126,10 +126,14 @@ export function AllWalletsList({
           itemWidth={itemWidth}
           imageHeaders={imageHeaders}
           onItemPress={onItemPress}
+          style={styles.itemContainer}
         />
       )}
       style={{ maxHeight: maxHeight - headerHeight - Spacing['4xl'] }}
-      contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding + Spacing.xs }]}
+      contentContainerStyle={[
+        styles.contentContainer,
+        { paddingHorizontal: padding + Spacing['2xs'] }
+      ]}
       onEndReached={fetchNextPage}
       onEndReachedThreshold={2}
       keyExtractor={(item, index) => item?.id ?? index}

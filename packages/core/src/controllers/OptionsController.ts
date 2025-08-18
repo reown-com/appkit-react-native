@@ -34,6 +34,7 @@ export interface OptionsControllerState {
   features?: Features;
   debug?: boolean;
   defaultNetwork?: AppKitNetwork;
+  requestedNetworks?: AppKitNetwork[];
 }
 
 // -- State --------------------------------------------- //
@@ -110,6 +111,10 @@ export const OptionsController = {
 
   setDefaultNetwork(defaultNetwork?: OptionsControllerState['defaultNetwork']) {
     state.defaultNetwork = defaultNetwork;
+  },
+
+  setRequestedNetworks(requestedNetworks?: OptionsControllerState['requestedNetworks']) {
+    state.requestedNetworks = requestedNetworks;
   },
 
   isClipboardAvailable() {
