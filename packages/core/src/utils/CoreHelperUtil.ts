@@ -18,6 +18,7 @@ import {
 import * as ct from 'countries-and-timezones';
 
 import { ConstantsUtil } from './ConstantsUtil';
+import { OptionsController } from '../controllers/OptionsController';
 
 // -- Helpers -----------------------------------------------------------------
 async function isAppInstalledIos(deepLink?: string): Promise<boolean> {
@@ -345,5 +346,14 @@ export const CoreHelperUtil = {
           .join(',');
 
     return `react-native-${adapterNames}-${version}`;
+  },
+
+  getRequestedCaipNetworkIds() {
+    const chains = OptionsController.state.requestedNetworks;
+    if (!chains) return [];
+
+    const requestedIds = chains.map(caipNetwork => caipNetwork.caipNetworkId);
+
+    return requestedIds;
   }
 };

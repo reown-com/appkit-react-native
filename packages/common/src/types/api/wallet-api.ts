@@ -1,3 +1,5 @@
+import type { CaipNetworkId } from '../common';
+
 export interface WcWallet {
   id: string;
   name: string;
@@ -11,6 +13,7 @@ export interface WcWallet {
   link_mode?: string | null;
   app_store?: string | null;
   play_store?: string | null;
+  chains?: readonly CaipNetworkId[];
 }
 
 export interface DataWallet {

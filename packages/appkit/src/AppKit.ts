@@ -663,6 +663,7 @@ export class AppKit {
     OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setDebug(options.debug);
     OptionsController.setFeatures(options.features);
+    OptionsController.setRequestedNetworks(this.networks);
 
     if (options.defaultNetwork) {
       const network = NetworkUtil.formatNetwork(options.defaultNetwork, this.projectId);
@@ -709,14 +710,17 @@ export class AppKit {
     const wallets = await StorageUtil.getRecentWallets();
     const filteredWallets = wallets.filter(wallet => {
       const { includeWalletIds, excludeWalletIds } = options;
-      if (includeWalletIds) {
+
+      if (includeWalletIds?.length) {
         return includeWalletIds.includes(wallet.id);
       }
-      if (excludeWalletIds) {
+      if (excludeWalletIds?.length) {
         return !excludeWalletIds.includes(wallet.id);
       }
 
-      return true;
+      return this.networks.some(
+        network => wallet.chains?.some(chain => network.caipNetworkId === chain)
+      );
     });
 
     WcController.setRecentWallets(filteredWallets);
@@ -740,8 +744,12 @@ export class AppKit {
 
     const customList = [...(customWallets ?? [])];
 
-    const addPhantom =
+    const isSolanaEnabled =
       adapters.some(adapter => adapter.getSupportedNamespace() === 'solana') &&
+      this.networks.some(network => network.chainNamespace === 'solana');
+
+    const addPhantom =
+      isSolanaEnabled &&
       extraConnectors?.some(connector => connector.type.toLowerCase() === 'phantom') &&
       !customList.some(wallet => wallet.id === ConstantsUtil.PHANTOM_CUSTOM_WALLET.id);
 
@@ -750,7 +758,7 @@ export class AppKit {
     }
 
     const addSolflare =
-      adapters.some(adapter => adapter.getSupportedNamespace() === 'solana') &&
+      isSolanaEnabled &&
       extraConnectors?.some(connector => connector.type.toLowerCase() === 'solflare') &&
       !customList.some(wallet => wallet.id === ConstantsUtil.SOLFLARE_CUSTOM_WALLET.id);
 

@@ -23,7 +23,7 @@ export function AllWalletsView() {
   const { maxWidth } = useCustomDimensions();
   const [headerHeight, setHeaderHeight] = useState<number>(0);
   const numColumns = 4;
-  const usableWidth = maxWidth - Spacing.xs * 2;
+  const usableWidth = maxWidth - Spacing['s'] * 2;
   const itemWidth = Math.abs(Math.trunc(usableWidth / numColumns));
 
   const { debouncedCallback: onInputChange } = useDebounceCallback({ callback: setSearchQuery });

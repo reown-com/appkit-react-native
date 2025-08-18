@@ -140,6 +140,7 @@ export const ApiController = {
     const results = await Promise.all(promises);
     const installed = results.filter(({ isInstalled }) => isInstalled).map(({ id }) => id);
     const { excludeWalletIds } = OptionsController.state;
+    const chains = CoreHelperUtil.getRequestedCaipNetworkIds();
 
     // Collect API-sourced installed wallets
     let apiInstalledWallets: WcWallet[] = [];
@@ -152,7 +153,8 @@ export const ApiController = {
           platform: this.platform(),
           entries: installed?.length.toString(),
           include: installed?.join(','),
-          exclude: excludeWalletIds?.join(',')
+          exclude: excludeWalletIds?.join(','),
+          chains: chains.join(',')
         }
       });
 
@@ -193,6 +195,7 @@ export const ApiController = {
   async fetchFeaturedWallets() {
     const { featuredWalletIds } = OptionsController.state;
     const exclude = state.installed.map(({ id }) => id);
+    const chains = CoreHelperUtil.getRequestedCaipNetworkIds();
 
     if (featuredWalletIds?.length) {
       const response = await api.get<ApiGetWalletsResponse>({
@@ -205,7 +208,8 @@ export const ApiController = {
             ? String(featuredWalletIds.length)
             : recommendedEntries,
           include: featuredWalletIds?.join(','),
-          exclude: exclude?.join(',')
+          exclude: exclude?.join(','),
+          chains: chains.join(',')
         }
       });
       if (!response) return;
@@ -237,6 +241,7 @@ export const ApiController = {
   async fetchRecommendedWallets() {
     const { installed } = ApiController.state;
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state;
+    const chains = CoreHelperUtil.getRequestedCaipNetworkIds();
 
     const exclude = [
       ...installed.map(({ id }) => id),
@@ -252,7 +257,8 @@ export const ApiController = {
         platform: this.platform(),
         entries: recommendedEntries,
         include: includeWalletIds?.join(','),
-        exclude: exclude?.join(',')
+        exclude: exclude?.join(','),
+        chains: chains.join(',')
       }
     });
 
@@ -275,6 +281,7 @@ export const ApiController = {
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state;
+    const chains = CoreHelperUtil.getRequestedCaipNetworkIds();
     const exclude = [
       ...state.installed.map(({ id }) => id),
       ...state.recommended.map(({ id }) => id),
@@ -289,7 +296,8 @@ export const ApiController = {
         platform: this.platform(),
         entries: String(defaultEntries),
         include: includeWalletIds?.join(','),
-        exclude: exclude.join(',')
+        exclude: exclude.join(','),
+        chains: chains.join(',')
       }
     });
 
@@ -312,6 +320,7 @@ export const ApiController = {
 
   async searchWallet({ search }: Pick<ApiGetWalletsRequest, 'search'>) {
     const { includeWalletIds, excludeWalletIds } = OptionsController.state;
+    const chains = CoreHelperUtil.getRequestedCaipNetworkIds();
     state.search = [];
     const response = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
@@ -322,7 +331,8 @@ export const ApiController = {
         entries: String(defaultEntries),
         search,
         include: includeWalletIds?.join(','),
-        exclude: excludeWalletIds?.join(',')
+        exclude: excludeWalletIds?.join(','),
+        chains: chains.join(',')
       }
     });
 

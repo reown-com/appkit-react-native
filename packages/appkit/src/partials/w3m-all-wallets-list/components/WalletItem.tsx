@@ -11,6 +11,7 @@ interface WalletItemProps {
   itemWidth?: number;
   imageHeaders?: Record<string, string>;
   onItemPress: (wallet: WcWallet) => void;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function WalletItem({
@@ -18,20 +19,21 @@ export function WalletItem({
   item,
   itemWidth,
   imageHeaders,
-  onItemPress
+  onItemPress,
+  style
 }: WalletItemProps) {
   const { walletImages } = useSnapshot(AssetController.state);
   const isInstalled = ApiController.state.installed.find(wallet => wallet?.id === item?.id);
   const imageSrc = AssetUtil.getWalletImage(item, walletImages);
 
   if (!item?.id) {
-    return <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />;
+    return <CardSelectLoader style={[containerStyle, { width: itemWidth }, style]} />;
   }
 
   return (
     <CardSelect
       imageSrc={imageSrc}
-      style={[containerStyle, { width: itemWidth }]}
+      style={[containerStyle, { width: itemWidth }, style]}
       imageHeaders={imageHeaders}
       name={item?.name ?? 'Unknown'}
       onPress={() => onItemPress(item)}

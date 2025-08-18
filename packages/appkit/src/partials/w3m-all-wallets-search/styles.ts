@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   contentContainer: {
-    paddingBottom: Spacing['2xl']
+    paddingBottom: Spacing['4xl']
   },
   placeholderContainer: {
     flex: 0,
@@ -19,7 +19,7 @@ export default StyleSheet.create({
   itemContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: Spacing.xs
+    margin: Spacing['4xs']
   },
   text: {
     marginTop: Spacing.xs
