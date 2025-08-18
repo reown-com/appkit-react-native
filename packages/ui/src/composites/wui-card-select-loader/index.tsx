@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { type StyleProp, type ViewStyle } from 'react-native';
 import { BorderRadius, Spacing, WalletImageSize } from '../../utils/ThemeUtil';
 import { useTheme } from '../../hooks/useTheme';
@@ -11,7 +12,7 @@ export interface CardSelectLoaderProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function CardSelectLoader({ style }: CardSelectLoaderProps) {
+export function _CardSelectLoader({ style }: CardSelectLoaderProps) {
   const Theme = useTheme();
 
   return (
@@ -34,3 +35,6 @@ export function CardSelectLoader({ style }: CardSelectLoaderProps) {
     </FlexView>
   );
 }
+export const CardSelectLoader = memo(_CardSelectLoader, () => {
+  return true;
+});

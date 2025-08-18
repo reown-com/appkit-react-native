@@ -15,10 +15,10 @@ import {
   FlexView,
   IconBox,
   LoadingThumbnail,
-  WalletImage
+  WalletImage,
+  useCustomDimensions
 } from '@reown/appkit-ui-react-native';
 
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w3m-connecting-body';
 import styles from './styles';
 import { useInternalAppKit } from '../../AppKitContext';

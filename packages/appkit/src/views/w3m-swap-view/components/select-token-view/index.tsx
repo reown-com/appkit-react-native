@@ -17,7 +17,8 @@ import {
   Separator,
   Text,
   TokenButton,
-  useTheme
+  useTheme,
+  useCustomDimensions
 } from '@reown/appkit-ui-react-native';
 
 import {
@@ -30,7 +31,6 @@ import {
 
 import { type SwapInputTarget, type SwapTokenWithBalance } from '@reown/appkit-common-react-native';
 
-import { useCustomDimensions } from '../../../../hooks/useCustomDimensions';
 import { Placeholder } from '../../../../partials/w3m-placeholder';
 import styles from './styles';
 import { createSections } from './utils';

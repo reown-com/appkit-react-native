@@ -1,3 +1,4 @@
+/********** Components **********/
 export { Card, type CardProps } from './components/wui-card';
 export { Icon, type IconProps } from './components/wui-icon';
 export { Image, type ImageProps } from './components/wui-image';
@@ -8,6 +9,7 @@ export { Text, type TextProps } from './components/wui-text';
 export { Visual, type VisualProps } from './components/wui-visual';
 export { Shimmer, type ShimmerProps } from './components/wui-shimmer';
 
+/********** Composites **********/
 export { AccountButton, type AccountButtonProps } from './composites/wui-account-button';
 export { AccountPill, type AccountPillProps } from './composites/wui-account-pill';
 export { ActionEntry, type ActionEntryProps } from './composites/wui-action-entry';
@@ -68,6 +70,7 @@ export { Overlay, type OverlayProps } from './layout/wui-overlay';
 export { FlexView, type FlexViewProps } from './layout/wui-flex';
 export { Separator } from './layout/wui-separator';
 
+/********** Types **********/
 export type {
   ButtonType,
   CardSelectType,
@@ -83,10 +86,14 @@ export type {
   VisualType,
   TransactionType
 } from './utils/TypesUtil';
+
+/********** Utils **********/
 export { UiUtil } from './utils/UiUtil';
 export { TransactionUtil } from './utils/TransactionUtil';
 export { Spacing, BorderRadius } from './utils/ThemeUtil';
 
+/********** Hooks **********/
 export { useTheme } from './hooks/useTheme';
 export { ThemeProvider } from './context/ThemeContext';
 export { useAnimatedValue } from './hooks/useAnimatedValue';
+export { useCustomDimensions } from './hooks/useCustomDimensions';

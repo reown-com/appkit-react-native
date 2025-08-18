@@ -6,7 +6,8 @@ import {
   Link,
   Separator,
   Spacing,
-  Text
+  Text,
+  useCustomDimensions
 } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
@@ -18,7 +19,6 @@ import {
   AssetUtil
 } from '@reown/appkit-core-react-native';
 import type { AppKitNetwork } from '@reown/appkit-common-react-native';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
 import { useInternalAppKit } from '../../AppKitContext';
 import { useSnapshot } from 'valtio';

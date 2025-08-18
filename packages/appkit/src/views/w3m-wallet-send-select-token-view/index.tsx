@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { ScrollView } from 'react-native';
-import { FlexView, InputText, ListToken, Text } from '@reown/appkit-ui-react-native';
+import {
+  FlexView,
+  InputText,
+  ListToken,
+  Text,
+  useCustomDimensions
+} from '@reown/appkit-ui-react-native';
 import {
   AssetController,
   AssetUtil,
@@ -11,7 +17,6 @@ import {
 } from '@reown/appkit-core-react-native';
 import type { Balance } from '@reown/appkit-common-react-native';
 
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { Placeholder } from '../../partials/w3m-placeholder';
 import styles from './styles';
 

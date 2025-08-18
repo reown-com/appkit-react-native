@@ -1,13 +1,21 @@
 import { useSnapshot } from 'valtio';
 import { ScrollView } from 'react-native';
-import { Avatar, Button, FlexView, Icon, Image, Text, UiUtil } from '@reown/appkit-ui-react-native';
+import {
+  Avatar,
+  Button,
+  FlexView,
+  Icon,
+  Image,
+  Text,
+  UiUtil,
+  useCustomDimensions
+} from '@reown/appkit-ui-react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
 import {
   ConnectionsController,
   RouterController,
   SendController
 } from '@reown/appkit-core-react-native';
-import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import { PreviewSendPill } from './components/preview-send-pill';
 import styles from './styles';
 import { PreviewSendDetails } from './components/preview-send-details';
