@@ -210,12 +210,12 @@ export class WalletConnectConnector extends WalletConnector {
     const provider = this.provider as IUniversalProvider;
 
     if (namespace) {
-      const _chainId = this.getChainId(namespace);
-
       // @ts-ignore
       return {
         ...provider,
         request: (args: RequestArguments, chainId?: CaipNetworkId) => {
+          const _chainId = this.getChainId(namespace);
+
           return provider.request(args, chainId || _chainId);
         }
       };
