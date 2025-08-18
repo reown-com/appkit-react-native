@@ -711,10 +711,10 @@ export class AppKit {
     const filteredWallets = wallets.filter(wallet => {
       const { includeWalletIds, excludeWalletIds } = options;
 
-      if (includeWalletIds) {
+      if (includeWalletIds?.length) {
         return includeWalletIds.includes(wallet.id);
       }
-      if (excludeWalletIds) {
+      if (excludeWalletIds?.length) {
         return !excludeWalletIds.includes(wallet.id);
       }
 
