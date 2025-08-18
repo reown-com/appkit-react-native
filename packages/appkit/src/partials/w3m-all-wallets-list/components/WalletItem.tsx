@@ -27,7 +27,7 @@ export function WalletItem({
   const imageSrc = AssetUtil.getWalletImage(item, walletImages);
 
   if (!item?.id) {
-    return <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />;
+    return <CardSelectLoader style={[containerStyle, { width: itemWidth }, style]} />;
   }
 
   return (
