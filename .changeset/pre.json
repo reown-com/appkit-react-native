@@ -16,6 +16,7 @@
     "@reown/appkit-wagmi-react-native": "2.0.0-alpha.3"
   },
   "changesets": [
-    "brown-snakes-own"
+    "brown-snakes-own",
+    "cruel-ants-sell"
   ]
 }

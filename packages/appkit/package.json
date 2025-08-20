@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-react-native",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -38,10 +38,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@reown/appkit-common-react-native": "2.0.0-alpha.3",
-    "@reown/appkit-core-react-native": "2.0.0-alpha.3",
-    "@reown/appkit-siwe-react-native": "2.0.0-alpha.3",
-    "@reown/appkit-ui-react-native": "2.0.0-alpha.3",
+    "@reown/appkit-common-react-native": "2.0.0-alpha.4",
+    "@reown/appkit-core-react-native": "2.0.0-alpha.4",
+    "@reown/appkit-siwe-react-native": "2.0.0-alpha.4",
+    "@reown/appkit-ui-react-native": "2.0.0-alpha.4",
     "@walletconnect/universal-provider": "2.21.5",
     "valtio": "2.1.5"
   },
