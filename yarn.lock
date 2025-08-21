@@ -7331,6 +7331,8 @@ __metadata:
   resolution: "@reown/appkit-react-native-cli@workspace:packages/cli"
   dependencies:
     chalk: "npm:5.4.1"
+  bin:
+    appkit-react-native: lib/commonjs/index.js
   languageName: unknown
   linkType: soft
 
