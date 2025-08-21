@@ -7326,6 +7326,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@reown/appkit-react-native-cli@workspace:packages/cli":
+  version: 0.0.0-use.local
+  resolution: "@reown/appkit-react-native-cli@workspace:packages/cli"
+  dependencies:
+    chalk: "npm:5.4.1"
+  languageName: unknown
+  linkType: soft
+
 "@reown/appkit-scaffold-react-native@npm:1.3.0, @reown/appkit-scaffold-react-native@workspace:packages/scaffold":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-scaffold-react-native@workspace:packages/scaffold"
@@ -11546,6 +11554,13 @@ __metadata:
     loupe: "npm:^3.1.0"
     pathval: "npm:^2.0.0"
   checksum: e7f00e5881e3d5224f08fe63966ed6566bd9fdde175863c7c16dd5240416de9b34c4a0dd925f4fd64ad56256ca6507d32cf6131c49e1db65c62578eb31d4566c
+  languageName: node
+  linkType: hard
+
+"chalk@npm:5.4.1":
+  version: 5.4.1
+  resolution: "chalk@npm:5.4.1"
+  checksum: b23e88132c702f4855ca6d25cb5538b1114343e41472d5263ee8a37cccfccd9c4216d111e1097c6a27830407a1dc81fecdf2a56f2c63033d4dbbd88c10b0dcef
   languageName: node
   linkType: hard
 
