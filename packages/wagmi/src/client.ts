@@ -111,20 +111,19 @@ export class AppKit extends AppKitScaffold {
         }
       },
 
-      async getApprovedCaipNetworksData() {
-        const walletChoice = await StorageUtil.getConnectedConnector();
+      async getApprovedCaipNetworksData(connectorType?: ConnectorType) {
         const walletConnectType =
           PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]!;
 
         const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID]!;
 
-        if (walletChoice?.includes(walletConnectType)) {
+        if (connectorType?.includes(walletConnectType)) {
           const connector = wagmiConfig.connectors.find(
             c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
           );
 
           return getWalletConnectCaipNetworks(connector);
-        } else if (authType) {
+        } else if (connectorType?.includes(authType)) {
           return getAuthCaipNetworks();
         }
 
@@ -443,11 +442,12 @@ export class AppKit extends AppKitScaffold {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`;
       this.setIsConnected(isConnected);
       this.setCaipAddress(caipAddress);
+      const connectorType = PresetsUtil.ConnectorTypesMap[connector?.id ?? ''];
       await Promise.all([
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
         this.syncConnectedWalletInfo(connector),
-        this.getApprovedCaipNetworksData()
+        this.getApprovedCaipNetworksData(connectorType)
       ]);
       this.hasSyncedConnectedAccount = true;
     } else if (!isConnected && !isConnecting && !isReconnecting && this.hasSyncedConnectedAccount) {
