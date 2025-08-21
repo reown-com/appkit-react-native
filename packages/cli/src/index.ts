@@ -45,7 +45,7 @@ export async function main() {
 
   const url = 'https://dashboard.reown.com';
   // eslint-disable-next-line no-console
-  console.log(`Your ${redTip('Project Id')} will work only on the Expo Go enviroment`);
+  console.log(`Your ${redTip('Project Id')} will work only on the Expo Go environment`);
   // eslint-disable-next-line no-console
   console.log(`
 Go to: ${url}
