@@ -6,6 +6,9 @@
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
+  "bin": {
+    "appkit-react-native": "lib/commonjs/index.js"
+  },
   "repository": "https://github.com/reown-com/appkit-react-native",
   "author": "Reown (https://discord.gg/reown)",
   "homepage": "https://reown.com/appkit",
