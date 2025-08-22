@@ -1,5 +1,17 @@
 # @reown/appkit-auth-ethers-react-native
 
+## 1.3.1
+
+### Patch Changes
+
+- [#419](https://github.com/reown-com/appkit-react-native/pull/419) [`0d087ef`](https://github.com/reown-com/appkit-react-native/commit/0d087efc6971c0ad9445b565ca51f709f78ac4cf) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: correctly set approved networks and support all networks flag
+
+- [#423](https://github.com/reown-com/appkit-react-native/pull/423) [`30847f7`](https://github.com/reown-com/appkit-react-native/commit/30847f7af9fc9758248c848cc97078fe67f61ee5) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: show network images correctly
+
+- Updated dependencies [[`0d087ef`](https://github.com/reown-com/appkit-react-native/commit/0d087efc6971c0ad9445b565ca51f709f78ac4cf), [`30847f7`](https://github.com/reown-com/appkit-react-native/commit/30847f7af9fc9758248c848cc97078fe67f61ee5)]:
+  - @reown/appkit-common-react-native@1.3.1
+  - @reown/appkit-wallet-react-native@1.3.1
+
 ## 1.3.0
 
 ### Minor Changes
