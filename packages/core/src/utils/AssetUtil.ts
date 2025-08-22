@@ -15,15 +15,19 @@ export const AssetUtil = {
   },
 
   getNetworkImage(network?: CaipNetwork, networkImages?: Record<string, string>) {
-    if (!network || !network?.imageId) {
+    if (!network) {
       return undefined;
     }
 
-    if (network?.imageUrl) {
+    if (network.imageUrl) {
       return network.imageUrl;
     }
 
-    return networkImages?.[network?.imageId];
+    if (network.imageId) {
+      return networkImages?.[network.imageId];
+    }
+
+    return undefined;
   },
 
   getConnectorImage(connector?: Connector) {
