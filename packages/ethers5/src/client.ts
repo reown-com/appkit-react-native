@@ -132,12 +132,12 @@ export class AppKit extends AppKitScaffold {
             PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]!;
 
           const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID]!;
-          if (walletChoice?.includes(walletConnectType)) {
+          if (walletChoice === walletConnectType) {
             const provider = await this.getWalletConnectProvider();
             const result = getWalletConnectCaipNetworks(provider);
 
             resolve(result);
-          } else if (walletChoice?.includes(authType)) {
+          } else if (walletChoice === authType) {
             const result = getAuthCaipNetworks();
             resolve(result);
           } else {

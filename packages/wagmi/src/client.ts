@@ -117,13 +117,13 @@ export class AppKit extends AppKitScaffold {
 
         const authType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.AUTH_CONNECTOR_ID]!;
 
-        if (connectorType?.includes(walletConnectType)) {
+        if (connectorType === walletConnectType) {
           const connector = wagmiConfig.connectors.find(
             c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
           );
 
           return getWalletConnectCaipNetworks(connector);
-        } else if (connectorType?.includes(authType)) {
+        } else if (connectorType === authType) {
           return getAuthCaipNetworks();
         }
 
