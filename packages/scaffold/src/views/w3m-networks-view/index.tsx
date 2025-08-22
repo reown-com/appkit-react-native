@@ -1,3 +1,4 @@
+import { useSnapshot } from 'valtio';
 import { ScrollView, View } from 'react-native';
 import {
   CardSelect,
@@ -16,7 +17,8 @@ import {
   type CaipNetwork,
   EventsController,
   CoreHelperUtil,
-  NetworkUtil
+  NetworkUtil,
+  AssetController
 } from '@reown/appkit-core-react-native';
 import { useCustomDimensions } from '../../hooks/useCustomDimensions';
 import styles from './styles';
@@ -24,6 +26,7 @@ import styles from './styles';
 export function NetworksView() {
   const { caipNetwork, requestedCaipNetworks, approvedCaipNetworkIds, supportsAllNetworks } =
     NetworkController.state;
+  const { networkImages } = useSnapshot(AssetController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const { maxWidth: width, padding } = useCustomDimensions();
   const numColumns = 4;
@@ -69,7 +72,7 @@ export function NetworksView() {
           testID={`w3m-network-switch-${network.name ?? network.id}`}
           name={network.name ?? 'Unknown'}
           type="network"
-          imageSrc={AssetUtil.getNetworkImage(network)}
+          imageSrc={AssetUtil.getNetworkImage(network, networkImages)}
           imageHeaders={imageHeaders}
           disabled={!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
           selected={caipNetwork?.id === network.id}

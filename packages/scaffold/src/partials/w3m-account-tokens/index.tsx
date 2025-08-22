@@ -9,6 +9,7 @@ import {
 import { useSnapshot } from 'valtio';
 import {
   AccountController,
+  AssetController,
   AssetUtil,
   NetworkController,
   RouterController
@@ -31,7 +32,8 @@ export function AccountTokens({ style }: Props) {
   const [refreshing, setRefreshing] = useState(false);
   const { tokenBalance } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const { networkImages } = useSnapshot(AssetController.state);
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork, networkImages);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

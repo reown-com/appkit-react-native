@@ -3,6 +3,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import {
   AccountController,
   ApiController,
+  AssetController,
   AssetUtil,
   EventsController,
   ModalController,
@@ -18,6 +19,7 @@ export interface NetworkButtonProps {
 
 export function NetworkButton({ disabled, style }: NetworkButtonProps) {
   const { isConnected } = useSnapshot(AccountController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
   const { loading } = useSnapshot(ModalController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
@@ -33,7 +35,7 @@ export function NetworkButton({ disabled, style }: NetworkButtonProps) {
   return (
     <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
       <NetworkButtonUI
-        imageSrc={AssetUtil.getNetworkImage(caipNetwork)}
+        imageSrc={AssetUtil.getNetworkImage(caipNetwork, networkImages)}
         imageHeaders={ApiController._getApiHeaders()}
         disabled={disabled || loading}
         style={style}

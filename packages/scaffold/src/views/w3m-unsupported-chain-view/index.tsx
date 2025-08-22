@@ -11,13 +11,15 @@ import {
   NetworkController,
   NetworkUtil,
   type CaipNetwork,
-  type NetworkControllerState
+  type NetworkControllerState,
+  AssetController
 } from '@reown/appkit-core-react-native';
 import styles from './styles';
 
 export function UnsupportedChainView() {
   const { caipNetwork, supportsAllNetworks, approvedCaipNetworkIds, requestedCaipNetworks } =
     useSnapshot(NetworkController.state) as NetworkControllerState;
+  const { networkImages } = useSnapshot(AssetController.state);
 
   const [disconnecting, setDisconnecting] = useState(false);
   const networks = CoreHelperUtil.sortNetworks(approvedCaipNetworkIds, requestedCaipNetworks);
@@ -59,7 +61,7 @@ export function UnsupportedChainView() {
           key={item.id}
           icon="networkPlaceholder"
           iconBackgroundColor="gray-glass-010"
-          imageSrc={AssetUtil.getNetworkImage(item)}
+          imageSrc={AssetUtil.getNetworkImage(item, networkImages)}
           imageHeaders={imageHeaders}
           onPress={() => onNetworkPress(item)}
           testID="button-network"

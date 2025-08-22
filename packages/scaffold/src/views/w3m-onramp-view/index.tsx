@@ -10,7 +10,8 @@ import {
   NetworkController,
   AssetUtil,
   SnackController,
-  ConstantsUtil
+  ConstantsUtil,
+  AssetController
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -50,12 +51,13 @@ export function OnRampView() {
     initialLoading
   } = useSnapshot(OnRampController.state) as OnRampControllerState;
   const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const [searchValue, setSearchValue] = useState('');
   const [isCurrencyModalVisible, setIsCurrencyModalVisible] = useState(false);
   const [isPaymentMethodModalVisible, setIsPaymentMethodModalVisible] = useState(false);
   const purchaseCurrencyCode =
     purchaseCurrency?.currencyCode?.split('_')[0] ?? purchaseCurrency?.currencyCode;
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork, networkImages);
 
   const getQuotes = useCallback(() => {
     if (OnRampController.canGenerateQuote()) {

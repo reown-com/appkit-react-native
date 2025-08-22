@@ -1,13 +1,13 @@
 import { proxy, ref } from 'valtio';
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil';
 import { PublicStateController } from './PublicStateController';
-import { NetworkUtil } from '@reown/appkit-common-react-native';
+import { NetworkUtil, type ConnectorType } from '@reown/appkit-common-react-native';
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
   switchCaipNetwork: (network: NetworkControllerState['caipNetwork']) => Promise<void>;
-  getApprovedCaipNetworksData: () => Promise<{
+  getApprovedCaipNetworksData: (connectorType?: ConnectorType) => Promise<{
     approvedCaipNetworkIds: NetworkControllerState['approvedCaipNetworkIds'];
     supportsAllNetworks: NetworkControllerState['supportsAllNetworks'];
   }>;
@@ -77,8 +77,8 @@ export const NetworkController = {
     return Boolean(state.smartAccountEnabledNetworks?.includes(Number(networkId)));
   },
 
-  async getApprovedCaipNetworksData() {
-    const data = await this._getClient().getApprovedCaipNetworksData();
+  async getApprovedCaipNetworksData(connectorType?: ConnectorType) {
+    const data = await this._getClient().getApprovedCaipNetworksData(connectorType);
     state.supportsAllNetworks = data.supportsAllNetworks;
     state.approvedCaipNetworkIds = data.approvedCaipNetworkIds;
   },

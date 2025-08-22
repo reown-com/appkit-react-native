@@ -13,6 +13,7 @@ import {
 import { type Transaction, type TransactionImage } from '@reown/appkit-common-react-native';
 import {
   AccountController,
+  AssetController,
   AssetUtil,
   EventsController,
   NetworkController,
@@ -33,7 +34,8 @@ export function AccountActivity({ style }: Props) {
   const [initialLoad, setInitialLoad] = useState(true);
   const { loading, transactions, next } = useSnapshot(TransactionsController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const { networkImages } = useSnapshot(AssetController.state);
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork, networkImages);
 
   const handleLoadMore = () => {
     TransactionsController.fetchTransactions(AccountController.state.address);

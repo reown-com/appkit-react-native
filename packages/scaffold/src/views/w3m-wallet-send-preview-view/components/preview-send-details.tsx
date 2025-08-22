@@ -1,4 +1,5 @@
-import { AssetUtil, type CaipNetwork } from '@reown/appkit-core-react-native';
+import { useSnapshot } from 'valtio';
+import { AssetController, AssetUtil, type CaipNetwork } from '@reown/appkit-core-react-native';
 import {
   BorderRadius,
   FlexView,
@@ -26,6 +27,7 @@ export function PreviewSendDetails({
   style
 }: PreviewSendDetailsProps) {
   const Theme = useTheme();
+  const { networkImages } = useSnapshot(AssetController.state);
 
   const formattedName = UiUtil.getTruncateString({
     string: name ?? '',
@@ -41,7 +43,7 @@ export function PreviewSendDetails({
     truncate: 'middle'
   });
 
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork, networkImages);
 
   return (
     <FlexView

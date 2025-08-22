@@ -33,6 +33,7 @@ import { SIWEController, type SIWEControllerClient } from '@reown/appkit-siwe-re
 import {
   ConstantsUtil,
   ErrorUtil,
+  type ConnectorType,
   type ThemeMode,
   type ThemeVariables
 } from '@reown/appkit-common-react-native';
@@ -197,7 +198,7 @@ export class AppKitScaffold {
     };
 
   protected getApprovedCaipNetworksData: (typeof NetworkController)['getApprovedCaipNetworksData'] =
-    () => NetworkController.getApprovedCaipNetworksData();
+    (connectorType?: ConnectorType) => NetworkController.getApprovedCaipNetworksData(connectorType);
 
   protected resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
     NetworkController.resetNetwork();
