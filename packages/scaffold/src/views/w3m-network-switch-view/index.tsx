@@ -3,6 +3,7 @@ import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
 import {
   ApiController,
+  AssetController,
   AssetUtil,
   ConnectionController,
   ConnectorController,
@@ -21,10 +22,13 @@ import {
 } from '@reown/appkit-ui-react-native';
 import styles from './styles';
 
+const imageHeaders = ApiController._getApiHeaders();
+
 export function NetworkSwitchView() {
   const { data } = useSnapshot(RouterController.state);
   const { recentWallets } = useSnapshot(ConnectionController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const isAuthConnected = ConnectorController.state.connectedConnector === 'AUTH';
   const [error, setError] = useState<boolean>(false);
   const [showRetry, setShowRetry] = useState<boolean>(false);
@@ -115,8 +119,8 @@ export function NetworkSwitchView() {
     <FlexView alignItems="center" padding={['2xl', 's', '4xl', 's']}>
       <LoadingHexagon paused={error}>
         <NetworkImage
-          imageSrc={AssetUtil.getNetworkImage(network)}
-          imageHeaders={ApiController._getApiHeaders()}
+          imageSrc={AssetUtil.getNetworkImage(network, networkImages)}
+          imageHeaders={imageHeaders}
           size="lg"
         />
         {error && (

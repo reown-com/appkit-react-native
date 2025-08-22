@@ -7,7 +7,8 @@ import {
   ModalController,
   AssetUtil,
   ThemeController,
-  ApiController
+  ApiController,
+  AssetController
 } from '@reown/appkit-core-react-native';
 import { AccountButton as AccountButtonUI, ThemeProvider } from '@reown/appkit-ui-react-native';
 
@@ -27,9 +28,10 @@ export function AccountButton({ balance, disabled, style, testID }: AccountButto
     profileName
   } = useSnapshot(AccountController.state);
   const { caipNetwork } = useSnapshot(NetworkController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
 
-  const networkImage = AssetUtil.getNetworkImage(caipNetwork);
+  const networkImage = AssetUtil.getNetworkImage(caipNetwork, networkImages);
   const showBalance = balance === 'show';
 
   return (

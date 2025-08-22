@@ -14,13 +14,17 @@ export const AssetUtil = {
     return undefined;
   },
 
-  getNetworkImage(network?: CaipNetwork) {
-    if (network?.imageUrl) {
-      return network?.imageUrl;
+  getNetworkImage(network?: CaipNetwork, networkImages?: Record<string, string>) {
+    if (!network) {
+      return undefined;
     }
 
-    if (network?.imageId) {
-      return AssetController.state.networkImages[network.imageId];
+    if (network.imageUrl) {
+      return network.imageUrl;
+    }
+
+    if (network.imageId) {
+      return networkImages?.[network.imageId];
     }
 
     return undefined;

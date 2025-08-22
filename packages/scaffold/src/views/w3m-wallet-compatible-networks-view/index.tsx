@@ -4,6 +4,7 @@ import { FlexView, Text, Banner, NetworkImage } from '@reown/appkit-ui-react-nat
 import {
   AccountController,
   ApiController,
+  AssetController,
   AssetUtil,
   NetworkController
 } from '@reown/appkit-core-react-native';
@@ -13,6 +14,7 @@ import styles from './styles';
 export function WalletCompatibleNetworks() {
   const { padding } = useCustomDimensions();
   const { preferredAccountType } = useSnapshot(AccountController.state);
+  const { networkImages } = useSnapshot(AssetController.state);
   const isSmartAccount =
     preferredAccountType === 'smartAccount' && NetworkController.checkIfSmartAccountEnabled();
   const approvedNetworks = isSmartAccount
@@ -32,7 +34,7 @@ export function WalletCompatibleNetworks() {
             padding={['s', 's', 's', 's']}
           >
             <NetworkImage
-              imageSrc={AssetUtil.getNetworkImage(network)}
+              imageSrc={AssetUtil.getNetworkImage(network, networkImages)}
               imageHeaders={imageHeaders}
               size="sm"
               style={styles.image}
