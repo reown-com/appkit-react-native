@@ -50,7 +50,7 @@ export function ConnectingView() {
         ConnectionController.setWcError(false);
         ConnectionController.connectWalletConnect(routeData?.wallet?.link_mode ?? undefined);
         await ConnectionController.state.wcPromise;
-        ConnectorController.setConnectedConnector('WALLET_CONNECT');
+        await ConnectorController.setConnectedConnector('WALLET_CONNECT');
         AccountController.setIsConnected(true);
 
         if (OptionsController.state.isSiweEnabled) {

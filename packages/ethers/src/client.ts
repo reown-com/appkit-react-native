@@ -139,7 +139,8 @@ export class AppKit extends AppKitScaffold {
 
       getApprovedCaipNetworksData: async () =>
         new Promise(async resolve => {
-          const walletChoice = await StorageUtil.getConnectedConnector();
+          const walletId = (await StorageUtil.getItem(EthersConstantsUtil.WALLET_ID)) as string;
+          const walletChoice = PresetsUtil.ConnectorTypesMap[walletId ?? ''];
           const walletConnectType =
             PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]!;
 
