@@ -64,6 +64,7 @@ export function ConnectingQrCode() {
             iconLeft="copySmall"
             color="fg-200"
             style={styles.copyButton}
+            disabled={!wcUri}
             onPress={onCopyAddress}
             testID="copy-link"
           >
