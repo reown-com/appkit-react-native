@@ -26,6 +26,7 @@ export default StyleSheet.create({
     justifyContent: 'flex-end'
   },
   withKeyboard: {
-    height: '100%'
+    height: '100%',
+    maxHeight: '100%'
   }
 });

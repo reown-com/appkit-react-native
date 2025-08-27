@@ -1,4 +1,5 @@
-import { ScrollView, View } from 'react-native';
+import { useSnapshot } from 'valtio';
+import { View } from 'react-native';
 import {
   CardSelect,
   CardSelectWidth,
@@ -7,7 +8,8 @@ import {
   Separator,
   Spacing,
   Text,
-  useCustomDimensions
+  useCustomDimensions,
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
@@ -21,13 +23,12 @@ import {
 import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 import styles from './styles';
 import { useInternalAppKit } from '../../AppKitContext';
-import { useSnapshot } from 'valtio';
 
 export function NetworksView() {
   const { networks, isConnected } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const imageHeaders = ApiController._getApiHeaders();
-  const { maxWidth: width, padding } = useCustomDimensions();
+  const { maxWidth: width } = useCustomDimensions();
   const numColumns = 4;
   const usableWidth = width - Spacing.xs * 2 - Spacing['4xs'];
   const itemWidth = Math.abs(Math.trunc(usableWidth / numColumns));
@@ -83,35 +84,31 @@ export function NetworksView() {
 
   return (
     <>
-      <ScrollView
-        bounces={false}
-        fadingEdgeLength={20}
-        style={{ paddingHorizontal: padding, marginBottom: Spacing.xl }}
-      >
+      <ScrollView>
         <FlexView flexDirection="row" flexWrap="wrap" padding={['xs', 'xs', '4xl', 'xs']}>
           {networksTemplate()}
         </FlexView>
-      </ScrollView>
-      <Separator />
-      <FlexView
-        padding={['s', 's', '3xl', 's']}
-        alignItems="center"
-        alignSelf="center"
-        style={{ width }}
-      >
-        <Text variant="small-400" color="fg-300" center>
-          Your connected wallet may not support some of the networks available for this dApp
-        </Text>
-        <Link
-          size="sm"
-          iconLeft="helpCircle"
-          onPress={onHelpPress}
-          style={styles.helpButton}
-          testID="what-is-a-network-button"
+        <Separator />
+        <FlexView
+          padding={['s', 's', '2xl', 's']}
+          alignItems="center"
+          alignSelf="center"
+          style={{ width }}
         >
-          What is a network?
-        </Link>
-      </FlexView>
+          <Text variant="small-400" color="fg-300" center>
+            Your connected wallet may not support some of the networks available for this dApp
+          </Text>
+          <Link
+            size="sm"
+            iconLeft="helpCircle"
+            onPress={onHelpPress}
+            style={styles.helpButton}
+            testID="what-is-a-network-button"
+          >
+            What is a network?
+          </Link>
+        </FlexView>
+      </ScrollView>
     </>
   );
 }

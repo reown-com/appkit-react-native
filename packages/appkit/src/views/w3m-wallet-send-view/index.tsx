@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
+
 import { useSnapshot } from 'valtio';
 import {
   ConnectionsController,
@@ -7,15 +7,14 @@ import {
   RouterController,
   SendController
 } from '@reown/appkit-core-react-native';
-import { Button, FlexView, IconBox, useCustomDimensions } from '@reown/appkit-ui-react-native';
+import { Button, FlexView, IconBox, ScrollView } from '@reown/appkit-ui-react-native';
 import { SendInputToken } from '../../partials/w3m-send-input-token';
 import { useKeyboard } from '../../hooks/useKeyboard';
 import { SendInputAddress } from '../../partials/w3m-send-input-address';
 import styles from './styles';
 
 export function WalletSendView() {
-  const { padding } = useCustomDimensions();
-  const { keyboardShown } = useKeyboard();
+  const { keyboardShown, keyboardHeight } = useKeyboard();
   const [isBalanceLoading, setBalanceLoading] = useState(false);
   const { token, sendTokenAmount, receiverAddress, receiverProfileName, loading } = useSnapshot(
     SendController.state
@@ -80,8 +79,7 @@ export function WalletSendView() {
 
   return (
     <ScrollView
-      style={[{ paddingHorizontal: padding }, keyboardShown && styles.withKeyboard]}
-      bounces={false}
+      style={keyboardShown ? [styles.withKeyboard, { marginBottom: keyboardHeight }] : undefined}
       keyboardShouldPersistTaps="always"
     >
       <FlexView padding={['l', 'l', '2xl', 'l']} alignItems="center" justifyContent="center">

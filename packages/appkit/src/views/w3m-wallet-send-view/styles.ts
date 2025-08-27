@@ -19,6 +19,7 @@ export default StyleSheet.create({
     width: '100%'
   },
   withKeyboard: {
-    height: '100%'
+    height: '100%',
+    maxHeight: '100%'
   }
 });

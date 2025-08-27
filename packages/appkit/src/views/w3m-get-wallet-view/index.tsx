@@ -1,5 +1,5 @@
-import { Linking, Platform, ScrollView } from 'react-native';
-import { FlexView, ListWallet, useCustomDimensions } from '@reown/appkit-ui-react-native';
+import { Linking, Platform } from 'react-native';
+import { FlexView, ListWallet, ScrollView } from '@reown/appkit-ui-react-native';
 import { ApiController, AssetController, AssetUtil } from '@reown/appkit-core-react-native';
 import { type WcWallet } from '@reown/appkit-common-react-native';
 import styles from './styles';
@@ -7,7 +7,6 @@ import { useSnapshot } from 'valtio';
 
 export function GetWalletView() {
   const { walletImages } = useSnapshot(AssetController.state);
-  const { padding } = useCustomDimensions();
   const imageHeaders = ApiController._getApiHeaders();
 
   const onWalletPress = (wallet: WcWallet) => {
@@ -32,13 +31,8 @@ export function GetWalletView() {
   };
 
   return (
-    <ScrollView
-      bounces={false}
-      style={{ paddingHorizontal: padding }}
-      fadingEdgeLength={20}
-      testID="get-a-wallet-view"
-    >
-      <FlexView padding={['s', 's', '3xl', 's']}>
+    <ScrollView testID="get-a-wallet-view">
+      <FlexView padding={['s', 's', 'xl', 's']}>
         {listTemplate()}
         <ListWallet
           name="Explore all"

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { ScrollView } from 'react-native';
 import {
   FlexView,
   InputText,
   ListToken,
   Text,
-  useCustomDimensions
+  useCustomDimensions,
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 import {
   AssetController,
@@ -19,14 +19,16 @@ import type { Balance } from '@reown/appkit-common-react-native';
 
 import { Placeholder } from '../../partials/w3m-placeholder';
 import styles from './styles';
+import type { LayoutChangeEvent } from 'react-native';
 
 export function WalletSendSelectTokenView() {
-  const { padding } = useCustomDimensions();
+  const { padding, maxHeight } = useCustomDimensions();
   const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const [filteredTokens, setFilteredTokens] = useState(balances ?? []);
+  const [headerHeight, setHeaderHeight] = useState<number>(0);
 
   const onSearchChange = (value: string) => {
     setTokenSearch(value);
@@ -34,6 +36,12 @@ export function WalletSendSelectTokenView() {
       _token => _token.name?.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredTokens(filtered ?? []);
+  };
+
+  const onLayout = (event: LayoutChangeEvent) => {
+    const { height } = event.nativeEvent.layout;
+    // Main header height + input height
+    setHeaderHeight(height + 60);
   };
 
   const onTokenPress = (_token: Balance) => {
@@ -44,10 +52,10 @@ export function WalletSendSelectTokenView() {
 
   return (
     <FlexView
-      margin={['l', '0', '2xl', '0']}
+      margin={['l', '0', '0', '0']}
       style={[styles.container, { paddingHorizontal: padding }]}
     >
-      <FlexView margin={['0', 'm', 'm', 'm']}>
+      <FlexView margin={['0', 'm', 'm', 'm']} onLayout={onLayout}>
         <InputText
           value={tokenSearch}
           icon="search"
@@ -56,7 +64,11 @@ export function WalletSendSelectTokenView() {
           clearButtonMode="while-editing"
         />
       </FlexView>
-      <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.tokenList}>
+      <ScrollView
+        disablePadding
+        contentContainerStyle={styles.tokenList}
+        style={{ height: maxHeight - headerHeight }}
+      >
         <Text variant="paragraph-500" color="fg-200" style={styles.title}>
           Your tokens
         </Text>

@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
-import { Platform, ScrollView } from 'react-native';
+import { Platform } from 'react-native';
 import {
   RouterController,
   ApiController,
@@ -16,7 +16,8 @@ import {
   IconBox,
   LoadingThumbnail,
   WalletImage,
-  useCustomDimensions
+  useCustomDimensions,
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 
 import { ConnectingBody, getMessage, type BodyErrorType } from '../../partials/w3m-connecting-body';
@@ -92,7 +93,7 @@ export function ConnectingExternalView() {
   }, [onConnect]);
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <FlexView
         alignItems="center"
         alignSelf="center"

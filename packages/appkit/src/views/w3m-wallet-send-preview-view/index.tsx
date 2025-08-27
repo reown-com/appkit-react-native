@@ -1,5 +1,4 @@
 import { useSnapshot } from 'valtio';
-import { ScrollView } from 'react-native';
 import {
   Avatar,
   Button,
@@ -8,7 +7,7 @@ import {
   Image,
   Text,
   UiUtil,
-  useCustomDimensions
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
 import {
@@ -21,7 +20,6 @@ import styles from './styles';
 import { PreviewSendDetails } from './components/preview-send-details';
 
 export function WalletSendPreviewView() {
-  const { padding } = useCustomDimensions();
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const { token, receiverAddress, receiverProfileName, receiverProfileImageUrl, loading } =
     useSnapshot(SendController.state);
@@ -69,7 +67,7 @@ export function WalletSendPreviewView() {
   };
 
   return (
-    <ScrollView style={{ paddingHorizontal: padding }}>
+    <ScrollView>
       <FlexView padding={['l', 'xl', '3xl', 'xl']}>
         <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
           <FlexView>

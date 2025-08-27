@@ -1,6 +1,5 @@
 import { useSnapshot } from 'valtio';
 import { useEffect } from 'react';
-import { ScrollView } from 'react-native';
 import {
   AccountPill,
   FlexView,
@@ -8,7 +7,8 @@ import {
   IconLink,
   NetworkButton,
   useTheme,
-  useCustomDimensions
+  useCustomDimensions,
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
@@ -51,7 +51,7 @@ export function AccountView() {
 
   return (
     <ScrollView
-      bounces={false}
+      disablePadding
       contentContainerStyle={[
         styles.contentContainer,
         {

@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
-import { Platform, ScrollView } from 'react-native';
+import { Platform } from 'react-native';
 import {
   RouterController,
   ApiController,
@@ -19,7 +19,8 @@ import {
   WalletImage,
   Link,
   IconBox,
-  useCustomDimensions
+  useCustomDimensions,
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 
 import { StoreLink } from './components/StoreLink';
@@ -100,7 +101,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   }, [wcUri, onConnect]);
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <FlexView
         alignItems="center"
         alignSelf="center"

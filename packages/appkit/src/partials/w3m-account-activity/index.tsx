@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ScrollView, View, type StyleProp, type ViewStyle, RefreshControl } from 'react-native';
+import { View, type StyleProp, type ViewStyle, RefreshControl } from 'react-native';
 import {
   FlexView,
   Link,
@@ -8,7 +8,8 @@ import {
   LoadingSpinner,
   Text,
   TransactionUtil,
-  useTheme
+  useTheme,
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 import { type Transaction, type TransactionImage } from '@reown/appkit-common-react-native';
 import {
@@ -121,9 +122,8 @@ export function AccountActivity({ style }: Props) {
 
   return (
     <ScrollView
-      style={[styles.container, style]}
-      fadingEdgeLength={20}
-      contentContainerStyle={[styles.contentContainer]}
+      style={style}
+      contentContainerStyle={styles.contentContainer}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}

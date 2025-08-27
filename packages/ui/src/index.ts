@@ -66,6 +66,8 @@ export { TokenButton, type TokenButtonProps } from './composites/wui-token-butto
 export { Tooltip, type TooltipProps } from './composites/wui-tooltip';
 export { WalletImage, type WalletImageProps } from './composites/wui-wallet-image';
 
+/********** Layout **********/
+export { ScrollView } from './layout/wui-scrollview';
 export { Overlay, type OverlayProps } from './layout/wui-overlay';
 export { FlexView, type FlexViewProps } from './layout/wui-flex';
 export { Separator } from './layout/wui-separator';

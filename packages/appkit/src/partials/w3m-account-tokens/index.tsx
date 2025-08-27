@@ -1,11 +1,5 @@
 import { useCallback, useState } from 'react';
-import {
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  type StyleProp,
-  type ViewStyle
-} from 'react-native';
+import { RefreshControl, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { useSnapshot } from 'valtio';
 import {
   AssetController,
@@ -20,7 +14,8 @@ import {
   ListToken,
   useTheme,
   Spacing,
-  LoadingSpinner
+  LoadingSpinner,
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 
 interface Props {
@@ -70,7 +65,6 @@ export function AccountTokens({ style, isLoading }: Props) {
 
   return (
     <ScrollView
-      fadingEdgeLength={20}
       style={style}
       refreshControl={
         <RefreshControl

@@ -5,14 +5,15 @@ export default StyleSheet.create({
   modal: {
     flex: 1,
     margin: 0,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
   header: {
     marginBottom: Spacing.s,
     paddingHorizontal: Spacing.m
   },
   container: {
-    height: '80%',
+    height: '90%',
     borderTopLeftRadius: BorderRadius.l,
     borderTopRightRadius: BorderRadius.l,
     paddingTop: Spacing.m

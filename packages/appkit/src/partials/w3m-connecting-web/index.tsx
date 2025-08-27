@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useCallback } from 'react';
-import { Linking, ScrollView } from 'react-native';
+import { Linking } from 'react-native';
 import {
   RouterController,
   ApiController,
@@ -17,7 +17,8 @@ import {
   LoadingThumbnail,
   WalletImage,
   Link,
-  IconBox
+  IconBox,
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 
 import { ConnectingBody, getMessage } from '../w3m-connecting-body';
@@ -65,7 +66,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
   }, [data?.wallet, wcUri]);
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20}>
+    <ScrollView>
       <FlexView alignItems="center" padding={['2xl', 'm', '3xl', 'm']}>
         <LoadingThumbnail paused={wcError}>
           <WalletImage

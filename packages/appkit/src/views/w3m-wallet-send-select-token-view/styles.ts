@@ -10,6 +10,7 @@ export default StyleSheet.create({
     marginBottom: Spacing.xs
   },
   tokenList: {
-    paddingHorizontal: Spacing.m
+    paddingHorizontal: Spacing.m,
+    paddingBottom: Spacing.m
   }
 });

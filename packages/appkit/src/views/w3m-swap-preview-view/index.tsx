@@ -1,6 +1,5 @@
 import { useSnapshot } from 'valtio';
 import { useEffect } from 'react';
-import { ScrollView } from 'react-native';
 import { NumberUtil } from '@reown/appkit-common-react-native';
 import { RouterController, SwapController } from '@reown/appkit-core-react-native';
 import {
@@ -10,13 +9,12 @@ import {
   Text,
   TokenButton,
   UiUtil,
-  useCustomDimensions
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 import { SwapDetails } from '../../partials/w3m-swap-details';
 import styles from './styles';
 
 export function SwapPreviewView() {
-  const { padding } = useCustomDimensions();
   const {
     sourceToken,
     sourceTokenAmount,
@@ -67,7 +65,7 @@ export function SwapPreviewView() {
   }, []);
 
   return (
-    <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
+    <ScrollView>
       <FlexView padding={['l', 'l', '2xl', 'l']} justifyContent="center">
         <FlexView flexDirection="row" justifyContent="space-between">
           <FlexView>

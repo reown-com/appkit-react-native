@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
-import { ScrollView, Modal } from 'react-native';
+import { Modal } from 'react-native';
 import {
   ConnectionsController,
   ConstantsUtil,
@@ -8,13 +8,7 @@ import {
   RouterController,
   SwapController
 } from '@reown/appkit-core-react-native';
-import {
-  Button,
-  FlexView,
-  IconLink,
-  useTheme,
-  useCustomDimensions
-} from '@reown/appkit-ui-react-native';
+import { Button, FlexView, IconLink, useTheme, ScrollView } from '@reown/appkit-ui-react-native';
 import { NumberUtil, type SwapInputTarget } from '@reown/appkit-common-react-native';
 
 import { useKeyboard } from '../../hooks/useKeyboard';
@@ -39,8 +33,7 @@ export function SwapView() {
     inputError
   } = useSnapshot(SwapController.state);
   const Theme = useTheme();
-  const { padding } = useCustomDimensions();
-  const { keyboardShown } = useKeyboard();
+  const { keyboardShown, keyboardHeight } = useKeyboard();
   const [showModal, setShowModal] = useState<SwapInputTarget | undefined>();
   const showDetails = !!sourceToken && !!toToken && !inputError;
 
@@ -157,8 +150,7 @@ export function SwapView() {
   return (
     <>
       <ScrollView
-        style={[{ paddingHorizontal: padding }, keyboardShown && styles.withKeyboard]}
-        bounces={false}
+        style={keyboardShown ? [styles.withKeyboard, { marginBottom: keyboardHeight }] : undefined}
         keyboardShouldPersistTaps="always"
       >
         <FlexView padding={['l', 'l', '2xl', 'l']} alignItems="center" justifyContent="center">

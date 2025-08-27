@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useState } from 'react';
-import { Linking, ScrollView } from 'react-native';
+import { Linking } from 'react-native';
 import {
   ApiController,
   CoreHelperUtil,
@@ -16,7 +16,6 @@ import {
   AssetController,
   AssetUtil
 } from '@reown/appkit-core-react-native';
-// import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common-react-native';
 import {
   Avatar,
   Button,
@@ -26,7 +25,7 @@ import {
   UiUtil,
   Spacing,
   ListItem,
-  useCustomDimensions
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 
 import { useInternalAppKit } from '../../AppKitContext';
@@ -76,8 +75,6 @@ export function AccountDefaultView() {
     isOnRampEnabled &&
     activeNamespace &&
     ConstantsUtil.ONRAMP_SUPPORTED_NAMESPACES.includes(activeNamespace);
-
-  const { padding } = useCustomDimensions();
 
   async function onDisconnect() {
     setDisconnecting(true);
@@ -192,8 +189,8 @@ export function AccountDefaultView() {
         onPress={ModalController.close}
         testID="header-close"
       />
-      <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
-        <FlexView alignItems="center" padding={['3xl', 's', '3xl', 's']}>
+      <ScrollView>
+        <FlexView alignItems="center" padding={['3xl', 's', '2xl', 's']}>
           <Avatar imageSrc={identity?.avatar} address={account ?? ''} />
           <FlexView flexDirection="row" alignItems="center" margin={['s', '0', '0', '0']}>
             <Text variant="medium-title-600">

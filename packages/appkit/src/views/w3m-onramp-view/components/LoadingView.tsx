@@ -1,5 +1,5 @@
-import { FlexView, Text, Shimmer } from '@reown/appkit-ui-react-native';
-import { Dimensions, ScrollView } from 'react-native';
+import { FlexView, Text, Shimmer, ScrollView } from '@reown/appkit-ui-react-native';
+import { Dimensions } from 'react-native';
 import { Header } from './Header';
 import styles from '../styles';
 
@@ -9,7 +9,7 @@ export function LoadingView() {
   return (
     <>
       <Header onSettingsPress={() => {}} />
-      <ScrollView bounces={false} testID="onramp-loading-view">
+      <ScrollView testID="onramp-loading-view">
         <FlexView padding={['s', 'l', '4xl', 'l']}>
           <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
             <Text variant="small-400" color="fg-150">

@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   Chip,
   CompatibleNetwork,
@@ -8,7 +8,7 @@ import {
   Spacing,
   Text,
   UiUtil,
-  useCustomDimensions
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
@@ -28,7 +28,6 @@ export function WalletReceiveView() {
   );
   const address = CoreHelperUtil.getPlainAddress(activeAddress);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
-  const { padding } = useCustomDimensions();
   const canCopy = OptionsController.isClipboardAvailable();
   const isSmartAccount = accountType === 'smartAccount';
 
@@ -68,7 +67,7 @@ export function WalletReceiveView() {
   if (!address) return;
 
   return (
-    <ScrollView bounces={false} style={{ paddingHorizontal: padding }}>
+    <ScrollView>
       <FlexView padding={['xl', 'xl', '2xl', 'xl']} alignItems="center">
         <Chip
           label={label}

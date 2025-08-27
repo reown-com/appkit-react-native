@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import {
   ApiController,
   EventUtil,
@@ -14,7 +14,7 @@ import {
   ListItem,
   Separator,
   Text,
-  useCustomDimensions
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 import { Placeholder } from '../../partials/w3m-placeholder';
 import { CustomWalletList } from './components/custom-wallet-list';
@@ -28,7 +28,6 @@ import { WcHelpersUtil } from '../../utils/HelpersUtil';
 export function ConnectView() {
   const { prefetchError } = useSnapshot(ApiController.state);
   const { features } = useSnapshot(OptionsController.state);
-  const { padding } = useCustomDimensions();
 
   const isSocialEnabled = features?.socials && features?.socials.length > 0;
   const showConnectWalletsButton = isSocialEnabled && !features?.showWallets;
@@ -61,8 +60,8 @@ export function ConnectView() {
   };
 
   return (
-    <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
-      <FlexView padding={['xs', '0', '2xl', '0']}>
+    <ScrollView>
+      <FlexView padding={['xs', '0', 'xl', '0']}>
         {isSocialEnabled ? (
           <>
             <SocialLoginList options={features?.socials} />
@@ -70,7 +69,7 @@ export function ConnectView() {
           </>
         ) : null}
 
-        <FlexView padding={['0', 's', 'xs', 's']}>
+        <FlexView padding={['0', 's', '0', 's']}>
           {showConnectWalletsButton ? (
             <ListItem contentStyle={styles.connectWalletButton} onPress={onViewAllPress}>
               <Icon name="wallet" size="lg" />

@@ -1,6 +1,5 @@
 import { useSnapshot } from 'valtio';
 import { memo, useCallback, useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
 import {
   OnRampController,
   ThemeController,
@@ -18,7 +17,8 @@ import {
   Image,
   Text,
   TokenButton,
-  useTheme
+  useTheme,
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 import {
   NumberUtil,
@@ -176,7 +176,7 @@ export function OnRampView() {
   return (
     <>
       <Header onSettingsPress={() => RouterController.push('OnRampSettings')} />
-      <ScrollView bounces={false}>
+      <ScrollView>
         <FlexView padding={['s', 'l', '4xl', 'l']}>
           <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
             <Text variant="small-400" color="fg-150">
@@ -245,25 +245,25 @@ export function OnRampView() {
               Continue
             </Button>
           </FlexView>
-          <SelectPaymentModal
-            visible={isPaymentMethodModalVisible}
-            onClose={onModalClose}
-            title="Payment"
-          />
-          <SelectorModal
-            selectedItem={purchaseCurrency}
-            visible={isCurrencyModalVisible}
-            onClose={onModalClose}
-            items={getPurchaseCurrencies(searchValue, true)}
-            onSearch={handleSearch}
-            renderItem={renderCurrencyItem}
-            keyExtractor={item => item.currencyCode}
-            title="Select token"
-            itemHeight={CURRENCY_ITEM_HEIGHT}
-            showNetwork
-          />
         </FlexView>
       </ScrollView>
+      <SelectPaymentModal
+        visible={isPaymentMethodModalVisible}
+        onClose={onModalClose}
+        title="Payment"
+      />
+      <SelectorModal
+        selectedItem={purchaseCurrency}
+        visible={isCurrencyModalVisible}
+        onClose={onModalClose}
+        items={getPurchaseCurrencies(searchValue, true)}
+        onSearch={handleSearch}
+        renderItem={renderCurrencyItem}
+        keyExtractor={item => item.currencyCode}
+        title="Select token"
+        itemHeight={CURRENCY_ITEM_HEIGHT}
+        showNetwork
+      />
     </>
   );
 }

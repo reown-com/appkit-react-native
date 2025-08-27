@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { FlatList, View, Modal } from 'react-native';
+import { FlatList, View, Modal, Animated } from 'react-native';
 import {
   FlexView,
   IconBox,
@@ -13,6 +13,7 @@ import {
 } from '@reown/appkit-ui-react-native';
 import styles from './styles';
 import { AssetController, AssetUtil, ConnectionsController } from '@reown/appkit-core-react-native';
+import { useEffect, useRef } from 'react';
 
 interface SelectorModalProps {
   title?: string;
@@ -47,6 +48,32 @@ export function SelectorModal({
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
+  const backdropOpacity = useRef(new Animated.Value(0)).current;
+
+  // Handle backdrop animation
+  useEffect(() => {
+    let backdropAnimation: Animated.CompositeAnimation;
+
+    if (visible) {
+      backdropAnimation = Animated.timing(backdropOpacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true
+      });
+      backdropAnimation.start();
+    } else {
+      backdropAnimation = Animated.timing(backdropOpacity, {
+        toValue: 0,
+        duration: 50,
+        useNativeDriver: true
+      });
+      backdropAnimation.start();
+    }
+
+    return () => {
+      backdropAnimation?.stop();
+    };
+  }, [visible, backdropOpacity]);
 
   const renderSeparator = () => {
     return <View style={{ height: SEPARATOR_HEIGHT }} />;
@@ -54,7 +81,7 @@ export function SelectorModal({
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <View style={styles.modal}>
+      <Animated.View style={[styles.modal, { opacity: backdropOpacity }]}>
         <FlexView style={[styles.container, { backgroundColor: Theme['bg-100'] }]}>
           <FlexView
             alignItems="center"
@@ -115,7 +142,7 @@ export function SelectorModal({
             }
           />
         </FlexView>
-      </View>
+      </Animated.View>
     </Modal>
   );
 }

@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useSnapshot } from 'valtio';
-import { Linking, ScrollView } from 'react-native';
+import { Linking } from 'react-native';
 import {
   RouterController,
   OnRampController,
@@ -13,7 +13,8 @@ import {
   IconLink,
   Button,
   Text,
-  useCustomDimensions
+  useCustomDimensions,
+  ScrollView
 } from '@reown/appkit-ui-react-native';
 
 import { ConnectingBody } from '../../partials/w3m-connecting-body';
@@ -107,12 +108,7 @@ export function OnRampLoadingView() {
   }, [onConnect]);
 
   return (
-    <ScrollView
-      bounces={false}
-      fadingEdgeLength={20}
-      contentContainerStyle={styles.container}
-      testID="onramp-loading-widget-view"
-    >
+    <ScrollView contentContainerStyle={styles.container} testID="onramp-loading-widget-view">
       <FlexView
         alignItems="center"
         alignSelf="center"

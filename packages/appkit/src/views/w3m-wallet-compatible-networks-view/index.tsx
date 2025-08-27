@@ -1,12 +1,5 @@
-import { ScrollView } from 'react-native';
 import { useSnapshot } from 'valtio';
-import {
-  FlexView,
-  Text,
-  Banner,
-  NetworkImage,
-  useCustomDimensions
-} from '@reown/appkit-ui-react-native';
+import { FlexView, Text, Banner, NetworkImage, ScrollView } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
   AssetController,
@@ -16,7 +9,6 @@ import {
 import styles from './styles';
 
 export function WalletCompatibleNetworks() {
-  const { padding } = useCustomDimensions();
   const { networks, accountType } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const isSmartAccount = accountType === 'smartAccount';
@@ -30,8 +22,8 @@ export function WalletCompatibleNetworks() {
   const imageHeaders = ApiController._getApiHeaders();
 
   return (
-    <ScrollView bounces={false} style={{ paddingHorizontal: padding }} fadingEdgeLength={20}>
-      <FlexView padding={['xl', 's', '2xl', 's']} margin={['0', '0', '2xl', '0']}>
+    <ScrollView>
+      <FlexView padding={['xl', 's', 'l', 's']}>
         <Banner icon="warningCircle" text="You can only receive assets on these networks." />
         {approvedNetworks.map((network, index) => (
           <FlexView

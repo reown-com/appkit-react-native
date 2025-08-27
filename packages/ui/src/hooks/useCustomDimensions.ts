@@ -14,23 +14,27 @@ type CustomDimensionsType = {
   padding: number;
 };
 
-const MAX_HEIGHT_PERCENTAGE = 0.9;
+const OFFSET_PERCENTAGE = 0.9;
 
-const getMaxHeight = (width: number, height: number) => {
-  return Math.max(width, height) * MAX_HEIGHT_PERCENTAGE;
+const getMaxSize = (value: number) => {
+  return value * OFFSET_PERCENTAGE;
+};
+
+const checkPortrait = (width: number, height: number) => {
+  return height > width;
 };
 
 export function useCustomDimensions(): CustomDimensionsType {
   const { width, height } = useWindowDimensions();
-  const [maxWidth, setMaxWidth] = useState<number>(Math.min(width, height));
-  const [maxHeight, setMaxHeight] = useState<number>(getMaxHeight(width, height));
-  const [isPortrait, setIsPortrait] = useState<boolean>(height > width);
+  const [maxWidth, setMaxWidth] = useState<number>(getMaxSize(width));
+  const [maxHeight, setMaxHeight] = useState<number>(getMaxSize(height));
+  const [isPortrait, setIsPortrait] = useState<boolean>(checkPortrait(width, height));
   const [padding, setPadding] = useState<number>(0);
 
   useEffect(() => {
-    setMaxWidth(Math.min(width, height));
-    setMaxHeight(getMaxHeight(width, height));
-    setIsPortrait(height > width);
+    setMaxWidth(getMaxSize(width));
+    setMaxHeight(getMaxSize(height));
+    setIsPortrait(checkPortrait(width, height));
     setPadding(width < height ? 0 : (width - height) / 2);
   }, [width, height]);
 

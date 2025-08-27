@@ -1,24 +1,16 @@
-import { ScrollView } from 'react-native';
-import { Button, FlexView, Text, Visual, useCustomDimensions } from '@reown/appkit-ui-react-native';
+import { Button, FlexView, Text, Visual, ScrollView } from '@reown/appkit-ui-react-native';
 import { EventsController, RouterController } from '@reown/appkit-core-react-native';
 import styles from './styles';
 
 export function WhatIsAWalletView() {
-  const { padding } = useCustomDimensions();
-
   const onGetWalletPress = () => {
     RouterController.push('GetWallet');
     EventsController.sendEvent({ type: 'track', event: 'CLICK_GET_WALLET' });
   };
 
   return (
-    <ScrollView
-      bounces={false}
-      fadingEdgeLength={20}
-      style={{ paddingHorizontal: padding }}
-      testID="what-is-a-wallet-view"
-    >
-      <FlexView alignItems="center" padding={['xs', '4xl', 'xl', '4xl']}>
+    <ScrollView testID="what-is-a-wallet-view">
+      <FlexView alignItems="center" padding={['xs', '4xl', 's', '4xl']}>
         <FlexView flexDirection="row" padding={['0', '0', 's', '0']}>
           <Visual name="login" />
           <Visual name="profile" style={styles.visual} />

@@ -1,16 +1,15 @@
-import { Linking, ScrollView } from 'react-native';
-import { Button, FlexView, Text, Visual, useCustomDimensions } from '@reown/appkit-ui-react-native';
+import { Linking } from 'react-native';
+import { Button, FlexView, Text, Visual, ScrollView } from '@reown/appkit-ui-react-native';
 import styles from './styles';
 
 export function WhatIsANetworkView() {
-  const { padding } = useCustomDimensions();
   const onLearnMorePress = () => {
     Linking.openURL('https://ethereum.org/en/developers/docs/networks/');
   };
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
-      <FlexView alignItems="center" padding={['l', '4xl', '3xl', '4xl']}>
+    <ScrollView>
+      <FlexView alignItems="center" padding={['l', '4xl', '2xl', '4xl']}>
         <FlexView flexDirection="row" padding={['0', '0', 'xs', '0']}>
           <Visual name="network" />
           <Visual name="layers" style={styles.visual} />

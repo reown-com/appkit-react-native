@@ -1,7 +1,7 @@
 /* eslint-disable valtio/state-snapshot-rule */
 import { useSnapshot } from 'valtio';
 import { useRef, useState, useMemo, useEffect } from 'react';
-import { FlatList, StyleSheet, View, Modal } from 'react-native';
+import { FlatList, StyleSheet, View, Modal, Animated } from 'react-native';
 import {
   FlexView,
   IconLink,
@@ -9,7 +9,8 @@ import {
   Text,
   useTheme,
   Separator,
-  BorderRadius
+  BorderRadius,
+  useCustomDimensions
 } from '@reown/appkit-ui-react-native';
 import { OnRampController } from '@reown/appkit-core-react-native';
 import { Quote, ITEM_HEIGHT as QUOTE_ITEM_HEIGHT } from './Quote';
@@ -27,6 +28,7 @@ const SEPARATOR_HEIGHT = Spacing.s;
 export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentModalProps) {
   const Theme = useTheme();
   const { selectedQuote, quotes, selectedPaymentMethod } = useSnapshot(OnRampController.state);
+  const { padding } = useCustomDimensions();
 
   const paymentMethodsRef = useRef<FlatList>(null);
   const [paymentMethods, setPaymentMethods] = useState<OnRampPaymentMethod[]>(
@@ -116,6 +118,33 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
     );
   };
 
+  const backdropOpacity = useRef(new Animated.Value(0)).current;
+
+  // Handle backdrop animation
+  useEffect(() => {
+    let backdropAnimation: Animated.CompositeAnimation;
+
+    if (visible) {
+      backdropAnimation = Animated.timing(backdropOpacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true
+      });
+      backdropAnimation.start();
+    } else {
+      backdropAnimation = Animated.timing(backdropOpacity, {
+        toValue: 0,
+        duration: 50,
+        useNativeDriver: true
+      });
+      backdropAnimation.start();
+    }
+
+    return () => {
+      backdropAnimation?.stop();
+    };
+  }, [visible, backdropOpacity]);
+
   useEffect(() => {
     if (visible && OnRampController.state.selectedPaymentMethod) {
       const methods = [
@@ -132,7 +161,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <View style={styles.modalContent}>
+      <Animated.View style={[styles.modalContent, { opacity: backdropOpacity }]}>
         <FlexView style={[styles.container, { backgroundColor: Theme['bg-100'] }]}>
           <FlexView
             alignItems="center"
@@ -144,10 +173,10 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
             {!!title && <Text variant="paragraph-600">{title}</Text>}
             <View style={styles.iconPlaceholder} />
           </FlexView>
-          <Text variant="small-500" color="fg-150" style={styles.subtitle}>
-            Pay with
-          </Text>
-          <FlexView>
+          <FlexView style={{ paddingHorizontal: padding }}>
+            <Text variant="small-500" color="fg-150" style={styles.subtitle}>
+              Pay with
+            </Text>
             <FlatList
               data={availablePaymentMethods}
               renderItem={renderPaymentMethod}
@@ -161,7 +190,11 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
             />
           </FlexView>
           <Separator style={styles.separator} color="gray-glass-010" />
-          <Text variant="small-500" color="fg-150" style={styles.subtitle}>
+          <Text
+            variant="small-500"
+            color="fg-150"
+            style={[styles.subtitle, { paddingHorizontal: padding }]}
+          >
             Providers
           </Text>
           <FlatList
@@ -169,6 +202,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
             bounces={false}
             renderItem={renderQuote}
             extraData={selectedPaymentMethod}
+            style={{ paddingHorizontal: padding }}
             contentContainerStyle={styles.listContent}
             ItemSeparatorComponent={renderSeparator}
             fadingEdgeLength={20}
@@ -180,7 +214,7 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
             })}
           />
         </FlexView>
-      </View>
+      </Animated.View>
     </Modal>
   );
 }
@@ -188,7 +222,8 @@ const styles = StyleSheet.create({
   modalContent: {
     margin: 0,
     flex: 1,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
   header: {
     marginBottom: Spacing.l,
@@ -196,7 +231,7 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.m
   },
   container: {
-    height: '80%',
+    height: '90%',
     borderTopLeftRadius: BorderRadius.l,
     borderTopRightRadius: BorderRadius.l
   },
