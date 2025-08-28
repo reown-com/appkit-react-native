@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-wallet-react-native",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -35,8 +35,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@reown/appkit-core-react-native": "1.3.0",
-    "@reown/appkit-ui-react-native": "1.3.0",
+    "@reown/appkit-core-react-native": "1.3.1",
+    "@reown/appkit-ui-react-native": "1.3.1",
     "zod": "3.22.4"
   },
   "peerDependencies": {
