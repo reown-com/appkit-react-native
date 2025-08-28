@@ -52,7 +52,7 @@ export function AllWalletsView() {
   const headerTemplate = () => {
     return (
       <FlexView
-        padding={['s', 'l', 'xs', 'l']}
+        padding={['s', 'l', '4xs', 'l']}
         flexDirection="row"
         alignItems="center"
         style={[

@@ -21,7 +21,7 @@ import { Placeholder } from '../../partials/w3m-placeholder';
 import styles from './styles';
 
 export function WalletSendSelectTokenView() {
-  const { padding } = useCustomDimensions();
+  const { padding, maxHeight } = useCustomDimensions();
   const { activeNetwork, balances } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
@@ -45,7 +45,7 @@ export function WalletSendSelectTokenView() {
   return (
     <FlexView
       margin={['l', '0', '2xl', '0']}
-      style={[styles.container, { paddingHorizontal: padding }]}
+      style={[styles.container, { paddingHorizontal: padding, height: maxHeight }]}
     >
       <FlexView margin={['0', 'm', 'm', 'm']}>
         <InputText

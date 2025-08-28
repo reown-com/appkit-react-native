@@ -31,7 +31,7 @@ export function WalletList({
   isLoading = false,
   loadingItems = 20
 }: Props) {
-  const { padding } = useCustomDimensions();
+  const { padding, maxHeight } = useCustomDimensions();
 
   // Create loading data if isLoading is true
   const displayData = isLoading
@@ -44,7 +44,7 @@ export function WalletList({
       bounces={false}
       numColumns={4}
       data={displayData}
-      style={styles.list}
+      style={[styles.list, { height: maxHeight }]}
       columnWrapperStyle={styles.columnWrapperStyle}
       renderItem={({ item }) => {
         if (isLoading) {
@@ -75,7 +75,7 @@ export function WalletList({
 
 const styles = StyleSheet.create({
   list: {
-    height: '100%'
+    paddingTop: Spacing['3xs']
   },
   contentContainer: {
     paddingBottom: Spacing['4xl'],

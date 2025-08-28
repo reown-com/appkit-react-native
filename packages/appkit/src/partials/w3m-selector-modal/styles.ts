@@ -12,7 +12,6 @@ export default StyleSheet.create({
     paddingHorizontal: Spacing.m
   },
   container: {
-    height: '100%',
     borderTopLeftRadius: BorderRadius.l,
     borderTopRightRadius: BorderRadius.l,
     paddingTop: Spacing.m

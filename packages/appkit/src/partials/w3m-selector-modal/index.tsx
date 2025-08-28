@@ -9,6 +9,7 @@ import {
   Separator,
   Spacing,
   Text,
+  useCustomDimensions,
   useTheme
 } from '@reown/appkit-ui-react-native';
 import styles from './styles';
@@ -44,6 +45,7 @@ export function SelectorModal({
   showNetwork
 }: SelectorModalProps) {
   const Theme = useTheme();
+  const { maxHeight } = useCustomDimensions();
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
@@ -55,7 +57,9 @@ export function SelectorModal({
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.modal}>
-        <FlexView style={[styles.container, { backgroundColor: Theme['bg-100'] }]}>
+        <FlexView
+          style={[styles.container, { backgroundColor: Theme['bg-100'], height: maxHeight }]}
+        >
           <FlexView
             alignItems="center"
             justifyContent="space-between"

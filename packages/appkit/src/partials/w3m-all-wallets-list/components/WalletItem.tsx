@@ -6,34 +6,25 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { memo } from 'react';
 
 interface WalletItemProps {
-  containerStyle?: StyleProp<ViewStyle>;
   item: WcWallet;
-  itemWidth?: number;
   imageHeaders?: Record<string, string>;
   onItemPress: (wallet: WcWallet) => void;
   style?: StyleProp<ViewStyle>;
 }
 
-export function WalletItem({
-  containerStyle,
-  item,
-  itemWidth,
-  imageHeaders,
-  onItemPress,
-  style
-}: WalletItemProps) {
+export function WalletItem({ item, imageHeaders, onItemPress, style }: WalletItemProps) {
   const { walletImages } = useSnapshot(AssetController.state);
   const isInstalled = ApiController.state.installed.find(wallet => wallet?.id === item?.id);
   const imageSrc = AssetUtil.getWalletImage(item, walletImages);
 
   if (!item?.id) {
-    return <CardSelectLoader style={[containerStyle, { width: itemWidth }, style]} />;
+    return <CardSelectLoader style={style} />;
   }
 
   return (
     <CardSelect
       imageSrc={imageSrc}
-      style={[containerStyle, itemWidth ? { width: itemWidth } : undefined, style]}
+      style={style}
       imageHeaders={imageHeaders}
       name={item?.name ?? 'Unknown'}
       onPress={() => onItemPress(item)}
