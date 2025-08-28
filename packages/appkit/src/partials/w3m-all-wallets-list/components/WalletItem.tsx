@@ -33,7 +33,7 @@ export function WalletItem({
   return (
     <CardSelect
       imageSrc={imageSrc}
-      style={[containerStyle, { width: itemWidth }, style]}
+      style={[containerStyle, itemWidth ? { width: itemWidth } : undefined, style]}
       imageHeaders={imageHeaders}
       name={item?.name ?? 'Unknown'}
       onPress={() => onItemPress(item)}
