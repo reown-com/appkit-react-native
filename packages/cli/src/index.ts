@@ -18,10 +18,12 @@ const TEMPLATE_URL =
 
 function runExpoCreate(projectName?: string) {
   return new Promise<void>((resolve, reject) => {
-    const args = ['create-expo', '--template', TEMPLATE_URL];
+    const args = ['create-expo'];
     if (projectName) {
       args.push(projectName);
     }
+
+    args.push('--template', TEMPLATE_URL);
 
     const child = spawn('npx', args, {
       stdio: 'inherit',
