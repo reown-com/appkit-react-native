@@ -17,7 +17,7 @@ type CustomDimensionsType = {
 const MAX_HEIGHT_PERCENTAGE = 0.9;
 
 const getMaxHeight = (height: number) => {
-  return height * MAX_HEIGHT_PERCENTAGE - (StatusBar.currentHeight ?? 0);
+  return height * MAX_HEIGHT_PERCENTAGE - (StatusBar.currentHeight ?? 20); // 20 offset for iOS
 };
 
 export function useCustomDimensions(): CustomDimensionsType {
