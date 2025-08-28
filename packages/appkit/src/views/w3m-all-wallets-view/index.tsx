@@ -5,7 +5,6 @@ import {
   FlexView,
   IconLink,
   SearchBar,
-  Spacing,
   useTheme,
   useCustomDimensions
 } from '@reown/appkit-ui-react-native';
@@ -15,23 +14,13 @@ import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { AllWalletsList } from '../../partials/w3m-all-wallets-list';
 import { AllWalletsSearch } from '../../partials/w3m-all-wallets-search';
 import { WcHelpersUtil } from '../../utils/HelpersUtil';
-import type { LayoutChangeEvent } from 'react-native';
 
 export function AllWalletsView() {
   const Theme = useTheme();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { maxWidth } = useCustomDimensions();
-  const [headerHeight, setHeaderHeight] = useState<number>(0);
-  const numColumns = 4;
-  const usableWidth = maxWidth - Spacing['s'] * 2;
-  const itemWidth = Math.abs(Math.trunc(usableWidth / numColumns));
 
   const { debouncedCallback: onInputChange } = useDebounceCallback({ callback: setSearchQuery });
-
-  const onHeaderLayout = (event: LayoutChangeEvent) => {
-    const { height } = event.nativeEvent.layout;
-    setHeaderHeight(height);
-  };
 
   const onWalletPress = (wallet: WcWallet) => {
     const isExternal = WcHelpersUtil.isExternalWallet(wallet);
@@ -65,7 +54,6 @@ export function AllWalletsView() {
       <FlexView
         padding={['s', 'l', 'xs', 'l']}
         flexDirection="row"
-        onLayout={onHeaderLayout}
         alignItems="center"
         style={[
           styles.header,
@@ -93,25 +81,10 @@ export function AllWalletsView() {
 
   const listTemplate = () => {
     if (searchQuery) {
-      return (
-        <AllWalletsSearch
-          columns={numColumns}
-          itemWidth={itemWidth}
-          searchQuery={searchQuery}
-          onItemPress={onWalletPress}
-          headerHeight={headerHeight}
-        />
-      );
+      return <AllWalletsSearch searchQuery={searchQuery} onItemPress={onWalletPress} />;
     }
 
-    return (
-      <AllWalletsList
-        columns={numColumns}
-        itemWidth={itemWidth}
-        onItemPress={onWalletPress}
-        headerHeight={headerHeight}
-      />
-    );
+    return <AllWalletsList onItemPress={onWalletPress} />;
   };
 
   return (

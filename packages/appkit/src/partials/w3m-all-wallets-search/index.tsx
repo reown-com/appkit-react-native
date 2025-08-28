@@ -9,13 +9,11 @@ import { Loading } from '../w3m-all-wallets-list/components/Loading';
 import { WalletList } from '../w3m-all-wallets-list/components/WalletList';
 
 export interface AllWalletsSearchProps {
-  columns: number;
   onItemPress: (wallet: WcWallet) => void;
-  itemWidth?: number;
   searchQuery?: string;
 }
 
-export function AllWalletsSearch({ searchQuery, itemWidth, onItemPress }: AllWalletsSearchProps) {
+export function AllWalletsSearch({ searchQuery, onItemPress }: AllWalletsSearchProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingError, setLoadingError] = useState<boolean>(false);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
@@ -52,7 +50,7 @@ export function AllWalletsSearch({ searchQuery, itemWidth, onItemPress }: AllWal
   }, [searchQuery, prevSearchQuery, searchFetch]);
 
   if (loading) {
-    return <Loading itemWidth={itemWidth} containerStyle={styles.itemContainer} />;
+    return <Loading loadingItems={20} />;
   }
 
   if (loadingError) {

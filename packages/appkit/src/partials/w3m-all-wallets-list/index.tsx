@@ -14,20 +14,18 @@ import { Loading } from './components/Loading';
 import { WalletList } from './components/WalletList';
 
 interface AllWalletsListProps {
-  columns: number;
   onItemPress: (wallet: WcWallet) => void;
-  itemWidth?: number;
   headerHeight?: number;
 }
 
-export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsListProps) {
+export function AllWalletsList({ onItemPress }: AllWalletsListProps) {
   const [loading, setLoading] = useState<boolean>(ApiController.state.wallets.length === 0);
   const [loadingError, setLoadingError] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const { installed, featured, recommended, wallets } = useSnapshot(ApiController.state);
   const { customWallets } = useSnapshot(OptionsController.state) as OptionsControllerState;
   const preloadedWallets = installed.length + featured.length + recommended.length;
-  const loadingItems = columns - ((100 + preloadedWallets) % columns);
+  const loadingItems = 4 - ((100 + preloadedWallets) % 4);
 
   const combinedWallets = [
     ...(customWallets ?? []),
@@ -85,7 +83,7 @@ export function AllWalletsList({ columns, itemWidth, onItemPress }: AllWalletsLi
   }, []);
 
   if (loading) {
-    return <Loading itemWidth={itemWidth} containerStyle={styles.itemContainer} />;
+    return <Loading loadingItems={20} />;
   }
 
   if (loadingError) {

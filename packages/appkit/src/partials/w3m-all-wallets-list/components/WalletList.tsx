@@ -1,6 +1,11 @@
 import { FlatList, StyleSheet } from 'react-native';
 import { WalletItem } from './WalletItem';
-import { CardSelectHeight, Spacing, useCustomDimensions } from '@reown/appkit-ui-react-native';
+import {
+  CardSelectHeight,
+  Spacing,
+  useCustomDimensions,
+  CardSelectLoader
+} from '@reown/appkit-ui-react-native';
 import { ApiController } from '@reown/appkit-core-react-native';
 import type { WcWallet } from '@reown/appkit-common-react-native';
 
@@ -14,27 +19,47 @@ interface Props {
   onItemPress: (wallet: WcWallet) => void;
   onEndReached?: () => void;
   onEndReachedThreshold?: number;
+  isLoading?: boolean;
+  loadingItems?: number;
 }
 
-export function WalletList({ data, onItemPress, onEndReached, onEndReachedThreshold }: Props) {
+export function WalletList({
+  data,
+  onItemPress,
+  onEndReached,
+  onEndReachedThreshold,
+  isLoading = false,
+  loadingItems = 20
+}: Props) {
   const { padding } = useCustomDimensions();
+
+  // Create loading data if isLoading is true
+  const displayData = isLoading
+    ? Array.from({ length: loadingItems }, (_, index) => ({ id: `loading-${index}` }) as WcWallet)
+    : data;
 
   return (
     <FlatList
       fadingEdgeLength={20}
       bounces={false}
       numColumns={4}
-      data={data}
+      data={displayData}
       style={styles.list}
       columnWrapperStyle={styles.columnWrapperStyle}
-      renderItem={({ item }) => (
-        <WalletItem
-          item={item}
-          imageHeaders={imageHeaders}
-          onItemPress={onItemPress}
-          style={styles.itemContainer}
-        />
-      )}
+      renderItem={({ item }) => {
+        if (isLoading) {
+          return <CardSelectLoader style={styles.itemContainer} />;
+        }
+
+        return (
+          <WalletItem
+            item={item}
+            imageHeaders={imageHeaders}
+            onItemPress={onItemPress}
+            style={styles.itemContainer}
+          />
+        );
+      }}
       contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding }]}
       onEndReached={onEndReached}
       onEndReachedThreshold={onEndReachedThreshold}
