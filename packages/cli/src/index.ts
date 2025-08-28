@@ -7,16 +7,25 @@ import { banner } from './utils';
 // Define styles
 const redTip = chalk.hex('#C70039'); // Red for tips
 
-// Display CLI Banner
-// eslint-disable-next-line no-console
-console.log(banner);
+// Display banner unless disabled with --no-banner
+if (!process.argv.includes('--no-banner')) {
+  // eslint-disable-next-line no-console
+  console.log(banner);
+}
 
 const TEMPLATE_URL =
   'https://github.com/reown-com/react-native-examples/tree/main/dapps/appkit-expo-wagmi';
 
-function runExpoCreate() {
+function runExpoCreate(projectName?: string) {
   return new Promise<void>((resolve, reject) => {
-    const child = spawn('npx', ['create-expo', '--template', TEMPLATE_URL], {
+    const args = ['create-expo'];
+    if (projectName) {
+      args.push(projectName);
+    }
+
+    args.push('--template', TEMPLATE_URL);
+
+    const child = spawn('npx', args, {
       stdio: 'inherit',
       shell: process.platform === 'win32'
     });
@@ -34,7 +43,16 @@ function runExpoCreate() {
 
 export async function main() {
   try {
-    await runExpoCreate();
+    const projectNameIndex = process.argv.findIndex(arg => arg === '--name');
+    let projectName: string | undefined;
+
+    if (projectNameIndex >= 0) {
+      const nextArg = process.argv[projectNameIndex + 1];
+      if (nextArg && !nextArg.startsWith('-')) {
+        projectName = nextArg;
+      }
+    }
+    await runExpoCreate(projectName);
   } catch (error: any) {
     // eslint-disable-next-line no-console
     console.error('Failed to run Expo initializer:', error?.message || error);
