@@ -4,8 +4,7 @@ import {
   Modal as RNModal,
   type ModalProps as RNModalProps,
   TouchableOpacity,
-  Animated,
-  StatusBar
+  Animated
 } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
@@ -75,11 +74,10 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
 
     if (visible && modalVisible) {
       // Calculate the target position (screen height - card height)
-      const targetY =
-        contentHeight > 0 ? height - contentHeight + (StatusBar.currentHeight ?? 0) : height * 0.2; // fallback to 20% from bottom
+      const targetY = contentHeight > 0 ? height - contentHeight : height * 0.2; // fallback to 20% from bottom
 
       modalAnimation = Animated.spring(translateY, {
-        toValue: targetY,
+        toValue: Math.round(targetY),
         damping: 25,
         stiffness: 220,
         mass: 1,

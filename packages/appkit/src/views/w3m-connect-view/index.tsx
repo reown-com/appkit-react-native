@@ -62,7 +62,7 @@ export function ConnectView() {
 
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
-      <FlexView padding={['xs', '0', '2xl', '0']}>
+      <FlexView padding={['xs', '0', '0', '0']}>
         {isSocialEnabled ? (
           <>
             <SocialLoginList options={features?.socials} />
