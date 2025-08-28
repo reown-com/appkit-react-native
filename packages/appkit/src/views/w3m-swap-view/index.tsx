@@ -39,7 +39,7 @@ export function SwapView() {
     inputError
   } = useSnapshot(SwapController.state);
   const Theme = useTheme();
-  const { padding } = useCustomDimensions();
+  const { padding, maxHeight } = useCustomDimensions();
   const { keyboardShown } = useKeyboard();
   const [showModal, setShowModal] = useState<SwapInputTarget | undefined>();
   const showDetails = !!sourceToken && !!toToken && !inputError;
@@ -157,7 +157,10 @@ export function SwapView() {
   return (
     <>
       <ScrollView
-        style={[{ paddingHorizontal: padding }, keyboardShown && styles.withKeyboard]}
+        style={[
+          { paddingHorizontal: padding },
+          keyboardShown && !showModal && { height: maxHeight }
+        ]}
         bounces={false}
         keyboardShouldPersistTaps="always"
       >

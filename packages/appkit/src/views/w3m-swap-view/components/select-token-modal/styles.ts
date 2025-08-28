@@ -8,9 +8,11 @@ export default StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     overflow: 'hidden',
-    margin: 0,
-    flex: 1,
-    justifyContent: 'flex-end'
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: 0
   },
   title: {
     paddingTop: Spacing['2xs']

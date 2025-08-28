@@ -44,7 +44,7 @@ interface Props {
 }
 
 export function SwapSelectTokenModal({ onClose, type, style, visible }: Props) {
-  const { padding } = useCustomDimensions();
+  const { padding, maxHeight } = useCustomDimensions();
   const Theme = useTheme();
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
@@ -88,7 +88,8 @@ export function SwapSelectTokenModal({ onClose, type, style, visible }: Props) {
           styles.container,
           {
             paddingHorizontal: padding,
-            backgroundColor: Theme['bg-100']
+            backgroundColor: Theme['bg-100'],
+            height: maxHeight
           },
           style
         ]}

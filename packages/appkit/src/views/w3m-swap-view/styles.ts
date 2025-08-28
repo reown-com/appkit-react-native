@@ -19,9 +19,5 @@ export default StyleSheet.create({
   actionButton: {
     marginTop: Spacing.xs,
     width: '100%'
-  },
-
-  withKeyboard: {
-    height: '100%'
   }
 });
