@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.m
   },
   container: {
-    height: '80%',
+    height: '100%',
     borderTopLeftRadius: BorderRadius.l,
     borderTopRightRadius: BorderRadius.l
   },

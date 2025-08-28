@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
-import { ScrollView, Modal } from 'react-native';
+import { ScrollView } from 'react-native';
 import {
   ConnectionsController,
   ConstantsUtil,
@@ -22,7 +22,7 @@ import { SwapInput } from '../../partials/w3m-swap-input';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { SwapDetails } from '../../partials/w3m-swap-details';
 import styles from './styles';
-import { SwapSelectTokenView } from './components/select-token-view';
+import { SwapSelectTokenModal } from './components/select-token-modal';
 
 export function SwapView() {
   const {
@@ -208,9 +208,7 @@ export function SwapView() {
           </Button>
         </FlexView>
       </ScrollView>
-      <Modal visible={!!showModal} transparent animationType="slide" onRequestClose={onModalClose}>
-        <SwapSelectTokenView style={styles.modalContent} onClose={onModalClose} type={showModal} />
-      </Modal>
+      <SwapSelectTokenModal visible={!!showModal} onClose={onModalClose} type={showModal} />
     </>
   );
 }
