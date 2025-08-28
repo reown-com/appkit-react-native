@@ -42,7 +42,14 @@ function runExpoCreate(projectName?: string) {
 export async function main() {
   try {
     const projectNameIndex = process.argv.findIndex(arg => arg === '--name');
-    const projectName = projectNameIndex >= 0 ? process.argv[projectNameIndex + 1] : undefined;
+    let projectName: string | undefined;
+
+    if (projectNameIndex >= 0) {
+      const nextArg = process.argv[projectNameIndex + 1];
+      if (nextArg && !nextArg.startsWith('-')) {
+        projectName = nextArg;
+      }
+    }
     await runExpoCreate(projectName);
   } catch (error: any) {
     // eslint-disable-next-line no-console
