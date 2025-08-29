@@ -354,6 +354,8 @@ export const ConnectionsController = {
     const newConnection = { ...connection, type };
     newConnectionsMap.set(namespace, newConnection);
     baseState.connections = newConnectionsMap;
+
+    return getActiveAddress(newConnection);
   },
 
   async disconnect(namespace: ChainNamespace, isInternal = true) {
