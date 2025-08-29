@@ -18,7 +18,7 @@ import { WcHelpersUtil } from '../../utils/HelpersUtil';
 export function AllWalletsView() {
   const Theme = useTheme();
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const { maxWidth } = useCustomDimensions();
+  const { padding } = useCustomDimensions();
 
   const { debouncedCallback: onInputChange } = useDebounceCallback({ callback: setSearchQuery });
 
@@ -57,7 +57,11 @@ export function AllWalletsView() {
         alignItems="center"
         style={[
           styles.header,
-          { backgroundColor: Theme['bg-100'], shadowColor: Theme['bg-100'], width: maxWidth }
+          {
+            backgroundColor: Theme['bg-100'],
+            shadowColor: Theme['bg-100'],
+            marginHorizontal: padding
+          }
         ]}
       >
         <SearchBar

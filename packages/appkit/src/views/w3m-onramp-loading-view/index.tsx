@@ -21,7 +21,7 @@ import styles from './styles';
 import { StringUtil } from '@reown/appkit-common-react-native';
 
 export function OnRampLoadingView() {
-  const { maxWidth: width } = useCustomDimensions();
+  const { padding } = useCustomDimensions();
   const { error } = useSnapshot(OnRampController.state);
   const providerName = StringUtil.capitalize(
     OnRampController.state.selectedQuote?.serviceProvider.toLowerCase()
@@ -111,14 +111,10 @@ export function OnRampLoadingView() {
       bounces={false}
       fadingEdgeLength={20}
       contentContainerStyle={styles.container}
+      style={{ paddingHorizontal: padding }}
       testID="onramp-loading-widget-view"
     >
-      <FlexView
-        alignItems="center"
-        alignSelf="center"
-        padding={['2xl', 'l', '0', 'l']}
-        style={{ width }}
-      >
+      <FlexView alignItems="center" alignSelf="center" padding={['2xl', 'l', '0', 'l']}>
         <IconLink
           icon="chevronLeft"
           size="md"
