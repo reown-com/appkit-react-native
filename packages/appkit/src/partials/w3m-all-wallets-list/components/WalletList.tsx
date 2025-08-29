@@ -4,7 +4,8 @@ import {
   CardSelectHeight,
   Spacing,
   useCustomDimensions,
-  CardSelectLoader
+  CardSelectLoader,
+  CardSelectWidth
 } from '@reown/appkit-ui-react-native';
 import { ApiController } from '@reown/appkit-core-react-native';
 import type { WcWallet } from '@reown/appkit-common-react-native';
@@ -12,6 +13,7 @@ import type { WcWallet } from '@reown/appkit-common-react-native';
 const imageHeaders = ApiController._getApiHeaders();
 
 const ITEM_HEIGHT = CardSelectHeight;
+const ITEM_WIDTH = CardSelectWidth;
 const ITEM_HEIGHT_WITH_GAP = ITEM_HEIGHT + Spacing['3xs'];
 
 interface Props {
@@ -87,6 +89,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   itemContainer: {
-    width: '23%'
+    width: '23%',
+    minWidth: ITEM_WIDTH
   }
 });
