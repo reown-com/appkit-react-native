@@ -11,7 +11,7 @@ import {
   Icon,
   BorderRadius
 } from '@reown/appkit-ui-react-native';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, type StyleProp, type ViewStyle } from 'react-native';
 
 export const ITEM_HEIGHT = 60;
 
@@ -22,9 +22,10 @@ interface Props {
   title: string;
   subtitle: string;
   testID?: string;
+  style?: StyleProp<ViewStyle>;
 }
 
-export function Currency({ onPress, item, selected, title, subtitle, testID }: Props) {
+export function Currency({ onPress, item, selected, title, subtitle, testID, style }: Props) {
   const Theme = useTheme();
 
   const handlePress = () => {
@@ -34,7 +35,7 @@ export function Currency({ onPress, item, selected, title, subtitle, testID }: P
   return (
     <Pressable
       onPress={handlePress}
-      style={styles.container}
+      style={[styles.container, style]}
       backgroundColor="transparent"
       testID={testID}
     >

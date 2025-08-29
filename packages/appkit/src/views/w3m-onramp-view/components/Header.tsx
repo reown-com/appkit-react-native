@@ -23,7 +23,7 @@ export function Header({ onSettingsPress }: HeaderProps) {
         style={styles.icon}
       />
       <Text variant="paragraph-600" numberOfLines={1} testID="header-text">
-        Buy crypto
+        Buy Crypto
       </Text>
       <IconLink
         icon="settings"

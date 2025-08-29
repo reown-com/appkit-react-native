@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
-import { ScrollView, Modal } from 'react-native';
+import { ScrollView } from 'react-native';
 import {
   ConnectionsController,
   ConstantsUtil,
@@ -22,7 +22,7 @@ import { SwapInput } from '../../partials/w3m-swap-input';
 import { useDebounceCallback } from '../../hooks/useDebounceCallback';
 import { SwapDetails } from '../../partials/w3m-swap-details';
 import styles from './styles';
-import { SwapSelectTokenView } from './components/select-token-view';
+import { SwapSelectTokenModal } from './components/select-token-modal';
 
 export function SwapView() {
   const {
@@ -39,7 +39,7 @@ export function SwapView() {
     inputError
   } = useSnapshot(SwapController.state);
   const Theme = useTheme();
-  const { padding } = useCustomDimensions();
+  const { padding, maxHeight } = useCustomDimensions();
   const { keyboardShown } = useKeyboard();
   const [showModal, setShowModal] = useState<SwapInputTarget | undefined>();
   const showDetails = !!sourceToken && !!toToken && !inputError;
@@ -157,7 +157,10 @@ export function SwapView() {
   return (
     <>
       <ScrollView
-        style={[{ paddingHorizontal: padding }, keyboardShown && styles.withKeyboard]}
+        style={[
+          { paddingHorizontal: padding },
+          keyboardShown && !showModal && { height: maxHeight }
+        ]}
         bounces={false}
         keyboardShouldPersistTaps="always"
       >
@@ -208,9 +211,7 @@ export function SwapView() {
           </Button>
         </FlexView>
       </ScrollView>
-      <Modal visible={!!showModal} transparent animationType="slide" onRequestClose={onModalClose}>
-        <SwapSelectTokenView style={styles.modalContent} onClose={onModalClose} type={showModal} />
-      </Modal>
+      <SwapSelectTokenModal visible={!!showModal} onClose={onModalClose} type={showModal} />
     </>
   );
 }

@@ -29,7 +29,7 @@ export function ConnectingExternalView() {
   const { data } = useSnapshot(RouterController.state);
   const { walletImages } = useSnapshot(AssetController.state);
   const { connect } = useInternalAppKit();
-  const { maxWidth: width } = useCustomDimensions();
+  const { padding } = useCustomDimensions();
   const [errorType, setErrorType] = useState<BodyErrorType>();
   const bodyMessage = getMessage({ walletName: data?.wallet?.name, errorType });
 
@@ -92,13 +92,13 @@ export function ConnectingExternalView() {
   }, [onConnect]);
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.container}>
-      <FlexView
-        alignItems="center"
-        alignSelf="center"
-        padding={['2xl', 'l', '0', 'l']}
-        style={{ width }}
-      >
+    <ScrollView
+      bounces={false}
+      fadingEdgeLength={20}
+      style={{ paddingHorizontal: padding }}
+      contentContainerStyle={styles.container}
+    >
+      <FlexView alignItems="center" alignSelf="center" padding={['2xl', 'l', '0', 'l']}>
         <LoadingThumbnail paused={!!errorType}>
           <WalletImage
             size="xl"

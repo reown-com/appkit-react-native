@@ -2,7 +2,7 @@ import { BorderRadius, Spacing } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  itemContent: {
+  listItem: {
     paddingLeft: 0
   },
   firstItem: {
@@ -21,5 +21,8 @@ export const styles = StyleSheet.create({
   imageBorder: {
     borderRadius: BorderRadius.full,
     overflow: 'hidden'
+  },
+  selectorItem: {
+    paddingHorizontal: Spacing.m
   }
 });

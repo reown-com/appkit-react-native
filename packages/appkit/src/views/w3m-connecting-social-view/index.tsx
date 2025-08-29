@@ -19,9 +19,10 @@ import { ConstantsUtil, StringUtil } from '@reown/appkit-common-react-native';
 
 import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
+import { ScrollView } from 'react-native';
 
 export function ConnectingSocialView() {
-  const { maxWidth: width } = useCustomDimensions();
+  const { padding } = useCustomDimensions();
   const { connect } = useInternalAppKit();
   const { data } = useSnapshot(RouterController.state);
   const { wcUri } = useSnapshot(WcController.state);
@@ -74,32 +75,29 @@ export function ConnectingSocialView() {
   }, [wcUri, onConnect]);
 
   return (
-    <FlexView
-      alignItems="center"
-      alignSelf="center"
-      padding={['2xl', 'l', '3xl', 'l']}
-      style={{ width }}
-    >
-      <LoadingThumbnail paused={!!error}>
-        <Logo logo={data?.socialProvider ?? 'more'} height={72} width={72} />
-        {error ? (
-          <IconBox
-            icon={'close'}
-            border
-            background
-            backgroundColor="icon-box-bg-error-100"
-            size="sm"
-            iconColor="error-100"
-            style={styles.errorIcon}
-          />
-        ) : null}
-      </LoadingThumbnail>
-      <Text style={styles.continueText} variant="paragraph-500">
-        Continue with {StringUtil.capitalize(data?.socialProvider ?? 'Login')}
-      </Text>
-      <Text variant="small-400" color="fg-200">
-        Continue in your browser
-      </Text>
-    </FlexView>
+    <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
+      <FlexView alignItems="center" alignSelf="center" padding={['2xl', 'l', '2xl', 'l']}>
+        <LoadingThumbnail paused={!!error}>
+          <Logo logo={data?.socialProvider ?? 'more'} height={72} width={72} />
+          {error ? (
+            <IconBox
+              icon={'close'}
+              border
+              background
+              backgroundColor="icon-box-bg-error-100"
+              size="sm"
+              iconColor="error-100"
+              style={styles.errorIcon}
+            />
+          ) : null}
+        </LoadingThumbnail>
+        <Text style={styles.continueText} variant="paragraph-500">
+          Continue with {StringUtil.capitalize(data?.socialProvider ?? 'Login')}
+        </Text>
+        <Text variant="small-400" color="fg-200">
+          Continue in your browser
+        </Text>
+      </FlexView>
+    </ScrollView>
   );
 }

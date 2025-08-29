@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect } from 'react';
-import { Card, Modal, ThemeProvider, useCustomDimensions } from '@reown/appkit-ui-react-native';
+import { Card, Modal, ThemeProvider } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
   EventsController,
@@ -21,7 +21,6 @@ export function AppKit() {
   const { open } = useSnapshot(ModalController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const { projectId } = useSnapshot(OptionsController.state);
-  const { maxHeight } = useCustomDimensions();
 
   const handleBackPress = () => {
     if (RouterController.state.history.length > 1) {
@@ -54,7 +53,7 @@ export function AppKit() {
         onBackdropPress={handleModalClose}
         testID="w3m-modal"
       >
-        <Card style={[styles.card, { maxHeight }]}>
+        <Card style={styles.card}>
           <Header />
           <AppKitRouter />
           <Snackbar />

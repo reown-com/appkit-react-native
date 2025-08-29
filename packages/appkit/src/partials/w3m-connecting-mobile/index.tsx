@@ -34,7 +34,7 @@ interface Props {
 
 export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const { data } = RouterController.state;
-  const { maxWidth: width } = useCustomDimensions();
+  const { padding } = useCustomDimensions();
   const { wcUri, wcError } = useSnapshot(WcController.state);
   const { walletImages } = useSnapshot(AssetController.state);
   const [errorType, setErrorType] = useState<BodyErrorType>();
@@ -100,13 +100,13 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   }, [wcUri, onConnect]);
 
   return (
-    <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.container}>
-      <FlexView
-        alignItems="center"
-        alignSelf="center"
-        padding={['2xl', 'l', '0', 'l']}
-        style={{ width }}
-      >
+    <ScrollView
+      bounces={false}
+      fadingEdgeLength={20}
+      style={{ paddingHorizontal: padding }}
+      contentContainerStyle={styles.container}
+    >
+      <FlexView alignItems="center" alignSelf="center" padding={['2xl', 'l', '0', 'l']}>
         <LoadingThumbnail paused={!!errorType || wcError}>
           <WalletImage
             size="xl"

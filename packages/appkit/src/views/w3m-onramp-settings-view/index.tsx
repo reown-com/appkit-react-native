@@ -55,6 +55,7 @@ export function OnRampSettingsView() {
           item={parsedItem}
           onPress={onPressModalItem}
           selected={parsedItem.countryCode === selectedCountry?.countryCode}
+          style={styles.selectorItem}
         />
       );
     }
@@ -68,6 +69,7 @@ export function OnRampSettingsView() {
         selected={parsedItem.currencyCode === paymentCurrency?.currencyCode}
         title={parsedItem.name}
         subtitle={parsedItem.currencyCode}
+        style={styles.selectorItem}
       />
     );
   };
@@ -79,7 +81,7 @@ export function OnRampSettingsView() {
           onPress={onCountryPress}
           chevron
           style={styles.firstItem}
-          contentStyle={styles.itemContent}
+          contentStyle={styles.listItem}
         >
           <FlexView
             alignItems="center"
@@ -101,7 +103,7 @@ export function OnRampSettingsView() {
             ) : null}
           </FlexView>
         </ListItem>
-        <ListItem onPress={onPaymentCurrencyPress} chevron contentStyle={styles.itemContent}>
+        <ListItem onPress={onPaymentCurrencyPress} chevron contentStyle={styles.listItem}>
           <FlexView
             alignItems="center"
             justifyContent="center"

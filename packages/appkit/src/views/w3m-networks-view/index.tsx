@@ -1,4 +1,4 @@
-import { ScrollView, View } from 'react-native';
+import { ScrollView, useWindowDimensions, View } from 'react-native';
 import {
   CardSelect,
   CardSelectWidth,
@@ -24,12 +24,14 @@ import { useInternalAppKit } from '../../AppKitContext';
 import { useSnapshot } from 'valtio';
 
 export function NetworksView() {
+  const { height, width } = useWindowDimensions();
+  const windowSize = Math.min(height, width);
   const { networks, isConnected } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const imageHeaders = ApiController._getApiHeaders();
-  const { maxWidth: width, padding } = useCustomDimensions();
+  const { padding } = useCustomDimensions();
   const numColumns = 4;
-  const usableWidth = width - Spacing.xs * 2 - Spacing['4xs'];
+  const usableWidth = windowSize - Spacing.xs * 2 - Spacing['4xs'];
   const itemWidth = Math.abs(Math.trunc(usableWidth / numColumns));
   const itemGap = Math.abs(
     Math.trunc((usableWidth - numColumns * CardSelectWidth) / numColumns) / 2
@@ -83,11 +85,7 @@ export function NetworksView() {
 
   return (
     <>
-      <ScrollView
-        bounces={false}
-        fadingEdgeLength={20}
-        style={{ paddingHorizontal: padding, marginBottom: Spacing.xl }}
-      >
+      <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
         <FlexView flexDirection="row" flexWrap="wrap" padding={['xs', 'xs', '4xl', 'xs']}>
           {networksTemplate()}
         </FlexView>

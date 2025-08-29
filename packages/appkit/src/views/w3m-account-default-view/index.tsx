@@ -278,7 +278,7 @@ export function AccountDefaultView() {
                 testID="button-onramp"
                 style={styles.actionButton}
               >
-                <Text color="fg-100">Buy crypto</Text>
+                <Text color="fg-100">Buy Crypto</Text>
               </ListItem>
             ) : null}
             {showSend ? (
@@ -332,7 +332,7 @@ export function AccountDefaultView() {
                 loading={loading}
               >
                 <Text color="fg-100">{`Switch to your ${
-                  accountType === 'eoa' ? 'smart account' : 'EOA'
+                  accountType === 'eoa' ? 'Smart Account' : 'EOA'
                 }`}</Text>
               </ListItem>
             ) : null}

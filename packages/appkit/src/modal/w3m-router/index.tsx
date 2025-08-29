@@ -35,9 +35,11 @@ import { UiUtil } from '../../utils/UiUtil';
 import { useRouteTransition } from '../../hooks/useRouteTransition';
 
 import { Animated } from 'react-native';
+import { useCustomDimensions } from '@reown/appkit-ui-react-native';
 
 export function AppKitRouter() {
   const { view } = useSnapshot(RouterController.state);
+  const { maxHeight } = useCustomDimensions();
   const { animateTransition, getAnimatedStyle } = useRouteTransition({
     duration: 300,
     useNativeDriver: true
@@ -117,7 +119,7 @@ export function AppKitRouter() {
   }, [view]);
 
   return (
-    <Animated.View style={[getAnimatedStyle()]}>
+    <Animated.View style={[getAnimatedStyle(), { maxHeight }]}>
       <ViewComponent />
     </Animated.View>
   );

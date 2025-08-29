@@ -332,10 +332,15 @@ export class AppKit {
     const adapter = this.getAdapterByNamespace(namespace);
     if (!adapter) throw new Error('No active adapter');
 
-    ConnectionsController.setAccountType(namespace, type);
+    const address = ConnectionsController.setAccountType(namespace, type);
 
     // Get balances from API
     ConnectionsController.fetchBalance();
+
+    // Fetch transactions for the new account
+    if (address) {
+      TransactionsController.fetchTransactions(address, true);
+    }
 
     // Sync balances from adapter
     this.syncNativeBalance(adapter, network);

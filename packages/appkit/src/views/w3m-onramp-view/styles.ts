@@ -24,6 +24,9 @@ export default StyleSheet.create({
     borderWidth: 0,
     borderRadius: BorderRadius['3xs']
   },
+  currencyItem: {
+    paddingHorizontal: Spacing.m
+  },
   currencyInput: {
     marginBottom: Spacing.m
   },

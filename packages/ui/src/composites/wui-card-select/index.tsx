@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { Animated, Pressable, View, type StyleProp, type ViewStyle } from 'react-native';
 import { Text } from '../../components/wui-text';
 import { IconBox } from '../wui-icon-box';
@@ -9,6 +9,7 @@ import { NetworkImage } from '../wui-network-image';
 import { WalletImage } from '../wui-wallet-image';
 import styles, { getBackgroundColor, ITEM_HEIGHT, ITEM_WIDTH } from './styles';
 import { UiUtil } from '../../utils/UiUtil';
+import { FlexView } from '../../layout/wui-flex';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -43,6 +44,7 @@ function _CardSelect({
   const Theme = useTheme();
   const normalbackgroundColor = getBackgroundColor({ selected, disabled, pressed: false });
   const pressedBackgroundColor = getBackgroundColor({ selected, disabled, pressed: true });
+  const Image = useMemo(() => (type === 'wallet' ? WalletImage : NetworkImage), [type]);
 
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
     Theme[normalbackgroundColor],
@@ -51,51 +53,45 @@ function _CardSelect({
 
   const textColor = disabled ? 'fg-300' : selected ? 'accent-100' : 'fg-100';
 
-  const Image = type === 'wallet' ? WalletImage : NetworkImage;
-
-  const templateInstalled = () => {
-    if (!installed) return null;
-
-    return (
-      <IconBox
-        icon="checkmark"
-        iconSize="xs"
-        iconColor={'success-100'}
-        border
-        borderSize={6}
-        borderColor="bg-150"
-        background
-        backgroundColor="icon-box-bg-success-100"
-        size="sm"
-        style={styles.installedBox}
-      />
-    );
-  };
-
   return (
-    <AnimatedPressable
-      onPress={onPress}
-      onPressIn={setEndValue}
-      onPressOut={setStartValue}
-      disabled={disabled}
-      style={[styles.container, { backgroundColor: animatedValue }, style]}
-      testID={testID}
-    >
-      <View>
-        <Image
-          imageSrc={imageSrc}
-          imageHeaders={imageHeaders}
-          size="md"
-          style={disabled ? styles.disabledImage : null}
-          selected={selected}
-          disabled={disabled}
-        />
-        {templateInstalled()}
-      </View>
-      <Text variant="tiny-500" color={textColor} style={styles.text} numberOfLines={1}>
-        {UiUtil.getWalletName(name)}
-      </Text>
-    </AnimatedPressable>
+    <FlexView style={style} alignItems="center" justifyContent="center">
+      <AnimatedPressable
+        onPress={onPress}
+        onPressIn={setEndValue}
+        onPressOut={setStartValue}
+        disabled={disabled}
+        style={[styles.container, { backgroundColor: animatedValue }]}
+        testID={testID}
+      >
+        <View>
+          <Image
+            imageSrc={imageSrc}
+            imageHeaders={imageHeaders}
+            size="md"
+            style={disabled ? styles.disabledImage : null}
+            selected={selected}
+            disabled={disabled}
+          />
+          {installed ? (
+            <IconBox
+              icon="checkmark"
+              iconSize="xs"
+              iconColor={'success-100'}
+              border
+              borderSize={6}
+              borderColor="bg-150"
+              background
+              backgroundColor="icon-box-bg-success-100"
+              size="sm"
+              style={styles.installedBox}
+            />
+          ) : null}
+        </View>
+        <Text variant="tiny-500" color={textColor} style={styles.text} numberOfLines={1}>
+          {UiUtil.getWalletName(name)}
+        </Text>
+      </AnimatedPressable>
+    </FlexView>
   );
 }
 
