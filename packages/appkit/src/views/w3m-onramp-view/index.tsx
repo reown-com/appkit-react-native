@@ -184,7 +184,7 @@ export function OnRampView() {
               You Buy
             </Text>
             <TokenButton
-              placeholder={'Select currency'}
+              placeholder={'Select Token'}
               imageUrl={purchaseCurrency?.symbolImageUrl}
               text={purchaseCurrencyCode}
               onPress={() => setIsCurrencyModalVisible(true)}
