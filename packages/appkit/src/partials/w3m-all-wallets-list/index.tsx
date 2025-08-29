@@ -24,9 +24,6 @@ export function AllWalletsList({ onItemPress }: AllWalletsListProps) {
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const { installed, featured, recommended, wallets } = useSnapshot(ApiController.state);
   const { customWallets } = useSnapshot(OptionsController.state) as OptionsControllerState;
-  const preloadedWallets =
-    installed.length + featured.length + recommended.length + (customWallets?.length ?? 0);
-  const loadingItems = 4 - ((100 + preloadedWallets) % 4);
 
   const combinedWallets = [
     ...(customWallets ?? []),
@@ -40,6 +37,8 @@ export function AllWalletsList({ onItemPress }: AllWalletsListProps) {
   const uniqueWallets = Array.from(
     new Map(combinedWallets.map(wallet => [wallet?.id, wallet])).values()
   ).filter(wallet => wallet?.id); // Filter out any undefined wallets
+
+  const loadingItems = 4 - ((100 + uniqueWallets.length) % 4);
 
   const walletList = [
     ...uniqueWallets,
