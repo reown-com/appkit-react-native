@@ -12,8 +12,9 @@ import {
   useCustomDimensions,
   useTheme
 } from '@reown/appkit-ui-react-native';
-import styles from './styles';
 import { AssetController, AssetUtil, ConnectionsController } from '@reown/appkit-core-react-native';
+import { Placeholder } from '../w3m-placeholder';
+import styles from './styles';
 
 interface SelectorModalProps {
   title?: string;
@@ -65,6 +66,13 @@ export function SelectorModal({
           keyboardShouldPersistTaps="always"
           style={[styles.container, { backgroundColor: Theme['bg-100'], maxHeight }]}
           ListHeaderComponentStyle={styles.header}
+          ListEmptyComponent={
+            <Placeholder
+              icon="coinPlaceholder"
+              title="No tokens found"
+              description="There's no available tokens for this network"
+            />
+          }
           ListHeaderComponent={
             <>
               <FlexView

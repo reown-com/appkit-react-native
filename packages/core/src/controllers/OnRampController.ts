@@ -124,7 +124,11 @@ export const OnRampController = {
           state.countriesDefaults?.find(d => d.countryCode === country.countryCode)
             ?.defaultCurrencyCode || 'USD';
 
-        const currency = state.paymentCurrencies?.find(c => c.currencyCode === currencyCode);
+        let currency = state.paymentCurrencies?.find(c => c.currencyCode === currencyCode);
+
+        if (!currency) {
+          currency = state.purchaseCurrencies?.find(c => c.currencyCode === 'USD');
+        }
 
         if (currency) {
           this.setPaymentCurrency(currency);
