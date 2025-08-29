@@ -63,7 +63,7 @@ export function WalletList({
       contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding }]}
       onEndReached={onEndReached}
       onEndReachedThreshold={onEndReachedThreshold}
-      keyExtractor={item => item?.id}
+      keyExtractor={(item, index) => item?.id ?? index}
       getItemLayout={(_, index) => ({
         length: ITEM_HEIGHT_WITH_GAP,
         offset: ITEM_HEIGHT_WITH_GAP * index,
