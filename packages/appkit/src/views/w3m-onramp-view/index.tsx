@@ -135,6 +135,7 @@ export function OnRampView() {
         title={item.name}
         subtitle={item.currencyCode.split('_')[0] ?? item.currencyCode}
         testID={`currency-item-${item.currencyCode}`}
+        style={styles.currencyItem}
       />
     );
   };

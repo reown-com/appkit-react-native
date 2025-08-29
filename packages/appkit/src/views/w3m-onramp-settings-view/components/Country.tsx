@@ -7,24 +7,29 @@ import {
   Icon,
   BorderRadius
 } from '@reown/appkit-ui-react-native';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 
 interface Props {
   onPress: (item: OnRampCountry) => void;
   item: OnRampCountry;
   selected: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
 export const ITEM_HEIGHT = 60;
 
-export function Country({ onPress, item, selected }: Props) {
+export function Country({ onPress, item, selected, style }: Props) {
   const handlePress = () => {
     onPress(item);
   };
 
   return (
-    <Pressable onPress={handlePress} style={styles.container} backgroundColor="transparent">
+    <Pressable
+      onPress={handlePress}
+      style={[styles.container, style]}
+      backgroundColor="transparent"
+    >
       <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start" padding="s">
         <FlexView style={styles.imageContainer}>
           {item.flagImageUrl && SvgUri ? (
