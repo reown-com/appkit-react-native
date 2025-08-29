@@ -259,7 +259,7 @@ export function OnRampView() {
             onSearch={handleSearch}
             renderItem={renderCurrencyItem}
             keyExtractor={item => item.currencyCode}
-            title="Select token"
+            title="Select Token"
             itemHeight={CURRENCY_ITEM_HEIGHT}
             showNetwork
           />
