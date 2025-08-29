@@ -24,7 +24,8 @@ export function AllWalletsList({ onItemPress }: AllWalletsListProps) {
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const { installed, featured, recommended, wallets } = useSnapshot(ApiController.state);
   const { customWallets } = useSnapshot(OptionsController.state) as OptionsControllerState;
-  const preloadedWallets = installed.length + featured.length + recommended.length;
+  const preloadedWallets =
+    installed.length + featured.length + recommended.length + (customWallets?.length ?? 0);
   const loadingItems = 4 - ((100 + preloadedWallets) % 4);
 
   const combinedWallets = [
