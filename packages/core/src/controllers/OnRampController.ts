@@ -127,7 +127,7 @@ export const OnRampController = {
         let currency = state.paymentCurrencies?.find(c => c.currencyCode === currencyCode);
 
         if (!currency) {
-          currency = state.purchaseCurrencies?.find(c => c.currencyCode === 'USD');
+          currency = state.paymentCurrencies?.find(c => c.currencyCode === 'USD');
         }
 
         if (currency) {
