@@ -15,11 +15,12 @@ type CustomDimensionsType = {
 
 const MAX_PORTRAIT_PERCENTAGE = 0.9;
 const MAX_LANDSCAPE_PERCENTAGE = 0.85;
+const IOS_STATUS_BAR_HEIGHT = 20;
 
 const getMaxHeight = (height: number, isPortrait: boolean) => {
   const percentage = isPortrait ? MAX_PORTRAIT_PERCENTAGE : MAX_LANDSCAPE_PERCENTAGE;
 
-  return height * percentage - (StatusBar.currentHeight ?? 20); // 20 offset for iOS
+  return height * percentage - (StatusBar.currentHeight ?? IOS_STATUS_BAR_HEIGHT);
 };
 
 export function useCustomDimensions(): CustomDimensionsType {
@@ -29,7 +30,7 @@ export function useCustomDimensions(): CustomDimensionsType {
   const [padding, setPadding] = useState<number>(0);
 
   useEffect(() => {
-    const _isPortrait = height >= width;
+    const _isPortrait = height > width;
 
     setMaxHeight(getMaxHeight(height, _isPortrait));
     setIsPortrait(_isPortrait);

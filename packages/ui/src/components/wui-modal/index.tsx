@@ -79,7 +79,7 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
       const targetY = contentHeight > 0 ? height - contentHeight : height * 0.2; // fallback to 20% from bottom
 
       modalAnimation = Animated.spring(translateY, {
-        toValue: Math.round(targetY),
+        toValue: targetY,
         damping: 25,
         stiffness: 220,
         mass: 1,
