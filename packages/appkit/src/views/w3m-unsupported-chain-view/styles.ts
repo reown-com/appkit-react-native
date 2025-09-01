@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   contentContainer: {
     padding: Spacing.s,
-    paddingBottom: Spacing.xl
+    paddingBottom: Spacing['4xl']
   },
   header: {
     marginBottom: Spacing.s
