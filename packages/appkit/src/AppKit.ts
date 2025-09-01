@@ -800,8 +800,6 @@ export class AppKit {
     }
   };
 
-  // handle navigation after chain change. More general.
-
   private async handleSiweChange(params?: {
     isConnection?: boolean;
     isNetworkChange?: boolean;
