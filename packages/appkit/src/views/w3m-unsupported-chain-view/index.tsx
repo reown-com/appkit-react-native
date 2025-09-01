@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import { useState } from 'react';
 import { FlatList } from 'react-native';
-import { Icon, ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
+import { ListItem, Separator, Text } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
   AssetController,
@@ -13,7 +13,6 @@ import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function UnsupportedChainView() {
-  const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const [disconnecting, setDisconnecting] = useState(false);
   const networks = ConnectionsController.getConnectedNetworks();
@@ -57,7 +56,6 @@ export function UnsupportedChainView() {
           <Text numberOfLines={1} color="fg-100">
             {item.name ?? 'Unknown'}
           </Text>
-          {item.id === activeNetwork?.id && <Icon name="checkmark" color="accent-100" />}
         </ListItem>
       )}
       ListFooterComponent={
