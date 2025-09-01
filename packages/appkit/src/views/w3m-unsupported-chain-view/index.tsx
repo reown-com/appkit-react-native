@@ -21,7 +21,7 @@ export function UnsupportedChainView() {
   const { disconnect, switchNetwork } = useInternalAppKit();
 
   const onNetworkPress = async (network: AppKitNetwork) => {
-    switchNetwork(network);
+    await switchNetwork(network);
   };
 
   const onDisconnect = async () => {
@@ -37,8 +37,8 @@ export function UnsupportedChainView() {
       ListHeaderComponentStyle={styles.header}
       ListHeaderComponent={
         <Text variant="small-400" color="fg-200" center>
-          The swap feature doesn't support your current network. Switch to an available option to
-          continue.
+          The current network is not supported by this application. Please switch to an available
+          option to continue.
         </Text>
       }
       contentContainerStyle={styles.contentContainer}

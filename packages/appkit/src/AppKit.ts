@@ -14,7 +14,8 @@ import {
   CoreHelperUtil,
   SendController,
   BlockchainApiController,
-  WalletUtil
+  WalletUtil,
+  type RouterControllerState
 } from '@reown/appkit-core-react-native';
 
 import {
@@ -149,7 +150,7 @@ export class AppKit {
     }
   }
 
-  private processConnection(
+  private async processConnection(
     connector: WalletConnector,
     namespaces?: Namespaces,
     shouldCloseModal: boolean = true
@@ -173,7 +174,7 @@ export class AppKit {
     this.setConnection(initializedAdapters, namespaces, walletInfo, properties);
 
     // Sync accounts
-    this.syncAccounts(initializedAdapters);
+    await this.syncAccounts(initializedAdapters);
 
     // Handle SIWE if enabled
     this.handleSiweConnectionIfEnabled(shouldCloseModal);
@@ -310,8 +311,12 @@ export class AppKit {
         ConnectionsController.state.activeNamespace === 'eip155' &&
         !!ConnectionsController.state.activeAddress
       ) {
-        await this.disconnect();
+        return await this.disconnect();
       }
+    }
+
+    if (RouterController.state.view === 'UnsupportedChain') {
+      return await this.disconnect();
     }
 
     RouterUtil.checkOnRampBack();
@@ -405,7 +410,7 @@ export class AppKit {
 
           const namespaces = connector.getNamespaces();
 
-          this.processConnection(connector, namespaces, false);
+          await this.processConnection(connector, namespaces, false);
         } catch (error) {
           // Use console.warn for non-critical initialization failures
           console.warn(`Failed to initialize connector type ${connected.type}:`, error);
@@ -611,14 +616,20 @@ export class AppKit {
       }
     });
 
-    adapter.on('chainChanged', ({ chainId }) => {
+    adapter.on('chainChanged', async ({ chainId }) => {
+      const isSupported = this.networks.some(network => network.id?.toString() === chainId);
+      if (!isSupported) {
+        ModalController.open({ view: 'UnsupportedChain' });
+
+        return;
+      }
+
       const namespace = adapter.getSupportedNamespace();
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
       ConnectionsController.setActiveNetwork(namespace, chain);
+      ConnectionsController.setActiveNamespace(namespace);
       const connection = ConnectionsController.state.connections.get(namespace);
       const isAuth = !!connection?.properties?.provider;
-
-      const activeNamespace = ConnectionsController.state.activeNamespace;
 
       const network = this.networks.find(n => n.id?.toString() === chainId);
       this.syncNativeBalance(adapter, network);
@@ -629,19 +640,16 @@ export class AppKit {
         ConnectionsController.fetchBalance();
       }
 
-      // Refresh transactions only when the active network changes
-      if (namespace === activeNamespace) {
-        const address = connection?.accounts?.find(account =>
-          account.startsWith(`${namespace}:${chainId}`)
-        );
-        if (address) {
-          TransactionsController.fetchTransactions(address, true);
-        }
+      const address = connection?.accounts?.find(account =>
+        account.startsWith(`${namespace}:${chainId}`)
+      );
+      if (address) {
+        TransactionsController.fetchTransactions(address, true);
       }
 
       // Check if user needs to sign in again
       if (namespace === 'eip155') {
-        this.handleSiweChange({ isNetworkChange: true });
+        await this.handleSiweChange({ isNetworkChange: true });
       }
     });
 
@@ -784,13 +792,15 @@ export class AppKit {
     await this.initRecentWallets(options);
   }
 
-  private onSiweNavigation = () => {
+  private navigate = (routeName: RouterControllerState['view']) => {
     if (ModalController.state.open) {
-      RouterController.push('ConnectingSiwe');
+      RouterController.push(routeName);
     } else {
-      ModalController.open({ view: 'ConnectingSiwe' });
+      ModalController.open({ view: routeName });
     }
   };
+
+  // handle navigation after chain change. More general.
 
   private async handleSiweChange(params?: {
     isConnection?: boolean;
@@ -801,6 +811,15 @@ export class AppKit {
     const { enabled, signOutOnAccountChange, signOutOnNetworkChange } =
       SIWEController.state._client?.options ?? {};
 
+    const isSupportedNetwork = this.networks.some(
+      network => network.caipNetworkId === ConnectionsController.state.activeCaipNetworkId
+    );
+
+    if (!isSupportedNetwork) {
+      // Do nothing. Unsupported network view will be shown.
+      return;
+    }
+
     if (enabled) {
       const session = await SIWEController.getSession();
       if (session && isAccountChange) {
@@ -808,18 +827,19 @@ export class AppKit {
           // If the address has changed and signOnAccountChange is enabled, sign out
           await SIWEController.signOut();
 
-          return this.onSiweNavigation();
+          return this.navigate('ConnectingSiwe');
         }
-      } else if (isNetworkChange) {
+      } else if (session && isNetworkChange) {
         if (signOutOnNetworkChange) {
           // If the network has changed and signOnNetworkChange is enabled, sign out
           await SIWEController.signOut();
 
-          return this.onSiweNavigation();
+          return this.navigate('ConnectingSiwe');
         }
       } else if (!session) {
         // If it's connected but there's no session, show sign view
-        return this.onSiweNavigation();
+
+        return this.navigate('ConnectingSiwe');
       } else if (isConnection) {
         // Connected with 1CA
         ModalController.close();
