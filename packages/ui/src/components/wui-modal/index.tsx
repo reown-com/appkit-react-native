@@ -3,9 +3,8 @@ import {
   useWindowDimensions,
   Modal as RNModal,
   type ModalProps as RNModalProps,
-  TouchableOpacity,
   Animated,
-  StatusBar
+  Pressable
 } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
@@ -17,6 +16,8 @@ export type ModalProps = Pick<
   children: React.ReactNode;
   onBackdropPress?: () => void;
 };
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function Modal({ visible, onBackdropPress, onRequestClose, testID, children }: ModalProps) {
   const Theme = useTheme();
@@ -75,8 +76,7 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
 
     if (visible && modalVisible) {
       // Calculate the target position (screen height - card height)
-      const targetY =
-        contentHeight > 0 ? height - contentHeight + (StatusBar.currentHeight ?? 0) : height * 0.2; // fallback to 20% from bottom
+      const targetY = contentHeight > 0 ? height - contentHeight : height * 0.2; // fallback to 20% from bottom
 
       modalAnimation = Animated.spring(translateY, {
         toValue: targetY,
@@ -112,31 +112,25 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
   }, [modalVisible, translateY, backdropOpacity, height]);
 
   return (
-    <>
+    <RNModal
+      visible={modalVisible}
+      transparent
+      animationType="none"
+      statusBarTranslucent
+      onRequestClose={onRequestClose}
+      testID={testID}
+    >
       {showBackdrop ? (
-        <Animated.View style={[styles.outerBackdrop, { opacity: backdropOpacity }]} />
+        <AnimatedPressable
+          style={[styles.backdrop, { opacity: backdropOpacity }]}
+          onPress={onBackdropPress}
+        />
       ) : null}
-      <RNModal
-        visible={modalVisible}
-        transparent
-        animationType="none"
-        statusBarTranslucent
-        onRequestClose={onRequestClose}
-        testID={testID}
+      <Animated.View
+        style={[styles.modal, { backgroundColor: Theme['bg-100'], transform: [{ translateY }] }]}
       >
-        {showBackdrop ? (
-          <TouchableOpacity
-            style={styles.innerBackdropTouchable}
-            activeOpacity={1}
-            onPress={onBackdropPress}
-          />
-        ) : null}
-        <Animated.View
-          style={[styles.modal, { backgroundColor: Theme['bg-100'], transform: [{ translateY }] }]}
-        >
-          <Animated.View onLayout={onContentLayout}>{children}</Animated.View>
-        </Animated.View>
-      </RNModal>
-    </>
+        <Animated.View onLayout={onContentLayout}>{children}</Animated.View>
+      </Animated.View>
+    </RNModal>
   );
 }

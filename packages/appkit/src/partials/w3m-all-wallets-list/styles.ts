@@ -4,12 +4,15 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   contentContainer: {
     paddingBottom: Spacing['4xl'],
-    paddingTop: Spacing['3xs']
+    paddingTop: Spacing['3xs'],
+    gap: Spacing['3xs'],
+    alignItems: 'center'
+  },
+  columnWrapperStyle: {
+    justifyContent: 'space-around'
   },
   itemContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: Spacing['4xs']
+    width: '23%'
   },
   pageLoader: {
     marginTop: Spacing.xl

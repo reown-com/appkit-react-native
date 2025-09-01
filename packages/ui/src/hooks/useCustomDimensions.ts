@@ -1,38 +1,41 @@
 import { useState, useEffect } from 'react';
-import { useWindowDimensions } from 'react-native';
+import { StatusBar, useWindowDimensions } from 'react-native';
 
 /**
  * Hook used to get the width of the screen and the padding needed to accomplish portrait and landscape modes.
- * @returns { width: number, isPortrait: boolean, isLandscape: boolean, padding: number }
+ * @returns { maxHeight: number, isPortrait: boolean, isLandscape: boolean, padding: number }
  */
 
 type CustomDimensionsType = {
-  maxWidth: number;
   maxHeight: number;
   isPortrait: boolean;
   isLandscape: boolean;
   padding: number;
 };
 
-const MAX_HEIGHT_PERCENTAGE = 0.9;
+const MAX_PORTRAIT_PERCENTAGE = 0.9;
+const MAX_LANDSCAPE_PERCENTAGE = 0.85;
+const IOS_STATUS_BAR_HEIGHT = 20;
 
-const getMaxHeight = (width: number, height: number) => {
-  return Math.max(width, height) * MAX_HEIGHT_PERCENTAGE;
+const getMaxHeight = (height: number, isPortrait: boolean) => {
+  const percentage = isPortrait ? MAX_PORTRAIT_PERCENTAGE : MAX_LANDSCAPE_PERCENTAGE;
+
+  return height * percentage - (StatusBar.currentHeight ?? IOS_STATUS_BAR_HEIGHT);
 };
 
 export function useCustomDimensions(): CustomDimensionsType {
   const { width, height } = useWindowDimensions();
-  const [maxWidth, setMaxWidth] = useState<number>(Math.min(width, height));
-  const [maxHeight, setMaxHeight] = useState<number>(getMaxHeight(width, height));
   const [isPortrait, setIsPortrait] = useState<boolean>(height > width);
+  const [maxHeight, setMaxHeight] = useState<number>(getMaxHeight(height, height > width));
   const [padding, setPadding] = useState<number>(0);
 
   useEffect(() => {
-    setMaxWidth(Math.min(width, height));
-    setMaxHeight(getMaxHeight(width, height));
-    setIsPortrait(height > width);
-    setPadding(width < height ? 0 : (width - height) / 2);
+    const _isPortrait = height > width;
+
+    setMaxHeight(getMaxHeight(height, _isPortrait));
+    setIsPortrait(_isPortrait);
+    setPadding(_isPortrait ? 0 : (width - height) / 2);
   }, [width, height]);
 
-  return { maxWidth, maxHeight, isPortrait, isLandscape: !isPortrait, padding };
+  return { maxHeight, isPortrait, isLandscape: !isPortrait, padding };
 }

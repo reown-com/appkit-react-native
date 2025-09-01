@@ -9,7 +9,8 @@ import {
   Text,
   useTheme,
   Separator,
-  BorderRadius
+  BorderRadius,
+  useCustomDimensions
 } from '@reown/appkit-ui-react-native';
 import { OnRampController } from '@reown/appkit-core-react-native';
 import { Quote, ITEM_HEIGHT as QUOTE_ITEM_HEIGHT } from './Quote';
@@ -26,6 +27,7 @@ const SEPARATOR_HEIGHT = Spacing.s;
 
 export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentModalProps) {
   const Theme = useTheme();
+  const { maxHeight } = useCustomDimensions();
   const { selectedQuote, quotes, selectedPaymentMethod } = useSnapshot(OnRampController.state);
 
   const paymentMethodsRef = useRef<FlatList>(null);
@@ -133,7 +135,9 @@ export function SelectPaymentModal({ title, visible, onClose }: SelectPaymentMod
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.modalContent}>
-        <FlexView style={[styles.container, { backgroundColor: Theme['bg-100'] }]}>
+        <FlexView
+          style={[styles.container, { backgroundColor: Theme['bg-100'], height: maxHeight }]}
+        >
           <FlexView
             alignItems="center"
             justifyContent="space-between"
@@ -196,7 +200,6 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.m
   },
   container: {
-    height: '80%',
     borderTopLeftRadius: BorderRadius.l,
     borderTopRightRadius: BorderRadius.l
   },

@@ -19,13 +19,5 @@ export default StyleSheet.create({
   actionButton: {
     marginTop: Spacing.xs,
     width: '100%'
-  },
-  modalContent: {
-    margin: 0,
-    flex: 1,
-    justifyContent: 'flex-end'
-  },
-  withKeyboard: {
-    height: '100%'
   }
 });

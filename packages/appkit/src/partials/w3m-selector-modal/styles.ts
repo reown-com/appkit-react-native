@@ -8,21 +8,19 @@ export default StyleSheet.create({
     justifyContent: 'flex-end'
   },
   header: {
-    marginBottom: Spacing.s,
-    paddingHorizontal: Spacing.m
+    paddingTop: Spacing['2xs'],
+    paddingBottom: Spacing.s
+  },
+  headerTop: {
+    paddingHorizontal: Spacing.m,
+    paddingBottom: Spacing.xs
   },
   container: {
-    height: '80%',
     borderTopLeftRadius: BorderRadius.l,
-    borderTopRightRadius: BorderRadius.l,
-    paddingTop: Spacing.m
-  },
-  selectedContainer: {
-    paddingHorizontal: Spacing.m
+    borderTopRightRadius: BorderRadius.l
   },
   listContent: {
-    paddingTop: Spacing.s,
-    paddingHorizontal: Spacing.m
+    paddingTop: Spacing.s
   },
   iconPlaceholder: {
     height: 32,
@@ -38,6 +36,6 @@ export default StyleSheet.create({
     marginHorizontal: Spacing.s
   },
   separator: {
-    marginTop: Spacing.m
+    marginVertical: Spacing.xs
   }
 });

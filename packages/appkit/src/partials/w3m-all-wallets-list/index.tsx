@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { FlatList } from 'react-native';
 import {
   ApiController,
   OptionsController,
@@ -8,36 +7,23 @@ import {
   type OptionsControllerState
 } from '@reown/appkit-core-react-native';
 import { type WcWallet } from '@reown/appkit-common-react-native';
-import { CardSelectHeight, Spacing, useCustomDimensions } from '@reown/appkit-ui-react-native';
 import styles from './styles';
 import { Placeholder } from '../w3m-placeholder';
 import { Loading } from './components/Loading';
-import { WalletItem } from './components/WalletItem';
+
+import { WalletList } from './components/WalletList';
 
 interface AllWalletsListProps {
-  columns: number;
   onItemPress: (wallet: WcWallet) => void;
-  itemWidth?: number;
   headerHeight?: number;
 }
 
-const ITEM_HEIGHT = CardSelectHeight + Spacing.xs * 2;
-
-export function AllWalletsList({
-  columns,
-  itemWidth,
-  onItemPress,
-  headerHeight = 0
-}: AllWalletsListProps) {
+export function AllWalletsList({ onItemPress }: AllWalletsListProps) {
   const [loading, setLoading] = useState<boolean>(ApiController.state.wallets.length === 0);
   const [loadingError, setLoadingError] = useState<boolean>(false);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
-  const { maxHeight, padding } = useCustomDimensions();
   const { installed, featured, recommended, wallets } = useSnapshot(ApiController.state);
   const { customWallets } = useSnapshot(OptionsController.state) as OptionsControllerState;
-  const imageHeaders = ApiController._getApiHeaders();
-  const preloadedWallets = installed.length + featured.length + recommended.length;
-  const loadingItems = columns - ((100 + preloadedWallets) % columns);
 
   const combinedWallets = [
     ...(customWallets ?? []),
@@ -51,6 +37,8 @@ export function AllWalletsList({
   const uniqueWallets = Array.from(
     new Map(combinedWallets.map(wallet => [wallet?.id, wallet])).values()
   ).filter(wallet => wallet?.id); // Filter out any undefined wallets
+
+  const loadingItems = 4 - ((100 + uniqueWallets.length) % 4);
 
   const walletList = [
     ...uniqueWallets,
@@ -95,7 +83,7 @@ export function AllWalletsList({
   }, []);
 
   if (loading) {
-    return <Loading itemWidth={itemWidth} containerStyle={styles.itemContainer} />;
+    return <Loading loadingItems={20} />;
   }
 
   if (loadingError) {
@@ -114,34 +102,11 @@ export function AllWalletsList({
   }
 
   return (
-    <FlatList
-      key={columns}
-      fadingEdgeLength={20}
-      bounces={false}
-      numColumns={columns}
+    <WalletList
       data={walletList}
-      renderItem={({ item }) => (
-        <WalletItem
-          item={item}
-          itemWidth={itemWidth}
-          imageHeaders={imageHeaders}
-          onItemPress={onItemPress}
-          style={styles.itemContainer}
-        />
-      )}
-      style={{ maxHeight: maxHeight - headerHeight - Spacing['4xl'] }}
-      contentContainerStyle={[
-        styles.contentContainer,
-        { paddingHorizontal: padding + Spacing['2xs'] }
-      ]}
       onEndReached={fetchNextPage}
       onEndReachedThreshold={2}
-      keyExtractor={(item, index) => item?.id ?? index}
-      getItemLayout={(_, index) => ({
-        length: ITEM_HEIGHT,
-        offset: ITEM_HEIGHT * index,
-        index
-      })}
+      onItemPress={onItemPress}
     />
   );
 }

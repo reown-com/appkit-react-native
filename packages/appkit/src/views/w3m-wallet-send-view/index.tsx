@@ -14,7 +14,7 @@ import { SendInputAddress } from '../../partials/w3m-send-input-address';
 import styles from './styles';
 
 export function WalletSendView() {
-  const { padding } = useCustomDimensions();
+  const { padding, maxHeight } = useCustomDimensions();
   const { keyboardShown } = useKeyboard();
   const [isBalanceLoading, setBalanceLoading] = useState(false);
   const { token, sendTokenAmount, receiverAddress, receiverProfileName, loading } = useSnapshot(
@@ -80,7 +80,7 @@ export function WalletSendView() {
 
   return (
     <ScrollView
-      style={[{ paddingHorizontal: padding }, keyboardShown && styles.withKeyboard]}
+      style={[{ paddingHorizontal: padding }, keyboardShown && { height: maxHeight }]}
       bounces={false}
       keyboardShouldPersistTaps="always"
     >

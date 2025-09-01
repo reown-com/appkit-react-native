@@ -8,7 +8,11 @@ export default StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     overflow: 'hidden',
-    marginTop: 80
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: 0
   },
   title: {
     paddingTop: Spacing['2xs']
@@ -29,7 +33,7 @@ export default StyleSheet.create({
     marginRight: Spacing.s
   },
   suggestedSeparator: {
-    marginVertical: Spacing.s
+    marginTop: Spacing.s
   },
   iconPlaceholder: {
     height: 32,

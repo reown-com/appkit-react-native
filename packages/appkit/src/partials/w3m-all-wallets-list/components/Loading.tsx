@@ -1,44 +1,13 @@
-import { CardSelectLoader, FlexView, useCustomDimensions } from '@reown/appkit-ui-react-native';
 import { memo } from 'react';
-import { type StyleProp, type ViewStyle } from 'react-native';
+import { WalletList } from './WalletList';
 
 interface LoadingProps {
-  itemWidth?: number;
-  containerStyle?: StyleProp<ViewStyle>;
+  loadingItems?: number;
 }
 
-function _Loading({ itemWidth, containerStyle }: LoadingProps) {
-  const { maxWidth, maxHeight } = useCustomDimensions();
-
+function _Loading({ loadingItems = 20 }: LoadingProps) {
   return (
-    <FlexView
-      flexDirection="row"
-      flexWrap="wrap"
-      alignSelf="center"
-      padding={['0', '0', 's', 'xs']}
-      style={{ maxWidth, maxHeight }}
-    >
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-      <CardSelectLoader style={[containerStyle, { width: itemWidth }]} />
-    </FlexView>
+    <WalletList data={[]} onItemPress={() => {}} isLoading={true} loadingItems={loadingItems} />
   );
 }
 

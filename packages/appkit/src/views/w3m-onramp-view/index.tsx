@@ -135,6 +135,7 @@ export function OnRampView() {
         title={item.name}
         subtitle={item.currencyCode.split('_')[0] ?? item.currencyCode}
         testID={`currency-item-${item.currencyCode}`}
+        style={styles.currencyItem}
       />
     );
   };
@@ -183,7 +184,7 @@ export function OnRampView() {
               You Buy
             </Text>
             <TokenButton
-              placeholder={'Select currency'}
+              placeholder={'Select Token'}
               imageUrl={purchaseCurrency?.symbolImageUrl}
               text={purchaseCurrencyCode}
               onPress={() => setIsCurrencyModalVisible(true)}
@@ -258,7 +259,7 @@ export function OnRampView() {
             onSearch={handleSearch}
             renderItem={renderCurrencyItem}
             keyExtractor={item => item.currencyCode}
-            title="Select token"
+            title="Select Token"
             itemHeight={CURRENCY_ITEM_HEIGHT}
             showNetwork
           />

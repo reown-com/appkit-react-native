@@ -1,13 +1,11 @@
-import { Linking, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Chip, FlexView, Spacing, Text } from '@reown/appkit-ui-react-native';
 import { ConstantsUtil } from '@reown/appkit-common-react-native';
+import { CoreHelperUtil } from '@reown/appkit-core-react-native';
 
 export function UpgradeEmailWalletView() {
   const onLinkPress = () => {
-    const link = ConstantsUtil.SECURE_SITE_DASHBOARD;
-    Linking.canOpenURL(link).then(supported => {
-      if (supported) Linking.openURL(link);
-    });
+    CoreHelperUtil.openLink(ConstantsUtil.SECURE_SITE_DASHBOARD);
   };
 
   return (

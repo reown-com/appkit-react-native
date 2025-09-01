@@ -28,7 +28,7 @@ export function TokenButton({
   onPress,
   style,
   disabled = false,
-  placeholder = 'Select token',
+  placeholder = 'Select Token',
   chevron,
   renderClip,
   testID

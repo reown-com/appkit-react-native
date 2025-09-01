@@ -16,11 +16,14 @@ import {
 } from '@reown/appkit-ui-react-native';
 import styles from './styles';
 import { ReownButton } from './components/ReownButton';
+import { useWindowDimensions } from 'react-native';
 
 export function ConnectingQrCode() {
+  const { height, width } = useWindowDimensions();
+  const windowSize = Math.min(height, width);
   const { wcUri } = useSnapshot(WcController.state);
   const showCopy = OptionsController.isClipboardAvailable();
-  const { maxWidth: windowSize, isPortrait } = useCustomDimensions();
+  const { isPortrait } = useCustomDimensions();
   const qrSize = (windowSize - Spacing.xl * 2) / (isPortrait ? 1 : 1.5);
 
   const onCopyAddress = () => {
