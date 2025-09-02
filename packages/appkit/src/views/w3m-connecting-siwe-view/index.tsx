@@ -11,6 +11,7 @@ import {
 import {
   ConnectionsController,
   EventsController,
+  ModalController,
   OptionsController,
   RouterController,
   SnackController
@@ -48,6 +49,8 @@ export function ConnectingSiweView() {
         type: 'track',
         properties: { network, isSmartAccount }
       });
+
+      ModalController.close();
 
       return session;
     } catch (error) {

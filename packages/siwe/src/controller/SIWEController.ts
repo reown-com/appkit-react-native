@@ -1,6 +1,5 @@
 import { proxy, ref, subscribe as sub } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
-import { OptionsController } from '@reown/appkit-core-react-native';
 import type {
   SIWEClientMethods,
   SIWESession,
@@ -135,7 +134,6 @@ export const SIWEController = {
   setSIWEClient(client: SIWEControllerClient) {
     state._client = ref(client);
     state.status = 'ready';
-    OptionsController.setIsSiweEnabled(client.options.enabled);
   },
 
   setNonce(nonce: SIWEControllerClientState['nonce']) {

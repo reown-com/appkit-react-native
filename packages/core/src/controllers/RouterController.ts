@@ -25,7 +25,6 @@ export interface RouterControllerState {
     | 'OnRampLoading'
     | 'OnRampSettings'
     | 'OnRampTransaction'
-    | 'SwitchNetwork'
     | 'Swap'
     | 'SwapPreview'
     | 'Transactions'
