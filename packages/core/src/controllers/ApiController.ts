@@ -108,87 +108,104 @@ export const ApiController = {
   },
 
   async fetchInstalledWallets() {
-    const { includeWalletIds, customWallets } = OptionsController.state;
-    const path = Platform.select({ default: 'getIosData', android: 'getAndroidData' });
-    const response = await api.get<ApiGetDataWalletsResponse>({
-      path,
-      headers: ApiController._getApiHeaders()
-    });
+    // Add timeout to prevent hanging
+    const controller = new AbortController();
+    let timeoutId: NodeJS.Timeout | undefined;
 
-    if (!response) return;
-
-    let { data: walletData } = response;
-
-    if (includeWalletIds?.length) {
-      walletData = walletData.filter(({ id }) => includeWalletIds.includes(id));
-    }
-
-    const promises = walletData.map(async item => {
-      return {
-        id: item.id,
-        isInstalled: await CoreHelperUtil.checkInstalled(item)
-      };
-    });
-
-    const customPromises = customWallets?.map(async item => {
-      return {
-        id: item.id,
-        isInstalled: await CoreHelperUtil.checkInstalled(item)
-      };
-    });
-
-    const results = await Promise.all(promises);
-    const installed = results.filter(({ isInstalled }) => isInstalled).map(({ id }) => id);
-    const { excludeWalletIds } = OptionsController.state;
-    const chains = CoreHelperUtil.getRequestedCaipNetworkIds();
-
-    // Collect API-sourced installed wallets
-    let apiInstalledWallets: WcWallet[] = [];
-    if (installed.length > 0) {
-      const walletResponse = await api.get<ApiGetWalletsResponse>({
-        path: '/getWallets',
-        headers: ApiController._getApiHeaders(),
-        params: {
-          page: '1',
-          platform: this.platform(),
-          entries: installed?.length.toString(),
-          include: installed?.join(','),
-          exclude: excludeWalletIds?.join(','),
-          chains: chains.join(',')
-        }
+    try {
+      const { includeWalletIds, customWallets } = OptionsController.state;
+      const path = Platform.select({ default: 'getIosData', android: 'getAndroidData' });
+      const response = await api.get<ApiGetDataWalletsResponse>({
+        path,
+        headers: ApiController._getApiHeaders()
       });
 
-      if (walletResponse?.data) {
-        const walletImages = walletResponse.data.map(d => d.image_id).filter(Boolean);
-        await CoreHelperUtil.allSettled(
-          (walletImages as string[]).map(id => ApiController._fetchWalletImage(id))
-        );
-        apiInstalledWallets = walletResponse.data;
-      }
-    }
+      if (!response) return;
 
-    // Collect custom installed wallets
-    let customInstalledWallets: CustomWallet[] = [];
-    if (customPromises?.length) {
-      const customResults = await Promise.all(customPromises);
-      const customInstalled = customResults
-        .filter(({ isInstalled }) => isInstalled)
-        .map(({ id }) => id);
-      customInstalledWallets =
-        customWallets?.filter(wallet => customInstalled.includes(wallet.id)) ?? [];
-    }
+      let { data: walletData } = response;
 
-    // Merge and de-duplicate by id, preserving order (API first, then custom)
-    const byId = new Map<string, WcWallet>();
-    [...apiInstalledWallets, ...customInstalledWallets].forEach(wallet => {
-      if (!byId.has(wallet.id)) {
-        byId.set(wallet.id, wallet);
+      if (includeWalletIds?.length) {
+        walletData = walletData.filter(({ id }) => includeWalletIds.includes(id));
       }
-    });
-    const combinedInstalled = Array.from(byId.values());
-    state.installed = combinedInstalled;
-    if (combinedInstalled.length) {
-      this.updateRecentWalletsInfo(combinedInstalled);
+
+      const promises = walletData.map(async item => {
+        return {
+          id: item.id,
+          isInstalled: await CoreHelperUtil.checkInstalled(item)
+        };
+      });
+
+      const customPromises = customWallets?.map(async item => {
+        return {
+          id: item.id,
+          isInstalled: await CoreHelperUtil.checkInstalled(item)
+        };
+      });
+
+      const results = await Promise.all(promises);
+      const installed = results.filter(({ isInstalled }) => isInstalled).map(({ id }) => id);
+      const { excludeWalletIds } = OptionsController.state;
+      const chains = CoreHelperUtil.getRequestedCaipNetworkIds();
+
+      // Add timeout to prevent hanging
+      timeoutId = setTimeout(() => controller.abort(), 10000);
+
+      // Collect API-sourced installed wallets
+      let apiInstalledWallets: WcWallet[] = [];
+      if (installed.length > 0) {
+        const walletResponse = await api.get<ApiGetWalletsResponse>({
+          path: '/getWallets',
+          headers: ApiController._getApiHeaders(),
+          params: {
+            page: '1',
+            platform: this.platform(),
+            entries: installed?.length.toString(),
+            include: installed?.join(','),
+            exclude: excludeWalletIds?.join(','),
+            chains: chains.join(',')
+          },
+          signal: controller.signal
+        });
+
+        if (walletResponse?.data) {
+          const walletImages = walletResponse.data.map(d => d.image_id).filter(Boolean);
+          await CoreHelperUtil.allSettled(
+            (walletImages as string[]).map(id => ApiController._fetchWalletImage(id))
+          );
+          apiInstalledWallets = walletResponse.data;
+        }
+      }
+
+      clearTimeout(timeoutId);
+
+      // Collect custom installed wallets
+      let customInstalledWallets: CustomWallet[] = [];
+      if (customPromises?.length) {
+        const customResults = await Promise.all(customPromises);
+        const customInstalled = customResults
+          .filter(({ isInstalled }) => isInstalled)
+          .map(({ id }) => id);
+        customInstalledWallets =
+          customWallets?.filter(wallet => customInstalled.includes(wallet.id)) ?? [];
+      }
+
+      // Merge and de-duplicate by id, preserving order (API first, then custom)
+      const byId = new Map<string, WcWallet>();
+      [...apiInstalledWallets, ...customInstalledWallets].forEach(wallet => {
+        if (!byId.has(wallet.id)) {
+          byId.set(wallet.id, wallet);
+        }
+      });
+      const combinedInstalled = Array.from(byId.values());
+      state.installed = combinedInstalled;
+      if (combinedInstalled.length) {
+        this.updateRecentWalletsInfo(combinedInstalled);
+      }
+    } catch (error) {
+      state.installed = [];
+      clearTimeout(timeoutId);
+      // eslint-disable-next-line no-console
+      console.log('Error fetching installed wallets', error);
     }
   },
 
@@ -375,18 +392,21 @@ export const ApiController = {
     try {
       state.prefetchError = false;
       state.prefetchLoading = true;
-      // this fetch must resolve first so we filter them in the other wallet requests
-      await ApiController.fetchInstalledWallets();
 
       const promises = [
-        ApiController.fetchFeaturedWallets(),
-        ApiController.fetchRecommendedWallets(),
         ApiController.fetchNetworkImages(),
         ApiController.fetchCustomWalletImages()
       ];
+
       if (OptionsController.state.enableAnalytics === undefined) {
         promises.push(ApiController.fetchAnalyticsConfig());
       }
+
+      // this fetch must resolve first so we filter them in the other wallet requests
+      await ApiController.fetchInstalledWallets();
+
+      promises.push(ApiController.fetchFeaturedWallets());
+      promises.push(ApiController.fetchRecommendedWallets());
 
       state.prefetchPromise = Promise.race([
         CoreHelperUtil.allSettled(promises),
