@@ -103,7 +103,8 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
     async disconnect() {
       const _provider = await this.getProvider();
       try {
-        await _provider?.disconnect();
+        await appKitProvidedConnector.disconnect();
+        config.emitter.emit('message', { type: 'externalDisconnect' });
       } catch (error) {
         if (!/No matching key/i.test((error as Error).message)) {
           throw error;
@@ -239,12 +240,11 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
       config.emitter.emit('change', { chainId });
     },
 
-    async onDisconnect(_error) {
+    async onDisconnect() {
       config.emitter.emit('disconnect');
 
       const _provider = await this.getProvider();
 
-      if (!_provider) return;
       if (accountsChanged) {
         _provider.off('accountsChanged', accountsChanged);
         accountsChanged = undefined;
