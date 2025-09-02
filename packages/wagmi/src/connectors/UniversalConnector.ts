@@ -243,23 +243,41 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
     async onDisconnect() {
       config.emitter.emit('disconnect');
 
-      const _provider = await this.getProvider();
+      try {
+        const _provider = await this.getProvider();
 
-      if (accountsChanged) {
-        _provider.off('accountsChanged', accountsChanged);
-        accountsChanged = undefined;
-      }
-      if (chainChanged) {
-        _provider.off('chainChanged', chainChanged);
-        chainChanged = undefined;
-      }
-      if (disconnect) {
-        _provider.off('disconnect', disconnect);
-        disconnect = undefined;
-      }
-      if (sessionDelete) {
-        _provider.off('session_delete', sessionDelete);
-        sessionDelete = undefined;
+        // Clean up event listeners
+        if (accountsChanged) {
+          _provider.off('accountsChanged', accountsChanged);
+          accountsChanged = undefined;
+        }
+        if (chainChanged) {
+          _provider.off('chainChanged', chainChanged);
+          chainChanged = undefined;
+        }
+        if (disconnect) {
+          _provider.off('disconnect', disconnect);
+          disconnect = undefined;
+        }
+        if (sessionDelete) {
+          _provider.off('session_delete', sessionDelete);
+          sessionDelete = undefined;
+        }
+      } catch (error) {
+        // If provider is not available, still clean up local references
+        // to prevent memory leaks
+        if (accountsChanged) {
+          accountsChanged = undefined;
+        }
+        if (chainChanged) {
+          chainChanged = undefined;
+        }
+        if (disconnect) {
+          disconnect = undefined;
+        }
+        if (sessionDelete) {
+          sessionDelete = undefined;
+        }
       }
     },
 
