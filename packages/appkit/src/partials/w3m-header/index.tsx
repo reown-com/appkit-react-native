@@ -59,6 +59,7 @@ export function Header() {
   };
 
   const noCloseViews = ['OnRampSettings'];
+  const noBackViews = ['UnsupportedChain'];
   const showClose = !noCloseViews.includes(view);
   const header = headings(data, view);
 
@@ -71,7 +72,9 @@ export function Header() {
   };
 
   const dynamicButtonTemplate = () => {
-    const showBack = RouterController.state.history.length > 1;
+    const showBack =
+      RouterController.state.history.length > 1 &&
+      !noBackViews.includes(RouterController.state.view);
     const showHelp = RouterController.state.view === 'Connect';
 
     if (showHelp) {
