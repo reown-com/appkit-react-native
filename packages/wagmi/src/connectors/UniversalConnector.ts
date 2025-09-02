@@ -1,4 +1,5 @@
 import type { Provider, WalletConnector } from '@reown/appkit-common-react-native';
+
 import {
   getAddress,
   numberToHex,
@@ -6,47 +7,47 @@ import {
   UserRejectedRequestError,
   type Hex
 } from 'viem';
-import { ChainNotConfiguredError, createConnector, ProviderNotFoundError } from 'wagmi';
+import {
+  ChainNotConfiguredError,
+  createConnector,
+  ProviderNotFoundError,
+  type Connector
+} from 'wagmi';
 import { formatNetwork } from '../utils/helpers';
+
+type UniversalConnector = Connector & {
+  onDisplayUri(uri: string): void;
+  onSessionDelete(data: { topic: string }): void;
+};
+
+type Properties = {
+  onDisplayUri(uri: string): void;
+  onSessionDelete(data: { topic: string }): void;
+};
 
 export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
   let provider: Provider | undefined;
 
-  let accountsChangedHandler: ((accounts: string[]) => void) | undefined;
-  let chainChangedHandler: ((chainId: string | number) => void) | undefined;
-  let disconnectHandler: ((error?: Error) => void) | undefined;
+  let accountsChanged: UniversalConnector['onAccountsChanged'] | undefined;
+  let chainChanged: UniversalConnector['onChainChanged'] | undefined;
+  let displayUri: UniversalConnector['onDisplayUri'] | undefined;
+  let sessionDelete: UniversalConnector['onSessionDelete'] | undefined;
+  let disconnect: UniversalConnector['onDisconnect'] | undefined;
 
-  type AppKitConnectorProperties = { ready: boolean };
-
-  return createConnector<Provider, AppKitConnectorProperties>(config => ({
+  return createConnector<Provider, Properties>(config => ({
     id: 'walletconnect',
     name: 'WalletConnect',
     type: 'walletconnect' as const,
     ready: !!appKitProvidedConnector.getProvider('eip155'),
 
     async setup() {
-      provider = appKitProvidedConnector.getProvider('eip155');
-      if (provider?.on) {
-        accountsChangedHandler = (accounts: string[]) => {
-          const hexAccounts = accounts.map(acc => getAddress(acc));
-          config.emitter.emit('change', { accounts: hexAccounts });
-          if (hexAccounts.length === 0) {
-            config.emitter.emit('disconnect');
-          }
-        };
-        chainChangedHandler = (chainId: string | number) => {
-          const newChainId = typeof chainId === 'string' ? parseInt(chainId, 10) : chainId;
-          config.emitter.emit('change', { chainId: newChainId });
-        };
-        disconnectHandler = (error?: Error) => {
-          config.emitter.emit('disconnect');
-          if (error) config.emitter.emit('error', { error });
-        };
-
-        if (accountsChangedHandler) provider.on('accountsChanged', accountsChangedHandler);
-        if (chainChangedHandler) provider.on('chainChanged', chainChangedHandler);
-        if (disconnectHandler) provider.on('disconnect', disconnectHandler);
-        if (disconnectHandler) provider.on('session_delete', disconnectHandler);
+      const _provider = await this.getProvider().catch(() => null);
+      if (!_provider) {
+        return;
+      }
+      if (!sessionDelete) {
+        sessionDelete = this.onSessionDelete.bind(this);
+        _provider.on('session_delete', sessionDelete);
       }
     },
 
@@ -71,8 +72,26 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
           await this.switchChain?.({ chainId });
           currentChainId = chainId;
         }
-
-        this.ready = true;
+        if (displayUri) {
+          _provider.off('display_uri', displayUri);
+          displayUri = undefined;
+        }
+        if (!accountsChanged) {
+          accountsChanged = this.onAccountsChanged.bind(this);
+          _provider.on('accountsChanged', accountsChanged);
+        }
+        if (!chainChanged) {
+          chainChanged = this.onChainChanged.bind(this);
+          _provider.on('chainChanged', chainChanged);
+        }
+        if (!disconnect) {
+          disconnect = this.onDisconnect.bind(this);
+          _provider.on('disconnect', disconnect);
+        }
+        if (!sessionDelete) {
+          sessionDelete = this.onSessionDelete.bind(this);
+          _provider.on('session_delete', sessionDelete);
+        }
 
         return { accounts: accountAddresses, chainId: currentChainId };
       } catch (error) {
@@ -82,18 +101,31 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
     },
 
     async disconnect() {
-      await appKitProvidedConnector.disconnect();
-      config.emitter.emit('message', { type: 'externalDisconnect' });
-      if (provider?.off && accountsChangedHandler && chainChangedHandler && disconnectHandler) {
-        provider.off('accountsChanged', accountsChangedHandler);
-        provider.off('chainChanged', chainChangedHandler);
-        provider.off('disconnect', disconnectHandler);
-        provider.off('session_delete', disconnectHandler);
-        accountsChangedHandler = undefined;
-        chainChangedHandler = undefined;
-        disconnectHandler = undefined;
+      const _provider = await this.getProvider();
+      try {
+        await _provider?.disconnect();
+      } catch (error) {
+        if (!/No matching key/i.test((error as Error).message)) {
+          throw error;
+        }
+      } finally {
+        if (chainChanged) {
+          _provider.off('chainChanged', chainChanged);
+          chainChanged = undefined;
+        }
+        if (disconnect) {
+          _provider.off('disconnect', disconnect);
+          disconnect = undefined;
+        }
+        if (accountsChanged) {
+          _provider.off('accountsChanged', accountsChanged);
+          accountsChanged = undefined;
+        }
+        if (sessionDelete) {
+          _provider.off('session_delete', sessionDelete);
+          sessionDelete = undefined;
+        }
       }
-      this.ready = false;
     },
 
     async getAccounts() {
@@ -139,7 +171,7 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
         provider = appKitProvidedConnector.getProvider('eip155');
       }
 
-      return provider as Provider;
+      return provider;
     },
 
     async isAuthorized() {
@@ -207,8 +239,36 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
       config.emitter.emit('change', { chainId });
     },
 
-    onDisconnect: () => {
+    async onDisconnect(_error) {
       config.emitter.emit('disconnect');
+
+      const _provider = await this.getProvider();
+
+      if (!_provider) return;
+      if (accountsChanged) {
+        _provider.off('accountsChanged', accountsChanged);
+        accountsChanged = undefined;
+      }
+      if (chainChanged) {
+        _provider.off('chainChanged', chainChanged);
+        chainChanged = undefined;
+      }
+      if (disconnect) {
+        _provider.off('disconnect', disconnect);
+        disconnect = undefined;
+      }
+      if (sessionDelete) {
+        _provider.off('session_delete', sessionDelete);
+        sessionDelete = undefined;
+      }
+    },
+
+    onDisplayUri(uri) {
+      config.emitter.emit('message', { type: 'display_uri', data: uri });
+    },
+
+    onSessionDelete() {
+      this.onDisconnect();
     }
   }));
 }

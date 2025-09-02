@@ -207,13 +207,16 @@ export class WalletConnectConnector extends WalletConnector {
       throw new Error('WalletConnectConnector: Provider not initialized. Call init() first.');
     }
 
-    const provider = this.provider as IUniversalProvider;
+    const provider = this.provider;
 
     if (namespace) {
-      // @ts-ignore
       return {
-        ...provider,
-        request: (args: RequestArguments, chainId?: CaipNetworkId) => {
+        ...this.provider,
+        connect: async (params?: any) => provider.connect(params) as Promise<any>,
+        disconnect: provider.disconnect.bind(provider),
+        on: provider.on.bind(provider),
+        off: provider.off.bind(provider),
+        request: async (args: RequestArguments, chainId?: CaipNetworkId) => {
           const _chainId = this.getChainId(namespace);
 
           return provider.request(args, chainId || _chainId);
