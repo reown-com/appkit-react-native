@@ -247,16 +247,22 @@ export const ConnectionsController = {
     baseState.connections = newConnectionsMap;
   },
 
-  updateAccounts(namespace: ChainNamespace, accounts: CaipAddress[]) {
+  updateAccounts(namespace: ChainNamespace, accounts: CaipAddress[]): boolean {
     const connection = baseState.connections.get(namespace);
     if (!connection) {
-      return;
+      return false;
+    }
+
+    if (connection.accounts.toString() === accounts.toString()) {
+      return false;
     }
 
     const newConnectionsMap = new Map(baseState.connections);
     const updatedConnection = { ...connection, accounts };
     newConnectionsMap.set(namespace, updatedConnection);
     baseState.connections = newConnectionsMap;
+
+    return true;
   },
 
   updateBalance(namespace: ChainNamespace, address: CaipAddress, balance: Balance) {

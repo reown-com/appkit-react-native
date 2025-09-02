@@ -609,9 +609,9 @@ export class AppKit {
   private subscribeToAdapterEvents(adapter: BlockchainAdapter): void {
     adapter.on('accountsChanged', ({ accounts }) => {
       const namespace = adapter.getSupportedNamespace();
-      ConnectionsController.updateAccounts(namespace, accounts);
+      const hasChanged = ConnectionsController.updateAccounts(namespace, accounts);
 
-      if (namespace === 'eip155') {
+      if (hasChanged && namespace === 'eip155') {
         this.handleSiweChange({ isAccountChange: true });
       }
     });
@@ -619,15 +619,14 @@ export class AppKit {
     adapter.on('chainChanged', async ({ chainId }) => {
       const isSupported = this.networks.some(network => network.id?.toString() === chainId);
       if (!isSupported) {
-        ModalController.open({ view: 'UnsupportedChain' });
-
-        return;
+        return this.navigate('UnsupportedChain');
       }
 
       const namespace = adapter.getSupportedNamespace();
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
       ConnectionsController.setActiveNetwork(namespace, chain);
       ConnectionsController.setActiveNamespace(namespace);
+
       const connection = ConnectionsController.state.connections.get(namespace);
       const isAuth = !!connection?.properties?.provider;
 
@@ -698,6 +697,7 @@ export class AppKit {
 
     if (options.siweConfig) {
       SIWEController.setSIWEClient(options.siweConfig);
+      OptionsController.setIsSiweEnabled(options.siweConfig.options.enabled);
     }
 
     if (
@@ -793,6 +793,10 @@ export class AppKit {
   }
 
   private navigate = (routeName: RouterControllerState['view']) => {
+    if (RouterController.state.view === routeName) {
+      return;
+    }
+
     if (ModalController.state.open) {
       RouterController.push(routeName);
     } else {
@@ -809,39 +813,33 @@ export class AppKit {
     const { enabled, signOutOnAccountChange, signOutOnNetworkChange } =
       SIWEController.state._client?.options ?? {};
 
-    const isSupportedNetwork = this.networks.some(
-      network => network.caipNetworkId === ConnectionsController.state.activeCaipNetworkId
-    );
-
-    if (!isSupportedNetwork) {
-      // Do nothing. Unsupported network view will be shown.
+    if (!enabled || RouterController.state.view === 'ConnectingSiwe') {
+      // Do nothing if view is connecting siwe or siwe is not enabled
       return;
     }
 
-    if (enabled) {
-      const session = await SIWEController.getSession();
-      if (session && isAccountChange) {
-        if (signOutOnAccountChange) {
-          // If the address has changed and signOnAccountChange is enabled, sign out
-          await SIWEController.signOut();
-
-          return this.navigate('ConnectingSiwe');
-        }
-      } else if (session && isNetworkChange) {
-        if (signOutOnNetworkChange) {
-          // If the network has changed and signOnNetworkChange is enabled, sign out
-          await SIWEController.signOut();
-
-          return this.navigate('ConnectingSiwe');
-        }
-      } else if (!session) {
-        // If it's connected but there's no session, show sign view
+    const session = await SIWEController.getSession();
+    if (session && isAccountChange) {
+      if (signOutOnAccountChange) {
+        // If the address has changed and signOnAccountChange is enabled, sign out
+        await SIWEController.signOut();
 
         return this.navigate('ConnectingSiwe');
-      } else if (isConnection) {
-        // Connected with 1CA
-        ModalController.close();
       }
+    } else if (session && isNetworkChange) {
+      if (signOutOnNetworkChange) {
+        // If the network has changed and signOnNetworkChange is enabled, sign out
+        await SIWEController.signOut();
+
+        return this.navigate('ConnectingSiwe');
+      }
+    } else if (!session) {
+      // If it's connected but there's no session, show sign view
+
+      return this.navigate('ConnectingSiwe');
+    } else if (isConnection) {
+      // Already connected with 1CA
+      ModalController.close();
     }
   }
 }

@@ -7,7 +7,7 @@ import {
   type SIWESession,
   type SIWEMessageArgs
 } from '@reown/appkit-common-react-native';
-import { ConnectionsController, CoreHelperUtil, RouterUtil } from '@reown/appkit-core-react-native';
+import { ConnectionsController, CoreHelperUtil } from '@reown/appkit-core-react-native';
 
 import type { SIWEControllerClient } from './controller/SIWEController';
 import { ConstantsUtil } from './utils/ConstantsUtil';
@@ -126,8 +126,6 @@ export class AppKitSIWEClient {
     if (this.methods.onSignIn) {
       this.methods.onSignIn(session);
     }
-
-    RouterUtil.navigateAfterNetworkSwitch();
 
     return session;
   }
