@@ -2,6 +2,9 @@ import { BorderRadius, Spacing } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+  container: {
+    minHeight: '30%'
+  },
   logoContainer: {
     marginTop: Spacing.xl,
     marginBottom: Spacing.m
@@ -15,13 +18,6 @@ export default StyleSheet.create({
   subtitle: {
     marginHorizontal: '10%',
     marginVertical: Spacing.l
-  },
-  closeButton: {
-    alignSelf: 'flex-end',
-    right: Spacing.xl,
-    top: Spacing.l,
-    position: 'absolute',
-    zIndex: 2
   },
   walletAvatar: {
     borderRadius: BorderRadius.full

@@ -32,7 +32,7 @@ export function Header() {
       Connect: 'Connect wallet',
       ConnectSocials: 'All socials',
       ConnectingExternal: walletName ?? 'Connect wallet',
-      ConnectingSiwe: undefined,
+      ConnectingSiwe: 'Sign in',
       ConnectingSocial: socialName ?? 'Connecting Social',
       ConnectingWalletConnect: walletName ?? 'WalletConnect',
       GetWallet: 'Get a wallet',
@@ -58,7 +58,7 @@ export function Header() {
     }[_view];
   };
 
-  const noCloseViews = ['OnRampSettings'];
+  const noCloseViews = ['OnRampSettings', 'ConnectingSiwe'];
   const noBackViews = ['UnsupportedChain'];
   const showClose = !noCloseViews.includes(view);
   const header = headings(data, view);
