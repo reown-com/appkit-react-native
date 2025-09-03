@@ -5,8 +5,8 @@ import {
   Button,
   DoubleImageLoader,
   FlexView,
-  IconLink,
-  Text
+  Text,
+  useCustomDimensions
 } from '@reown/appkit-ui-react-native';
 import {
   ConnectionsController,
@@ -20,9 +20,11 @@ import { SIWEController } from '@reown/appkit-siwe-react-native';
 
 import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
+import { ScrollView } from 'react-native';
 
 export function ConnectingSiweView() {
   const { disconnect } = useInternalAppKit();
+  const { padding } = useCustomDimensions();
   const { metadata } = useSnapshot(OptionsController.state);
   const { activeAddress, identity, walletInfo } = useSnapshot(ConnectionsController.state);
   const [isSigning, setIsSigning] = useState(false);
@@ -84,46 +86,48 @@ export function ConnectingSiweView() {
   };
 
   return (
-    <FlexView padding={['2xl', 's', '3xl', 's']}>
-      <IconLink
-        icon="close"
-        size="md"
-        onPress={onCancel}
-        testID="header-close"
-        style={styles.closeButton}
-      />
-      <Text variant="paragraph-600" numberOfLines={1} center>
-        Sign in
-      </Text>
-      <DoubleImageLoader
-        style={styles.logoContainer}
-        leftImage={dappIcon}
-        rightImage={walletIcon}
-        renderRightPlaceholder={() => (
-          <Avatar imageSrc={identity?.avatar} address={activeAddress} size={60} borderWidth={0} />
-        )}
-        rightItemStyle={!walletIcon && styles.walletAvatar}
-      />
-      <Text center variant="medium-600" color="fg-100" style={styles.title}>
-        {dappName} needs to connect to your wallet
-      </Text>
-      <Text center variant="small-400" color="fg-200" style={styles.subtitle}>
-        Sign this message to prove you own this wallet and proceed. Cancelling will disconnect you
-      </Text>
-      <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
-        <Button variant="shade" onPress={onCancel} style={styles.button} loading={isDisconnecting}>
-          Cancel
-        </Button>
-        <Button
-          variant="fill"
-          loading={isSigning}
-          disabled={isDisconnecting}
-          onPress={onSign}
-          style={styles.button}
-        >
-          Sign
-        </Button>
+    <ScrollView
+      bounces={false}
+      fadingEdgeLength={20}
+      style={{ paddingHorizontal: padding }}
+      contentContainerStyle={styles.container}
+    >
+      <FlexView padding={['0', 's', '3xl', 's']}>
+        <DoubleImageLoader
+          style={styles.logoContainer}
+          leftImage={dappIcon}
+          rightImage={walletIcon}
+          renderRightPlaceholder={() => (
+            <Avatar imageSrc={identity?.avatar} address={activeAddress} size={60} borderWidth={0} />
+          )}
+          rightItemStyle={!walletIcon && styles.walletAvatar}
+        />
+        <Text center variant="medium-600" color="fg-100" style={styles.title}>
+          {dappName} needs to connect to your wallet
+        </Text>
+        <Text center variant="small-400" color="fg-200" style={styles.subtitle}>
+          Sign this message to prove you own this wallet and proceed. Cancelling will disconnect you
+        </Text>
+        <FlexView flexDirection="row" justifyContent="space-between" margin={['s', '0', '0', '0']}>
+          <Button
+            variant="shade"
+            onPress={onCancel}
+            style={styles.button}
+            loading={isDisconnecting}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="fill"
+            loading={isSigning}
+            disabled={isDisconnecting}
+            onPress={onSign}
+            style={styles.button}
+          >
+            Sign
+          </Button>
+        </FlexView>
       </FlexView>
-    </FlexView>
+    </ScrollView>
   );
 }
