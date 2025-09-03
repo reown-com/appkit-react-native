@@ -16,12 +16,10 @@ import {
 import { formatNetwork } from '../utils/helpers';
 
 type UniversalConnector = Connector & {
-  onDisplayUri(uri: string): void;
   onSessionDelete(data: { topic: string }): void;
 };
 
 type Properties = {
-  onDisplayUri(uri: string): void;
   onSessionDelete(data: { topic: string }): void;
 };
 
@@ -30,7 +28,6 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
 
   let accountsChanged: UniversalConnector['onAccountsChanged'] | undefined;
   let chainChanged: UniversalConnector['onChainChanged'] | undefined;
-  let displayUri: UniversalConnector['onDisplayUri'] | undefined;
   let sessionDelete: UniversalConnector['onSessionDelete'] | undefined;
   let disconnect: UniversalConnector['onDisconnect'] | undefined;
 
@@ -72,10 +69,6 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
           await this.switchChain?.({ chainId });
           currentChainId = chainId;
         }
-        if (displayUri) {
-          _provider.off('display_uri', displayUri);
-          displayUri = undefined;
-        }
         if (!accountsChanged) {
           accountsChanged = this.onAccountsChanged.bind(this);
           _provider.on('accountsChanged', accountsChanged);
@@ -101,7 +94,7 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
     },
 
     async disconnect() {
-      const _provider = await this.getProvider();
+      const _provider = await this.getProvider().catch(() => null);
       try {
         await appKitProvidedConnector.disconnect();
         config.emitter.emit('message', { type: 'externalDisconnect' });
@@ -111,19 +104,19 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
         }
       } finally {
         if (chainChanged) {
-          _provider.off('chainChanged', chainChanged);
+          _provider?.off('chainChanged', chainChanged);
           chainChanged = undefined;
         }
         if (disconnect) {
-          _provider.off('disconnect', disconnect);
+          _provider?.off('disconnect', disconnect);
           disconnect = undefined;
         }
         if (accountsChanged) {
-          _provider.off('accountsChanged', accountsChanged);
+          _provider?.off('accountsChanged', accountsChanged);
           accountsChanged = undefined;
         }
         if (sessionDelete) {
-          _provider.off('session_delete', sessionDelete);
+          _provider?.off('session_delete', sessionDelete);
           sessionDelete = undefined;
         }
       }
@@ -279,10 +272,6 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
           sessionDelete = undefined;
         }
       }
-    },
-
-    onDisplayUri(uri) {
-      config.emitter.emit('message', { type: 'display_uri', data: uri });
     },
 
     onSessionDelete() {
