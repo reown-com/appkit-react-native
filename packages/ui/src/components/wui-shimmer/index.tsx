@@ -18,7 +18,7 @@ export interface ShimmerProps {
   style?: StyleProp<ViewStyle>;
 }
 
-function _Shimmer({
+function Shimmer_({
   width = 200,
   height = 200,
   duration = 1000,
@@ -127,6 +127,6 @@ function _Shimmer({
   );
 }
 
-export const Shimmer = memo(_Shimmer, () => {
+export const Shimmer = memo(Shimmer_, () => {
   return true;
 });

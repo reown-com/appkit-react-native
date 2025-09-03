@@ -12,7 +12,7 @@ export interface CardSelectLoaderProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function _CardSelectLoader({ style }: CardSelectLoaderProps) {
+export function CardSelectLoader_({ style }: CardSelectLoaderProps) {
   const Theme = useTheme();
 
   return (
@@ -35,6 +35,6 @@ export function _CardSelectLoader({ style }: CardSelectLoaderProps) {
     </FlexView>
   );
 }
-export const CardSelectLoader = memo(_CardSelectLoader, () => {
+export const CardSelectLoader = memo(CardSelectLoader_, () => {
   return true;
 });

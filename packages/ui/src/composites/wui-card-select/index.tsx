@@ -29,7 +29,7 @@ export interface CardSelectProps {
   testID?: string;
 }
 
-function _CardSelect({
+function CardSelect_({
   name,
   type = 'wallet',
   imageSrc,
@@ -95,6 +95,6 @@ function _CardSelect({
   );
 }
 
-export const CardSelect = memo(_CardSelect, (prevProps, nextProps) => {
+export const CardSelect = memo(CardSelect_, (prevProps, nextProps) => {
   return prevProps.name === nextProps.name && prevProps.imageSrc === nextProps.imageSrc;
 });
