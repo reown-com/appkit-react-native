@@ -56,16 +56,14 @@ export function SwapSelectTokenModal({ onClose, type, style, visible }: Props) {
   const [tokenSearch, setTokenSearch] = useState<string>('');
   const isSourceToken = type === 'sourceToken';
 
-  const [filteredTokens, setFilteredTokens] = useState(
-    createSections(isSourceToken, tokenSearch, myTokensWithBalance)
-  );
+  const filteredTokens = createSections(isSourceToken, tokenSearch, myTokensWithBalance);
+
   const suggestedList = suggestedTokens
     ?.filter(token => token.address !== SwapController.state.sourceToken?.address)
     .slice(0, 8);
 
   const onSearchChange = (value: string) => {
     setTokenSearch(value);
-    setFilteredTokens(createSections(isSourceToken, value, myTokensWithBalance));
   };
 
   const onTokenPress = (token: SwapTokenWithBalance) => {
