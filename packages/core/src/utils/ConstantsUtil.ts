@@ -219,8 +219,6 @@ export const ConstantsUtil = {
     'eip155:1499',
     // Sonic
     'eip155:7007',
-    // Swellchain
-    'eip155:7777777',
     // Taiko
     'eip155:167000',
     // Viction
@@ -238,9 +236,7 @@ export const ConstantsUtil = {
     // ZkLink Nova
     'eip155:810180',
     // re.al
-    'eip155:666',
-    // Zora
-    'eip155:7777777'
+    'eip155:666'
   ],
 
   SWAP_SUPPORTED_NETWORKS: [

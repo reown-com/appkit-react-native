@@ -15,7 +15,7 @@ import styles from './styles';
 export function UnsupportedChainView() {
   const { networkImages } = useSnapshot(AssetController.state);
   const [disconnecting, setDisconnecting] = useState(false);
-  const networks = ConnectionsController.getConnectedNetworks();
+  const networks = ConnectionsController.getAvailableNetworks();
   const imageHeaders = ApiController._getApiHeaders();
   const { disconnect, switchNetwork } = useInternalAppKit();
 

@@ -96,5 +96,9 @@ function CardSelect_({
 }
 
 export const CardSelect = memo(CardSelect_, (prevProps, nextProps) => {
-  return prevProps.name === nextProps.name && prevProps.imageSrc === nextProps.imageSrc;
+  return (
+    prevProps.name === nextProps.name &&
+    prevProps.imageSrc === nextProps.imageSrc &&
+    prevProps.selected === nextProps.selected
+  );
 });

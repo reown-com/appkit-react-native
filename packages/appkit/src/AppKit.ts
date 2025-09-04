@@ -290,10 +290,6 @@ export class AppKit {
     });
 
     ConnectionsController.setActiveNetwork(network.chainNamespace, network.caipNetworkId);
-
-    if (ConnectionsController.state.activeNamespace !== network.chainNamespace) {
-      ConnectionsController.setActiveNamespace(network.chainNamespace);
-    }
   }
 
   open(options?: AppKitOpenOptions) {
@@ -583,7 +579,8 @@ export class AppKit {
       const caipNetwork = adapter?.connector?.getChainId(namespace);
       const namespaceProperties = {
         ...properties,
-        smartAccounts: properties?.smartAccounts?.filter(account => account.startsWith(namespace))
+        smartAccounts: properties?.smartAccounts?.filter(account => account.startsWith(namespace)),
+        canAddEvmChain: wallet?.name === 'MetaMask Wallet' // MetaMask allows adding EVM chains after connecting
       };
 
       ConnectionsController.setConnection({
@@ -625,7 +622,6 @@ export class AppKit {
       const namespace = adapter.getSupportedNamespace();
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
       ConnectionsController.setActiveNetwork(namespace, chain);
-      ConnectionsController.setActiveNamespace(namespace);
 
       const connection = ConnectionsController.state.connections.get(namespace);
       const isAuth = !!connection?.properties?.provider;

@@ -337,6 +337,8 @@ export const ConnectionsController = {
       ...connection,
       caipNetwork: networkId
     });
+
+    this.setActiveNamespace(namespace);
   },
 
   setNetworks(networks: AppKitNetwork[]) {
@@ -344,11 +346,34 @@ export const ConnectionsController = {
   },
 
   getConnectedNetworks() {
+    const connection = getActiveConnection(baseState);
+    if (!connection) {
+      return [];
+    }
+
     return baseState.networks.filter(
       network =>
         baseState.connections
           .get(network.chainNamespace)
           ?.accounts.some(account => account.startsWith(network.caipNetworkId))
+    );
+  },
+
+  getAvailableNetworks() {
+    const connection = getActiveConnection(baseState);
+
+    if (!connection) {
+      return baseState.networks;
+    }
+
+    const canAddEvmChain = connection.properties?.canAddEvmChain;
+
+    return baseState.networks.filter(
+      network =>
+        baseState.connections
+          .get(network.chainNamespace)
+          ?.accounts.some(account => account.startsWith(network.caipNetworkId)) ||
+        (canAddEvmChain && network.chainNamespace === 'eip155')
     );
   },
 
