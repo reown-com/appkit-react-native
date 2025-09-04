@@ -199,7 +199,7 @@ export class WalletConnectConnector extends WalletConnector {
 
     provider.off('display_uri', onUri);
 
-    return session?.namespaces as Namespaces;
+    return (session?.namespaces as Namespaces) ?? {};
   }
 
   override getProvider(namespace?: ChainNamespace): Provider {
