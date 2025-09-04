@@ -229,7 +229,7 @@ export class WalletConnectConnector extends WalletConnector {
 
   override getNamespaces(): Namespaces {
     const namespaces =
-      ((this.provider as IUniversalProvider).session?.namespaces as Namespaces) ?? {};
+      ((this.provider as IUniversalProvider)?.session?.namespaces as Namespaces) ?? {};
     this.namespaces = namespaces;
 
     return namespaces;
