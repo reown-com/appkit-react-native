@@ -186,21 +186,10 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
       if (!newChain) throw new SwitchChainError(new ChainNotConfiguredError());
 
       try {
-        await Promise.all([
-          new Promise<void>(resolve => {
-            const listener = ({ chainId: currentChainId }: { chainId?: number | undefined }) => {
-              if (currentChainId === chainId) {
-                config.emitter.off('change', listener);
-                resolve();
-              }
-            };
-            config.emitter.on('change', listener);
-          }),
-          _provider.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: numberToHex(chainId) }]
-          })
-        ]);
+        await _provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: numberToHex(chainId) }]
+        });
 
         return newChain;
       } catch (err) {
@@ -208,25 +197,28 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
 
         if (/(user rejected)/i.test(error.message)) throw new UserRejectedRequestError(error);
 
-        // Indicates chain is not added to provider
-        try {
-          const addEthereumChainParams = {
-            chainId: numberToHex(chainId),
-            chainName: newChain.name,
-            nativeCurrency: newChain.nativeCurrency,
-            rpcUrls: [newChain.rpcUrls.default?.http[0] ?? ''], //
-            blockExplorerUrls: [newChain.blockExplorers?.default?.url]
-          };
+        if ((error as any)?.code === 4902 || (error as any)?.data?.originalError?.code === 4902) {
+          // Indicates chain is not added to provider
+          try {
+            const addEthereumChainParams = {
+              chainId: numberToHex(chainId),
+              chainName: newChain.name,
+              nativeCurrency: newChain.nativeCurrency,
+              rpcUrls: [newChain.rpcUrls.default?.http[0] ?? ''],
+              blockExplorerUrls: [newChain.blockExplorers?.default?.url]
+            };
 
-          await _provider.request({
-            method: 'wallet_addEthereumChain',
-            params: [addEthereumChainParams]
-          });
+            await _provider.request({
+              method: 'wallet_addEthereumChain',
+              params: [addEthereumChainParams]
+            });
 
-          return newChain;
-        } catch (addError) {
-          throw new UserRejectedRequestError(addError as Error);
+            return newChain;
+          } catch (addError) {
+            throw new UserRejectedRequestError(addError as Error);
+          }
         }
+        throw new SwitchChainError(error as Error);
       }
     },
 

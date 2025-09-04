@@ -34,7 +34,7 @@ export function NetworkSwitchView() {
       setIsError(false);
       await switchNetwork(RouterController.state.data.network);
       back();
-    } catch (error: any) {
+    } catch (error) {
       setIsError(true);
       setShowRetry(true);
     }
