@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useDeferredValue, useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import {
   OnRampController,
@@ -56,6 +56,7 @@ export function OnRampView() {
   const { activeNetwork } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
   const [searchValue, setSearchValue] = useState('');
+  const deferredSearchValue = useDeferredValue(searchValue);
   const [isCurrencyModalVisible, setIsCurrencyModalVisible] = useState(false);
   const [isPaymentMethodModalVisible, setIsPaymentMethodModalVisible] = useState(false);
   const purchaseCurrencyCode =
@@ -255,7 +256,7 @@ export function OnRampView() {
             selectedItem={purchaseCurrency}
             visible={isCurrencyModalVisible}
             onClose={onModalClose}
-            items={getPurchaseCurrencies(searchValue, true)}
+            items={getPurchaseCurrencies(deferredSearchValue, true)}
             onSearch={handleSearch}
             renderItem={renderCurrencyItem}
             keyExtractor={item => item.currencyCode}

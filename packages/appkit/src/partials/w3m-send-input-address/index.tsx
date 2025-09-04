@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useDeferredValue } from 'react';
 import { TextInput } from 'react-native';
 import { FlexView, useTheme } from '@reown/appkit-ui-react-native';
 import { SendController } from '@reown/appkit-core-react-native';
@@ -13,6 +13,7 @@ export interface SendInputAddressProps {
 export function SendInputAddress({ value }: SendInputAddressProps) {
   const Theme = useTheme();
   const [inputValue, setInputValue] = useState<string | undefined>(value);
+  const deferredValue = useDeferredValue(inputValue);
 
   const onSearch = async (search: string) => {
     SendController.setReceiverAddress(search);
@@ -47,7 +48,7 @@ export function SendInputAddress({ value }: SendInputAddressProps) {
         style={[styles.input, { color: Theme['fg-100'] }]}
         autoCapitalize="none"
         autoCorrect={false}
-        value={inputValue}
+        value={deferredValue}
         onChangeText={onInputChange}
         keyboardType="default"
         inputMode="text"

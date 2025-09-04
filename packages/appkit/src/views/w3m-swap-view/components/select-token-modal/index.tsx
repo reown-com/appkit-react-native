@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useDeferredValue, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import {
   Modal,
@@ -54,9 +54,10 @@ export function SwapSelectTokenModal({ onClose, type, style, visible }: Props) {
 
   const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
   const [tokenSearch, setTokenSearch] = useState<string>('');
+  const deferredTokenSearch = useDeferredValue(tokenSearch);
   const isSourceToken = type === 'sourceToken';
 
-  const filteredTokens = createSections(isSourceToken, tokenSearch, myTokensWithBalance);
+  const filteredTokens = createSections(isSourceToken, deferredTokenSearch, myTokensWithBalance);
 
   const suggestedList = suggestedTokens
     ?.filter(token => token.address !== SwapController.state.sourceToken?.address)
@@ -104,7 +105,7 @@ export function SwapSelectTokenModal({ onClose, type, style, visible }: Props) {
         </FlexView>
         <FlexView margin={['0', '0', 'xs', '0']}>
           <InputText
-            value={tokenSearch}
+            value={deferredTokenSearch}
             icon="search"
             placeholder="Search token"
             onChangeText={onSearchChange}

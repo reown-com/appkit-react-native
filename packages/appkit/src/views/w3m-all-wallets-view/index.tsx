@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useDeferredValue, useState } from 'react';
 import { WcController, EventsController, RouterController } from '@reown/appkit-core-react-native';
 import { type WcWallet } from '@reown/appkit-common-react-native';
 import {
@@ -18,6 +18,7 @@ import { WcHelpersUtil } from '../../utils/HelpersUtil';
 export function AllWalletsView() {
   const Theme = useTheme();
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const deferredSearchQuery = useDeferredValue(searchQuery);
   const { padding } = useCustomDimensions();
 
   const { debouncedCallback: onInputChange } = useDebounceCallback({ callback: setSearchQuery });
@@ -84,8 +85,8 @@ export function AllWalletsView() {
   };
 
   const listTemplate = () => {
-    if (searchQuery) {
-      return <AllWalletsSearch searchQuery={searchQuery} onItemPress={onWalletPress} />;
+    if (deferredSearchQuery) {
+      return <AllWalletsSearch searchQuery={deferredSearchQuery} onItemPress={onWalletPress} />;
     }
 
     return <AllWalletsList onItemPress={onWalletPress} />;

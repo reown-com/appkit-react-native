@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { memo, useState } from 'react';
+import { memo, useDeferredValue, useState } from 'react';
 import { SvgUri } from 'react-native-svg';
 import { FlexView, ListItem, Text, useTheme, Icon, Image } from '@reown/appkit-ui-react-native';
 import { OnRampController } from '@reown/appkit-core-react-native';
@@ -13,7 +13,9 @@ import {
   getItemHeight,
   getModalItems,
   getModalItemKey,
-  getModalSearchPlaceholder
+  getModalSearchPlaceholder,
+  getModalEmptyTitle,
+  getModalEmptyDescription
 } from './utils';
 import { styles } from './styles';
 
@@ -27,6 +29,12 @@ export function OnRampSettingsView() {
   const Theme = useTheme();
   const [modalType, setModalType] = useState<ModalType>();
   const [searchValue, setSearchValue] = useState('');
+  const deferredSearchValue = useDeferredValue(searchValue);
+
+  const onModalClose = () => {
+    setModalType(undefined);
+    setSearchValue('');
+  };
 
   const onCountryPress = () => {
     setModalType('country');
@@ -129,8 +137,8 @@ export function OnRampSettingsView() {
       </FlexView>
       <SelectorModal
         visible={!!modalType}
-        onClose={() => setModalType(undefined)}
-        items={getModalItems(modalType, searchValue, true)}
+        onClose={onModalClose}
+        items={getModalItems(modalType, deferredSearchValue, true)}
         selectedItem={modalType === 'country' ? selectedCountry : paymentCurrency}
         onSearch={setSearchValue}
         renderItem={renderModalItem}
@@ -138,6 +146,8 @@ export function OnRampSettingsView() {
         title={getModalTitle(modalType)}
         itemHeight={getItemHeight(modalType)}
         searchPlaceholder={getModalSearchPlaceholder(modalType)}
+        emptyTitle={getModalEmptyTitle(modalType)}
+        emptyDescription={getModalEmptyDescription(modalType)}
       />
     </>
   );

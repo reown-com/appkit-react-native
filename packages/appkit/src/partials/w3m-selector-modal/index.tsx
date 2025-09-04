@@ -28,6 +28,8 @@ interface SelectorModalProps {
   itemHeight?: number;
   showNetwork?: boolean;
   searchPlaceholder?: string;
+  emptyTitle?: string;
+  emptyDescription?: string;
 }
 
 const SEPARATOR_HEIGHT = Spacing.s;
@@ -43,7 +45,9 @@ export function SelectorModal({
   searchPlaceholder,
   keyExtractor,
   itemHeight,
-  showNetwork
+  showNetwork,
+  emptyTitle = 'No tokens found',
+  emptyDescription = "There's no available tokens for this network"
 }: SelectorModalProps) {
   const Theme = useTheme();
   const { maxHeight } = useCustomDimensions();
@@ -67,11 +71,7 @@ export function SelectorModal({
           style={[styles.container, { backgroundColor: Theme['bg-100'], maxHeight }]}
           ListHeaderComponentStyle={styles.header}
           ListEmptyComponent={
-            <Placeholder
-              icon="coinPlaceholder"
-              title="No tokens found"
-              description="There's no available tokens for this network"
-            />
+            <Placeholder icon="coinPlaceholder" title={emptyTitle} description={emptyDescription} />
           }
           ListHeaderComponent={
             <>
