@@ -13,6 +13,7 @@ import { ConnectingSocialView } from '../../views/w3m-connecting-social-view';
 import { ConnectingSiweView } from '../../views/w3m-connecting-siwe-view';
 import { GetWalletView } from '../../views/w3m-get-wallet-view';
 import { NetworksView } from '../../views/w3m-networks-view';
+import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
 import { OnRampLoadingView } from '../../views/w3m-onramp-loading-view';
 import { OnRampView } from '../../views/w3m-onramp-view';
 import { OnRampCheckoutView } from '../../views/w3m-onramp-checkout-view';
@@ -90,6 +91,8 @@ export function AppKitRouter() {
         return SwapView;
       case 'SwapPreview':
         return SwapPreviewView;
+      case 'SwitchNetwork':
+        return NetworkSwitchView;
       case 'Transactions':
         return TransactionsView;
       case 'UnsupportedChain':

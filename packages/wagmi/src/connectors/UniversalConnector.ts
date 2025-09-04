@@ -3,6 +3,7 @@ import type { Provider, WalletConnector } from '@reown/appkit-common-react-nativ
 import {
   getAddress,
   numberToHex,
+  RpcError,
   SwitchChainError,
   UserRejectedRequestError,
   type Hex
@@ -13,7 +14,6 @@ import {
   ProviderNotFoundError,
   type Connector
 } from 'wagmi';
-import { formatNetwork } from '../utils/helpers';
 
 type UniversalConnector = Connector & {
   onSessionDelete(data: { topic: string }): void;
@@ -191,28 +191,27 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
           params: [{ chainId: numberToHex(chainId) }]
         });
 
-        config.emitter.emit('change', { chainId });
-
         return newChain;
-      } catch (error) {
-        // Try to add chain if switch failed (common pattern)
-        //4902 in MetaMask: Unrecognized chain ID
+      } catch (err) {
+        const error = err as RpcError;
+
+        if (/(user rejected)/i.test(error.message)) throw new UserRejectedRequestError(error);
+
         if ((error as any)?.code === 4902 || (error as any)?.data?.originalError?.code === 4902) {
+          // Indicates chain is not added to provider
           try {
+            const addEthereumChainParams = {
+              chainId: numberToHex(chainId),
+              chainName: newChain.name,
+              nativeCurrency: newChain.nativeCurrency,
+              rpcUrls: [newChain.rpcUrls.default?.http[0] ?? ''],
+              blockExplorerUrls: [newChain.blockExplorers?.default?.url]
+            };
+
             await _provider.request({
               method: 'wallet_addEthereumChain',
-              params: [
-                {
-                  chainId: numberToHex(chainId),
-                  chainName: newChain.name,
-                  nativeCurrency: newChain.nativeCurrency,
-                  rpcUrls: [newChain.rpcUrls.default?.http[0] ?? ''], // Take first default HTTP RPC URL
-                  blockExplorerUrls: [newChain.blockExplorers?.default?.url]
-                }
-              ]
+              params: [addEthereumChainParams]
             });
-            await appKitProvidedConnector.switchNetwork(formatNetwork(newChain));
-            config.emitter.emit('change', { chainId });
 
             return newChain;
           } catch (addError) {

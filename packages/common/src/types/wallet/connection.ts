@@ -20,6 +20,7 @@ export interface ConnectionProperties {
   smartAccounts?: CaipAddress[];
   provider?: SocialProvider;
   sessionTopic?: string;
+  canAddEvmChain?: boolean;
 }
 
 export interface LinkingRecord {

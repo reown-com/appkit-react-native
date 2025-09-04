@@ -1,3 +1,4 @@
+/* eslint-disable valtio/state-snapshot-rule */
 import { ScrollView, useWindowDimensions, View } from 'react-native';
 import {
   CardSelect,
@@ -26,8 +27,8 @@ import { useSnapshot } from 'valtio';
 export function NetworksView() {
   const { height, width } = useWindowDimensions();
   const windowSize = Math.min(height, width);
-  const { networks, isConnected } = useSnapshot(ConnectionsController.state);
   const { networkImages } = useSnapshot(AssetController.state);
+  const { activeNetwork, isConnected } = useSnapshot(ConnectionsController.state);
   const imageHeaders = ApiController._getApiHeaders();
   const { padding } = useCustomDimensions();
   const numColumns = 4;
@@ -38,7 +39,8 @@ export function NetworksView() {
   );
   const { switchNetwork, back } = useInternalAppKit();
 
-  const networkList = isConnected ? ConnectionsController.getConnectedNetworks() : networks;
+  const networkList = ConnectionsController.getAvailableNetworks();
+  const connectedNetworks = ConnectionsController.getConnectedNetworks();
 
   const onHelpPress = () => {
     RouterController.push('WhatIsANetwork');
@@ -47,15 +49,24 @@ export function NetworksView() {
 
   const networksTemplate = () => {
     const onNetworkPress = async (network: AppKitNetwork) => {
-      await switchNetwork(network);
-      back();
+      if (
+        !isConnected ||
+        connectedNetworks.some(
+          connectedNetwork => connectedNetwork.caipNetworkId === network.caipNetworkId
+        )
+      ) {
+        await switchNetwork(network);
+        back();
+      } else {
+        RouterController.push('SwitchNetwork', { network });
+      }
     };
 
     return networkList.map(network => {
-      const isSelected = ConnectionsController.state.isConnected
-        ? ConnectionsController.state.activeCaipNetworkId === network.caipNetworkId
+      const isSelected = isConnected
+        ? activeNetwork?.caipNetworkId === network.caipNetworkId
         : OptionsController.state.defaultNetwork?.caipNetworkId === network.caipNetworkId;
-      // eslint-disable-next-line valtio/state-snapshot-rule
+
       const networkImage = AssetUtil.getNetworkImage(network, networkImages);
 
       return (

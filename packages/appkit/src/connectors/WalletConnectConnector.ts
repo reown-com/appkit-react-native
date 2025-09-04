@@ -199,7 +199,7 @@ export class WalletConnectConnector extends WalletConnector {
 
     provider.off('display_uri', onUri);
 
-    return this.namespaces;
+    return (session?.namespaces as Namespaces) ?? {};
   }
 
   override getProvider(namespace?: ChainNamespace): Provider {
@@ -228,7 +228,11 @@ export class WalletConnectConnector extends WalletConnector {
   }
 
   override getNamespaces(): Namespaces {
-    return this.namespaces ?? {};
+    const namespaces =
+      ((this.provider as IUniversalProvider)?.session?.namespaces as Namespaces) ?? {};
+    this.namespaces = namespaces;
+
+    return namespaces;
   }
 
   override getProperties(): ConnectionProperties | undefined {
@@ -250,7 +254,8 @@ export class WalletConnectConnector extends WalletConnector {
   }
 
   override getChainId(namespace: ChainNamespace): CaipNetworkId | undefined {
-    if (!this.namespaces || !this.namespaces[namespace]) {
+    const namespaces = this.getNamespaces();
+    if (!namespaces || !namespaces[namespace]) {
       return undefined;
     }
 
