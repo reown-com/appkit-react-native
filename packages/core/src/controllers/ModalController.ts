@@ -30,10 +30,14 @@ export const ModalController = {
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise;
     const isConnected = ConnectionsController.state.isConnected;
+    const isUniversalWallet = !!ConnectionsController.state.connection?.properties?.provider;
     if (options?.view) {
+      if (options.view === 'Account' && !isUniversalWallet) {
+        options.view = 'AccountDefault';
+      }
+
       RouterController.reset(options.view);
     } else if (isConnected) {
-      const isUniversalWallet = !!ConnectionsController.state.connection?.properties?.provider;
       RouterController.reset(isUniversalWallet ? 'Account' : 'AccountDefault');
     } else {
       RouterController.reset('Connect');
