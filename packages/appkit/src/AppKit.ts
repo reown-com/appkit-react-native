@@ -511,7 +511,7 @@ export class AppKit {
     }
   }
 
-  private async refreshBalance(fetchAllBalances: boolean = false) {
+  private refreshBalance(fetchAllBalances: boolean = false) {
     try {
       if (fetchAllBalances) {
         ConnectionsController.fetchBalance();
@@ -548,7 +548,6 @@ export class AppKit {
     const recomputePolling = () => {
       const open = ModalController.state.open;
       const view = RouterController.state.view;
-
       if (open && (view === 'Account' || view === 'AccountDefault')) {
         // fetch all balances when user is using embedded wallet
         this.startBalancePolling(view === 'Account');
@@ -556,9 +555,7 @@ export class AppKit {
         this.stopBalancePolling();
       }
     };
-
     recomputePolling();
-
     subscribeKey(RouterController.state, 'view', () => recomputePolling());
     subscribeKey(ModalController.state, 'open', () => recomputePolling());
   }
@@ -644,7 +641,7 @@ export class AppKit {
 
       // Check if user needs to sign in again
       if (namespace === 'eip155') {
-        await this.handleSiweChange({ isNetworkChange: true });
+        this.handleSiweChange({ isNetworkChange: true });
       }
     });
 
