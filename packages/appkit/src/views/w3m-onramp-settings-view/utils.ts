@@ -23,8 +23,8 @@ const MODAL_EMPTY_TITLES: Record<ModalType, string> = {
 };
 
 const MODAL_EMPTY_DESCRIPTIONS: Record<ModalType, string> = {
-  country: "There's no available countries",
-  paymentCurrency: "There's no available currencies"
+  country: 'There are no available countries',
+  paymentCurrency: 'There are no available currencies'
 };
 
 const ITEM_HEIGHTS: Record<ModalType, number> = {

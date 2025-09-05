@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { memo, useDeferredValue, useState } from 'react';
+import { memo, useState } from 'react';
 import { SvgUri } from 'react-native-svg';
 import { FlexView, ListItem, Text, useTheme, Icon, Image } from '@reown/appkit-ui-react-native';
 import { OnRampController } from '@reown/appkit-core-react-native';
@@ -29,7 +29,6 @@ export function OnRampSettingsView() {
   const Theme = useTheme();
   const [modalType, setModalType] = useState<ModalType>();
   const [searchValue, setSearchValue] = useState('');
-  const deferredSearchValue = useDeferredValue(searchValue);
 
   const onModalClose = () => {
     setModalType(undefined);
@@ -138,7 +137,7 @@ export function OnRampSettingsView() {
       <SelectorModal
         visible={!!modalType}
         onClose={onModalClose}
-        items={getModalItems(modalType, deferredSearchValue, true)}
+        items={getModalItems(modalType, searchValue, true)}
         selectedItem={modalType === 'country' ? selectedCountry : paymentCurrency}
         onSearch={setSearchValue}
         renderItem={renderModalItem}

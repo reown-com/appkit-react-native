@@ -1,4 +1,4 @@
-import { useDeferredValue, useState } from 'react';
+import { useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { ScrollView } from 'react-native';
 import {
@@ -26,7 +26,6 @@ export function WalletSendSelectTokenView() {
   const { networkImages } = useSnapshot(AssetController.state);
   const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
   const [tokenSearch, setTokenSearch] = useState<string>('');
-  const deferredTokenSearch = useDeferredValue(tokenSearch);
   const [filteredTokens, setFilteredTokens] = useState(balances ?? []);
 
   const onSearchChange = (value: string) => {
@@ -50,7 +49,7 @@ export function WalletSendSelectTokenView() {
     >
       <FlexView margin={['0', 'm', 'm', 'm']}>
         <InputText
-          value={deferredTokenSearch}
+          value={tokenSearch}
           icon="search"
           placeholder="Search token"
           onChangeText={onSearchChange}
