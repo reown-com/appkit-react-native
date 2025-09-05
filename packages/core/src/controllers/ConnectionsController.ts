@@ -80,11 +80,13 @@ const updateConnection = (
   namespace: ChainNamespace,
   connection: Connection,
   updates: Partial<Connection>
-) => {
-  if (!connection) return;
+): Connection => {
   const newConnectionsMap = new Map(baseState.connections);
-  newConnectionsMap.set(namespace, { ...connection, ...updates });
+  const newConnection = { ...connection, ...updates };
+  newConnectionsMap.set(namespace, newConnection);
   baseState.connections = newConnectionsMap;
+
+  return newConnection;
 };
 
 const getActiveIdentity = (connection: Connection): Identity | undefined => {
@@ -206,6 +208,10 @@ export const ConnectionsController = {
   state: derivedState,
 
   setActiveNamespace(namespace?: ChainNamespace) {
+    if (baseState.activeNamespace === namespace) {
+      return;
+    }
+
     baseState.activeNamespace = namespace;
     StorageUtil.setActiveNamespace(namespace);
   },
@@ -257,10 +263,7 @@ export const ConnectionsController = {
       return false;
     }
 
-    const newConnectionsMap = new Map(baseState.connections);
-    const updatedConnection = { ...connection, accounts };
-    newConnectionsMap.set(namespace, updatedConnection);
-    baseState.connections = newConnectionsMap;
+    updateConnection(namespace, connection, { accounts });
 
     return true;
   },
@@ -333,10 +336,7 @@ export const ConnectionsController = {
       return;
     }
 
-    baseState.connections.set(namespace, {
-      ...connection,
-      caipNetwork: networkId
-    });
+    updateConnection(namespace, connection, { caipNetwork: networkId });
 
     this.setActiveNamespace(namespace);
   },
@@ -381,10 +381,7 @@ export const ConnectionsController = {
     const connection = baseState.connections.get(namespace);
     if (!connection) return;
 
-    const newConnectionsMap = new Map(baseState.connections);
-    const newConnection = { ...connection, type };
-    newConnectionsMap.set(namespace, newConnection);
-    baseState.connections = newConnectionsMap;
+    const newConnection = updateConnection(namespace, connection, { type });
 
     return getActiveAddress(newConnection);
   },
