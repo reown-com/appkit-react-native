@@ -1,6 +1,7 @@
-import { Button, Text, FlexView } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
-import { useSignMessage, useAccount, useSendTransaction, useEstimateGas } from 'wagmi';
+import { useAccount } from '@reown/appkit-react-native';
+import { Button, Text, FlexView } from '@reown/appkit-ui-react-native';
+import { useSignMessage, useSendTransaction, useEstimateGas } from 'wagmi';
 import { Hex, parseEther } from 'viem';
 import { SendTransactionData, SignMessageData } from 'wagmi/query';
 import { ToastUtils } from '../utils/ToastUtils';

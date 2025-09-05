@@ -14,6 +14,7 @@ export interface WcWallet {
   app_store?: string | null;
   play_store?: string | null;
   chains?: readonly CaipNetworkId[];
+  badge_type?: 'certified' | 'none';
 }
 
 export interface DataWallet {
