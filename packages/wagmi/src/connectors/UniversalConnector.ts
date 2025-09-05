@@ -223,13 +223,22 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
     },
 
     onAccountsChanged(accounts: string[]) {
+      //Only emit if the account is an evm account
+      const shouldEmit = accounts.some(account => account.startsWith('0x'));
+
       if (accounts.length === 0) this.onDisconnect();
-      else config.emitter.emit('change', { accounts: accounts.map(x => getAddress(x)) });
+      else if (shouldEmit)
+        config.emitter.emit('change', { accounts: accounts.map(x => getAddress(x)) });
     },
 
     onChainChanged(chain: string) {
       const chainId = Number(chain);
-      config.emitter.emit('change', { chainId });
+
+      //Only emit if the chain is in the config (evm)
+      const shouldEmit = config.chains.some(c => c.id === chainId);
+      if (shouldEmit) {
+        config.emitter.emit('change', { chainId });
+      }
     },
 
     async onDisconnect() {

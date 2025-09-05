@@ -13,7 +13,9 @@ import {
   getItemHeight,
   getModalItems,
   getModalItemKey,
-  getModalSearchPlaceholder
+  getModalSearchPlaceholder,
+  getModalEmptyTitle,
+  getModalEmptyDescription
 } from './utils';
 import { styles } from './styles';
 
@@ -27,6 +29,11 @@ export function OnRampSettingsView() {
   const Theme = useTheme();
   const [modalType, setModalType] = useState<ModalType>();
   const [searchValue, setSearchValue] = useState('');
+
+  const onModalClose = () => {
+    setModalType(undefined);
+    setSearchValue('');
+  };
 
   const onCountryPress = () => {
     setModalType('country');
@@ -129,7 +136,7 @@ export function OnRampSettingsView() {
       </FlexView>
       <SelectorModal
         visible={!!modalType}
-        onClose={() => setModalType(undefined)}
+        onClose={onModalClose}
         items={getModalItems(modalType, searchValue, true)}
         selectedItem={modalType === 'country' ? selectedCountry : paymentCurrency}
         onSearch={setSearchValue}
@@ -138,6 +145,8 @@ export function OnRampSettingsView() {
         title={getModalTitle(modalType)}
         itemHeight={getItemHeight(modalType)}
         searchPlaceholder={getModalSearchPlaceholder(modalType)}
+        emptyTitle={getModalEmptyTitle(modalType)}
+        emptyDescription={getModalEmptyDescription(modalType)}
       />
     </>
   );

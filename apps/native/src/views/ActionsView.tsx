@@ -9,15 +9,15 @@ import { WagmiActionsView } from './WagmiActionsView';
 
 export function ActionsView() {
   const isConnected = true;
-  const { chainId } = useAccount();
+  const { namespace} = useAccount();
 
   return isConnected ? (
     <FlexView style={styles.container}>
-      {chainId?.startsWith('eip155') ? (
+      {namespace === 'eip155' ? (
         <WagmiActionsView />
-      ) : chainId?.startsWith('solana') ? (
+      ) : namespace === 'solana' ? (
         <SolanaActionsView />
-      ) : chainId?.startsWith('bip122') ? (
+      ) : namespace === 'bip122' ? (
         <BitcoinActionsView />
       ) : null}
     </FlexView>

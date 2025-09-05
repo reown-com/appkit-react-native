@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { ConnectionsController } from '@reown/appkit-core-react-native';
+import { ConnectionsController, CoreHelperUtil } from '@reown/appkit-core-react-native';
 import { useAppKit } from './useAppKit';
 
 export function useAccount() {
@@ -8,15 +8,20 @@ export function useAccount() {
   const {
     activeAddress: address,
     activeNamespace,
-    connections
+    connection,
+    networks
   } = useSnapshot(ConnectionsController.state);
 
-  const connection = activeNamespace ? connections.get(activeNamespace) : undefined;
+  const activeChain = connection?.caipNetwork
+    ? // eslint-disable-next-line valtio/state-snapshot-rule
+      networks.find(network => network.caipNetworkId === connection?.caipNetwork)
+    : undefined;
 
   return {
-    address: address?.split(':')[2],
+    address: CoreHelperUtil.getPlainAddress(address),
     isConnected: !!address,
-    chainId: connection?.caipNetwork,
+    chainId: activeChain?.id,
+    chain: activeChain,
     namespace: activeNamespace
   };
 }

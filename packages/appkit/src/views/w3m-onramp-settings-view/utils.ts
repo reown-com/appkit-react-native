@@ -17,6 +17,16 @@ const MODAL_SEARCH_PLACEHOLDERS: Record<ModalType, string> = {
   paymentCurrency: 'Search currency'
 };
 
+const MODAL_EMPTY_TITLES: Record<ModalType, string> = {
+  country: 'No countries found',
+  paymentCurrency: 'No currencies found'
+};
+
+const MODAL_EMPTY_DESCRIPTIONS: Record<ModalType, string> = {
+  country: 'There are no available countries',
+  paymentCurrency: 'There are no available currencies'
+};
+
 const ITEM_HEIGHTS: Record<ModalType, number> = {
   country: COUNTRY_ITEM_HEIGHT,
   paymentCurrency: CURRENCY_ITEM_HEIGHT
@@ -38,6 +48,14 @@ export const getModalTitle = (type?: ModalType) => {
 
 export const getModalSearchPlaceholder = (type?: ModalType) => {
   return type ? MODAL_SEARCH_PLACEHOLDERS[type] : undefined;
+};
+
+export const getModalEmptyTitle = (type?: ModalType) => {
+  return type ? MODAL_EMPTY_TITLES[type] : undefined;
+};
+
+export const getModalEmptyDescription = (type?: ModalType) => {
+  return type ? MODAL_EMPTY_DESCRIPTIONS[type] : undefined;
 };
 
 const searchFilter = (
