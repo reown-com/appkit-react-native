@@ -23,5 +23,8 @@ export default StyleSheet.create({
   placeholderContainer: {
     flex: 0,
     height: '90%'
+  },
+  loadingContainer: {
+    height: 320
   }
 });

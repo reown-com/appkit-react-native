@@ -4,13 +4,13 @@ import {
   ApiController,
   AssetController,
   AssetUtil,
+  OptionsController,
   WcController,
   type WcControllerState
 } from '@reown/appkit-core-react-native';
 import { type WcWallet } from '@reown/appkit-common-react-native';
 import { ListItemLoader, ListWallet } from '@reown/appkit-ui-react-native';
 import { UiUtil } from '../../../utils/UiUtil';
-import { filterOutRecentWallets } from '../utils';
 
 interface Props {
   itemStyle: StyleProp<ViewStyle>;
@@ -19,22 +19,23 @@ interface Props {
 
 export function AllWalletList({ itemStyle, onWalletPress }: Props) {
   const { installed, featured, recommended, prefetchLoading } = useSnapshot(ApiController.state);
+  const { customWallets } = useSnapshot(OptionsController.state);
   const { recentWallets } = useSnapshot(WcController.state) as WcControllerState;
   const { walletImages } = useSnapshot(AssetController.state);
   const imageHeaders = ApiController._getApiHeaders();
-  const RECENT_COUNT = recentWallets?.length && installed.length ? 1 : recentWallets?.length ?? 0;
 
-  const combinedWallets = [...installed, ...featured, ...recommended];
+  const combinedWallets = [
+    ...(recentWallets?.slice(0, 1) ?? []),
+    ...installed,
+    ...featured,
+    ...recommended,
+    ...(customWallets ?? [])
+  ];
 
   // Deduplicate by wallet ID
-  const uniqueWallets = Array.from(
+  const list = Array.from(
     new Map(combinedWallets.map(wallet => [wallet.id, wallet])).values()
-  );
-
-  const list = filterOutRecentWallets(recentWallets, uniqueWallets, RECENT_COUNT).slice(
-    0,
-    UiUtil.TOTAL_VISIBLE_WALLETS - RECENT_COUNT
-  );
+  ).slice(0, UiUtil.TOTAL_VISIBLE_WALLETS);
 
   if (!list?.length) {
     return null;
@@ -46,16 +47,22 @@ export function AllWalletList({ itemStyle, onWalletPress }: Props) {
       <ListItemLoader style={itemStyle} />
     </>
   ) : (
-    list.map(wallet => (
-      <ListWallet
-        key={wallet?.id}
-        imageSrc={AssetUtil.getWalletImage(wallet, walletImages)}
-        imageHeaders={imageHeaders}
-        name={wallet?.name ?? 'Unknown'}
-        onPress={() => onWalletPress(wallet)}
-        style={itemStyle}
-        installed={!!installed.find(installedWallet => installedWallet.id === wallet.id)}
-      />
-    ))
+    list.map(wallet => {
+      const isRecent = recentWallets?.some(recentWallet => recentWallet.id === wallet.id);
+
+      return (
+        <ListWallet
+          key={wallet?.id}
+          imageSrc={AssetUtil.getWalletImage(wallet, walletImages)}
+          imageHeaders={imageHeaders}
+          name={wallet?.name ?? 'Unknown'}
+          onPress={() => onWalletPress(wallet)}
+          tagLabel={isRecent ? 'Recent' : undefined}
+          tagVariant={isRecent ? 'shade' : undefined}
+          style={itemStyle}
+          installed={!!installed.find(installedWallet => installedWallet.id === wallet.id)}
+        />
+      );
+    })
   );
 }

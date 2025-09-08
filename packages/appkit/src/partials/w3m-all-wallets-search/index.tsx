@@ -1,5 +1,6 @@
+import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
-import { ApiController, SnackController } from '@reown/appkit-core-react-native';
+import { ApiController, OptionsController, SnackController } from '@reown/appkit-core-react-native';
 import { type WcWallet } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '@reown/appkit-ui-react-native';
 import { Placeholder } from '../w3m-placeholder';
@@ -14,25 +15,24 @@ export interface AllWalletsSearchProps {
 }
 
 export function AllWalletsSearch({ searchQuery, onItemPress }: AllWalletsSearchProps) {
+  const { search } = useSnapshot(ApiController.state);
+  const { customWallets } = useSnapshot(OptionsController.state);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingError, setLoadingError] = useState<boolean>(false);
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>('');
   const { isLandscape } = useCustomDimensions();
 
-  const emptyTemplate = () => {
-    return (
-      <Placeholder
-        icon="walletPlaceholder"
-        description="No results found"
-        style={[styles.emptyContainer, isLandscape && styles.emptyLandscape]}
-      />
-    );
-  };
+  const customWalletResults = (customWallets ?? []).filter(wallet =>
+    wallet.name.toLowerCase().includes(searchQuery?.toLowerCase() ?? '')
+  );
+
+  const results = [...search, ...customWalletResults];
 
   const searchFetch = useCallback(async () => {
     try {
       setLoading(true);
       setLoadingError(false);
+      // eslint-disable-next-line valtio/state-snapshot-rule
       await ApiController.searchWallet({ search: searchQuery });
       setLoading(false);
     } catch (error) {
@@ -50,7 +50,7 @@ export function AllWalletsSearch({ searchQuery, onItemPress }: AllWalletsSearchP
   }, [searchQuery, prevSearchQuery, searchFetch]);
 
   if (loading) {
-    return <Loading loadingItems={20} />;
+    return <Loading loadingItems={12} />;
   }
 
   if (loadingError) {
@@ -62,15 +62,21 @@ export function AllWalletsSearch({ searchQuery, onItemPress }: AllWalletsSearchP
         description={`This might be due to a temporary network issue.\nPlease try reloading to see if that helps.`}
         actionIcon="refresh"
         actionPress={searchFetch}
-        style={styles.placeholderContainer}
+        style={[styles.placeholderContainer]}
         actionTitle="Retry"
       />
     );
   }
 
-  if (ApiController.state.search.length === 0) {
-    return emptyTemplate();
+  if (results.length === 0) {
+    return (
+      <Placeholder
+        icon="walletPlaceholder"
+        description="No results found"
+        style={[styles.emptyContainer, isLandscape && styles.emptyLandscape]}
+      />
+    );
   }
 
-  return <WalletList onItemPress={onItemPress} data={ApiController.state.search} />;
+  return <WalletList onItemPress={onItemPress} data={results} />;
 }
