@@ -17,10 +17,8 @@ import {
   useCustomDimensions
 } from '@reown/appkit-ui-react-native';
 import { Placeholder } from '../../partials/w3m-placeholder';
-import { CustomWalletList } from './components/custom-wallet-list';
 import { AllWalletsButton } from './components/all-wallets-button';
 import { AllWalletList } from './components/all-wallet-list';
-import { RecentWalletList } from './components/recent-wallet-list';
 import { SocialLoginList } from './components/social-login-list';
 import styles from './styles';
 import { WcHelpersUtil } from '../../utils/HelpersUtil';
@@ -94,9 +92,7 @@ export function ConnectView() {
           ) : null}
           {showList ? (
             <>
-              <RecentWalletList itemStyle={styles.item} onWalletPress={onWalletPress} />
               <AllWalletList itemStyle={styles.item} onWalletPress={onWalletPress} />
-              <CustomWalletList itemStyle={styles.item} onWalletPress={onWalletPress} />
               <AllWalletsButton itemStyle={styles.item} onPress={onViewAllPress} />
             </>
           ) : null}

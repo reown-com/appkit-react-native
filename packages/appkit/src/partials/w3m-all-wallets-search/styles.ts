@@ -11,6 +11,8 @@ export default StyleSheet.create({
   },
   emptyContainer: {
     flex: 0,
+    justifyContent: 'flex-start',
+    paddingTop: Spacing['4xl'],
     height: '90%'
   },
   emptyLandscape: {

@@ -25,13 +25,22 @@ export function AllWalletsList({ onItemPress }: AllWalletsListProps) {
   const { installed, featured, recommended, wallets } = useSnapshot(ApiController.state);
   const { customWallets } = useSnapshot(OptionsController.state) as OptionsControllerState;
 
-  const combinedWallets = [
-    ...(customWallets ?? []),
-    ...installed,
-    ...featured,
-    ...recommended,
-    ...wallets
-  ];
+  let combinedWallets = [...installed, ...featured, ...recommended, ...wallets];
+
+  // Show custom wallets after certified wallets.
+  const certifiedIndex = combinedWallets.findLastIndex(wallet => wallet.badge_type === 'certified');
+  if (certifiedIndex > -1) {
+    const nonCertifiedWallets = combinedWallets.splice(certifiedIndex + 1);
+    combinedWallets = combinedWallets.concat(customWallets ?? [], nonCertifiedWallets);
+  } else {
+    combinedWallets = [
+      ...installed,
+      ...featured,
+      ...recommended,
+      ...(customWallets ?? []),
+      ...wallets
+    ];
+  }
 
   // Deduplicate by wallet ID
   const uniqueWallets = Array.from(
@@ -61,7 +70,7 @@ export function AllWalletsList({ onItemPress }: AllWalletsListProps) {
   const fetchNextPage = async () => {
     try {
       if (
-        walletList.length < ApiController.state.count &&
+        walletList.length - (customWallets ?? []).length < ApiController.state.count &&
         !pageLoading &&
         !loading &&
         ApiController.state.page > 0
@@ -83,7 +92,7 @@ export function AllWalletsList({ onItemPress }: AllWalletsListProps) {
   }, []);
 
   if (loading) {
-    return <Loading loadingItems={20} />;
+    return <Loading loadingItems={12} style={styles.loadingContainer} />;
   }
 
   if (loadingError) {

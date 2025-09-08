@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { WalletItem } from './WalletItem';
 import {
   CardSelectHeight,
@@ -23,6 +23,7 @@ interface Props {
   onEndReachedThreshold?: number;
   isLoading?: boolean;
   loadingItems?: number;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function WalletList({
@@ -31,7 +32,8 @@ export function WalletList({
   onEndReached,
   onEndReachedThreshold,
   isLoading = false,
-  loadingItems = 20
+  loadingItems = 20,
+  style
 }: Props) {
   const { padding, maxHeight } = useCustomDimensions();
 
@@ -46,7 +48,7 @@ export function WalletList({
       bounces={false}
       numColumns={4}
       data={displayData}
-      style={[styles.list, { height: maxHeight }]}
+      style={[styles.list, { height: maxHeight }, style]}
       columnWrapperStyle={styles.columnWrapperStyle}
       renderItem={({ item }) => {
         if (isLoading) {
