@@ -27,11 +27,19 @@ export function AllWalletsList({ onItemPress }: AllWalletsListProps) {
 
   let combinedWallets = [...installed, ...featured, ...recommended, ...wallets];
 
-  // push custom wallets after wallets with badge_type === 'certified'. they already come sorted.
+  // Show custom wallets after certified wallets.
   const certifiedIndex = combinedWallets.findLastIndex(wallet => wallet.badge_type === 'certified');
   if (certifiedIndex > -1) {
     const nonCertifiedWallets = combinedWallets.splice(certifiedIndex + 1);
     combinedWallets = combinedWallets.concat(customWallets ?? [], nonCertifiedWallets);
+  } else {
+    combinedWallets = [
+      ...installed,
+      ...featured,
+      ...recommended,
+      ...(customWallets ?? []),
+      ...wallets
+    ];
   }
 
   // Deduplicate by wallet ID
