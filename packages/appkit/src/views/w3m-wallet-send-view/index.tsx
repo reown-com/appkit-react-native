@@ -15,7 +15,7 @@ import styles from './styles';
 
 export function WalletSendView() {
   const { padding, maxHeight } = useCustomDimensions();
-  const { keyboardShown } = useKeyboard();
+  const { keyboardShown, keyboardHeight } = useKeyboard();
   const [isBalanceLoading, setBalanceLoading] = useState(false);
   const { token, sendTokenAmount, receiverAddress, receiverProfileName, loading } = useSnapshot(
     SendController.state
@@ -80,7 +80,8 @@ export function WalletSendView() {
 
   return (
     <ScrollView
-      style={[{ paddingHorizontal: padding }, keyboardShown && { height: maxHeight }]}
+      style={[{ paddingHorizontal: padding, maxHeight }]}
+      contentContainerStyle={keyboardShown ? { paddingBottom: keyboardHeight } : undefined}
       bounces={false}
       keyboardShouldPersistTaps="always"
     >
