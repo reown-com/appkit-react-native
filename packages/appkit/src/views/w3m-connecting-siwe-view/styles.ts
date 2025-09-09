@@ -2,9 +2,6 @@ import { BorderRadius, Spacing } from '@reown/appkit-ui-react-native';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  container: {
-    minHeight: '30%'
-  },
   logoContainer: {
     marginTop: Spacing.xl,
     marginBottom: Spacing.m

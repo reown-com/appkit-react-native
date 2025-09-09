@@ -52,7 +52,7 @@ export function OnRampCheckoutView() {
 
   return (
     <ScrollView style={{ paddingHorizontal: padding }}>
-      <FlexView padding={['2xl', 'l', '4xl', 'l']}>
+      <FlexView padding={['2xl', 'l', 's', 'l']}>
         <FlexView alignItems="center">
           <Text color="fg-200">You Buy</Text>
           <FlexView flexDirection="row" alignItems="center">

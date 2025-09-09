@@ -193,7 +193,7 @@ export function AccountDefaultView() {
         testID="header-close"
       />
       <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
-        <FlexView alignItems="center" padding={['3xl', 's', '3xl', 's']}>
+        <FlexView alignItems="center" padding={['3xl', 's', 's', 's']}>
           <Avatar imageSrc={identity?.avatar} address={account ?? ''} />
           <FlexView flexDirection="row" alignItems="center" margin={['s', '0', '0', '0']}>
             <Text variant="medium-title-600">

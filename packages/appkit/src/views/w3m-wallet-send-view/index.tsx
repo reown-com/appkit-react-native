@@ -84,7 +84,7 @@ export function WalletSendView() {
       bounces={false}
       keyboardShouldPersistTaps="always"
     >
-      <FlexView padding={['l', 'l', '2xl', 'l']} alignItems="center" justifyContent="center">
+      <FlexView padding="l" alignItems="center" justifyContent="center">
         <SendInputToken
           token={token}
           sendTokenAmount={sendTokenAmount}

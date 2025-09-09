@@ -50,15 +50,7 @@ export function AccountView() {
   }, []);
 
   return (
-    <ScrollView
-      bounces={false}
-      contentContainerStyle={[
-        styles.contentContainer,
-        {
-          paddingHorizontal: padding
-        }
-      ]}
-    >
+    <ScrollView bounces={false} contentContainerStyle={{ paddingHorizontal: padding }}>
       <NetworkButton
         imageSrc={networkImage}
         imageHeaders={ApiController._getApiHeaders()}

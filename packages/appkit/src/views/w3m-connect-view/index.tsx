@@ -60,7 +60,7 @@ export function ConnectView() {
 
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
-      <FlexView padding={['xs', '0', 's', '0']}>
+      <FlexView padding={['xs', '0', 'xs', '0']}>
         {isSocialEnabled ? (
           <>
             <SocialLoginList options={features?.socials} />
@@ -68,7 +68,7 @@ export function ConnectView() {
           </>
         ) : null}
 
-        <FlexView padding={['0', 's', 'xs', 's']}>
+        <FlexView padding={['0', 's', '0', 's']}>
           {showConnectWalletsButton ? (
             <ListItem contentStyle={styles.connectWalletButton} onPress={onViewAllPress}>
               <Icon name="wallet" size="lg" />

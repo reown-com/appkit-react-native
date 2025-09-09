@@ -10,7 +10,7 @@ export function WhatIsANetworkView() {
 
   return (
     <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
-      <FlexView alignItems="center" padding={['l', '4xl', '3xl', '4xl']}>
+      <FlexView alignItems="center" padding={['l', '4xl', 'm', '4xl']}>
         <FlexView flexDirection="row" padding={['0', '0', 'xs', '0']}>
           <Visual name="network" />
           <Visual name="layers" style={styles.visual} />

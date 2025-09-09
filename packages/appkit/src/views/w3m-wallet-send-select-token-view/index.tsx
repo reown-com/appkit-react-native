@@ -44,7 +44,7 @@ export function WalletSendSelectTokenView() {
 
   return (
     <FlexView
-      margin={['l', '0', '2xl', '0']}
+      margin={['l', '0', 'l', '0']}
       style={[styles.container, { paddingHorizontal: padding, height: maxHeight }]}
     >
       <FlexView margin={['0', 'm', 'm', 'm']}>

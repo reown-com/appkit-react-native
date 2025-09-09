@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     paddingTop: Spacing['3xs']
   },
   contentContainer: {
-    paddingBottom: Spacing['4xl'],
+    paddingBottom: Spacing['xs'],
     paddingTop: Spacing['3xs'],
     gap: Spacing['3xs'],
     alignItems: 'center'

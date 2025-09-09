@@ -1,10 +1,7 @@
 import { Spacing } from '@reown/appkit-ui-react-native';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  contentContainer: {
-    paddingBottom: Platform.select({ ios: Spacing.s })
-  },
   networkIcon: {
     alignSelf: 'flex-start',
     position: 'absolute',

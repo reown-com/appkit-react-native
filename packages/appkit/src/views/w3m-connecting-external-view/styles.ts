@@ -3,8 +3,7 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
-    paddingBottom: Spacing['3xl'],
-    minHeight: '30%'
+    paddingBottom: Spacing['s']
   },
   retryButton: {
     marginTop: Spacing.m

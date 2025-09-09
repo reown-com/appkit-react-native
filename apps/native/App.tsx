@@ -4,6 +4,7 @@ import * as Clipboard from 'expo-clipboard';
 import '@walletconnect/react-native-compat';
 import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
 import {
@@ -86,36 +87,38 @@ export default function Native() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
-      <AppKitProvider instance={appKit}>
-        <QueryClientProvider client={queryClient}>
-          <SafeAreaView style={[styles.container, isDarkMode && styles.dark]}>
-            <StatusBar style="auto" />
-            <Text variant="medium-title-600" style={styles.title}>
-              AppKit Multichain for React Native
-            </Text>
-            <WalletInfoView />
-            <AppKitButton
-              connectStyle={styles.button}
-              accountStyle={styles.button}
-              label="Connect"
-              loadingLabel="Connecting..."
-              balance="show"
-            />
-            <NetworkButton />
-            <ActionsView />
-            <OpenButton />
-            <DisconnectButton />
-            <Button size="sm" onPress={() => appKit.disconnect()}>
-              Disconnect
-            </Button>
-            <EventsView style={styles.events} />
-            <AppKit />
-          </SafeAreaView>
-          <Toast />
-        </QueryClientProvider>
-      </AppKitProvider>
-    </WagmiProvider>
+    <SafeAreaProvider>
+      <WagmiProvider config={wagmiAdapter.wagmiConfig}>
+        <AppKitProvider instance={appKit}>
+          <QueryClientProvider client={queryClient}>
+            <SafeAreaView style={[styles.container, isDarkMode && styles.dark]}>
+              <StatusBar style="auto" />
+              <Text variant="medium-title-600" style={styles.title}>
+                AppKit Multichain for React Native
+              </Text>
+              <WalletInfoView />
+              <AppKitButton
+                connectStyle={styles.button}
+                accountStyle={styles.button}
+                label="Connect"
+                loadingLabel="Connecting..."
+                balance="show"
+              />
+              <NetworkButton />
+              <ActionsView />
+              <OpenButton />
+              <DisconnectButton />
+              <Button size="sm" onPress={() => appKit.disconnect()}>
+                Disconnect
+              </Button>
+              <EventsView style={styles.events} />
+              <AppKit />
+            </SafeAreaView>
+            <Toast />
+          </QueryClientProvider>
+        </AppKitProvider>
+      </WagmiProvider>
+    </SafeAreaProvider>
   );
 }
 

@@ -9,6 +9,7 @@ import {
   RouterController,
   ThemeController
 } from '@reown/appkit-core-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppKitRouter } from '../w3m-router';
 import { Header } from '../../partials/w3m-header';
@@ -17,6 +18,7 @@ import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function AppKit() {
+  const { bottom, top } = useSafeAreaInsets();
   const { close } = useInternalAppKit();
   const { open } = useSnapshot(ModalController.state);
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
@@ -53,7 +55,7 @@ export function AppKit() {
         onBackdropPress={handleModalClose}
         testID="w3m-modal"
       >
-        <Card style={styles.card}>
+        <Card style={[styles.card, { paddingBottom: bottom, marginTop: top }]}>
           <Header />
           <AppKitRouter />
           <Snackbar />

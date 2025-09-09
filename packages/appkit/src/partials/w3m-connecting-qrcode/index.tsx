@@ -57,7 +57,7 @@ export function ConnectingQrCode() {
       alignItems="center"
       justifyContent="center"
       flexDirection={isPortrait ? 'column' : 'row'}
-      padding="xl"
+      padding={['xl', 'xl', 'xs', 'xl']}
     >
       <QrCode size={qrSize} uri={wcUri} testID="qr-code" />
       <FlexView alignItems="center" margin="m">

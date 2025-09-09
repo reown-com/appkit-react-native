@@ -75,13 +75,8 @@ export function ConnectingSocialView() {
   }, [wcUri, onConnect]);
 
   return (
-    <ScrollView
-      bounces={false}
-      fadingEdgeLength={20}
-      style={{ paddingHorizontal: padding }}
-      contentContainerStyle={styles.container}
-    >
-      <FlexView alignItems="center" alignSelf="center" padding={['2xl', 'l', '2xl', 'l']}>
+    <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
+      <FlexView alignItems="center" alignSelf="center" padding={['2xl', 'l', 'xl', 'l']}>
         <LoadingThumbnail paused={!!error}>
           <Logo logo={data?.socialProvider ?? 'more'} height={72} width={72} />
           {error ? (

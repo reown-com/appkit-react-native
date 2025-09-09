@@ -123,7 +123,7 @@ export function AccountActivity({ style }: Props) {
     <ScrollView
       style={[styles.container, style]}
       fadingEdgeLength={20}
-      contentContainerStyle={[styles.contentContainer]}
+      contentContainerStyle={styles.contentContainer}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}

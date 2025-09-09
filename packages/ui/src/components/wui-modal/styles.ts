@@ -7,6 +7,8 @@ export default StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
   modal: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
     borderTopLeftRadius: BorderRadius.l,
     borderTopRightRadius: BorderRadius.l,
     position: 'absolute',

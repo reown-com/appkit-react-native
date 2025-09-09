@@ -15,6 +15,7 @@ export type ModalProps = Pick<
 > & {
   children: React.ReactNode;
   onBackdropPress?: () => void;
+  topInset?: number;
 };
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -126,9 +127,7 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
           onPress={onBackdropPress}
         />
       ) : null}
-      <Animated.View
-        style={[styles.modal, { backgroundColor: Theme['bg-100'], transform: [{ translateY }] }]}
-      >
+      <Animated.View style={[styles.modal, { transform: [{ translateY }] }]}>
         <Animated.View onLayout={onContentLayout}>{children}</Animated.View>
       </Animated.View>
     </RNModal>

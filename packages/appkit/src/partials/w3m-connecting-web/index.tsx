@@ -66,7 +66,7 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
 
   return (
     <ScrollView bounces={false} fadingEdgeLength={20} contentContainerStyle={styles.container}>
-      <FlexView alignItems="center" padding={['2xl', 'm', '3xl', 'm']}>
+      <FlexView alignItems="center" padding={['2xl', 'm', 'xs', 'm']}>
         <LoadingThumbnail paused={wcError}>
           <WalletImage
             size="xl"

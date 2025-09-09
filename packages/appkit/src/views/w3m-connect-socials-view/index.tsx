@@ -1,12 +1,12 @@
 import { useSnapshot } from 'valtio';
 import { ScrollView } from 'react-native';
 import { StringUtil, type SocialProvider } from '@reown/appkit-common-react-native';
+import { FlexView, ListSocial, Text, useCustomDimensions } from '@reown/appkit-ui-react-native';
 import {
   EventsController,
   OptionsController,
   RouterController
 } from '@reown/appkit-core-react-native';
-import { FlexView, ListSocial, Text, useCustomDimensions } from '@reown/appkit-ui-react-native';
 
 import styles from './styles';
 
@@ -27,7 +27,7 @@ export function ConnectSocialsView() {
 
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
-      <FlexView padding={['xs', 'm', '2xl', 'm']}>
+      <FlexView padding={['xs', 'm', '0', 'm']}>
         {socialProviders.map(provider => (
           <ListSocial
             key={provider}

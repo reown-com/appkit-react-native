@@ -9,7 +9,7 @@ export function UpgradeEmailWalletView() {
   };
 
   return (
-    <FlexView padding={['l', 'l', '3xl', 'l']} alignItems="center">
+    <FlexView padding={['l', 'l', 's', 'l']} alignItems="center">
       <Text variant="paragraph-400">Follow the instructions on</Text>
       <Chip
         label="secure.reown.com"

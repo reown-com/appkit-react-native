@@ -70,7 +70,7 @@ export function WalletSendPreviewView() {
 
   return (
     <ScrollView style={{ paddingHorizontal: padding }}>
-      <FlexView padding={['l', 'xl', '3xl', 'xl']}>
+      <FlexView padding={['l', 'xl', 'l', 'xl']}>
         <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
           <FlexView>
             <Text variant="small-400" color="fg-150">
