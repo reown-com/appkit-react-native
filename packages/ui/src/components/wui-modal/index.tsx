@@ -14,7 +14,6 @@ export type ModalProps = Pick<
 > & {
   children: React.ReactNode;
   onBackdropPress?: () => void;
-  topInset?: number;
 };
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
