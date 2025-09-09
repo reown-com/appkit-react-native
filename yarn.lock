@@ -119,6 +119,7 @@ __metadata:
     react-dom: 18.3.1
     react-native: 0.76.7
     react-native-get-random-values: ~1.11.0
+    react-native-safe-area-context: 5.6.1
     react-native-svg: 15.12.0
     react-native-toast-message: 2.2.1
     react-native-web: ~0.19.13
@@ -4347,6 +4348,7 @@ __metadata:
     "@walletconnect/utils": ">=2.16.1"
     react: ">=18"
     react-native: ">=0.72"
+    react-native-safe-area-context: ">=4.4.0"
     react-native-svg: ">=13.10"
   languageName: unknown
   linkType: soft
@@ -15924,6 +15926,16 @@ __metadata:
     escape-string-regexp: ^5.0.0
     fast-glob: ^3.3.3
   checksum: 6356c362c517c49e17d54ee764c3566ba71491fa0d755618ecf2ca548348668e84fe448c24066645983acbc2bd4c0ed47594f9b3ec9dcc0558c0fd9594d2391e
+  languageName: node
+  linkType: hard
+
+"react-native-safe-area-context@npm:5.6.1":
+  version: 5.6.1
+  resolution: "react-native-safe-area-context@npm:5.6.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: f346615d5f8f26c0c8459d29c149ea3f66684b8ae79cea6fd48d118d039851a69a92955d67b455d0e7ab46639155c4357ebf58ec1859b2377ee459e2a04b602b
   languageName: node
   linkType: hard
 

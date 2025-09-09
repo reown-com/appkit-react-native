@@ -164,7 +164,7 @@ export function SwapView() {
         bounces={false}
         keyboardShouldPersistTaps="always"
       >
-        <FlexView padding={['l', 'l', '2xl', 'l']} alignItems="center" justifyContent="center">
+        <FlexView padding="l" alignItems="center" justifyContent="center">
           <SwapInput
             token={sourceToken}
             value={sourceTokenAmount}

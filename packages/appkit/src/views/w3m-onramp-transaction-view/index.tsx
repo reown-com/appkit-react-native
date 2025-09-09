@@ -29,7 +29,7 @@ export function OnRampTransactionView() {
   }, []);
 
   return (
-    <FlexView padding={['3xs', 'l', '4xl', 'l']}>
+    <FlexView padding={['3xs', 'l', 's', 'l']}>
       <FlexView>
         <FlexView alignItems="center">
           <IconBox

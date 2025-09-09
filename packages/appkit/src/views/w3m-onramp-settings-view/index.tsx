@@ -83,7 +83,7 @@ export function OnRampSettingsView() {
 
   return (
     <>
-      <FlexView style={{ backgroundColor: Theme['bg-100'] }} padding={['s', 'm', '4xl', 'm']}>
+      <FlexView style={{ backgroundColor: Theme['bg-100'] }} padding={['s', 'm', 's', 'm']}>
         <ListItem
           onPress={onCountryPress}
           chevron

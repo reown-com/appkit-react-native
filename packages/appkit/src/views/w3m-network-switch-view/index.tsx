@@ -47,7 +47,7 @@ export function NetworkSwitchView() {
 
   return (
     <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
-      <FlexView alignItems="center" padding={['xl', 's', '4xl', 's']}>
+      <FlexView alignItems="center" padding={['xl', 's', 's', 's']}>
         <LoadingHexagon paused={isError}>
           <NetworkImage
             imageSrc={networkImage}

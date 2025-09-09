@@ -68,7 +68,7 @@ export function SwapPreviewView() {
 
   return (
     <ScrollView style={{ paddingHorizontal: padding }} bounces={false}>
-      <FlexView padding={['l', 'l', '2xl', 'l']} justifyContent="center">
+      <FlexView padding="l" justifyContent="center">
         <FlexView flexDirection="row" justifyContent="space-between">
           <FlexView>
             <Text variant="small-400" color="fg-150">

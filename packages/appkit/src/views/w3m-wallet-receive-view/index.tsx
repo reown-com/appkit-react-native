@@ -69,7 +69,7 @@ export function WalletReceiveView() {
 
   return (
     <ScrollView bounces={false} style={{ paddingHorizontal: padding }}>
-      <FlexView padding={['xl', 'xl', '2xl', 'xl']} alignItems="center">
+      <FlexView padding="xl" alignItems="center">
         <Chip
           label={label}
           rightIcon={canCopy ? 'copy' : undefined}

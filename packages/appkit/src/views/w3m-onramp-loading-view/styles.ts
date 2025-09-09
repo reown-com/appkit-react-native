@@ -3,7 +3,7 @@ import { Spacing } from '@reown/appkit-ui-react-native';
 
 export default StyleSheet.create({
   container: {
-    paddingBottom: Spacing['xl']
+    paddingBottom: Spacing['s']
   },
   backButton: {
     alignSelf: 'flex-start'

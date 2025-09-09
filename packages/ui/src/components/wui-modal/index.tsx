@@ -6,7 +6,6 @@ import {
   Animated,
   Pressable
 } from 'react-native';
-import { useTheme } from '../../hooks/useTheme';
 import styles from './styles';
 
 export type ModalProps = Pick<
@@ -20,9 +19,7 @@ export type ModalProps = Pick<
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function Modal({ visible, onBackdropPress, onRequestClose, testID, children }: ModalProps) {
-  const Theme = useTheme();
   const { height } = useWindowDimensions();
-
   const backdropOpacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(height)).current;
   const [showBackdrop, setShowBackdrop] = useState(false);
@@ -126,9 +123,7 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
           onPress={onBackdropPress}
         />
       ) : null}
-      <Animated.View
-        style={[styles.modal, { backgroundColor: Theme['bg-100'], transform: [{ translateY }] }]}
-      >
+      <Animated.View style={[styles.modal, { transform: [{ translateY }] }]}>
         <Animated.View onLayout={onContentLayout}>{children}</Animated.View>
       </Animated.View>
     </RNModal>

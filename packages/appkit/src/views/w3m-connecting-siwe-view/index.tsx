@@ -86,13 +86,8 @@ export function ConnectingSiweView() {
   };
 
   return (
-    <ScrollView
-      bounces={false}
-      fadingEdgeLength={20}
-      style={{ paddingHorizontal: padding }}
-      contentContainerStyle={styles.container}
-    >
-      <FlexView padding={['0', 's', '3xl', 's']}>
+    <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
+      <FlexView padding={['0', 's', 's', 's']}>
         <DoubleImageLoader
           style={styles.logoContainer}
           leftImage={dappIcon}

@@ -97,17 +97,12 @@ export function NetworksView() {
   return (
     <>
       <ScrollView bounces={false} fadingEdgeLength={20} style={{ paddingHorizontal: padding }}>
-        <FlexView flexDirection="row" flexWrap="wrap" padding={['xs', 'xs', '4xl', 'xs']}>
+        <FlexView flexDirection="row" flexWrap="wrap" padding="xs">
           {networksTemplate()}
         </FlexView>
       </ScrollView>
       <Separator />
-      <FlexView
-        padding={['s', 's', '3xl', 's']}
-        alignItems="center"
-        alignSelf="center"
-        style={{ width }}
-      >
+      <FlexView padding="s" alignItems="center" alignSelf="center" style={{ width }}>
         <Text variant="small-400" color="fg-300" center>
           Your connected wallet may not support some of the networks available for this dApp
         </Text>

@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   contentContainer: {
-    paddingBottom: Spacing['4xl']
+    paddingBottom: Spacing['xs']
   },
   placeholderContainer: {
     flex: 0,

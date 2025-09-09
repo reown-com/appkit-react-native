@@ -18,7 +18,7 @@ export function WhatIsAWalletView() {
       style={{ paddingHorizontal: padding }}
       testID="what-is-a-wallet-view"
     >
-      <FlexView alignItems="center" padding={['xs', '4xl', 'xl', '4xl']}>
+      <FlexView alignItems="center" padding={['xs', '4xl', 's', '4xl']}>
         <FlexView flexDirection="row" padding={['0', '0', 's', '0']}>
           <Visual name="login" />
           <Visual name="profile" style={styles.visual} />

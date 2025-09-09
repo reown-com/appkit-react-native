@@ -38,7 +38,7 @@ export function GetWalletView() {
       fadingEdgeLength={20}
       testID="get-a-wallet-view"
     >
-      <FlexView padding={['s', 's', '3xl', 's']}>
+      <FlexView padding="s">
         {listTemplate()}
         <ListWallet
           name="Explore all"
