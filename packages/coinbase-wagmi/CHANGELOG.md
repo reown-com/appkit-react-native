@@ -1,5 +1,14 @@
 # @reown/appkit-coinbase-wagmi-react-native
 
+## 1.3.2
+
+### Patch Changes
+
+- [#442](https://github.com/reown-com/appkit-react-native/pull/442) [`4e34173`](https://github.com/reown-com/appkit-react-native/commit/4e3417386473023d102455446a4067a359560cc2) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: Update License to the Reown Community License
+
+- Updated dependencies [[`4e34173`](https://github.com/reown-com/appkit-react-native/commit/4e3417386473023d102455446a4067a359560cc2)]:
+  - @reown/appkit-common-react-native@1.3.2
+
 ## 1.3.1
 
 ### Patch Changes
