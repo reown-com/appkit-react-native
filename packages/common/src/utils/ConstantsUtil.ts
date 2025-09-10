@@ -1,5 +1,5 @@
 export const ConstantsUtil = {
-  VERSION: '1.3.1',
+  VERSION: '1.3.2',
 
   EIP155: 'eip155',
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',
