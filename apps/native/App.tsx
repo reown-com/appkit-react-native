@@ -34,8 +34,8 @@ import { siweConfig } from './src/utils/SiweUtils';
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
 const metadata = {
-  name: 'AppKit RN',
-  description: 'AppKit RN by Reown',
+  name: 'AppKit Multichain',
+  description: 'AppKit Multichain by Reown',
   url: 'https://reown.com/appkit',
   icons: ['https://avatars.githubusercontent.com/u/179229932'],
   redirect: {

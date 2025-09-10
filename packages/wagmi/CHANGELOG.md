@@ -48,6 +48,52 @@
   - @reown/appkit-react-native@2.0.0
   - @reown/appkit-common-react-native@2.0.0
 
+## 1.3.2
+
+### Patch Changes
+
+- [#442](https://github.com/reown-com/appkit-react-native/pull/442) [`4e34173`](https://github.com/reown-com/appkit-react-native/commit/4e3417386473023d102455446a4067a359560cc2) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: Update License to the Reown Community License
+
+- Updated dependencies [[`4e34173`](https://github.com/reown-com/appkit-react-native/commit/4e3417386473023d102455446a4067a359560cc2)]:
+  - @reown/appkit-scaffold-utils-react-native@1.3.2
+  - @reown/appkit-scaffold-react-native@1.3.2
+  - @reown/appkit-common-react-native@1.3.2
+  - @reown/appkit-siwe-react-native@1.3.2
+
+## 1.3.1
+
+### Patch Changes
+
+- [#419](https://github.com/reown-com/appkit-react-native/pull/419) [`0d087ef`](https://github.com/reown-com/appkit-react-native/commit/0d087efc6971c0ad9445b565ca51f709f78ac4cf) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: correctly set approved networks and support all networks flag
+
+- [#423](https://github.com/reown-com/appkit-react-native/pull/423) [`30847f7`](https://github.com/reown-com/appkit-react-native/commit/30847f7af9fc9758248c848cc97078fe67f61ee5) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: show network images correctly
+
+- Updated dependencies [[`0d087ef`](https://github.com/reown-com/appkit-react-native/commit/0d087efc6971c0ad9445b565ca51f709f78ac4cf), [`30847f7`](https://github.com/reown-com/appkit-react-native/commit/30847f7af9fc9758248c848cc97078fe67f61ee5)]:
+  - @reown/appkit-scaffold-react-native@1.3.1
+  - @reown/appkit-common-react-native@1.3.1
+  - @reown/appkit-scaffold-utils-react-native@1.3.1
+  - @reown/appkit-siwe-react-native@1.3.1
+
+## 1.3.0
+
+### Minor Changes
+
+- [#395](https://github.com/reown-com/appkit-react-native/pull/395) [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - feat: added onramp feature
+
+### Patch Changes
+
+- [#395](https://github.com/reown-com/appkit-react-native/pull/395) [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: switch universal account type
+
+- [#395](https://github.com/reown-com/appkit-react-native/pull/395) [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: bump ethereum-provider version to 2.21.5
+
+- [#395](https://github.com/reown-com/appkit-react-native/pull/395) [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: update cloud.reown.com to dashboard.reown.com
+
+- Updated dependencies [[`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3), [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3), [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3), [`922524d`](https://github.com/reown-com/appkit-react-native/commit/922524de7a93184a654054c0e7042c51bbda5aa3)]:
+  - @reown/appkit-scaffold-react-native@1.3.0
+  - @reown/appkit-common-react-native@1.3.0
+  - @reown/appkit-siwe-react-native@1.3.0
+  - @reown/appkit-scaffold-utils-react-native@1.3.0
+
 ## 1.2.6
 
 ### Patch Changes
