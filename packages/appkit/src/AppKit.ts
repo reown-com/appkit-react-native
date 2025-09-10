@@ -675,7 +675,7 @@ export class AppKit {
       OptionsController.setDefaultNetwork(network);
     }
 
-    ThemeController.setThemeMode(options.themeMode);
+    ThemeController.setDefaultThemeMode(options.themeMode);
     ThemeController.setThemeVariables(options.themeVariables);
 
     OptionsController.setSdkVersion(
