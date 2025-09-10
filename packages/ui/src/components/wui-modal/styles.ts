@@ -18,6 +18,9 @@ export default StyleSheet.create({
     bottom: 0
   },
   bottomBackground: {
-    flexGrow: 1
+    flexGrow: 1,
+    // workaround to fix the bottom background color
+    top: -2,
+    bottom: -20
   }
 });
