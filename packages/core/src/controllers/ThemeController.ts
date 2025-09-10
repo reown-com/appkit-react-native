@@ -5,12 +5,14 @@ import type { ThemeMode, ThemeVariables } from '@reown/appkit-common-react-nativ
 // -- Types --------------------------------------------- //
 export interface ThemeControllerState {
   themeMode?: ThemeMode;
+  defaultThemeMode?: ThemeMode;
   themeVariables?: ThemeVariables;
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<ThemeControllerState>({
   themeMode: undefined,
+  defaultThemeMode: undefined,
   themeVariables: {}
 });
 
@@ -28,6 +30,11 @@ export const ThemeController = {
     } else {
       state.themeMode = themeMode;
     }
+  },
+
+  setDefaultThemeMode(themeMode: ThemeControllerState['defaultThemeMode']) {
+    state.defaultThemeMode = themeMode;
+    this.setThemeMode(themeMode);
   },
 
   setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {

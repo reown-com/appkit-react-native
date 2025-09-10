@@ -1,5 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect } from 'react';
+import { useColorScheme } from 'react-native';
 import { Card, Modal, ThemeProvider } from '@reown/appkit-ui-react-native';
 import {
   ApiController,
@@ -18,10 +19,11 @@ import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
 export function AppKit() {
+  const theme = useColorScheme();
   const { bottom, top } = useSafeAreaInsets();
   const { close } = useInternalAppKit();
   const { open } = useSnapshot(ModalController.state);
-  const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
+  const { themeMode, themeVariables, defaultThemeMode } = useSnapshot(ThemeController.state);
   const { projectId } = useSnapshot(OptionsController.state);
 
   const handleBackPress = () => {
@@ -31,6 +33,12 @@ export function AppKit() {
 
     return handleModalClose();
   };
+
+  useEffect(() => {
+    if (theme && !defaultThemeMode) {
+      ThemeController.setThemeMode(theme);
+    }
+  }, [theme, defaultThemeMode]);
 
   const prefetch = useCallback(async () => {
     await ApiController.prefetch();
