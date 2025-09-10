@@ -16,4 +16,4 @@
 '@reown/appkit-ui-react-native': patch
 ---
 
-chore: license change
+chore: Update License to the Reown Community License
