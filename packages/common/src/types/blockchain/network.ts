@@ -35,5 +35,5 @@ export interface CaipNetwork {
 }
 
 export interface AppKitOpenOptions {
-  view: 'Account' | 'Connect' | 'Networks' | 'Swap' | 'OnRamp';
+  view: 'Account' | 'Connect' | 'WalletConnect' | 'Networks' | 'Swap' | 'OnRamp';
 }

@@ -71,7 +71,7 @@ export function AppKitRouter() {
         return ConnectingSiweView;
       case 'ConnectingSocial':
         return ConnectingSocialView;
-      case 'ConnectingWalletConnect':
+      case 'WalletConnect':
         return ConnectingView;
       case 'GetWallet':
         return GetWalletView;

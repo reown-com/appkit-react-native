@@ -38,7 +38,7 @@ export function ConnectView() {
     if (isExternal) {
       RouterController.push('ConnectingExternal', { wallet });
     } else {
-      RouterController.push('ConnectingWalletConnect', { wallet });
+      RouterController.push('WalletConnect', { wallet });
     }
 
     const platform = EventUtil.getWalletPlatform(wallet, isInstalled);

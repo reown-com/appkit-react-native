@@ -27,7 +27,7 @@ export function AllWalletsView() {
     if (isExternal) {
       RouterController.push('ConnectingExternal', { wallet });
     } else {
-      RouterController.push('ConnectingWalletConnect', { wallet });
+      RouterController.push('WalletConnect', { wallet });
     }
 
     EventsController.sendEvent({
@@ -40,7 +40,7 @@ export function AllWalletsView() {
   const onQrCodePress = () => {
     WcController.removePressedWallet();
     WcController.removeWcLinking();
-    RouterController.push('ConnectingWalletConnect');
+    RouterController.push('WalletConnect');
 
     EventsController.sendEvent({
       type: 'track',

@@ -66,12 +66,12 @@ describe('RouterController', () => {
   });
 
   it('should update state correctly on push() with data', () => {
-    RouterController.push('ConnectingWalletConnect', {
+    RouterController.push('WalletConnect', {
       wallet: { id: 'test', name: 'TestWallet' }
     });
     expect(RouterController.state).toEqual({
-      view: 'ConnectingWalletConnect',
-      history: ['Account', 'Networks', 'ConnectingWalletConnect'],
+      view: 'WalletConnect',
+      history: ['Account', 'Networks', 'WalletConnect'],
       navigationDirection: 'forward',
       data: {
         wallet: { id: 'test', name: 'TestWallet' }

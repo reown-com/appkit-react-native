@@ -34,7 +34,7 @@ export function Header() {
       ConnectingExternal: walletName ?? 'Connect wallet',
       ConnectingSiwe: 'Sign in',
       ConnectingSocial: socialName ?? 'Connecting Social',
-      ConnectingWalletConnect: walletName ?? 'WalletConnect',
+      WalletConnect: walletName ?? 'WalletConnect',
       GetWallet: 'Get a wallet',
       Networks: 'Select network',
       OnRamp: undefined,
