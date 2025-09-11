@@ -1,18 +1,13 @@
 /* eslint-disable valtio/state-snapshot-rule */
 import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
-import { ConnectionsController, CoreHelperUtil } from '@reown/appkit-core-react-native';
+import { ConnectionsController, ModalController } from '@reown/appkit-core-react-native';
 import { useAppKit } from './useAppKit';
 
-export function useAccount() {
+export function useAppKitState() {
   useAppKit(); // Use the hook for checks
-
-  const {
-    activeAddress: address,
-    activeNamespace,
-    connection,
-    networks
-  } = useSnapshot(ConnectionsController.state);
+  const { activeAddress: address, connection, networks } = useSnapshot(ConnectionsController.state);
+  const { open, loading } = useSnapshot(ModalController.state);
 
   const activeChain = useMemo(
     () =>
@@ -23,10 +18,9 @@ export function useAccount() {
   );
 
   return {
-    address: CoreHelperUtil.getPlainAddress(address),
+    isOpen: open,
+    isLoading: loading,
     isConnected: !!address,
-    chainId: activeChain?.id,
-    chain: activeChain,
-    namespace: activeNamespace
+    chain: activeChain
   };
 }

@@ -1,10 +1,13 @@
+import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import { ConnectionsController } from '@reown/appkit-core-react-native';
 import { useAppKit } from './useAppKit';
 
 export function useWalletInfo() {
   useAppKit(); // Use the hook for checks
-  const { walletInfo } = useSnapshot(ConnectionsController.state);
+  const { walletInfo: walletInfoSnapshot } = useSnapshot(ConnectionsController.state);
 
-  return { walletInfo };
+  const walletInfo = useMemo(() => ({ walletInfo: walletInfoSnapshot }), [walletInfoSnapshot]);
+
+  return walletInfo;
 }

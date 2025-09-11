@@ -9,7 +9,7 @@ import { WagmiActionsView } from './WagmiActionsView';
 
 export function ActionsView() {
   const isConnected = true;
-  const { namespace} = useAccount();
+  const { namespace } = useAccount();
 
   return isConnected ? (
     <FlexView style={styles.container}>
