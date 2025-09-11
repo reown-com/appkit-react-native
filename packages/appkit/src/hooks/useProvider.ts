@@ -1,3 +1,5 @@
+/* eslint-disable valtio/state-snapshot-rule */
+import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import { ConnectionsController } from '@reown/appkit-core-react-native';
 import type { Provider, ChainNamespace } from '@reown/appkit-common-react-native';
@@ -37,10 +39,14 @@ interface ProviderResult {
 export function useProvider(): ProviderResult {
   const { connection } = useSnapshot(ConnectionsController.state);
 
-  if (!connection) return { provider: undefined, providerType: undefined };
+  const returnValue = useMemo(() => {
+    if (!connection) return { provider: undefined, providerType: undefined };
 
-  return {
-    provider: connection.adapter.getProvider(),
-    providerType: connection.adapter.getSupportedNamespace()
-  };
+    return {
+      provider: connection.adapter.getProvider(),
+      providerType: connection.adapter.getSupportedNamespace()
+    };
+  }, [connection]);
+
+  return returnValue;
 }

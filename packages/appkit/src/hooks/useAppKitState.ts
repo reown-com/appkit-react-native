@@ -1,3 +1,5 @@
+/* eslint-disable valtio/state-snapshot-rule */
+import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import { ConnectionsController, ModalController } from '@reown/appkit-core-react-native';
 import { useAppKit } from './useAppKit';
@@ -7,10 +9,13 @@ export function useAppKitState() {
   const { activeAddress: address, connection, networks } = useSnapshot(ConnectionsController.state);
   const { open, loading } = useSnapshot(ModalController.state);
 
-  const activeChain = connection?.caipNetwork
-    ? // eslint-disable-next-line valtio/state-snapshot-rule
-      networks.find(network => network.caipNetworkId === connection?.caipNetwork)
-    : undefined;
+  const activeChain = useMemo(
+    () =>
+      connection?.caipNetwork
+        ? networks.find(network => network.caipNetworkId === connection?.caipNetwork)
+        : undefined,
+    [connection?.caipNetwork, networks]
+  );
 
   return {
     isOpen: open,
