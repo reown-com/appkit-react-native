@@ -25,6 +25,7 @@ export { useProvider } from './hooks/useProvider';
 export { useAccount } from './hooks/useAccount';
 export { useWalletInfo } from './hooks/useWalletInfo';
 export { useAppKitEvents, useAppKitEventSubscription } from './hooks/useAppKitEvents';
+export { useAppKitState } from './hooks/useAppKitState';
 
 /********** Networks **********/
 export { solana, solanaDevnet, solanaTestnet } from '@reown/appkit-common-react-native';
