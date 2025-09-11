@@ -10,7 +10,7 @@ export function LoadingView() {
     <>
       <Header onSettingsPress={() => {}} />
       <ScrollView bounces={false} testID="onramp-loading-view">
-        <FlexView padding={['s', 'l', '4xl', 'l']}>
+        <FlexView padding={['s', 'l', 's', 'l']}>
           <FlexView flexDirection="row" alignItems="center" justifyContent="space-between">
             <Text variant="small-400" color="fg-150">
               You Buy
