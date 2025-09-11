@@ -1,6 +1,4 @@
-import { useContext } from 'react';
-import { useSnapshot } from 'valtio';
-import { ModalController } from '@reown/appkit-core-react-native';
+import { useContext, useMemo } from 'react';
 
 import type { AppKit } from '../AppKit';
 import { AppKitContext } from '../AppKitContext';
@@ -10,26 +8,33 @@ interface UseAppKitReturn {
   close: AppKit['close'];
   disconnect: (namespace?: string) => void;
   switchNetwork: AppKit['switchNetwork'];
-  isOpen: boolean;
 }
 
 export const useAppKit = (): UseAppKitReturn => {
   const context = useContext(AppKitContext);
-  const { open } = useSnapshot(ModalController.state);
 
   if (context === undefined) {
     throw new Error('useAppKit must be used within an AppKitProvider');
   }
+
   if (!context.appKit) {
     // This might happen if the provider is rendered before AppKit is initialized
     throw new Error('AppKit instance is not yet available in context.');
   }
 
-  return {
-    open: context.appKit.open.bind(context.appKit),
-    close: context.appKit.close.bind(context.appKit),
-    disconnect: (namespace?: string) => context.appKit?.disconnect.bind(context.appKit)(namespace),
-    switchNetwork: context.appKit.switchNetwork.bind(context.appKit),
-    isOpen: open
-  };
+  const stableFunctions = useMemo(() => {
+    if (!context.appKit) {
+      throw new Error('AppKit instance is not available');
+    }
+
+    return {
+      open: context.appKit.open.bind(context.appKit),
+      close: context.appKit.close.bind(context.appKit),
+      disconnect: (namespace?: string) =>
+        context.appKit!.disconnect.bind(context.appKit!)(namespace),
+      switchNetwork: context.appKit.switchNetwork.bind(context.appKit)
+    };
+  }, [context.appKit]);
+
+  return stableFunctions;
 };
