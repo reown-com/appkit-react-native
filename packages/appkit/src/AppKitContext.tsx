@@ -1,4 +1,4 @@
-import React, { createContext, useContext, type ReactNode } from 'react';
+import React, { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { AppKit } from './AppKit';
 
 interface AppKitContextType {
@@ -26,14 +26,22 @@ export const useInternalAppKit = () => {
     throw new Error('AppKit instance is not yet available in context.');
   }
 
-  return {
-    connect: context.appKit.connect.bind(context.appKit),
-    disconnect: context.appKit.disconnect.bind(context.appKit),
-    open: context.appKit.open.bind(context.appKit),
-    close: context.appKit.close.bind(context.appKit),
-    back: context.appKit.back.bind(context.appKit),
-    switchNetwork: context.appKit.switchNetwork.bind(context.appKit),
-    getProvider: context.appKit.getProvider.bind(context.appKit),
-    switchAccountType: context.appKit.switchAccountType.bind(context.appKit)
-  };
+  const stableFunctions = useMemo(() => {
+    if (!context.appKit) {
+      throw new Error('AppKit instance is not available');
+    }
+
+    return {
+      connect: context.appKit.connect.bind(context.appKit),
+      disconnect: context.appKit.disconnect.bind(context.appKit),
+      open: context.appKit.open.bind(context.appKit),
+      close: context.appKit.close.bind(context.appKit),
+      back: context.appKit.back.bind(context.appKit),
+      switchNetwork: context.appKit.switchNetwork.bind(context.appKit),
+      getProvider: context.appKit.getProvider.bind(context.appKit),
+      switchAccountType: context.appKit.switchAccountType.bind(context.appKit)
+    };
+  }, [context.appKit]);
+
+  return stableFunctions;
 };
