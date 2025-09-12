@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Animated, Easing, View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { useTheme } from '../../hooks/useTheme';
@@ -39,12 +39,14 @@ export function LoadingSpinner({
     return () => {
       loop.stop();
     };
-  }, [spinValue]);
+  }, []);
 
-  const spin = spinValue.current.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg']
-  });
+  const spin = useMemo(() => {
+    return spinValue.current.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg']
+    });
+  }, [spinValue]);
 
   return (
     <View style={[styles.container, style]} testID={testID}>
