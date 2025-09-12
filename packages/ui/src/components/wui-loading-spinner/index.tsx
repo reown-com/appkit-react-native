@@ -46,7 +46,7 @@ export function LoadingSpinner({
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg']
     });
-  }, [spinValue]);
+  }, []);
 
   return (
     <View style={[styles.container, style]} testID={testID}>
