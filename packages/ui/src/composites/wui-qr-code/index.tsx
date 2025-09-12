@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg from 'react-native-svg';
 import { Icon } from '../../components/wui-icon';
@@ -19,7 +19,7 @@ export interface QrCodeProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function QrCode({ size, uri, imageSrc, testID, arenaClear, icon, style }: QrCodeProps) {
+export function QrCode_({ size, uri, imageSrc, testID, arenaClear, icon, style }: QrCodeProps) {
   const Theme = LightTheme;
   const containerPadding = Spacing.l;
   const qrSize = size - containerPadding * 2;
@@ -76,3 +76,11 @@ export function QrCode({ size, uri, imageSrc, testID, arenaClear, icon, style }:
     <Shimmer width={size} height={size} borderRadius={BorderRadius.l} />
   );
 }
+
+export const QrCode = memo(QrCode_, (prevProps, nextProps) => {
+  return (
+    prevProps.size === nextProps.size &&
+    prevProps.uri === nextProps.uri &&
+    prevProps.style === nextProps.style
+  );
+});

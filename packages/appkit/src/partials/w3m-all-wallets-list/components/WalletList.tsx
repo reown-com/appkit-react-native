@@ -65,6 +65,9 @@ export function WalletList({
         );
       }}
       contentContainerStyle={[styles.contentContainer, { paddingHorizontal: padding }]}
+      initialNumToRender={32}
+      maxToRenderPerBatch={12}
+      windowSize={10}
       onEndReached={onEndReached}
       onEndReachedThreshold={onEndReachedThreshold}
       keyExtractor={(item, index) => item?.id ?? `item-${index}`}
