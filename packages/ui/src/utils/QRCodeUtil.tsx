@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Line, Rect, Circle } from 'react-native-svg';
 import QRCode from 'qrcode';
-import { DarkTheme, LightTheme } from '../utils/ThemeUtil';
+import { LightTheme } from '../utils/ThemeUtil';
 
 type CoordinateMapping = [number, number[]];
 
@@ -34,8 +34,8 @@ function getMatrix(value: string, errorCorrectionLevel: QRCode.QRCodeErrorCorrec
 
 export const QRCodeUtil = {
   generate(uri: string, size: number, logoSize: number) {
-    const dotColor = DarkTheme['bg-100'];
-    const edgeColor = LightTheme['bg-100'];
+    const dotColor = LightTheme['inverse-000'];
+    const edgeColor = LightTheme['inverse-100'];
     const dots: ReactNode[] = [];
     const matrix = getMatrix(uri, 'Q');
     const cellSize = size / matrix.length;

@@ -158,7 +158,7 @@ export const iconOptions: IconType[] = [
   'google',
   'helpCircle',
   'infoCircle',
-  'mail',
+  'email',
   'mobile',
   'more',
   'networkPlaceholder',

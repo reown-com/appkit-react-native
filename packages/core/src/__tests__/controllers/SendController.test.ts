@@ -50,8 +50,8 @@ describe('SendController', () => {
     expect(SendController.state.receiverProfileImageUrl).toEqual(receiverProfileImageUrl);
   });
 
-  it('should update state correctly on resetSend()', () => {
-    SendController.resetSend();
+  it('should update state correctly on resetState()', () => {
+    SendController.resetState();
     expect(SendController.state).toEqual({ loading: false });
   });
 });

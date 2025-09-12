@@ -1,0 +1,20 @@
+import { Spacing } from '@reown/appkit-ui-react-native';
+import { StyleSheet } from 'react-native';
+
+export default StyleSheet.create({
+  container: {
+    paddingBottom: Spacing['s']
+  },
+  retryButton: {
+    marginTop: Spacing.m
+  },
+  retryIcon: {
+    transform: [{ rotateY: '180deg' }]
+  },
+  errorIcon: {
+    position: 'absolute',
+    bottom: 5,
+    right: 5,
+    zIndex: 2
+  }
+});

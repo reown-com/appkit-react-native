@@ -1,4 +1,4 @@
-import type { RequestCache } from './TypeUtil';
+import type { RequestCache } from '@reown/appkit-common-react-native';
 
 // -- Types ----------------------------------------------------------------------
 interface Options {
@@ -8,7 +8,7 @@ interface Options {
 
 interface RequestArguments {
   path: string;
-  headers?: HeadersInit_;
+  headers?: HeadersInit;
   params?: Record<string, string | undefined>;
   cache?: RequestCache;
   signal?: AbortSignal;
