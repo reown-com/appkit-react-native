@@ -5930,13 +5930,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/sdk-communication-layer@npm:0.32.0":
-  version: 0.32.0
-  resolution: "@metamask/sdk-communication-layer@npm:0.32.0"
+"@metamask/sdk-analytics@npm:0.0.5":
+  version: 0.0.5
+  resolution: "@metamask/sdk-analytics@npm:0.0.5"
   dependencies:
+    openapi-fetch: "npm:^0.13.5"
+  checksum: 4beaac3a5fb6c741ee10e9bc6882ccdec8cb6224d702c3d3b3ee52f66d2f47647090c6d6d3b2fdd27b0b507d7077b9d78d559e6a57094aeca4ec9d7be4f86899
+  languageName: node
+  linkType: hard
+
+"@metamask/sdk-communication-layer@npm:0.33.1":
+  version: 0.33.1
+  resolution: "@metamask/sdk-communication-layer@npm:0.33.1"
+  dependencies:
+    "@metamask/sdk-analytics": "npm:0.0.5"
     bufferutil: "npm:^4.0.8"
     date-fns: "npm:^2.29.3"
-    debug: "npm:^4.3.4"
+    debug: "npm:4.3.4"
     utf-8-validate: "npm:^5.0.2"
     uuid: "npm:^8.3.2"
   peerDependencies:
@@ -5945,32 +5955,33 @@ __metadata:
     eventemitter2: ^6.4.9
     readable-stream: ^3.6.2
     socket.io-client: ^4.5.1
-  checksum: f13defc09ff46839e4d5429deb327306b5c0c49378fdb2ccb3acaa89a61cc44e7f7e49bbeb56be88dd25c529c902dac0860091829893e730335094194c906ce4
+  checksum: fefe55cd144c2bbfac45b3b59c5946f4e1afb2edb9a2047b45dba7449f4d8029f83a7eaa789d921b5cb9fb678a886e11a516b6d1bd46c7f8a6ee9a216e8b5e3c
   languageName: node
   linkType: hard
 
-"@metamask/sdk-install-modal-web@npm:0.32.0":
-  version: 0.32.0
-  resolution: "@metamask/sdk-install-modal-web@npm:0.32.0"
+"@metamask/sdk-install-modal-web@npm:0.32.1":
+  version: 0.32.1
+  resolution: "@metamask/sdk-install-modal-web@npm:0.32.1"
   dependencies:
     "@paulmillr/qr": "npm:^0.2.1"
-  checksum: e28b12924bc26f15c62d7489e07a0201a02105b6d52babbca30d86c8488ec8e0e13fceb088aa76713eea4022957cf507053d06dea6cb35c091dcb3345e2fa435
+  checksum: 7684610424850f9e4bd084ca4788baf2de0a0897355ab4b39dd4acbb00d41a4e0f92956499d824e71bb9d004cd7a128fbabe84b63a6d81d57a922ab29395bcc0
   languageName: node
   linkType: hard
 
-"@metamask/sdk@npm:0.32.0":
-  version: 0.32.0
-  resolution: "@metamask/sdk@npm:0.32.0"
+"@metamask/sdk@npm:0.33.1":
+  version: 0.33.1
+  resolution: "@metamask/sdk@npm:0.33.1"
   dependencies:
     "@babel/runtime": "npm:^7.26.0"
     "@metamask/onboarding": "npm:^1.0.1"
     "@metamask/providers": "npm:16.1.0"
-    "@metamask/sdk-communication-layer": "npm:0.32.0"
-    "@metamask/sdk-install-modal-web": "npm:0.32.0"
+    "@metamask/sdk-analytics": "npm:0.0.5"
+    "@metamask/sdk-communication-layer": "npm:0.33.1"
+    "@metamask/sdk-install-modal-web": "npm:0.32.1"
     "@paulmillr/qr": "npm:^0.2.1"
     bowser: "npm:^2.9.0"
     cross-fetch: "npm:^4.0.0"
-    debug: "npm:^4.3.4"
+    debug: "npm:4.3.4"
     eciesjs: "npm:^0.4.11"
     eth-rpc-errors: "npm:^4.0.3"
     eventemitter2: "npm:^6.4.9"
@@ -5981,7 +5992,7 @@ __metadata:
     tslib: "npm:^2.6.0"
     util: "npm:^0.12.4"
     uuid: "npm:^8.3.2"
-  checksum: 7038015fd6b516d17325b383650ec97ffe2ade3d9959c8af8d568a8742ea55bbb8a54c0ae4cbe256074d4e791c60888100ce8173624b805febdf4a707db29204
+  checksum: a2676a354f30440d55a61a29e5aeea8a36b6a6c21fa0b35283a1a0332220b00f75c0e7c78814ff5dcbbfdf61d9253a1ae8e105d2824a7a93daa549b5da21a356
   languageName: node
   linkType: hard
 
@@ -12460,7 +12471,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4, debug@npm:~4.3.1, debug@npm:~4.3.2":
+"debug@npm:4, debug@npm:4.3.4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4, debug@npm:~4.3.1, debug@npm:~4.3.2":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
   dependencies:
@@ -19457,6 +19468,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"openapi-fetch@npm:^0.13.5":
+  version: 0.13.8
+  resolution: "openapi-fetch@npm:0.13.8"
+  dependencies:
+    openapi-typescript-helpers: "npm:^0.0.15"
+  checksum: 28fd9b2f23be8ed1b8ac489ae9715b087de6a70be4ce3c40285d9a1fa1f033ecd2d08f767765c5a45a1797bb0996bd331cc57fb5bac1e259d999b58567f029ac
+  languageName: node
+  linkType: hard
+
+"openapi-typescript-helpers@npm:^0.0.15":
+  version: 0.0.15
+  resolution: "openapi-typescript-helpers@npm:0.0.15"
+  checksum: 5eb68d487b787e3e31266470b1a310726549dd45a1079655ab18066ab291b0b3c343fdf629991013706a2329b86964f8798d56ef0272b94b931fe6c19abd7a88
+  languageName: node
+  linkType: hard
+
 "optionator@npm:^0.9.3":
   version: 0.9.3
   resolution: "optionator@npm:0.9.3"
@@ -19499,13 +19526,6 @@ __metadata:
     strip-ansi: "npm:^6.0.0"
     wcwidth: "npm:^1.0.1"
   checksum: 10ff14aace236d0e2f044193362b22edce4784add08b779eccc8f8ef97195cae1248db8ec1ec5f5ff076f91acbe573f5f42a98c19b78dba8c54eefff983cae85
-  languageName: node
-  linkType: hard
-
-"os-tmpdir@npm:~1.0.2":
-  version: 1.0.2
-  resolution: "os-tmpdir@npm:1.0.2"
-  checksum: f438450224f8e2687605a8dd318f0db694b6293c5d835ae509a69e97c8de38b6994645337e5577f5001115470414638978cc49da1cdcc25106dad8738dc69990
   languageName: node
   linkType: hard
 
@@ -22894,12 +22914,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:^0.0.33":
-  version: 0.0.33
-  resolution: "tmp@npm:0.0.33"
-  dependencies:
-    os-tmpdir: "npm:~1.0.2"
-  checksum: 69863947b8c29cabad43fe0ce65cec5bb4b481d15d4b4b21e036b060b3edbf3bc7a5541de1bacb437bb3f7c4538f669752627fdf9b4aaf034cebd172ba373408
+"tmp@npm:0.2.4":
+  version: 0.2.4
+  resolution: "tmp@npm:0.2.4"
+  checksum: ac4a7538a9ddb89ead6f4ee019bc23c28ce31549a0bd0ba499a64f81e0804b1e9a3a758622b33807a1f9644dbde9a0205637985f9450abdba1d5062704f98782
   languageName: node
   linkType: hard
 
