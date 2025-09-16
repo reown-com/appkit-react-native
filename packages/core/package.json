@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-core-react-native",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0-alpha.5",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -40,7 +40,7 @@
     "provenance": true
   },
   "dependencies": {
-    "@reown/appkit-common-react-native": "2.0.0-alpha.4",
+    "@reown/appkit-common-react-native": "2.0.0-alpha.5",
     "countries-and-timezones": "3.7.2",
     "derive-valtio": "0.2.0",
     "valtio": "2.1.5"

@@ -16,6 +16,7 @@
     "@reown/appkit-wagmi-react-native": "2.0.0-alpha.4"
   },
   "changesets": [
-    "cruel-ants-sell"
+    "cruel-ants-sell",
+    "grumpy-readers-buy"
   ]
 }

@@ -1,5 +1,11 @@
 # @reown/appkit-common-react-native
 
+## 2.0.0-alpha.5
+
+### Patch Changes
+
+- [#338](https://github.com/reown-com/appkit-react-native/pull/338) [`59385df`](https://github.com/reown-com/appkit-react-native/commit/59385dffb15556f9c500dea9b2abfacd63251a6b) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - bump alpha
+
 ## 2.0.0-alpha.4
 
 ### Patch Changes
