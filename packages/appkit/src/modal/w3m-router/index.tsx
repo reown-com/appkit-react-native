@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useLayoutEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { RouterController } from '@reown/appkit-core-react-native';
 
 import { AccountDefaultView } from '../../views/w3m-account-default-view';
@@ -49,7 +49,7 @@ export function AppKitRouter() {
     UiUtil.setRouteTransition(animateTransition);
   }, [animateTransition]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     UiUtil.createViewTransition();
   }, [view]);
 
