@@ -91,6 +91,8 @@
     "ip": "^2.0.1",
     "form-data": "3.0.4",
     "sha.js": "2.4.12",
-    "@walletconnect/universal-provider": "2.21.8"
+    "@walletconnect/universal-provider": "2.21.8",
+    "@metamask/sdk": "0.33.1",
+    "tmp": "0.2.4"
   }
 }

@@ -36,7 +36,8 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "dependencies": {
     "@reown/appkit-common-react-native": "2.0.0-alpha.4"
