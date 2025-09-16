@@ -36,7 +36,8 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "react-native": "src/index.ts",
   "react-native-builder-bob": {
