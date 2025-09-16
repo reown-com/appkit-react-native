@@ -35,7 +35,8 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "dependencies": {
     "polished": "4.3.1",
