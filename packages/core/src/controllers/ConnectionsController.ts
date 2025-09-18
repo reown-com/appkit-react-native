@@ -13,6 +13,7 @@ import {
   type AccountType,
   type Connection,
   SolanaBaseAdapter,
+  BitcoinBaseAdapter,
   type Identity
 } from '@reown/appkit-common-react-native';
 import { StorageUtil } from '../utils/StorageUtil';
@@ -450,8 +451,11 @@ export const ConnectionsController = {
     const adapter = baseState.connections.get(baseState.activeNamespace)?.adapter;
 
     if (
-      adapter instanceof EVMAdapter ||
-      (adapter instanceof SolanaBaseAdapter && plainAddress && chainId)
+      (adapter instanceof EVMAdapter ||
+        adapter instanceof SolanaBaseAdapter ||
+        adapter instanceof BitcoinBaseAdapter) &&
+      plainAddress &&
+      chainId
     ) {
       return adapter.signMessage(plainAddress, message, chainId);
     }
