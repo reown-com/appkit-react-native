@@ -169,6 +169,8 @@ export class AppKit {
 
     // Sync accounts
     await this.syncAccounts(initializedAdapters);
+
+    this.close();
   }
 
   /**
