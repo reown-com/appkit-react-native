@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { RouterController } from '@reown/appkit-core-react-native';
 
 import { AccountDefaultView } from '../../views/w3m-account-default-view';
