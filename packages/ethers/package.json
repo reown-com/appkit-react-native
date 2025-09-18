@@ -40,8 +40,7 @@
   },
   "dependencies": {
     "@reown/appkit-common-react-native": "2.0.0-alpha.5",
-    "@reown/appkit-react-native": "2.0.0-alpha.5",
-    "@reown/appkit-siwe-react-native": "2.0.0-alpha.5"
+    "@reown/appkit-react-native": "2.0.0-alpha.5"
   },
   "peerDependencies": {
     "@react-native-community/netinfo": "*",

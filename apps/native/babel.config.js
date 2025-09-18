@@ -6,7 +6,6 @@ const etherspack = require('../../packages/ethers/package.json');
 const bitcoinpack = require('../../packages/bitcoin/package.json');
 const solanapack = require('../../packages/solana/package.json');
 const commonpack = require('../../packages/common/package.json');
-const siwepack = require('../../packages/siwe/package.json');
 const coinbasepack = require('../../packages/coinbase/package.json');
 const appkitpack = require('../../packages/appkit/package.json');
 
@@ -29,7 +28,6 @@ module.exports = function (api) {
             [solanapack.name]: path.join(__dirname, '../../packages/solana', solanapack.source),
             [wagmipack.name]: path.join(__dirname, '../../packages/wagmi', wagmipack.source),
             [commonpack.name]: path.join(__dirname, '../../packages/common', commonpack.source),
-            [siwepack.name]: path.join(__dirname, '../../packages/siwe', siwepack.source),
             [appkitpack.name]: path.join(__dirname, '../../packages/appkit', appkitpack.source),
             [coinbasepack.name]: path.join(
               __dirname,

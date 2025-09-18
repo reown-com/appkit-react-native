@@ -8,7 +8,6 @@
     "packages/appkit",
     "packages/ui",
     "packages/common",
-    "packages/siwe",
     "packages/ethers",
     "packages/solana",
     "packages/bitcoin",

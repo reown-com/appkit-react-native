@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 
-import { testM as base, testMSiwe as siwe } from './w3m-fixture';
+import { testM as base } from './w3m-fixture';
 import { WalletPage } from '../pages/WalletPage';
 import { WalletValidator } from '../validators/WalletValidator';
 
@@ -84,14 +84,6 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
     await walletValidator.expectConnected();
     timeEnd('walletValidator.expectConnected');
 
-    await use(walletPage);
-  }
-});
-
-export const testMWSiwe = siwe.extend<ModalWalletFixture>({
-  walletPage: async ({ context }, use) => {
-    const walletPage = new WalletPage(await context.newPage());
-    await walletPage.load();
     await use(walletPage);
   }
 });

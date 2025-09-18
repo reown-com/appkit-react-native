@@ -4311,7 +4311,6 @@ __metadata:
   dependencies:
     "@reown/appkit-common-react-native": 2.0.0-alpha.5
     "@reown/appkit-react-native": 2.0.0-alpha.5
-    "@reown/appkit-siwe-react-native": 2.0.0-alpha.5
   peerDependencies:
     "@react-native-community/netinfo": "*"
     "@walletconnect/react-native-compat": ">=2.16.1"
@@ -4350,7 +4349,6 @@ __metadata:
   dependencies:
     "@reown/appkit-common-react-native": 2.0.0-alpha.5
     "@reown/appkit-core-react-native": 2.0.0-alpha.5
-    "@reown/appkit-siwe-react-native": 2.0.0-alpha.5
     "@reown/appkit-ui-react-native": 2.0.0-alpha.5
     "@walletconnect/universal-provider": 2.21.8
     valtio: 2.1.5
@@ -4377,19 +4375,6 @@ __metadata:
   checksum: b835d4a8762d631cdeb41b4fdfc7aaff9b386d5808ca4f8f78c9733a0a9cbc7c1f05f527db42172330d439b7d22fa880b12e02a80cbe320ccfbe5cb91eab1ba7
   languageName: node
   linkType: hard
-
-"@reown/appkit-siwe-react-native@2.0.0-alpha.5, @reown/appkit-siwe-react-native@workspace:packages/siwe":
-  version: 0.0.0-use.local
-  resolution: "@reown/appkit-siwe-react-native@workspace:packages/siwe"
-  dependencies:
-    "@reown/appkit-common-react-native": 2.0.0-alpha.5
-    "@reown/appkit-core-react-native": 2.0.0-alpha.5
-    "@reown/appkit-ui-react-native": 2.0.0-alpha.5
-    valtio: 2.1.5
-  peerDependencies:
-    "@walletconnect/utils": ">=2.16.1"
-  languageName: unknown
-  linkType: soft
 
 "@reown/appkit-solana-react-native@workspace:*, @reown/appkit-solana-react-native@workspace:packages/solana":
   version: 0.0.0-use.local
@@ -4457,7 +4442,6 @@ __metadata:
   dependencies:
     "@reown/appkit-common-react-native": 2.0.0-alpha.5
     "@reown/appkit-react-native": 2.0.0-alpha.5
-    "@reown/appkit-siwe-react-native": 2.0.0-alpha.5
   peerDependencies:
     "@react-native-community/netinfo": "*"
     "@walletconnect/react-native-compat": ">=2.16.1"
