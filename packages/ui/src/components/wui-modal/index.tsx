@@ -126,13 +126,10 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
           onPress={onBackdropPress}
         />
       ) : null}
-      <AnimatedPressable
-        onPress={onBackdropPress}
-        style={[styles.modal, { transform: [{ translateY }] }]}
-      >
+      <Animated.View style={[styles.modal, { transform: [{ translateY }] }]}>
         <Animated.View onLayout={onContentLayout}>{children}</Animated.View>
         <View style={[styles.bottomBackground, { backgroundColor: Theme['bg-100'] }]} />
-      </AnimatedPressable>
+      </Animated.View>
     </RNModal>
   );
 }

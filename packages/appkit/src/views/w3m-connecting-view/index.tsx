@@ -1,5 +1,6 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { type Platform } from '@reown/appkit-common-react-native';
 import {
   WcController,
   ConstantsUtil,
@@ -15,7 +16,6 @@ import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
 import { ConnectingMobile } from '../../partials/w3m-connecting-mobile';
 import { ConnectingWeb } from '../../partials/w3m-connecting-web';
 import { ConnectingHeader } from '../../partials/w3m-connecting-header';
-import { type Platform } from '@reown/appkit-common-react-native';
 
 export function ConnectingView() {
   const { connect } = useInternalAppKit();
@@ -79,34 +79,7 @@ export function ConnectingView() {
     setPlatform(tab);
   };
 
-  const headerTemplate = () => {
-    if (isQr) return null;
-
-    if (platforms.length > 1) {
-      return <ConnectingHeader platforms={platforms} onSelectPlatform={onSelectPlatform} />;
-    }
-
-    return null;
-  };
-
-  const platformTemplate = () => {
-    if (isQr) {
-      return <ConnectingQrCode />;
-    }
-
-    switch (platform) {
-      case 'mobile':
-        return (
-          <ConnectingMobile onRetry={onRetry} onCopyUri={onCopyUri} isInstalled={isInstalled} />
-        );
-      case 'web':
-        return <ConnectingWeb onCopyUri={onCopyUri} />;
-      default:
-        return undefined;
-    }
-  };
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     const _platforms: Platform[] = [];
     if (data?.wallet?.mobile_link) {
       _platforms.push('mobile');
@@ -134,8 +107,16 @@ export function ConnectingView() {
 
   return (
     <>
-      {headerTemplate()}
-      {platformTemplate()}
+      {platforms.length > 1 ? (
+        <ConnectingHeader platforms={platforms} onSelectPlatform={onSelectPlatform} />
+      ) : null}
+      {isQr ? (
+        <ConnectingQrCode />
+      ) : platform === 'mobile' ? (
+        <ConnectingMobile onRetry={onRetry} onCopyUri={onCopyUri} isInstalled={isInstalled} />
+      ) : platform === 'web' ? (
+        <ConnectingWeb onCopyUri={onCopyUri} />
+      ) : null}
     </>
   );
 }

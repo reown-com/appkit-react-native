@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { RouterController } from '@reown/appkit-core-react-native';
 
 import { AccountDefaultView } from '../../views/w3m-account-default-view';
@@ -31,8 +31,8 @@ import { WalletSendPreviewView } from '../../views/w3m-wallet-send-preview-view'
 import { WalletSendSelectTokenView } from '../../views/w3m-wallet-send-select-token-view';
 import { WhatIsANetworkView } from '../../views/w3m-what-is-a-network-view';
 import { WhatIsAWalletView } from '../../views/w3m-what-is-a-wallet-view';
-import { UiUtil } from '../../utils/UiUtil';
-import { useRouteTransition } from '../../hooks/useRouteTransition';
+// import { UiUtil } from '../../utils/UiUtil';
+// import { useRouteTransition } from '../../hooks/useRouteTransition';
 
 import { Animated } from 'react-native';
 import { useCustomDimensions } from '@reown/appkit-ui-react-native';
@@ -40,18 +40,15 @@ import { useCustomDimensions } from '@reown/appkit-ui-react-native';
 export function AppKitRouter() {
   const { view } = useSnapshot(RouterController.state);
   const { maxHeight } = useCustomDimensions();
-  const { animateTransition, getAnimatedStyle } = useRouteTransition({
-    duration: 300,
-    useNativeDriver: true
-  });
+  // const { animateTransition, getAnimatedStyle } = useRouteTransition();
 
-  useEffect(() => {
-    UiUtil.setRouteTransition(animateTransition);
-  }, [animateTransition]);
+  // useEffect(() => {
+  //   UiUtil.setRouteTransition(animateTransition);
+  // }, [animateTransition]);
 
-  useEffect(() => {
-    UiUtil.createViewTransition();
-  }, [view]);
+  // useEffect(() => {
+  //   UiUtil.createViewTransition();
+  // }, [view]);
 
   const ViewComponent = useMemo(() => {
     switch (view) {
@@ -119,7 +116,7 @@ export function AppKitRouter() {
   }, [view]);
 
   return (
-    <Animated.View style={[getAnimatedStyle(), { maxHeight }]}>
+    <Animated.View style={{ maxHeight }}>
       <ViewComponent />
     </Animated.View>
   );
