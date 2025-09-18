@@ -1,0 +1,343 @@
+import UniversalProvider from '@walletconnect/universal-provider';
+
+import {
+  type CaipNetworkId,
+  type ChainNamespace,
+  type SIWXSession
+} from '@reown/appkit-common-react-native';
+
+// import { EventsController } from '../controllers/EventsController';
+import {
+  ModalController,
+  OptionsController,
+  RouterController,
+  SnackController,
+  CoreHelperUtil,
+  ConnectionsController
+} from '@reown/appkit-core-react-native';
+
+/**
+ * SIWXUtil holds the methods to interact with the SIWX plugin and must be called internally on AppKit.
+ */
+
+export const SIWXUtil = {
+  getSIWX() {
+    return OptionsController.state.siwx;
+  },
+
+  async initializeIfEnabled(caipAddress = ConnectionsController.state.activeAddress) {
+    const siwx = OptionsController.state.siwx;
+
+    if (!siwx || !caipAddress) {
+      return;
+    }
+
+    const [namespace, chainId, address] = caipAddress.split(':') as [
+      ChainNamespace,
+      string,
+      string
+    ];
+
+    const isSupportedNetwork = ConnectionsController.getAvailableNetworks().find(
+      network => network.caipNetworkId === `${namespace}:${chainId}`
+    );
+
+    if (!isSupportedNetwork) {
+      return;
+    }
+
+    try {
+      const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address);
+
+      if (sessions.length) {
+        ModalController.close();
+
+        return;
+      }
+
+      //TODO: rename view to SIWXSignMessage
+
+      if (ModalController.state.open) {
+        RouterController.push('ConnectingSiwe');
+      } else {
+        ModalController.open({ view: 'ConnectingSiwe' });
+      }
+    } catch (error: unknown) {
+      console.error('SIWXUtil:initializeIfEnabled error', error);
+
+      // EventsController.sendEvent({
+      //   type: 'track',
+      //   event: 'SIWX_AUTH_ERROR',
+      //   properties: this.getSIWXEventProperties(error)
+      // });
+
+      //TODO: USE APPKIT DISCONNECT
+      await ConnectionsController.disconnect(namespace);
+      RouterController.reset('Connect');
+      SnackController.showError('A problem occurred while trying initialize authentication');
+    }
+  },
+  async requestSignMessage() {
+    const siwx = OptionsController.state.siwx;
+
+    const address = ConnectionsController.state.activeAddress;
+    const plainAddress = CoreHelperUtil.getPlainAddress(address);
+    const network = ConnectionsController.state.activeNetwork;
+
+    if (!siwx) {
+      throw new Error('SIWX is not enabled');
+    }
+
+    if (!address || !plainAddress) {
+      throw new Error('No ActiveCaipAddress found');
+    }
+
+    if (!network) {
+      throw new Error('No ActiveCaipNetwork or client found');
+    }
+
+    try {
+      const siwxMessage = await siwx.createMessage({
+        chainId: network.caipNetworkId,
+        accountAddress: plainAddress
+      });
+
+      const message = siwxMessage.toString();
+
+      const signature = await ConnectionsController.signMessage(address, message);
+
+      if (!signature) {
+        throw new Error('Error signing message');
+      }
+
+      await siwx.addSession({
+        data: siwxMessage,
+        message,
+        signature
+      });
+
+      ModalController.close();
+
+      // EventsController.sendEvent({
+      //   type: 'track',
+      //   event: 'SIWX_AUTH_SUCCESS',
+      //   properties: this.getSIWXEventProperties()
+      // });
+    } catch (error) {
+      if (!ModalController.state.open) {
+        await ModalController.open({
+          view: 'ConnectingSiwe'
+        });
+      }
+
+      SnackController.showError('Error signing message');
+      // EventsController.sendEvent({
+      //   type: 'track',
+      //   event: 'SIWX_AUTH_ERROR',
+      //   properties: this.getSIWXEventProperties(error)
+      // });
+
+      // eslint-disable-next-line no-console
+      console.error('SWIXUtil:requestSignMessage', error);
+    }
+  },
+  async cancelSignMessage(onDisconnect: () => Promise<void>) {
+    try {
+      const siwx = this.getSIWX();
+      const isRequired = siwx?.getRequired?.();
+      if (isRequired) {
+        await onDisconnect();
+      }
+
+      ModalController.close();
+      // EventsController.sendEvent({
+      //   event: 'CLICK_CANCEL_SIWX',
+      //   type: 'track',
+      //   properties: this.getSIWXEventProperties()
+      // });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('SIWXUtil:cancelSignMessage', error);
+    }
+  },
+  async getAllSessions() {
+    const siwx = this.getSIWX();
+    const allRequestedCaipNetworks = ConnectionsController.state.networks;
+    const sessions = [] as SIWXSession[];
+    await Promise.all(
+      allRequestedCaipNetworks.map(async caipNetwork => {
+        const session = await siwx?.getSessions(
+          caipNetwork.caipNetworkId,
+          CoreHelperUtil.getPlainAddress(ConnectionsController.state.activeAddress) || ''
+        );
+        if (session) {
+          sessions.push(...session);
+        }
+      })
+    );
+
+    return sessions;
+  },
+  async getSessions(args?: { address?: string; caipNetworkId?: CaipNetworkId }) {
+    const siwx = OptionsController.state.siwx;
+    let address = args?.address;
+    if (!address) {
+      const activeCaipAddress = ConnectionsController.state.activeAddress;
+      address = CoreHelperUtil.getPlainAddress(activeCaipAddress);
+    }
+
+    let network = args?.caipNetworkId;
+    if (!network) {
+      const activeCaipNetwork = ConnectionsController.state.activeNetwork;
+      network = activeCaipNetwork?.caipNetworkId;
+    }
+
+    if (!(siwx && address && network)) {
+      return [];
+    }
+
+    return siwx.getSessions(network, address);
+  },
+  async isSIWXCloseDisabled() {
+    const siwx = this.getSIWX();
+
+    if (siwx) {
+      const isSiwxSignMessage = RouterController.state.view === 'ConnectingSiwe';
+
+      if (isSiwxSignMessage) {
+        return siwx.getRequired?.() && (await this.getSessions()).length === 0;
+      }
+    }
+
+    return false;
+  },
+
+  async universalProviderAuthenticate({
+    universalProvider,
+    chains,
+    methods
+  }: {
+    universalProvider: UniversalProvider;
+    chains: CaipNetworkId[];
+    methods: string[];
+  }) {
+    const siwx = SIWXUtil.getSIWX();
+    const network = ConnectionsController.state.activeNetwork;
+    const namespaces = new Set(chains.map(chain => chain.split(':')[0] as ChainNamespace));
+
+    if (!siwx || namespaces.size !== 1 || !namespaces.has('eip155')) {
+      return false;
+    }
+
+    // Ignores chainId and account address to get other message data
+    const siwxMessage = await siwx.createMessage({
+      chainId: ConnectionsController.state.activeNetwork?.caipNetworkId || ('' as CaipNetworkId),
+      accountAddress: ''
+    });
+
+    const result = await universalProvider.authenticate({
+      nonce: siwxMessage.nonce,
+      domain: siwxMessage.domain,
+      uri: siwxMessage.uri,
+      exp: siwxMessage.expirationTime,
+      iat: siwxMessage.issuedAt,
+      nbf: siwxMessage.notBefore,
+      requestId: siwxMessage.requestId,
+      version: siwxMessage.version,
+      resources: siwxMessage.resources,
+      statement: siwxMessage.statement,
+      chainId: siwxMessage.chainId,
+      methods,
+      // The first chainId is what is used for universal provider to build the message
+      chains: [siwxMessage.chainId, ...chains.filter(chain => chain !== siwxMessage.chainId)]
+    });
+
+    SnackController.showLoading('Authenticating...');
+
+    // AccountController.setConnectedWalletInfo(
+    //   {
+    //     ...result.session.peer.metadata,
+    //     name: result.session.peer.metadata.name,
+    //     icon: result.session.peer.metadata.icons?.[0],
+    //     type: 'WALLET_CONNECT'
+    //   },
+    //   Array.from(namespaces)[0] as ChainNamespace
+    // );
+
+    if (result?.auths?.length) {
+      const sessions = result.auths.map<SIWXSession>(cacao => {
+        const message = universalProvider.client.formatAuthMessage({
+          request: cacao.p,
+          iss: cacao.p.iss
+        });
+
+        return {
+          data: {
+            ...cacao.p,
+            accountAddress: cacao.p.iss.split(':').slice(-1).join(''),
+            chainId: cacao.p.iss.split(':').slice(2, 4).join(':') as CaipNetworkId,
+            uri: cacao.p.aud,
+            version: cacao.p.version || siwxMessage.version,
+            expirationTime: cacao.p.exp,
+            issuedAt: cacao.p.iat,
+            notBefore: cacao.p.nbf
+          },
+          message,
+          signature: cacao.s.s,
+          cacao
+        };
+      });
+
+      try {
+        await siwx.setSessions(sessions);
+
+        if (network) {
+          // ChainController.setLastConnectedSIWECaipNetwork(network);
+        }
+
+        // EventsController.sendEvent({
+        //   type: 'track',
+        //   event: 'SIWX_AUTH_SUCCESS',
+        //   properties: SIWXUtil.getSIWXEventProperties()
+        // });
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('SIWX:universalProviderAuth - failed to set sessions', error);
+
+        // EventsController.sendEvent({
+        //   type: 'track',
+        //   event: 'SIWX_AUTH_ERROR',
+        //   properties: SIWXUtil.getSIWXEventProperties(error)
+        // });
+
+        // eslint-disable-next-line no-console
+        await universalProvider.disconnect().catch(console.error);
+        throw error;
+      } finally {
+        SnackController.hide();
+      }
+    }
+
+    return true;
+  },
+  getSIWXEventProperties(error?: unknown) {
+    const namespace = ConnectionsController.state.activeNamespace;
+
+    if (!namespace) {
+      throw new Error('SIWXUtil:getSIWXEventProperties - namespace is required');
+    }
+
+    return {
+      network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
+      isSmartAccount: ConnectionsController.state.accountType === 'smartAccount',
+      message: error ? CoreHelperUtil.parseError(error) : undefined
+    };
+  },
+  async clearSessions() {
+    const siwx = this.getSIWX();
+
+    if (siwx) {
+      await siwx.setSessions([]);
+    }
+  }
+};

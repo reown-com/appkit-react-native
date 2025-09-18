@@ -51,8 +51,8 @@
     "react": ">=18",
     "react-native": ">=0.72",
     "react-native-get-random-values": "*",
-    "viem": ">=2.21.4",
-    "wagmi": ">=2.12.10"
+    "viem": ">=2 <3.0.0",
+    "wagmi": ">=2 <3.0.0"
   },
   "eslintIgnore": [
     "node_modules/",

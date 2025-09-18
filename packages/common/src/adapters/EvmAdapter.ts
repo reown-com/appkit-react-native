@@ -71,7 +71,7 @@ function encodeERC20Function(method: string, params: any[]): string {
 }
 
 export abstract class EVMAdapter extends BlockchainAdapter {
-  async signMessage(address: string, message: string, chain?: string): Promise<string> {
+  async signMessage(address: string, message: string, chainId?: string): Promise<string> {
     const provider = this.getProvider();
 
     if (!provider) {
@@ -83,7 +83,7 @@ export abstract class EVMAdapter extends BlockchainAdapter {
         method: 'personal_sign',
         params: [message, address]
       },
-      `eip155:${chain}`
+      `eip155:${chainId}`
     );
 
     return signature as string;

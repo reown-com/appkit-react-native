@@ -449,7 +449,10 @@ export const ConnectionsController = {
 
     const adapter = baseState.connections.get(baseState.activeNamespace)?.adapter;
 
-    if (adapter instanceof EVMAdapter && plainAddress && chainId) {
+    if (
+      adapter instanceof EVMAdapter ||
+      (adapter instanceof SolanaBaseAdapter && plainAddress && chainId)
+    ) {
       return adapter.signMessage(plainAddress, message, chainId);
     }
 

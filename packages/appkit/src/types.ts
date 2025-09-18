@@ -10,7 +10,8 @@ import {
   type AppKitSIWEClient,
   type ThemeMode,
   type ThemeVariables,
-  type Tokens
+  type Tokens,
+  type SIWXConfig
 } from '@reown/appkit-common-react-native';
 
 /**
@@ -161,6 +162,13 @@ export interface AppKitConfig {
    * @see {@link https://docs.reown.com/appkit/react-native/core/siwe | SIWE Documentation}
    */
   siweConfig?: AppKitSIWEClient;
+
+  /**
+   * @experimental - This feature is not production ready.
+   * Enable Sign In With X (SIWX) feature.
+   * @default undefined
+   */
+  siwx?: SIWXConfig;
 
   /**
    * Optional default network to use when no specific network is selected.

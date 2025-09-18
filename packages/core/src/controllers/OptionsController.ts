@@ -7,7 +7,8 @@ import type {
   Features,
   ProjectId,
   SdkType,
-  SdkVersion
+  SdkVersion,
+  SIWXConfig
 } from '@reown/appkit-common-react-native';
 
 import { ConstantsUtil } from '../utils/ConstantsUtil';
@@ -30,6 +31,7 @@ export interface OptionsControllerState {
   sdkVersion: SdkVersion;
   metadata?: Metadata;
   isSiweEnabled?: boolean;
+  siwx?: SIWXConfig;
   isOnRampEnabled?: boolean;
   features?: Features;
   debug?: boolean;
@@ -115,6 +117,11 @@ export const OptionsController = {
 
   setRequestedNetworks(requestedNetworks?: OptionsControllerState['requestedNetworks']) {
     state.requestedNetworks = requestedNetworks;
+  },
+
+  setSiwx(siwx?: OptionsControllerState['siwx']) {
+    //TODO: Add default values
+    state.siwx = siwx;
   },
 
   isClipboardAvailable() {

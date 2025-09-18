@@ -11,7 +11,7 @@ import {
 import {
   ConnectionsController,
   EventsController,
-  ModalController,
+  // ModalController,
   OptionsController,
   RouterController,
   SnackController
@@ -21,6 +21,7 @@ import { SIWEController } from '@reown/appkit-siwe-react-native';
 import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 import { ScrollView } from 'react-native';
+import { SIWXUtil } from '../../utils/SIWXUtil';
 
 export function ConnectingSiweView() {
   const { disconnect } = useInternalAppKit();
@@ -38,23 +39,24 @@ export function ConnectingSiweView() {
 
   const onSign = async () => {
     setIsSigning(true);
-    EventsController.sendEvent({
-      event: 'CLICK_SIGN_SIWE_MESSAGE',
-      type: 'track',
-      properties: { network, isSmartAccount }
-    });
+    // EventsController.sendEvent({
+    //   event: 'CLICK_SIGN_SIWE_MESSAGE',
+    //   type: 'track',
+    //   properties: { network, isSmartAccount }
+    // });
     try {
-      const session = await SIWEController.signIn();
+      await SIWXUtil.requestSignMessage();
+      // const session = await SIWEController.signIn();
 
-      EventsController.sendEvent({
-        event: 'SIWE_AUTH_SUCCESS',
-        type: 'track',
-        properties: { network, isSmartAccount }
-      });
+      // EventsController.sendEvent({
+      //   event: 'SIWE_AUTH_SUCCESS',
+      //   type: 'track',
+      //   properties: { network, isSmartAccount }
+      // });
 
-      ModalController.close();
+      // ModalController.close();
 
-      return session;
+      // return session;
     } catch (error) {
       SnackController.showError('Signature declined');
 
@@ -73,7 +75,8 @@ export function ConnectingSiweView() {
   const onCancel = async () => {
     if (ConnectionsController.state.activeAddress) {
       setIsDisconnecting(true);
-      await disconnect();
+      // await disconnect();
+      await SIWXUtil.cancelSignMessage(disconnect);
       setIsDisconnecting(false);
     } else {
       RouterController.push('Connect');

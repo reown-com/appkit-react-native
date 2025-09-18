@@ -213,6 +213,34 @@ export class SolanaAdapter extends SolanaBaseAdapter {
     }
   }
 
+  override async signMessage(address: string, message: string): Promise<string> {
+    try {
+      if (!this.connector) {
+        throw new Error('SolanaAdapter:signMessage - no active connector');
+      }
+
+      const provider = this.connector.getProvider('solana');
+      if (!provider) {
+        throw new Error('SolanaAdapter:signMessage - provider is undefined');
+      }
+
+      const encodedMessage = new TextEncoder().encode(message);
+      const params = {
+        message: base58.encode(encodedMessage),
+        pubkey: address
+        // For Phantom, pubkey is not part of signMessage params directly with session
+        // For other wallets, it might be needed if they don't infer from session
+      };
+      const { signature } = (await provider.request({ method: 'solana_signMessage', params })) as {
+        signature: string;
+      };
+
+      return signature;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async switchNetwork(network: AppKitNetwork): Promise<void> {
     if (!this.connector) throw new Error('No active connector');
 

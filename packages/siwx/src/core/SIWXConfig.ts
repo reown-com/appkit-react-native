@@ -1,0 +1,183 @@
+import type {
+  CaipNetworkId,
+  SIWXConfig as SIWXConfigInterface,
+  SIWXMessage,
+  SIWXSession,
+  SIWXStorage,
+  SIWXVerifier
+} from '@reown/appkit-common-react-native';
+
+import type { SIWXMessenger } from './SIWXMessenger';
+
+/**
+ * This is the base class for a SIWX config.
+ * You may extend this class to create your own configuration replacing the default logic.
+ */
+export abstract class SIWXConfig implements SIWXConfigInterface {
+  private messenger: SIWXMessenger;
+  private verifiers: SIWXVerifier[];
+  private storage?: SIWXStorage;
+
+  public required: boolean;
+
+  constructor(params: SIWXConfig.ConstructorParams) {
+    this.messenger = params.messenger;
+    this.verifiers = params.verifiers;
+    this.storage = params.storage;
+    this.required = params.required ?? true;
+  }
+
+  public setStorage(storage: SIWXStorage) {
+    this.storage = storage;
+  }
+
+  /**
+   * Uses the messenger to create a message.
+   *
+   * @param input SIWXMessage.Input
+   * @returns Promise<SIWXMessage>
+   */
+  public createMessage(input: SIWXMessage.Input): Promise<SIWXMessage> {
+    return this.messenger.createMessage(input);
+  }
+
+  /**
+   * Combine the verifiers to verify the session and storage to store it.
+   * It will throw an error if the session is not valid.
+   *
+   * @param session SIWXSession
+   * @returns Promise<void>
+   */
+  public async addSession(session: SIWXSession): Promise<void> {
+    const isValid = await this.verifySession(session);
+    if (!isValid) {
+      throw new Error('The signature is not valid');
+    }
+
+    return this.getStorage().add(session);
+  }
+
+  /**
+   * Combine the verifiers to verify the sessions and storage to store all of them.
+   * It will throw an error if any of the sessions is not valid.
+   *
+   * @param chainId CaipNetworkId
+   * @param address string
+   * @returns Promise<SIWXSession[]>
+   */
+  public async setSessions(sessions: SIWXSession[]): Promise<void> {
+    const verifications = await Promise.all(sessions.map(session => this.verifySession(session)));
+
+    const invalidSession = sessions.find((_, index) => !verifications[index]);
+    if (invalidSession) {
+      throw new Error('The signature is not valid', { cause: invalidSession });
+    }
+
+    return this.getStorage().set(sessions);
+  }
+
+  /**
+   * Get the sessions from the storage and verify them.
+   * If the session is not valid, it will be removed from the storage.
+   *
+   * @param chainId CaipNetworkId
+   * @param address string
+   * @returns Promise<SIWXSession[]>
+   */
+  public async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
+    const sessions = await this.getStorage().get(chainId, address);
+    const verifications = await Promise.all(
+      sessions.map(async session => {
+        if (await this.verifySession(session)) {
+          return true;
+        }
+
+        await this.getStorage().delete(session.data.chainId, session.data.accountAddress);
+
+        return false;
+      })
+    );
+
+    return sessions.filter((_, index) => verifications[index]);
+  }
+
+  /**
+   * Remove the session from the storage.
+   *
+   * @param chainId CaipNetworkId
+   * @param address string
+   * @returns Promise<void>
+   */
+  public async revokeSession(chainId: CaipNetworkId, address: string): Promise<void> {
+    return this.getStorage().delete(chainId, address);
+  }
+
+  /**
+   * This method should verify the session.
+   * It will first check if the verifier should verify the session and then call the verify method.
+   * It will return `true` if the session is valid for all verifications and there is at least one verification.
+   *
+   * @param session SIWXSession
+   * @returns Promise<boolean> - If `true` means the session is valid.
+   */
+  protected async verifySession(session: SIWXSession): Promise<boolean> {
+    const chainVerifiers = this.verifiers.filter(verifier => verifier.shouldVerify(session));
+    const verifications = await Promise.all(
+      chainVerifiers.map(verifier => verifier.verify(session))
+    );
+
+    return verifications.length > 0 && verifications.every(result => result);
+  }
+
+  /**
+   * This method determines whether the wallet stays connected when the user denies the signature request.
+   *
+   * @returns {boolean}
+   */
+  getRequired() {
+    return this.required;
+  }
+
+  private getStorage() {
+    if (!this.storage) {
+      throw new Error('Storage is not set');
+    }
+
+    return this.storage;
+  }
+}
+
+export namespace SIWXConfig {
+  export type ConstructorParams = {
+    /**
+     * The messenger to create the messages.
+     */
+    messenger: SIWXMessenger;
+
+    /**
+     * The verifiers to verify the sessions.
+     */
+    verifiers: SIWXVerifier[];
+
+    /**
+     * The storage to store the sessions.
+     */
+    storage: SIWXStorage;
+
+    /**
+     * If false the wallet stays connected when user denies the signature request.
+     * @default true
+     */
+    required?: boolean;
+
+    /**
+     * The domain to use for the SIWX message.
+     */
+    domain?: string;
+
+    /**
+     * The URI to use for the SIWX message.
+     */
+    uri?: string;
+  };
+}
