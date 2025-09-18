@@ -10,7 +10,7 @@ import {
   type ConnectorType,
   type ChainNamespace,
   type WalletDeepLink,
-  ConstantsUtil
+  SafeStorageKeys
 } from '@reown/appkit-common-react-native';
 import { OptionsController } from '../controllers/OptionsController';
 
@@ -18,7 +18,7 @@ import { OptionsController } from '../controllers/OptionsController';
 export const StorageUtil = {
   setWalletConnectDeepLink({ href, name }: WalletDeepLink) {
     try {
-      OptionsController.getStorage().setItem(ConstantsUtil.STORAGE_KEYS.WC_DEEPLINK, {
+      OptionsController.getStorage().setItem(SafeStorageKeys.WC_DEEPLINK, {
         href,
         name
       });
@@ -30,7 +30,7 @@ export const StorageUtil = {
   async getWalletConnectDeepLink() {
     try {
       const deepLink = await OptionsController.getStorage().getItem<WalletDeepLink>(
-        ConstantsUtil.STORAGE_KEYS.WC_DEEPLINK
+        SafeStorageKeys.WC_DEEPLINK
       );
       if (deepLink) {
         return deepLink;
@@ -44,7 +44,7 @@ export const StorageUtil = {
 
   async removeWalletConnectDeepLink() {
     try {
-      await OptionsController.getStorage().removeItem(ConstantsUtil.STORAGE_KEYS.WC_DEEPLINK);
+      await OptionsController.getStorage().removeItem(SafeStorageKeys.WC_DEEPLINK);
     } catch {
       console.info('Unable to remove WalletConnect deep link');
     }
@@ -63,10 +63,7 @@ export const StorageUtil = {
       if (recentWallets.length > 2) {
         recentWallets.pop();
       }
-      OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.RECENT_WALLET,
-        recentWallets
-      );
+      OptionsController.getStorage().setItem(SafeStorageKeys.RECENT_WALLET, recentWallets);
 
       return recentWallets;
     } catch {
@@ -78,10 +75,7 @@ export const StorageUtil = {
 
   async setRecentWallets(wallets: WcWallet[]) {
     try {
-      await OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.RECENT_WALLET,
-        wallets
-      );
+      await OptionsController.getStorage().setItem(SafeStorageKeys.RECENT_WALLET, wallets);
     } catch {
       console.info('Unable to set recent wallets');
     }
@@ -89,9 +83,7 @@ export const StorageUtil = {
 
   async getRecentWallets(): Promise<WcWallet[]> {
     try {
-      const recent = await OptionsController.getStorage().getItem(
-        ConstantsUtil.STORAGE_KEYS.RECENT_WALLET
-      );
+      const recent = await OptionsController.getStorage().getItem(SafeStorageKeys.RECENT_WALLET);
 
       return recent ?? [];
     } catch {
@@ -114,7 +106,7 @@ export const StorageUtil = {
       if (!currentConnectors.some(c => c.type === type)) {
         const updatedConnectors = [...currentConnectors, { type, namespaces }];
         await OptionsController.getStorage().setItem(
-          ConstantsUtil.STORAGE_KEYS.CONNECTED_CONNECTORS,
+          SafeStorageKeys.CONNECTED_CONNECTORS,
           updatedConnectors
         );
       }
@@ -127,7 +119,7 @@ export const StorageUtil = {
     try {
       const connectors = await OptionsController.getStorage().getItem<
         { type: ConnectorType; namespaces: string[] }[]
-      >(ConstantsUtil.STORAGE_KEYS.CONNECTED_CONNECTORS);
+      >(SafeStorageKeys.CONNECTED_CONNECTORS);
 
       return connectors ?? [];
     } catch (err) {
@@ -142,7 +134,7 @@ export const StorageUtil = {
       const currentConnectors = await StorageUtil.getConnectedConnectors();
       const updatedConnectors = currentConnectors.filter(c => c.type !== type);
       await OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.CONNECTED_CONNECTORS,
+        SafeStorageKeys.CONNECTED_CONNECTORS,
         updatedConnectors
       );
     } catch {
@@ -153,7 +145,7 @@ export const StorageUtil = {
   async setOnRampPreferredCountry(country: OnRampCountry) {
     try {
       await OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_PREFERRED_COUNTRY,
+        SafeStorageKeys.ONRAMP_PREFERRED_COUNTRY,
         country
       );
     } catch {
@@ -164,7 +156,7 @@ export const StorageUtil = {
   async getOnRampPreferredCountry() {
     try {
       const country = await OptionsController.getStorage().getItem<OnRampCountry>(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_PREFERRED_COUNTRY
+        SafeStorageKeys.ONRAMP_PREFERRED_COUNTRY
       );
 
       return country ?? undefined;
@@ -178,7 +170,7 @@ export const StorageUtil = {
   async setOnRampPreferredFiatCurrency(currency: OnRampFiatCurrency) {
     try {
       await OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_PREFERRED_FIAT_CURRENCY,
+        SafeStorageKeys.ONRAMP_PREFERRED_FIAT_CURRENCY,
         currency
       );
     } catch {
@@ -189,7 +181,7 @@ export const StorageUtil = {
   async getOnRampPreferredFiatCurrency() {
     try {
       const currency = await OptionsController.getStorage().getItem<OnRampFiatCurrency>(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_PREFERRED_FIAT_CURRENCY
+        SafeStorageKeys.ONRAMP_PREFERRED_FIAT_CURRENCY
       );
 
       return currency ?? undefined;
@@ -202,10 +194,7 @@ export const StorageUtil = {
 
   async setOnRampCountries(countries: OnRampCountry[]) {
     try {
-      await OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_COUNTRIES,
-        countries
-      );
+      await OptionsController.getStorage().setItem(SafeStorageKeys.ONRAMP_COUNTRIES, countries);
     } catch {
       console.info('Unable to set OnRamp Countries');
     }
@@ -214,7 +203,7 @@ export const StorageUtil = {
   async getOnRampCountries() {
     try {
       const countries = await OptionsController.getStorage().getItem<OnRampCountry[]>(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_COUNTRIES
+        SafeStorageKeys.ONRAMP_COUNTRIES
       );
 
       return countries ?? [];
@@ -229,10 +218,10 @@ export const StorageUtil = {
     try {
       const timestamp = Date.now();
 
-      await OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_COUNTRIES_DEFAULTS,
-        { data: countriesDefaults, timestamp }
-      );
+      await OptionsController.getStorage().setItem(SafeStorageKeys.ONRAMP_COUNTRIES_DEFAULTS, {
+        data: countriesDefaults,
+        timestamp
+      });
     } catch {
       console.info('Unable to set OnRamp Countries Defaults');
     }
@@ -241,7 +230,7 @@ export const StorageUtil = {
   async getOnRampCountriesDefaults() {
     try {
       const result = await OptionsController.getStorage().getItem(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_COUNTRIES_DEFAULTS
+        SafeStorageKeys.ONRAMP_COUNTRIES_DEFAULTS
       );
 
       if (!result) {
@@ -267,10 +256,10 @@ export const StorageUtil = {
     try {
       const timestamp = Date.now();
 
-      await OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_SERVICE_PROVIDERS,
-        { data: serviceProviders, timestamp }
-      );
+      await OptionsController.getStorage().setItem(SafeStorageKeys.ONRAMP_SERVICE_PROVIDERS, {
+        data: serviceProviders,
+        timestamp
+      });
     } catch {
       console.info('Unable to set OnRamp Service Providers');
     }
@@ -279,7 +268,7 @@ export const StorageUtil = {
   async getOnRampServiceProviders() {
     try {
       const result = await OptionsController.getStorage().getItem(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_SERVICE_PROVIDERS
+        SafeStorageKeys.ONRAMP_SERVICE_PROVIDERS
       );
 
       if (!result) {
@@ -306,7 +295,7 @@ export const StorageUtil = {
     try {
       const timestamp = Date.now();
 
-      await OptionsController.getStorage().setItem(ConstantsUtil.STORAGE_KEYS.ONRAMP_FIAT_LIMITS, {
+      await OptionsController.getStorage().setItem(SafeStorageKeys.ONRAMP_FIAT_LIMITS, {
         data: fiatLimits,
         timestamp
       });
@@ -318,7 +307,7 @@ export const StorageUtil = {
   async getOnRampFiatLimits() {
     try {
       const result = await OptionsController.getStorage().getItem(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_FIAT_LIMITS
+        SafeStorageKeys.ONRAMP_FIAT_LIMITS
       );
 
       if (!result) {
@@ -344,10 +333,10 @@ export const StorageUtil = {
     try {
       const timestamp = Date.now();
 
-      await OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_FIAT_CURRENCIES,
-        { data: fiatCurrencies, timestamp }
-      );
+      await OptionsController.getStorage().setItem(SafeStorageKeys.ONRAMP_FIAT_CURRENCIES, {
+        data: fiatCurrencies,
+        timestamp
+      });
     } catch {
       console.info('Unable to set OnRamp Fiat Currencies');
     }
@@ -356,7 +345,7 @@ export const StorageUtil = {
   async getOnRampFiatCurrencies() {
     try {
       const result = await OptionsController.getStorage().getItem(
-        ConstantsUtil.STORAGE_KEYS.ONRAMP_FIAT_CURRENCIES
+        SafeStorageKeys.ONRAMP_FIAT_CURRENCIES
       );
 
       if (!result) {
@@ -381,17 +370,12 @@ export const StorageUtil = {
   async setActiveNamespace(namespace?: ChainNamespace) {
     try {
       if (!namespace) {
-        await OptionsController.getStorage().removeItem(
-          ConstantsUtil.STORAGE_KEYS.ACTIVE_NAMESPACE
-        );
+        await OptionsController.getStorage().removeItem(SafeStorageKeys.ACTIVE_NAMESPACE);
 
         return;
       }
 
-      await OptionsController.getStorage().setItem(
-        ConstantsUtil.STORAGE_KEYS.ACTIVE_NAMESPACE,
-        namespace
-      );
+      await OptionsController.getStorage().setItem(SafeStorageKeys.ACTIVE_NAMESPACE, namespace);
     } catch {
       console.info('Unable to set Active Namespace');
     }
@@ -400,7 +384,7 @@ export const StorageUtil = {
   async getActiveNamespace() {
     try {
       const namespace = (await OptionsController.getStorage().getItem(
-        ConstantsUtil.STORAGE_KEYS.ACTIVE_NAMESPACE
+        SafeStorageKeys.ACTIVE_NAMESPACE
       )) as ChainNamespace;
 
       return namespace ?? undefined;
@@ -414,7 +398,7 @@ export const StorageUtil = {
 
   async removeActiveNamespace() {
     try {
-      await OptionsController.getStorage().removeItem(ConstantsUtil.STORAGE_KEYS.ACTIVE_NAMESPACE);
+      await OptionsController.getStorage().removeItem(SafeStorageKeys.ACTIVE_NAMESPACE);
     } catch {
       console.info('Unable to remove Active Namespace');
     }

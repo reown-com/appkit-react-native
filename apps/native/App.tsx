@@ -6,7 +6,7 @@ import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
-import { DefaultSIWX, DefaultStorage, EIP155Verifier } from '@reown/appkit-siwx-react-native';
+import { ReownAuthentication } from '@reown/appkit-siwx-react-native';
 
 import {
   AppKitProvider,
@@ -23,7 +23,7 @@ import { Button, Text } from '@reown/appkit-ui-react-native';
 import { chains } from './src/utils/WagmiUtils';
 import { OpenButton } from './src/components/OpenButton';
 import { DisconnectButton } from './src/components/DisconnectButton';
-import { SolanaAdapter, PhantomConnector, SolflareConnector, SolanaVerifier } from '@reown/appkit-solana-react-native';
+import { SolanaAdapter, PhantomConnector, SolflareConnector } from '@reown/appkit-solana-react-native';
 import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
 import { WagmiAdapter } from '@reown/appkit-wagmi-react-native';
 import { ActionsView } from './src/views/ActionsView';
@@ -73,7 +73,7 @@ const appKit = createAppKit({
   debug: true,
   enableAnalytics: true,
   storage,
-  siwx: new DefaultSIWX({ storage: new DefaultStorage({ storage }), domain: 'app.bundle.id', uri: metadata.redirect.universal, verifiers: [new EIP155Verifier(), new SolanaVerifier()] }),
+  siwx: new ReownAuthentication(),
   extraConnectors: [new PhantomConnector(), new SolflareConnector()],
   // tokens: {
   //   'eip155:1': {

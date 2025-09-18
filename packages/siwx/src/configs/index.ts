@@ -1,1 +1,1 @@
-export * from './DefaultSIWX';
+export * from './ReownAuthenticationSIWX';

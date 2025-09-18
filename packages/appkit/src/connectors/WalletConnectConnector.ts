@@ -67,9 +67,15 @@ export class WalletConnectConnector extends WalletConnector {
         this.wallet = {
           ...metadata,
           name: metadata.name,
-          icon: metadata.icons?.[0]
+          icon: metadata.icons?.[0],
+          type: 'walletconnect'
         };
       }
+    } else {
+      this.wallet = {
+        name: 'Unknown Wallet',
+        type: 'walletconnect'
+      };
     }
 
     return true;
@@ -175,10 +181,14 @@ export class WalletConnectConnector extends WalletConnector {
       this.wallet = {
         ...metadata,
         name: metadata?.name,
-        icon: metadata?.icons?.[0]
+        icon: metadata?.icons?.[0],
+        type: 'walletconnect'
       };
     } else {
-      this.wallet = undefined;
+      this.wallet = {
+        name: 'Unknown Wallet',
+        type: 'walletconnect'
+      };
     }
 
     if (defaultNetwork?.caipNetworkId) {

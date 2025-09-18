@@ -96,7 +96,8 @@ export class CoinbaseConnector extends WalletConnector {
     return {
       name: 'Coinbase Wallet',
       description: 'Your home to everything onchain',
-      url: 'https://www.coinbase.com/wallet'
+      url: 'https://www.coinbase.com/wallet',
+      type: 'external'
     };
   }
 
