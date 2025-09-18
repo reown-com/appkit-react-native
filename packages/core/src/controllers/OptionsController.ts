@@ -29,7 +29,6 @@ export interface OptionsControllerState {
   sdkType: SdkType;
   sdkVersion: SdkVersion;
   metadata?: Metadata;
-  isSiweEnabled?: boolean;
   isOnRampEnabled?: boolean;
   features?: Features;
   debug?: boolean;
@@ -85,10 +84,6 @@ export const OptionsController = {
 
   setMetadata(metadata: OptionsControllerState['metadata']) {
     state.metadata = metadata;
-  },
-
-  setIsSiweEnabled(isSiweEnabled: OptionsControllerState['isSiweEnabled']) {
-    state.isSiweEnabled = isSiweEnabled;
   },
 
   setFeatures(features: OptionsControllerState['features']) {

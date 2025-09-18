@@ -7,7 +7,6 @@
 '@reown/appkit-solana-react-native': patch
 '@reown/appkit-wagmi-react-native': patch
 '@reown/appkit-core-react-native': patch
-'@reown/appkit-siwe-react-native': patch
 '@reown/appkit-ui-react-native': patch
 ---
 

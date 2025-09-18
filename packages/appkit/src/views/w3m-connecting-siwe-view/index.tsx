@@ -16,7 +16,6 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-core-react-native';
-import { SIWEController } from '@reown/appkit-siwe-react-native';
 
 import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
@@ -44,7 +43,7 @@ export function ConnectingSiweView() {
       properties: { network, isSmartAccount }
     });
     try {
-      const session = await SIWEController.signIn();
+      // const session = await SIWEController.signIn();
 
       EventsController.sendEvent({
         event: 'SIWE_AUTH_SUCCESS',
@@ -54,11 +53,11 @@ export function ConnectingSiweView() {
 
       ModalController.close();
 
-      return session;
+      // return session;
     } catch (error) {
       SnackController.showError('Signature declined');
 
-      SIWEController.setStatus('error');
+      // SIWEController.setStatus('error');
 
       return EventsController.sendEvent({
         event: 'SIWE_AUTH_ERROR',
