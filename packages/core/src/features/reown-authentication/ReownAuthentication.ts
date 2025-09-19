@@ -52,6 +52,7 @@ export class ReownAuthentication implements SIWXConfig {
       method: 'POST',
       key: 'authenticate',
       body: {
+        data: session.cacao ? undefined : session.data,
         message: session.message,
         signature: session.signature,
         clientId: this.getClientId(),
