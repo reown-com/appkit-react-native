@@ -29,7 +29,7 @@ export function LogoSelect({ logo, disabled, style, onPress }: LogoSelectProps) 
       style={[styles.box, { backgroundColor: animatedValue }, style]}
       disabled={disabled}
     >
-      <Logo logo={logo} style={disabled && styles.disabled} />
+      <Logo logo={logo} style={disabled ? styles.disabled : null} />
     </AnimatedPressable>
   );
 }

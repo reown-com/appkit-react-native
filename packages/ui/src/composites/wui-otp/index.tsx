@@ -82,7 +82,7 @@ export function Otp({ length, style, onChangeText, autoFocus }: OtpProps) {
     <View style={styles.container}>
       {Array.from({ length }).map((_, index) => (
         <InputNumeric
-          autoFocus={autoFocus && index === 0}
+          autoFocus={autoFocus ? index === 0 : undefined}
           key={index}
           style={style}
           value={value[index] || ''}

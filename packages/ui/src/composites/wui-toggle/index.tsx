@@ -74,9 +74,9 @@ export function Toggle({
         ) : (
           title
         )}
-        {canClose && (
+        {canClose ? (
           <IconBox icon={isOpen ? 'chevronTop' : 'chevronBottom'} size="sm" iconColor="fg-200" />
-        )}
+        ) : null}
       </Pressable>
 
       <Animated.View style={[styles.contentWrapper, { height: animatedHeight }]}>

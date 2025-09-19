@@ -10,7 +10,7 @@ import styles from './styles';
 export const ListTokenTotalHeight = 64;
 
 export interface ListTokenProps {
-  imageSrc: string;
+  imageSrc?: string;
   networkSrc?: string;
   name: string;
   value?: number;

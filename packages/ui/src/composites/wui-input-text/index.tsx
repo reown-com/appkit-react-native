@@ -113,7 +113,7 @@ export const InputText = forwardRef<InputRef, InputTextProps>(
               disabled && { backgroundColor: Theme['gray-glass-002'] }
             ]}
           >
-            {icon && <Icon name={icon} size="md" color="fg-275" style={styles.icon} />}
+            {icon ? <Icon name={icon} size="md" color="fg-275" style={styles.icon} /> : null}
             <TextInput
               ref={inputRef}
               onFocus={handleFocus}

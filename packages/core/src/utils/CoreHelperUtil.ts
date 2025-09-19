@@ -1,11 +1,24 @@
 /* eslint-disable no-bitwise */
 
 import { Linking, Platform } from 'react-native';
-import { ConstantsUtil as CommonConstants, type Balance } from '@reown/appkit-common-react-native';
+import {
+  BlockchainAdapter,
+  ConstantsUtil as CommonConstants,
+  type AdapterType,
+  type Balance,
+  type CaipAddress,
+  type CaipNetwork,
+  type ChainNamespace,
+  type SocialProvider,
+  type LinkingRecord,
+  type DataWallet,
+  type SdkVersion
+} from '@reown/appkit-common-react-native';
+
 import * as ct from 'countries-and-timezones';
 
 import { ConstantsUtil } from './ConstantsUtil';
-import type { CaipAddress, CaipNetwork, DataWallet, LinkingRecord } from './TypeUtil';
+import { OptionsController } from '../controllers/OptionsController';
 
 // -- Helpers -----------------------------------------------------------------
 async function isAppInstalledIos(deepLink?: string): Promise<boolean> {
@@ -97,7 +110,7 @@ export const CoreHelperUtil = {
     };
   },
 
-  formatUniversalUrl(appUrl: string, wcUri: string): LinkingRecord {
+  formatUniversalUrl(appUrl: string, wcUri: string, provider?: SocialProvider): LinkingRecord {
     if (CoreHelperUtil.isLinkModeURL(wcUri)) {
       return {
         redirect: wcUri,
@@ -115,7 +128,9 @@ export const CoreHelperUtil = {
     const encodedWcUrl = encodeURIComponent(wcUri);
 
     return {
-      redirect: `${safeAppUrl}wc?uri=${encodedWcUrl}`,
+      redirect: provider
+        ? `${safeAppUrl}wc?uri=${encodedWcUrl}&provider=${provider}`
+        : `${safeAppUrl}wc?uri=${encodedWcUrl}`,
       href: safeAppUrl
     };
   },
@@ -144,8 +159,8 @@ export const CoreHelperUtil = {
     return formattedBalance ? `${formattedBalance} ${symbol}` : `0.000 ${symbol || ''}`;
   },
 
-  isAddress(address: string, chain = 'eip155'): boolean {
-    switch (chain) {
+  isAddress(address: string, namespace: ChainNamespace = 'eip155'): boolean {
+    switch (namespace) {
       case 'eip155':
         if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
           return false;
@@ -277,7 +292,7 @@ export const CoreHelperUtil = {
 
     let sum = 0;
     for (const item of array) {
-      sum += item.value ?? 0;
+      sum += item?.value ?? 0;
     }
 
     const roundedNumber = sum.toFixed(2);
@@ -317,5 +332,28 @@ export const CoreHelperUtil = {
         func(...args);
       }, wait);
     };
+  },
+
+  generateSdkVersion(adapters: BlockchainAdapter[], version: string): SdkVersion {
+    const hasNoAdapters = adapters.length === 0;
+    const universalType: AdapterType = 'universal';
+
+    const adapterNames = hasNoAdapters
+      ? universalType
+      : adapters
+          .sort((a, b) => a.adapterType.localeCompare(b.adapterType))
+          .map(adapter => adapter.adapterType)
+          .join(',');
+
+    return `react-native-${adapterNames}-${version}`;
+  },
+
+  getRequestedCaipNetworkIds() {
+    const chains = OptionsController.state.requestedNetworks;
+    if (!chains) return [];
+
+    const requestedIds = chains.map(caipNetwork => caipNetwork.caipNetworkId);
+
+    return requestedIds;
   }
 };

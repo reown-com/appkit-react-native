@@ -1,16 +1,15 @@
 import { proxy, ref, subscribe as sub } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
-import { OptionsController } from '@reown/appkit-core-react-native';
 import type {
   SIWEClientMethods,
   SIWESession,
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs
-} from '../utils/TypeUtils';
+} from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {
-  signIn: () => Promise<SIWESession>;
+  signIn: () => Promise<SIWESession | undefined>;
   options: {
     enabled: boolean;
     nonceRefetchIntervalMs: number;
@@ -135,7 +134,6 @@ export const SIWEController = {
   setSIWEClient(client: SIWEControllerClient) {
     state._client = ref(client);
     state.status = 'ready';
-    OptionsController.setIsSiweEnabled(client.options.enabled);
   },
 
   setNonce(nonce: SIWEControllerClientState['nonce']) {

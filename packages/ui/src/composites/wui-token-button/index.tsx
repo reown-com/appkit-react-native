@@ -28,7 +28,7 @@ export function TokenButton({
   onPress,
   style,
   disabled = false,
-  placeholder = 'Select token',
+  placeholder = 'Select Token',
   chevron,
   renderClip,
   testID
@@ -59,7 +59,7 @@ export function TokenButton({
           source={imageUrl}
           style={[styles.image, { backgroundColor: Theme['inverse-100'] }]}
         />
-        {renderClip && <View style={styles.clipContainer}>{renderClip}</View>}
+        {renderClip ? <View style={styles.clipContainer}>{renderClip}</View> : null}
       </View>
     ),
     <Text key="text">{text}</Text>
@@ -75,7 +75,9 @@ export function TokenButton({
       testID={testID}
     >
       {inverse ? content.reverse() : content}
-      {chevron && <Icon name="chevronBottom" size="xxs" color="fg-150" style={styles.chevron} />}
+      {chevron ? (
+        <Icon name="chevronBottom" size="xxs" color="fg-150" style={styles.chevron} />
+      ) : null}
     </Button>
   );
 }

@@ -1,4 +1,4 @@
-import type { Platform, WcWallet } from './TypeUtil';
+import type { Platform, WcWallet } from '@reown/appkit-common-react-native';
 
 export const EventUtil = {
   getWalletPlatform(wallet: WcWallet, installed?: boolean): Platform | undefined {

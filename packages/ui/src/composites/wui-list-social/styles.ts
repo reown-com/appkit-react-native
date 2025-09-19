@@ -24,5 +24,8 @@ export default StyleSheet.create({
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  rightIcon: {
+    marginRight: Spacing['2xs']
   }
 });

@@ -14,6 +14,7 @@
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.updateImportsOnFileMove.enabled": "always",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "eslint.workingDirectories": [
     {
       "mode": "auto"

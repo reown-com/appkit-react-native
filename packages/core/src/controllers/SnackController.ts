@@ -22,26 +22,52 @@ const state = proxy<SnackControllerState>({
   long: false
 });
 
+// -- Private Variables --------------------------------- //
+let hideTimeout: NodeJS.Timeout | null = null;
+
+// -- Private Functions --------------------------------- //
+const clearHideTimeout = () => {
+  if (hideTimeout) {
+    clearTimeout(hideTimeout);
+    hideTimeout = null;
+  }
+};
+
+const scheduleAutoHide = (long: boolean) => {
+  clearHideTimeout();
+
+  const duration = long ? 15000 : 2200;
+  hideTimeout = setTimeout(() => {
+    SnackController.hide();
+  }, duration);
+};
+
 // -- Controller ---------------------------------------- //
 export const SnackController = {
   state,
 
-  showSuccess(message: SnackControllerState['message']) {
+  showSuccess(message: SnackControllerState['message'], long = false) {
     state.message = message;
     state.variant = 'success';
     state.open = true;
+    state.long = long;
+    scheduleAutoHide(long);
   },
 
-  showError(message: SnackControllerState['message']) {
+  showError(message: SnackControllerState['message'], long = false) {
     state.message = message;
     state.variant = 'error';
     state.open = true;
+    state.long = long;
+    scheduleAutoHide(long);
   },
 
-  showLoading(message: SnackControllerState['message']) {
+  showLoading(message: SnackControllerState['message'], long = false) {
     state.message = message;
     state.variant = 'loading';
     state.open = true;
+    state.long = long;
+    scheduleAutoHide(long);
   },
 
   showInternalError(error: Message) {
@@ -52,6 +78,7 @@ export const SnackController = {
       state.variant = 'error';
       state.open = true;
       state.long = true;
+      scheduleAutoHide(true);
     }
 
     if (error.longMessage) {
@@ -61,9 +88,8 @@ export const SnackController = {
   },
 
   hide() {
+    clearHideTimeout();
     state.open = false;
     state.long = false;
-    state.message = '';
-    state.variant = 'success';
   }
 };

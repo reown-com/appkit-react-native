@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
+import { useAccount, useAppKit } from '@reown/appkit-react-native';
 import { Button } from '@reown/appkit-ui-react-native';
-import { useAccount, useDisconnect } from 'wagmi';
 
 export function DisconnectButton() {
+  const { disconnect } = useAppKit();
   const { isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
 
   return isConnected ? (
     <Button testID="disconnect-hook-button" style={styles.button} onPress={() => disconnect()}>

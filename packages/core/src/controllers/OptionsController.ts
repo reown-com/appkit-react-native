@@ -1,13 +1,15 @@
 import { proxy, ref } from 'valtio';
 import type {
+  Storage,
+  Metadata,
+  AppKitNetwork,
   CustomWallet,
   Features,
-  Metadata,
   ProjectId,
   SdkType,
-  SdkVersion,
-  Tokens
-} from '../utils/TypeUtil';
+  SdkVersion
+} from '@reown/appkit-common-react-native';
+
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 
 // -- Types --------------------------------------------- //
@@ -17,12 +19,12 @@ export interface ClipboardClient {
 
 export interface OptionsControllerState {
   projectId: ProjectId;
-  _clipboardClient?: ClipboardClient;
+  clipboardClient?: ClipboardClient;
+  storage?: Storage;
   includeWalletIds?: string[];
   excludeWalletIds?: string[];
   featuredWalletIds?: string[];
   customWallets?: CustomWallet[];
-  tokens?: Tokens;
   enableAnalytics?: boolean;
   sdkType: SdkType;
   sdkVersion: SdkVersion;
@@ -31,14 +33,17 @@ export interface OptionsControllerState {
   isOnRampEnabled?: boolean;
   features?: Features;
   debug?: boolean;
+  defaultNetwork?: AppKitNetwork;
+  requestedNetworks?: AppKitNetwork[];
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
   projectId: '',
   sdkType: 'appkit',
-  sdkVersion: 'react-native-wagmi-undefined',
+  sdkVersion: 'react-native-undefined-undefined',
   features: ConstantsUtil.DEFAULT_FEATURES,
+  customWallets: [],
   debug: false
 });
 
@@ -47,7 +52,7 @@ export const OptionsController = {
   state,
 
   setClipboardClient(client: ClipboardClient) {
-    state._clipboardClient = ref(client);
+    state.clipboardClient = ref(client);
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -64,10 +69,6 @@ export const OptionsController = {
 
   setFeaturedWalletIds(featuredWalletIds: OptionsControllerState['featuredWalletIds']) {
     state.featuredWalletIds = featuredWalletIds;
-  },
-
-  setTokens(tokens: OptionsControllerState['tokens']) {
-    state.tokens = tokens;
   },
 
   setCustomWallets(customWallets: OptionsControllerState['customWallets']) {
@@ -102,12 +103,34 @@ export const OptionsController = {
     state.isOnRampEnabled = isOnRampEnabled;
   },
 
+  setStorage(storage?: OptionsControllerState['storage']) {
+    if (storage) {
+      state.storage = ref(storage);
+    }
+  },
+
+  setDefaultNetwork(defaultNetwork?: OptionsControllerState['defaultNetwork']) {
+    state.defaultNetwork = defaultNetwork;
+  },
+
+  setRequestedNetworks(requestedNetworks?: OptionsControllerState['requestedNetworks']) {
+    state.requestedNetworks = requestedNetworks;
+  },
+
   isClipboardAvailable() {
-    return !!state._clipboardClient;
+    return !!state.clipboardClient;
+  },
+
+  getStorage() {
+    if (!state.storage) {
+      throw new Error('AppKit: Storage is not set');
+    }
+
+    return state.storage;
   },
 
   copyToClipboard(value: string) {
-    const client = state._clipboardClient;
+    const client = state.clipboardClient;
     if (client) {
       client?.setString(value);
     }

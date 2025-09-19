@@ -1,21 +1,15 @@
 import {
-  AccountController,
-  NetworkController,
-  ConnectionController,
-  RouterUtil
-} from '@reown/appkit-core-react-native';
-import { NetworkUtil } from '@reown/appkit-common-react-native';
+  NetworkUtil,
+  type SIWECreateMessageArgs,
+  type SIWEVerifyMessageArgs,
+  type SIWEConfig,
+  type SIWEClientMethods,
+  type SIWESession,
+  type SIWEMessageArgs
+} from '@reown/appkit-common-react-native';
+import { ConnectionsController, CoreHelperUtil } from '@reown/appkit-core-react-native';
 
-import type {
-  SIWECreateMessageArgs,
-  SIWEVerifyMessageArgs,
-  SIWEConfig,
-  SIWEClientMethods,
-  SIWESession,
-  SIWEMessageArgs
-} from './utils/TypeUtils';
 import type { SIWEControllerClient } from './controller/SIWEController';
-
 import { ConstantsUtil } from './utils/ConstantsUtil';
 
 // -- Client -------------------------------------------------------------------- //
@@ -86,27 +80,40 @@ export class AppKitSIWEClient {
     return session;
   }
 
-  async signIn(): Promise<SIWESession> {
-    const { address } = AccountController.state;
-    const nonce = await this.getNonce(address);
-    if (!address) {
+  async signIn(): Promise<SIWESession | undefined> {
+    const { activeAddress, activeCaipNetworkId } = ConnectionsController.state;
+
+    if (!activeAddress || !activeCaipNetworkId || !activeCaipNetworkId.startsWith('eip155')) {
+      return Promise.resolve(undefined);
+    }
+
+    const plainAddress = CoreHelperUtil.getPlainAddress(activeAddress);
+
+    if (!plainAddress) {
       throw new Error('An address is required to create a SIWE message.');
     }
-    const chainId = NetworkUtil.caipNetworkIdToNumber(NetworkController.state.caipNetwork?.id);
+
+    const nonce = await this.getNonce(plainAddress);
+
+    const chainId = NetworkUtil.caipNetworkIdToNumber(activeCaipNetworkId);
+
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.');
     }
+
     const messageParams = await this.getMessageParams?.();
     const message = this.createMessage({
-      address: `eip155:${chainId}:${address}`,
-      chainId,
+      address: activeAddress,
       nonce,
       version: '1',
       iat: messageParams?.iat || new Date().toISOString(),
       ...messageParams!
     });
 
-    const signature = await ConnectionController.signMessage(message);
+    const signature = await ConnectionsController.signMessage(activeAddress, message);
+    if (!signature) {
+      throw new Error('Error signing SIWE message');
+    }
     const isValid = await this.verifyMessage({ message, signature });
     if (!isValid) {
       throw new Error('Error verifying SIWE signature');
@@ -119,8 +126,6 @@ export class AppKitSIWEClient {
     if (this.methods.onSignIn) {
       this.methods.onSignIn(session);
     }
-
-    RouterUtil.navigateAfterNetworkSwitch();
 
     return session;
   }
