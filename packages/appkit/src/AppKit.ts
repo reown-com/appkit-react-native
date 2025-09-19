@@ -171,7 +171,7 @@ export class AppKit {
     // Sync accounts
     await this.syncAccounts(initializedAdapters);
 
-    await SIWXUtil.initializeIfEnabled();
+    await SIWXUtil.initializeIfEnabled(this.disconnect);
   }
 
   /**
@@ -623,7 +623,7 @@ export class AppKit {
         TransactionsController.fetchTransactions(address, true);
       }
 
-      SIWXUtil.initializeIfEnabled(address);
+      SIWXUtil.initializeIfEnabled(this.disconnect, address);
     });
 
     adapter.on('disconnect', () => {

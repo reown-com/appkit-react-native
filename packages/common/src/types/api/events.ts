@@ -21,10 +21,9 @@ export type EventName =
   | 'EMAIL_EDIT'
   | 'EMAIL_EDIT_COMPLETE'
   | 'EMAIL_UPGRADE_FROM_MODAL'
-  | 'CLICK_SIGN_SIWE_MESSAGE'
-  | 'CLICK_CANCEL_SIWE'
-  | 'SIWE_AUTH_SUCCESS'
-  | 'SIWE_AUTH_ERROR'
+  | 'SIWX_AUTH_SUCCESS'
+  | 'SIWX_AUTH_ERROR'
+  | 'CLICK_CANCEL_SIWX'
   | 'CLICK_TRANSACTIONS'
   | 'ERROR_FETCH_TRANSACTIONS'
   | 'LOAD_MORE_TRANSACTIONS'
@@ -160,7 +159,8 @@ export type Event =
     }
   | {
       type: 'track';
-      event: 'CLICK_CANCEL_SIWE';
+      address?: string;
+      event: 'CLICK_SIGN_SIWX_MESSAGE';
       properties: {
         network: string;
         isSmartAccount: boolean;
@@ -168,7 +168,7 @@ export type Event =
     }
   | {
       type: 'track';
-      event: 'SIWE_AUTH_SUCCESS';
+      event: 'CLICK_CANCEL_SIWX';
       properties: {
         network: string;
         isSmartAccount: boolean;
@@ -176,10 +176,19 @@ export type Event =
     }
   | {
       type: 'track';
-      event: 'SIWE_AUTH_ERROR';
+      event: 'SIWX_AUTH_SUCCESS';
       properties: {
         network: string;
         isSmartAccount: boolean;
+      };
+    }
+  | {
+      type: 'track';
+      event: 'SIWX_AUTH_ERROR';
+      properties: {
+        network: string;
+        isSmartAccount: boolean;
+        message?: string;
       };
     }
   | {

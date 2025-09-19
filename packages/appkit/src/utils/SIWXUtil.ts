@@ -6,14 +6,14 @@ import {
   type SIWXSession
 } from '@reown/appkit-common-react-native';
 
-// import { EventsController } from '../controllers/EventsController';
 import {
   ModalController,
   OptionsController,
   RouterController,
   SnackController,
   CoreHelperUtil,
-  ConnectionsController
+  ConnectionsController,
+  EventsController
 } from '@reown/appkit-core-react-native';
 
 /**
@@ -25,7 +25,10 @@ export const SIWXUtil = {
     return OptionsController.state.siwx;
   },
 
-  async initializeIfEnabled(caipAddress = ConnectionsController.state.activeAddress) {
+  async initializeIfEnabled(
+    onDisconnect: () => Promise<void>,
+    caipAddress = ConnectionsController.state.activeAddress
+  ) {
     const siwx = OptionsController.state.siwx;
 
     if (!siwx || !caipAddress) {
@@ -55,29 +58,32 @@ export const SIWXUtil = {
         return;
       }
 
-      //TODO: rename view to SIWXSignMessage
-
       if (ModalController.state.open) {
         RouterController.push('ConnectingSiwe');
       } else {
         ModalController.open({ view: 'ConnectingSiwe' });
       }
     } catch (error: unknown) {
+      // eslint-disable-next-line no-console
       console.error('SIWXUtil:initializeIfEnabled error', error);
 
-      // EventsController.sendEvent({
-      //   type: 'track',
-      //   event: 'SIWX_AUTH_ERROR',
-      //   properties: this.getSIWXEventProperties(error)
-      // });
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SIWX_AUTH_ERROR',
+        properties: this.getSIWXEventProperties(error)
+      });
 
-      //TODO: USE APPKIT DISCONNECT
-      await ConnectionsController.disconnect(namespace);
-      RouterController.reset('Connect');
+      await onDisconnect();
       SnackController.showError('A problem occurred while trying initialize authentication');
     }
   },
   async requestSignMessage() {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CLICK_SIGN_SIWX_MESSAGE',
+      properties: this.getSIWXEventProperties()
+    });
+
     const siwx = OptionsController.state.siwx;
 
     const address = ConnectionsController.state.activeAddress;
@@ -118,11 +124,11 @@ export const SIWXUtil = {
 
       ModalController.close();
 
-      // EventsController.sendEvent({
-      //   type: 'track',
-      //   event: 'SIWX_AUTH_SUCCESS',
-      //   properties: this.getSIWXEventProperties()
-      // });
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SIWX_AUTH_SUCCESS',
+        properties: this.getSIWXEventProperties()
+      });
     } catch (error) {
       if (!ModalController.state.open) {
         await ModalController.open({
@@ -131,11 +137,11 @@ export const SIWXUtil = {
       }
 
       SnackController.showError('Error signing message');
-      // EventsController.sendEvent({
-      //   type: 'track',
-      //   event: 'SIWX_AUTH_ERROR',
-      //   properties: this.getSIWXEventProperties(error)
-      // });
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SIWX_AUTH_ERROR',
+        properties: this.getSIWXEventProperties(error)
+      });
 
       // eslint-disable-next-line no-console
       console.error('SWIXUtil:requestSignMessage', error);
@@ -147,14 +153,15 @@ export const SIWXUtil = {
       const isRequired = siwx?.getRequired?.();
       if (isRequired) {
         await onDisconnect();
+      } else {
+        ModalController.close();
       }
 
-      ModalController.close();
-      // EventsController.sendEvent({
-      //   event: 'CLICK_CANCEL_SIWX',
-      //   type: 'track',
-      //   properties: this.getSIWXEventProperties()
-      // });
+      EventsController.sendEvent({
+        event: 'CLICK_CANCEL_SIWX',
+        type: 'track',
+        properties: this.getSIWXEventProperties()
+      });
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('SIWXUtil:cancelSignMessage', error);
@@ -192,7 +199,7 @@ export const SIWXUtil = {
       network = activeCaipNetwork?.caipNetworkId;
     }
 
-    if (!(siwx && address && network)) {
+    if (!siwx || !address || !network) {
       return [];
     }
 
@@ -295,20 +302,20 @@ export const SIWXUtil = {
           // ChainController.setLastConnectedSIWECaipNetwork(network);
         }
 
-        // EventsController.sendEvent({
-        //   type: 'track',
-        //   event: 'SIWX_AUTH_SUCCESS',
-        //   properties: SIWXUtil.getSIWXEventProperties()
-        // });
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SIWX_AUTH_SUCCESS',
+          properties: SIWXUtil.getSIWXEventProperties()
+        });
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('SIWX:universalProviderAuth - failed to set sessions', error);
 
-        // EventsController.sendEvent({
-        //   type: 'track',
-        //   event: 'SIWX_AUTH_ERROR',
-        //   properties: SIWXUtil.getSIWXEventProperties(error)
-        // });
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SIWX_AUTH_ERROR',
+          properties: SIWXUtil.getSIWXEventProperties(error)
+        });
 
         // eslint-disable-next-line no-console
         await universalProvider.disconnect().catch(console.error);

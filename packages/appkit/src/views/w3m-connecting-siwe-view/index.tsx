@@ -11,8 +11,6 @@ import {
 } from '@reown/appkit-ui-react-native';
 import {
   ConnectionsController,
-  EventsController,
-  // ModalController,
   OptionsController,
   RouterController,
   SnackController
@@ -33,37 +31,13 @@ export function ConnectingSiweView() {
   const dappName = metadata?.name || 'Dapp';
   const dappIcon = metadata?.icons[0] || '';
   const walletIcon = walletInfo?.icon;
-  const isSmartAccount = ConnectionsController.state.accountType === 'smartAccount';
-  const network = ConnectionsController.state.activeNetwork?.caipNetworkId || '';
 
   const onSign = async () => {
     setIsSigning(true);
-    // EventsController.sendEvent({
-    //   event: 'CLICK_SIGN_SIWE_MESSAGE',
-    //   type: 'track',
-    //   properties: { network, isSmartAccount }
-    // });
     try {
       await SIWXUtil.requestSignMessage();
-      // const session = await SIWEController.signIn();
-
-      // EventsController.sendEvent({
-      //   event: 'SIWE_AUTH_SUCCESS',
-      //   type: 'track',
-      //   properties: { network, isSmartAccount }
-      // });
-
-      // ModalController.close();
-
-      // return session;
     } catch (error) {
       SnackController.showError('Signature declined');
-
-      return EventsController.sendEvent({
-        event: 'SIWE_AUTH_ERROR',
-        type: 'track',
-        properties: { network, isSmartAccount }
-      });
     } finally {
       setIsSigning(false);
     }
@@ -72,17 +46,11 @@ export function ConnectingSiweView() {
   const onCancel = async () => {
     if (ConnectionsController.state.activeAddress) {
       setIsDisconnecting(true);
-      // await disconnect();
       await SIWXUtil.cancelSignMessage(disconnect);
       setIsDisconnecting(false);
     } else {
       RouterController.push('Connect');
     }
-    EventsController.sendEvent({
-      event: 'CLICK_CANCEL_SIWE',
-      type: 'track',
-      properties: { network, isSmartAccount }
-    });
   };
 
   return (
