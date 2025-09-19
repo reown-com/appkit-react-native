@@ -59,9 +59,9 @@ export const SIWXUtil = {
       }
 
       if (ModalController.state.open) {
-        RouterController.push('ConnectingSiwe');
+        RouterController.push('SIWXSignMessage');
       } else {
-        ModalController.open({ view: 'ConnectingSiwe' });
+        ModalController.open({ view: 'SIWXSignMessage' });
       }
     } catch (error: unknown) {
       // eslint-disable-next-line no-console
@@ -132,7 +132,7 @@ export const SIWXUtil = {
     } catch (error) {
       if (!ModalController.state.open) {
         await ModalController.open({
-          view: 'ConnectingSiwe'
+          view: 'SIWXSignMessage'
         });
       }
 
@@ -209,7 +209,7 @@ export const SIWXUtil = {
     const siwx = this.getSIWX();
 
     if (siwx) {
-      const isSiwxSignMessage = RouterController.state.view === 'ConnectingSiwe';
+      const isSiwxSignMessage = RouterController.state.view === 'SIWXSignMessage';
 
       if (isSiwxSignMessage) {
         return siwx.getRequired?.() && (await this.getSessions()).length === 0;

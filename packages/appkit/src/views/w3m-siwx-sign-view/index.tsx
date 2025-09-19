@@ -20,7 +20,7 @@ import { useInternalAppKit } from '../../AppKitContext';
 import { SIWXUtil } from '../../utils/SIWXUtil';
 import styles from './styles';
 
-export function ConnectingSiweView() {
+export function SIWXSignMessageView() {
   const { disconnect } = useInternalAppKit();
   const { padding } = useCustomDimensions();
   const { metadata } = useSnapshot(OptionsController.state);
