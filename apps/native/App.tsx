@@ -6,10 +6,10 @@ import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
-import { ReownAuthentication } from '@reown/appkit-siwx-react-native';
 
 import {
   AppKitProvider,
+  ReownAuthentication,
   createAppKit,
   AppKit,
   AppKitButton,

@@ -3,7 +3,6 @@ import type { SIWXSession, SIWXMessage } from './message';
 
 /**
  * This interface represents the SIWX configuration plugin, which is used to create and manage SIWX messages and sessions.
- * AppKit provides predefined implementations for this interface through `@reown/appkit-siwx-react-native`.
  * You may use it to create a custom implementation following your needs, but watch close for the methods requirements.
  */
 export interface SIWXConfig {

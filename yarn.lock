@@ -4376,19 +4376,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reown/appkit-siwx-react-native@workspace:packages/siwx":
-  version: 0.0.0-use.local
-  resolution: "@reown/appkit-siwx-react-native@workspace:packages/siwx"
-  dependencies:
-    "@reown/appkit-common-react-native": 2.0.0-alpha.5
-    "@reown/appkit-core-react-native": 2.0.0-alpha.5
-    bs58: 6.0.0
-    tweetnacl: 1.0.3
-  peerDependencies:
-    viem: ">=2 <3.0.0"
-  languageName: unknown
-  linkType: soft
-
 "@reown/appkit-solana-react-native@workspace:*, @reown/appkit-solana-react-native@workspace:packages/solana":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-solana-react-native@workspace:packages/solana"

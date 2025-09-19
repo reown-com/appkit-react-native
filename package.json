@@ -13,7 +13,6 @@
     "packages/bitcoin",
     "packages/wagmi",
     "packages/coinbase",
-    "packages/siwx",
     "apps/*"
   ],
   "scripts": {

@@ -151,14 +151,6 @@ export type Event =
     }
   | {
       type: 'track';
-      event: 'CLICK_SIGN_SIWE_MESSAGE';
-      properties: {
-        network: string;
-        isSmartAccount: boolean;
-      };
-    }
-  | {
-      type: 'track';
       address?: string;
       event: 'CLICK_SIGN_SIWX_MESSAGE';
       properties: {

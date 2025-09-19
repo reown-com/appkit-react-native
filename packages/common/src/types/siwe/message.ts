@@ -1,4 +1,4 @@
-import type { CaipAddress, CaipNetworkId } from '../common';
+import type { CaipNetworkId } from '../common';
 
 /**
  * This interface represents a SIWX session, which is used to store the user's identity information.
@@ -62,35 +62,9 @@ export declare namespace SIWXMessage {
   type Timestamp = string;
 }
 
-export interface SIWESession {
-  address: string;
-  chainId: number;
-}
-
 interface CacaoHeader {
   t: 'caip122';
 }
-
-export interface SIWECreateMessageArgs {
-  domain: string;
-  nonce: string;
-  uri: string;
-  address: CaipAddress;
-  version: '1';
-  type?: CacaoHeader['t'];
-  nbf?: string;
-  exp?: string;
-  statement?: string;
-  requestId?: string;
-  resources?: string[];
-  expiry?: number;
-  iat?: string;
-}
-
-export type SIWEMessageArgs = {
-  chains: CaipNetworkId[];
-  methods?: string[];
-} & Omit<SIWECreateMessageArgs, 'address' | 'nonce' | 'version'>;
 
 interface CacaoPayload {
   domain: string;
@@ -115,10 +89,4 @@ interface Cacao {
     s: string;
     m?: string;
   };
-}
-
-export interface SIWEVerifyMessageArgs {
-  message: string;
-  signature: string;
-  cacao?: Cacao;
 }
