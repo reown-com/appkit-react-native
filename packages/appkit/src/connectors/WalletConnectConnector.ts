@@ -14,7 +14,6 @@ import {
   type ConnectionProperties,
   type RequestArguments
 } from '@reown/appkit-common-react-native';
-import { getDidAddress, getDidChainId, SIWEController } from '@reown/appkit-siwe-react-native';
 
 interface WalletConnectConnectorConfig {
   projectId: string;
@@ -100,7 +99,7 @@ export class WalletConnectConnector extends WalletConnector {
   }
 
   override async connect(opts: ConnectOptions) {
-    const { siweConfig, namespaces, defaultNetwork, universalLink } = opts;
+    const { namespaces, defaultNetwork } = opts;
     function onUri(uri: string) {
       WcController.setWcUri(uri);
     }
@@ -112,68 +111,68 @@ export class WalletConnectConnector extends WalletConnector {
 
     let session: IUniversalProvider['session'];
 
-    // SIWE
-    const isEVMOnly = Object.keys(namespaces ?? {}).length === 1 && namespaces?.['eip155'];
-    const params = await siweConfig?.getMessageParams?.();
-    if (siweConfig?.options?.enabled && params && Object.keys(params).length > 0 && isEVMOnly) {
-      // 1CA is only supported on EVM
+    // // SIWE
+    // const isEVMOnly = Object.keys(namespaces ?? {}).length === 1 && namespaces?.['eip155'];
+    // const params = await siweConfig?.getMessageParams?.();
+    // if (siweConfig?.options?.enabled && params && Object.keys(params).length > 0 && isEVMOnly) {
+    //   // 1CA is only supported on EVM
 
-      // @ts-ignore
-      const result = await provider.authenticate(
-        {
-          ...params,
-          nonce: await siweConfig.getNonce(),
-          methods: namespaces?.['eip155']?.methods,
-          chains: params.chains
-        },
-        universalLink
-      );
+    //   // @ts-ignore
+    //   const result = await provider.authenticate(
+    //     {
+    //       ...params,
+    //       nonce: await siweConfig.getNonce(),
+    //       methods: namespaces?.['eip155']?.methods,
+    //       chains: params.chains
+    //     },
+    //     universalLink
+    //   );
 
-      // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
-      const signedCacao = result?.auths?.[0];
-      if (signedCacao) {
-        const { p, s } = signedCacao;
-        const chainId = getDidChainId(p.iss);
-        const address = getDidAddress(p.iss);
+    //   // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
+    //   const signedCacao = result?.auths?.[0];
+    //   if (signedCacao) {
+    //     const { p, s } = signedCacao;
+    //     const chainId = getDidChainId(p.iss);
+    //     const address = getDidAddress(p.iss);
 
-        try {
-          // Kicks off verifyMessage and populates external states
-          const message = provider?.client?.formatAuthMessage({
-            request: p,
-            iss: p.iss
-          })!;
+    //     try {
+    //       // Kicks off verifyMessage and populates external states
+    //       const message = provider?.client?.formatAuthMessage({
+    //         request: p,
+    //         iss: p.iss
+    //       })!;
 
-          await SIWEController.verifyMessage({
-            message,
-            signature: s.s,
-            cacao: signedCacao
-          });
+    //       await SIWEController.verifyMessage({
+    //         message,
+    //         signature: s.s,
+    //         cacao: signedCacao
+    //       });
 
-          if (address && chainId) {
-            const siweSession = {
-              address,
-              chainId: parseInt(chainId, 10)
-            };
+    //       if (address && chainId) {
+    //         const siweSession = {
+    //           address,
+    //           chainId: parseInt(chainId, 10)
+    //         };
 
-            SIWEController.setSession(siweSession);
-            SIWEController.onSignIn?.(siweSession);
-          }
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error('Error verifying message', error);
-          // eslint-disable-next-line no-console
-          await provider.disconnect().catch(console.error);
-          // eslint-disable-next-line no-console
-          await SIWEController.signOut().catch(console.error);
-          throw error;
-        }
-      }
-      session = result?.session;
-    } else {
-      session = await (this.provider as IUniversalProvider).connect({
-        optionalNamespaces: namespaces
-      });
-    }
+    //         SIWEController.setSession(siweSession);
+    //         SIWEController.onSignIn?.(siweSession);
+    //       }
+    //     } catch (error) {
+    //       // eslint-disable-next-line no-console
+    //       console.error('Error verifying message', error);
+    //       // eslint-disable-next-line no-console
+    //       await provider.disconnect().catch(console.error);
+    //       // eslint-disable-next-line no-console
+    //       await SIWEController.signOut().catch(console.error);
+    //       throw error;
+    //     }
+    //   }
+    //   session = result?.session;
+    // } else {
+    session = await (this.provider as IUniversalProvider).connect({
+      optionalNamespaces: namespaces
+    });
+    // }
 
     const metadata = session?.peer?.metadata;
     if (metadata) {

@@ -59,7 +59,7 @@ export function Header() {
   };
 
   const noCloseViews = ['OnRampSettings', 'ConnectingSiwe'];
-  const noBackViews = ['UnsupportedChain'];
+  const noBackViews = ['UnsupportedChain', 'ConnectingSiwe'];
   const showClose = !noCloseViews.includes(view);
   const header = headings(data, view);
 

@@ -7,7 +7,6 @@ import {
   type Metadata,
   type Network,
   type Storage,
-  type AppKitSIWEClient,
   type ThemeMode,
   type ThemeVariables,
   type Tokens,
@@ -153,15 +152,6 @@ export interface AppKitConfig {
    * @example { accent: "#3B82F6" }
    */
   themeVariables?: ThemeVariables;
-
-  /**
-   * Optional SIWE (Sign-In with Ethereum) configuration.
-   * Enables authentication flow using Ethereum signatures.
-   * Must implement the AppKitSIWEClient interface.
-   *
-   * @see {@link https://docs.reown.com/appkit/react-native/core/siwe | SIWE Documentation}
-   */
-  siweConfig?: AppKitSIWEClient;
 
   /**
    * @experimental - This feature is not production ready.

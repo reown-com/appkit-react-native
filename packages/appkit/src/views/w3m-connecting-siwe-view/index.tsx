@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ScrollView } from 'react-native';
 import { useSnapshot } from 'valtio';
 import {
   Avatar,
@@ -16,12 +17,10 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-core-react-native';
-import { SIWEController } from '@reown/appkit-siwe-react-native';
 
 import { useInternalAppKit } from '../../AppKitContext';
-import styles from './styles';
-import { ScrollView } from 'react-native';
 import { SIWXUtil } from '../../utils/SIWXUtil';
+import styles from './styles';
 
 export function ConnectingSiweView() {
   const { disconnect } = useInternalAppKit();
@@ -59,8 +58,6 @@ export function ConnectingSiweView() {
       // return session;
     } catch (error) {
       SnackController.showError('Signature declined');
-
-      SIWEController.setStatus('error');
 
       return EventsController.sendEvent({
         event: 'SIWE_AUTH_ERROR',

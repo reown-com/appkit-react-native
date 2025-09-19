@@ -41,7 +41,6 @@
   "dependencies": {
     "@reown/appkit-common-react-native": "2.0.0-alpha.5",
     "@reown/appkit-core-react-native": "2.0.0-alpha.5",
-    "@reown/appkit-siwe-react-native": "2.0.0-alpha.5",
     "@reown/appkit-ui-react-native": "2.0.0-alpha.5",
     "@walletconnect/universal-provider": "2.21.8",
     "valtio": "2.1.5"
