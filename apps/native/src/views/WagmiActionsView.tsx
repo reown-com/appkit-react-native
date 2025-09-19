@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { useAccount } from '@reown/appkit-react-native';
 import { Button, Text, FlexView } from '@reown/appkit-ui-react-native';
 import { useSignMessage, useSendTransaction, useEstimateGas } from 'wagmi';
 import { Hex, parseEther } from 'viem';
@@ -7,7 +6,6 @@ import { SendTransactionData, SignMessageData } from 'wagmi/query';
 import { ToastUtils } from '../utils/ToastUtils';
 
 export function WagmiActionsView() {
-  const { isConnected } = useAccount();
 
   const onSignSuccess = (data: SignMessageData) => {
     ToastUtils.showSuccessToast('Signature successful', data);
@@ -46,7 +44,7 @@ export function WagmiActionsView() {
     }
   });
 
-  return isConnected ? (
+  return (
     <FlexView style={styles.container}>
       <Text variant="medium-600">Wagmi Actions</Text>
       <Button
@@ -62,7 +60,7 @@ export function WagmiActionsView() {
       </Button>
       {isSending ? <Text>Check Wallet</Text> : null}
     </FlexView>
-  ) : null;
+  );
 }
 
 const styles = StyleSheet.create({

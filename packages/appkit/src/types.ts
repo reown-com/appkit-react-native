@@ -7,10 +7,10 @@ import {
   type Metadata,
   type Network,
   type Storage,
-  type AppKitSIWEClient,
   type ThemeMode,
   type ThemeVariables,
-  type Tokens
+  type Tokens,
+  type SIWXConfig
 } from '@reown/appkit-common-react-native';
 
 /**
@@ -154,13 +154,11 @@ export interface AppKitConfig {
   themeVariables?: ThemeVariables;
 
   /**
-   * Optional SIWE (Sign-In with Ethereum) configuration.
-   * Enables authentication flow using Ethereum signatures.
-   * Must implement the AppKitSIWEClient interface.
-   *
-   * @see {@link https://docs.reown.com/appkit/react-native/core/siwe | SIWE Documentation}
+   * @experimental - This feature is not production ready.
+   * Enable Sign In With X (SIWX) feature.
+   * @default undefined
    */
-  siweConfig?: AppKitSIWEClient;
+  siwx?: SIWXConfig;
 
   /**
    * Optional default network to use when no specific network is selected.

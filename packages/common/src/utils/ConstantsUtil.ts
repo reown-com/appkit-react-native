@@ -64,21 +64,5 @@ export const ConstantsUtil = {
     app_store: 'https://apps.apple.com/app/id1580902717',
     android_app_id: 'com.solflare.mobile',
     ios_schema: 'solflare://'
-  },
-
-  // Storage Keys
-  STORAGE_KEYS: {
-    WC_DEEPLINK: 'WALLETCONNECT_DEEPLINK_CHOICE', //dont change this one
-    RECENT_WALLET: '@appkit/recent_wallet',
-    CONNECTED_CONNECTORS: '@appkit/connected_connectors',
-    ONRAMP_PREFERRED_COUNTRY: '@appkit/onramp_preferred_country',
-    ONRAMP_COUNTRIES: '@appkit/onramp_countries',
-    ONRAMP_SERVICE_PROVIDERS: '@appkit/onramp_service_providers',
-    ONRAMP_FIAT_LIMITS: '@appkit/onramp_fiat_limits',
-    ONRAMP_FIAT_CURRENCIES: '@appkit/onramp_fiat_currencies',
-    ONRAMP_PREFERRED_FIAT_CURRENCY: '@appkit/onramp_preferred_fiat_currency',
-    ONRAMP_COUNTRIES_DEFAULTS: '@appkit/onramp_countries_defaults',
-    ACTIVE_NAMESPACE: '@appkit/active_namespace',
-    COINBASE_CONNECTOR_SESSION: '@appkit/coinbase_connector/session'
   }
 };

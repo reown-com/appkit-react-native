@@ -10,7 +10,7 @@ import { ConnectSocialsView } from '../../views/w3m-connect-socials-view';
 import { ConnectingView } from '../../views/w3m-connecting-view';
 import { ConnectingExternalView } from '../../views/w3m-connecting-external-view';
 import { ConnectingSocialView } from '../../views/w3m-connecting-social-view';
-import { ConnectingSiweView } from '../../views/w3m-connecting-siwe-view';
+import { SIWXSignMessageView } from '../../views/w3m-siwx-sign-view';
 import { GetWalletView } from '../../views/w3m-get-wallet-view';
 import { NetworksView } from '../../views/w3m-networks-view';
 import { NetworkSwitchView } from '../../views/w3m-network-switch-view';
@@ -64,8 +64,8 @@ export function AppKitRouter() {
         return ConnectSocialsView;
       case 'ConnectingExternal':
         return ConnectingExternalView;
-      case 'ConnectingSiwe':
-        return ConnectingSiweView;
+      case 'SIWXSignMessage':
+        return SIWXSignMessageView;
       case 'ConnectingSocial':
         return ConnectingSocialView;
       case 'WalletConnect':

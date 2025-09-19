@@ -10,7 +10,6 @@
     "@reown/appkit-common-react-native": "2.0.0-alpha.4",
     "@reown/appkit-core-react-native": "2.0.0-alpha.4",
     "@reown/appkit-ethers-react-native": "2.0.0-alpha.4",
-    "@reown/appkit-siwe-react-native": "2.0.0-alpha.4",
     "@reown/appkit-solana-react-native": "2.0.0-alpha.4",
     "@reown/appkit-ui-react-native": "2.0.0-alpha.4",
     "@reown/appkit-wagmi-react-native": "2.0.0-alpha.4"

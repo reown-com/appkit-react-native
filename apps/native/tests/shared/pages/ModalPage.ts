@@ -111,19 +111,6 @@ export class ModalPage {
     await this.page.getByTestId('get-a-wallet-button').click();
   }
 
-  // async promptSiwe() {
-  //   const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign');
-  //   await expect(siweSign, 'Siwe prompt sign button should be visible').toBeVisible({
-  //     timeout: 10_000
-  //   });
-  //   await expect(siweSign, 'Siwe prompt sign button should be enabled').toBeEnabled();
-  //   await siweSign.click();
-  // }
-
-  // async cancelSiwe() {
-  //   await this.page.getByTestId('w3m-connecting-siwe-cancel').click();
-  // }
-
   async switchNetwork(network: SupportedChain) {
     await this.page.getByTestId(`w3m-network-switch-${network}`).click();
     // The state is changing too fast and test runner doesn't wait for the loading page

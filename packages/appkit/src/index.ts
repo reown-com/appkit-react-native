@@ -31,6 +31,9 @@ export { useAppKitState } from './hooks/useAppKitState';
 export { solana, solanaDevnet, solanaTestnet } from '@reown/appkit-common-react-native';
 export { bitcoin, bitcoinTestnet } from '@reown/appkit-common-react-native';
 
+/********** SIWX **********/
+export { ReownAuthentication } from '@reown/appkit-core-react-native';
+
 /********** Main **********/
 export { createAppKit } from './AppKit';
 export { AppKitProvider } from './AppKitContext';

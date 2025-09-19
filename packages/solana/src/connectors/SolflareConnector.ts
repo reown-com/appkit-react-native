@@ -12,7 +12,10 @@ export class SolflareConnector extends DeeplinkConnector {
   }
 
   override getWalletInfo(): WalletInfo {
-    return ConstantsUtil.SOLFLARE_CUSTOM_WALLET;
+    return {
+      ...ConstantsUtil.SOLFLARE_CUSTOM_WALLET,
+      type: 'external'
+    };
   }
 
   protected getBaseUrl(): string {

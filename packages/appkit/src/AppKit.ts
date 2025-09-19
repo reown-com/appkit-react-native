@@ -37,13 +37,13 @@ import {
   type Connection,
   type WcWallet
 } from '@reown/appkit-common-react-native';
-import { SIWEController } from '@reown/appkit-siwe-react-native';
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector';
 import { WcHelpersUtil } from './utils/HelpersUtil';
 import { NetworkUtil } from './utils/NetworkUtil';
 import { RouterUtil } from './utils/RouterUtil';
 import { type AppKitConfig } from './types';
+import { SIWXUtil } from './utils/SIWXUtil';
 
 export class AppKit {
   private projectId: string;
@@ -131,8 +131,7 @@ export class AppKit {
       const approvedNamespaces = await connector.connect({
         namespaces: this.namespaces,
         defaultNetwork: chain,
-        universalLink: targetWallet?.link_mode ?? undefined,
-        siweConfig: this.config?.siweConfig
+        universalLink: targetWallet?.link_mode ?? undefined
       });
 
       this.processConnection(connector, approvedNamespaces);
@@ -150,11 +149,7 @@ export class AppKit {
     }
   }
 
-  private async processConnection(
-    connector: WalletConnector,
-    namespaces?: Namespaces,
-    shouldCloseModal: boolean = true
-  ) {
+  private async processConnection(connector: WalletConnector, namespaces?: Namespaces) {
     if (!namespaces || Object.keys(namespaces).length === 0) {
       throw new Error('No namespaces provided');
     }
@@ -176,19 +171,7 @@ export class AppKit {
     // Sync accounts
     await this.syncAccounts(initializedAdapters);
 
-    // Handle SIWE if enabled
-    this.handleSiweConnectionIfEnabled(shouldCloseModal);
-  }
-
-  private handleSiweConnectionIfEnabled(shouldCloseModal: boolean = true): void {
-    if (
-      OptionsController.state.isSiweEnabled &&
-      ConnectionsController.state.activeNamespace === 'eip155'
-    ) {
-      this.handleSiweChange({ isConnection: true });
-    } else if (shouldCloseModal) {
-      ModalController.close();
-    }
+    await SIWXUtil.initializeIfEnabled(this.disconnect);
   }
 
   /**
@@ -230,8 +213,8 @@ export class AppKit {
         );
       }
 
-      if (OptionsController.state.isSiweEnabled) {
-        await SIWEController.signOut();
+      if (SIWXUtil.getSIWX()?.signOutOnDisconnect) {
+        await SIWXUtil.clearSessions();
       }
 
       EventsController.sendEvent({
@@ -298,15 +281,11 @@ export class AppKit {
 
   async close() {
     ModalController.close();
+    const isSIWXRequired = SIWXUtil.getSIWX()?.getRequired?.();
 
-    if (OptionsController.state.isSiweEnabled && ConnectionsController.state.isConnected) {
-      const session = await SIWEController.getSession();
-      if (
-        !session &&
-        SIWEController.state.status !== 'success' &&
-        ConnectionsController.state.activeNamespace === 'eip155' &&
-        !!ConnectionsController.state.activeAddress
-      ) {
+    if (isSIWXRequired && ConnectionsController.state.isConnected) {
+      const sessions = await SIWXUtil.getSessions();
+      if (!sessions.length) {
         return await this.disconnect();
       }
     }
@@ -324,6 +303,13 @@ export class AppKit {
       RouterUtil.checkBack();
 
       return RouterController.goBack();
+    }
+
+    const isSIWXRequired = SIWXUtil.getSIWX()?.getRequired?.();
+
+    if (isSIWXRequired) {
+      // Don't close the modal if SIWX is required
+      return;
     }
 
     return this.close();
@@ -405,7 +391,7 @@ export class AppKit {
 
           const namespaces = connector.getNamespaces();
 
-          await this.processConnection(connector, namespaces, false);
+          await this.processConnection(connector, namespaces);
         } catch (error) {
           // Use console.warn for non-critical initialization failures
           console.warn(`Failed to initialize connector type ${connected.type}:`, error);
@@ -605,11 +591,7 @@ export class AppKit {
   private subscribeToAdapterEvents(adapter: BlockchainAdapter): void {
     adapter.on('accountsChanged', ({ accounts }) => {
       const namespace = adapter.getSupportedNamespace();
-      const hasChanged = ConnectionsController.updateAccounts(namespace, accounts);
-
-      if (hasChanged && namespace === 'eip155') {
-        this.handleSiweChange({ isAccountChange: true });
-      }
+      ConnectionsController.updateAccounts(namespace, accounts);
     });
 
     adapter.on('chainChanged', async ({ chainId }) => {
@@ -641,10 +623,7 @@ export class AppKit {
         TransactionsController.fetchTransactions(address, true);
       }
 
-      // Check if user needs to sign in again
-      if (namespace === 'eip155') {
-        this.handleSiweChange({ isNetworkChange: true });
-      }
+      SIWXUtil.initializeIfEnabled(this.disconnect, address);
     });
 
     adapter.on('disconnect', () => {
@@ -690,9 +669,8 @@ export class AppKit {
 
     ConnectionsController.setNetworks(this.networks);
 
-    if (options.siweConfig) {
-      SIWEController.setSIWEClient(options.siweConfig);
-      OptionsController.setIsSiweEnabled(options.siweConfig.options.enabled);
+    if (options.siwx) {
+      OptionsController.setSiwx(options.siwx);
     }
 
     if (
@@ -798,45 +776,6 @@ export class AppKit {
       ModalController.open({ view: routeName });
     }
   };
-
-  private async handleSiweChange(params?: {
-    isConnection?: boolean;
-    isNetworkChange?: boolean;
-    isAccountChange?: boolean;
-  }) {
-    const { isNetworkChange, isAccountChange, isConnection } = params ?? {};
-    const { enabled, signOutOnAccountChange, signOutOnNetworkChange } =
-      SIWEController.state._client?.options ?? {};
-
-    if (!enabled || RouterController.state.view === 'ConnectingSiwe') {
-      // Do nothing if view is connecting siwe or siwe is not enabled
-      return;
-    }
-
-    const session = await SIWEController.getSession();
-    if (session && isAccountChange) {
-      if (signOutOnAccountChange) {
-        // If the address has changed and signOnAccountChange is enabled, sign out
-        await SIWEController.signOut();
-
-        return this.navigate('ConnectingSiwe');
-      }
-    } else if (session && isNetworkChange) {
-      if (signOutOnNetworkChange) {
-        // If the network has changed and signOnNetworkChange is enabled, sign out
-        await SIWEController.signOut();
-
-        return this.navigate('ConnectingSiwe');
-      }
-    } else if (!session) {
-      // If it's connected but there's no session, show sign view
-
-      return this.navigate('ConnectingSiwe');
-    } else if (isConnection) {
-      // Already connected with 1CA
-      ModalController.close();
-    }
-  }
 }
 
 export function createAppKit(config: AppKitConfig): AppKit {

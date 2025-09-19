@@ -32,7 +32,7 @@ export function Header() {
       Connect: 'Connect wallet',
       ConnectSocials: 'All socials',
       ConnectingExternal: walletName ?? 'Connect wallet',
-      ConnectingSiwe: 'Sign in',
+      SIWXSignMessage: 'Sign in',
       ConnectingSocial: socialName ?? 'Connecting Social',
       WalletConnect: walletName ?? 'WalletConnect',
       GetWallet: 'Get a wallet',
@@ -58,8 +58,8 @@ export function Header() {
     }[_view];
   };
 
-  const noCloseViews = ['OnRampSettings', 'ConnectingSiwe'];
-  const noBackViews = ['UnsupportedChain'];
+  const noCloseViews = ['OnRampSettings', 'SIWXSignMessage'];
+  const noBackViews = ['UnsupportedChain', 'SIWXSignMessage'];
   const showClose = !noCloseViews.includes(view);
   const header = headings(data, view);
 

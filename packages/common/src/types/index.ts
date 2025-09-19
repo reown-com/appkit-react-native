@@ -18,8 +18,8 @@ export * from './swap';
 // OnRamp types
 export * from './onramp';
 
-// SIWE types
-export * from './siwe';
+// SIWX types
+export * from './siwx';
 
 // Storage types
 export * from './storage';
