@@ -396,10 +396,9 @@ export class AppKit {
    * This attempts to restore previous sessions.
    */
   private async initConnectors() {
+    ModalController.setLoading(true);
     const connectedConnectors = await StorageUtil.getConnectedConnectors();
     if (connectedConnectors.length > 0) {
-      ModalController.setLoading(true);
-
       for (const connected of connectedConnectors) {
         try {
           const connector = await this.createConnector(connected.type);
@@ -413,8 +412,11 @@ export class AppKit {
           await StorageUtil.removeConnectedConnectors(connected.type);
         }
       }
-      ModalController.setLoading(false);
     }
+
+    //Always init the walletconnect connector
+    await this.createWalletConnectConnector();
+    ModalController.setLoading(false);
   }
 
   private setupAdaptersAndSubscribe(

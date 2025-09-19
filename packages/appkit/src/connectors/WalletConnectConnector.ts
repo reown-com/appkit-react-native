@@ -165,7 +165,6 @@ export class WalletConnectConnector extends WalletConnector {
       session = result?.session;
     } else {
       session = await (this.provider as IUniversalProvider).connect({
-        namespaces: {},
         optionalNamespaces: namespaces
       });
     }
