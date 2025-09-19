@@ -222,54 +222,57 @@ export const SIWXUtil = {
   async universalProviderAuthenticate({
     universalProvider,
     chains,
-    methods
+    methods,
+    universalLink
   }: {
     universalProvider: UniversalProvider;
     chains: CaipNetworkId[];
     methods: string[];
+    universalLink?: string;
   }) {
     const siwx = SIWXUtil.getSIWX();
-    const network = ConnectionsController.state.activeNetwork;
     const namespaces = new Set(chains.map(chain => chain.split(':')[0] as ChainNamespace));
 
     if (!siwx || namespaces.size !== 1 || !namespaces.has('eip155')) {
-      return false;
+      return undefined;
     }
 
     // Ignores chainId and account address to get other message data
     const siwxMessage = await siwx.createMessage({
-      chainId: ConnectionsController.state.activeNetwork?.caipNetworkId || ('' as CaipNetworkId),
+      chainId: OptionsController.state.defaultNetwork?.caipNetworkId || ('' as CaipNetworkId),
       accountAddress: ''
     });
 
-    const result = await universalProvider.authenticate({
-      nonce: siwxMessage.nonce,
-      domain: siwxMessage.domain,
-      uri: siwxMessage.uri,
-      exp: siwxMessage.expirationTime,
-      iat: siwxMessage.issuedAt,
-      nbf: siwxMessage.notBefore,
-      requestId: siwxMessage.requestId,
-      version: siwxMessage.version,
-      resources: siwxMessage.resources,
-      statement: siwxMessage.statement,
-      chainId: siwxMessage.chainId,
-      methods,
+    let messageChains = chains;
+
+    if (OptionsController.state.defaultNetwork?.caipNetworkId) {
       // The first chainId is what is used for universal provider to build the message
-      chains: [siwxMessage.chainId, ...chains.filter(chain => chain !== siwxMessage.chainId)]
-    });
+      messageChains = [
+        OptionsController.state.defaultNetwork?.caipNetworkId,
+        ...chains.filter(chain => chain !== OptionsController.state.defaultNetwork?.caipNetworkId)
+      ];
+    }
+
+    const result = await universalProvider.authenticate(
+      {
+        nonce: siwxMessage.nonce,
+        domain: siwxMessage.domain,
+        uri: siwxMessage.uri,
+        exp: siwxMessage.expirationTime,
+        iat: siwxMessage.issuedAt,
+        nbf: siwxMessage.notBefore,
+        requestId: siwxMessage.requestId,
+        version: siwxMessage.version,
+        resources: siwxMessage.resources,
+        statement: siwxMessage.statement,
+        chainId: siwxMessage.chainId,
+        methods,
+        chains: messageChains
+      },
+      universalLink
+    );
 
     SnackController.showLoading('Authenticating...');
-
-    // AccountController.setConnectedWalletInfo(
-    //   {
-    //     ...result.session.peer.metadata,
-    //     name: result.session.peer.metadata.name,
-    //     icon: result.session.peer.metadata.icons?.[0],
-    //     type: 'WALLET_CONNECT'
-    //   },
-    //   Array.from(namespaces)[0] as ChainNamespace
-    // );
 
     if (result?.auths?.length) {
       const sessions = result.auths.map<SIWXSession>(cacao => {
@@ -298,10 +301,6 @@ export const SIWXUtil = {
       try {
         await siwx.setSessions(sessions);
 
-        if (network) {
-          // ChainController.setLastConnectedSIWECaipNetwork(network);
-        }
-
         EventsController.sendEvent({
           type: 'track',
           event: 'SIWX_AUTH_SUCCESS',
@@ -325,7 +324,7 @@ export const SIWXUtil = {
       }
     }
 
-    return true;
+    return result?.session;
   },
   getSIWXEventProperties(error?: unknown) {
     const namespace = ConnectionsController.state.activeNamespace;
