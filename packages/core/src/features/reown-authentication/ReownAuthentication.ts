@@ -15,6 +15,8 @@ import { ReownAuthenticationMessenger } from './ReownAuthenticationMessenger';
 import { ConnectionsController } from '../../controllers/ConnectionsController';
 import { CoreHelperUtil } from '../../utils/CoreHelperUtil';
 import { OptionsController } from '../../controllers/OptionsController';
+import { FetchUtil } from '../../utils/FetchUtil';
+import { Alert } from 'react-native';
 
 /**
  * This is the configuration for using SIWX with Reown Authentication service.
@@ -24,6 +26,7 @@ export class ReownAuthentication implements SIWXConfig {
   private readonly localAuthStorageKey: keyof SafeStorageItems;
   private readonly localNonceStorageKey: keyof SafeStorageItems;
   private readonly messenger: ReownAuthenticationMessenger;
+  private readonly fetchUtil = new FetchUtil({ baseUrl: CoreHelperUtil.getApiUrl() });
 
   private required: boolean;
 
@@ -194,20 +197,16 @@ export class ReownAuthentication implements SIWXConfig {
   > {
     const { projectId, st, sv, domain } = this.getSDKProperties();
 
-    const url = new URL(`${CoreHelperUtil.getApiUrl()}/auth/v1/${String(key)}`);
-    url.searchParams.set('projectId', projectId);
-    url.searchParams.set('st', st);
-    url.searchParams.set('sv', sv);
-    url.searchParams.set('domain', domain);
-
-    if (query) {
-      Object.entries(query).forEach(([queryKey, queryValue]) =>
-        url.searchParams.set(queryKey, String(queryValue))
-      );
-    }
+    const url = this.fetchUtil.createUrl({
+      path: `/auth/v1/${String(key)}`,
+      params: { projectId, st, sv, domain, ...query }
+    });
 
     const nonceJwt = await this.getStorageToken(this.localNonceStorageKey);
     const auth = await this.getStorageToken(this.localAuthStorageKey);
+
+    //TODO: remove
+    Alert.alert(url);
 
     const response = await fetch(url, {
       method,
