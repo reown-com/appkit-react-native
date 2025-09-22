@@ -90,16 +90,19 @@ export class BitcoinAdapter extends BitcoinBaseAdapter {
     return BitcoinAdapter.supportedNamespace;
   }
 
-  async signMessage(address: string, message: string): Promise<string> {
+  async signMessage(address: string, message: string, chainId?: string): Promise<string> {
     if (!this.connector) throw new Error('BitcoinAdapter:signMessage - No active connector');
 
     const provider = this.connector.getProvider('bip122');
     if (!provider) throw new Error('BitcoinAdapter:signMessage - No active provider');
 
-    const { signature } = (await provider.request({
-      method: 'signMessage',
-      params: { message, account: address, address, protocol: 'ecdsa' }
-    })) as { address: string; signature: string };
+    const { signature } = (await provider.request(
+      {
+        method: 'signMessage',
+        params: { message, account: address, address, protocol: 'ecdsa' }
+      },
+      `bip122:${chainId}`
+    )) as { address: string; signature: string };
 
     const formattedSignature = Buffer.from(signature, 'hex').toString('base64');
 

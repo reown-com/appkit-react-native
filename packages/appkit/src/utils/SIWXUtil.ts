@@ -15,6 +15,7 @@ import {
   ConnectionsController,
   EventsController
 } from '@reown/appkit-core-react-native';
+import { Alert } from 'react-native';
 
 /**
  * SIWXUtil holds the methods to interact with the SIWX plugin and must be called internally on AppKit.
@@ -135,6 +136,9 @@ export const SIWXUtil = {
           view: 'SIWXSignMessage'
         });
       }
+
+      // @ts-ignore
+      Alert.alert('Error signing message', error?.message ?? error);
 
       SnackController.showError('Error signing message');
       EventsController.sendEvent({

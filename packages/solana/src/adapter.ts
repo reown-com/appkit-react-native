@@ -213,7 +213,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
     }
   }
 
-  override async signMessage(address: string, message: string): Promise<string> {
+  override async signMessage(address: string, message: string, chainId?: string): Promise<string> {
     try {
       if (!this.connector) {
         throw new Error('SolanaAdapter:signMessage - no active connector');
@@ -231,7 +231,10 @@ export class SolanaAdapter extends SolanaBaseAdapter {
         // For Phantom, pubkey is not part of signMessage params directly with session
         // For other wallets, it might be needed if they don't infer from session
       };
-      const { signature } = (await provider.request({ method: 'solana_signMessage', params })) as {
+      const { signature } = (await provider.request(
+        { method: 'solana_signMessage', params },
+        `solana:${chainId}`
+      )) as {
         signature: string;
       };
 
