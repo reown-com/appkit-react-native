@@ -272,7 +272,7 @@ export const SIWXUtil = {
       universalLink
     );
 
-    SnackController.showLoading('Authenticating...');
+    SnackController.showLoading('Authenticating...', true);
 
     if (result?.auths?.length) {
       const sessions = result.auths.map<SIWXSession>(cacao => {
@@ -327,12 +327,6 @@ export const SIWXUtil = {
     return result?.session;
   },
   getSIWXEventProperties(error?: unknown) {
-    const namespace = ConnectionsController.state.activeNamespace;
-
-    if (!namespace) {
-      throw new Error('SIWXUtil:getSIWXEventProperties - namespace is required');
-    }
-
     return {
       network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
       isSmartAccount: ConnectionsController.state.accountType === 'smartAccount',
