@@ -287,22 +287,6 @@ export class ReownAuthentication implements SIWXConfig {
 
     const { name, icon, type } = connectedWalletInfo;
 
-    // let type: ReownAuthentication.WalletInfo['type'] = 'unknown';
-
-    //TODO: Differenciate external from walletconnect wallets
-    // switch (connectedWalletInfo['type']) {
-    //   case 'EXTERNAL':
-    //   case 'INJECTED':
-    //   case 'ANNOUNCED':
-    //     type = 'extension';
-    //     break;
-    //   case 'WALLET_CONNECT':
-    //     type = 'walletconnect';
-    //     break;
-    //   default:
-    //     type = 'unknown';
-    // }
-
     return {
       type: type ?? 'unknown',
       name,
