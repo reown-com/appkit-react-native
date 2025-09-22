@@ -230,6 +230,8 @@ export class ReownAuthentication implements SIWXConfig {
     });
 
     if (!response.ok) {
+      //TODO: remove
+      Alert.alert(await response.text());
       throw new Error(await response.text());
     }
 
