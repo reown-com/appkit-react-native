@@ -144,7 +144,7 @@ export const SIWXUtil = {
       });
 
       // eslint-disable-next-line no-console
-      console.error('SWIXUtil:requestSignMessage', error);
+      console.error('SIWXUtil:requestSignMessage', error);
     }
   },
   async cancelSignMessage(onDisconnect: () => Promise<void>) {
