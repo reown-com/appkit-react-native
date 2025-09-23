@@ -109,6 +109,6 @@ export class BitcoinAdapter extends BitcoinBaseAdapter {
 
     const formattedSignature = FormatUtil.normalizeSignature(signature);
 
-    return formattedSignature.hex;
+    return formattedSignature.base64;
   }
 }

@@ -115,7 +115,6 @@ export const OptionsController = {
   },
 
   setSiwx(siwx?: OptionsControllerState['siwx']) {
-    //TODO: Add default values
     state.siwx = siwx;
   },
 
