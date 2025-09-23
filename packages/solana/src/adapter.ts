@@ -224,6 +224,8 @@ export class SolanaAdapter extends SolanaBaseAdapter {
         throw new Error('SolanaAdapter:signMessage - provider is undefined');
       }
 
+      const chain = chainId ? `${this.getSupportedNamespace()}:${chainId}` : undefined;
+
       const encodedMessage = new TextEncoder().encode(message);
       const params = {
         message: base58.encode(encodedMessage),
@@ -233,7 +235,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
       };
       const { signature } = (await provider.request(
         { method: 'solana_signMessage', params },
-        `solana:${chainId}`
+        chain
       )) as {
         signature: string;
       };

@@ -37,7 +37,8 @@ export function BitcoinActionsView() {
         {
           method: 'signMessage',
           params: { message, account: address, address, protocol: 'ecdsa' }
-        }
+        },
+        `bip122:${chainId}`
       )) as { address: string; signature: string };
 
       const formattedSignature = Buffer.from(signature, 'hex').toString('base64');

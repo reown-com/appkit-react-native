@@ -96,12 +96,14 @@ export class BitcoinAdapter extends BitcoinBaseAdapter {
     const provider = this.connector.getProvider('bip122');
     if (!provider) throw new Error('BitcoinAdapter:signMessage - No active provider');
 
+    const chain = chainId ? `${this.getSupportedNamespace()}:${chainId}` : undefined;
+
     const { signature } = (await provider.request(
       {
         method: 'signMessage',
         params: { message, account: address, address, protocol: 'ecdsa' }
       },
-      `bip122:${chainId}`
+      chain
     )) as { address: string; signature: string };
 
     const formattedSignature = Buffer.from(signature, 'hex').toString('base64');

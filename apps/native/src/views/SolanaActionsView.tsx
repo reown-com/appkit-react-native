@@ -14,7 +14,7 @@ import { ToastUtils } from '../utils/ToastUtils';
 
 export function SolanaActionsView() {
   const isConnected = true;
-  const { address } = useAccount();
+  const { address, chainId } = useAccount();
   const { provider } = useProvider();
 
   const onSignSuccess = (data: any, title = 'Sign successful') => {
@@ -45,7 +45,7 @@ export function SolanaActionsView() {
         // For other wallets, it might be needed if they don't infer from session
       };
       const { signature } = (await provider.request(
-        { method: 'solana_signMessage', params }
+        { method: 'solana_signMessage', params }, `solana:${chainId}`
       )) as { signature: string };
       onSignSuccess(signature, 'Sign Message successful');
     } catch (error) {
