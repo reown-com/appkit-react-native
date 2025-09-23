@@ -13,7 +13,7 @@ export class PhantomConnector extends DeeplinkConnector {
 
   override getWalletInfo(): WalletInfo {
     return {
-      ...ConstantsUtil.PHANTOM_CUSTOM_WALLET,
+      name: ConstantsUtil.PHANTOM_CUSTOM_WALLET.name,
       type: 'external'
     };
   }

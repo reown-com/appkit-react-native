@@ -283,10 +283,14 @@ export class ReownAuthentication implements SIWXConfig {
       return { type: 'social', social, identifier };
     }
 
-    const { name, icon, type } = connectedWalletInfo;
+    let { name, icon, type } = connectedWalletInfo;
+
+    if (!type || type !== 'walletconnect') {
+      type = 'unknown';
+    }
 
     return {
-      type: type ?? 'unknown',
+      type,
       name,
       icon
     };
