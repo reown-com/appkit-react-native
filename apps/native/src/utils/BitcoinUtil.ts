@@ -188,7 +188,7 @@ export const BitcoinUtil = {
       raw = Buffer.from(signature, 'hex');
       if (raw.length > 0 && /^[0-9a-fA-F]+$/.test(signature)) {
         return {
-          hex: signature.toLowerCase(),
+          hex: signature,
           base64: raw.toString('base64')
         };
       }
