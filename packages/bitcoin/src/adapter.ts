@@ -8,6 +8,7 @@ import {
 } from '@reown/appkit-common-react-native';
 import { BitcoinApi } from './utils/BitcoinApi';
 import { UnitsUtil } from './utils/UnitsUtil';
+import { FormatUtil } from './utils/FormatUtil';
 
 export class BitcoinAdapter extends BitcoinBaseAdapter {
   private static supportedNamespace: ChainNamespace = 'bip122';
@@ -106,8 +107,8 @@ export class BitcoinAdapter extends BitcoinBaseAdapter {
       chain
     )) as { address: string; signature: string };
 
-    const formattedSignature = Buffer.from(signature, 'hex').toString('base64');
+    const formattedSignature = FormatUtil.normalizeSignature(signature);
 
-    return formattedSignature;
+    return formattedSignature.base64;
   }
 }
