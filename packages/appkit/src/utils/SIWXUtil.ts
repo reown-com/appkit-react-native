@@ -33,6 +33,8 @@ export const SIWXUtil = {
     const siwx = OptionsController.state.siwx;
 
     if (!siwx || !caipAddress) {
+      ModalController.close();
+
       return;
     }
 
