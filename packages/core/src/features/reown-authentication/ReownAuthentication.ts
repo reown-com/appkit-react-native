@@ -207,22 +207,25 @@ export class ReownAuthentication implements SIWXConfig {
     const response = await fetch(url, {
       method,
       body: body ? JSON.stringify(body) : undefined,
-      headers: Array.isArray(headers)
-        ? headers.reduce((acc, header) => {
-            switch (header) {
-              case 'nonce':
-                acc['x-nonce-jwt'] = `Bearer ${nonceJwt}`;
-                break;
-              case 'auth':
-                acc['Authorization'] = `Bearer ${auth}`;
-                break;
-              default:
-                break;
-            }
+      headers: {
+        'Content-Type': 'application/json',
+        ...(Array.isArray(headers)
+          ? headers.reduce((acc, header) => {
+              switch (header) {
+                case 'nonce':
+                  acc['x-nonce-jwt'] = `Bearer ${nonceJwt}`;
+                  break;
+                case 'auth':
+                  acc['Authorization'] = `Bearer ${auth}`;
+                  break;
+                default:
+                  break;
+              }
 
-            return acc;
-          }, {})
-        : undefined
+              return acc;
+            }, {})
+          : {})
+      }
     });
 
     if (!response.ok) {
