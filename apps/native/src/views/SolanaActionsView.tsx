@@ -88,7 +88,7 @@ export function SolanaActionsView() {
         {
           method: 'solana_signTransaction',
           params
-        },
+        },`solana:${chainId}`
       )) as { signature?: string; transaction?: string };
       if (result.signature) {
         onSignSuccess(`Signature: ${result.signature}`, 'Sign Transaction successful');
@@ -144,7 +144,7 @@ export function SolanaActionsView() {
         {
           method: 'solana_signAndSendTransaction',
           params
-        },
+        },`solana:${chainId}`
       )) as { signature: string };
       onSignSuccess(`Tx Signature: ${signature}`, 'Sign & Send Tx successful');
       // Optionally, you can confirm the transaction here using the signature and connection
