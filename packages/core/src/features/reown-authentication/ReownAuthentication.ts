@@ -16,7 +16,6 @@ import { ConnectionsController } from '../../controllers/ConnectionsController';
 import { CoreHelperUtil } from '../../utils/CoreHelperUtil';
 import { OptionsController } from '../../controllers/OptionsController';
 import { FetchUtil } from '../../utils/FetchUtil';
-import { Alert } from 'react-native';
 
 /**
  * This is the configuration for using SIWX with Reown Authentication service.
@@ -205,9 +204,6 @@ export class ReownAuthentication implements SIWXConfig {
     const nonceJwt = await this.getStorageToken(this.localNonceStorageKey);
     const auth = await this.getStorageToken(this.localAuthStorageKey);
 
-    //TODO: remove
-    Alert.alert(url);
-
     const response = await fetch(url, {
       method,
       body: body ? JSON.stringify(body) : undefined,
@@ -230,8 +226,6 @@ export class ReownAuthentication implements SIWXConfig {
     });
 
     if (!response.ok) {
-      //TODO: remove
-      Alert.alert(await response.text());
       throw new Error(await response.text());
     }
 

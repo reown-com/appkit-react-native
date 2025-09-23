@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useSnapshot } from 'valtio';
 import {
   Avatar,
@@ -37,10 +37,6 @@ export function SIWXSignMessageView() {
     try {
       await SIWXUtil.requestSignMessage();
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('SIWXSignMessageView:onSign', error);
-      // @ts-ignore
-      Alert.alert('Signature declined', error?.message ?? error);
       SnackController.showError('Signature declined');
     } finally {
       setIsSigning(false);
