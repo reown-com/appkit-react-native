@@ -208,7 +208,7 @@ export function SolanaActionsView() {
         {
           method: 'solana_signAllTransactions',
           params
-        },
+        }, `solana:${chainId}`
       )) as { transactions?: string[]; signatures?: string[] }; // Adjust based on provider's typical response
 
       if (result.transactions) {

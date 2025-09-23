@@ -6,7 +6,7 @@ import { hexlify, isHexString, toUtf8Bytes } from 'ethers';
 import { ToastUtils } from '../utils/ToastUtils';
 
 export function EthersActionsView() {
-  const { address } = useAccount();
+  const { address, chainId } = useAccount();
   const { provider } = useProvider();
 
   const onSignSuccess = (data: any) => {
@@ -38,7 +38,7 @@ export function EthersActionsView() {
         {
           method: 'personal_sign',
           params: [hexMessage, address]
-        }
+        },`eip155:${chainId}`
       );
 
       onSignSuccess(signature);
