@@ -16,6 +16,16 @@ export const ConstantsUtil = {
   SECURE_SITE_ICON: `https://secure.reown.com/images/favicon.png`,
   REOWN_URL: `https://reown.com`,
 
+  CHAIN_NAME_MAP: {
+    eip155: 'EVM Networks',
+    solana: 'Solana',
+    polkadot: 'Polkadot',
+    bip122: 'Bitcoin',
+    cosmos: 'Cosmos',
+    sui: 'Sui',
+    stacks: 'Stacks'
+  },
+
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet
     '0xdac17f958d2ee523a2206206994597c13d831ec7',

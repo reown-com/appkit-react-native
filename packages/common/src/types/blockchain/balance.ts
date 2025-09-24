@@ -11,7 +11,7 @@ export interface Balance {
     numeric: string;
   };
   chainId?: string;
-  address?: CaipAddress; // contract address
+  address?: CaipAddress | string; // contract address
   value?: number; //total value of the amount in currency
   price?: number; //price of the token in currency
   iconUrl?: string;

@@ -53,6 +53,20 @@ export const CoreHelperUtil = {
     return Date.now() - lastRetry >= ConstantsUtil.ONE_SEC_MS;
   },
 
+  isCaipAddress(address?: unknown): address is CaipAddress {
+    if (typeof address !== 'string') {
+      return false;
+    }
+
+    const sections = address.split(':');
+    const namespace = sections[0];
+
+    return (
+      sections.filter(Boolean).length === 3 &&
+      (namespace as string) in CommonConstants.CHAIN_NAME_MAP
+    );
+  },
+
   getPairingExpiry() {
     return Date.now() + ConstantsUtil.FOUR_MINUTES_MS;
   },

@@ -10,6 +10,7 @@ import { getSolanaNativeBalance, getSolanaTokenBalance } from './helpers';
 import { Connection, Transaction, VersionedTransaction } from '@solana/web3.js';
 import base58 from 'bs58';
 import { createSendTransaction } from './utils/createSendTransaction';
+import { createSPLTokenTransaction } from './utils/createSPLTokenTransaction';
 
 export interface SolanaTransactionData {
   fromAddress: string;
@@ -17,6 +18,7 @@ export interface SolanaTransactionData {
   amount: number;
   network?: AppKitNetwork;
   rpcUrl?: string;
+  tokenMint?: string;
 }
 
 export class SolanaAdapter extends SolanaBaseAdapter {
@@ -169,7 +171,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
   }
 
   async sendTransaction(data: SolanaTransactionData): Promise<string | null> {
-    const { fromAddress, toAddress, amount, network, rpcUrl } = data;
+    const { fromAddress, toAddress, amount, network, rpcUrl, tokenMint } = data;
 
     if (!this.connector) {
       throw new Error('SolanaAdapter:sendTransaction - no active connector');
@@ -209,12 +211,20 @@ export class SolanaAdapter extends SolanaBaseAdapter {
       // Create connection
       const connection = new Connection(connectionRpcUrl, 'confirmed');
 
-      const transaction = await createSendTransaction({
-        connection,
-        fromAddress,
-        toAddress,
-        value: amount
-      });
+      const transaction = tokenMint
+        ? await createSPLTokenTransaction({
+            connection,
+            fromAddress,
+            toAddress,
+            amount,
+            tokenMint
+          })
+        : await createSendTransaction({
+            connection,
+            fromAddress,
+            toAddress,
+            amount
+          });
 
       // Sign the transaction
       const signedTransaction = await this.signTransaction(transaction, network);
