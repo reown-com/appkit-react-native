@@ -119,13 +119,18 @@ export const SendController = {
       });
       RouterController.reset(isAuth ? 'Account' : 'AccountDefault');
       this.resetState();
-    } catch (error) {
+    } catch (error: any) {
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_ERROR',
         properties: eventProperties
       });
-      SnackController.showError('Something went wrong');
+
+      if (error?.message && error?.message.includes('user rejected')) {
+        SnackController.showError('Transaction cancelled');
+      } else {
+        SnackController.showError('Something went wrong');
+      }
     } finally {
       this.state.loading = false;
     }

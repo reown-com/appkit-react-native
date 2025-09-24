@@ -19,7 +19,6 @@ import type { SPLTokenTransactionArgs } from '../types';
 
 const SPL_COMPUTE_BUDGET_CONSTANTS = {
   UNIT_PRICE_MICRO_LAMPORTS: 1000000,
-  UNIT_LIMIT_TRANSFER_ONLY: 300000,
   UNIT_LIMIT_WITH_ATA_CREATION: 400000
 } as const;
 
@@ -102,18 +101,16 @@ export async function createSPLTokenTransaction({
 
     const instructions: TransactionInstruction[] = [];
 
-    const computeUnitLimit = shouldCreateATA
-      ? SPL_COMPUTE_BUDGET_CONSTANTS.UNIT_LIMIT_WITH_ATA_CREATION
-      : SPL_COMPUTE_BUDGET_CONSTANTS.UNIT_LIMIT_TRANSFER_ONLY;
-
-    instructions.push(
-      ComputeBudgetProgram.setComputeUnitPrice({
-        microLamports: SPL_COMPUTE_BUDGET_CONSTANTS.UNIT_PRICE_MICRO_LAMPORTS
-      }),
-      ComputeBudgetProgram.setComputeUnitLimit({ units: computeUnitLimit })
-    );
-
     if (shouldCreateATA) {
+      instructions.push(
+        ComputeBudgetProgram.setComputeUnitPrice({
+          microLamports: SPL_COMPUTE_BUDGET_CONSTANTS.UNIT_PRICE_MICRO_LAMPORTS
+        }),
+        ComputeBudgetProgram.setComputeUnitLimit({
+          units: SPL_COMPUTE_BUDGET_CONSTANTS.UNIT_LIMIT_WITH_ATA_CREATION
+        })
+      );
+
       instructions.push(
         createAssociatedTokenAccountInstruction(
           fromPubkey,
