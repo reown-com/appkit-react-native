@@ -65,7 +65,6 @@ export class ReownAuthentication implements SIWXConfig {
 
     this.setStorageToken(response.token, this.localAuthStorageKey);
 
-    //TODO: Check this emit
     this.emit('sessionChanged', session);
   }
 
