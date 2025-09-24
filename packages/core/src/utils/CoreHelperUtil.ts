@@ -75,8 +75,12 @@ export const CoreHelperUtil = {
     return caipAddress?.split(':')[1];
   },
 
-  getPlainAddress(caipAddress: CaipAddress | undefined) {
-    return caipAddress?.split(':')[2];
+  getPlainAddress(address: CaipAddress | string | undefined) {
+    if (this.isCaipAddress(address)) {
+      return address?.split(':')[2];
+    }
+
+    return address;
   },
 
   async wait(milliseconds: number) {

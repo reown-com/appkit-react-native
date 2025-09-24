@@ -280,8 +280,11 @@ export const ConnectionsController = {
     const existingBalances = connection.balances.get(address) || [];
     // Check if this token already exists by contract address or symbol
     const existingIndex = existingBalances.findIndex(existingBalance => {
-      if (balance.address) {
-        return existingBalance.address === balance.address;
+      if (balance.address && existingBalance.address) {
+        return (
+          CoreHelperUtil.getPlainAddress(existingBalance.address) ===
+          CoreHelperUtil.getPlainAddress(balance.address)
+        );
       }
 
       return existingBalance.symbol === balance.symbol;
