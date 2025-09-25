@@ -43,7 +43,7 @@
     "@reown/appkit-common-react-native": "2.0.0-alpha.5",
     "countries-and-timezones": "3.7.2",
     "derive-valtio": "0.2.0",
-    "valtio": "2.1.5"
+    "valtio": "2.1.8"
   },
   "peerDependencies": {
     "@walletconnect/react-native-compat": ">=2.16.1",
