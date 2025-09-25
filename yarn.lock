@@ -4243,7 +4243,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@reown/appkit-bitcoin-react-native@workspace:packages/bitcoin"
   dependencies:
-    "@reown/appkit-common-react-native": 2.0.0-alpha.5
+    "@reown/appkit-common-react-native": 2.0.0-alpha.6
   peerDependencies:
     "@walletconnect/react-native-compat": ">=2.16.1"
     react: ">=18"
@@ -4255,7 +4255,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@reown/appkit-coinbase-react-native@workspace:packages/coinbase"
   dependencies:
-    "@reown/appkit-common-react-native": 2.0.0-alpha.5
+    "@reown/appkit-common-react-native": 2.0.0-alpha.6
   peerDependencies:
     "@coinbase/wallet-mobile-sdk": ">=1.1.2"
     react: ">=18"
@@ -4263,7 +4263,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@reown/appkit-common-react-native@2.0.0-alpha.5, @reown/appkit-common-react-native@workspace:packages/common":
+"@reown/appkit-common-react-native@2.0.0-alpha.6, @reown/appkit-common-react-native@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-common-react-native@workspace:packages/common"
   dependencies:
@@ -4299,11 +4299,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reown/appkit-core-react-native@2.0.0-alpha.5, @reown/appkit-core-react-native@workspace:packages/core":
+"@reown/appkit-core-react-native@2.0.0-alpha.6, @reown/appkit-core-react-native@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-core-react-native@workspace:packages/core"
   dependencies:
-    "@reown/appkit-common-react-native": 2.0.0-alpha.5
+    "@reown/appkit-common-react-native": 2.0.0-alpha.6
     countries-and-timezones: 3.7.2
     derive-valtio: 0.2.0
     valtio: 2.1.8
@@ -4318,8 +4318,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@reown/appkit-ethers-react-native@workspace:packages/ethers"
   dependencies:
-    "@reown/appkit-common-react-native": 2.0.0-alpha.5
-    "@reown/appkit-react-native": 2.0.0-alpha.5
+    "@reown/appkit-common-react-native": 2.0.0-alpha.6
+    "@reown/appkit-react-native": 2.0.0-alpha.6
   peerDependencies:
     "@react-native-community/netinfo": "*"
     "@walletconnect/react-native-compat": ">=2.16.1"
@@ -4352,13 +4352,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reown/appkit-react-native@2.0.0-alpha.5, @reown/appkit-react-native@workspace:*, @reown/appkit-react-native@workspace:packages/appkit":
+"@reown/appkit-react-native@2.0.0-alpha.6, @reown/appkit-react-native@workspace:*, @reown/appkit-react-native@workspace:packages/appkit":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-react-native@workspace:packages/appkit"
   dependencies:
-    "@reown/appkit-common-react-native": 2.0.0-alpha.5
-    "@reown/appkit-core-react-native": 2.0.0-alpha.5
-    "@reown/appkit-ui-react-native": 2.0.0-alpha.5
+    "@reown/appkit-common-react-native": 2.0.0-alpha.6
+    "@reown/appkit-core-react-native": 2.0.0-alpha.6
+    "@reown/appkit-ui-react-native": 2.0.0-alpha.6
     "@walletconnect/universal-provider": 2.21.9
     valtio: 2.1.8
   peerDependencies:
@@ -4389,7 +4389,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@reown/appkit-solana-react-native@workspace:packages/solana"
   dependencies:
-    "@reown/appkit-common-react-native": 2.0.0-alpha.5
+    "@reown/appkit-common-react-native": 2.0.0-alpha.6
     "@solana/spl-token": 0.4.13
     "@solana/web3.js": 1.98.2
     bs58: 6.0.0
@@ -4401,11 +4401,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@reown/appkit-ui-react-native@2.0.0-alpha.5, @reown/appkit-ui-react-native@workspace:*, @reown/appkit-ui-react-native@workspace:packages/ui":
+"@reown/appkit-ui-react-native@2.0.0-alpha.6, @reown/appkit-ui-react-native@workspace:*, @reown/appkit-ui-react-native@workspace:packages/ui":
   version: 0.0.0-use.local
   resolution: "@reown/appkit-ui-react-native@workspace:packages/ui"
   dependencies:
-    "@reown/appkit-common-react-native": 2.0.0-alpha.5
+    "@reown/appkit-common-react-native": 2.0.0-alpha.6
     polished: 4.3.1
     qrcode: 1.5.3
   peerDependencies:
@@ -4450,8 +4450,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@reown/appkit-wagmi-react-native@workspace:packages/wagmi"
   dependencies:
-    "@reown/appkit-common-react-native": 2.0.0-alpha.5
-    "@reown/appkit-react-native": 2.0.0-alpha.5
+    "@reown/appkit-common-react-native": 2.0.0-alpha.6
+    "@reown/appkit-react-native": 2.0.0-alpha.6
   peerDependencies:
     "@react-native-community/netinfo": "*"
     "@walletconnect/react-native-compat": ">=2.16.1"

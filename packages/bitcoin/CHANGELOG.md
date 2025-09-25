@@ -1,5 +1,14 @@
 # @reown/appkit-bitcoin-react-native
 
+## 2.0.0-alpha.6
+
+### Patch Changes
+
+- [#338](https://github.com/reown-com/appkit-react-native/pull/338) [`53ff4fa`](https://github.com/reown-com/appkit-react-native/commit/53ff4fa9b1ee1531dd34c57f29c9f2f6edcd2e4d) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: bump alpha
+
+- Updated dependencies [[`53ff4fa`](https://github.com/reown-com/appkit-react-native/commit/53ff4fa9b1ee1531dd34c57f29c9f2f6edcd2e4d)]:
+  - @reown/appkit-common-react-native@2.0.0-alpha.6
+
 ## 2.0.0-alpha.5
 
 ### Patch Changes

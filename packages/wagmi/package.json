@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-wagmi-react-native",
-  "version": "2.0.0-alpha.5",
+  "version": "2.0.0-alpha.6",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
@@ -41,8 +41,8 @@
     "provenance": true
   },
   "dependencies": {
-    "@reown/appkit-common-react-native": "2.0.0-alpha.5",
-    "@reown/appkit-react-native": "2.0.0-alpha.5"
+    "@reown/appkit-common-react-native": "2.0.0-alpha.6",
+    "@reown/appkit-react-native": "2.0.0-alpha.6"
   },
   "peerDependencies": {
     "@react-native-community/netinfo": "*",
