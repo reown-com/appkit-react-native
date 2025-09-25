@@ -9,7 +9,7 @@ import Toast from 'react-native-toast-message';
 
 import {
   AppKitProvider,
-  ReownAuthentication,
+  // ReownAuthentication,
   createAppKit,
   AppKit,
   AppKitButton,
@@ -71,7 +71,7 @@ const appKit = createAppKit({
   debug: true,
   enableAnalytics: true,
   storage,
-  siwx: new ReownAuthentication(),
+  // siwx: new ReownAuthentication(),
   extraConnectors: [new PhantomConnector(), new SolflareConnector()],
   // tokens: {
   //   'eip155:1': {

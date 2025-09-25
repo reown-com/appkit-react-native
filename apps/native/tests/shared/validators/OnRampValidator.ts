@@ -10,11 +10,6 @@ export class OnRampValidator {
     await expect(this.page.getByText('Continue')).toBeVisible({ timeout: 5000 });
   }
 
-  async expectOnRampLoadingView() {
-    // Verify that the loading view is displayed
-    await expect(this.page.getByTestId('onramp-loading-view')).toBeVisible({ timeout: 10000 });
-  }
-
   async expectCurrencySelectionModal() {
     // Verify that the currency selection modal is displayed
     await expect(this.page.getByText('Select token')).toBeVisible({ timeout: 10000 });

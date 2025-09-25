@@ -63,6 +63,7 @@ export function OnRampSettingsView() {
           onPress={onPressModalItem}
           selected={parsedItem.countryCode === selectedCountry?.countryCode}
           style={styles.selectorItem}
+          testID={`country-item-${parsedItem.countryCode}`}
         />
       );
     }

@@ -26,14 +26,21 @@ export const SIWXUtil = {
     return OptionsController.state.siwx;
   },
 
-  async initializeIfEnabled(
-    onDisconnect: () => Promise<void>,
-    caipAddress = ConnectionsController.state.activeAddress
-  ) {
+  async initializeIfEnabled({
+    onDisconnect,
+    caipAddress = ConnectionsController.state.activeAddress,
+    closeModal = false
+  }: {
+    onDisconnect: () => Promise<void>;
+    caipAddress?: string;
+    closeModal?: boolean;
+  }) {
     const siwx = OptionsController.state.siwx;
 
     if (!siwx || !caipAddress) {
-      ModalController.close();
+      if (closeModal) {
+        ModalController.close();
+      }
 
       return;
     }

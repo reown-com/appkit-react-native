@@ -171,7 +171,7 @@ export class AppKit {
     // Sync accounts
     await this.syncAccounts(initializedAdapters);
 
-    await SIWXUtil.initializeIfEnabled(this.disconnect);
+    await SIWXUtil.initializeIfEnabled({ onDisconnect: this.disconnect, closeModal: true });
   }
 
   /**
@@ -623,7 +623,7 @@ export class AppKit {
         TransactionsController.fetchTransactions(address, true);
       }
 
-      SIWXUtil.initializeIfEnabled(this.disconnect, address);
+      SIWXUtil.initializeIfEnabled({ onDisconnect: this.disconnect, caipAddress: address });
     });
 
     adapter.on('disconnect', () => {
