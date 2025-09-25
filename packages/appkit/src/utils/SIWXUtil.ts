@@ -126,6 +126,12 @@ export const SIWXUtil = {
         throw new Error('Error signing message');
       }
 
+      SnackController.showLoading('Authenticating...', true);
+
+      // Add a small delay to allow the app to fully restore network connectivity
+      // after returning from background (wallet redirect)
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       await siwx.addSession({
         data: siwxMessage,
         message,
