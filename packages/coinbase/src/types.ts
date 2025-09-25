@@ -1,3 +1,4 @@
+import type { MMKV } from 'react-native-mmkv';
 import type { Namespaces } from '@reown/appkit-common-react-native';
 import type {
   KVStorage,
@@ -18,6 +19,6 @@ export type CoinbaseSession = {
 };
 
 export type CoinbaseConnectorConfig = {
-  storage?: KVStorage;
+  storage?: KVStorage | MMKV;
   jsonRpcUrl?: string;
 };
