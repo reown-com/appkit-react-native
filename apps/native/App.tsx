@@ -9,7 +9,7 @@ import Toast from 'react-native-toast-message';
 
 import {
   AppKitProvider,
-  ReownAuthentication,
+  // ReownAuthentication,
   createAppKit,
   AppKit,
   AppKitButton,
