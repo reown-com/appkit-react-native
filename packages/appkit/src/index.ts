@@ -17,6 +17,13 @@ export { AppKit } from './modal/w3m-modal';
 /********** Types **********/
 export type * from '@reown/appkit-core-react-native';
 export type { AppKitNetwork, Storage } from '@reown/appkit-common-react-native';
+export type {
+  SIWXConfig,
+  SIWXMessage,
+  SIWXSession,
+  SIWXStorage,
+  SIWXVerifier
+} from '@reown/appkit-common-react-native';
 export type { AppKitConfig } from './types';
 
 /****** Hooks *******/
