@@ -55,4 +55,8 @@ export { StorageUtil } from './utils/StorageUtil';
 export { EventUtil } from './utils/EventUtil';
 export { WalletUtil } from './utils/WalletUtil';
 
+// -- Features ----------------------------------------------------------------
+export { ReownAuthentication } from './features/reown-authentication/ReownAuthentication';
+export { ReownAuthenticationMessenger } from './features/reown-authentication/ReownAuthenticationMessenger';
+
 // Types are now exported from @reown/appkit-common-react-native

@@ -13,6 +13,7 @@ import {
   type AccountType,
   type Connection,
   SolanaBaseAdapter,
+  BitcoinBaseAdapter,
   type Identity
 } from '@reown/appkit-common-react-native';
 import { StorageUtil } from '../utils/StorageUtil';
@@ -279,8 +280,11 @@ export const ConnectionsController = {
     const existingBalances = connection.balances.get(address) || [];
     // Check if this token already exists by contract address or symbol
     const existingIndex = existingBalances.findIndex(existingBalance => {
-      if (balance.address) {
-        return existingBalance.address === balance.address;
+      if (balance.address && existingBalance.address) {
+        return (
+          CoreHelperUtil.getPlainAddress(existingBalance.address) ===
+          CoreHelperUtil.getPlainAddress(balance.address)
+        );
       }
 
       return existingBalance.symbol === balance.symbol;
@@ -449,7 +453,13 @@ export const ConnectionsController = {
 
     const adapter = baseState.connections.get(baseState.activeNamespace)?.adapter;
 
-    if (adapter instanceof EVMAdapter && plainAddress && chainId) {
+    if (
+      (adapter instanceof EVMAdapter ||
+        adapter instanceof SolanaBaseAdapter ||
+        adapter instanceof BitcoinBaseAdapter) &&
+      plainAddress &&
+      chainId
+    ) {
       return adapter.signMessage(plainAddress, message, chainId);
     }
 

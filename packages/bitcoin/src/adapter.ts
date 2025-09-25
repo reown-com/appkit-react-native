@@ -1,5 +1,5 @@
 import {
-  BlockchainAdapter,
+  BitcoinBaseAdapter,
   type AppKitNetwork,
   type CaipAddress,
   type ChainNamespace,
@@ -8,8 +8,9 @@ import {
 } from '@reown/appkit-common-react-native';
 import { BitcoinApi } from './utils/BitcoinApi';
 import { UnitsUtil } from './utils/UnitsUtil';
+import { FormatUtil } from './utils/FormatUtil';
 
-export class BitcoinAdapter extends BlockchainAdapter {
+export class BitcoinAdapter extends BitcoinBaseAdapter {
   private static supportedNamespace: ChainNamespace = 'bip122';
   private static api = BitcoinApi;
 
@@ -88,5 +89,26 @@ export class BitcoinAdapter extends BlockchainAdapter {
 
   getSupportedNamespace(): ChainNamespace {
     return BitcoinAdapter.supportedNamespace;
+  }
+
+  async signMessage(address: string, message: string, chainId?: string): Promise<string> {
+    if (!this.connector) throw new Error('BitcoinAdapter:signMessage - No active connector');
+
+    const provider = this.connector.getProvider('bip122');
+    if (!provider) throw new Error('BitcoinAdapter:signMessage - No active provider');
+
+    const chain = chainId ? `${this.getSupportedNamespace()}:${chainId}` : undefined;
+
+    const { signature } = (await provider.request(
+      {
+        method: 'signMessage',
+        params: { message, account: address, address, protocol: 'ecdsa' }
+      },
+      chain
+    )) as { address: string; signature: string };
+
+    const formattedSignature = FormatUtil.normalizeSignature(signature);
+
+    return formattedSignature.base64;
   }
 }

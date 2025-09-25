@@ -95,8 +95,7 @@ export class CoinbaseConnector extends WalletConnector {
   override getWalletInfo(): WalletInfo | undefined {
     return {
       name: 'Coinbase Wallet',
-      description: 'Your home to everything onchain',
-      url: 'https://www.coinbase.com/wallet'
+      type: 'external'
     };
   }
 

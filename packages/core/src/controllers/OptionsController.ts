@@ -7,7 +7,8 @@ import type {
   Features,
   ProjectId,
   SdkType,
-  SdkVersion
+  SdkVersion,
+  SIWXConfig
 } from '@reown/appkit-common-react-native';
 
 import { ConstantsUtil } from '../utils/ConstantsUtil';
@@ -29,7 +30,7 @@ export interface OptionsControllerState {
   sdkType: SdkType;
   sdkVersion: SdkVersion;
   metadata?: Metadata;
-  isSiweEnabled?: boolean;
+  siwx?: SIWXConfig;
   isOnRampEnabled?: boolean;
   features?: Features;
   debug?: boolean;
@@ -87,10 +88,6 @@ export const OptionsController = {
     state.metadata = metadata;
   },
 
-  setIsSiweEnabled(isSiweEnabled: OptionsControllerState['isSiweEnabled']) {
-    state.isSiweEnabled = isSiweEnabled;
-  },
-
   setFeatures(features: OptionsControllerState['features']) {
     state.features = { ...ConstantsUtil.DEFAULT_FEATURES, ...features };
   },
@@ -115,6 +112,14 @@ export const OptionsController = {
 
   setRequestedNetworks(requestedNetworks?: OptionsControllerState['requestedNetworks']) {
     state.requestedNetworks = requestedNetworks;
+  },
+
+  setSiwx(siwx?: OptionsControllerState['siwx']) {
+    if (siwx && (siwx?.signOutOnDisconnect === undefined || siwx?.signOutOnDisconnect === null)) {
+      siwx.signOutOnDisconnect = true;
+    }
+
+    state.siwx = siwx;
   },
 
   isClipboardAvailable() {

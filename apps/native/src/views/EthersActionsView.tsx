@@ -6,7 +6,6 @@ import { hexlify, isHexString, toUtf8Bytes } from 'ethers';
 import { ToastUtils } from '../utils/ToastUtils';
 
 export function EthersActionsView() {
-  const isConnected = true;
   const { address, chainId } = useAccount();
   const { provider } = useProvider();
 
@@ -39,8 +38,7 @@ export function EthersActionsView() {
         {
           method: 'personal_sign',
           params: [hexMessage, address]
-        },
-        chainId
+        },`eip155:${chainId}`
       );
 
       onSignSuccess(signature);
@@ -51,14 +49,14 @@ export function EthersActionsView() {
     }
   };
 
-  return isConnected ? (
+  return (
     <FlexView style={styles.container}>
       <Text variant="medium-600">EVM Actions</Text>
       <Button testID="sign-message-button" onPress={signMessage}>
         Sign
       </Button>
     </FlexView>
-  ) : null;
+  );
 }
 
 const styles = StyleSheet.create({

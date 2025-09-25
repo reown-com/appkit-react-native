@@ -6,8 +6,7 @@ import { ToastUtils } from '../utils/ToastUtils';
 import { BitcoinUtil, SignPSBTResponse } from '../utils/BitcoinUtil';
 
 export function BitcoinActionsView() {
-  const isConnected = true;
-  const { address, chainId } = useAccount();
+  const { address, chainId, namespace } = useAccount();
   const { provider } = useProvider();
 
   const onSignSuccess = (data: string) => {
@@ -39,12 +38,12 @@ export function BitcoinActionsView() {
           method: 'signMessage',
           params: { message, account: address, address, protocol: 'ecdsa' }
         },
-        chainId
+        `bip122:${chainId}`
       )) as { address: string; signature: string };
 
-      const formattedSignature = Buffer.from(signature, 'hex').toString('base64');
+      const formattedSignature = BitcoinUtil.normalizeSignature(signature);
 
-      onSignSuccess(formattedSignature);
+      onSignSuccess(formattedSignature.base64);
     } catch (error) {
       onSignError(error as Error);
     }
@@ -64,19 +63,19 @@ export function BitcoinActionsView() {
         return;
       }
 
-      if (chainId?.split(':')[0] !== 'bip122') {
+      if (namespace !== 'bip122') {
         ToastUtils.showErrorToast('Sign failed', 'The selected chain is not bip122');
 
         return;
       }
 
-      const utxos = await BitcoinUtil.getUTXOs(address, chainId as `bip122:${string}`);
+      const utxos = await BitcoinUtil.getUTXOs(address, `bip122:${chainId}`);
       const feeRate = await BitcoinUtil.getFeeRate();
 
       const params = BitcoinUtil.createSignPSBTParams({
         amount: 1500,
         feeRate,
-        caipNetworkId: chainId as `bip122:${string}`,
+        caipNetworkId: `bip122:${chainId}`,
         recipientAddress: address,
         senderAddress: address,
         utxos
@@ -93,8 +92,7 @@ export function BitcoinActionsView() {
             signInputs: params.signInputs,
             broadcast: params.broadcast
           }
-        },
-        chainId
+        }, `bip122:${chainId}`
       )) as SignPSBTResponse;
 
       onSignSuccess(`${response.psbt}-${response.txid}`);
@@ -105,7 +103,7 @@ export function BitcoinActionsView() {
     }
   };
 
-  return isConnected ? (
+  return (
     <FlexView style={styles.container}>
       <Text variant="medium-600">Bitcoin Actions</Text>
       <Button testID="sign-message-button" onPress={signMessage}>
@@ -115,7 +113,7 @@ export function BitcoinActionsView() {
         Sign PSBT
       </Button>
     </FlexView>
-  ) : null;
+  );
 }
 
 const styles = StyleSheet.create({

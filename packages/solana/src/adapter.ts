@@ -10,6 +10,7 @@ import { getSolanaNativeBalance, getSolanaTokenBalance } from './helpers';
 import { Connection, Transaction, VersionedTransaction } from '@solana/web3.js';
 import base58 from 'bs58';
 import { createSendTransaction } from './utils/createSendTransaction';
+import { createSPLTokenTransaction } from './utils/createSPLTokenTransaction';
 
 export interface SolanaTransactionData {
   fromAddress: string;
@@ -17,6 +18,7 @@ export interface SolanaTransactionData {
   amount: number;
   network?: AppKitNetwork;
   rpcUrl?: string;
+  tokenMint?: string;
 }
 
 export class SolanaAdapter extends SolanaBaseAdapter {
@@ -93,10 +95,22 @@ export class SolanaAdapter extends SolanaBaseAdapter {
     }
 
     try {
-      // Serialize transaction to base64 (following WalletConnect standard)
-      const serializedTransaction = Buffer.from(
-        new Uint8Array(transaction.serialize({ verifySignatures: false }))
-      ).toString('base64');
+      // Check if this is a deeplink provider (Phantom/Solflare)
+      const isDeeplinkProvider =
+        this.connector.type === 'phantom' || this.connector.type === 'solflare';
+
+      // Serialize transaction based on provider type
+      let serializedTransaction: string;
+      if (isDeeplinkProvider) {
+        // Deeplink providers (Phantom/Solflare) expect base58
+        const transactionBytes = new Uint8Array(transaction.serialize({ verifySignatures: false }));
+        serializedTransaction = base58.encode(transactionBytes);
+      } else {
+        // WalletConnect providers expect base64 (following WalletConnect standard)
+        serializedTransaction = Buffer.from(
+          new Uint8Array(transaction.serialize({ verifySignatures: false }))
+        ).toString('base64');
+      }
 
       const result = (await provider.request(
         {
@@ -125,7 +139,20 @@ export class SolanaAdapter extends SolanaBaseAdapter {
 
       if ('transaction' in result && result.transaction) {
         // New response format - deserialize the signed transaction
-        const decodedTransaction = Buffer.from(result.transaction, 'base64');
+        let decodedTransaction: Buffer;
+
+        if (isDeeplinkProvider) {
+          // Deeplink providers return base58 encoded transactions
+          try {
+            const decodedBytes = base58.decode(result.transaction);
+            decodedTransaction = Buffer.from(decodedBytes);
+          } catch (error) {
+            throw new Error('Failed to decode base58 transaction from deeplink provider');
+          }
+        } else {
+          // WalletConnect providers return base64 encoded transactions
+          decodedTransaction = Buffer.from(result.transaction, 'base64');
+        }
 
         if (transaction instanceof VersionedTransaction) {
           return VersionedTransaction.deserialize(new Uint8Array(decodedTransaction)) as T;
@@ -144,7 +171,7 @@ export class SolanaAdapter extends SolanaBaseAdapter {
   }
 
   async sendTransaction(data: SolanaTransactionData): Promise<string | null> {
-    const { fromAddress, toAddress, amount, network, rpcUrl } = data;
+    const { fromAddress, toAddress, amount, network, rpcUrl, tokenMint } = data;
 
     if (!this.connector) {
       throw new Error('SolanaAdapter:sendTransaction - no active connector');
@@ -184,12 +211,20 @@ export class SolanaAdapter extends SolanaBaseAdapter {
       // Create connection
       const connection = new Connection(connectionRpcUrl, 'confirmed');
 
-      const transaction = await createSendTransaction({
-        connection,
-        fromAddress,
-        toAddress,
-        value: amount
-      });
+      const transaction = tokenMint
+        ? await createSPLTokenTransaction({
+            connection,
+            fromAddress,
+            toAddress,
+            amount,
+            tokenMint
+          })
+        : await createSendTransaction({
+            connection,
+            fromAddress,
+            toAddress,
+            amount
+          });
 
       // Sign the transaction
       const signedTransaction = await this.signTransaction(transaction, network);
@@ -210,6 +245,39 @@ export class SolanaAdapter extends SolanaBaseAdapter {
         throw new Error(`SolanaAdapter:sendTransaction - ${error.message}`);
       }
       throw new Error('SolanaAdapter:sendTransaction - unknown error occurred');
+    }
+  }
+
+  override async signMessage(address: string, message: string, chainId?: string): Promise<string> {
+    try {
+      if (!this.connector) {
+        throw new Error('SolanaAdapter:signMessage - no active connector');
+      }
+
+      const provider = this.connector.getProvider('solana');
+      if (!provider) {
+        throw new Error('SolanaAdapter:signMessage - provider is undefined');
+      }
+
+      const chain = chainId ? `${this.getSupportedNamespace()}:${chainId}` : undefined;
+
+      const encodedMessage = new TextEncoder().encode(message);
+      const params = {
+        message: base58.encode(encodedMessage),
+        pubkey: address
+        // For Phantom, pubkey is not part of signMessage params directly with session
+        // For other wallets, it might be needed if they don't infer from session
+      };
+      const { signature } = (await provider.request(
+        { method: 'solana_signMessage', params },
+        chain
+      )) as {
+        signature: string;
+      };
+
+      return signature;
+    } catch (error) {
+      throw error;
     }
   }
 

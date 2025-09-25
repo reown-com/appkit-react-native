@@ -11,6 +11,7 @@ export interface WalletInfo {
     universal?: string;
     linkMode?: boolean;
   };
+  type?: 'walletconnect' | 'external' | 'unknown';
   [key: string]: unknown;
 }
 

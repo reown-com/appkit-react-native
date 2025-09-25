@@ -1,5 +1,5 @@
 import { WcController } from '@reown/appkit-core-react-native';
-import { UniversalProvider, type IUniversalProvider } from '@walletconnect/universal-provider';
+import UniversalProvider from '@walletconnect/universal-provider';
 import {
   WalletConnector,
   type AppKitNetwork,
@@ -14,7 +14,7 @@ import {
   type ConnectionProperties,
   type RequestArguments
 } from '@reown/appkit-common-react-native';
-import { getDidAddress, getDidChainId, SIWEController } from '@reown/appkit-siwe-react-native';
+import { SIWXUtil } from '../utils/SIWXUtil';
 
 interface WalletConnectConnectorConfig {
   projectId: string;
@@ -42,7 +42,7 @@ export class WalletConnectConnector extends WalletConnector {
   }
 
   override async restoreSession(): Promise<boolean> {
-    const provider = this.getProvider() as IUniversalProvider;
+    const provider = this.getProvider() as UniversalProvider;
     if (!provider) {
       return false;
     }
@@ -67,9 +67,15 @@ export class WalletConnectConnector extends WalletConnector {
         this.wallet = {
           ...metadata,
           name: metadata.name,
-          icon: metadata.icons?.[0]
+          icon: metadata.icons?.[0],
+          type: 'walletconnect'
         };
       }
+    } else {
+      this.wallet = {
+        name: 'Unknown Wallet',
+        type: 'walletconnect'
+      };
     }
 
     return true;
@@ -81,7 +87,7 @@ export class WalletConnectConnector extends WalletConnector {
   }: {
     projectId: string;
     metadata: Metadata;
-  }): Promise<IUniversalProvider> {
+  }): Promise<UniversalProvider> {
     if (!this.provider) {
       this.provider = (await UniversalProvider.init({
         projectId,
@@ -90,81 +96,36 @@ export class WalletConnectConnector extends WalletConnector {
       })) as Provider;
     }
 
-    return this.provider as IUniversalProvider;
+    return this.provider as UniversalProvider;
   }
 
   override async connect(opts: ConnectOptions) {
-    const { siweConfig, namespaces, defaultNetwork, universalLink } = opts;
+    const { namespaces, defaultNetwork, universalLink } = opts;
     function onUri(uri: string) {
       WcController.setWcUri(uri);
     }
 
-    const provider = this.getProvider() as IUniversalProvider;
+    const provider = this.getProvider() as UniversalProvider;
 
     // @ts-ignore
     provider.on('display_uri', onUri);
 
-    let session: IUniversalProvider['session'];
+    let session: UniversalProvider['session'];
 
     // SIWE
     const isEVMOnly = Object.keys(namespaces ?? {}).length === 1 && namespaces?.['eip155'];
-    const params = await siweConfig?.getMessageParams?.();
-    if (siweConfig?.options?.enabled && params && Object.keys(params).length > 0 && isEVMOnly) {
+
+    if (isEVMOnly && SIWXUtil.getSIWX()) {
       // 1CA is only supported on EVM
 
-      // @ts-ignore
-      const result = await provider.authenticate(
-        {
-          ...params,
-          nonce: await siweConfig.getNonce(),
-          methods: namespaces?.['eip155']?.methods,
-          chains: params.chains
-        },
+      session = await SIWXUtil.universalProviderAuthenticate({
+        universalProvider: this.provider as UniversalProvider,
+        chains: namespaces?.['eip155']?.chains ?? [],
+        methods: namespaces?.['eip155']?.methods ?? [],
         universalLink
-      );
-
-      // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
-      const signedCacao = result?.auths?.[0];
-      if (signedCacao) {
-        const { p, s } = signedCacao;
-        const chainId = getDidChainId(p.iss);
-        const address = getDidAddress(p.iss);
-
-        try {
-          // Kicks off verifyMessage and populates external states
-          const message = provider?.client?.formatAuthMessage({
-            request: p,
-            iss: p.iss
-          })!;
-
-          await SIWEController.verifyMessage({
-            message,
-            signature: s.s,
-            cacao: signedCacao
-          });
-
-          if (address && chainId) {
-            const siweSession = {
-              address,
-              chainId: parseInt(chainId, 10)
-            };
-
-            SIWEController.setSession(siweSession);
-            SIWEController.onSignIn?.(siweSession);
-          }
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error('Error verifying message', error);
-          // eslint-disable-next-line no-console
-          await provider.disconnect().catch(console.error);
-          // eslint-disable-next-line no-console
-          await SIWEController.signOut().catch(console.error);
-          throw error;
-        }
-      }
-      session = result?.session;
+      });
     } else {
-      session = await (this.provider as IUniversalProvider).connect({
+      session = await (this.provider as UniversalProvider).connect({
         optionalNamespaces: namespaces
       });
     }
@@ -174,14 +135,18 @@ export class WalletConnectConnector extends WalletConnector {
       this.wallet = {
         ...metadata,
         name: metadata?.name,
-        icon: metadata?.icons?.[0]
+        icon: metadata?.icons?.[0],
+        type: 'walletconnect'
       };
     } else {
-      this.wallet = undefined;
+      this.wallet = {
+        name: 'Unknown Wallet',
+        type: 'walletconnect'
+      };
     }
 
     if (defaultNetwork?.caipNetworkId) {
-      (this.provider as IUniversalProvider).setDefaultChain(defaultNetwork.caipNetworkId);
+      (this.provider as UniversalProvider).setDefaultChain(defaultNetwork.caipNetworkId);
     }
 
     if (session?.sessionProperties) {
@@ -228,7 +193,7 @@ export class WalletConnectConnector extends WalletConnector {
 
   override getNamespaces(): Namespaces {
     const namespaces =
-      ((this.provider as IUniversalProvider)?.session?.namespaces as Namespaces) ?? {};
+      ((this.provider as UniversalProvider)?.session?.namespaces as Namespaces) ?? {};
     this.namespaces = namespaces;
 
     return namespaces;
@@ -243,7 +208,7 @@ export class WalletConnectConnector extends WalletConnector {
 
     let caipNetworkId = network.caipNetworkId ?? `eip155:${network.id}`;
 
-    (this.provider as IUniversalProvider).setDefaultChain(caipNetworkId);
+    (this.provider as UniversalProvider).setDefaultChain(caipNetworkId);
 
     return Promise.resolve();
   }
@@ -258,7 +223,7 @@ export class WalletConnectConnector extends WalletConnector {
       return undefined;
     }
 
-    const chainId = (this.provider as IUniversalProvider).rpcProviders[
+    const chainId = (this.provider as UniversalProvider).rpcProviders[
       namespace
     ]?.getDefaultChain?.();
 

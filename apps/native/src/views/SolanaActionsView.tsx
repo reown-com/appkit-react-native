@@ -45,11 +45,7 @@ export function SolanaActionsView() {
         // For other wallets, it might be needed if they don't infer from session
       };
       const { signature } = (await provider.request(
-        {
-          method: 'solana_signMessage',
-          params
-        },
-        chainId
+        { method: 'solana_signMessage', params }, `solana:${chainId}`
       )) as { signature: string };
       onSignSuccess(signature, 'Sign Message successful');
     } catch (error) {
@@ -92,8 +88,7 @@ export function SolanaActionsView() {
         {
           method: 'solana_signTransaction',
           params
-        },
-        chainId
+        },`solana:${chainId}`
       )) as { signature?: string; transaction?: string };
       if (result.signature) {
         onSignSuccess(`Signature: ${result.signature}`, 'Sign Transaction successful');
@@ -149,8 +144,7 @@ export function SolanaActionsView() {
         {
           method: 'solana_signAndSendTransaction',
           params
-        },
-        chainId
+        },`solana:${chainId}`
       )) as { signature: string };
       onSignSuccess(`Tx Signature: ${signature}`, 'Sign & Send Tx successful');
       // Optionally, you can confirm the transaction here using the signature and connection
@@ -214,8 +208,7 @@ export function SolanaActionsView() {
         {
           method: 'solana_signAllTransactions',
           params
-        },
-        chainId
+        }, `solana:${chainId}`
       )) as { transactions?: string[]; signatures?: string[] }; // Adjust based on provider's typical response
 
       if (result.transactions) {

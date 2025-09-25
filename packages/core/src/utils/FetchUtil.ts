@@ -87,7 +87,7 @@ export class FetchUtil {
     }
   }
 
-  private createUrl({ path, params }: RequestArguments) {
+  public createUrl({ path, params }: RequestArguments) {
     let fullUrl: string;
 
     const isAbsoluteUrl = path.startsWith('http://') || path.startsWith('https://');

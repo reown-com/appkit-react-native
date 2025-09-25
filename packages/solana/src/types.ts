@@ -5,6 +5,7 @@ import type {
   WalletInfo
 } from '@reown/appkit-common-react-native';
 import type nacl from 'tweetnacl';
+import type { Connection } from '@solana/web3.js';
 
 // --- From helpers ---
 
@@ -15,6 +16,14 @@ export interface TokenInfo {
   decimals: number;
   logoURI?: string;
 }
+
+export type SPLTokenTransactionArgs = {
+  connection: Connection;
+  fromAddress: string;
+  toAddress: string;
+  amount: number;
+  tokenMint: string;
+};
 
 // --- From PhantomProvider ---
 

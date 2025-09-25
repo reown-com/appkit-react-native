@@ -8,6 +8,7 @@ import { EventsController } from './EventsController';
 import { RouterController } from './RouterController';
 import { ConnectionsController } from './ConnectionsController';
 import { SwapController } from './SwapController';
+import { ConstantsUtil as CoreConstantsUtil } from '../utils/ConstantsUtil';
 
 // -- Types --------------------------------------------- //
 export interface TxParams {
@@ -118,13 +119,18 @@ export const SendController = {
       });
       RouterController.reset(isAuth ? 'Account' : 'AccountDefault');
       this.resetState();
-    } catch (error) {
+    } catch (error: any) {
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_ERROR',
         properties: eventProperties
       });
-      SnackController.showError('Something went wrong');
+
+      if (error?.message && error?.message.includes('user rejected')) {
+        SnackController.showError('Transaction cancelled');
+      } else {
+        SnackController.showError('Something went wrong');
+      }
     } finally {
       this.state.loading = false;
     }
@@ -222,7 +228,21 @@ export const SendController = {
       throw new Error('Invalid address');
     }
 
+    let tokenMint: string | undefined;
+
+    if (
+      SendController.state.token &&
+      SendController.state.token.address !== CoreConstantsUtil.NATIVE_TOKEN_ADDRESS.solana
+    ) {
+      if (CoreHelperUtil.isCaipAddress(SendController.state.token.address)) {
+        tokenMint = CoreHelperUtil.getPlainAddress(SendController.state.token.address);
+      } else {
+        tokenMint = SendController.state.token.address;
+      }
+    }
+
     await ConnectionsController.sendTransaction({
+      tokenMint,
       fromAddress: plainAddress,
       toAddress: this.state.receiverAddress,
       amount: this.state.sendTokenAmount,

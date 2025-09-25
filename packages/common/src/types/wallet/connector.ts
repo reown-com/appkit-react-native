@@ -4,7 +4,6 @@ import type { AppKitNetwork } from '../blockchain/network';
 import type { Provider } from '../blockchain/adapter';
 import type { WalletInfo, Metadata } from './wallet-info';
 import type { ConnectionProperties } from './connection';
-import type { AppKitSIWEClient } from '../siwe';
 import type { Storage } from '../storage';
 import type { WcWallet } from '../api/wallet-api';
 
@@ -31,7 +30,6 @@ export type ConnectOptions = {
   namespaces?: ProposalNamespaces;
   defaultNetwork?: AppKitNetwork;
   universalLink?: string;
-  siweConfig?: AppKitSIWEClient;
 };
 
 export type ConnectorInitOptions = {

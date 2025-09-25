@@ -23,12 +23,4 @@ export const testM = timingFixture.extend<ModalFixture>({
   }
 });
 
-export const testMSiwe = timingFixture.extend<ModalFixture>({
-  modalPage: async ({ page }, use) => {
-    const modalPage = new ModalPage(page);
-    await modalPage.load();
-    await use(modalPage);
-  }
-});
-
 export { expect } from '@playwright/test';
