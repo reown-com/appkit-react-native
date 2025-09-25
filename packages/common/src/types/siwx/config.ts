@@ -70,6 +70,4 @@ export interface SIWXConfig {
    * @default true
    */
   signOutOnDisconnect?: boolean;
-  domain?: string;
-  uri?: string;
 }
