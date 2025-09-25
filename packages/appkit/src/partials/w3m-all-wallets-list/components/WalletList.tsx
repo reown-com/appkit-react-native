@@ -24,6 +24,7 @@ interface Props {
   isLoading?: boolean;
   loadingItems?: number;
   style?: StyleProp<ViewStyle>;
+  testIDKey?: string;
 }
 
 export function WalletList({
@@ -33,6 +34,7 @@ export function WalletList({
   onEndReachedThreshold,
   isLoading = false,
   loadingItems = 20,
+  testIDKey,
   style
 }: Props) {
   const { padding, maxHeight } = useCustomDimensions();
@@ -61,6 +63,7 @@ export function WalletList({
             imageHeaders={imageHeaders}
             onItemPress={onItemPress}
             style={styles.itemContainer}
+            testID={testIDKey ? `${testIDKey}-${item?.id}` : undefined}
           />
         );
       }}

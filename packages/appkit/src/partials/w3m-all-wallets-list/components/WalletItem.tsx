@@ -10,9 +10,10 @@ interface WalletItemProps {
   imageHeaders?: Record<string, string>;
   onItemPress: (wallet: WcWallet) => void;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
-export function WalletItem({ item, imageHeaders, onItemPress, style }: WalletItemProps) {
+export function WalletItem({ item, imageHeaders, onItemPress, style, testID }: WalletItemProps) {
   const { walletImages } = useSnapshot(AssetController.state);
   const isInstalled = ApiController.state.installed.find(wallet => wallet?.id === item?.id);
   const imageSrc = AssetUtil.getWalletImage(item, walletImages);
@@ -29,6 +30,7 @@ export function WalletItem({ item, imageHeaders, onItemPress, style }: WalletIte
       name={item?.name ?? 'Unknown'}
       onPress={() => onItemPress(item)}
       installed={!!isInstalled}
+      testID={testID}
     />
   );
 }

@@ -78,5 +78,5 @@ export function AllWalletsSearch({ searchQuery, onItemPress }: AllWalletsSearchP
     );
   }
 
-  return <WalletList onItemPress={onItemPress} data={results} />;
+  return <WalletList onItemPress={onItemPress} data={results} testIDKey="wallet-search-item" />;
 }

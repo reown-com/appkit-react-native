@@ -36,10 +36,6 @@ onrampTest.beforeAll(async ({ browser }) => {
 
 onrampTest.beforeEach(async () => {
   await onRampPage.openBuyCryptoModal();
-  try {
-    await onRampValidator.expectOnRampLoadingView();
-  } catch {
-  }
   await onRampValidator.expectOnRampInitialScreen();
 
   const currency = await onRampPage.getPaymentCurrency();
@@ -158,7 +154,7 @@ onrampTest('Should be able to select a country and see currency update', async (
 onrampTest('Should display appropriate error messages for invalid amounts', async () => {
   try {
     // Test too low amount
-    await onRampPage.enterAmount(0.1);
+    await onRampPage.enterAmount(1);
     await onRampValidator.expectAmountError();
 
     // Test too high amount

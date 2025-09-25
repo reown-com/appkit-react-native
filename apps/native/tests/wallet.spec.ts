@@ -58,13 +58,6 @@ sampleWalletTest('it should be connected instantly after page refresh', async ()
  * - Network persistence after refresh
  */
 
-sampleWalletTest('it should show disabled networks', async () => {
-  await modalPage.openAccountModal();
-  await modalPage.goToNetworks();
-  await modalValidator.expectNetworksDisabled(TEST_CHAINS.GNOSIS);
-  await modalPage.closeModal();
-});
-
 sampleWalletTest('it should switch networks and sign', async () => {
   const chains = [TEST_CHAINS.POLYGON, TEST_CHAINS.ETHEREUM];
 

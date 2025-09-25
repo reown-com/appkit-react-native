@@ -15,11 +15,12 @@ interface Props {
   item: OnRampCountry;
   selected: boolean;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
 export const ITEM_HEIGHT = 60;
 
-export function Country({ onPress, item, selected, style }: Props) {
+export function Country({ onPress, item, selected, style, testID }: Props) {
   const handlePress = () => {
     onPress(item);
   };
@@ -29,6 +30,7 @@ export function Country({ onPress, item, selected, style }: Props) {
       onPress={handlePress}
       style={[styles.container, style]}
       backgroundColor="transparent"
+      testID={testID}
     >
       <FlexView flexDirection="row" alignItems="center" justifyContent="flex-start" padding="s">
         <FlexView style={styles.imageContainer}>
