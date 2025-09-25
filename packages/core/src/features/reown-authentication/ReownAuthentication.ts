@@ -26,6 +26,7 @@ export class ReownAuthentication implements SIWXConfig {
   private readonly localNonceStorageKey: keyof SafeStorageItems;
   private readonly messenger: ReownAuthenticationMessenger;
   private readonly fetchUtil = new FetchUtil({ baseUrl: CoreHelperUtil.getApiUrl() });
+  public readonly signOutOnDisconnect: boolean;
 
   private required: boolean;
 
@@ -43,6 +44,8 @@ export class ReownAuthentication implements SIWXConfig {
     this.messenger = new ReownAuthenticationMessenger({
       getNonce: this.getNonce.bind(this)
     });
+
+    this.signOutOnDisconnect = params.signOutOnDisconnect ?? true;
   }
 
   async createMessage(input: SIWXMessage.Input): Promise<SIWXMessage> {
@@ -331,6 +334,12 @@ export namespace ReownAuthentication {
      * @default true
      */
     required?: boolean;
+    /**
+     * This flag determines whether the session should be cleared when the user disconnects.
+     *
+     * @default true
+     */
+    signOutOnDisconnect?: boolean;
   };
 
   export type AvailableRequestHeaders = {

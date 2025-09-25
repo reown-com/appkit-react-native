@@ -65,10 +65,9 @@ export interface SIWXConfig {
    */
   getRequired?: () => boolean;
   /**
-   * This method determines whether the session should be cleared when the user disconnects.
+   * This flag determines whether the session should be cleared when the user disconnects.
    *
    * @default true
-   * @returns {boolean}
    */
   signOutOnDisconnect?: boolean;
   domain?: string;

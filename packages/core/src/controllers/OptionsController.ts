@@ -115,6 +115,10 @@ export const OptionsController = {
   },
 
   setSiwx(siwx?: OptionsControllerState['siwx']) {
+    if (siwx && (siwx?.signOutOnDisconnect === undefined || siwx?.signOutOnDisconnect === null)) {
+      siwx.signOutOnDisconnect = true;
+    }
+
     state.siwx = siwx;
   },
 
