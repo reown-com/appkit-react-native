@@ -138,6 +138,8 @@ export const SIWXUtil = {
         signature
       });
 
+      SnackController.hide();
+
       ModalController.close();
 
       EventsController.sendEvent({
