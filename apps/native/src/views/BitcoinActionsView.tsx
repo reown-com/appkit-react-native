@@ -69,13 +69,13 @@ export function BitcoinActionsView() {
         return;
       }
 
-      const utxos = await BitcoinUtil.getUTXOs(address, chainId as `bip122:${string}`);
+      const utxos = await BitcoinUtil.getUTXOs(address, `bip122:${chainId}`);
       const feeRate = await BitcoinUtil.getFeeRate();
 
       const params = BitcoinUtil.createSignPSBTParams({
         amount: 1500,
         feeRate,
-        caipNetworkId: chainId as `bip122:${string}`,
+        caipNetworkId: `bip122:${chainId}`,
         recipientAddress: address,
         senderAddress: address,
         utxos
