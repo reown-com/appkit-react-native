@@ -50,6 +50,7 @@ export const EventsController = {
       await api.post({
         path: '/e',
         headers: ApiController._getApiHeaders(),
+        params: ApiController._getApiParams(),
         body: {
           eventId: CoreHelperUtil.getUUID(),
           bundleId: CoreHelperUtil.getBundleId(),

@@ -71,9 +71,13 @@ export class FetchUtil {
     return this.processResponse<T>(response);
   }
 
-  public async fetchImage(path: string, headers?: Record<string, string>) {
+  public async fetchImage(
+    path: string,
+    headers?: Record<string, string>,
+    params?: Record<string, string>
+  ) {
     try {
-      const url = this.createUrl({ path }).toString();
+      const url = this.createUrl({ path, params }).toString();
       const response = await fetch(url, { headers });
       const blob = await response.blob();
       const reader = new FileReader();

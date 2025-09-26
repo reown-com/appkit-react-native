@@ -65,13 +65,18 @@ export const ApiController = {
     return subKey(state, key, callback);
   },
 
-  _getApiHeaders() {
+  _getApiParams() {
     const { projectId, sdkType, sdkVersion } = OptionsController.state;
 
     return {
-      'x-project-id': projectId,
-      'x-sdk-type': sdkType,
-      'x-sdk-version': sdkVersion,
+      projectId,
+      st: sdkType,
+      sv: sdkVersion
+    };
+  },
+
+  _getApiHeaders() {
+    return {
       'User-Agent': ApiUtil.getUserAgent(),
       'origin': ApiUtil.getOrigin()
     };
@@ -79,7 +84,11 @@ export const ApiController = {
 
   async _fetchWalletImage(imageId: string) {
     const headers = ApiController._getApiHeaders();
-    const url = await api.fetchImage(`/getWalletImage/${imageId}`, headers);
+    const url = await api.fetchImage(
+      `/getWalletImage/${imageId}`,
+      headers,
+      ApiController._getApiParams()
+    );
     if (url) {
       AssetController.setWalletImage(imageId, url);
     }
@@ -92,7 +101,11 @@ export const ApiController = {
     }
 
     const headers = ApiController._getApiHeaders();
-    const url = await api.fetchImage(`/public/getAssetImage/${imageId}`, headers);
+    const url = await api.fetchImage(
+      `/public/getAssetImage/${imageId}`,
+      headers,
+      ApiController._getApiParams()
+    );
     if (url) {
       AssetController.setNetworkImage(networkId, url);
     }
@@ -117,6 +130,7 @@ export const ApiController = {
       const path = Platform.select({ default: 'getIosData', android: 'getAndroidData' });
       const response = await api.get<ApiGetDataWalletsResponse>({
         path,
+        params: ApiController._getApiParams(),
         headers: ApiController._getApiHeaders()
       });
 
@@ -157,6 +171,7 @@ export const ApiController = {
           path: '/getWallets',
           headers: ApiController._getApiHeaders(),
           params: {
+            ...ApiController._getApiParams(),
             page: '1',
             platform: this.platform(),
             entries: installed?.length.toString(),
@@ -219,6 +234,7 @@ export const ApiController = {
         path: '/getWallets',
         headers: ApiController._getApiHeaders(),
         params: {
+          ...ApiController._getApiParams(),
           page: '1',
           platform: this.platform(),
           entries: featuredWalletIds?.length
@@ -270,6 +286,7 @@ export const ApiController = {
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getApiParams(),
         page: '1',
         platform: this.platform(),
         entries: recommendedEntries,
@@ -309,6 +326,7 @@ export const ApiController = {
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getApiParams(),
         page: String(page),
         platform: this.platform(),
         entries: String(defaultEntries),
@@ -343,6 +361,7 @@ export const ApiController = {
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getApiParams(),
         page: '1',
         platform: this.platform(),
         entries: String(defaultEntries),
@@ -426,6 +445,7 @@ export const ApiController = {
   async fetchAnalyticsConfig() {
     const response = await api.get<ApiGetAnalyticsConfigResponse>({
       path: '/getAnalyticsConfig',
+      params: ApiController._getApiParams(),
       headers: ApiController._getApiHeaders()
     });
     if (!response) return;
