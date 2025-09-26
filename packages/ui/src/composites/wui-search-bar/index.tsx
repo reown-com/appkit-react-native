@@ -41,7 +41,7 @@ export function SearchBar({
         returnKeyType="search"
         disableFullscreenUI
       >
-        {showClear && (
+        {showClear ? (
           <InputElement
             icon="close"
             style={{ marginRight: Spacing['4xs'] }}
@@ -51,7 +51,7 @@ export function SearchBar({
               handleChangeText('');
             }}
           />
-        )}
+        ) : null}
       </InputText>
     </FlexView>
   );

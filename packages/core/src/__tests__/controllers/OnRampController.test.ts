@@ -1,5 +1,4 @@
 import {
-  AccountController,
   OnRampController,
   BlockchainApiController,
   ConstantsUtil,
@@ -13,7 +12,7 @@ import type {
   OnRampCryptoCurrency,
   OnRampPaymentMethod,
   OnRampServiceProvider
-} from '../../utils/TypeUtil';
+} from '@reown/appkit-common-react-native';
 
 // Mock dependencies
 jest.mock('../../utils/StorageUtil');
@@ -34,11 +33,11 @@ jest.mock('../../controllers/EventsController', () => ({
     sendEvent: jest.fn()
   }
 }));
-
-jest.mock('../../controllers/NetworkController', () => ({
-  NetworkController: {
+jest.mock('../../controllers/ConnectionsController', () => ({
+  ConnectionsController: {
     state: {
-      caipNetwork: { id: 'eip155:1' }
+      activeNetwork: { caipNetworkId: 'eip155:1' },
+      activeAddress: 'eip155:1:0x1234567890123456789012345678901234567890'
     }
   }
 }));
@@ -254,7 +253,6 @@ describe('OnRampController', () => {
         mockCountry,
         mockCountry2
       ]);
-
       (BlockchainApiController.fetchOnRampFiatCurrencies as jest.Mock).mockResolvedValue([
         mockFiatCurrency, // USD
         mockFiatCurrency2 // ARS
@@ -342,7 +340,6 @@ describe('OnRampController', () => {
       OnRampController.setPaymentCurrency(mockFiatCurrency);
       OnRampController.setPurchaseCurrency(mockCryptoCurrency);
       OnRampController.setPaymentAmount(100);
-      AccountController.setCaipAddress('eip155:1:0x1234567890123456789012345678901234567890');
 
       // Mock API response
       (BlockchainApiController.fetchOnRampPaymentMethods as jest.Mock).mockResolvedValue([
@@ -379,7 +376,6 @@ describe('OnRampController', () => {
       OnRampController.setPaymentCurrency(mockFiatCurrency);
       OnRampController.setPurchaseCurrency(mockCryptoCurrency);
       OnRampController.setPaymentAmount(10);
-      AccountController.setCaipAddress('eip155:1:0x1234567890123456789012345678901234567890');
 
       // Mock API error
       (BlockchainApiController.getOnRampQuotes as jest.Mock).mockRejectedValue({

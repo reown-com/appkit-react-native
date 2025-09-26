@@ -1,0 +1,40 @@
+import { useSnapshot } from 'valtio';
+import { ApiController, AssetController, AssetUtil } from '@reown/appkit-core-react-native';
+import { CardSelect, CardSelectLoader } from '@reown/appkit-ui-react-native';
+import type { WcWallet } from '@reown/appkit-common-react-native';
+import type { StyleProp, ViewStyle } from 'react-native';
+import { memo } from 'react';
+
+interface WalletItemProps {
+  item: WcWallet;
+  imageHeaders?: Record<string, string>;
+  onItemPress: (wallet: WcWallet) => void;
+  style?: StyleProp<ViewStyle>;
+  testID?: string;
+}
+
+export function WalletItem({ item, imageHeaders, onItemPress, style, testID }: WalletItemProps) {
+  const { walletImages } = useSnapshot(AssetController.state);
+  const isInstalled = ApiController.state.installed.find(wallet => wallet?.id === item?.id);
+  const imageSrc = AssetUtil.getWalletImage(item, walletImages);
+
+  if (!item?.id) {
+    return <CardSelectLoader style={style} />;
+  }
+
+  return (
+    <CardSelect
+      imageSrc={imageSrc}
+      style={style}
+      imageHeaders={imageHeaders}
+      name={item?.name ?? 'Unknown'}
+      onPress={() => onItemPress(item)}
+      installed={!!isInstalled}
+      testID={testID}
+    />
+  );
+}
+
+export const MemoizedWalletItem = memo(WalletItem, (prevProps, nextProps) => {
+  return prevProps.item.id === nextProps.item.id;
+});

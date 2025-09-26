@@ -1,11 +1,9 @@
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg from 'react-native-svg';
 import { Icon } from '../../components/wui-icon';
 import { Image } from '../../components/wui-image';
 import { Shimmer } from '../../components/wui-shimmer';
-import { Text } from '../../components/wui-text';
-import { FlexView } from '../../layout/wui-flex';
 import { QRCodeUtil } from '../../utils/QRCodeUtil';
 import { BorderRadius, LightTheme, Spacing } from '../../utils/ThemeUtil';
 import type { IconType } from '../../utils/TypesUtil';
@@ -21,9 +19,7 @@ export interface QrCodeProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const LABEL_HEIGHT = 18;
-
-export function QrCode({ size, uri, imageSrc, testID, arenaClear, icon, style }: QrCodeProps) {
+export function QrCode_({ size, uri, imageSrc, testID, arenaClear, icon, style }: QrCodeProps) {
   const Theme = LightTheme;
   const containerPadding = Spacing.l;
   const qrSize = size - containerPadding * 2;
@@ -66,25 +62,25 @@ export function QrCode({ size, uri, imageSrc, testID, arenaClear, icon, style }:
     <View
       style={[
         styles.container,
-        { width: size, backgroundColor: Theme['bg-100'], padding: containerPadding },
+        { width: size, backgroundColor: Theme['inverse-100'], padding: containerPadding },
         style
       ]}
       testID={testID}
     >
-      <FlexView alignItems="center" justifyContent="center">
-        <Svg height={qrSize} width={qrSize}>
-          {dots}
-        </Svg>
-        {logoTemplate()}
-      </FlexView>
-      <Text variant="small-500" color="fg-150" style={[styles.label, { height: LABEL_HEIGHT }]}>
-        UX by{' '}
-        <Text variant="small-500" color="inverse-000">
-          Reown
-        </Text>
-      </Text>
+      <Svg height={qrSize} width={qrSize}>
+        {dots}
+      </Svg>
+      {logoTemplate()}
     </View>
   ) : (
-    <Shimmer width={size} height={size + LABEL_HEIGHT} borderRadius={BorderRadius.l} />
+    <Shimmer width={size} height={size} borderRadius={BorderRadius.l} />
   );
 }
+
+export const QrCode = memo(QrCode_, (prevProps, nextProps) => {
+  return (
+    prevProps.size === nextProps.size &&
+    prevProps.uri === nextProps.uri &&
+    prevProps.style === nextProps.style
+  );
+});

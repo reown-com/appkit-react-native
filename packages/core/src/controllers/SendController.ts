@@ -1,19 +1,19 @@
 import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy, ref, subscribe as sub } from 'valtio';
 import { ContractUtil, type Balance } from '@reown/appkit-common-react-native';
-import { AccountController } from './AccountController';
-import { ConnectionController } from './ConnectionController';
+
 import { SnackController } from './SnackController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { EventsController } from './EventsController';
-import { NetworkController } from './NetworkController';
 import { RouterController } from './RouterController';
+import { ConnectionsController } from './ConnectionsController';
+import { SwapController } from './SwapController';
+import { ConstantsUtil as CoreConstantsUtil } from '../utils/ConstantsUtil';
 
 // -- Types --------------------------------------------- //
 export interface TxParams {
   receiverAddress: string;
   sendTokenAmount: number;
-  gasPrice: bigint;
   decimals: string;
 }
 
@@ -30,8 +30,6 @@ export interface SendControllerState {
   receiverAddress?: string;
   receiverProfileName?: string;
   receiverProfileImageUrl?: string;
-  gasPrice?: bigint;
-  gasPriceInUSD?: number;
   loading: boolean;
 }
 
@@ -78,152 +76,185 @@ export const SendController = {
     state.receiverProfileName = receiverProfileName;
   },
 
-  setGasPrice(gasPrice: SendControllerState['gasPrice']) {
-    state.gasPrice = gasPrice;
-  },
-
-  setGasPriceInUsd(gasPriceInUSD: SendControllerState['gasPriceInUSD']) {
-    state.gasPriceInUSD = gasPriceInUSD;
-  },
-
   setLoading(loading: SendControllerState['loading']) {
     state.loading = loading;
   },
 
-  sendToken() {
-    if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
-      state.loading = true;
+  async sendToken() {
+    const isAuth = !!ConnectionsController.state.connection?.properties?.provider;
+    const eventProperties = {
+      isSmartAccount: ConnectionsController.state.accountType === 'smartAccount',
+      token: this.state.token?.address ?? this.state.token?.symbol ?? '',
+      amount: this.state.sendTokenAmount || 0,
+      network: ConnectionsController.state.activeNetwork?.caipNetworkId ?? ''
+    };
+
+    try {
+      this.state.loading = true;
+
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_INITIATED',
-        properties: {
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
-          token: this.state.token.address,
-          amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
-        }
+        properties: eventProperties
       });
-      this.sendERC20Token({
+
+      switch (ConnectionsController.state.activeNamespace) {
+        case 'eip155':
+          await SendController.sendEvmToken();
+
+          break;
+        case 'solana':
+          await SendController.sendSolanaToken();
+
+          break;
+        default:
+          throw new Error('Unsupported chain');
+      }
+
+      SnackController.showSuccess('Transaction started');
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_SUCCESS',
+        properties: eventProperties
+      });
+      RouterController.reset(isAuth ? 'Account' : 'AccountDefault');
+      this.resetState();
+    } catch (error: any) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_ERROR',
+        properties: eventProperties
+      });
+
+      if (error?.message && error?.message.includes('user rejected')) {
+        SnackController.showError('Transaction cancelled');
+      } else {
+        SnackController.showError('Something went wrong');
+      }
+    } finally {
+      this.state.loading = false;
+    }
+  },
+
+  async sendEvmToken() {
+    if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
+      await this.sendERC20Token({
         receiverAddress: this.state.receiverAddress,
         tokenAddress: this.state.token.address,
         sendTokenAmount: this.state.sendTokenAmount,
-        decimals: this.state.token.quantity.decimals
+        decimals: this.state.token.quantity?.decimals || '0'
       });
     } else if (
       this.state.receiverAddress &&
       this.state.sendTokenAmount &&
-      this.state.gasPrice &&
-      this.state.token?.quantity.decimals
+      this.state.token?.quantity?.decimals
     ) {
-      state.loading = true;
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SEND_INITIATED',
-        properties: {
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
-          token: this.state.token?.symbol,
-          amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
-        }
-      });
-      this.sendNativeToken({
+      await this.sendNativeToken({
         receiverAddress: this.state.receiverAddress,
         sendTokenAmount: this.state.sendTokenAmount,
-        gasPrice: this.state.gasPrice,
         decimals: this.state.token.quantity.decimals
       });
     }
   },
 
   async sendNativeToken(params: TxParams) {
-    RouterController.pushTransactionStack({
-      view: 'Account',
-      goBack: false
-    });
-
     const to = params.receiverAddress as `0x${string}`;
-    const address = AccountController.state.address as `0x${string}`;
-    const value = ConnectionController.parseUnits(
+    const network = ConnectionsController.state.activeNetwork;
+    const address = CoreHelperUtil.getPlainAddress(
+      ConnectionsController.state.activeAddress
+    ) as `0x${string}`;
+    if (!address) {
+      throw new Error('Invalid address');
+    }
+
+    const value = ConnectionsController.parseUnits(
       params.sendTokenAmount.toString(),
       Number(params.decimals)
     );
     const data = '0x';
 
-    try {
-      await ConnectionController.sendTransaction({
-        to,
-        address,
-        data,
-        value,
-        gasPrice: params.gasPrice
-      });
-      SnackController.showSuccess('Transaction started');
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SEND_SUCCESS',
-        properties: {
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
-          token: this.state.token?.symbol || '',
-          amount: params.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
-        }
-      });
-      this.resetSend();
-    } catch (error) {
-      state.loading = false;
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SEND_ERROR',
-        properties: {
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount',
-          token: this.state.token?.symbol || '',
-          amount: params.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
-        }
-      });
-      SnackController.showError('Something went wrong');
-    }
+    await ConnectionsController.sendTransaction({
+      to,
+      address,
+      data,
+      value,
+      network
+    });
   },
 
   async sendERC20Token(params: ContractWriteParams) {
-    RouterController.pushTransactionStack({
-      view: 'Account',
-      goBack: false
-    });
-
-    const amount = ConnectionController.parseUnits(
+    const network = ConnectionsController.state.activeNetwork;
+    const amount = ConnectionsController.parseUnits(
       params.sendTokenAmount.toString(),
       Number(params.decimals)
     );
 
-    try {
-      if (
-        AccountController.state.address &&
-        params.sendTokenAmount &&
-        params.receiverAddress &&
-        params.tokenAddress
-      ) {
-        const tokenAddress = CoreHelperUtil.getPlainAddress(
-          params.tokenAddress as `${string}:${string}:${string}`
-        ) as `0x${string}`;
-        await ConnectionController.writeContract({
-          fromAddress: AccountController.state.address as `0x${string}`,
-          tokenAddress,
-          receiverAddress: params.receiverAddress as `0x${string}`,
-          tokenAmount: amount,
-          method: 'transfer',
-          abi: ContractUtil.getERC20Abi(tokenAddress)
-        });
-        SnackController.showSuccess('Transaction started');
-        this.resetSend();
+    if (
+      ConnectionsController.state.activeAddress &&
+      params.sendTokenAmount &&
+      params.receiverAddress &&
+      params.tokenAddress
+    ) {
+      const tokenAddress = CoreHelperUtil.getPlainAddress(
+        params.tokenAddress as `${string}:${string}:${string}`
+      ) as `0x${string}`;
+
+      const fromAddress = CoreHelperUtil.getPlainAddress(
+        ConnectionsController.state.activeAddress
+      ) as `0x${string}`;
+      if (!fromAddress) {
+        throw new Error('Invalid address');
       }
-    } catch (error) {
-      state.loading = false;
-      SnackController.showError('Something went wrong');
+
+      await ConnectionsController.writeContract({
+        fromAddress,
+        tokenAddress,
+        receiverAddress: params.receiverAddress as `0x${string}`,
+        tokenAmount: amount,
+        method: 'transfer',
+        abi: ContractUtil.getERC20Abi(tokenAddress),
+        network
+      });
     }
   },
 
-  resetSend() {
+  async sendSolanaToken() {
+    if (!this.state.sendTokenAmount || !this.state.receiverAddress) {
+      throw new Error('An amount and receiver address are required');
+    }
+
+    const plainAddress = CoreHelperUtil.getPlainAddress(ConnectionsController.state.activeAddress);
+    if (!plainAddress) {
+      throw new Error('Invalid address');
+    }
+
+    let tokenMint: string | undefined;
+
+    if (
+      SendController.state.token &&
+      SendController.state.token.address !== CoreConstantsUtil.NATIVE_TOKEN_ADDRESS.solana
+    ) {
+      if (CoreHelperUtil.isCaipAddress(SendController.state.token.address)) {
+        tokenMint = CoreHelperUtil.getPlainAddress(SendController.state.token.address);
+      } else {
+        tokenMint = SendController.state.token.address;
+      }
+    }
+
+    await ConnectionsController.sendTransaction({
+      tokenMint,
+      fromAddress: plainAddress,
+      toAddress: this.state.receiverAddress,
+      amount: this.state.sendTokenAmount,
+      network: ConnectionsController.state.activeNetwork
+    });
+  },
+
+  async fetchNetworkPrice() {
+    await SwapController.getNetworkTokenPrice();
+  },
+
+  resetState() {
     state.token = undefined;
     state.sendTokenAmount = undefined;
     state.receiverAddress = undefined;

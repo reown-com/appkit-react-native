@@ -1,0 +1,124 @@
+import { StyleSheet } from 'react-native';
+import { Button, Text, FlexView } from '@reown/appkit-ui-react-native';
+import { useAccount, useProvider } from '@reown/appkit-react-native';
+
+import { ToastUtils } from '../utils/ToastUtils';
+import { BitcoinUtil, SignPSBTResponse } from '../utils/BitcoinUtil';
+
+export function BitcoinActionsView() {
+  const { address, chainId, namespace } = useAccount();
+  const { provider } = useProvider();
+
+  const onSignSuccess = (data: string) => {
+    ToastUtils.showSuccessToast('Sign successful', data);
+  };
+
+  const onSignError = (error: Error) => {
+    ToastUtils.showErrorToast('Sign failed', error.message);
+  };
+
+  const signMessage = async () => {
+    try {
+      if (!provider) {
+        ToastUtils.showErrorToast('Sign failed', 'No provider found');
+
+        return;
+      }
+
+      if (!address) {
+        ToastUtils.showErrorToast('Sign failed', 'No address found');
+
+        return;
+      }
+
+      const message = 'Hello from AppKit Bitcoin';
+
+      const { signature } = (await provider.request(
+        {
+          method: 'signMessage',
+          params: { message, account: address, address, protocol: 'ecdsa' }
+        },
+        `bip122:${chainId}`
+      )) as { address: string; signature: string };
+
+      const formattedSignature = BitcoinUtil.normalizeSignature(signature);
+
+      onSignSuccess(formattedSignature.base64);
+    } catch (error) {
+      onSignError(error as Error);
+    }
+  };
+
+  const signPsbt = async () => {
+    try {
+      if (!provider) {
+        ToastUtils.showErrorToast('Sign failed', 'No provider found');
+
+        return;
+      }
+
+      if (!address) {
+        ToastUtils.showErrorToast('Sign failed', 'No address found');
+
+        return;
+      }
+
+      if (namespace !== 'bip122') {
+        ToastUtils.showErrorToast('Sign failed', 'The selected chain is not bip122');
+
+        return;
+      }
+
+      const utxos = await BitcoinUtil.getUTXOs(address, `bip122:${chainId}`);
+      const feeRate = await BitcoinUtil.getFeeRate();
+
+      const params = BitcoinUtil.createSignPSBTParams({
+        amount: 1500,
+        feeRate,
+        caipNetworkId: `bip122:${chainId}`,
+        recipientAddress: address,
+        senderAddress: address,
+        utxos
+      });
+
+      params.broadcast = false;
+
+      const response = (await provider.request(
+        {
+          method: 'signPsbt',
+          params: {
+            account: address,
+            psbt: params.psbt,
+            signInputs: params.signInputs,
+            broadcast: params.broadcast
+          }
+        }, `bip122:${chainId}`
+      )) as SignPSBTResponse;
+
+      onSignSuccess(`${response.psbt}-${response.txid}`);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('error', error);
+      onSignError(error as Error);
+    }
+  };
+
+  return (
+    <FlexView style={styles.container}>
+      <Text variant="medium-600">Bitcoin Actions</Text>
+      <Button testID="sign-message-button" onPress={signMessage}>
+        Sign
+      </Button>
+      <Button testID="sign-psbt-button" onPress={signPsbt}>
+        Sign PSBT
+      </Button>
+    </FlexView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: 16,
+    gap: 8
+  }
+});

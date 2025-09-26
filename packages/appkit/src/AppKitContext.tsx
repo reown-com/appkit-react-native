@@ -1,0 +1,47 @@
+import React, { createContext, useContext, useMemo, type ReactNode } from 'react';
+import { AppKit } from './AppKit';
+
+interface AppKitContextType {
+  appKit: AppKit | null;
+}
+
+export const AppKitContext = createContext<AppKitContextType>({ appKit: null });
+
+interface AppKitProviderProps {
+  children: ReactNode;
+  instance: AppKit;
+}
+
+export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children, instance }) => {
+  return <AppKitContext.Provider value={{ appKit: instance }}>{children}</AppKitContext.Provider>;
+};
+
+export const useInternalAppKit = () => {
+  const context = useContext(AppKitContext);
+  if (context === undefined) {
+    throw new Error('useAppKit must be used within an AppKitProvider');
+  }
+  if (!context.appKit) {
+    // This might happen if the provider is rendered before AppKit is initialized
+    throw new Error('AppKit instance is not yet available in context.');
+  }
+
+  const stableFunctions = useMemo(() => {
+    if (!context.appKit) {
+      throw new Error('AppKit instance is not available');
+    }
+
+    return {
+      connect: context.appKit.connect.bind(context.appKit),
+      disconnect: context.appKit.disconnect.bind(context.appKit),
+      open: context.appKit.open.bind(context.appKit),
+      close: context.appKit.close.bind(context.appKit),
+      back: context.appKit.back.bind(context.appKit),
+      switchNetwork: context.appKit.switchNetwork.bind(context.appKit),
+      getProvider: context.appKit.getProvider.bind(context.appKit),
+      switchAccountType: context.appKit.switchAccountType.bind(context.appKit)
+    };
+  }, [context.appKit]);
+
+  return stableFunctions;
+};

@@ -169,7 +169,7 @@ export type IconType =
   | 'google'
   | 'helpCircle'
   | 'infoCircle'
-  | 'mail'
+  | 'email'
   | 'mobile'
   | 'more'
   | 'networkPlaceholder'
@@ -179,6 +179,7 @@ export type IconType =
   | 'qrCode'
   | 'recycleHorizontal'
   | 'refresh'
+  | 'reown'
   | 'search'
   | 'settings'
   | 'swapHorizontal'
@@ -223,6 +224,7 @@ export type LogoType =
   | 'more'
   | 'telegram'
   | 'twitch'
+  | 'email'
   | 'x';
 
 export type TagType = 'main' | 'shade' | 'error' | 'success';

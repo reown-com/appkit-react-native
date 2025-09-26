@@ -1,11 +1,10 @@
-import type { Features } from './TypeUtil';
+import type { ChainNamespace, Features } from '@reown/appkit-common-react-native';
 
 const defaultFeatures: Features = {
   swaps: true,
   onramp: true,
-  email: true,
-  emailShowWallets: true,
-  socials: ['x', 'discord', 'apple']
+  socials: ['email', 'google', 'x', 'discord', 'apple', 'facebook', 'github', 'farcaster'],
+  showWallets: true
 };
 
 export const OnRampErrorType = {
@@ -35,7 +34,12 @@ export const ConstantsUtil = {
 
   LINKING_ERROR: 'LINKING_ERROR',
 
-  NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  NATIVE_TOKEN_ADDRESS: {
+    eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    solana: 'So11111111111111111111111111111111111111111',
+    polkadot: '0x',
+    bip122: '0x'
+  } as const satisfies Record<ChainNamespace, string>,
 
   ONRAMP_ERROR_TYPES: OnRampErrorType,
 
@@ -129,6 +133,112 @@ export const ConstantsUtil = {
     'WNT'
   ],
 
+  //TODO: replace with supported chains from backend
+  ACTIVITY_SUPPORTED_CHAINS: [
+    // Arbitrum
+    'eip155:42161',
+    // BNB Chain
+    'eip155:56',
+    // Ethereum
+    'eip155:1',
+    // Blast
+    'eip155:81457',
+    // Ape Chain
+    'eip155:99999',
+    // Avalanche
+    'eip155:43114',
+    // Abstract
+    'eip155:900',
+    // opBNB
+    'eip155:204',
+    // Astar zkEVM
+    'eip155:3776',
+    // ZKsync Era
+    'eip155:324',
+    // Berachain
+    'eip155:80085',
+    // BOB
+    'eip155:60808',
+    // Cyber
+    'eip155:7560',
+    // Degen Chain
+    'eip155:666666666',
+    // Fraxtal
+    'eip155:252',
+    // Gravity Alpha
+    'eip155:10003',
+    // Ink
+    'eip155:999',
+    // Lens
+    'eip155:1348',
+    // Lisk
+    'eip155:113',
+    // Mode
+    'eip155:34443',
+    // Base
+    'eip155:8453',
+    // Mantle
+    'eip155:5000',
+    // Optimism
+    'eip155:10',
+    // Polygon
+    'eip155:137',
+    // Celo
+    'eip155:42220',
+    // Manta Pacific
+    'eip155:169',
+    // Gnosis Chain
+    'eip155:100',
+    // Fantom
+    'eip155:250',
+    // Ronin
+    'eip155:2020',
+    // Linea
+    'eip155:59144',
+    // Metis Andromeda
+    'eip155:1088',
+    // Aurora
+    'eip155:1313161554',
+    // XDC
+    'eip155:50',
+    // Cronos zkEVM
+    'eip155:1030',
+    // Polygon zkEVM
+    'eip155:1101',
+    // Polynomial
+    'eip155:80001',
+    // Rari
+    'eip155:1380012617',
+    // Redstone
+    'eip155:690',
+    // Scroll
+    'eip155:534352',
+    // Sei
+    'eip155:1329',
+    // Soneium
+    'eip155:1499',
+    // Sonic
+    'eip155:7007',
+    // Taiko
+    'eip155:167000',
+    // Viction
+    'eip155:88',
+    // Unichain
+    'eip155:12345',
+    // Wonder
+    'eip155:8787',
+    // X Layer
+    'eip155:196',
+    // World Chain
+    'eip155:2008',
+    // ZERϴ
+    'eip155:77777',
+    // ZkLink Nova
+    'eip155:810180',
+    // re.al
+    'eip155:666'
+  ],
+
   SWAP_SUPPORTED_NETWORKS: [
     // Ethereum'
     'eip155:1',
@@ -155,6 +265,10 @@ export const ConstantsUtil = {
     // Aurora
     'eip155:1313161554'
   ],
+
+  SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'],
+
+  ONRAMP_SUPPORTED_NAMESPACES: ['eip155', 'solana', 'bip122'],
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
 
@@ -183,6 +297,8 @@ export const ConstantsUtil = {
     'eip155:7700': 'CANTO', // Canto
     'eip155:59144': 'ETH_LINEA', // Linea
     'eip155:1101': 'ETH_POLYGONZKEVM', // Polygon zkEVM
-    'eip155:196': 'XIN' // Mixin
+    'eip155:196': 'XIN', // Mixin
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'SOL',
+    'bip122:000000000019d6689c085ae165831e93': 'BTC'
   }
 };

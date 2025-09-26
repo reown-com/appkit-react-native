@@ -1,9 +1,10 @@
 {
   "name": "@reown/appkit-core-react-native",
-  "version": "1.3.2",
+  "version": "2.0.0-alpha.6",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
+  "react-native": "src/index.ts",
   "source": "src/index.ts",
   "scripts": {
     "build": "bob build",
@@ -39,30 +40,15 @@
     "provenance": true
   },
   "dependencies": {
-    "@reown/appkit-common-react-native": "1.3.2",
+    "@reown/appkit-common-react-native": "2.0.0-alpha.6",
     "countries-and-timezones": "3.7.2",
-    "valtio": "1.13.2"
+    "derive-valtio": "0.2.0",
+    "valtio": "2.1.8"
   },
   "peerDependencies": {
-    "@react-native-async-storage/async-storage": ">=1.17.0",
-    "@walletconnect/react-native-compat": ">=2.13.1",
-    "react": ">=17",
-    "react-native": ">=0.68.5"
-  },
-  "react-native": "src/index.ts",
-  "react-native-builder-bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      "commonjs",
-      "module",
-      [
-        "typescript",
-        {
-          "tsc": "../../node_modules/.bin/tsc"
-        }
-      ]
-    ]
+    "@walletconnect/react-native-compat": ">=2.16.1",
+    "react": ">=18",
+    "react-native": ">=0.72"
   },
   "eslintIgnore": [
     "node_modules/",

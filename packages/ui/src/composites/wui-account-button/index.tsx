@@ -114,11 +114,11 @@ export function AccountButton({
           borderWidth={2}
           style={[styles.image, !avatarSrc && styles.avatarPlaceholder]}
         />
-        {address && (
+        {address ? (
           <Text variant="paragraph-500" color="fg-200" style={styles.address}>
             {formattedAddress}
           </Text>
-        )}
+        ) : null}
       </View>
     </AnimatedPressable>
   );

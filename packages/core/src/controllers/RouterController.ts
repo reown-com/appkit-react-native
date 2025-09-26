@@ -1,22 +1,12 @@
 import { proxy } from 'valtio';
 import type {
+  AppKitNetwork,
+  SocialProvider,
   WcWallet,
-  CaipNetwork,
-  Connector,
-  SwapInputTarget,
   OnRampTransactionResult
-} from '../utils/TypeUtil';
+} from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
-type TransactionAction = {
-  goBack: boolean;
-  view: RouterControllerState['view'] | null;
-  close?: boolean;
-  replace?: boolean;
-  onSuccess?: () => void;
-  onCancel?: () => void;
-};
-
 export interface RouterControllerState {
   view:
     | 'Account'
@@ -25,13 +15,7 @@ export interface RouterControllerState {
     | 'Connect'
     | 'ConnectSocials'
     | 'ConnectingExternal'
-    | 'ConnectingSiwe'
     | 'ConnectingSocial'
-    | 'ConnectingFarcaster'
-    | 'ConnectingWalletConnect'
-    | 'Create'
-    | 'EmailVerifyDevice'
-    | 'EmailVerifyOtp'
     | 'GetWallet'
     | 'Networks'
     | 'OnRamp'
@@ -39,18 +23,15 @@ export interface RouterControllerState {
     | 'OnRampLoading'
     | 'OnRampSettings'
     | 'OnRampTransaction'
-    | 'SwitchNetwork'
+    | 'SIWXSignMessage'
     | 'Swap'
-    | 'SwapSelectToken'
     | 'SwapPreview'
+    | 'SwitchNetwork'
     | 'Transactions'
     | 'UnsupportedChain'
-    | 'UpdateEmailPrimaryOtp'
-    | 'UpdateEmailSecondaryOtp'
-    | 'UpdateEmailWallet'
     | 'UpgradeEmailWallet'
-    | 'UpgradeToSmartAccount'
     | 'WalletCompatibleNetworks'
+    | 'WalletConnect'
     | 'WalletReceive'
     | 'WalletSend'
     | 'WalletSendPreview'
@@ -58,62 +39,41 @@ export interface RouterControllerState {
     | 'WhatIsANetwork'
     | 'WhatIsAWallet';
   history: RouterControllerState['view'][];
+  navigationDirection: 'forward' | 'backward' | 'none';
   data?: {
-    connector?: Connector;
     wallet?: WcWallet;
-    network?: CaipNetwork;
-    email?: string;
-    newEmail?: string;
-    swapTarget?: SwapInputTarget;
+    network?: AppKitNetwork;
     onrampResult?: OnRampTransactionResult;
+    socialProvider?: SocialProvider;
   };
-  transactionStack: TransactionAction[];
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<RouterControllerState>({
   view: 'Connect',
   history: ['Connect'],
-  transactionStack: []
+  navigationDirection: 'none'
 });
 
 // -- Controller ---------------------------------------- //
 export const RouterController = {
   state,
 
-  push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
+  push(
+    view: RouterControllerState['view'],
+    data?: RouterControllerState['data'],
+    direction: 'forward' | 'backward' = 'forward'
+  ) {
     if (view !== state.view) {
+      state.navigationDirection = direction;
       state.view = view;
       state.history = [...state.history, view];
       state.data = data;
     }
   },
 
-  pushTransactionStack(action: TransactionAction) {
-    state.transactionStack = [...state.transactionStack, action];
-  },
-
-  popTransactionStack(cancel?: boolean) {
-    const action = state.transactionStack.pop();
-
-    if (!action) {
-      return;
-    }
-
-    if (cancel) {
-      this.goBack();
-      action?.onCancel?.();
-    } else {
-      if (action.goBack) {
-        this.goBack();
-      } else if (action.view) {
-        this.reset(action.view);
-      }
-      action?.onSuccess?.();
-    }
-  },
-
   reset(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
+    state.navigationDirection = 'none';
     state.view = view;
     state.history = [view];
     state.data = data;
@@ -121,6 +81,7 @@ export const RouterController = {
 
   replace(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     if (state.history.length >= 1 && state.history.at(-1) !== view) {
+      state.navigationDirection = 'none';
       state.view = view;
       state.history[state.history.length - 1] = view;
       state.data = data;
@@ -132,6 +93,7 @@ export const RouterController = {
       state.history.pop();
       const [last] = state.history.slice(-1);
       if (last) {
+        state.navigationDirection = 'backward';
         state.view = last;
       }
     }
@@ -142,6 +104,7 @@ export const RouterController = {
       state.history = state.history.slice(0, historyIndex + 1);
       const [last] = state.history.slice(-1);
       if (last) {
+        state.navigationDirection = 'backward';
         state.view = last;
       }
     }

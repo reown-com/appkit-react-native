@@ -7,24 +7,12 @@ export {
 
 export { RouterController, type RouterControllerState } from './controllers/RouterController';
 
-export { AccountController, type AccountControllerState } from './controllers/AccountController';
+export { WcController, type WcControllerState } from './controllers/WcController';
 
 export {
-  NetworkController,
-  type NetworkControllerClient,
-  type NetworkControllerState
-} from './controllers/NetworkController';
-
-export {
-  ConnectionController,
-  type ConnectionControllerClient,
-  type ConnectionControllerState
-} from './controllers/ConnectionController';
-
-export {
-  ConnectorController,
-  type ConnectorControllerState
-} from './controllers/ConnectorController';
+  ConnectionsController,
+  type ConnectionsControllerState
+} from './controllers/ConnectionsController';
 
 export { SnackController, type SnackControllerState } from './controllers/SnackController';
 
@@ -57,17 +45,18 @@ export {
 export { SendController, type SendControllerState } from './controllers/SendController';
 
 export { OnRampController, type OnRampControllerState } from './controllers/OnRampController';
-export { WebviewController, type WebviewControllerState } from './controllers/WebviewController';
 
 // -- Utils -------------------------------------------------------------------
 export { ApiUtil } from './utils/ApiUtil';
 export { AssetUtil } from './utils/AssetUtil';
-export { ConnectionUtil } from './utils/ConnectionUtil';
 export { ConstantsUtil } from './utils/ConstantsUtil';
 export { CoreHelperUtil } from './utils/CoreHelperUtil';
 export { StorageUtil } from './utils/StorageUtil';
 export { EventUtil } from './utils/EventUtil';
-export { RouterUtil } from './utils/RouterUtil';
-export { NetworkUtil } from './utils/NetworkUtil';
+export { WalletUtil } from './utils/WalletUtil';
 
-export type * from './utils/TypeUtil';
+// -- Features ----------------------------------------------------------------
+export { ReownAuthentication } from './features/reown-authentication/ReownAuthentication';
+export { ReownAuthenticationMessenger } from './features/reown-authentication/ReownAuthenticationMessenger';
+
+// Types are now exported from @reown/appkit-common-react-native

@@ -6,7 +6,6 @@ const API_URL = CoreHelperUtil.getApiUrl();
 describe('AssetController', () => {
   it('should have valid default state', () => {
     expect(AssetController.state).toEqual({
-      connectorImages: {},
       walletImages: {},
       networkImages: {},
       tokenImages: {}
@@ -35,13 +34,5 @@ describe('AssetController', () => {
 
     AssetController.setWalletImage(MOCK_WALLET_ID, MOCK_WALLET_IMAGE);
     expect(AssetController.state.walletImages[MOCK_WALLET_ID]).toEqual(MOCK_WALLET_IMAGE);
-  });
-
-  it('should save connector images correctly', () => {
-    const MOCK_CONNECTOR_ID = '7c5ff577-a68d-49c5-02cd-3d83637b0b00';
-    const MOCK_CONNECTOR_IMAGE = `${API_URL}/getWalletImage/7c5ff577-a68d-49c5-02cd-3d83637b0b00`;
-
-    AssetController.setConnectorImage(MOCK_CONNECTOR_ID, MOCK_CONNECTOR_IMAGE);
-    expect(AssetController.state.connectorImages[MOCK_CONNECTOR_ID]).toEqual(MOCK_CONNECTOR_IMAGE);
   });
 });

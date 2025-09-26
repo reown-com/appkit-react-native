@@ -4,20 +4,21 @@ import { proxy } from 'valtio';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { FetchUtil } from '../utils/FetchUtil';
 import { StorageUtil } from '../utils/StorageUtil';
-import type {
-  ApiGetAnalyticsConfigResponse,
-  ApiGetDataWalletsResponse,
-  ApiGetWalletsRequest,
-  ApiGetWalletsResponse,
-  WcWallet
-} from '../utils/TypeUtil';
+import {
+  type ApiGetAnalyticsConfigResponse,
+  type ApiGetDataWalletsResponse,
+  type ApiGetWalletsRequest,
+  type ApiGetWalletsResponse,
+  type CustomWallet,
+  type WcWallet,
+  PresetsUtil
+} from '@reown/appkit-common-react-native';
 import { AssetController } from './AssetController';
-import { NetworkController } from './NetworkController';
 import { OptionsController } from './OptionsController';
-import { ConnectorController } from './ConnectorController';
-import { ConnectionController } from './ConnectionController';
+import { WcController } from './WcController';
 import { ApiUtil } from '../utils/ApiUtil';
 import { SnackController } from './SnackController';
+import { ConnectionsController } from './ConnectionsController';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl();
@@ -64,13 +65,18 @@ export const ApiController = {
     return subKey(state, key, callback);
   },
 
-  _getApiHeaders() {
+  _getApiParams() {
     const { projectId, sdkType, sdkVersion } = OptionsController.state;
 
     return {
-      'x-project-id': projectId,
-      'x-sdk-type': sdkType,
-      'x-sdk-version': sdkVersion,
+      projectId,
+      st: sdkType,
+      sv: sdkVersion
+    };
+  },
+
+  _getApiHeaders() {
+    return {
       'User-Agent': ApiUtil.getUserAgent(),
       'origin': ApiUtil.getOrigin()
     };
@@ -78,113 +84,165 @@ export const ApiController = {
 
   async _fetchWalletImage(imageId: string) {
     const headers = ApiController._getApiHeaders();
-    const url = await api.fetchImage(`/getWalletImage/${imageId}`, headers);
+    const url = await api.fetchImage(
+      `/getWalletImage/${imageId}`,
+      headers,
+      ApiController._getApiParams()
+    );
     if (url) {
       AssetController.setWalletImage(imageId, url);
     }
   },
 
-  async _fetchConnectorImage(imageId: string) {
-    const headers = ApiController._getApiHeaders();
-    const url = await api.fetchImage(`/public/getAssetImage/${imageId}`, headers);
-    if (url) {
-      AssetController.setConnectorImage(imageId, url);
+  async _fetchNetworkImage(networkId: string) {
+    const imageId = PresetsUtil.NetworkImageIds[networkId];
+    if (!imageId) {
+      return;
     }
-  },
 
-  async _fetchNetworkImage(imageId: string) {
     const headers = ApiController._getApiHeaders();
-    const url = await api.fetchImage(`/public/getAssetImage/${imageId}`, headers);
-    if (url) {
-      AssetController.setNetworkImage(imageId, url);
-    }
-  },
-
-  async fetchConnectorImages() {
-    const { connectors } = ConnectorController.state;
-    const ids = connectors.map(({ imageId }) => imageId).filter(Boolean);
-    await CoreHelperUtil.allSettled(
-      (ids as string[]).map(id => ApiController._fetchConnectorImage(id))
+    const url = await api.fetchImage(
+      `/public/getAssetImage/${imageId}`,
+      headers,
+      ApiController._getApiParams()
     );
+    if (url) {
+      AssetController.setNetworkImage(networkId, url);
+    }
   },
 
   async fetchNetworkImages() {
-    const { requestedCaipNetworks } = NetworkController.state;
-    const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean);
-    if (ids) {
+    const networks = ConnectionsController.state.networks;
+    if (networks) {
       await CoreHelperUtil.allSettled(
-        (ids as string[]).map(id => ApiController._fetchNetworkImage(id))
+        networks.map(network => ApiController._fetchNetworkImage(network.id as string))
       );
     }
   },
 
   async fetchInstalledWallets() {
-    const { includeWalletIds } = OptionsController.state;
-    const path = Platform.select({ default: 'getIosData', android: 'getAndroidData' });
-    const response = await api.get<ApiGetDataWalletsResponse>({
-      path,
-      headers: ApiController._getApiHeaders()
-    });
+    // Add timeout to prevent hanging
+    const controller = new AbortController();
+    let timeoutId: NodeJS.Timeout | undefined;
 
-    if (!response) return;
-
-    let { data: walletData } = response;
-
-    if (includeWalletIds?.length) {
-      walletData = walletData.filter(({ id }) => includeWalletIds.includes(id));
-    }
-
-    const promises = walletData.map(async item => {
-      return {
-        id: item.id,
-        isInstalled: await CoreHelperUtil.checkInstalled(item)
-      };
-    });
-
-    const results = await Promise.all(promises);
-    const installed = results.filter(({ isInstalled }) => isInstalled).map(({ id }) => id);
-    const { excludeWalletIds } = OptionsController.state;
-
-    if (installed.length > 0) {
-      const walletResponse = await api.get<ApiGetWalletsResponse>({
-        path: '/getWallets',
-        headers: ApiController._getApiHeaders(),
-        params: {
-          page: '1',
-          platform: this.platform(),
-          entries: installed?.length.toString(),
-          include: installed?.join(','),
-          exclude: excludeWalletIds?.join(',')
-        }
+    try {
+      const { includeWalletIds, customWallets } = OptionsController.state;
+      const path = Platform.select({ default: 'getIosData', android: 'getAndroidData' });
+      const response = await api.get<ApiGetDataWalletsResponse>({
+        path,
+        params: ApiController._getApiParams(),
+        headers: ApiController._getApiHeaders()
       });
 
-      if (walletResponse?.data) {
-        const walletImages = walletResponse.data.map(d => d.image_id).filter(Boolean);
-        await CoreHelperUtil.allSettled(
-          (walletImages as string[]).map(id => ApiController._fetchWalletImage(id))
-        );
-        state.installed = walletResponse.data;
-        this.updateRecentWalletsInfo(walletResponse.data);
+      if (!response) return;
+
+      let { data: walletData } = response;
+
+      if (includeWalletIds?.length) {
+        walletData = walletData.filter(({ id }) => includeWalletIds.includes(id));
       }
+
+      const promises = walletData.map(async item => {
+        return {
+          id: item.id,
+          isInstalled: await CoreHelperUtil.checkInstalled(item)
+        };
+      });
+
+      const customPromises = customWallets?.map(async item => {
+        return {
+          id: item.id,
+          isInstalled: await CoreHelperUtil.checkInstalled(item)
+        };
+      });
+
+      const results = await Promise.all(promises);
+      const installed = results.filter(({ isInstalled }) => isInstalled).map(({ id }) => id);
+      const { excludeWalletIds } = OptionsController.state;
+      const chains = CoreHelperUtil.getRequestedCaipNetworkIds();
+
+      // Add timeout to prevent hanging
+      timeoutId = setTimeout(() => controller.abort(), 10000);
+
+      // Collect API-sourced installed wallets
+      let apiInstalledWallets: WcWallet[] = [];
+      if (installed.length > 0) {
+        const walletResponse = await api.get<ApiGetWalletsResponse>({
+          path: '/getWallets',
+          headers: ApiController._getApiHeaders(),
+          params: {
+            ...ApiController._getApiParams(),
+            page: '1',
+            platform: this.platform(),
+            entries: installed?.length.toString(),
+            include: installed?.join(','),
+            exclude: excludeWalletIds?.join(','),
+            chains: chains.join(',')
+          },
+          signal: controller.signal
+        });
+
+        if (walletResponse?.data) {
+          const walletImages = walletResponse.data.map(d => d.image_id).filter(Boolean);
+          await CoreHelperUtil.allSettled(
+            (walletImages as string[]).map(id => ApiController._fetchWalletImage(id))
+          );
+          apiInstalledWallets = walletResponse.data;
+        }
+      }
+
+      clearTimeout(timeoutId);
+
+      // Collect custom installed wallets
+      let customInstalledWallets: CustomWallet[] = [];
+      if (customPromises?.length) {
+        const customResults = await Promise.all(customPromises);
+        const customInstalled = customResults
+          .filter(({ isInstalled }) => isInstalled)
+          .map(({ id }) => id);
+        customInstalledWallets =
+          customWallets?.filter(wallet => customInstalled.includes(wallet.id)) ?? [];
+      }
+
+      // Merge and de-duplicate by id, preserving order (API first, then custom)
+      const byId = new Map<string, WcWallet>();
+      [...apiInstalledWallets, ...customInstalledWallets].forEach(wallet => {
+        if (!byId.has(wallet.id)) {
+          byId.set(wallet.id, wallet);
+        }
+      });
+      const combinedInstalled = Array.from(byId.values());
+      state.installed = combinedInstalled;
+      if (combinedInstalled.length) {
+        this.updateRecentWalletsInfo(combinedInstalled);
+      }
+    } catch (error) {
+      state.installed = [];
+      clearTimeout(timeoutId);
+      // eslint-disable-next-line no-console
+      console.log('Error fetching installed wallets', error);
     }
   },
 
   async fetchFeaturedWallets() {
     const { featuredWalletIds } = OptionsController.state;
     const exclude = state.installed.map(({ id }) => id);
+    const chains = CoreHelperUtil.getRequestedCaipNetworkIds();
 
     if (featuredWalletIds?.length) {
       const response = await api.get<ApiGetWalletsResponse>({
         path: '/getWallets',
         headers: ApiController._getApiHeaders(),
         params: {
+          ...ApiController._getApiParams(),
           page: '1',
           platform: this.platform(),
           entries: featuredWalletIds?.length
             ? String(featuredWalletIds.length)
             : recommendedEntries,
           include: featuredWalletIds?.join(','),
-          exclude: exclude?.join(',')
+          exclude: exclude?.join(','),
+          chains: chains.join(',')
         }
       });
       if (!response) return;
@@ -201,9 +259,22 @@ export const ApiController = {
     }
   },
 
+  async fetchCustomWalletImages() {
+    const { customWallets } = OptionsController.state;
+    if (!customWallets?.length) {
+      return;
+    }
+
+    const images = customWallets.map(w => w.image_id).filter(Boolean);
+    await CoreHelperUtil.allSettled(
+      (images as string[]).map(id => ApiController._fetchWalletImage(id))
+    );
+  },
+
   async fetchRecommendedWallets() {
     const { installed } = ApiController.state;
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state;
+    const chains = CoreHelperUtil.getRequestedCaipNetworkIds();
 
     const exclude = [
       ...installed.map(({ id }) => id),
@@ -215,11 +286,13 @@ export const ApiController = {
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getApiParams(),
         page: '1',
         platform: this.platform(),
         entries: recommendedEntries,
         include: includeWalletIds?.join(','),
-        exclude: exclude?.join(',')
+        exclude: exclude?.join(','),
+        chains: chains.join(',')
       }
     });
 
@@ -242,6 +315,7 @@ export const ApiController = {
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state;
+    const chains = CoreHelperUtil.getRequestedCaipNetworkIds();
     const exclude = [
       ...state.installed.map(({ id }) => id),
       ...state.recommended.map(({ id }) => id),
@@ -252,11 +326,13 @@ export const ApiController = {
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getApiParams(),
         page: String(page),
         platform: this.platform(),
         entries: String(defaultEntries),
         include: includeWalletIds?.join(','),
-        exclude: exclude.join(',')
+        exclude: exclude.join(','),
+        chains: chains.join(',')
       }
     });
 
@@ -279,17 +355,20 @@ export const ApiController = {
 
   async searchWallet({ search }: Pick<ApiGetWalletsRequest, 'search'>) {
     const { includeWalletIds, excludeWalletIds } = OptionsController.state;
+    const chains = CoreHelperUtil.getRequestedCaipNetworkIds();
     state.search = [];
     const response = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getApiParams(),
         page: '1',
         platform: this.platform(),
         entries: String(defaultEntries),
         search,
         include: includeWalletIds?.join(','),
-        exclude: excludeWalletIds?.join(',')
+        exclude: excludeWalletIds?.join(','),
+        chains: chains.join(',')
       }
     });
 
@@ -324,7 +403,7 @@ export const ApiController = {
 
     if (update) {
       await StorageUtil.setRecentWallets(updatedRecent);
-      ConnectionController.setRecentWallets(updatedRecent);
+      WcController.setRecentWallets(updatedRecent);
     }
   },
 
@@ -332,18 +411,21 @@ export const ApiController = {
     try {
       state.prefetchError = false;
       state.prefetchLoading = true;
-      // this fetch must resolve first so we filter them in the other wallet requests
-      await ApiController.fetchInstalledWallets();
 
       const promises = [
-        ApiController.fetchFeaturedWallets(),
-        ApiController.fetchRecommendedWallets(),
         ApiController.fetchNetworkImages(),
-        ApiController.fetchConnectorImages()
+        ApiController.fetchCustomWalletImages()
       ];
+
       if (OptionsController.state.enableAnalytics === undefined) {
         promises.push(ApiController.fetchAnalyticsConfig());
       }
+
+      // this fetch must resolve first so we filter them in the other wallet requests
+      await ApiController.fetchInstalledWallets();
+
+      promises.push(ApiController.fetchFeaturedWallets());
+      promises.push(ApiController.fetchRecommendedWallets());
 
       state.prefetchPromise = Promise.race([
         CoreHelperUtil.allSettled(promises),
@@ -363,6 +445,7 @@ export const ApiController = {
   async fetchAnalyticsConfig() {
     const response = await api.get<ApiGetAnalyticsConfigResponse>({
       path: '/getAnalyticsConfig',
+      params: ApiController._getApiParams(),
       headers: ApiController._getApiHeaders()
     });
     if (!response) return;

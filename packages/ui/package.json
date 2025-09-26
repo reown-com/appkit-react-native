@@ -1,9 +1,10 @@
 {
   "name": "@reown/appkit-ui-react-native",
-  "version": "1.3.2",
+  "version": "2.0.0-alpha.6",
   "main": "lib/commonjs/index.js",
   "types": "lib/typescript/index.d.ts",
   "module": "lib/module/index.js",
+  "react-native": "src/index.ts",
   "source": "src/index.ts",
   "scripts": {
     "build": "bob build",
@@ -39,28 +40,14 @@
     "provenance": true
   },
   "dependencies": {
+    "@reown/appkit-common-react-native": "2.0.0-alpha.6",
     "polished": "4.3.1",
     "qrcode": "1.5.3"
   },
   "peerDependencies": {
-    "react": ">=17",
-    "react-native": ">=0.68.5",
-    "react-native-svg": ">=13"
-  },
-  "react-native": "src/index.ts",
-  "react-native-builder-bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      "commonjs",
-      "module",
-      [
-        "typescript",
-        {
-          "tsc": "../../node_modules/.bin/tsc"
-        }
-      ]
-    ]
+    "react": ">=18",
+    "react-native": ">=0.72",
+    "react-native-svg": ">=13.10"
   },
   "eslintIgnore": [
     "node_modules/",

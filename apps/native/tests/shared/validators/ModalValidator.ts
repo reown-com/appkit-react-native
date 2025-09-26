@@ -34,19 +34,11 @@ export class ModalValidator {
     ).toContainText('authenticated');
   }
 
-  async expectOnSignInEventCalled(toBe: boolean) {
-    await expect(this.page.getByTestId('siwe-event-onSignIn')).toContainText(`${toBe}`);
-  }
-
   async expectUnauthenticated() {
     await expect(
       this.page.getByTestId('w3m-authentication-status'),
       'Authentication status should be: unauthenticated'
     ).toContainText('unauthenticated');
-  }
-
-  async expectOnSignOutEventCalled(toBe: boolean) {
-    await expect(this.page.getByTestId('siwe-event-onSignOut')).toContainText(`${toBe}`);
   }
 
   async expectSignatureDeclined() {

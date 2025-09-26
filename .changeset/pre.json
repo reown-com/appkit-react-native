@@ -1,0 +1,22 @@
+{
+  "mode": "exit",
+  "tag": "alpha",
+  "initialVersions": {
+    "@apps/gallery": "1.0.8",
+    "@apps/native": "1.0.8",
+    "@reown/appkit-react-native": "2.0.0-alpha.5",
+    "@reown/appkit-bitcoin-react-native": "2.0.0-alpha.5",
+    "@reown/appkit-coinbase-react-native": "2.0.0-alpha.5",
+    "@reown/appkit-common-react-native": "2.0.0-alpha.5",
+    "@reown/appkit-core-react-native": "2.0.0-alpha.5",
+    "@reown/appkit-ethers-react-native": "2.0.0-alpha.5",
+    "@reown/appkit-solana-react-native": "2.0.0-alpha.5",
+    "@reown/appkit-ui-react-native": "2.0.0-alpha.5",
+    "@reown/appkit-wagmi-react-native": "2.0.0-alpha.5"
+  },
+  "changesets": [
+    "cruel-ants-sell",
+    "fifty-hornets-begin",
+    "grumpy-readers-buy"
+  ]
+}
