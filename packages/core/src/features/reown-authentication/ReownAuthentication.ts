@@ -17,6 +17,7 @@ import { CoreHelperUtil } from '../../utils/CoreHelperUtil';
 import { OptionsController } from '../../controllers/OptionsController';
 import { FetchUtil } from '../../utils/FetchUtil';
 import { ApiUtil } from '../../utils/ApiUtil';
+import { LogController } from '../../controllers/LogController';
 
 /**
  * This is the configuration for using SIWX with Reown Authentication service.
@@ -109,7 +110,9 @@ export class ReownAuthentication implements SIWXConfig {
       this.emit('sessionChanged', session);
 
       return [session];
-    } catch {
+    } catch (error) {
+      LogController.sendError(error, 'ReownAuthentication.ts', 'getSessions');
+
       return [];
     }
   }

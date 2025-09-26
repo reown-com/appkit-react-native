@@ -15,6 +15,7 @@ import {
   SendController,
   BlockchainApiController,
   WalletUtil,
+  LogController,
   type RouterControllerState
 } from '@reown/appkit-core-react-native';
 
@@ -144,7 +145,7 @@ export class AppKit {
         });
       }
     } catch (error) {
-      console.warn('Connection failed:', error);
+      LogController.sendError(error, 'AppKit.ts', 'connect');
       throw error;
     }
   }
@@ -222,6 +223,7 @@ export class AppKit {
         event: 'DISCONNECT_SUCCESS'
       });
     } catch (error) {
+      LogController.sendError(error, 'AppKit.ts', 'disconnect');
       EventsController.sendEvent({
         type: 'track',
         event: 'DISCONNECT_ERROR'
@@ -251,6 +253,7 @@ export class AppKit {
   }
 
   async switchNetwork(network: AppKitNetwork): Promise<void> {
+    LogController.sendError('test', 'AppKit.ts', 'getNetworks');
     const { isConnected } = ConnectionsController.state;
 
     if (!isConnected) {
@@ -393,8 +396,9 @@ export class AppKit {
 
           await this.processConnection(connector, namespaces);
         } catch (error) {
-          // Use console.warn for non-critical initialization failures
-          console.warn(`Failed to initialize connector type ${connected.type}:`, error);
+          LogController.sendError(error, 'AppKit.ts', 'initializeConnector', {
+            connectorType: connected.type
+          });
           await StorageUtil.removeConnectedConnectors(connected.type);
         }
       }
@@ -494,6 +498,7 @@ export class AppKit {
           );
         }
       } catch (error) {
+        LogController.sendError(error, 'AppKit.ts', 'syncIdentity');
         // Continue processing other addresses even if one fails
       }
     }
@@ -512,8 +517,9 @@ export class AppKit {
           this.syncNativeBalance(adapter, network);
         }
       }
-    } catch {
+    } catch (error) {
       // ignore
+      LogController.sendError(error, 'AppKit.ts', 'refreshBalance');
     }
   }
 
@@ -648,6 +654,16 @@ export class AppKit {
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
     OptionsController.setEnableAnalytics(options.enableAnalytics);
     OptionsController.setDebug(options.debug);
+
+    // Initialize LogController after debug option is set
+    LogController.initialize();
+    LogController.sendInfo('AppKit initialization started', 'AppKit.ts', 'initControllers', {
+      projectId: options.projectId,
+      adapters: this.adapters.map(a => a.constructor.name),
+      networks: this.networks.map(n => n.name),
+      debug: options.debug
+    });
+
     OptionsController.setFeatures(options.features);
     OptionsController.setRequestedNetworks(this.networks);
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import {
   ApiController,
+  LogController,
   OptionsController,
   SnackController,
   type OptionsControllerState
@@ -61,6 +62,7 @@ export function AllWalletsList({ onItemPress }: AllWalletsListProps) {
       await ApiController.fetchWallets({ page: 1 });
       setLoading(false);
     } catch (error) {
+      LogController.sendError(error, 'AllWalletsList.tsx', 'initialFetch');
       SnackController.showError('Failed to load wallets');
       setLoading(false);
       setLoadingError(true);

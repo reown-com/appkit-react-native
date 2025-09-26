@@ -14,6 +14,7 @@ import { BlockchainApiController } from './BlockchainApiController';
 import { OptionsController } from './OptionsController';
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil';
 import { SnackController } from './SnackController';
+import { LogController } from './LogController';
 import { RouterController } from './RouterController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { TransactionsController } from './TransactionsController';
@@ -249,6 +250,7 @@ export const SwapController = {
         this.setSourceTokenAmount('1');
       }
     } catch (error) {
+      LogController.sendError(error, 'SwapController.ts', 'initializeState');
       SnackController.showError('Failed to initialize swap');
       RouterController.goBack();
     } finally {
@@ -491,6 +493,7 @@ export const SwapController = {
         this.setTransactionDetails();
       }
     } catch (error) {
+      LogController.sendError(error, 'SwapController.ts', 'getQuote');
       SnackController.showError('Failed to get swap quote');
     } finally {
       state.loadingQuote = false;
@@ -750,6 +753,11 @@ export const SwapController = {
       return transactionHash;
     } catch (err) {
       const error = err as TransactionError;
+      LogController.sendError(error, 'SwapController.ts', 'sendTransactionForSwap', {
+        sourceToken: this.state.sourceToken?.symbol,
+        toToken: this.state.toToken?.symbol,
+        amount: this.state.sourceTokenAmount
+      });
       state.transactionError = error?.shortMessage;
       state.loadingTransaction = false;
       SnackController.showError(error?.shortMessage ?? 'Transaction error');

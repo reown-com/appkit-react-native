@@ -16,6 +16,13 @@ export {
 
 export { SnackController, type SnackControllerState } from './controllers/SnackController';
 
+export {
+  LogController,
+  type LogControllerState,
+  type LogEntry,
+  type LogLevel
+} from './controllers/LogController';
+
 export { ApiController, type ApiControllerState } from './controllers/ApiController';
 
 export { AssetController, type AssetControllerState } from './controllers/AssetController';

@@ -13,7 +13,8 @@ import {
   SnackController,
   CoreHelperUtil,
   ConnectionsController,
-  EventsController
+  EventsController,
+  LogController
 } from '@reown/appkit-core-react-native';
 import { Alert } from 'react-native';
 
@@ -74,8 +75,7 @@ export const SIWXUtil = {
         ModalController.open({ view: 'SIWXSignMessage' });
       }
     } catch (error: unknown) {
-      // eslint-disable-next-line no-console
-      console.error('SIWXUtil:initializeIfEnabled error', error);
+      LogController.sendError(error, 'SIWXUtil.ts', 'initializeIfEnabled');
 
       EventsController.sendEvent({
         type: 'track',

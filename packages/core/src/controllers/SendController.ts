@@ -9,6 +9,7 @@ import { RouterController } from './RouterController';
 import { ConnectionsController } from './ConnectionsController';
 import { SwapController } from './SwapController';
 import { ConstantsUtil as CoreConstantsUtil } from '../utils/ConstantsUtil';
+import { LogController } from './LogController';
 
 // -- Types --------------------------------------------- //
 export interface TxParams {
@@ -120,6 +121,7 @@ export const SendController = {
       RouterController.reset(isAuth ? 'Account' : 'AccountDefault');
       this.resetState();
     } catch (error: any) {
+      LogController.sendError(error, 'SendController.ts', 'sendToken');
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_ERROR',

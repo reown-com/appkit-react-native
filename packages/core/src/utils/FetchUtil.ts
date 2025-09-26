@@ -1,4 +1,5 @@
 import type { RequestCache } from '@reown/appkit-common-react-native';
+import { LogController } from '../controllers/LogController';
 
 // -- Types ----------------------------------------------------------------------
 interface Options {
@@ -134,14 +135,18 @@ export class FetchUtil {
       if (response.headers.get('content-type')?.includes('application/json')) {
         try {
           const errorData = await response.json();
+          LogController.sendError(errorData, 'FetchUtil.ts', 'processResponse');
 
           return Promise.reject(errorData);
         } catch (jsonError) {
+          LogController.sendError(jsonError, 'FetchUtil.ts', 'processResponse');
+
           return Promise.reject(`Code: ${response.status} - ${response.statusText}`);
         }
       }
 
       const errorText = await response.text();
+      LogController.sendError(errorText, 'FetchUtil.ts', 'processResponse');
 
       return Promise.reject(`Code: ${response.status} - ${response.statusText} - ${errorText}`);
     }
