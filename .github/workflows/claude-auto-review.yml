@@ -3,9 +3,6 @@ name: Claude Auto Review
 on:
   pull_request:
     types: [opened]
-    branches:
-      - develop
-      - main
   issue_comment:
     types: [created]
 
