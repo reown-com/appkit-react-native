@@ -146,12 +146,12 @@ export const LogController = {
     };
 
     state.logs.push(entry);
-    
+
     // Enforce maximum log count
     if (state.logs.length > MAX_LOGS_COUNT) {
       state.logs = state.logs.slice(-MAX_LOGS_COUNT);
     }
-    
+
     logToConsole(entry);
 
     // Trigger lazy cleanup when needed (throttled)
@@ -175,7 +175,7 @@ export const LogController = {
       // Sanitize stack trace to remove sensitive file paths
       data['stack'] = error.stack ? sanitizeStackTrace(error.stack) : undefined;
       data['name'] = error.name;
-      
+
       // Sanitize any additional properties on the error object
       const errorProps: Record<string, unknown> = {};
       Object.getOwnPropertyNames(error).forEach(prop => {
@@ -183,7 +183,7 @@ export const LogController = {
           errorProps[prop] = (error as any)[prop];
         }
       });
-      
+
       if (Object.keys(errorProps).length > 0) {
         Object.assign(data, sanitizeValue(errorProps) as Record<string, unknown>);
       }

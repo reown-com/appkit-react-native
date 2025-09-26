@@ -265,9 +265,9 @@ describe('LogController', () => {
       for (let i = 0; i < 50; i++) {
         const message = `Concurrent message ${i}`;
         expectedMessages.add(message);
-        
+
         promises.push(
-          new Promise<void>((resolve) => {
+          new Promise<void>(resolve => {
             setTimeout(() => {
               LogController.sendInfo(message, 'ConcurrentTest.ts', 'testFunction');
               resolve();
@@ -302,18 +302,20 @@ describe('LogController', () => {
       logs.forEach((log, index) => {
         if (index < 10) {
           // Make first 10 logs old (25 hours ago)
-          log.timestamp = Date.now() - (25 * 60 * 60 * 1000);
+          log.timestamp = Date.now() - 25 * 60 * 60 * 1000;
         }
       });
 
       // Trigger multiple concurrent cleanup operations
-      const cleanupPromises = Array.from({ length: 10 }, () =>
-        new Promise<void>((resolve) => {
-          setTimeout(() => {
-            LogController.forceCleanup();
-            resolve();
-          }, Math.random() * 5);
-        })
+      const cleanupPromises = Array.from(
+        { length: 10 },
+        () =>
+          new Promise<void>(resolve => {
+            setTimeout(() => {
+              LogController.forceCleanup();
+              resolve();
+            }, Math.random() * 5);
+          })
       );
 
       await Promise.all(cleanupPromises);
@@ -333,7 +335,7 @@ describe('LogController', () => {
       // Concurrent writes
       for (let i = 0; i < 20; i++) {
         operations.push(
-          new Promise<void>((resolve) => {
+          new Promise<void>(resolve => {
             setTimeout(() => {
               LogController.sendError(`Concurrent error ${i}`, 'MixedTest.ts', 'errorFunction');
               resolve();
@@ -345,7 +347,7 @@ describe('LogController', () => {
       // Concurrent reads
       for (let i = 0; i < 15; i++) {
         operations.push(
-          new Promise<LogEntry[]>((resolve) => {
+          new Promise<LogEntry[]>(resolve => {
             setTimeout(() => {
               const logs = LogController.getLogs();
               resolve(logs);
@@ -355,11 +357,11 @@ describe('LogController', () => {
       }
 
       const results = await Promise.all(operations);
-      
+
       // Verify final state
       const finalLogs = LogController.getLogs();
       expect(finalLogs.length).toBeGreaterThanOrEqual(30); // 10 initial + 20 concurrent
-      
+
       // Verify read operations returned valid data
       const readResults = results.slice(20) as LogEntry[][];
       readResults.forEach(logs => {
@@ -392,7 +394,7 @@ describe('LogController', () => {
 
       const logs = LogController.getLogs();
       expect(logs.length).toBeLessThanOrEqual(300); // Should be capped at MAX_LOGS_COUNT
-      
+
       // Verify the most recent logs are kept
       const lastLog = logs[logs.length - 1];
       expect(lastLog?.message).toContain('Load test message');
@@ -408,7 +410,7 @@ describe('LogController', () => {
       // Make half of them old
       logs.forEach((log, index) => {
         if (index % 2 === 0) {
-          log.timestamp = Date.now() - (25 * 60 * 60 * 1000); // 25 hours ago
+          log.timestamp = Date.now() - 25 * 60 * 60 * 1000; // 25 hours ago
         }
       });
 
@@ -527,8 +529,9 @@ describe('LogController', () => {
 
     it('should handle Error objects with very long messages and stacks', () => {
       const longMessage = 'x'.repeat(10000); // Very long message
-      const longStack = Array.from({ length: 100 }, (_, i) => 
-        `    at function${i} (/very/long/path/to/file/with/sensitive/data.ts:${i}:${i})`
+      const longStack = Array.from(
+        { length: 100 },
+        (_, i) => `    at function${i} (/very/long/path/to/file/with/sensitive/data.ts:${i}:${i})`
       ).join('\n');
 
       const longError = new Error(longMessage);
@@ -538,11 +541,11 @@ describe('LogController', () => {
 
       const logs = LogController.getLogs();
       expect(logs).toHaveLength(1);
-      
+
       const log = logs[0];
       expect(log?.message.length).toBeLessThanOrEqual(500); // Should be truncated
       expect(log?.data?.['stack']).toBeDefined();
-      
+
       const stackLines = (log?.data?.['stack'] as string)?.split('\n') || [];
       expect(stackLines.length).toBeLessThanOrEqual(11); // 10 lines + truncation message
     });
@@ -562,10 +565,10 @@ describe('LogController', () => {
 
       const logs = LogController.getLogs();
       expect(logs).toHaveLength(1);
-      
+
       const log = logs[0];
       expect(log?.message).toBe('Database connection failed');
-      
+
       // Verify sensitive data is redacted
       const data = log?.data as Record<string, any>;
       expect(data?.['password']).toBe('[REDACTED]');
@@ -573,7 +576,7 @@ describe('LogController', () => {
       expect(data?.['user_token']).toBe('[REDACTED]');
       expect(data?.['connection_string']).toBe('[REDACTED]');
       expect(data?.['authorization']).toBe('[REDACTED]');
-      
+
       // Verify safe data is preserved
       expect(data?.['safe_data']).toBe('this is safe');
       expect(data?.['debug_info']).toBe('safe debug info');
@@ -603,11 +606,11 @@ describe('LogController', () => {
 
       const logs = LogController.getLogs();
       expect(logs).toHaveLength(1);
-      
+
       const log = logs[0];
       expect(log?.message).toBe('Deep error');
       expect(log?.data).toBeDefined();
-      
+
       // Should handle deep nesting and sanitize sensitive data
       const data = log?.data as any;
       expect(data?.level1?.level2?.level3?.level4?.level5?.password).toBe('[REDACTED]');
