@@ -1,5 +1,7 @@
 import { proxy } from 'valtio';
 import { OptionsController } from './OptionsController';
+import { sanitizeString, sanitizeStackTrace, sanitizeValue, sanitizeData } from '../utils/LogUtils';
+import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 
 // -- Types --------------------------------------------- //
 export type LogLevel = 'info' | 'warn' | 'error' | 'debug';
@@ -21,7 +23,7 @@ export interface LogControllerState {
 
 // -- Constants ----------------------------------------- //
 const DEFAULT_MAX_RETENTION_HOURS = 24;
-const MAX_LOGS_COUNT = 1000; // Prevent memory issues
+const MAX_LOGS_COUNT = 300; // Prevent memory issues
 
 // -- State --------------------------------------------- //
 const state = proxy<LogControllerState>({
@@ -34,7 +36,7 @@ let lastCleanupTime = 0;
 const CLEANUP_THROTTLE_MS = 5 * 60 * 1000; // Only cleanup every 5 minutes max
 
 const generateLogId = (): string => {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  return CoreHelperUtil.getUUID();
 };
 
 const cleanupOldLogsIfNeeded = () => {
@@ -137,13 +139,19 @@ export const LogController = {
       id: generateLogId(),
       timestamp: Date.now(),
       level,
-      message,
+      message: sanitizeString(message),
       fileName,
       functionName,
-      data
+      data: sanitizeData(data)
     };
 
     state.logs.push(entry);
+    
+    // Enforce maximum log count
+    if (state.logs.length > MAX_LOGS_COUNT) {
+      state.logs = state.logs.slice(-MAX_LOGS_COUNT);
+    }
+    
     logToConsole(entry);
 
     // Trigger lazy cleanup when needed (throttled)
@@ -160,19 +168,34 @@ export const LogController = {
     additionalData?: Record<string, unknown>
   ) {
     let message: string;
-    let data: Record<string, unknown> = { ...additionalData };
+    let data: Record<string, unknown> = sanitizeData(additionalData) || {};
 
     if (error instanceof Error) {
-      message = error.message;
-      data['stack'] = error.stack;
+      message = error.message || 'Error occurred';
+      // Sanitize stack trace to remove sensitive file paths
+      data['stack'] = error.stack ? sanitizeStackTrace(error.stack) : undefined;
       data['name'] = error.name;
+      
+      // Sanitize any additional properties on the error object
+      const errorProps: Record<string, unknown> = {};
+      Object.getOwnPropertyNames(error).forEach(prop => {
+        if (prop !== 'message' && prop !== 'stack' && prop !== 'name') {
+          errorProps[prop] = (error as any)[prop];
+        }
+      });
+      
+      if (Object.keys(errorProps).length > 0) {
+        Object.assign(data, sanitizeValue(errorProps) as Record<string, unknown>);
+      }
     } else if (typeof error === 'string') {
       message = error;
     } else {
       message = 'Unknown error occurred';
-      data['originalError'] = error;
+      // Sanitize the original error object
+      data['originalError'] = sanitizeValue(error);
     }
 
+    // Note: sanitization happens in sendLog method
     this.sendLog('error', message, fileName, functionName, data);
   },
 
@@ -250,9 +273,9 @@ export const LogController = {
   },
 
   /**
-   * Set maximum retention hours
+   * Set log retention hours
    */
-  setMaxRetentionHours(hours: number) {
+  setLogRetentionHours(hours: number) {
     state.maxRetentionHours = hours;
     lastCleanupTime = 0; // Reset throttle to force immediate cleanup
     cleanupOldLogsIfNeeded(); // Clean up immediately with new retention

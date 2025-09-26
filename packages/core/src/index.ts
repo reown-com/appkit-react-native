@@ -61,6 +61,7 @@ export { CoreHelperUtil } from './utils/CoreHelperUtil';
 export { StorageUtil } from './utils/StorageUtil';
 export { EventUtil } from './utils/EventUtil';
 export { WalletUtil } from './utils/WalletUtil';
+export { LogUtils } from './utils/LogUtils';
 
 // -- Features ----------------------------------------------------------------
 export { ReownAuthentication } from './features/reown-authentication/ReownAuthentication';

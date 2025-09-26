@@ -253,7 +253,6 @@ export class AppKit {
   }
 
   async switchNetwork(network: AppKitNetwork): Promise<void> {
-    LogController.sendError('test', 'AppKit.ts', 'getNetworks');
     const { isConnected } = ConnectionsController.state;
 
     if (!isConnected) {

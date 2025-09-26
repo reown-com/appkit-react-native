@@ -1,4 +1,3 @@
-/* eslint-disable valtio/state-snapshot-rule */
 import { useContext, useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import { LogController, type LogEntry, type LogLevel } from '@reown/appkit-core-react-native';
@@ -6,7 +5,7 @@ import { AppKitContext } from '../AppKitContext';
 
 export interface UseAppKitLogsReturn {
   /**
-   * All logs from AppKit (regular array, safe for console.log)
+   * All logs from AppKit
    */
   logs: LogEntry[];
 
@@ -91,7 +90,6 @@ export const useAppKitLogs = (): UseAppKitLogsReturn => {
     throw new Error('AppKit instance is not yet available in context.');
   }
 
-  // Use valtio snapshot to get reactive updates
   const { logs, maxRetentionHours } = useSnapshot(LogController.state);
 
   // Memoized functions that don't need to change on every render
@@ -104,22 +102,43 @@ export const useAppKitLogs = (): UseAppKitLogsReturn => {
       exportLogs: () => LogController.exportLogs(),
       getLogsStats: () => LogController.getLogsStats(),
       clearLogs: () => LogController.clearLogs(),
-      setLogRetentionHours: (hours: number) => LogController.setMaxRetentionHours(hours)
+      setLogRetentionHours: (hours: number) => LogController.setLogRetentionHours(hours)
     }),
     []
   );
 
-  // Convert proxy arrays to regular arrays to avoid console.log issues
-  const regularArrays = useMemo(
-    () => ({
-      logs: [...logs], // Convert proxy array to regular array
-      errorLogs: [...logs.filter(log => log.level === 'error')],
-      warningLogs: [...logs.filter(log => log.level === 'warn')],
-      infoLogs: [...logs.filter(log => log.level === 'info')],
-      debugLogs: [...logs.filter(log => log.level === 'debug')]
-    }),
-    [logs]
-  );
+  const regularArrays = useMemo(() => {
+    const allLogs = [...logs]; // Convert proxy to regular array
+    const errorLogs: LogEntry[] = [];
+    const warningLogs: LogEntry[] = [];
+    const infoLogs: LogEntry[] = [];
+    const debugLogs: LogEntry[] = [];
+
+    for (const log of allLogs) {
+      switch (log.level) {
+        case 'error':
+          errorLogs.push(log);
+          break;
+        case 'warn':
+          warningLogs.push(log);
+          break;
+        case 'info':
+          infoLogs.push(log);
+          break;
+        case 'debug':
+          debugLogs.push(log);
+          break;
+      }
+    }
+
+    return {
+      logs: allLogs,
+      errorLogs,
+      warningLogs,
+      infoLogs,
+      debugLogs
+    };
+  }, [logs]);
 
   return {
     ...regularArrays,

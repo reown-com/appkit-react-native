@@ -143,7 +143,7 @@ export const OnRampController = {
 
       StorageUtil.setOnRampPreferredCountry(country);
     } catch (error) {
-      LogController.sendError(error, 'OnRampController.ts', 'getAvailableCurrencies');
+      LogController.sendError(error, 'OnRampController.ts', 'setSelectedCountry');
       state.loading = false;
       state.error = {
         type: OnRampErrorType.FAILED_TO_LOAD_COUNTRIES,

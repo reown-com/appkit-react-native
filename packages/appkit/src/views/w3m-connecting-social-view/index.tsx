@@ -49,7 +49,7 @@ export function ConnectingSocialView() {
         });
       }
     } catch (e) {
-      LogController.sendError(error, 'ConnectingSocialView.tsx', 'onConnect');
+      LogController.sendError(e, 'ConnectingSocialView.tsx', 'onConnect');
       EventsController.sendEvent({
         type: 'track',
         event: 'SOCIAL_LOGIN_ERROR',
