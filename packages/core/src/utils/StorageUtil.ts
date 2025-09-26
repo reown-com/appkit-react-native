@@ -13,6 +13,7 @@ import {
   SafeStorageKeys
 } from '@reown/appkit-common-react-native';
 import { OptionsController } from '../controllers/OptionsController';
+import { LogController } from '../controllers/LogController';
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -22,8 +23,8 @@ export const StorageUtil = {
         href,
         name
       });
-    } catch {
-      console.info('Unable to set WalletConnect deep link');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'setWalletConnectDeepLink');
     }
   },
 
@@ -35,8 +36,8 @@ export const StorageUtil = {
       if (deepLink) {
         return deepLink;
       }
-    } catch {
-      console.info('Unable to get WalletConnect deep link');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'getWalletConnectDeepLink');
     }
 
     return undefined;
@@ -45,8 +46,8 @@ export const StorageUtil = {
   async removeWalletConnectDeepLink() {
     try {
       await OptionsController.getStorage().removeItem(SafeStorageKeys.WC_DEEPLINK);
-    } catch {
-      console.info('Unable to remove WalletConnect deep link');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'removeWalletConnectDeepLink');
     }
   },
 
@@ -66,8 +67,8 @@ export const StorageUtil = {
       OptionsController.getStorage().setItem(SafeStorageKeys.RECENT_WALLET, recentWallets);
 
       return recentWallets;
-    } catch {
-      console.info('Unable to set recent wallet');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'addRecentWallet');
 
       return undefined;
     }
@@ -76,8 +77,8 @@ export const StorageUtil = {
   async setRecentWallets(wallets: WcWallet[]) {
     try {
       await OptionsController.getStorage().setItem(SafeStorageKeys.RECENT_WALLET, wallets);
-    } catch {
-      console.info('Unable to set recent wallets');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'setRecentWallets');
     }
   },
 
@@ -86,8 +87,8 @@ export const StorageUtil = {
       const recent = await OptionsController.getStorage().getItem(SafeStorageKeys.RECENT_WALLET);
 
       return recent ?? [];
-    } catch {
-      console.info('Unable to get recent wallets');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'getRecentWallets');
     }
 
     return [];
@@ -110,8 +111,8 @@ export const StorageUtil = {
           updatedConnectors
         );
       }
-    } catch {
-      console.info('Unable to set Connected Connector');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'setConnectedConnectors');
     }
   },
 
@@ -123,7 +124,7 @@ export const StorageUtil = {
 
       return connectors ?? [];
     } catch (err) {
-      console.info('Unable to get Connected Connector');
+      LogController.sendError(err, 'StorageUtil.ts', 'getConnectedConnectors');
     }
 
     return [];
@@ -137,8 +138,8 @@ export const StorageUtil = {
         SafeStorageKeys.CONNECTED_CONNECTORS,
         updatedConnectors
       );
-    } catch {
-      console.info('Unable to remove Connected Connector');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'removeConnectedConnectors');
     }
   },
 
@@ -148,8 +149,8 @@ export const StorageUtil = {
         SafeStorageKeys.ONRAMP_PREFERRED_COUNTRY,
         country
       );
-    } catch {
-      console.info('Unable to set OnRamp Preferred Country');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'setOnRampPreferredCountry');
     }
   },
 
@@ -173,8 +174,8 @@ export const StorageUtil = {
         SafeStorageKeys.ONRAMP_PREFERRED_FIAT_CURRENCY,
         currency
       );
-    } catch {
-      console.info('Unable to set OnRamp Preferred Fiat Currency');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'setOnRampPreferredFiatCurrency');
     }
   },
 
@@ -185,8 +186,8 @@ export const StorageUtil = {
       );
 
       return currency ?? undefined;
-    } catch {
-      console.info('Unable to get OnRamp Preferred Fiat Currency');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'getOnRampPreferredFiatCurrency');
     }
 
     return undefined;
@@ -195,8 +196,8 @@ export const StorageUtil = {
   async setOnRampCountries(countries: OnRampCountry[]) {
     try {
       await OptionsController.getStorage().setItem(SafeStorageKeys.ONRAMP_COUNTRIES, countries);
-    } catch {
-      console.info('Unable to set OnRamp Countries');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'setOnRampCountries');
     }
   },
 
@@ -207,8 +208,8 @@ export const StorageUtil = {
       );
 
       return countries ?? [];
-    } catch {
-      console.info('Unable to get OnRamp Countries');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'getOnRampCountries');
     }
 
     return [];
@@ -222,8 +223,8 @@ export const StorageUtil = {
         data: countriesDefaults,
         timestamp
       });
-    } catch {
-      console.info('Unable to set OnRamp Countries Defaults');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'setOnRampCountriesDefaults');
     }
   },
 
@@ -245,8 +246,8 @@ export const StorageUtil = {
       }
 
       return (data as OnRampCountryDefaults[]) ?? [];
-    } catch {
-      console.info('Unable to get OnRamp Countries Defaults');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'getOnRampCountriesDefaults');
     }
 
     return [];
@@ -260,8 +261,8 @@ export const StorageUtil = {
         data: serviceProviders,
         timestamp
       });
-    } catch {
-      console.info('Unable to set OnRamp Service Providers');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'setOnRampServiceProviders');
     }
   },
 
@@ -284,8 +285,7 @@ export const StorageUtil = {
 
       return (data as OnRampServiceProvider[]) ?? [];
     } catch (err) {
-      console.error(err);
-      console.info('Unable to get OnRamp Service Providers');
+      LogController.sendError(err, 'StorageUtil.ts', 'getOnRampServiceProviders');
     }
 
     return [];
@@ -299,8 +299,8 @@ export const StorageUtil = {
         data: fiatLimits,
         timestamp
       });
-    } catch {
-      console.info('Unable to set OnRamp Fiat Limits');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'setOnRampFiatLimits');
     }
   },
 
@@ -322,8 +322,8 @@ export const StorageUtil = {
       }
 
       return (data as OnRampFiatLimit[]) ?? [];
-    } catch {
-      console.info('Unable to get OnRamp Fiat Limits');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'getOnRampFiatLimits');
     }
 
     return [];
@@ -337,8 +337,8 @@ export const StorageUtil = {
         data: fiatCurrencies,
         timestamp
       });
-    } catch {
-      console.info('Unable to set OnRamp Fiat Currencies');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'setOnRampFiatCurrencies');
     }
   },
 
@@ -360,8 +360,8 @@ export const StorageUtil = {
       }
 
       return (data as OnRampFiatCurrency[]) ?? [];
-    } catch {
-      console.info('Unable to get OnRamp Fiat Currencies');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'getOnRampFiatCurrencies');
     }
 
     return [];
@@ -376,8 +376,8 @@ export const StorageUtil = {
       }
 
       await OptionsController.getStorage().setItem(SafeStorageKeys.ACTIVE_NAMESPACE, namespace);
-    } catch {
-      console.info('Unable to set Active Namespace');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'setActiveNamespace');
     }
   },
 
@@ -389,8 +389,7 @@ export const StorageUtil = {
 
       return namespace ?? undefined;
     } catch (err) {
-      console.error(err);
-      console.info('Unable to get Active Namespace');
+      LogController.sendError(err, 'StorageUtil.ts', 'getActiveNamespace');
     }
 
     return undefined;
@@ -399,8 +398,8 @@ export const StorageUtil = {
   async removeActiveNamespace() {
     try {
       await OptionsController.getStorage().removeItem(SafeStorageKeys.ACTIVE_NAMESPACE);
-    } catch {
-      console.info('Unable to remove Active Namespace');
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'removeActiveNamespace');
     }
   }
 };

@@ -5,7 +5,8 @@ import {
   CoreHelperUtil,
   EventsController,
   RouterController,
-  SnackController
+  SnackController,
+  LogController
 } from '@reown/appkit-core-react-native';
 import {
   FlexView,
@@ -48,6 +49,7 @@ export function ConnectingSocialView() {
         });
       }
     } catch (e) {
+      LogController.sendError(e, 'ConnectingSocialView.tsx', 'onConnect');
       EventsController.sendEvent({
         type: 'track',
         event: 'SOCIAL_LOGIN_ERROR',

@@ -2,6 +2,7 @@ import { subscribeKey as subKey } from 'valtio/utils';
 import { proxy, subscribe as sub } from 'valtio';
 import { BlockchainApiController } from './BlockchainApiController';
 import type { BlockchainApiEnsError } from '@reown/appkit-common-react-native';
+import { LogController } from './LogController';
 
 // -- Types --------------------------------------------- //
 
@@ -32,6 +33,7 @@ export const EnsController = {
     try {
       return await BlockchainApiController.lookupEnsName(name);
     } catch (e) {
+      LogController.sendError(e, 'EnsController.ts', 'resolveName');
       const error = e as BlockchainApiEnsError;
       throw new Error(error?.reasons?.[0]?.description || 'Error resolving name');
     }

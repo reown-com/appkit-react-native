@@ -16,6 +16,13 @@ export {
 
 export { SnackController, type SnackControllerState } from './controllers/SnackController';
 
+export {
+  LogController,
+  type LogControllerState,
+  type LogEntry,
+  type LogLevel
+} from './controllers/LogController';
+
 export { ApiController, type ApiControllerState } from './controllers/ApiController';
 
 export { AssetController, type AssetControllerState } from './controllers/AssetController';
@@ -54,6 +61,7 @@ export { CoreHelperUtil } from './utils/CoreHelperUtil';
 export { StorageUtil } from './utils/StorageUtil';
 export { EventUtil } from './utils/EventUtil';
 export { WalletUtil } from './utils/WalletUtil';
+export { LogUtils } from './utils/LogUtils';
 
 // -- Features ----------------------------------------------------------------
 export { ReownAuthentication } from './features/reown-authentication/ReownAuthentication';

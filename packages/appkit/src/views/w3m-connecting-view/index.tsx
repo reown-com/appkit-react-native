@@ -9,7 +9,8 @@ import {
   SnackController,
   OptionsController,
   ApiController,
-  EventsController
+  EventsController,
+  LogController
 } from '@reown/appkit-core-react-native';
 import { useInternalAppKit } from '../../AppKitContext';
 import { ConnectingQrCode } from '../../partials/w3m-connecting-qrcode';
@@ -51,6 +52,7 @@ export function ConnectingView() {
         WcController.setWcPromise(connectPromise);
       }
     } catch (error) {
+      LogController.sendError(error, 'ConnectingView.tsx', 'initializeConnection');
       WcController.setWcError(true);
       WcController.clearUri();
       SnackController.showError('Declined');

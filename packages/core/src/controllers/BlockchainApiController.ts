@@ -42,6 +42,7 @@ import { ConstantsUtil } from '../utils/ConstantsUtil';
 import { ApiUtil } from '../utils/ApiUtil';
 
 import { SnackController } from './SnackController';
+import { LogController } from './LogController';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getBlockchainApiUrl();
@@ -95,6 +96,8 @@ export const BlockchainApiController = {
         await BlockchainApiController.getSupportedNetworks();
       }
     } catch (e) {
+      LogController.sendError(e, 'BlockchainApiController.ts', 'isNetworkSupported');
+
       return false;
     }
 

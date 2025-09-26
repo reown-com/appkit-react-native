@@ -8,7 +8,8 @@ import {
   WcController,
   AssetUtil,
   AssetController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  LogController
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -72,6 +73,7 @@ export function ConnectingExternalView() {
         });
       }
     } catch (error) {
+      LogController.sendError(error, 'ConnectingExternalView.tsx', 'onConnect');
       if (/(Wallet not found)/i.test((error as Error).message)) {
         setErrorType('not_installed');
       } else if (/(rejected)/i.test((error as Error).message)) {

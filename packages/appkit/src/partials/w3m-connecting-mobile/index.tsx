@@ -10,7 +10,8 @@ import {
   OptionsController,
   EventsController,
   ConstantsUtil,
-  AssetController
+  AssetController,
+  LogController
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -85,6 +86,7 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         });
       }
     } catch (error: any) {
+      LogController.sendError(error, 'ConnectingMobile.tsx', 'onConnect');
       if (error.message.includes(ConstantsUtil.LINKING_ERROR)) {
         setErrorType('not_installed');
       } else {

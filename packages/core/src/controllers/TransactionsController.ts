@@ -5,6 +5,7 @@ import { EventsController } from './EventsController';
 import { SnackController } from './SnackController';
 import { BlockchainApiController } from './BlockchainApiController';
 import { ConnectionsController } from './ConnectionsController';
+import { LogController } from './LogController';
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<string, Transaction[]>;
@@ -74,6 +75,7 @@ export const TransactionsController = {
       state.empty = nonSpamTransactions.length === 0;
       state.next = response?.next ? response.next : undefined;
     } catch (error) {
+      LogController.sendError(error, 'TransactionsController.ts', 'fetchTransactions');
       EventsController.sendEvent({
         type: 'track',
         event: 'ERROR_FETCH_TRANSACTIONS',

@@ -12,6 +12,7 @@ import type {
 } from '@reown/appkit-common-react-native';
 
 import { ConstantsUtil } from '../utils/ConstantsUtil';
+import { LogController } from './LogController';
 
 // -- Types --------------------------------------------- //
 export interface ClipboardClient {
@@ -128,6 +129,7 @@ export const OptionsController = {
 
   getStorage() {
     if (!state.storage) {
+      LogController.sendError('AppKit: Storage is not set', 'OptionsController.ts', 'getStorage');
       throw new Error('AppKit: Storage is not set');
     }
 
