@@ -252,7 +252,7 @@ export const CoreHelperUtil = {
     });
   },
 
-  getBundleId() {
+  getBundleId(): string | undefined {
     if ((global as any)?.Application?.applicationId) {
       return (global as any)?.Application?.applicationId;
     }

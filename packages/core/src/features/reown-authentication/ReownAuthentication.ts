@@ -16,6 +16,7 @@ import { ConnectionsController } from '../../controllers/ConnectionsController';
 import { CoreHelperUtil } from '../../utils/CoreHelperUtil';
 import { OptionsController } from '../../controllers/OptionsController';
 import { FetchUtil } from '../../utils/FetchUtil';
+import { ApiUtil } from '../../utils/ApiUtil';
 
 /**
  * This is the configuration for using SIWX with Reown Authentication service.
@@ -299,13 +300,14 @@ export class ReownAuthentication implements SIWXConfig {
   }
 
   private getSDKProperties(): { projectId: string; st: string; sv: string; domain: string } {
-    const headers = ApiController._getApiHeaders();
+    const { projectId, st, sv } = ApiController._getApiParams();
+    const domain = ApiUtil.getOrigin();
 
     return {
-      projectId: headers['x-project-id'],
-      st: headers['x-sdk-type'],
-      sv: headers['x-sdk-version'],
-      domain: headers['origin']
+      projectId,
+      st,
+      sv,
+      domain
     };
   }
 
