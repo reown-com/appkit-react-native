@@ -64,7 +64,7 @@ export function authConnector(parameters: AuthConnectorOptions) {
         chainId: frameChainId as number,
         chain: {
           id: frameChainId as number,
-          unsuported: false
+          unsupported: false
         }
       };
     },
