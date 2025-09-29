@@ -129,7 +129,7 @@ describe('LogController', () => {
       OptionsController.setDebug(true);
       LogController.sendInfo('Test message', 'TestFile.ts', 'testFunction');
 
-      expect(consoleSpy.log).toHaveBeenCalledWith(expect.stringContaining('[AppKit'), '');
+      expect(consoleSpy.log).toHaveBeenCalledWith(expect.stringContaining('[AppKit]'));
     });
 
     it('should use correct console method for each log level', () => {

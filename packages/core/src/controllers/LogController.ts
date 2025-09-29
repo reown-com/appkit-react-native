@@ -39,7 +39,6 @@ const logToConsole = (entry: LogEntry) => {
     return;
   }
 
-  const timestamp = new Date(entry.timestamp).toISOString();
   const location =
     entry.fileName && entry.functionName
       ? `[${entry.fileName}:${entry.functionName}]`
@@ -47,24 +46,24 @@ const logToConsole = (entry: LogEntry) => {
       ? `[${entry.fileName}]`
       : '';
 
-  const logMessage = `[AppKit ${timestamp}] ${location} ${entry.message}`;
+  const logMessage = `[AppKit] ${location} ${entry.message}`;
 
   switch (entry.level) {
     case 'error':
       // eslint-disable-next-line no-console
-      console.error(logMessage, entry.data || '');
+      console.error(logMessage);
       break;
     case 'warn':
-      console.warn(logMessage, entry.data || '');
+      console.warn(logMessage);
       break;
     case 'debug':
       // eslint-disable-next-line no-console
-      console.debug(logMessage, entry.data || '');
+      console.debug(logMessage);
       break;
     case 'info':
     default:
       // eslint-disable-next-line no-console
-      console.log(logMessage, entry.data || '');
+      console.log(logMessage);
       break;
   }
 };
