@@ -652,7 +652,7 @@ export class AppKit {
     this.setCustomWallets(options);
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
     OptionsController.setEnableAnalytics(options.enableAnalytics);
-    OptionsController.setDebug(options.debug);
+    OptionsController.setDebug(options.debug && __DEV__);
 
     // Initialize LogController after debug option is set
     LogController.initialize();
