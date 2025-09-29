@@ -27,7 +27,6 @@ describe('LogController', () => {
     it('should initialize correctly', () => {
       LogController.initialize();
       expect(LogController.state.logs).toEqual([]);
-      expect(LogController.state.maxRetentionHours).toBe(24);
     });
 
     it('should not log when debug is false', () => {
@@ -213,54 +212,6 @@ describe('LogController', () => {
         debug: 0
       });
     });
-
-    it('should filter logs by time range', () => {
-      const now = Date.now();
-      const oneHourAgo = now - 60 * 60 * 1000;
-
-      LogController.sendInfo('Old message');
-
-      // Manually set timestamp to simulate old log
-      const logs = LogController.getLogs();
-      logs[0]!.timestamp = oneHourAgo;
-
-      LogController.sendInfo('New message');
-
-      const recentLogs = LogController.getLogsByTimeRange(now - 1000, now + 1000);
-      expect(recentLogs).toHaveLength(1);
-      expect(recentLogs[0]?.message).toBe('New message');
-    });
-  });
-
-  describe('Retention Management', () => {
-    beforeEach(() => {
-      OptionsController.setDebug(true);
-    });
-
-    it('should set retention hours', () => {
-      LogController.setLogRetentionHours(12);
-      expect(LogController.state.maxRetentionHours).toBe(12);
-    });
-
-    it('should cleanup old logs based on retention', () => {
-      // Set short retention for testing
-      LogController.setLogRetentionHours(0.001); // ~3.6 seconds
-
-      LogController.sendInfo('Old message');
-
-      // Manually set timestamp to simulate old log
-      const logs = LogController.getLogs();
-      logs[0]!.timestamp = Date.now() - 60 * 60 * 1000; // 1 hour ago
-
-      LogController.sendInfo('New message');
-
-      // Force cleanup
-      LogController.forceCleanup();
-
-      const remainingLogs = LogController.getLogs();
-      expect(remainingLogs).toHaveLength(1);
-      expect(remainingLogs[0]?.message).toBe('New message');
-    });
   });
 
   describe('Data Handling', () => {
@@ -331,37 +282,32 @@ describe('LogController', () => {
       expect(uniqueIds.size).toBe(ids.length);
     });
 
-    it('should handle concurrent cleanup operations safely', async () => {
-      // Add logs with old timestamps
+    it('should handle concurrent read operations safely', async () => {
+      // Add logs
       for (let i = 0; i < 20; i++) {
-        LogController.sendInfo(`Old message ${i}`, 'CleanupTest.ts', 'testFunction');
+        LogController.sendInfo(`Message ${i}`, 'ConcurrentTest.ts', 'testFunction');
       }
 
-      // Manually set old timestamps
-      const logs = LogController.getLogs();
-      logs.forEach((log, index) => {
-        if (index < 10) {
-          // Make first 10 logs old (25 hours ago)
-          log.timestamp = Date.now() - 25 * 60 * 60 * 1000;
-        }
-      });
-
-      // Trigger multiple concurrent cleanup operations
-      const cleanupPromises = Array.from(
+      // Trigger multiple concurrent read operations
+      const readPromises = Array.from(
         { length: 10 },
         () =>
-          new Promise<void>(resolve => {
+          new Promise<LogEntry[]>(resolve => {
             setTimeout(() => {
-              LogController.forceCleanup();
-              resolve();
+              const logs = LogController.getLogs();
+              resolve(logs);
             }, Math.random() * 5);
           })
       );
 
-      await Promise.all(cleanupPromises);
+      const results = await Promise.all(readPromises);
 
-      const remainingLogs = LogController.getLogs();
-      expect(remainingLogs.length).toBeLessThanOrEqual(10); // Old logs should be cleaned up
+      // All reads should return the same logs
+      results.forEach(logs => {
+        expect(logs.length).toBe(20);
+        expect(logs[0]?.message).toBe('Message 0');
+        expect(logs[19]?.message).toBe('Message 19');
+      });
     });
 
     it('should handle mixed concurrent read/write operations', async () => {
@@ -441,27 +387,19 @@ describe('LogController', () => {
       expect(lastLog?.message).toContain('Load test message');
     });
 
-    it('should handle rapid successive cleanup operations', () => {
-      // Add logs with mixed timestamps
+    it('should handle rapid successive log operations', () => {
+      // Add logs rapidly
       for (let i = 0; i < 100; i++) {
         LogController.sendInfo(`Rapid message ${i}`, 'RapidTest.ts', 'testFunction');
       }
 
       const logs = LogController.getLogs();
-      // Make half of them old
+      expect(logs.length).toBe(100);
+
+      // Verify all messages are present and in order
       logs.forEach((log, index) => {
-        if (index % 2 === 0) {
-          log.timestamp = Date.now() - 25 * 60 * 60 * 1000; // 25 hours ago
-        }
+        expect(log.message).toBe(`Rapid message ${index}`);
       });
-
-      // Trigger rapid cleanup operations
-      for (let i = 0; i < 10; i++) {
-        LogController.forceCleanup();
-      }
-
-      const remainingLogs = LogController.getLogs();
-      expect(remainingLogs.length).toBeLessThanOrEqual(50); // Roughly half should remain
     });
 
     it('should maintain performance under memory pressure', () => {
@@ -485,23 +423,6 @@ describe('LogController', () => {
 
       const logs = LogController.getLogs();
       expect(logs.length).toBeLessThanOrEqual(300); // Capped at MAX_LOGS_COUNT
-    });
-
-    it('should handle retention time changes under load', () => {
-      // Add logs
-      for (let i = 0; i < 50; i++) {
-        LogController.sendInfo(`Retention test ${i}`, 'RetentionTest.ts', 'testFunction');
-      }
-
-      // Change retention multiple times rapidly
-      LogController.setLogRetentionHours(1);
-      LogController.setLogRetentionHours(48);
-      LogController.setLogRetentionHours(12);
-      LogController.setLogRetentionHours(24);
-
-      const logs = LogController.getLogs();
-      expect(LogController.state.maxRetentionHours).toBe(24);
-      expect(logs.length).toBeGreaterThan(0);
     });
   });
 

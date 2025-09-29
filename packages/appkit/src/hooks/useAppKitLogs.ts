@@ -20,11 +20,6 @@ export interface UseAppKitLogsReturn {
   getRecentLogs: (count?: number) => LogEntry[];
 
   /**
-   * Get logs within a time range
-   */
-  getLogsByTimeRange: (startTime: number, endTime: number) => LogEntry[];
-
-  /**
    * Export all logs as JSON string
    */
   exportLogs: () => string;
@@ -38,16 +33,6 @@ export interface UseAppKitLogsReturn {
    * Clear all logs
    */
   clearLogs: () => void;
-
-  /**
-   * Set log retention period in hours
-   */
-  setLogRetentionHours: (hours: number) => void;
-
-  /**
-   * Current retention hours setting
-   */
-  maxRetentionHours: number;
 
   /**
    * Convenience getters for different log levels (regular arrays, safe for console.log)
@@ -90,19 +75,16 @@ export const useAppKitLogs = (): UseAppKitLogsReturn => {
     throw new Error('AppKit instance is not yet available in context.');
   }
 
-  const { logs, maxRetentionHours } = useSnapshot(LogController.state);
+  const { logs } = useSnapshot(LogController.state);
 
   // Memoized functions that don't need to change on every render
   const stableFunctions = useMemo(
     () => ({
       getLogsByLevel: (level: LogLevel) => LogController.getLogsByLevel(level),
       getRecentLogs: (count?: number) => LogController.getRecentLogs(count),
-      getLogsByTimeRange: (startTime: number, endTime: number) =>
-        LogController.getLogsByTimeRange(startTime, endTime),
       exportLogs: () => LogController.exportLogs(),
       getLogsStats: () => LogController.getLogsStats(),
-      clearLogs: () => LogController.clearLogs(),
-      setLogRetentionHours: (hours: number) => LogController.setLogRetentionHours(hours)
+      clearLogs: () => LogController.clearLogs()
     }),
     []
   );
@@ -142,7 +124,6 @@ export const useAppKitLogs = (): UseAppKitLogsReturn => {
 
   return {
     ...regularArrays,
-    maxRetentionHours,
     ...stableFunctions
   };
 };

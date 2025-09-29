@@ -18,53 +18,18 @@ export interface LogEntry {
 
 export interface LogControllerState {
   logs: LogEntry[];
-  maxRetentionHours: number;
 }
 
 // -- Constants ----------------------------------------- //
-const DEFAULT_MAX_RETENTION_HOURS = 24;
 const MAX_LOGS_COUNT = 300; // Prevent memory issues
 
 // -- State --------------------------------------------- //
 const state = proxy<LogControllerState>({
-  logs: [],
-  maxRetentionHours: DEFAULT_MAX_RETENTION_HOURS
+  logs: []
 });
-
-// -- Private Functions --------------------------------- //
-let lastCleanupTime = 0;
-const CLEANUP_THROTTLE_MS = 5 * 60 * 1000; // Only cleanup every 5 minutes max
 
 const generateLogId = (): string => {
   return CoreHelperUtil.getUUID();
-};
-
-const cleanupOldLogsIfNeeded = () => {
-  const now = Date.now();
-
-  // Throttle cleanup to avoid excessive processing
-  if (now - lastCleanupTime < CLEANUP_THROTTLE_MS) {
-    return;
-  }
-
-  const maxAge = state.maxRetentionHours * 60 * 60 * 1000; // Convert hours to milliseconds
-  const initialCount = state.logs.length;
-
-  // Remove old logs
-  state.logs = state.logs.filter(log => now - log.timestamp <= maxAge);
-
-  // Also limit total count to prevent memory issues
-  if (state.logs.length > MAX_LOGS_COUNT) {
-    state.logs = state.logs.slice(-MAX_LOGS_COUNT);
-  }
-
-  lastCleanupTime = now;
-
-  // Optional: Log cleanup stats in debug mode
-  if (OptionsController.state.debug && initialCount > state.logs.length) {
-    // eslint-disable-next-line no-console
-    console.log(`[AppKit LogController] Cleaned up ${initialCount - state.logs.length} old logs`);
-  }
 };
 
 const logToConsole = (entry: LogEntry) => {
@@ -112,17 +77,15 @@ export const LogController = {
    * Initialize the LogController
    */
   initialize() {
-    // Perform initial cleanup of any existing old logs
-    cleanupOldLogsIfNeeded();
+    // Initialize the LogController
   },
 
   /**
    * Destroy the LogController (cleanup resources)
    */
   destroy() {
-    // No background timers to clean up - using lazy cleanup approach
+    // Clear all logs
     state.logs = [];
-    lastCleanupTime = 0;
   },
 
   /**
@@ -157,9 +120,6 @@ export const LogController = {
     }
 
     logToConsole(entry);
-
-    // Trigger lazy cleanup when needed (throttled)
-    cleanupOldLogsIfNeeded();
   },
 
   /**
@@ -243,8 +203,6 @@ export const LogController = {
    * Get all logs
    */
   getLogs(): LogEntry[] {
-    cleanupOldLogsIfNeeded(); // Lazy cleanup when logs are accessed
-
     return [...state.logs];
   },
 
@@ -253,13 +211,6 @@ export const LogController = {
    */
   getLogsByLevel(level: LogLevel): LogEntry[] {
     return state.logs.filter(log => log.level === level);
-  },
-
-  /**
-   * Get logs within a time range
-   */
-  getLogsByTimeRange(startTime: number, endTime: number): LogEntry[] {
-    return state.logs.filter(log => log.timestamp >= startTime && log.timestamp <= endTime);
   },
 
   /**
@@ -274,23 +225,6 @@ export const LogController = {
    */
   clearLogs() {
     state.logs = [];
-  },
-
-  /**
-   * Set log retention hours
-   */
-  setLogRetentionHours(hours: number) {
-    state.maxRetentionHours = hours;
-    lastCleanupTime = 0; // Reset throttle to force immediate cleanup
-    cleanupOldLogsIfNeeded(); // Clean up immediately with new retention
-  },
-
-  /**
-   * Force cleanup of old logs (bypasses throttling)
-   */
-  forceCleanup() {
-    lastCleanupTime = 0; // Reset throttle
-    cleanupOldLogsIfNeeded();
   },
 
   /**
