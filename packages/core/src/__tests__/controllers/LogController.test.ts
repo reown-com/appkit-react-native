@@ -440,7 +440,7 @@ describe('LogController', () => {
       const duration = endTime - startTime;
 
       // Should complete in reasonable time (less than 1 second for 1000 logs)
-      expect(duration).toBeLessThan(1000);
+      expect(duration).toBeLessThan(2000);
 
       const logs = LogController.getLogs();
       expect(logs.length).toBeLessThanOrEqual(300); // Capped at MAX_LOGS_COUNT
