@@ -12,7 +12,7 @@ export function EventsView({ style }: Props) {
   const { isOpen } = useAppKitState();
   const { logs } = useAppKitLogs();
   const [eventCount, setEventCount] = useState(0);
-  const lastLog = logs.at(-1);
+  const lastLog = logs.slice(-1)[0]
 
   useAppKitEventSubscription('MODAL_OPEN', () => {
     setEventCount(prev => prev + 1);

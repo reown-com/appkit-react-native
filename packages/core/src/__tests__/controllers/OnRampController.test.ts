@@ -48,7 +48,8 @@ jest.mock('../../utils/CoreHelperUtil', () => ({
     getBlockchainApiUrl: jest.fn(),
     getApiUrl: jest.fn(),
     debounce: jest.fn(),
-    getPlainAddress: jest.fn(caipAddress => caipAddress?.split(':')[2])
+    getPlainAddress: jest.fn(caipAddress => caipAddress?.split(':')[2]),
+    getUUID: jest.fn()
   }
 }));
 
