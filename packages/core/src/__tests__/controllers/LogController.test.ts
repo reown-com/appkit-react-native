@@ -30,64 +30,91 @@ describe('LogController', () => {
       expect(LogController.state.maxRetentionHours).toBe(24);
     });
 
-    it('should send info log', () => {
-      LogController.sendInfo('Test info message', 'TestFile.ts', 'testFunction');
+    it('should not log when debug is false', () => {
+      OptionsController.setDebug(false);
+      LogController.sendInfo('This should not be logged', 'TestFile.ts', 'testFunction');
+      LogController.sendError('This error should not be logged', 'TestFile.ts', 'testFunction');
+      LogController.sendWarn('This warning should not be logged', 'TestFile.ts', 'testFunction');
+      LogController.sendDebug('This debug should not be logged', 'TestFile.ts', 'testFunction');
+
+      const logs = LogController.getLogs();
+      expect(logs).toHaveLength(0);
+    });
+
+    it('should log when debug is true', () => {
+      OptionsController.setDebug(true);
+      LogController.sendInfo('This should be logged', 'TestFile.ts', 'testFunction');
 
       const logs = LogController.getLogs();
       expect(logs).toHaveLength(1);
-      expect(logs[0]).toMatchObject({
-        level: 'info',
-        message: 'Test info message',
-        fileName: 'TestFile.ts',
-        functionName: 'testFunction'
+      expect(logs[0]?.message).toBe('This should be logged');
+    });
+
+    // All subsequent tests in this describe block need debug mode enabled
+    describe('with debug enabled', () => {
+      beforeEach(() => {
+        OptionsController.setDebug(true);
       });
-      expect(logs[0]?.id).toBeDefined();
-      expect(logs[0]?.timestamp).toBeDefined();
-    });
 
-    it('should send error log with Error object', () => {
-      const testError = new Error('Test error message');
-      LogController.sendError(testError, 'ErrorFile.ts', 'errorFunction');
+      it('should send info log', () => {
+        LogController.sendInfo('Test info message', 'TestFile.ts', 'testFunction');
 
-      const logs = LogController.getLogs();
-      expect(logs).toHaveLength(1);
-      expect(logs[0]).toMatchObject({
-        level: 'error',
-        message: 'Test error message',
-        fileName: 'ErrorFile.ts',
-        functionName: 'errorFunction'
+        const logs = LogController.getLogs();
+        expect(logs).toHaveLength(1);
+        expect(logs[0]).toMatchObject({
+          level: 'info',
+          message: 'Test info message',
+          fileName: 'TestFile.ts',
+          functionName: 'testFunction'
+        });
+        expect(logs[0]?.id).toBeDefined();
+        expect(logs[0]?.timestamp).toBeDefined();
       });
-      expect(logs[0]?.data?.['stack']).toBeDefined();
-      expect(logs[0]?.data?.['name']).toBe('Error');
-    });
 
-    it('should send error log with string', () => {
-      LogController.sendError('String error message', 'StringFile.ts', 'stringFunction');
+      it('should send error log with Error object', () => {
+        const testError = new Error('Test error message');
+        LogController.sendError(testError, 'ErrorFile.ts', 'errorFunction');
 
-      const logs = LogController.getLogs();
-      expect(logs).toHaveLength(1);
-      expect(logs[0]).toMatchObject({
-        level: 'error',
-        message: 'String error message',
-        fileName: 'StringFile.ts',
-        functionName: 'stringFunction'
+        const logs = LogController.getLogs();
+        expect(logs).toHaveLength(1);
+        expect(logs[0]).toMatchObject({
+          level: 'error',
+          message: 'Test error message',
+          fileName: 'ErrorFile.ts',
+          functionName: 'errorFunction'
+        });
+        expect(logs[0]?.data?.['stack']).toBeDefined();
+        expect(logs[0]?.data?.['name']).toBe('Error');
       });
-    });
 
-    it('should send warning log', () => {
-      LogController.sendWarn('Test warning', 'WarnFile.ts', 'warnFunction');
+      it('should send error log with string', () => {
+        LogController.sendError('String error message', 'StringFile.ts', 'stringFunction');
 
-      const logs = LogController.getLogs();
-      expect(logs).toHaveLength(1);
-      expect(logs[0]?.level).toBe('warn');
-    });
+        const logs = LogController.getLogs();
+        expect(logs).toHaveLength(1);
+        expect(logs[0]).toMatchObject({
+          level: 'error',
+          message: 'String error message',
+          fileName: 'StringFile.ts',
+          functionName: 'stringFunction'
+        });
+      });
 
-    it('should send debug log', () => {
-      LogController.sendDebug('Test debug', 'DebugFile.ts', 'debugFunction');
+      it('should send warning log', () => {
+        LogController.sendWarn('Test warning', 'WarnFile.ts', 'warnFunction');
 
-      const logs = LogController.getLogs();
-      expect(logs).toHaveLength(1);
-      expect(logs[0]?.level).toBe('debug');
+        const logs = LogController.getLogs();
+        expect(logs).toHaveLength(1);
+        expect(logs[0]?.level).toBe('warn');
+      });
+
+      it('should send debug log', () => {
+        LogController.sendDebug('Test debug', 'DebugFile.ts', 'debugFunction');
+
+        const logs = LogController.getLogs();
+        expect(logs).toHaveLength(1);
+        expect(logs[0]?.level).toBe('debug');
+      });
     });
   });
 
@@ -122,6 +149,10 @@ describe('LogController', () => {
   });
 
   describe('Log Management', () => {
+    beforeEach(() => {
+      OptionsController.setDebug(true);
+    });
+
     it('should filter logs by level', () => {
       LogController.sendInfo('Info 1');
       LogController.sendError('Error 1');
@@ -202,6 +233,10 @@ describe('LogController', () => {
   });
 
   describe('Retention Management', () => {
+    beforeEach(() => {
+      OptionsController.setDebug(true);
+    });
+
     it('should set retention hours', () => {
       LogController.setLogRetentionHours(12);
       expect(LogController.state.maxRetentionHours).toBe(12);
@@ -229,6 +264,10 @@ describe('LogController', () => {
   });
 
   describe('Data Handling', () => {
+    beforeEach(() => {
+      OptionsController.setDebug(true);
+    });
+
     it('should include additional data in logs', () => {
       const additionalData = { userId: '123', action: 'test' };
       LogController.sendInfo('Message with data', 'TestFile.ts', 'testFunction', additionalData);
@@ -251,6 +290,7 @@ describe('LogController', () => {
     beforeEach(() => {
       LogController.clearLogs();
       LogController.initialize();
+      OptionsController.setDebug(true);
     });
 
     afterEach(() => {
@@ -380,6 +420,7 @@ describe('LogController', () => {
     beforeEach(() => {
       LogController.clearLogs();
       LogController.initialize();
+      OptionsController.setDebug(true);
     });
 
     afterEach(() => {
@@ -468,6 +509,7 @@ describe('LogController', () => {
     beforeEach(() => {
       LogController.clearLogs();
       LogController.initialize();
+      OptionsController.setDebug(true);
     });
 
     afterEach(() => {

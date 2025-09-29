@@ -135,6 +135,10 @@ export const LogController = {
     functionName?: string,
     data?: Record<string, unknown>
   ) {
+    if (!OptionsController.state.debug) {
+      return;
+    }
+
     const entry: LogEntry = {
       id: generateLogId(),
       timestamp: Date.now(),
