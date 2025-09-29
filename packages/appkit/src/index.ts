@@ -33,6 +33,7 @@ export { useAccount } from './hooks/useAccount';
 export { useWalletInfo } from './hooks/useWalletInfo';
 export { useAppKitEvents, useAppKitEventSubscription } from './hooks/useAppKitEvents';
 export { useAppKitState } from './hooks/useAppKitState';
+export { useAppKitLogs, type UseAppKitLogsReturn } from './hooks/useAppKitLogs';
 
 /********** Networks **********/
 export { solana, solanaDevnet, solanaTestnet } from '@reown/appkit-common-react-native';

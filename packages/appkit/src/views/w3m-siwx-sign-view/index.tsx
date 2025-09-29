@@ -11,6 +11,7 @@ import {
 } from '@reown/appkit-ui-react-native';
 import {
   ConnectionsController,
+  LogController,
   OptionsController,
   RouterController,
   SnackController
@@ -37,6 +38,7 @@ export function SIWXSignMessageView() {
     try {
       await SIWXUtil.requestSignMessage();
     } catch (error) {
+      LogController.sendError(error, 'SIWXSignMessageView.tsx', 'onSign');
       SnackController.showError('Signature declined');
     } finally {
       setIsSigning(false);

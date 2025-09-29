@@ -9,7 +9,8 @@ import {
   CoreHelperUtil,
   OptionsController,
   EventsController,
-  AssetController
+  AssetController,
+  LogController
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -61,7 +62,9 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
           }
         });
       }
-    } catch {}
+    } catch (error) {
+      LogController.sendError(error, 'ConnectingWeb.tsx', 'onConnect');
+    }
   }, [data?.wallet, wcUri]);
 
   return (

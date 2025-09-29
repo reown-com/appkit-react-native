@@ -19,6 +19,7 @@ import { WcController } from './WcController';
 import { ApiUtil } from '../utils/ApiUtil';
 import { SnackController } from './SnackController';
 import { ConnectionsController } from './ConnectionsController';
+import { LogController } from './LogController';
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl();
@@ -219,8 +220,7 @@ export const ApiController = {
     } catch (error) {
       state.installed = [];
       clearTimeout(timeoutId);
-      // eslint-disable-next-line no-console
-      console.log('Error fetching installed wallets', error);
+      LogController.sendError(error, 'ApiController.ts', 'fetchInstalledWallets');
     }
   },
 

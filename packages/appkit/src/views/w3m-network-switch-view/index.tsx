@@ -4,6 +4,7 @@ import {
   ApiController,
   AssetController,
   AssetUtil,
+  LogController,
   RouterController
 } from '@reown/appkit-core-react-native';
 import {
@@ -35,6 +36,7 @@ export function NetworkSwitchView() {
       await switchNetwork(RouterController.state.data.network);
       back();
     } catch (error) {
+      LogController.sendError(error, 'NetworkSwitchView.tsx', 'onSwitchNetwork');
       setIsError(true);
       setShowRetry(true);
     }

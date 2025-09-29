@@ -129,6 +129,7 @@ export interface AppKitConfig {
   /**
    * Optional flag to enable debug mode.
    * When enabled, additional logging and debugging information will be output.
+   * Only enabled in development mode.
    *
    * @see {@link https://docs.reown.com/appkit/react-native/core/options#debug | Debug Documentation}
    * @default false

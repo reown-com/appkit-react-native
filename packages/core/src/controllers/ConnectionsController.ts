@@ -19,6 +19,7 @@ import {
 import { StorageUtil } from '../utils/StorageUtil';
 import { BlockchainApiController } from './BlockchainApiController';
 import { SnackController } from './SnackController';
+import { LogController } from './LogController';
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 
 // -- Types --------------------------------------------- //
@@ -531,6 +532,10 @@ export const ConnectionsController = {
         });
       });
     } catch (error) {
+      LogController.sendError(error, 'ConnectionsController.ts', 'fetchBalance', {
+        address,
+        namespace
+      });
       SnackController.showError('Failed to get account balance');
     }
   },

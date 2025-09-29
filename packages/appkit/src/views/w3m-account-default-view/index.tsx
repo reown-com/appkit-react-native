@@ -14,7 +14,8 @@ import {
   OnRampController,
   ConnectionsController,
   AssetController,
-  AssetUtil
+  AssetUtil,
+  LogController
 } from '@reown/appkit-core-react-native';
 // import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common-react-native';
 import {
@@ -94,6 +95,7 @@ export function AccountDefaultView() {
         switchAccountType(namespace, newType, network);
       }
     } catch (error) {
+      LogController.sendError(error, 'AccountDefaultView.tsx', 'onSwitchAccountType');
       SnackController.showError('Error switching account type');
     }
   };

@@ -1,6 +1,11 @@
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useState } from 'react';
-import { ApiController, OptionsController, SnackController } from '@reown/appkit-core-react-native';
+import {
+  ApiController,
+  LogController,
+  OptionsController,
+  SnackController
+} from '@reown/appkit-core-react-native';
 import { type WcWallet } from '@reown/appkit-common-react-native';
 import { useCustomDimensions } from '@reown/appkit-ui-react-native';
 import { Placeholder } from '../w3m-placeholder';
@@ -36,6 +41,7 @@ export function AllWalletsSearch({ searchQuery, onItemPress }: AllWalletsSearchP
       await ApiController.searchWallet({ search: searchQuery });
       setLoading(false);
     } catch (error) {
+      LogController.sendError(error, 'AllWalletsSearch.tsx', 'searchFetch');
       SnackController.showError('Failed to load wallets');
       setLoading(false);
       setLoadingError(true);
