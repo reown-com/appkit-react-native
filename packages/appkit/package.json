@@ -42,7 +42,7 @@
     "@reown/appkit-common-react-native": "2.0.0-alpha.6",
     "@reown/appkit-core-react-native": "2.0.0-alpha.6",
     "@reown/appkit-ui-react-native": "2.0.0-alpha.6",
-    "@walletconnect/universal-provider": "2.21.9",
+    "@walletconnect/universal-provider": "2.21.10",
     "valtio": "2.1.8"
   },
   "peerDependencies": {
