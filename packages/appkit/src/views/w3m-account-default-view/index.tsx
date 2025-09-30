@@ -122,7 +122,7 @@ export function AccountDefaultView() {
       type: 'track',
       event: 'OPEN_SWAP',
       properties: {
-        network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
+        network: ConnectionsController.state.activeNetwork?.caipNetworkId,
         isSmartAccount: false
       }
     });
@@ -158,7 +158,7 @@ export function AccountDefaultView() {
   };
 
   const onSendPress = () => {
-    const network = ConnectionsController.state.activeNetwork?.caipNetworkId || '';
+    const network = ConnectionsController.state.activeNetwork?.caipNetworkId;
     const isSmartAccount = ConnectionsController.state.accountType === 'smartAccount';
 
     EventsController.sendEvent({

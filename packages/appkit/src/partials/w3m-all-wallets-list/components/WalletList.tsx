@@ -18,7 +18,7 @@ const ITEM_HEIGHT_WITH_GAP = ITEM_HEIGHT + Spacing['3xs'];
 
 interface Props {
   data: WcWallet[];
-  onItemPress: (wallet: WcWallet) => void;
+  onItemPress: (wallet: WcWallet, displayIndex: number) => void;
   onEndReached?: () => void;
   onEndReachedThreshold?: number;
   isLoading?: boolean;
@@ -52,7 +52,7 @@ export function WalletList({
       data={displayData}
       style={[styles.list, { height: maxHeight }, style]}
       columnWrapperStyle={styles.columnWrapperStyle}
-      renderItem={({ item }) => {
+      renderItem={({ item, index }) => {
         if (isLoading) {
           return <CardSelectLoader style={styles.itemContainer} />;
         }
@@ -61,6 +61,7 @@ export function WalletList({
           <WalletItem
             item={item}
             imageHeaders={imageHeaders}
+            displayIndex={index}
             onItemPress={onItemPress}
             style={styles.itemContainer}
             testID={testIDKey ? `${testIDKey}-${item?.id}` : undefined}

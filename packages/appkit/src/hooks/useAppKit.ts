@@ -1,4 +1,5 @@
 import { useContext, useMemo } from 'react';
+import type { ChainNamespace } from '@reown/appkit-common-react-native';
 
 import type { AppKit } from '../AppKit';
 import { AppKitContext } from '../AppKitContext';
@@ -6,7 +7,7 @@ import { AppKitContext } from '../AppKitContext';
 interface UseAppKitReturn {
   open: AppKit['open'];
   close: AppKit['close'];
-  disconnect: (namespace?: string) => void;
+  disconnect: (namespace?: ChainNamespace) => void;
   switchNetwork: AppKit['switchNetwork'];
 }
 
@@ -30,7 +31,7 @@ export const useAppKit = (): UseAppKitReturn => {
     return {
       open: context.appKit.open.bind(context.appKit),
       close: context.appKit.close.bind(context.appKit),
-      disconnect: (namespace?: string) =>
+      disconnect: (namespace?: ChainNamespace) =>
         context.appKit!.disconnect.bind(context.appKit!)(namespace),
       switchNetwork: context.appKit.switchNetwork.bind(context.appKit)
     };

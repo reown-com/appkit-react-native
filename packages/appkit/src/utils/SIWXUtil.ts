@@ -349,7 +349,7 @@ export const SIWXUtil = {
   },
   getSIWXEventProperties(error?: unknown) {
     return {
-      network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
+      network: ConnectionsController.state.activeNetwork?.caipNetworkId,
       isSmartAccount: ConnectionsController.state.accountType === 'smartAccount',
       message: error ? CoreHelperUtil.parseError(error) : undefined
     };

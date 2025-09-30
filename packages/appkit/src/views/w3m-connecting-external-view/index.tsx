@@ -9,7 +9,8 @@ import {
   AssetUtil,
   AssetController,
   CoreHelperUtil,
-  LogController
+  LogController,
+  ConnectionsController
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -42,6 +43,21 @@ export function ConnectingExternalView() {
   const onStorePress = () => {
     if (storeUrl) {
       CoreHelperUtil.openLink(storeUrl);
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'GET_WALLET',
+        properties: {
+          name: RouterController.state.data?.wallet?.name ?? 'Unknown',
+          link: storeUrl,
+          linkType: Platform.select({
+            ios: 'appstore',
+            android: 'playstore',
+            default: undefined
+          }),
+          explorerId: RouterController.state.data?.wallet?.id,
+          walletRank: RouterController.state.data?.wallet?.order
+        }
+      });
     }
   };
 
@@ -62,13 +78,17 @@ export function ConnectingExternalView() {
         }
         WcController.addRecentWallet(wallet);
         WcController.setPressedWallet(wallet);
+        const address = ConnectionsController.state.activeAddress;
+        const caipNetworkId = ConnectionsController.state.activeNetwork?.caipNetworkId;
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
+          address: CoreHelperUtil.getPlainAddress(address),
           properties: {
             name: wallet?.name ?? 'Unknown',
             method: 'mobile',
-            explorer_id: wallet?.id
+            caipNetworkId,
+            explorerId: wallet?.id
           }
         });
       }

@@ -10,7 +10,8 @@ import {
   OptionsController,
   EventsController,
   AssetController,
-  LogController
+  LogController,
+  ConnectionsController
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -51,14 +52,18 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
         await Linking.openURL(redirect);
         await WcController.state.wcPromise;
         WcController.setConnectedWallet(wcLinking, data?.wallet);
+        const address = ConnectionsController.state.activeAddress;
+        const caipNetworkId = ConnectionsController.state.activeNetwork?.caipNetworkId;
 
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
+          address: CoreHelperUtil.getPlainAddress(address),
           properties: {
             method: 'web',
             name: data?.wallet?.name ?? 'Unknown',
-            explorer_id: data?.wallet?.id
+            explorerId: data?.wallet?.id,
+            caipNetworkId
           }
         });
       }

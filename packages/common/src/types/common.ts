@@ -4,7 +4,7 @@ export type CaipAddress = `${string}:${string}:${string}`;
 
 export type CaipNetworkId = `${string}:${string}`;
 
-export type ChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122';
+export type ChainNamespace = 'eip155' | 'solana' | 'bip122';
 
 export type AdapterType = 'solana' | 'wagmi' | 'ethers' | 'universal' | 'bip122';
 

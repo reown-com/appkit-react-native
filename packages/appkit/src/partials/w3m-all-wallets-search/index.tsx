@@ -15,7 +15,7 @@ import { Loading } from '../w3m-all-wallets-list/components/Loading';
 import { WalletList } from '../w3m-all-wallets-list/components/WalletList';
 
 export interface AllWalletsSearchProps {
-  onItemPress: (wallet: WcWallet) => void;
+  onItemPress: (wallet: WcWallet, displayIndex: number) => void;
   searchQuery?: string;
 }
 

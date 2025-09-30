@@ -4,7 +4,9 @@ import {
   WcController,
   EventsController,
   OptionsController,
-  SnackController
+  SnackController,
+  ConnectionsController,
+  CoreHelperUtil
 } from '@reown/appkit-core-react-native';
 import {
   FlexView,
@@ -35,13 +37,17 @@ export function ConnectingQrCode() {
 
   const onConnect = async () => {
     await WcController.state.wcPromise;
+    const address = ConnectionsController.state.activeAddress;
+    const caipNetworkId = ConnectionsController.state.activeNetwork?.caipNetworkId;
 
     EventsController.sendEvent({
       type: 'track',
       event: 'CONNECT_SUCCESS',
+      address: CoreHelperUtil.getPlainAddress(address),
       properties: {
         method: 'qrcode',
-        name: 'WalletConnect'
+        name: 'WalletConnect',
+        caipNetworkId
       }
     });
   };

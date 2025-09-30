@@ -15,7 +15,7 @@ import { Loading } from './components/Loading';
 import { WalletList } from './components/WalletList';
 
 interface AllWalletsListProps {
-  onItemPress: (wallet: WcWallet) => void;
+  onItemPress: (wallet: WcWallet, displayIndex: number) => void;
   headerHeight?: number;
 }
 

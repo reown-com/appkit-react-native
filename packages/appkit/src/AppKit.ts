@@ -180,7 +180,7 @@ export class AppKit {
    * @param namespace - The namespace to disconnect from.
    * @param isInternal - Whether the disconnect is internal (i.e. from the AppKit) or external (i.e. from wallet side).
    */
-  async disconnect(namespace?: string, isInternal?: boolean): Promise<void> {
+  async disconnect(namespace?: ChainNamespace, isInternal?: boolean): Promise<void> {
     try {
       const activeNamespace = namespace ?? ConnectionsController.state.activeNamespace;
 
@@ -220,7 +220,10 @@ export class AppKit {
 
       EventsController.sendEvent({
         type: 'track',
-        event: 'DISCONNECT_SUCCESS'
+        event: 'DISCONNECT_SUCCESS',
+        properties: {
+          namespace: activeNamespace
+        }
       });
     } catch (error) {
       LogController.sendError(error, 'AppKit.ts', 'disconnect');
@@ -270,7 +273,7 @@ export class AppKit {
       type: 'track',
       event: 'SWITCH_NETWORK',
       properties: {
-        network: network.id
+        network: network.caipNetworkId
       }
     });
 
@@ -385,6 +388,10 @@ export class AppKit {
    */
   private async initConnectors() {
     ModalController.setLoading(true);
+
+    //Always init the walletconnect connector
+    await this.createWalletConnectConnector();
+
     const connectedConnectors = await StorageUtil.getConnectedConnectors();
     if (connectedConnectors.length > 0) {
       for (const connected of connectedConnectors) {
@@ -401,10 +408,22 @@ export class AppKit {
           await StorageUtil.removeConnectedConnectors(connected.type);
         }
       }
+
+      const address = ConnectionsController.state.activeAddress;
+      const walletInfo = ConnectionsController.state.walletInfo;
+      if (address) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_SUCCESS',
+          address: CoreHelperUtil.getPlainAddress(address),
+          properties: {
+            name: walletInfo?.name ?? 'Unknown',
+            reconnect: true
+          }
+        });
+      }
     }
 
-    //Always init the walletconnect connector
-    await this.createWalletConnectConnector();
     ModalController.setLoading(false);
   }
 
@@ -644,6 +663,7 @@ export class AppKit {
 
   private async initControllers(options: AppKitConfig) {
     await this.initStorageAndValues(options);
+    let defaultNetwork;
 
     OptionsController.setProjectId(options.projectId);
     OptionsController.setMetadata(options.metadata);
@@ -667,8 +687,8 @@ export class AppKit {
     OptionsController.setRequestedNetworks(this.networks);
 
     if (options.defaultNetwork) {
-      const network = NetworkUtil.formatNetwork(options.defaultNetwork, this.projectId);
-      OptionsController.setDefaultNetwork(network);
+      defaultNetwork = NetworkUtil.formatNetwork(options.defaultNetwork, this.projectId);
+      OptionsController.setDefaultNetwork(defaultNetwork);
     }
 
     ThemeController.setDefaultThemeMode(options.themeMode);
@@ -694,6 +714,24 @@ export class AppKit {
     ) {
       OptionsController.setIsOnRampEnabled(true);
     }
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'INITIALIZE',
+      properties: {
+        showWallets: options.features?.showWallets,
+        themeMode: options.themeMode,
+        themeVariables: options.themeVariables,
+        networks: this.networks.map(network => network.caipNetworkId).filter(Boolean),
+        defaultNetwork: defaultNetwork?.caipNetworkId,
+        metadata: options.metadata,
+        enableAnalytics: options.enableAnalytics,
+        features: options.features,
+        adapters: this.adapters.map(adapter => adapter?.constructor?.name).filter(Boolean),
+        extraConnectors: this.extraConnectors.map(connector => connector?.type).filter(Boolean),
+        siwx: !!options.siwx
+      }
+    });
   }
 
   private async initActiveNamespace() {

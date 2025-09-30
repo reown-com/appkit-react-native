@@ -8,7 +8,7 @@ export function WhatIsAWalletView() {
 
   const onGetWalletPress = () => {
     RouterController.push('GetWallet');
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_GET_WALLET' });
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_GET_WALLET_HELP' });
   };
 
   return (

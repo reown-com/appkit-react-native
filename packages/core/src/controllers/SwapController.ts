@@ -732,7 +732,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_SUCCESS',
         properties: {
-          network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
+          network: ConnectionsController.state.activeNetwork?.caipNetworkId,
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',
@@ -766,7 +766,7 @@ export const SwapController = {
         event: 'SWAP_ERROR',
         properties: {
           message: error?.shortMessage ?? error?.message ?? 'Unknown',
-          network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
+          network: ConnectionsController.state.activeNetwork?.caipNetworkId,
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',
