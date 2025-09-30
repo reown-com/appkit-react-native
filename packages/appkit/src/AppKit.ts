@@ -388,6 +388,10 @@ export class AppKit {
    */
   private async initConnectors() {
     ModalController.setLoading(true);
+
+    //Always init the walletconnect connector
+    await this.createWalletConnectConnector();
+
     const connectedConnectors = await StorageUtil.getConnectedConnectors();
     if (connectedConnectors.length > 0) {
       for (const connected of connectedConnectors) {
@@ -404,10 +408,22 @@ export class AppKit {
           await StorageUtil.removeConnectedConnectors(connected.type);
         }
       }
+
+      const address = ConnectionsController.state.activeAddress;
+      const walletInfo = ConnectionsController.state.walletInfo;
+      if (address) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_SUCCESS',
+          address: CoreHelperUtil.getPlainAddress(address),
+          properties: {
+            name: walletInfo?.name ?? 'Unknown',
+            reconnect: true
+          }
+        });
+      }
     }
 
-    //Always init the walletconnect connector
-    await this.createWalletConnectConnector();
     ModalController.setLoading(false);
   }
 
