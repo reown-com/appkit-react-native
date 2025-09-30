@@ -21,7 +21,7 @@ export function AccountWalletFeatures() {
   const { features, isOnRampEnabled } = useSnapshot(OptionsController.state);
   const { activeNetwork, balances, activeNamespace } = useSnapshot(ConnectionsController.state);
   const balance = CoreHelperUtil.calculateAndFormatBalance(balances as BalanceType[]);
-  const network = ConnectionsController.state.activeNetwork?.caipNetworkId || '';
+  const network = ConnectionsController.state.activeNetwork?.caipNetworkId;
   const isSmartAccount = ConnectionsController.state.accountType === 'smartAccount';
   const showSend =
     activeNamespace && ConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(activeNamespace);

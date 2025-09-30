@@ -87,7 +87,7 @@ export const SendController = {
       isSmartAccount: ConnectionsController.state.accountType === 'smartAccount',
       token: this.state.token?.address ?? this.state.token?.symbol ?? '',
       amount: this.state.sendTokenAmount || 0,
-      network: ConnectionsController.state.activeNetwork?.caipNetworkId ?? ''
+      network: ConnectionsController.state.activeNetwork?.caipNetworkId
     };
 
     try {
@@ -128,7 +128,10 @@ export const SendController = {
         properties: eventProperties
       });
 
-      if (error?.message && error?.message.includes('user rejected')) {
+      if (
+        error?.message &&
+        (error?.message.includes('user rejected') || error?.message.includes('canceled'))
+      ) {
         SnackController.showError('Transaction cancelled');
       } else {
         SnackController.showError('Something went wrong');

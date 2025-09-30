@@ -152,6 +152,11 @@ export const LogController = {
       }
     } else if (typeof error === 'string') {
       message = error;
+    } else if (error && typeof error === 'object' && 'message' in error) {
+      // Handle error-like objects (e.g., RPC errors, custom error objects)
+      message = String((error as any).message) || 'Error occurred';
+      // Include all properties of the error object
+      Object.assign(data, sanitizeValue(error) as Record<string, unknown>);
     } else {
       message = 'Unknown error occurred';
       // Sanitize the original error object

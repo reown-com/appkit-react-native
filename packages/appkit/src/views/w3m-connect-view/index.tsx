@@ -33,7 +33,7 @@ export function ConnectView() {
   const showLoadingError = !showConnectWalletsButton && prefetchError;
   const showList = !showConnectWalletsButton && !showLoadingError;
 
-  const onWalletPress = (wallet: WcWallet, isInstalled?: boolean) => {
+  const onWalletPress = (wallet: WcWallet, displayIndex: number, isInstalled?: boolean) => {
     const isExternal = WcHelpersUtil.isExternalWallet(wallet);
     if (isExternal) {
       RouterController.push('ConnectingExternal', { wallet });
@@ -48,7 +48,10 @@ export function ConnectView() {
       properties: {
         name: wallet.name ?? 'Unknown',
         platform,
-        explorer_id: wallet.id
+        explorerId: wallet.id,
+        walletRank: wallet.order,
+        displayIndex,
+        view: 'Connect'
       }
     });
   };

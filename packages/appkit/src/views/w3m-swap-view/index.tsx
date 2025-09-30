@@ -93,7 +93,7 @@ export function SwapView() {
       type: 'track',
       event: 'INITIATE_SWAP',
       properties: {
-        network: ConnectionsController.state.activeNetwork?.caipNetworkId || '',
+        network: ConnectionsController.state.activeNetwork?.caipNetworkId,
         swapFromToken: SwapController.state.sourceToken?.symbol || '',
         swapToToken: SwapController.state.toToken?.symbol || '',
         swapFromAmount: SwapController.state.sourceTokenAmount || '',

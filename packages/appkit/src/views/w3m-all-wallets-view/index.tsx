@@ -22,7 +22,7 @@ export function AllWalletsView() {
 
   const { debouncedCallback: onInputChange } = useDebounceCallback({ callback: setSearchQuery });
 
-  const onWalletPress = (wallet: WcWallet) => {
+  const onWalletPress = (wallet: WcWallet, displayIndex: number) => {
     const isExternal = WcHelpersUtil.isExternalWallet(wallet);
     if (isExternal) {
       RouterController.push('ConnectingExternal', { wallet });
@@ -33,7 +33,14 @@ export function AllWalletsView() {
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
-      properties: { name: wallet.name ?? 'Unknown', platform: 'mobile', explorer_id: wallet.id }
+      properties: {
+        name: wallet.name ?? 'Unknown',
+        platform: 'mobile',
+        explorerId: wallet.id,
+        walletRank: wallet.order,
+        displayIndex,
+        view: 'AllWallets'
+      }
     });
   };
 

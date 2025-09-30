@@ -7,13 +7,21 @@ import { memo } from 'react';
 
 interface WalletItemProps {
   item: WcWallet;
+  displayIndex: number;
   imageHeaders?: Record<string, string>;
-  onItemPress: (wallet: WcWallet) => void;
+  onItemPress: (wallet: WcWallet, displayIndex: number) => void;
   style?: StyleProp<ViewStyle>;
   testID?: string;
 }
 
-export function WalletItem({ item, imageHeaders, onItemPress, style, testID }: WalletItemProps) {
+export function WalletItem({
+  item,
+  displayIndex,
+  imageHeaders,
+  onItemPress,
+  style,
+  testID
+}: WalletItemProps) {
   const { walletImages } = useSnapshot(AssetController.state);
   const isInstalled = ApiController.state.installed.find(wallet => wallet?.id === item?.id);
   const imageSrc = AssetUtil.getWalletImage(item, walletImages);
@@ -28,7 +36,7 @@ export function WalletItem({ item, imageHeaders, onItemPress, style, testID }: W
       style={style}
       imageHeaders={imageHeaders}
       name={item?.name ?? 'Unknown'}
-      onPress={() => onItemPress(item)}
+      onPress={() => onItemPress(item, displayIndex)}
       installed={!!isInstalled}
       testID={testID}
     />

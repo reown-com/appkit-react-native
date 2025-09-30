@@ -180,7 +180,7 @@ export class AppKit {
    * @param namespace - The namespace to disconnect from.
    * @param isInternal - Whether the disconnect is internal (i.e. from the AppKit) or external (i.e. from wallet side).
    */
-  async disconnect(namespace?: string, isInternal?: boolean): Promise<void> {
+  async disconnect(namespace?: ChainNamespace, isInternal?: boolean): Promise<void> {
     try {
       const activeNamespace = namespace ?? ConnectionsController.state.activeNamespace;
 
@@ -220,7 +220,10 @@ export class AppKit {
 
       EventsController.sendEvent({
         type: 'track',
-        event: 'DISCONNECT_SUCCESS'
+        event: 'DISCONNECT_SUCCESS',
+        properties: {
+          namespace: activeNamespace
+        }
       });
     } catch (error) {
       LogController.sendError(error, 'AppKit.ts', 'disconnect');
@@ -270,7 +273,7 @@ export class AppKit {
       type: 'track',
       event: 'SWITCH_NETWORK',
       properties: {
-        network: network.id
+        network: network.caipNetworkId
       }
     });
 
@@ -644,6 +647,7 @@ export class AppKit {
 
   private async initControllers(options: AppKitConfig) {
     await this.initStorageAndValues(options);
+    let defaultNetwork;
 
     OptionsController.setProjectId(options.projectId);
     OptionsController.setMetadata(options.metadata);
@@ -667,8 +671,8 @@ export class AppKit {
     OptionsController.setRequestedNetworks(this.networks);
 
     if (options.defaultNetwork) {
-      const network = NetworkUtil.formatNetwork(options.defaultNetwork, this.projectId);
-      OptionsController.setDefaultNetwork(network);
+      defaultNetwork = NetworkUtil.formatNetwork(options.defaultNetwork, this.projectId);
+      OptionsController.setDefaultNetwork(defaultNetwork);
     }
 
     ThemeController.setDefaultThemeMode(options.themeMode);
@@ -694,6 +698,19 @@ export class AppKit {
     ) {
       OptionsController.setIsOnRampEnabled(true);
     }
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'INITIALIZE',
+      properties: {
+        showWallets: options.features?.showWallets,
+        themeMode: options.themeMode,
+        themeVariables: options.themeVariables,
+        networks: this.networks.map(network => network.caipNetworkId),
+        defaultNetwork: defaultNetwork?.caipNetworkId,
+        metadata: options.metadata
+      }
+    });
   }
 
   private async initActiveNamespace() {

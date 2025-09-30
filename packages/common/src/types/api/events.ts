@@ -1,9 +1,19 @@
-import type { Platform, SocialProvider, AccountType } from '../common';
+import type {
+  Platform,
+  SocialProvider,
+  AccountType,
+  CaipNetworkId,
+  ChainNamespace,
+  ThemeVariables,
+  ThemeMode
+} from '../common';
+import type { Metadata } from '../wallet';
 
 export type EventName =
   | 'MODAL_LOADED'
   | 'MODAL_OPEN'
   | 'MODAL_CLOSE'
+  | 'INITIALIZE'
   | 'CLICK_ALL_WALLETS'
   | 'CLICK_NETWORKS'
   | 'SWITCH_NETWORK'
@@ -14,7 +24,8 @@ export type EventName =
   | 'DISCONNECT_ERROR'
   | 'CLICK_WALLET_HELP'
   | 'CLICK_NETWORK_HELP'
-  | 'CLICK_GET_WALLET'
+  | 'CLICK_GET_WALLET_HELP'
+  | 'GET_WALLET'
   | 'EMAIL_LOGIN_SELECTED'
   | 'EMAIL_VERIFICATION_CODE_PASS'
   | 'EMAIL_VERIFICATION_CODE_FAIL'
@@ -23,6 +34,7 @@ export type EventName =
   | 'EMAIL_UPGRADE_FROM_MODAL'
   | 'SIWX_AUTH_SUCCESS'
   | 'SIWX_AUTH_ERROR'
+  | 'CLICK_SIGN_SIWX_MESSAGE'
   | 'CLICK_CANCEL_SIWX'
   | 'CLICK_TRANSACTIONS'
   | 'ERROR_FETCH_TRANSACTIONS'
@@ -60,6 +72,18 @@ export type Event =
     }
   | {
       type: 'track';
+      event: 'INITIALIZE';
+      properties: {
+        showWallets?: boolean;
+        themeMode?: ThemeMode;
+        themeVariables?: ThemeVariables;
+        networks: CaipNetworkId[];
+        defaultNetwork?: CaipNetworkId;
+        metadata?: Metadata;
+      };
+    }
+  | {
+      type: 'track';
       event: 'MODAL_CLOSE';
       properties: {
         connected: boolean;
@@ -77,7 +101,7 @@ export type Event =
       type: 'track';
       event: 'SWITCH_NETWORK';
       properties: {
-        network: number | string;
+        network: CaipNetworkId;
       };
     }
   | {
@@ -86,16 +110,22 @@ export type Event =
       properties: {
         name: string;
         platform?: Platform;
-        explorer_id?: string;
+        explorerId?: string;
+        walletRank?: number;
+        displayIndex?: number;
+        view?: 'Connect' | 'AllWallets';
       };
     }
   | {
       type: 'track';
       event: 'CONNECT_SUCCESS';
+      address?: string;
       properties: {
         name: string;
-        method: Platform;
-        explorer_id?: string;
+        caipNetworkId?: CaipNetworkId;
+        method?: Platform;
+        explorerId?: string;
+        reconnect?: boolean;
       };
     }
   | {
@@ -108,6 +138,9 @@ export type Event =
   | {
       type: 'track';
       event: 'DISCONNECT_SUCCESS';
+      properties: {
+        namespace?: ChainNamespace;
+      };
     }
   | {
       type: 'track';
@@ -123,7 +156,18 @@ export type Event =
     }
   | {
       type: 'track';
-      event: 'CLICK_GET_WALLET';
+      event: 'CLICK_GET_WALLET_HELP';
+    }
+  | {
+      type: 'track';
+      event: 'GET_WALLET';
+      properties: {
+        name: string;
+        explorerId?: string;
+        link?: string;
+        link_type?: 'appstore' | 'playstore';
+        walletRank?: number;
+      };
     }
   | {
       type: 'track';
@@ -154,7 +198,7 @@ export type Event =
       address?: string;
       event: 'CLICK_SIGN_SIWX_MESSAGE';
       properties: {
-        network: string;
+        network?: CaipNetworkId;
         isSmartAccount: boolean;
       };
     }
@@ -162,7 +206,7 @@ export type Event =
       type: 'track';
       event: 'CLICK_CANCEL_SIWX';
       properties: {
-        network: string;
+        network?: CaipNetworkId;
         isSmartAccount: boolean;
       };
     }
@@ -170,7 +214,7 @@ export type Event =
       type: 'track';
       event: 'SIWX_AUTH_SUCCESS';
       properties: {
-        network: string;
+        network?: CaipNetworkId;
         isSmartAccount: boolean;
       };
     }
@@ -178,7 +222,7 @@ export type Event =
       type: 'track';
       event: 'SIWX_AUTH_ERROR';
       properties: {
-        network: string;
+        network?: CaipNetworkId;
         isSmartAccount: boolean;
         message?: string;
       };
@@ -215,7 +259,7 @@ export type Event =
       event: 'OPEN_SEND';
       properties: {
         isSmartAccount: boolean;
-        network: string;
+        network?: CaipNetworkId;
       };
     }
   | {
@@ -223,7 +267,7 @@ export type Event =
       event: 'OPEN_SWAP';
       properties: {
         isSmartAccount: boolean;
-        network: string;
+        network?: CaipNetworkId;
       };
     }
   | {
@@ -231,7 +275,7 @@ export type Event =
       event: 'INITIATE_SWAP';
       properties: {
         isSmartAccount: boolean;
-        network: string;
+        network?: CaipNetworkId;
         swapFromToken: string;
         swapToToken: string;
         swapFromAmount: string;
@@ -243,7 +287,7 @@ export type Event =
       event: 'SWAP_SUCCESS';
       properties: {
         isSmartAccount: boolean;
-        network: string;
+        network?: CaipNetworkId;
         swapFromToken: string;
         swapToToken: string;
         swapFromAmount: string;
@@ -255,7 +299,7 @@ export type Event =
       event: 'SWAP_ERROR';
       properties: {
         isSmartAccount: boolean;
-        network: string;
+        network?: CaipNetworkId;
         swapFromToken: string;
         swapToToken: string;
         swapFromAmount: string;
@@ -268,7 +312,7 @@ export type Event =
       event: 'SEND_INITIATED';
       properties: {
         isSmartAccount: boolean;
-        network: string;
+        network?: CaipNetworkId;
         token: string;
         amount: number;
       };
@@ -278,7 +322,7 @@ export type Event =
       event: 'SEND_SUCCESS';
       properties: {
         isSmartAccount: boolean;
-        network: string;
+        network?: CaipNetworkId;
         token: string;
         amount: number;
       };
@@ -288,7 +332,7 @@ export type Event =
       event: 'SEND_ERROR';
       properties: {
         isSmartAccount: boolean;
-        network: string;
+        network?: CaipNetworkId;
         token: string;
         amount: number;
       };

@@ -14,7 +14,7 @@ import { UiUtil } from '../../../utils/UiUtil';
 
 interface Props {
   itemStyle: StyleProp<ViewStyle>;
-  onWalletPress: (wallet: WcWallet) => void;
+  onWalletPress: (wallet: WcWallet, displayIndex: number, isInstalled?: boolean) => void;
 }
 
 export function AllWalletList({ itemStyle, onWalletPress }: Props) {
@@ -47,8 +47,10 @@ export function AllWalletList({ itemStyle, onWalletPress }: Props) {
       <ListItemLoader style={itemStyle} />
     </>
   ) : (
-    list.map(wallet => {
+    list.map((wallet, index) => {
       const isRecent = recentWallets?.some(recentWallet => recentWallet.id === wallet.id);
+      //eslint-disable-next-line valtio/state-snapshot-rule
+      const isInstalled = !!installed.find(installedWallet => installedWallet.id === wallet.id);
 
       return (
         <ListWallet
@@ -56,11 +58,11 @@ export function AllWalletList({ itemStyle, onWalletPress }: Props) {
           imageSrc={AssetUtil.getWalletImage(wallet, walletImages)}
           imageHeaders={imageHeaders}
           name={wallet?.name ?? 'Unknown'}
-          onPress={() => onWalletPress(wallet)}
+          onPress={() => onWalletPress(wallet, index)}
           tagLabel={isRecent ? 'Recent' : undefined}
           tagVariant={isRecent ? 'shade' : undefined}
           style={itemStyle}
-          installed={!!installed.find(installedWallet => installedWallet.id === wallet.id)}
+          installed={isInstalled}
         />
       );
     })

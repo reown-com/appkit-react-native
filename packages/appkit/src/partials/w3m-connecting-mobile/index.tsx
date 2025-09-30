@@ -11,7 +11,8 @@ import {
   EventsController,
   ConstantsUtil,
   AssetController,
-  LogController
+  LogController,
+  ConnectionsController
 } from '@reown/appkit-core-react-native';
 import {
   Button,
@@ -61,6 +62,21 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const onStorePress = () => {
     if (storeUrl) {
       CoreHelperUtil.openLink(storeUrl);
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'GET_WALLET',
+        properties: {
+          name: data?.wallet?.name ?? 'Unknown',
+          link: storeUrl,
+          link_type: Platform.select({
+            ios: 'appstore',
+            android: 'playstore',
+            default: undefined
+          }),
+          explorerId: data?.wallet?.id,
+          walletRank: data?.wallet?.order
+        }
+      });
     }
   };
 
@@ -75,13 +91,17 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         await CoreHelperUtil.openLink(redirect);
         await WcController.state.wcPromise;
         WcController.setConnectedWallet(wcLinking, data?.wallet);
+        const address = ConnectionsController.state.activeAddress;
+        const caipNetworkId = ConnectionsController.state.activeNetwork?.caipNetworkId;
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
+          address: CoreHelperUtil.getPlainAddress(address),
           properties: {
             method: 'mobile',
             name: data?.wallet?.name ?? 'Unknown',
-            explorer_id: data?.wallet?.id
+            explorerId: data?.wallet?.id,
+            caipNetworkId
           }
         });
       }
