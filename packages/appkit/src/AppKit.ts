@@ -722,13 +722,13 @@ export class AppKit {
         showWallets: options.features?.showWallets,
         themeMode: options.themeMode,
         themeVariables: options.themeVariables,
-        networks: this.networks.map(network => network.caipNetworkId),
+        networks: this.networks.map(network => network.caipNetworkId).filter(Boolean),
         defaultNetwork: defaultNetwork?.caipNetworkId,
         metadata: options.metadata,
         enableAnalytics: options.enableAnalytics,
         features: options.features,
-        adapters: this.adapters.map(adapter => adapter?.constructor?.name),
-        extraConnectors: this.extraConnectors.map(connector => connector?.type),
+        adapters: this.adapters.map(adapter => adapter?.constructor?.name).filter(Boolean),
+        extraConnectors: this.extraConnectors.map(connector => connector?.type).filter(Boolean),
         siwx: !!options.siwx
       }
     });
