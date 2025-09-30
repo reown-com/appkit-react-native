@@ -58,7 +58,7 @@ export function AllWalletList({ itemStyle, onWalletPress }: Props) {
           imageSrc={AssetUtil.getWalletImage(wallet, walletImages)}
           imageHeaders={imageHeaders}
           name={wallet?.name ?? 'Unknown'}
-          onPress={() => onWalletPress(wallet, index)}
+          onPress={() => onWalletPress(wallet, index, isInstalled)}
           tagLabel={isRecent ? 'Recent' : undefined}
           tagVariant={isRecent ? 'shade' : undefined}
           style={itemStyle}
