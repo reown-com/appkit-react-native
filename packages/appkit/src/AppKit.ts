@@ -724,7 +724,12 @@ export class AppKit {
         themeVariables: options.themeVariables,
         networks: this.networks.map(network => network.caipNetworkId),
         defaultNetwork: defaultNetwork?.caipNetworkId,
-        metadata: options.metadata
+        metadata: options.metadata,
+        enableAnalytics: options.enableAnalytics,
+        features: options.features,
+        adapters: this.adapters.map(adapter => adapter?.constructor?.name),
+        extraConnectors: this.extraConnectors.map(connector => connector?.type),
+        siwx: !!options.siwx
       }
     });
   }

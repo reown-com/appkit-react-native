@@ -49,7 +49,7 @@ export function ConnectingExternalView() {
         properties: {
           name: RouterController.state.data?.wallet?.name ?? 'Unknown',
           link: storeUrl,
-          link_type: Platform.select({
+          linkType: Platform.select({
             ios: 'appstore',
             android: 'playstore',
             default: undefined

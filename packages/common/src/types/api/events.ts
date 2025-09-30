@@ -7,6 +7,7 @@ import type {
   ThemeVariables,
   ThemeMode
 } from '../common';
+import type { Features } from '../ui';
 import type { Metadata } from '../wallet';
 
 export type EventName =
@@ -80,6 +81,11 @@ export type Event =
         networks: CaipNetworkId[];
         defaultNetwork?: CaipNetworkId;
         metadata?: Metadata;
+        enableAnalytics?: boolean;
+        features?: Features;
+        adapters?: string[];
+        extraConnectors?: string[];
+        siwx?: boolean;
       };
     }
   | {
@@ -165,7 +171,7 @@ export type Event =
         name: string;
         explorerId?: string;
         link?: string;
-        link_type?: 'appstore' | 'playstore';
+        linkType?: 'appstore' | 'playstore';
         walletRank?: number;
       };
     }
