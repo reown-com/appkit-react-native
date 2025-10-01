@@ -839,12 +839,14 @@ export function createAppKit(config: AppKitConfig) {
   try {
     if (globalThis.__REOWN_APPKIT_INSTANCE__) {
       LogController.sendDebug('AppKit: Reusing existing instance', 'AppKit.ts', 'createAppKit');
+
       return globalThis.__REOWN_APPKIT_INSTANCE__;
     }
 
     LogController.sendDebug('AppKit: Creating new instance', 'AppKit.ts', 'createAppKit');
     const instance = new AppKit(config);
     globalThis.__REOWN_APPKIT_INSTANCE__ = instance;
+
     return instance;
   } catch (error) {
     LogController.sendError(error, 'AppKit.ts', 'createAppKit');
