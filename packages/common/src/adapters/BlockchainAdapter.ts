@@ -86,6 +86,7 @@ export abstract class BlockchainAdapter extends EventEmitter {
     const updatedAccounts =
       _accounts
         ?.filter(account => {
+          // Normalize to lowercase for case-insensitive comparison since plain addresses from CAIP may vary in casing
           const accountAddress = NetworkUtil.getPlainAddress(account)?.toLowerCase();
 
           return (

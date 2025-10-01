@@ -128,8 +128,7 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
 
     async getAccounts() {
       const namespaces = appKitProvidedConnector.getNamespaces();
-      // @ts-ignore
-      const eip155Accounts = namespaces?.eip155?.accounts;
+      const eip155Accounts = namespaces?.['eip155']?.accounts as string[] | undefined;
       if (!eip155Accounts) return [] as readonly Hex[];
 
       return eip155Accounts
@@ -149,8 +148,7 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
 
       // Fallback: Try to get from CAIP accounts if available
       const namespaces = appKitProvidedConnector.getNamespaces();
-      // @ts-ignore
-      const eip155Accounts = namespaces?.eip155?.accounts;
+      const eip155Accounts = namespaces?.['eip155']?.accounts as string[] | undefined;
       if (eip155Accounts && eip155Accounts.length > 0) {
         const parts = eip155Accounts[0]?.split(':');
         if (parts && parts.length > 1 && typeof parts[1] === 'string') {
