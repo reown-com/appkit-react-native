@@ -46,8 +46,11 @@ import { RouterUtil } from './utils/RouterUtil';
 import { type AppKitConfig } from './types';
 import { SIWXUtil } from './utils/SIWXUtil';
 
-declare global {
-  var __REOWN_APPKIT_INSTANCE__: AppKit | undefined;
+const APPKIT_INSTANCE_KEY = Symbol.for('__REOWN_APPKIT_INSTANCE__');
+
+// Type helper to access the symbol-keyed property on globalThis
+interface GlobalWithAppKit {
+  [key: symbol]: AppKit | undefined;
 }
 
 export class AppKit {
@@ -835,21 +838,29 @@ export class AppKit {
   };
 }
 
-export function createAppKit(config: AppKitConfig) {
+/**
+ * Creates or returns the existing AppKit singleton instance.
+ *
+ * @warning This function implements a singleton pattern. If an instance already exists,
+ * it will be returned and the provided config parameter will be IGNORED. If you need to
+ * change configuration, you must reload your application or clear the singleton manually.
+ *
+ * @param config - AppKit configuration options
+ * @returns The AppKit singleton instance
+ * @throws Error if configuration validation fails
+ */
+export function createAppKit(config: AppKitConfig): AppKit {
   try {
-    if (globalThis.__REOWN_APPKIT_INSTANCE__) {
-      LogController.sendDebug('AppKit: Reusing existing instance', 'AppKit.ts', 'createAppKit');
+    const globalWithAppKit = globalThis as GlobalWithAppKit;
 
-      return globalThis.__REOWN_APPKIT_INSTANCE__;
+    if (!globalWithAppKit[APPKIT_INSTANCE_KEY]) {
+      globalWithAppKit[APPKIT_INSTANCE_KEY] = new AppKit(config);
+      LogController.sendDebug('AppKit: Creating new instance', 'AppKit.ts', 'createAppKit');
     }
 
-    LogController.sendDebug('AppKit: Creating new instance', 'AppKit.ts', 'createAppKit');
-    const instance = new AppKit(config);
-    globalThis.__REOWN_APPKIT_INSTANCE__ = instance;
-
-    return instance;
+    return globalWithAppKit[APPKIT_INSTANCE_KEY]!;
   } catch (error) {
-    LogController.sendError(error, 'AppKit.ts', 'createAppKit');
+    console.error(error);
     throw error;
   }
 }
