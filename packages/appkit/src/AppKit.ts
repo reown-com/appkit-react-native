@@ -46,6 +46,10 @@ import { RouterUtil } from './utils/RouterUtil';
 import { type AppKitConfig } from './types';
 import { SIWXUtil } from './utils/SIWXUtil';
 
+declare global {
+  var __APPKIT_INSTANCE__: AppKit | undefined;
+}
+
 export class AppKit {
   private projectId: string;
   private adapters: BlockchainAdapter[];
@@ -832,5 +836,14 @@ export class AppKit {
 }
 
 export function createAppKit(config: AppKitConfig): AppKit {
-  return new AppKit(config);
+  if (global.__APPKIT_INSTANCE__) {
+    LogController.sendDebug('AppKit: Reusing existing instance', 'AppKit.ts', 'createAppKit');
+    return global.__APPKIT_INSTANCE__;
+  }
+
+  LogController.sendDebug('AppKit: Creating new instance', 'AppKit.ts', 'createAppKit');
+  const instance = new AppKit(config);
+  global.__APPKIT_INSTANCE__ = instance;
+
+  return instance;
 }
