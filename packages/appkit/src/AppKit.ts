@@ -848,6 +848,6 @@ export function createAppKit(config: AppKitConfig) {
     return instance;
   } catch (error) {
     LogController.sendError(error, 'AppKit.ts', 'createAppKit');
-    return undefined;
+    throw error;
   }
 }
