@@ -46,6 +46,13 @@ import { RouterUtil } from './utils/RouterUtil';
 import { type AppKitConfig } from './types';
 import { SIWXUtil } from './utils/SIWXUtil';
 
+const APPKIT_INSTANCE_KEY = Symbol.for('__REOWN_APPKIT_INSTANCE__');
+
+// Type helper to access the symbol-keyed property on globalThis
+interface GlobalWithAppKit {
+  [key: symbol]: AppKit | undefined;
+}
+
 export class AppKit {
   private projectId: string;
   private adapters: BlockchainAdapter[];
@@ -831,6 +838,41 @@ export class AppKit {
   };
 }
 
+/**
+ * Creates or returns the existing AppKit singleton instance.
+ *
+ * @warning This function implements a singleton pattern. If an instance already exists,
+ * it will be returned and the provided config parameter will be IGNORED. If you need to
+ * change configuration, you must reload your application or clear the singleton manually.
+ *
+ * @param config - AppKit configuration options
+ * @returns The AppKit singleton instance
+ * @throws Error if configuration validation fails
+ */
 export function createAppKit(config: AppKitConfig): AppKit {
-  return new AppKit(config);
+  try {
+    const globalWithAppKit = globalThis as GlobalWithAppKit;
+
+    if (!globalWithAppKit[APPKIT_INSTANCE_KEY]) {
+      if (config.debug && __DEV__) {
+        // using console.log to avoid possible issues with LogController not being initialized
+        //eslint-disable-next-line no-console
+        console.log('AppKit: Creating new instance - AppKit.ts:createAppKit');
+      }
+      globalWithAppKit[APPKIT_INSTANCE_KEY] = new AppKit(config);
+    } else if (config.debug && __DEV__) {
+      //eslint-disable-next-line no-console
+      console.log('AppKit: Reusing existing instance - AppKit.ts:createAppKit');
+    }
+
+    return globalWithAppKit[APPKIT_INSTANCE_KEY]!;
+  } catch (error) {
+    if (__DEV__) {
+      // using console.error to avoid possible issues with LogController not being initialized
+      //eslint-disable-next-line no-console
+      console.error('AppKit: Failed to create instance - AppKit.ts:createAppKit', error);
+    }
+
+    throw error;
+  }
 }
