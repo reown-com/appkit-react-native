@@ -10,4 +10,4 @@
 '@reown/appkit-ui-react-native': patch
 ---
 
-chore: v2 alpha.4
+Release v2.0.1 stable version

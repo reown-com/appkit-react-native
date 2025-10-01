@@ -1,5 +1,16 @@
 # @reown/appkit-coinbase-react-native
 
+## 2.0.0
+
+### Major Changes
+
+- c8ec10d: Release v2.0.0 stable version
+
+### Patch Changes
+
+- Updated dependencies [c8ec10d]
+  - @reown/appkit-common-react-native@2.0.0
+
 ## 2.0.0-alpha.6
 
 ### Patch Changes
