@@ -856,10 +856,12 @@ export function createAppKit(config: AppKitConfig): AppKit {
     if (!globalWithAppKit[APPKIT_INSTANCE_KEY]) {
       if (config.debug && __DEV__) {
         // using console.log to avoid possible issues with LogController not being initialized
+        //eslint-disable-next-line no-console
         console.log('AppKit: Creating new instance - AppKit.ts:createAppKit');
       }
       globalWithAppKit[APPKIT_INSTANCE_KEY] = new AppKit(config);
     } else if (config.debug && __DEV__) {
+      //eslint-disable-next-line no-console
       console.log('AppKit: Reusing existing instance - AppKit.ts:createAppKit');
     }
 
@@ -867,6 +869,7 @@ export function createAppKit(config: AppKitConfig): AppKit {
   } catch (error) {
     if (__DEV__) {
       // using console.error to avoid possible issues with LogController not being initialized
+      //eslint-disable-next-line no-console
       console.error('AppKit: Failed to create instance - AppKit.ts:createAppKit', error);
     }
 
