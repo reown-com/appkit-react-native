@@ -149,6 +149,12 @@ export class WagmiAdapter extends EVMAdapter {
     return WagmiAdapter.supportedNamespace;
   }
 
+  // Override subscribeToEvents to prevent double subscription
+  // Wagmi handles provider events through its connector system and watchAccount
+  override subscribeToEvents(): void {
+    // Do nothing - wagmi's watchAccount in setupWatchers handles all events
+  }
+
   override init({ connector: _connector }: BlockchainAdapterInitParams): void {
     super.init({ connector: _connector });
 
@@ -184,11 +190,24 @@ export class WagmiAdapter extends EVMAdapter {
   setupWatchers() {
     watchAccount(this.wagmiConfig, {
       onChange: (accountData, prevAccountData) => {
+        // Handle disconnect
         if (accountData.status === 'disconnected' && prevAccountData.address) {
           this.onDisconnect();
+
+          return;
         }
 
-        if (accountData?.chainId && accountData?.chainId !== prevAccountData?.chainId) {
+        // Handle account address changes
+        if (
+          accountData?.addresses &&
+          accountData?.address &&
+          accountData.address !== prevAccountData?.address
+        ) {
+          this.onAccountsChanged([...accountData.addresses]);
+        }
+
+        // Handle chain changes
+        if (accountData?.chainId && accountData.chainId !== prevAccountData?.chainId) {
           this.onChainChanged(accountData.chainId?.toString());
         }
       }

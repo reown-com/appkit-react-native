@@ -226,9 +226,11 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
       //Only emit if the account is an evm account
       const shouldEmit = accounts.some(account => account.startsWith('0x'));
 
-      if (accounts.length === 0) this.onDisconnect();
-      else if (shouldEmit)
+      if (accounts.length === 0) {
+        this.onDisconnect();
+      } else if (shouldEmit) {
         config.emitter.emit('change', { accounts: accounts.map(x => getAddress(x)) });
+      }
     },
 
     onChainChanged(chain: string) {

@@ -293,8 +293,6 @@ export const SIWXUtil = {
       universalLink
     );
 
-    SnackController.showLoading('Authenticating...', true);
-
     if (result?.auths?.length) {
       const sessions = result.auths.map<SIWXSession>(cacao => {
         const message = universalProvider.client.formatAuthMessage({
@@ -320,6 +318,7 @@ export const SIWXUtil = {
       });
 
       try {
+        SnackController.showLoading('Authenticating...', true);
         await siwx.setSessions(sessions);
 
         EventsController.sendEvent({
