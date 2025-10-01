@@ -860,7 +860,7 @@ export function createAppKit(config: AppKitConfig): AppKit {
 
     return globalWithAppKit[APPKIT_INSTANCE_KEY]!;
   } catch (error) {
-    console.error(error);
+    LogController.sendError(error, 'AppKit.ts', 'createAppKit');
     throw error;
   }
 }
