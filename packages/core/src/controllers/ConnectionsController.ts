@@ -391,6 +391,15 @@ export const ConnectionsController = {
     return getActiveAddress(newConnection);
   },
 
+  getActiveNetworkId(namespace?: ChainNamespace) {
+    const connection = namespace
+      ? baseState.connections.get(namespace)
+      : getActiveConnection(baseState);
+    if (!connection) return undefined;
+
+    return connection.caipNetwork;
+  },
+
   async disconnect(namespace: ChainNamespace, isInternal = true) {
     const connection = baseState.connections.get(namespace);
     if (!connection) return;

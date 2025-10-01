@@ -34,6 +34,7 @@ export class WagmiAdapter extends EVMAdapter {
   public wagmiChains: readonly Chain[] | undefined;
   public wagmiConfig!: Config;
   private wagmiConfigConnector?: Connector;
+  private unsubscribeWatchAccount?: () => void;
 
   constructor(configParams: ConfigParams) {
     super({
@@ -131,6 +132,11 @@ export class WagmiAdapter extends EVMAdapter {
   }
 
   async disconnect(): Promise<void> {
+    if (this.unsubscribeWatchAccount) {
+      this.unsubscribeWatchAccount();
+      this.unsubscribeWatchAccount = undefined;
+    }
+
     if (this.wagmiConfigConnector) {
       await disconnectWagmiCore(this.wagmiConfig, { connector: this.wagmiConfigConnector });
       this.wagmiConfigConnector = undefined;
@@ -147,6 +153,12 @@ export class WagmiAdapter extends EVMAdapter {
 
   getSupportedNamespace(): ChainNamespace {
     return WagmiAdapter.supportedNamespace;
+  }
+
+  // Override subscribeToEvents to prevent double subscription
+  // Wagmi handles provider events through its connector system and watchAccount
+  override subscribeToEvents(): void {
+    // Do nothing - wagmi's watchAccount in setupWatchers handles all events
   }
 
   override init({ connector: _connector }: BlockchainAdapterInitParams): void {
@@ -182,13 +194,31 @@ export class WagmiAdapter extends EVMAdapter {
   }
 
   setupWatchers() {
-    watchAccount(this.wagmiConfig, {
+    // Clean up existing subscription if any
+    this.unsubscribeWatchAccount?.();
+
+    this.unsubscribeWatchAccount = watchAccount(this.wagmiConfig, {
       onChange: (accountData, prevAccountData) => {
+        if (!this.connector) return;
+
+        // Handle disconnect
         if (accountData.status === 'disconnected' && prevAccountData.address) {
           this.onDisconnect();
+
+          return;
         }
 
-        if (accountData?.chainId && accountData?.chainId !== prevAccountData?.chainId) {
+        // Handle account address changes
+        if (
+          accountData?.addresses &&
+          accountData?.address &&
+          accountData.address !== prevAccountData?.address
+        ) {
+          this.onAccountsChanged([...accountData.addresses]);
+        }
+
+        // Handle chain changes
+        if (accountData?.chainId && accountData.chainId !== prevAccountData?.chainId) {
           this.onChainChanged(accountData.chainId?.toString());
         }
       }

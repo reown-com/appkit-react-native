@@ -135,7 +135,7 @@ export class FetchUtil {
       if (response.headers.get('content-type')?.includes('application/json')) {
         try {
           const errorData = await response.json();
-          LogController.sendError(errorData, 'FetchUtil.ts', 'processResponse');
+          LogController.sendError(JSON.stringify(errorData), 'FetchUtil.ts', 'processResponse');
 
           return Promise.reject(errorData);
         } catch (jsonError) {

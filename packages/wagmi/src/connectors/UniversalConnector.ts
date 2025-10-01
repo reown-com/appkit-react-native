@@ -31,6 +31,25 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
   let sessionDelete: UniversalConnector['onSessionDelete'] | undefined;
   let disconnect: UniversalConnector['onDisconnect'] | undefined;
 
+  function cleanupEventListeners(_provider?: Provider | null) {
+    if (accountsChanged) {
+      _provider?.off('accountsChanged', accountsChanged);
+      accountsChanged = undefined;
+    }
+    if (chainChanged) {
+      _provider?.off('chainChanged', chainChanged);
+      chainChanged = undefined;
+    }
+    if (disconnect) {
+      _provider?.off('disconnect', disconnect);
+      disconnect = undefined;
+    }
+    if (sessionDelete) {
+      _provider?.off('session_delete', sessionDelete);
+      sessionDelete = undefined;
+    }
+  }
+
   return createConnector<Provider, Properties>(config => ({
     id: 'walletconnect',
     name: 'WalletConnect',
@@ -103,29 +122,13 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
           throw error;
         }
       } finally {
-        if (chainChanged) {
-          _provider?.off('chainChanged', chainChanged);
-          chainChanged = undefined;
-        }
-        if (disconnect) {
-          _provider?.off('disconnect', disconnect);
-          disconnect = undefined;
-        }
-        if (accountsChanged) {
-          _provider?.off('accountsChanged', accountsChanged);
-          accountsChanged = undefined;
-        }
-        if (sessionDelete) {
-          _provider?.off('session_delete', sessionDelete);
-          sessionDelete = undefined;
-        }
+        cleanupEventListeners(_provider);
       }
     },
 
     async getAccounts() {
       const namespaces = appKitProvidedConnector.getNamespaces();
-      // @ts-ignore
-      const eip155Accounts = namespaces?.eip155?.accounts;
+      const eip155Accounts = namespaces?.['eip155']?.accounts as string[] | undefined;
       if (!eip155Accounts) return [] as readonly Hex[];
 
       return eip155Accounts
@@ -145,8 +148,7 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
 
       // Fallback: Try to get from CAIP accounts if available
       const namespaces = appKitProvidedConnector.getNamespaces();
-      // @ts-ignore
-      const eip155Accounts = namespaces?.eip155?.accounts;
+      const eip155Accounts = namespaces?.['eip155']?.accounts as string[] | undefined;
       if (eip155Accounts && eip155Accounts.length > 0) {
         const parts = eip155Accounts[0]?.split(':');
         if (parts && parts.length > 1 && typeof parts[1] === 'string') {
@@ -226,9 +228,11 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
       //Only emit if the account is an evm account
       const shouldEmit = accounts.some(account => account.startsWith('0x'));
 
-      if (accounts.length === 0) this.onDisconnect();
-      else if (shouldEmit)
+      if (accounts.length === 0) {
+        this.onDisconnect();
+      } else if (shouldEmit) {
         config.emitter.emit('change', { accounts: accounts.map(x => getAddress(x)) });
+      }
     },
 
     onChainChanged(chain: string) {
@@ -246,39 +250,11 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
 
       try {
         const _provider = await this.getProvider();
-
-        // Clean up event listeners
-        if (accountsChanged) {
-          _provider.off('accountsChanged', accountsChanged);
-          accountsChanged = undefined;
-        }
-        if (chainChanged) {
-          _provider.off('chainChanged', chainChanged);
-          chainChanged = undefined;
-        }
-        if (disconnect) {
-          _provider.off('disconnect', disconnect);
-          disconnect = undefined;
-        }
-        if (sessionDelete) {
-          _provider.off('session_delete', sessionDelete);
-          sessionDelete = undefined;
-        }
+        cleanupEventListeners(_provider);
       } catch (error) {
         // If provider is not available, still clean up local references
         // to prevent memory leaks
-        if (accountsChanged) {
-          accountsChanged = undefined;
-        }
-        if (chainChanged) {
-          chainChanged = undefined;
-        }
-        if (disconnect) {
-          disconnect = undefined;
-        }
-        if (sessionDelete) {
-          sessionDelete = undefined;
-        }
+        cleanupEventListeners(null);
       }
     },
 

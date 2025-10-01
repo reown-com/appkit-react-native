@@ -633,6 +633,13 @@ export class AppKit {
 
       const namespace = adapter.getSupportedNamespace();
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
+
+      const activeNetwork = ConnectionsController.getActiveNetworkId(namespace);
+      if (activeNetwork === chain) {
+        // No need to update the active network
+        return;
+      }
+
       ConnectionsController.setActiveNetwork(namespace, chain);
 
       const connection = ConnectionsController.state.connections.get(namespace);
@@ -654,7 +661,13 @@ export class AppKit {
         TransactionsController.fetchTransactions(address, true);
       }
 
-      SIWXUtil.initializeIfEnabled({ onDisconnect: this.disconnect, caipAddress: address });
+      const closeModal = RouterController.state.view === 'UnsupportedChain';
+
+      SIWXUtil.initializeIfEnabled({
+        onDisconnect: this.disconnect,
+        caipAddress: address,
+        closeModal
+      });
     });
 
     adapter.on('disconnect', () => {

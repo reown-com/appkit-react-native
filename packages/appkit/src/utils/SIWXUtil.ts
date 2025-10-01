@@ -16,7 +16,6 @@ import {
   EventsController,
   LogController
 } from '@reown/appkit-core-react-native';
-import { Alert } from 'react-native';
 
 /**
  * SIWXUtil holds the methods to interact with the SIWX plugin and must be called internally on AppKit.
@@ -153,10 +152,7 @@ export const SIWXUtil = {
           view: 'SIWXSignMessage'
         });
       }
-
-      // @ts-ignore
-      Alert.alert('Error signing message', error?.message ?? error);
-
+      SnackController.hide();
       SnackController.showError('Error signing message');
       EventsController.sendEvent({
         type: 'track',
@@ -293,8 +289,6 @@ export const SIWXUtil = {
       universalLink
     );
 
-    SnackController.showLoading('Authenticating...', true);
-
     if (result?.auths?.length) {
       const sessions = result.auths.map<SIWXSession>(cacao => {
         const message = universalProvider.client.formatAuthMessage({
@@ -320,6 +314,7 @@ export const SIWXUtil = {
       });
 
       try {
+        SnackController.showLoading('Authenticating...', true);
         await siwx.setSessions(sessions);
 
         EventsController.sendEvent({

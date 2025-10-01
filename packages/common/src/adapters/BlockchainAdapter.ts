@@ -79,16 +79,26 @@ export abstract class BlockchainAdapter extends EventEmitter {
 
   onAccountsChanged(accounts: string[]): void {
     const _accounts = this.getAccounts();
+    // Normalize incoming accounts to lowercase for case-insensitive comparison
+    const normalizedIncomingAccounts = accounts.map(addr => addr.toLowerCase());
+
+    // Filter: Keep only adapter accounts (CAIP) whose plain address is in the incoming accounts array
     const updatedAccounts =
       _accounts
         ?.filter(account => {
-          const accountAddress = NetworkUtil.getPlainAddress(account);
+          // Normalize to lowercase for case-insensitive comparison since plain addresses from CAIP may vary in casing
+          const accountAddress = NetworkUtil.getPlainAddress(account)?.toLowerCase();
 
-          return accountAddress !== undefined && accounts.includes(accountAddress);
+          return (
+            accountAddress !== undefined && normalizedIncomingAccounts.includes(accountAddress)
+          );
         })
-        ?.sort((a, b) => {
-          const aIndex = accounts.indexOf(NetworkUtil.getPlainAddress(a) ?? '');
-          const bIndex = accounts.indexOf(NetworkUtil.getPlainAddress(b) ?? '');
+        // Sort: Maintain the order from the incoming accounts parameter
+        .sort((a, b) => {
+          const aAddress = NetworkUtil.getPlainAddress(a)?.toLowerCase() ?? '';
+          const bAddress = NetworkUtil.getPlainAddress(b)?.toLowerCase() ?? '';
+          const aIndex = normalizedIncomingAccounts.indexOf(aAddress);
+          const bIndex = normalizedIncomingAccounts.indexOf(bAddress);
 
           return aIndex - bIndex;
         }) ?? [];
