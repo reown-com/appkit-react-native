@@ -391,7 +391,7 @@ export const ConnectionsController = {
     return getActiveAddress(newConnection);
   },
 
-  getActiveNetwork(namespace?: ChainNamespace) {
+  getActiveNetworkId(namespace?: ChainNamespace) {
     const connection = namespace
       ? baseState.connections.get(namespace)
       : getActiveConnection(baseState);

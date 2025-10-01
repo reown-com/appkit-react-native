@@ -31,6 +31,25 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
   let sessionDelete: UniversalConnector['onSessionDelete'] | undefined;
   let disconnect: UniversalConnector['onDisconnect'] | undefined;
 
+  function cleanupEventListeners(_provider?: Provider | null) {
+    if (accountsChanged) {
+      _provider?.off('accountsChanged', accountsChanged);
+      accountsChanged = undefined;
+    }
+    if (chainChanged) {
+      _provider?.off('chainChanged', chainChanged);
+      chainChanged = undefined;
+    }
+    if (disconnect) {
+      _provider?.off('disconnect', disconnect);
+      disconnect = undefined;
+    }
+    if (sessionDelete) {
+      _provider?.off('session_delete', sessionDelete);
+      sessionDelete = undefined;
+    }
+  }
+
   return createConnector<Provider, Properties>(config => ({
     id: 'walletconnect',
     name: 'WalletConnect',
@@ -103,22 +122,7 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
           throw error;
         }
       } finally {
-        if (chainChanged) {
-          _provider?.off('chainChanged', chainChanged);
-          chainChanged = undefined;
-        }
-        if (disconnect) {
-          _provider?.off('disconnect', disconnect);
-          disconnect = undefined;
-        }
-        if (accountsChanged) {
-          _provider?.off('accountsChanged', accountsChanged);
-          accountsChanged = undefined;
-        }
-        if (sessionDelete) {
-          _provider?.off('session_delete', sessionDelete);
-          sessionDelete = undefined;
-        }
+        cleanupEventListeners(_provider);
       }
     },
 
@@ -248,39 +252,11 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
 
       try {
         const _provider = await this.getProvider();
-
-        // Clean up event listeners
-        if (accountsChanged) {
-          _provider.off('accountsChanged', accountsChanged);
-          accountsChanged = undefined;
-        }
-        if (chainChanged) {
-          _provider.off('chainChanged', chainChanged);
-          chainChanged = undefined;
-        }
-        if (disconnect) {
-          _provider.off('disconnect', disconnect);
-          disconnect = undefined;
-        }
-        if (sessionDelete) {
-          _provider.off('session_delete', sessionDelete);
-          sessionDelete = undefined;
-        }
+        cleanupEventListeners(_provider);
       } catch (error) {
         // If provider is not available, still clean up local references
         // to prevent memory leaks
-        if (accountsChanged) {
-          accountsChanged = undefined;
-        }
-        if (chainChanged) {
-          chainChanged = undefined;
-        }
-        if (disconnect) {
-          disconnect = undefined;
-        }
-        if (sessionDelete) {
-          sessionDelete = undefined;
-        }
+        cleanupEventListeners(null);
       }
     },
 
