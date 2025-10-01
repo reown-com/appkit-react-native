@@ -47,7 +47,7 @@ import { type AppKitConfig } from './types';
 import { SIWXUtil } from './utils/SIWXUtil';
 
 declare global {
-  var __APPKIT_INSTANCE__: AppKit | undefined;
+  var __REOWN_APPKIT_INSTANCE__: AppKit | undefined;
 }
 
 export class AppKit {
@@ -835,15 +835,19 @@ export class AppKit {
   };
 }
 
-export function createAppKit(config: AppKitConfig): AppKit {
-  if (global.__APPKIT_INSTANCE__) {
-    LogController.sendDebug('AppKit: Reusing existing instance', 'AppKit.ts', 'createAppKit');
-    return global.__APPKIT_INSTANCE__;
+export function createAppKit(config: AppKitConfig) {
+  try {
+    if (globalThis.__REOWN_APPKIT_INSTANCE__) {
+      LogController.sendDebug('AppKit: Reusing existing instance', 'AppKit.ts', 'createAppKit');
+      return globalThis.__REOWN_APPKIT_INSTANCE__;
+    }
+
+    LogController.sendDebug('AppKit: Creating new instance', 'AppKit.ts', 'createAppKit');
+    const instance = new AppKit(config);
+    globalThis.__REOWN_APPKIT_INSTANCE__ = instance;
+    return instance;
+  } catch (error) {
+    LogController.sendError(error, 'AppKit.ts', 'createAppKit');
+    return undefined;
   }
-
-  LogController.sendDebug('AppKit: Creating new instance', 'AppKit.ts', 'createAppKit');
-  const instance = new AppKit(config);
-  global.__APPKIT_INSTANCE__ = instance;
-
-  return instance;
 }
