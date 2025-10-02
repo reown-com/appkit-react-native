@@ -634,12 +634,6 @@ export class AppKit {
       const namespace = adapter.getSupportedNamespace();
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
 
-      const activeNetwork = ConnectionsController.getActiveNetworkId(namespace);
-      if (activeNetwork === chain) {
-        // No need to update the active network
-        return;
-      }
-
       ConnectionsController.setActiveNetwork(namespace, chain);
 
       const connection = ConnectionsController.state.connections.get(namespace);
