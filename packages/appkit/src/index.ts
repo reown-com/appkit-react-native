@@ -1,3 +1,5 @@
+import '@walletconnect/react-native-compat';
+
 /********** Components **********/
 export {
   AccountButton as AccountButton,
