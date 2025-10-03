@@ -73,13 +73,6 @@ export const LogController = {
   state,
 
   /**
-   * Initialize the LogController
-   */
-  initialize() {
-    // Initialize the LogController
-  },
-
-  /**
    * Destroy the LogController (cleanup resources)
    */
   destroy() {
@@ -100,7 +93,6 @@ export const LogController = {
     if (!OptionsController.state.debug) {
       return;
     }
-
     const entry: LogEntry = {
       id: generateLogId(),
       timestamp: Date.now(),
