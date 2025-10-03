@@ -91,7 +91,7 @@ export const LogController = {
     data?: Record<string, unknown>
   ) {
     if (!OptionsController.state.debug) {
-      return; // Logs were not stored when debug=false
+      return;
     }
     const entry: LogEntry = {
       id: generateLogId(),

@@ -686,7 +686,7 @@ export class AppKit {
     this.setCustomWallets(options);
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds);
     OptionsController.setEnableAnalytics(options.enableAnalytics);
-    OptionsController.setDebug(options.debug && __DEV__);
+    OptionsController.setDebug(options.debug);
 
     LogController.sendInfo('AppKit initialization started', 'AppKit.ts', 'initControllers', {
       projectId: options.projectId,
