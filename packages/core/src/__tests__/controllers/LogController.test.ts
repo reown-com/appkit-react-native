@@ -25,7 +25,6 @@ describe('LogController', () => {
 
   describe('Basic Logging', () => {
     it('should initialize correctly', () => {
-      LogController.initialize();
       expect(LogController.state.logs).toEqual([]);
     });
 
@@ -240,7 +239,6 @@ describe('LogController', () => {
   describe('Concurrent Access Patterns', () => {
     beforeEach(() => {
       LogController.clearLogs();
-      LogController.initialize();
       OptionsController.setDebug(true);
     });
 
@@ -365,7 +363,6 @@ describe('LogController', () => {
   describe('Memory Cleanup Under Load', () => {
     beforeEach(() => {
       LogController.clearLogs();
-      LogController.initialize();
       OptionsController.setDebug(true);
     });
 
@@ -429,7 +426,6 @@ describe('LogController', () => {
   describe('Malformed Error Objects', () => {
     beforeEach(() => {
       LogController.clearLogs();
-      LogController.initialize();
       OptionsController.setDebug(true);
     });
 
