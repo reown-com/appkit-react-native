@@ -125,5 +125,18 @@ export const EventsController = {
     if (OptionsController.state.enableAnalytics) {
       EventsController._sendAnalyticsEvent(data, timestamp);
     }
+  },
+
+  resetState() {
+    if (state.pendingImpressionTimeout) {
+      clearTimeout(state.pendingImpressionTimeout);
+      state.pendingImpressionTimeout = undefined;
+    }
+    state.pendingWalletImpressions = [];
+    state.data = {
+      type: 'track',
+      event: 'MODAL_CREATED'
+    };
+    state.timestamp = Date.now();
   }
 };

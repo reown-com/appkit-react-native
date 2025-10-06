@@ -85,7 +85,7 @@ export function WalletList({
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       if (isLoading) return;
 
-      viewableItems.forEach(({ item, index }) => {
+      viewableItems.forEach(({ item }, index) => {
         const wallet = item as WcWallet;
         if (wallet?.id && !viewedWalletsRef.current.has(wallet.id)) {
           viewedWalletsRef.current.add(wallet.id);
@@ -93,7 +93,7 @@ export function WalletList({
           EventsController.trackWalletImpression({
             wallet,
             view: 'AllWallets',
-            displayIndex: index ?? 0,
+            displayIndex: index,
             query: searchQuery,
             installed: isInstalled
           });

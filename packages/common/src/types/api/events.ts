@@ -26,6 +26,7 @@ export type EventName =
   | 'MODAL_OPEN'
   | 'MODAL_CLOSE'
   | 'INITIALIZE'
+  | 'WALLET_IMPRESSION'
   | 'CLICK_ALL_WALLETS'
   | 'CLICK_NETWORKS'
   | 'SWITCH_NETWORK'
