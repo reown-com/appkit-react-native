@@ -42,7 +42,7 @@ jobs:
         shell: bash
 
       - name: Build Packages
-        run: yarn changeset:prepublish
+        run: yarn changeset:prepublish:ci
         shell: bash
 
       - name: Configure NPM for Publishing
