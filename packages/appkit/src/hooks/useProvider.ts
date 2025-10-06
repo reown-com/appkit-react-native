@@ -1,7 +1,7 @@
 /* eslint-disable valtio/state-snapshot-rule */
 import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
-import { ConnectionsController } from '@reown/appkit-core-react-native';
+import { ConnectionsController, LogController } from '@reown/appkit-core-react-native';
 import type { Provider, ChainNamespace } from '@reown/appkit-common-react-native';
 
 /**
@@ -48,6 +48,8 @@ export function useProvider(): ProviderResult {
         providerType: connection.adapter.getSupportedNamespace()
       };
     } catch (error) {
+      LogController.sendError(error, 'useProvider', 'useProvider');
+
       // Provider not initialized yet during session restoration
       return { provider: undefined, providerType: undefined };
     }
