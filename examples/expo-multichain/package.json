@@ -14,6 +14,7 @@
     "build:dev": "eas build --profile development",
     "build:dev:android": "eas build --platform android --profile development",
     "build:dev:ios": "eas build --platform ios --profile development",
+    "build:prod:android": "eas build --platform android --local --clear-cache --profile production-apk",
     "web": "expo start --web",
     "lint": "expo lint",
     "credentials": "eas credentials"

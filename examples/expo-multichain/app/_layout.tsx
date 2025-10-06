@@ -1,19 +1,18 @@
 import 'text-encoding';
-import "@walletconnect/react-native-compat";
+import '@walletconnect/react-native-compat';
 
+import { AppKit, AppKitProvider, bitcoin, createAppKit, solana } from '@reown/appkit-react-native';
+import { WagmiAdapter } from '@reown/appkit-wagmi-react-native';
 import {
-  AppKit,
-  AppKitProvider,
-  bitcoin,
-  createAppKit,
-  solana,
-} from "@reown/appkit-react-native";
-import { WagmiAdapter } from "@reown/appkit-wagmi-react-native";
-import { SolanaAdapter, PhantomConnector, SolflareConnector } from "@reown/appkit-solana-react-native";
-import { BitcoinAdapter } from "@reown/appkit-bitcoin-react-native";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { arbitrum, mainnet, polygon } from "@wagmi/core/chains";
-import { WagmiProvider } from "wagmi";
+  SolanaAdapter,
+  PhantomConnector,
+  SolflareConnector
+} from '@reown/appkit-solana-react-native';
+import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { arbitrum, mainnet, polygon } from '@wagmi/core/chains';
+import { WagmiProvider } from 'wagmi';
+import { Alert, View } from 'react-native';
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
@@ -22,35 +21,34 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { storage } from "@/config/storage";
-import { Alert, View } from 'react-native';
+import { storage } from '@/config/storage';
 
 // 0. Setup queryClient
 const queryClient = new QueryClient();
 
 // 1. Get projectId at https://dashboard.reown.com
-const projectId =  process.env.EXPO_PUBLIC_PROJECT_ID ?? 'undefined';
+const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? 'undefined';
 
 if (projectId === 'undefined') {
-  Alert.alert("Project ID is not set");
+  Alert.alert('Project ID is not set');
 }
 
 // 2. Create config
 const metadata = {
-  name: "AppKit Multichain",
-  description: "AppKit Expo + Multichain Example",
-  url: "https://reown.com/appkit",
-  icons: ["https://avatars.githubusercontent.com/u/179229932"],
+  name: 'AppKit Multichain',
+  description: 'AppKit Expo + Multichain Example',
+  url: 'https://reown.com/appkit',
+  icons: ['https://avatars.githubusercontent.com/u/179229932'],
   redirect: {
-    native: "appkitexpomultichain://"
-  },
+    native: 'appkitexpomultichain://'
+  }
 };
 
 const networks = [mainnet, polygon, arbitrum];
 
 const wagmiAdapter = new WagmiAdapter({
   projectId,
-  networks: networks as any,
+  networks: networks as any
 });
 
 const solanaAdapter = new SolanaAdapter();
@@ -65,7 +63,7 @@ const appkit = createAppKit({
   metadata,
   storage,
   defaultNetwork: mainnet, // Optional
-  enableAnalytics: true, // Optional - defaults to your Cloud configuration
+  enableAnalytics: true // Optional - defaults to your Cloud configuration
 });
 
 export default function RootLayout() {
@@ -74,7 +72,7 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     KHTeka: require('../assets/fonts/KHTeka-Regular.otf'),
     KHTekaMedium: require('../assets/fonts/KHTeka-Medium.otf'),
-    KHTekaMono: require('../assets/fonts/KHTekaMono-Regular.otf'),
+    KHTekaMono: require('../assets/fonts/KHTekaMono-Regular.otf')
   });
 
   if (!loaded) {
@@ -87,15 +85,15 @@ export default function RootLayout() {
       <WagmiProvider config={wagmiAdapter.wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <AppKitProvider instance={appkit}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="auto" />
-          {/* This is a workaround for the Android modal issue. https://github.com/expo/expo/issues/32991#issuecomment-2489620459 */}
-          <View style={{ position: "absolute", height: "100%", width: "100%" }}>
-            <AppKit />
-          </View>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+            <StatusBar style="auto" />
+            {/* This is a workaround for the Android modal issue. https://github.com/expo/expo/issues/32991#issuecomment-2489620459 */}
+            <View style={{ position: 'absolute', height: '100%', width: '100%' }}>
+              <AppKit />
+            </View>
           </AppKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
