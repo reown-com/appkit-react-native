@@ -245,7 +245,7 @@ export class AppKit {
   /**
    * Returns the provider for a given namespace.
    * @param namespace - The namespace to get the provider for.
-   * @returns The provider for the given namespace.
+   * @returns The provider for the given namespace, or null if not available or not yet initialized.
    */
   getProvider<T extends Provider>(namespace?: string): T | null {
     const activeNamespace = namespace ?? ConnectionsController.state.activeNamespace;
@@ -256,7 +256,15 @@ export class AppKit {
     );
     if (!connection || !connection.adapter || !connection.adapter.connector) return null;
 
-    return connection.adapter.connector.getProvider() as T;
+    try {
+      return connection.adapter.connector.getProvider() as T;
+    } catch (error) {
+      // Provider not initialized yet during session restoration
+      // This can happen on app restart when restoring a previous connection
+      LogController.sendError(error, 'AppKit.ts', 'getProvider');
+
+      return null;
+    }
   }
 
   getNetworks() {

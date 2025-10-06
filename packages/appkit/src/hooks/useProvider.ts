@@ -42,10 +42,15 @@ export function useProvider(): ProviderResult {
   const returnValue = useMemo(() => {
     if (!connection) return { provider: undefined, providerType: undefined };
 
-    return {
-      provider: connection.adapter.getProvider(),
-      providerType: connection.adapter.getSupportedNamespace()
-    };
+    try {
+      return {
+        provider: connection.adapter.getProvider(),
+        providerType: connection.adapter.getSupportedNamespace()
+      };
+    } catch (error) {
+      // Provider not initialized yet during session restoration
+      return { provider: undefined, providerType: undefined };
+    }
   }, [connection]);
 
   return returnValue;
