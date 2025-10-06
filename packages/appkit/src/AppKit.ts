@@ -257,7 +257,7 @@ export class AppKit {
     if (!connection || !connection.adapter || !connection.adapter.connector) return null;
 
     try {
-      return connection.adapter.connector.getProvider() as T;
+      return connection.adapter.connector.getProvider() as T | null;
     } catch (error) {
       // Provider not initialized yet during session restoration
       // This can happen on app restart when restoring a previous connection

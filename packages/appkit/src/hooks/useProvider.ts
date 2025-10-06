@@ -40,7 +40,9 @@ export function useProvider(): ProviderResult {
   const { connection } = useSnapshot(ConnectionsController.state);
 
   const returnValue = useMemo(() => {
-    if (!connection) return { provider: undefined, providerType: undefined };
+    if (!connection || !connection.adapter) {
+      return { provider: undefined, providerType: undefined };
+    }
 
     try {
       return {
