@@ -214,6 +214,7 @@ export class AppKit {
       SendController.resetState();
       OnRampController.resetState();
       WcController.resetState();
+      EventsController.sendWalletImpressions();
 
       if (ConnectionsController.state.activeNamespace === undefined) {
         ConnectionsController.setActiveNamespace(
@@ -308,6 +309,7 @@ export class AppKit {
 
     RouterUtil.checkOnRampBack();
     RouterUtil.checkSocialLoginBack();
+    EventsController.sendWalletImpressions();
   }
 
   back() {

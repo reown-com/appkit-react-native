@@ -10,6 +10,17 @@ import type {
 import type { Features } from '../ui';
 import type { Metadata } from '../wallet';
 
+export type WalletImpressionItem = {
+  name: string;
+  walletRank: number | undefined;
+  explorerId: string;
+  view: 'Connect' | 'AllWallets';
+  displayIndex?: number;
+  query?: string;
+  certified?: boolean;
+  installed?: boolean;
+};
+
 export type EventName =
   | 'MODAL_LOADED'
   | 'MODAL_OPEN'
@@ -442,4 +453,9 @@ export type Event =
       properties?: {
         message?: string;
       };
+    }
+  | {
+      type: 'track';
+      event: 'WALLET_IMPRESSION';
+      items: Array<WalletImpressionItem>;
     };

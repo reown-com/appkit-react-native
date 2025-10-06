@@ -4,6 +4,7 @@ import {
   ApiController,
   AssetController,
   AssetUtil,
+  EventsController,
   OptionsController,
   WcController,
   type WcControllerState
@@ -11,6 +12,7 @@ import {
 import { type WcWallet } from '@reown/appkit-common-react-native';
 import { ListItemLoader, ListWallet } from '@reown/appkit-ui-react-native';
 import { UiUtil } from '../../../utils/UiUtil';
+import { useEffect, useRef } from 'react';
 
 interface Props {
   itemStyle: StyleProp<ViewStyle>;
@@ -24,6 +26,9 @@ export function AllWalletList({ itemStyle, onWalletPress }: Props) {
   const { walletImages } = useSnapshot(AssetController.state);
   const imageHeaders = ApiController._getApiHeaders();
 
+  // Track which wallets have been tracked to prevent duplicates
+  const trackedWalletsRef = useRef<Set<string>>(new Set());
+
   const combinedWallets = [
     ...(recentWallets?.slice(0, 1) ?? []),
     ...installed,
@@ -36,6 +41,27 @@ export function AllWalletList({ itemStyle, onWalletPress }: Props) {
   const list = Array.from(
     new Map(combinedWallets.map(wallet => [wallet.id, wallet])).values()
   ).slice(0, UiUtil.TOTAL_VISIBLE_WALLETS);
+
+  // Track impressions once when the list stabilizes
+  useEffect(() => {
+    if (!prefetchLoading && list.length > 0) {
+      list.forEach((wallet, index) => {
+        if (!trackedWalletsRef.current.has(wallet.id)) {
+          trackedWalletsRef.current.add(wallet.id);
+          const isInstalled = !!ApiController.state.installed.find(
+            installedWallet => installedWallet.id === wallet.id
+          );
+          EventsController.trackWalletImpression({
+            wallet,
+            view: 'Connect',
+            displayIndex: index,
+            // eslint-disable-next-line valtio/state-snapshot-rule
+            installed: isInstalled
+          });
+        }
+      });
+    }
+  }, [prefetchLoading, list]);
 
   if (!list?.length) {
     return null;
