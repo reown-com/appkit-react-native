@@ -85,13 +85,17 @@ export const EventsController = {
     }
 
     const impressions = state.pendingWalletImpressions;
+
+    if (impressions.length === 0) {
+      return;
+    }
+
+    state.pendingWalletImpressions = [];
     EventsController.sendEvent({
       type: 'track',
       event: 'WALLET_IMPRESSION',
       items: impressions
     });
-
-    state.pendingWalletImpressions = [];
   },
 
   async _sendAnalyticsEvent(data: EventsControllerState['data'], timestamp: number) {
