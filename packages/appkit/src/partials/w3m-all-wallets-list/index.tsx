@@ -116,7 +116,7 @@ export function AllWalletsList({ onItemPress }: AllWalletsListProps) {
     <WalletList
       data={walletList}
       onEndReached={fetchNextPage}
-      onEndReachedThreshold={2}
+      onEndReachedThreshold={0.5}
       onItemPress={onItemPress}
     />
   );
