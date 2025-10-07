@@ -43,3 +43,7 @@ credentials.json
 # don't commit to enable Continous Native Generation
 /ios
 /android
+
+# maestro
+.maestro/screenshots/
+.maestro/*.mp4

@@ -15,12 +15,9 @@ on:
         type: choice
         description: "Build type to run"
         options:
-          - dev
-          - prod-apk
-          - ios-dev
-          - ios-prod
-          - publish-expo
-          - all
+          - preview
+          - production
+          - development
       platform:
         type: choice
         description: "Platform to build"
@@ -37,6 +34,7 @@ env:
   EXPO_TEAM_ID: ${{ secrets.EXPO_TEAM_ID }}
   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
   NODE_OPTIONS: --openssl-legacy-provider
+  WORKING_DIRECTORY: examples/expo-multichain
 
 jobs:
   check-skip:
@@ -46,7 +44,8 @@ jobs:
       - name: Skip CI check
         run: echo "Proceeding with workflow"
 
-  test:
+  # Job 1: Linting for all PRs and pushes
+  lint:
     needs: check-skip
     runs-on: ubuntu-latest
     steps:
@@ -65,25 +64,239 @@ jobs:
       - name: 🧹 Run ESLint
         run: npm run lint
 
-      - name: 📢 Notify test results
+      - name: 📢 Notify lint results
         if: always()
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
-          SLACK_TITLE: Test Results
-          SLACK_MESSAGE: 'Tests ${{ job.status == "success" && "passed ✅" || "failed ❌" }}'
+          SLACK_TITLE: Lint Results
+          SLACK_MESSAGE: 'Linting ${{ job.status == "success" && "passed ✅" || "failed ❌" }}'
 
-  build-and-deploy:
-    needs: test
-    if: (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')) || github.event_name == 'workflow_dispatch'
-    strategy:
-      matrix:
-        platform: [android]
-        include:
-          - platform: ios
-            runs-on: macos-latest
-    runs-on: ${{ matrix.platform == 'ios' && 'macos-latest' || 'ubuntu-latest' }}
+  # Job 2: Publish snapshot for PRs (reuses the snapshot workflow)
+  publish-snapshot:
+    needs: lint
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/snapshot.yml
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Job 3: Build and test PR - Android
+  pr-build-test-android:
+    needs: publish-snapshot
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚡ Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: ☕ Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🏗 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: 📦 Install dependencies
+        run: |
+          npm ci
+          npm install -g eas-cli@latest
+
+      - name: 📱 Setup EAS build cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.eas-build-local
+          key: ${{ runner.os }}-eas-build-android-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-eas-build-android-
+
+      - name: 🔄 Verify EAS CLI installation
+        run: eas --version
+
+      - name: 📦 Install Snapshot Versions in Example App
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          # Install the snapshot versions of all @reown packages
+          npm install \
+            @reown/appkit-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }} \
+            @reown/appkit-wagmi-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }} \
+            @reown/appkit-solana-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }} \
+            @reown/appkit-bitcoin-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }}
+
+      - name: 📱 Build Development APK with Snapshot
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
+          eas build --platform android --profile production-apk --local --non-interactive --output=./app-dev.apk
+        env:
+          NODE_ENV: development
+
+      - name: 🧪 Setup Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: 🤖 Run Android Emulator and Maestro Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          ram-size: 4096M
+          heap-size: 576M
+          emulator-boot-timeout: 900
+          profile: pixel_6
+          avd-name: maestro_test_device
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot-save -no-snapshot-load
+          script: |
+            set -x
+            
+            # Setup debug directory
+            mkdir -p ${{ env.WORKING_DIRECTORY }}/debug-artifacts
+            
+            # Wait for emulator to be fully ready
+            echo "Waiting for emulator to be ready..."
+            adb wait-for-device
+            
+            # Wait for boot completion
+            echo "Waiting for boot completion..."
+            adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
+            echo "Boot completed!"
+            adb devices
+            
+            # Clear and start logcat capture
+            adb logcat -c
+            adb logcat > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/full-logcat.txt &
+            LOGCAT_PID=$!
+            
+            # Install app
+            echo "Installing APK..."
+            adb install -r ${{ env.WORKING_DIRECTORY }}/app-dev.apk
+            adb install -r ${{ env.WORKING_DIRECTORY }}/.maestro/sample-wallet/wallet.apk
+            
+            # Verify installation
+            echo "Verifying app installation..."
+            adb shell pm list packages | grep "com.reown.appkit.expomultichain" || (echo "ERROR: App not installed correctly" && exit 1)
+            adb shell pm list packages | grep "com.walletconnect.web3modal.rnsample.internal" || (echo "ERROR: Wallet not installed correctly" && exit 1)
+            
+            # Check APK info
+            echo "Checking APK details:"
+            adb shell dumpsys package com.reown.appkit.expomultichain | grep -A 5 "versionName" || true
+            
+            # Clear app data for clean state
+            echo "Clearing app data..."
+            adb shell pm clear com.reown.appkit.expomultichain || true
+            adb shell pm clear com.walletconnect.web3modal.rnsample.internal || true
+                      
+            # Wait for system to settle
+            sleep 5
+            
+            # Capture debug info before tests
+            echo "=== CAPTURING DEBUG INFO ==="
+            
+            # Network state (critical for WalletConnect)
+            echo "Network state:" > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/network_state.txt
+            adb shell dumpsys connectivity >> ${{ env.WORKING_DIRECTORY }}/debug-artifacts/network_state.txt
+            adb shell settings get global airplane_mode_on >> ${{ env.WORKING_DIRECTORY }}/debug-artifacts/network_state.txt
+            
+            # Memory info
+            adb shell dumpsys meminfo com.reown.appkit.expomultichain > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/meminfo.txt || true
+            adb shell dumpsys meminfo com.walletconnect.web3modal.rnsample.internal > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/meminfo.txt || true
+            
+            # App process info
+            adb shell ps | grep reown > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/processes.txt || true
+            
+            # Try manual app launch to verify
+            echo "Attempting manual app launch..."
+            adb shell monkey -p com.reown.appkit.expomultichain -c android.intent.category.LAUNCHER 1
+            sleep 5
+            
+            # Check if app is running
+            adb shell ps | grep -q "com.reown.appkit.expomultichain" || echo "WARNING: App may not be running"
+            
+            # Take screenshot before tests
+            adb shell screencap /sdcard/app_state_before_maestro.png
+            adb pull /sdcard/app_state_before_maestro.png ${{ env.WORKING_DIRECTORY }}/debug-artifacts/ || true
+            
+            # Check current activity
+            echo "Current activity before Maestro:"
+            adb shell dumpsys activity activities | grep -E "mResumedActivity|mFocusedActivity" || true
+            
+            echo "=== RUNNING MAESTRO TESTS ==="
+            
+            # Run Maestro tests
+            ~/.maestro/bin/maestro test ${{ env.WORKING_DIRECTORY }}/.maestro/basic-smoke-test.yaml || (echo "Basic test failed" && exit 1)
+            ~/.maestro/bin/maestro test ${{ env.WORKING_DIRECTORY }}/.maestro/wallet-qr-load.yaml || (echo "Wallet QR load test failed" && exit 1)
+            ~/.maestro/bin/maestro test ${{ env.WORKING_DIRECTORY }}/.maestro/connect-wallet.yaml || (echo "Connect wallet test failed" && exit 1)
+            
+            echo "All tests passed!"
+            
+            # Check for crashes
+            echo "Checking for crashes..."
+            adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime|Process:.*com.reown" > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/crashes.txt || echo "No crashes found" > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/crashes.txt
+            
+            # Kill logcat capture
+            kill $LOGCAT_PID || true
+
+      - name: 📦 Upload debug artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-artifacts-android-${{ github.event.pull_request.number }}
+          path: ${{ env.WORKING_DIRECTORY }}/debug-artifacts/
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: 📦 Upload Maestro artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-artifacts-android-${{ github.event.pull_request.number }}
+          path: |
+            ${{ env.WORKING_DIRECTORY }}/.maestro/
+            ~/.maestro/tests/**/*
+            **/*.mp4
+            **/*.mov
+            **/*.png
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: 📦 Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-build-android-${{ github.event.pull_request.number }}
+          path: ${{ env.WORKING_DIRECTORY }}/app-dev.apk
+          retention-days: 7
+
+      # - name: 📢 Notify build results
+      #   if: always()
+      #   uses: rtCamp/action-slack-notify@v2
+      #   env:
+      #     SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
+      #     SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
+      #     SLACK_TITLE: PR Build Results - Android
+      #     SLACK_MESSAGE: |
+      #       PR #${{ github.event.pull_request.number }} Android build ${{ job.status == "success" && "passed ✅" || "failed ❌" }}
+      #       Snapshot: ${{ needs.publish-snapshot.outputs.snapshot-tag }}
+
+  # Job 4: Build and test PR - iOS
+  pr-build-test-ios:
+    needs: publish-snapshot
+    if: github.event_name == 'pull_request'
+    runs-on: macos-latest
     steps:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
@@ -103,71 +316,409 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.eas-build-local
-          key: ${{ runner.os }}-eas-build-local-${{ hashFiles('**/package.json') }}
+          key: ${{ runner.os }}-eas-build-ios-${{ hashFiles('**/package.json') }}
           restore-keys: |
-            ${{ runner.os }}-eas-build-local-
+            ${{ runner.os }}-eas-build-ios-
 
       - name: 🔄 Verify EAS CLI installation
-        run: |
-          echo "EAS CLI version:"
-          eas --version
+        run: eas --version
 
-      - name: 📱 Build Development APK
-        if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'dev' || github.event_name == 'push' && (matrix.platform == 'android' || github.event.inputs.platform == 'all' || github.event.inputs.platform == 'android')
+      - name: 📦 Install Snapshot Versions in Example App
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          # Build with increased memory limit
+          # Install the snapshot versions of all @reown packages
+          npm install \
+            @reown/appkit-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }} \
+            @reown/appkit-wagmi-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }} \
+            @reown/appkit-solana-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }} \
+            @reown/appkit-bitcoin-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }}
+
+      - name: 📱 Build Development App with Snapshot
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          eas build --platform android --profile development --local --clear-cache --non-interactive --output=./app-dev.apk
+          eas build --platform ios --profile production-simulator --local --non-interactive --output=./app-ios-dev.app
         env:
           NODE_ENV: development
 
-      - name: 📱 Build Production APK
-        if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-apk' || github.event_name == 'push' && (matrix.platform == 'android' || github.event.inputs.platform == 'all' || github.event.inputs.platform == 'android')
+      - name: 🧪 Setup Maestro
         run: |
-          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          eas build --platform android --profile production-apk --local --clear-cache --non-interactive --output=./app-prod.apk
-        env:
-          NODE_ENV: production
+          brew tap mobile-dev-inc/tap
+          brew install maestro
 
-      - name: 📱 Build iOS Development
-        if: (github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'ios-dev') && (matrix.platform == 'ios' || github.event.inputs.platform == 'all' || github.event.inputs.platform == 'ios')
+      - name: 📱 Setup iOS Simulator and Run Maestro Tests
         run: |
-          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          eas build --platform ios --profile development --local --clear-cache --non-interactive --output=./app-ios-dev.app
-        env:
-          NODE_ENV: development
+          set -x
+          
+          # Setup debug directory
+          mkdir -p ${{ env.WORKING_DIRECTORY }}/debug-artifacts
+          
+          # Setup simulator
+          SIM_DEVICE_NAME="iPhone-15-Maestro-Test"
+          SIM_DEVICE_TYPE="iPhone 15"
+          
+          # Find iOS runtime (prefer iOS 18, fallback to latest available)
+          SIM_RUNTIME_ID=$(xcrun simctl list runtimes | grep -E "iOS 18" | awk '{print $NF}' | head -n 1)
+          if [ -z "$SIM_RUNTIME_ID" ]; then
+            echo "No suitable iOS runtime found. Using default."
+            SIM_RUNTIME_ID=$(xcrun simctl list runtimes | grep "iOS" | awk '{print $NF}' | tail -n 1)
+          fi
+          
+          echo "Using iOS runtime: $SIM_RUNTIME_ID"
+          
+          # Create or get existing simulator
+          UDID=$(xcrun simctl create "$SIM_DEVICE_NAME" "$SIM_DEVICE_TYPE" "$SIM_RUNTIME_ID" 2>/dev/null || xcrun simctl list devices | grep "$SIM_DEVICE_NAME" | grep -oE '\([0-9A-F-]+\)' | tr -d '()')
+          
+          echo "Simulator UDID: $UDID"
+          
+          # Boot the simulator
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          
+          # Export UDID for Maestro
+          export MAESTRO_IOS_DEVICE="$UDID"
+          
+          # Wait for simulator to be fully ready
+          sleep 5
+          
+          # Install app
+          echo "Installing app on simulator..."
+          xcrun simctl install "$UDID" ${{ env.WORKING_DIRECTORY }}/app-ios-dev.app
+          xcrun simctl install "$UDID" ${{ env.WORKING_DIRECTORY }}/.maestro/sample-wallet/wallet.app
+          
+          # Verify installation
+          echo "Verifying app installation..."
+          xcrun simctl listapps "$UDID" | grep -i "expomultichain" || (echo "ERROR: App not installed correctly" && exit 1)
+          
+          # Get app bundle info
+          echo "App bundle info:" > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/app_info.txt
+          xcrun simctl listapps "$UDID" | grep -A 10 "expomultichain" >> ${{ env.WORKING_DIRECTORY }}/debug-artifacts/app_info.txt || true
+          
+          # Grant permissions
+          echo "Granting permissions..."
+          xcrun simctl privacy "$UDID" grant all com.reown.appkit.expomultichain || true
+          
+          # Clear app data for clean state
+          echo "Clearing app data..."
+          xcrun simctl uninstall "$UDID" com.reown.appkit.expomultichain 2>/dev/null || true
+          xcrun simctl install "$UDID" ${{ env.WORKING_DIRECTORY }}/app-ios-dev.app
+          
+          # Wait for system to settle
+          sleep 5
+          
+          # Capture debug info before tests
+          echo "=== CAPTURING DEBUG INFO ==="
+          
+          # Device status
+          xcrun simctl status_bar "$UDID" list > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/device_status.txt || true
+          
+          # Take screenshot before tests
+          xcrun simctl io "$UDID" screenshot ${{ env.WORKING_DIRECTORY }}/debug-artifacts/app_state_before_maestro.png || true
+          
+          # Try to launch the app manually
+          echo "Attempting manual app launch..."
+          xcrun simctl launch "$UDID" com.reown.appkit.expomultichain || echo "Manual launch returned error, continuing..."
+          sleep 5
+          
+          # Take another screenshot after launch
+          xcrun simctl io "$UDID" screenshot ${{ env.WORKING_DIRECTORY }}/debug-artifacts/app_state_after_launch.png || true
+          
+          echo "=== RUNNING MAESTRO TESTS ==="
+          
+          # Run Maestro tests
+          maestro test ${{ env.WORKING_DIRECTORY }}/.maestro/basic-smoke-test.yaml || (echo "Basic test failed" && exit 1)
+          maestro test ${{ env.WORKING_DIRECTORY }}/.maestro/wallet-qr-load.yaml || (echo "Wallet QR load test failed" && exit 1)
+          maestro test ${{ env.WORKING_DIRECTORY }}/.maestro/connect-wallet.yaml || (echo "Connect wallet test failed" && exit 1)
+          
+          echo "All tests passed!"
+          
+          # Capture final state
+          xcrun simctl io "$UDID" screenshot ${{ env.WORKING_DIRECTORY }}/debug-artifacts/app_state_after_tests.png || true
 
-      - name: 📱 Build iOS Production
-        if: (github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'ios-prod') && (matrix.platform == 'ios' || github.event.inputs.platform == 'all' || github.event.inputs.platform == 'ios')
-        run: |
-          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          eas build --platform ios --profile production --local --clear-cache --non-interactive --output=./app-ios-prod.ipa
-        env:
-          NODE_ENV: production
-
-      - name: 🚀 Publish to Expo
-        if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'publish-expo'
-        run: |
-          eas update --auto
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-
-      - name: 📦 Upload build artifacts to GitHub
+      - name: 📦 Upload debug artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: app-builds
+          name: debug-artifacts-ios-${{ github.event.pull_request.number }}
+          path: ${{ env.WORKING_DIRECTORY }}/debug-artifacts/
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: 📦 Upload Maestro artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-artifacts-ios-${{ github.event.pull_request.number }}
           path: |
-            ./app-dev.apk
-            ./app-prod.apk
-            ./app-ios-dev.app
-            ./app-ios-prod.ipa
+            ${{ env.WORKING_DIRECTORY }}/.maestro/
+            ~/.maestro/tests/**/*
+            **/*.mp4
+            **/*.mov
+            **/*.png
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: 📦 Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-build-ios-${{ github.event.pull_request.number }}
+          path: ${{ env.WORKING_DIRECTORY }}/app-ios-dev.app
           retention-days: 7
 
-      - name: 📢 Notify build completion
-        if: always()
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
-          SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
-          SLACK_TITLE: Build Results
-          SLACK_MESSAGE: 'Build ${{ job.status == "success" && "completed successfully ✅" || "failed ❌" }}'
+      # - name: 📢 Notify build results
+      #   if: always()
+      #   uses: rtCamp/action-slack-notify@v2
+      #   env:
+      #     SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
+      #     SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
+      #     SLACK_TITLE: PR Build Results - iOS
+      #     SLACK_MESSAGE: |
+      #       PR #${{ github.event.pull_request.number }} iOS build ${{ job.status == "success" && "passed ✅" || "failed ❌" }}
+      #       Snapshot: ${{ needs.publish-snapshot.outputs.snapshot-tag }}
+
+  # Job 5: Deploy preview builds on merge to development - Android
+  # deploy-preview-android:
+  #   needs: lint
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/development'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: 🏗 Checkout repository
+  #       uses: actions/checkout@v4
+  #
+  #     - name: 🏗 Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: "22"
+  #         cache: "npm"
+  #
+  #     - name: 📦 Install dependencies
+  #       run: |
+  #         npm ci
+  #         npm install -g eas-cli@latest
+  #
+  #     - name: 📱 Setup EAS build cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: ~/.eas-build-local
+  #         key: ${{ runner.os }}-eas-build-preview-android-${{ hashFiles('**/package.json') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-eas-build-preview-android-
+  #
+  #     - name: 🔄 Verify EAS CLI installation
+  #       run: eas --version
+  #
+  #     - name: 📱 Build Preview Android
+  #       id: build_preview
+  #       working-directory: ${{ env.WORKING_DIRECTORY }}
+  #       run: |
+  #         export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
+  #         eas build --platform android --profile preview --non-interactive
+  #       env:
+  #         NODE_ENV: production
+  #
+  #     - name: 🚀 Deploy EAS Update
+  #       id: eas_update
+  #       working-directory: ${{ env.WORKING_DIRECTORY }}
+  #       continue-on-error: true
+  #       run: |
+  #         eas update --branch preview --platform android --non-interactive --message "Deploy from ${{ github.sha }}"
+  #
+  #     - name: ⚠️ Handle Update Failure (Native Changes Detected)
+  #       if: steps.eas_update.outcome == 'failure'
+  #       run: |
+  #         echo "::warning::EAS Update failed - likely due to native code changes"
+  #         echo "A new build is required. Consider submitting to stores manually."
+  #         echo "Build ID from previous step can be used for submission."
+  #
+  #     # TODO: Uncomment when ready to auto-submit to Firebase on update failure
+  #     # - name: 🚀 Submit to Firebase App Distribution
+  #     #   if: steps.eas_update.outcome == 'failure'
+  #     #   working-directory: ${{ env.WORKING_DIRECTORY }}
+  #     #   run: |
+  #     #     npm install -g firebase-tools
+  #     #     firebase appdistribution:distribute \
+  #     #       --app ${{ secrets.FIREBASE_ANDROID_APP_ID }} \
+  #     #       --groups testers \
+  #     #       --release-notes "Automated preview build from development branch"
+  #
+  #     - name: 📢 Notify deployment results
+  #       if: always()
+  #       uses: rtCamp/action-slack-notify@v2
+  #       env:
+  #         SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
+  #         SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
+  #         SLACK_TITLE: Preview Deploy - Android
+  #         SLACK_MESSAGE: |
+  #           Preview build for Android ${{ job.status == "success" && "deployed successfully ✅" || "failed ❌" }}
+  #           EAS Update: ${{ steps.eas_update.outcome == 'success' && 'Applied ✅' || 'Failed - Manual submission may be required ⚠️' }}
+  #           Branch: ${{ github.ref_name }}
+  #           Commit: ${{ github.sha }}
+
+  # Job 6: Deploy preview builds on merge to development - iOS
+  # deploy-preview-ios:
+  #   needs: lint
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/development'
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: 🏗 Checkout repository
+  #       uses: actions/checkout@v4
+  #
+  #     - name: 🏗 Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: "22"
+  #         cache: "npm"
+  #
+  #     - name: 📦 Install dependencies
+  #       run: |
+  #         npm ci
+  #         npm install -g eas-cli@latest
+  #
+  #     - name: 📱 Setup EAS build cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: ~/.eas-build-local
+  #         key: ${{ runner.os }}-eas-build-preview-ios-${{ hashFiles('**/package.json') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-eas-build-preview-ios-
+  #
+  #     - name: 🔄 Verify EAS CLI installation
+  #       run: eas --version
+  #
+  #     - name: 📱 Build Preview iOS
+  #       id: build_preview
+  #       working-directory: ${{ env.WORKING_DIRECTORY }}
+  #       run: |
+  #         export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
+  #         eas build --platform ios --profile preview --non-interactive
+  #       env:
+  #         NODE_ENV: production
+  #
+  #     - name: 🚀 Deploy EAS Update
+  #       id: eas_update
+  #       working-directory: ${{ env.WORKING_DIRECTORY }}
+  #       continue-on-error: true
+  #       run: |
+  #         eas update --branch preview --platform ios --non-interactive --message "Deploy from ${{ github.sha }}"
+  #
+  #     - name: ⚠️ Handle Update Failure (Native Changes Detected)
+  #       if: steps.eas_update.outcome == 'failure'
+  #       run: |
+  #         echo "::warning::EAS Update failed - likely due to native code changes"
+  #         echo "A new build is required. Consider submitting to TestFlight manually."
+  #         echo "Build ID from previous step can be used for submission."
+  #
+  #     # TODO: Uncomment when ready to auto-submit to TestFlight on update failure
+  #     # - name: 🚀 Submit to TestFlight
+  #     #   if: steps.eas_update.outcome == 'failure'
+  #     #   working-directory: ${{ env.WORKING_DIRECTORY }}
+  #     #   run: |
+  #     #     eas submit -p ios --latest --non-interactive
+  #     #   env:
+  #     #     EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+  #     #     EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
+  #     #     EXPO_APPLE_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
+  #     #     EXPO_TEAM_ID: ${{ secrets.EXPO_TEAM_ID }}
+  #
+  #     - name: 📢 Notify deployment results
+  #       if: always()
+  #       uses: rtCamp/action-slack-notify@v2
+  #       env:
+  #         SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
+  #         SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
+  #         SLACK_TITLE: Preview Deploy - iOS
+  #         SLACK_MESSAGE: |
+  #           Preview build for iOS ${{ job.status == "success" && "deployed successfully ✅" || "failed ❌" }}
+  #           EAS Update: ${{ steps.eas_update.outcome == 'success' && 'Applied ✅' || 'Failed - Manual submission may be required ⚠️' }}
+  #           Branch: ${{ github.ref_name }}
+  #           Commit: ${{ github.sha }}
+
+  # Job 7: Production Android build (manual trigger only)
+  # deploy-production-android:
+  #   needs: lint
+  #   if: |
+  #     github.event_name == 'workflow_dispatch' && 
+  #     github.event.inputs.buildType == 'production' &&
+  #     (github.event.inputs.platform == 'all' || github.event.inputs.platform == 'android')
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: 🏗 Checkout repository
+  #       uses: actions/checkout@v4
+  #
+  #     - name: 🏗 Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: "22"
+  #         cache: "npm"
+  #
+  #     - name: 📦 Install dependencies
+  #       run: |
+  #         npm ci
+  #         npm install -g eas-cli@latest
+  #
+  #     - name: 📱 Build Production Android
+  #       working-directory: ${{ env.WORKING_DIRECTORY }}
+  #       run: |
+  #         export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
+  #         eas build --platform android --profile production --non-interactive
+  #       env:
+  #         NODE_ENV: production
+  #
+  #     - name: 📢 Notify production deployment
+  #       if: always()
+  #       uses: rtCamp/action-slack-notify@v2
+  #       env:
+  #         SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
+  #         SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
+  #         SLACK_TITLE: Production Deploy - Android
+  #         SLACK_MESSAGE: 'Production build for Android ${{ job.status == "success" && "completed ✅" || "failed ❌" }}'
+
+  # Job 8: Production iOS build (manual trigger only)
+  # deploy-production-ios:
+  #   needs: lint
+  #   if: |
+  #     github.event_name == 'workflow_dispatch' && 
+  #     github.event.inputs.buildType == 'production' &&
+  #     (github.event.inputs.platform == 'all' || github.event.inputs.platform == 'ios')
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: 🏗 Checkout repository
+  #       uses: actions/checkout@v4
+  #
+  #     - name: 🏗 Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: "22"
+  #         cache: "npm"
+  #
+  #     - name: 📦 Install dependencies
+  #       run: |
+  #         npm ci
+  #         npm install -g eas-cli@latest
+  #
+  #     - name: 📱 Build Production iOS
+  #       working-directory: ${{ env.WORKING_DIRECTORY }}
+  #       run: |
+  #         export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
+  #         eas build --platform ios --profile production --non-interactive
+  #       env:
+  #         NODE_ENV: production
+  #
+  #     - name: 🚀 Submit to App Store
+  #       working-directory: ${{ env.WORKING_DIRECTORY }}
+  #       run: |
+  #         eas submit -p ios --latest --non-interactive
+  #       env:
+  #         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+  #         EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
+  #         EXPO_APPLE_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
+  #         EXPO_TEAM_ID: ${{ secrets.EXPO_TEAM_ID }}
+  #
+  #     - name: 📢 Notify production deployment
+  #       if: always()
+  #       uses: rtCamp/action-slack-notify@v2
+  #       env:
+  #         SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
+  #         SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
+  #         SLACK_TITLE: Production Deploy - iOS
+  #         SLACK_MESSAGE: 'Production build for iOS ${{ job.status == "success" && "completed ✅" || "failed ❌" }}'

@@ -5,7 +5,26 @@ permissions:
 
 on:
   workflow_call:
+    inputs:
+      snapshot-tag:
+        description: 'Optional custom snapshot tag. If not provided, uses branch name'
+        required: false
+        type: string
+    outputs:
+      snapshot-tag:
+        description: 'The snapshot tag that was published'
+        value: ${{ jobs.snapshot.outputs.snapshot-tag }}
+    secrets:
+      NPM_TOKEN:
+        required: true
+      GITHUB_TOKEN:
+        required: true
   workflow_dispatch:
+    inputs:
+      snapshot-tag:
+        description: 'Optional custom snapshot tag. If not provided, uses branch name'
+        required: false
+        type: string
 
 jobs:
   snapshot:
@@ -15,10 +34,14 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    outputs:
+      snapshot-tag: ${{ steps.get-snapshot-tag.outputs.tag }}
 
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -32,14 +55,29 @@ jobs:
           npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
           node .github/scripts/publish-initial-versions.js
 
+      - name: Determine Snapshot Tag
+        id: determine-tag
+        run: |
+          if [ -n "${{ inputs.snapshot-tag }}" ]; then
+            echo "tag=${{ inputs.snapshot-tag }}" >> $GITHUB_OUTPUT
+          else
+            snapshot=$(git branch --show-current | tr -cs '[:alnum:]-' '-' | tr '[:upper:]' '[:lower:]' | sed 's/-$//')
+            echo "tag=$snapshot" >> $GITHUB_OUTPUT
+          fi
+
       - name: Publish Snapshots
         continue-on-error: false
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          snapshot=$(git branch --show-current | tr -cs '[:alnum:]-' '-' | tr '[:upper:]' '[:lower:]' | sed 's/-$//')
+          snapshot="${{ steps.determine-tag.outputs.tag }}"
           npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
           yarn run changeset version --no-git-tag --snapshot $snapshot
           yarn run changeset:prepublish:ci
           yarn run changeset publish --no-git-tag --snapshot $snapshot --tag $snapshot
+
+      - name: Get Snapshot Tag
+        id: get-snapshot-tag
+        run: |
+          echo "tag=${{ steps.determine-tag.outputs.tag }}" >> $GITHUB_OUTPUT

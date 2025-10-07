@@ -1,0 +1,75 @@
+appId: com.reown.appkit.expomultichain
+---
+# Connect Wallet Flow Test
+
+- launchApp:
+    clearState: true
+    clearKeychain: true
+
+# Step 1: Verify home screen
+- assertVisible: "AppKit"
+- assertVisible: "for React Native"
+- assertVisible: "Connect Wallet"
+- takeScreenshot: .maestro/screenshots/connect-wallet/step-01-home
+- startRecording:
+    path: '.maestro/screenshots/connect-wallet/connect-wallet-video'
+    label: 'Connect wallet test'
+
+# Step 2: Press Connect Wallet button
+- tapOn: "Connect Wallet"
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: .maestro/screenshots/connect-wallet/step-02-connect-modal
+
+# Step 3: Press "All wallets" button
+- tapOn:
+    id: "all-wallets"
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: .maestro/screenshots/connect-wallet/step-03-all-wallets
+
+# Step 4: Check if MetaMask wallet appears
+- assertVisible: "MetaMask"
+- takeScreenshot: .maestro/screenshots/connect-wallet/step-04-metamask-visible
+
+# Step 5: Search for React wallet
+- tapOn: "Search wallet"
+- inputText: "React"
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: .maestro/screenshots/connect-wallet/step-05-react-visible
+- assertVisible:
+    id: "wallet-search-item-6880782cf8ff712bf8772b585960346290fd2499c1f1c51df9fe713d9d2e9384"
+
+# Step 6: Press React wallet
+- doubleTapOn:
+    id: "wallet-search-item-6880782cf8ff712bf8772b585960346290fd2499c1f1c51df9fe713d9d2e9384"
+    delay: 200
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: .maestro/screenshots/connect-wallet/step-06-react-pressed
+
+- runFlow:
+    when:
+      visible: "Open"
+      platform: iOS
+    commands:
+      - tapOn: "Open"
+
+# Step 7: Connect wallet
+- extendedWaitUntil:
+    visible: 
+        id: "approve-button"
+    timeout: 10000
+- tapOn:
+    id: "approve-button"
+
+# Step 8: Check if React wallet is connected
+- assertVisible: "Connected to"
+- takeScreenshot: .maestro/screenshots/connect-wallet/step-08-react-connected
+
+# Step 9: Check if React wallet is connected
+- assertVisible: "React Native Wallet Example"
+- takeScreenshot: .maestro/screenshots/connect-wallet/step-09-react-connected
+
+- stopRecording

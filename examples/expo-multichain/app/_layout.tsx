@@ -19,6 +19,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
+import { setStringAsync } from 'expo-clipboard';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { storage } from '@/config/storage';
@@ -61,6 +62,11 @@ const appkit = createAppKit({
   adapters: [wagmiAdapter, solanaAdapter, bitcoinAdapter],
   extraConnectors: [new PhantomConnector(), new SolflareConnector()],
   metadata,
+  clipboardClient: {
+    setString: async (value: string) => {
+      await setStringAsync(value);
+    }
+  },
   storage,
   defaultNetwork: mainnet, // Optional
   enableAnalytics: true // Optional - defaults to your Cloud configuration
