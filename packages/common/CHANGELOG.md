@@ -1,5 +1,11 @@
 # @reown/appkit-common-react-native
 
+## 2.0.0
+
+### Major Changes
+
+- c8ec10d: Release v2.0.0 stable version
+
 ## 2.0.0-alpha.6
 
 ### Patch Changes
@@ -29,16 +35,6 @@
 ### Patch Changes
 
 - f39727b: chore: bump alpha
-
-## 2.0.0
-
-### Major Changes
-
-- 40d26c1: BREAKING CHANGE: Prepare for AppKit v2.0.0-alpha Includes duplicate adapter validation and other API refinements.
-
-### Patch Changes
-
-- 5f71dfb: feat: phantom wallet support
 
 ## 1.3.2
 
