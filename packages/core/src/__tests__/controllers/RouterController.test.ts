@@ -6,7 +6,7 @@ describe('RouterController', () => {
     expect(RouterController.state).toEqual({
       view: 'Connect',
       history: ['Connect'],
-      transactionStack: []
+      navigationDirection: 'none'
     });
   });
 
@@ -15,7 +15,7 @@ describe('RouterController', () => {
     expect(RouterController.state).toEqual({
       view: 'Account',
       history: ['Connect', 'Account'],
-      transactionStack: []
+      navigationDirection: 'forward'
     });
   });
 
@@ -24,7 +24,7 @@ describe('RouterController', () => {
     expect(RouterController.state).toEqual({
       view: 'Account',
       history: ['Connect', 'Account'],
-      transactionStack: []
+      navigationDirection: 'forward'
     });
   });
 
@@ -33,7 +33,7 @@ describe('RouterController', () => {
     expect(RouterController.state).toEqual({
       view: 'Connect',
       history: ['Connect'],
-      transactionStack: []
+      navigationDirection: 'backward'
     });
   });
 
@@ -42,7 +42,7 @@ describe('RouterController', () => {
     expect(RouterController.state).toEqual({
       view: 'Connect',
       history: ['Connect'],
-      transactionStack: []
+      navigationDirection: 'backward'
     });
   });
 
@@ -51,7 +51,7 @@ describe('RouterController', () => {
     expect(RouterController.state).toEqual({
       view: 'Account',
       history: ['Account'],
-      transactionStack: []
+      navigationDirection: 'none'
     });
   });
 
@@ -61,21 +61,21 @@ describe('RouterController', () => {
     expect(RouterController.state).toEqual({
       view: 'Networks',
       history: ['Account', 'Networks'],
-      transactionStack: []
+      navigationDirection: 'none'
     });
   });
 
   it('should update state correctly on push() with data', () => {
-    RouterController.push('ConnectingWalletConnect', {
+    RouterController.push('WalletConnect', {
       wallet: { id: 'test', name: 'TestWallet' }
     });
     expect(RouterController.state).toEqual({
-      view: 'ConnectingWalletConnect',
-      history: ['Account', 'Networks', 'ConnectingWalletConnect'],
+      view: 'WalletConnect',
+      history: ['Account', 'Networks', 'WalletConnect'],
+      navigationDirection: 'forward',
       data: {
         wallet: { id: 'test', name: 'TestWallet' }
-      },
-      transactionStack: []
+      }
     });
   });
 });

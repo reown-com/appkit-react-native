@@ -18,7 +18,7 @@ export const TEST_CHAINS = {
 export type SupportedChain = (typeof TEST_CHAINS)[keyof typeof TEST_CHAINS];
 
 export const TIMEOUTS = {
-  ANIMATION: 300,
+  ANIMATION: 400,
   NETWORK_SWITCH: 500,
   CONNECTION: 5000,
   SESSION_PROPOSAL: 30000

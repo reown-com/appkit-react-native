@@ -1,11 +1,11 @@
-import type { Transaction } from '@reown/appkit-common-react-native';
+import type { CaipAddress, Transaction } from '@reown/appkit-common-react-native';
 import { proxy, subscribe as sub } from 'valtio';
 import { OptionsController } from './OptionsController';
 import { EventsController } from './EventsController';
 import { SnackController } from './SnackController';
-import { NetworkController } from './NetworkController';
 import { BlockchainApiController } from './BlockchainApiController';
-import { AccountController } from './AccountController';
+import { ConnectionsController } from './ConnectionsController';
+import { LogController } from './LogController';
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<string, Transaction[]>;
@@ -34,22 +34,29 @@ export const TransactionsController = {
     return sub(state, () => callback(state));
   },
 
-  async fetchTransactions(accountAddress?: string, reset?: boolean) {
-    const { projectId } = OptionsController.state;
-
-    if (!projectId || !accountAddress) {
-      throw new Error("Transactions can't be fetched without a projectId and an accountAddress");
-    }
-
-    state.loading = true;
-
-    if (reset) {
-      state.next = undefined;
-    }
-
+  async fetchTransactions(accountAddress: CaipAddress, reset?: boolean) {
     try {
+      const { projectId } = OptionsController.state;
+
+      if (!projectId || !accountAddress) {
+        throw new Error("Transactions can't be fetched without a projectId and an accountAddress");
+      }
+
+      state.loading = true;
+
+      if (reset) {
+        state.next = undefined;
+      }
+
+      const [namespace, chain, address] = accountAddress?.split(':') ?? [];
+
+      if (!namespace || !chain || !address) {
+        throw new Error('Invalid address');
+      }
+
       const response = await BlockchainApiController.fetchTransactions({
-        account: accountAddress,
+        account: address,
+        chainId: `${namespace}:${chain}`,
         projectId,
         cursor: state.next
       });
@@ -68,14 +75,15 @@ export const TransactionsController = {
       state.empty = nonSpamTransactions.length === 0;
       state.next = response?.next ? response.next : undefined;
     } catch (error) {
+      LogController.sendError(error, 'TransactionsController.ts', 'fetchTransactions');
       EventsController.sendEvent({
         type: 'track',
         event: 'ERROR_FETCH_TRANSACTIONS',
         properties: {
-          address: accountAddress,
-          projectId,
+          address: accountAddress ?? '',
+          projectId: OptionsController.state.projectId,
           cursor: state.next,
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+          isSmartAccount: ConnectionsController.state.accountType === 'smartAccount'
         }
       });
       SnackController.showError('Failed to fetch transactions');
@@ -121,7 +129,7 @@ export const TransactionsController = {
   },
 
   filterByConnectedChain(transactions: Transaction[]) {
-    const chainId = NetworkController.state.caipNetwork?.id;
+    const chainId = ConnectionsController.state.activeCaipNetworkId;
     const filteredTransactions = transactions.filter(
       transaction => transaction.metadata.chain === chainId
     );
@@ -133,7 +141,7 @@ export const TransactionsController = {
     state.next = undefined;
   },
 
-  resetTransactions() {
+  resetState() {
     state.transactions = [];
     state.loading = false;
     state.empty = false;

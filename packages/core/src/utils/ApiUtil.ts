@@ -3,7 +3,7 @@ import { CoreHelperUtil } from './CoreHelperUtil';
 
 export const ApiUtil = {
   getOrigin() {
-    return CoreHelperUtil.getBundleId();
+    return CoreHelperUtil.getBundleId() ?? 'react-native-unknown-origin';
   },
 
   getReactNativeVersion() {

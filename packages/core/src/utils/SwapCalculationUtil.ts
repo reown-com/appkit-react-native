@@ -1,7 +1,6 @@
 // -- Types --------------------------------------------- //
 
-import { NumberUtil } from '@reown/appkit-common-react-native';
-import type { SwapTokenWithBalance } from './TypeUtil';
+import { NumberUtil, type SwapTokenWithBalance } from '@reown/appkit-common-react-native';
 
 // -- Util ---------------------------------------- //
 export const SwapCalculationUtil = {

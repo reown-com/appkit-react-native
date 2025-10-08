@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, type ReactNode } from 'react';
 import { Animated, Easing, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 import { useTheme } from '../../hooks/useTheme';
@@ -38,23 +38,30 @@ export function LoadingThumbnail({
     return () => {
       loop.stop();
     };
-  }, [spinValue]);
+  }, []);
 
-  // Calculate one side of the Rectangle with borders
-  const sideLength = rectangleSize - borderRadius * 2 + (Math.PI * borderRadius) / 2;
+  const { sideLength, strokeColor, containerStyle } = useMemo(() => {
+    const _sideLength = rectangleSize - borderRadius * 2 + (Math.PI * borderRadius) / 2;
+    const _strokeColor = paused ? 'transparent' : Theme['accent-100'];
+    const _containerStyle = { height: outerContainerSize, width: outerContainerSize };
 
-  const spin = spinValue.current.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, -sideLength * 4]
-  });
+    return { sideLength: _sideLength, strokeColor: _strokeColor, containerStyle: _containerStyle };
+  }, [rectangleSize, borderRadius, paused, Theme, outerContainerSize]);
+
+  const spin = useMemo(() => {
+    return spinValue.current.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, -sideLength * 4]
+    });
+  }, [sideLength]);
 
   return (
-    <View style={[styles.container, { height: outerContainerSize, width: outerContainerSize }]}>
+    <View style={[styles.container, containerStyle]}>
       <Svg width={outerContainerSize} height={outerContainerSize} style={styles.loader}>
         <AnimatedRect
           height={rectangleSize}
           width={rectangleSize}
-          stroke={paused ? 'transparent' : Theme['accent-100']}
+          stroke={strokeColor}
           strokeWidth={strokeWidth}
           x={strokeWidth / 2}
           y={strokeWidth / 2}

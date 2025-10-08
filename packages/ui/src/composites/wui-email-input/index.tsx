@@ -84,7 +84,7 @@ export function EmailInput({
     return (
       <RightIcon
         loading={loading}
-        showChevron={submitEnabled && !errorMessage}
+        showChevron={submitEnabled ? !errorMessage : false}
         onPress={handleChevronPress}
       />
     );
@@ -93,7 +93,7 @@ export function EmailInput({
   return (
     <View style={style}>
       <InputText
-        icon="mail"
+        icon="email"
         placeholder="Email"
         size="md"
         onSubmitEditing={handleSubmitEditing}
@@ -107,11 +107,11 @@ export function EmailInput({
       >
         {rightIconTemplate()}
       </InputText>
-      {errorMessage && (
+      {errorMessage ? (
         <Text color="error-100" variant="tiny-500" style={styles.text}>
           {errorMessage}
         </Text>
-      )}
+      ) : null}
     </View>
   );
 }

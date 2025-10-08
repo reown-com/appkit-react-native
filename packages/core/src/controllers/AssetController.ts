@@ -4,7 +4,6 @@ import { proxy } from 'valtio';
 export interface AssetControllerState {
   walletImages: Record<string, string>;
   networkImages: Record<string, string>;
-  connectorImages: Record<string, string>;
   tokenImages: Record<string, string>;
 }
 
@@ -12,7 +11,6 @@ export interface AssetControllerState {
 const state = proxy<AssetControllerState>({
   walletImages: {},
   networkImages: {},
-  connectorImages: {},
   tokenImages: {}
 });
 
@@ -26,10 +24,6 @@ export const AssetController = {
 
   setNetworkImage(key: string, value: string) {
     state.networkImages[key] = value;
-  },
-
-  setConnectorImage(key: string, value: string) {
-    state.connectorImages[key] = value;
   },
 
   setTokenImage(key: string, value: string) {

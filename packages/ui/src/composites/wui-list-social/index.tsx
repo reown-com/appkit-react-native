@@ -6,6 +6,7 @@ import type { LogoType } from '../../utils/TypesUtil';
 import styles from './styles';
 import { Logo } from '../wui-logo';
 import type { ReactNode } from 'react';
+import { Icon } from '../../components/wui-icon';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -18,6 +19,8 @@ export interface ListSocialProps {
   testID?: string;
   logoWidth?: number;
   logoHeight?: number;
+  logoStyle?: StyleProp<ViewStyle>;
+  chevron?: boolean;
 }
 
 export function ListSocial({
@@ -28,7 +31,9 @@ export function ListSocial({
   style,
   testID,
   logoHeight = 40,
-  logoWidth = 40
+  logoWidth = 40,
+  logoStyle,
+  chevron
 }: ListSocialProps) {
   const Theme = useTheme();
   const { animatedValue, setStartValue, setEndValue } = useAnimatedValue(
@@ -48,18 +53,23 @@ export function ListSocial({
       <View
         style={[
           styles.border,
-          { height: logoHeight + 1, width: logoWidth + 1, borderColor: Theme['gray-glass-005'] }
+          { height: logoHeight + 1, width: logoWidth + 1, borderColor: Theme['gray-glass-005'] },
+          logoStyle
         ]}
       >
         <Logo
           logo={logo}
-          style={disabled && styles.disabledLogo}
+          style={[disabled && styles.disabledLogo]}
           width={logoWidth}
           height={logoHeight}
         />
       </View>
       {children}
-      <View style={styles.rightPlaceholder} />
+      {chevron ? (
+        <Icon name="chevronRight" size="md" color="fg-200" style={styles.rightIcon} />
+      ) : (
+        <View style={styles.rightPlaceholder} />
+      )}
     </AnimatedPressable>
   );
 }

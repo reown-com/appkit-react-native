@@ -20,6 +20,9 @@ export interface FlexViewProps {
   flexShrink?: FlexShrinkType;
   alignItems?: FlexAlignType;
   alignSelf?: FlexAlignType;
+  rowGap?: SpacingType;
+  gap?: SpacingType;
+  columnGap?: SpacingType;
   justifyContent?: FlexJustifyContentType;
   padding?: SpacingType | SpacingType[];
   margin?: SpacingType | SpacingType[];
@@ -36,6 +39,9 @@ export function FlexView(props: FlexViewProps) {
     alignItems: props.alignItems,
     alignSelf: props.alignSelf,
     justifyContent: props.justifyContent,
+    rowGap: props.rowGap && UiUtil.getSpacingStyles(props.rowGap),
+    gap: props.gap && UiUtil.getSpacingStyles(props.gap),
+    columnGap: props.columnGap && UiUtil.getSpacingStyles(props.columnGap),
     paddingTop: props.padding && UiUtil.getSpacingStyles(props.padding, 0),
     paddingRight: props.padding && UiUtil.getSpacingStyles(props.padding, 1),
     paddingBottom: props.padding && UiUtil.getSpacingStyles(props.padding, 2),
