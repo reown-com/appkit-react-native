@@ -38,18 +38,18 @@
 
 ### Changed
 
-- ** ⚠️ BREAKING: Initialization Process**:
+-  ⚠️ **BREAKING: Initialization Process**:
   - Replaced monolithic package imports with modular adapter system
   - `createAppKit` now requires `adapters` and `networks` arrays instead of chain-specific configs
   - `createAppKit` now requires `storage` to handles data persistence
   - Configuration moved from adapter-specific functions to centralized `AppKitConfig`
 
-- ** ⚠️ BREAKING: Package Structure**:
+-  ⚠️ **BREAKING: Package Structure**:
   - Primary entry point changed from `@reown/appkit-wagmi-react-native` or `@reown/appkit-ethers-react-native` to `@reown/appkit-react-native`
   - Chain-specific packages now serve as adapters rather than primary libraries
   - All hooks and components now imported from `@reown/appkit-react-native`
 
-- ** ⚠️ BREAKING: Provider Setup**:
+-  ⚠️ **BREAKING: Provider Setup**:
   - New `AppKitProvider` wrapper required for all applications
   - Wagmi users must now access config via `wagmiAdapter.wagmiConfig`
   - Enhanced provider hierarchy supporting multiple blockchain contexts
