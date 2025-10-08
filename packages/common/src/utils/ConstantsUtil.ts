@@ -1,5 +1,5 @@
 export const ConstantsUtil = {
-  VERSION: '1.3.2',
+  VERSION: '2.0.0-alpha.6',
 
   EIP155: 'eip155',
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',
@@ -11,12 +11,20 @@ export const ConstantsUtil = {
   BLOCKCHAIN_API_RPC_URL_STAGING: 'https://staging.rpc.walletconnect.org',
   PULSE_API_URL: 'https://pulse.walletconnect.org',
   API_URL: 'https://api.web3modal.org',
+  WEB_WALLET_URL: 'https://web-wallet.walletconnect.org',
+  SECURE_SITE_DASHBOARD: `https://secure.reown.com/dashboard`,
+  SECURE_SITE_ICON: `https://secure.reown.com/images/favicon.png`,
+  REOWN_URL: `https://reown.com`,
 
-  WALLET_CONNECT_CONNECTOR_ID: 'walletConnect',
-  COINBASE_CONNECTOR_ID: 'coinbaseWallet',
-  AUTH_CONNECTOR_ID: 'appKitAuth',
-
-  COINBASE_EXPLORER_ID: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+  CHAIN_NAME_MAP: {
+    eip155: 'EVM Networks',
+    solana: 'Solana',
+    polkadot: 'Polkadot',
+    bip122: 'Bitcoin',
+    cosmos: 'Cosmos',
+    sui: 'Sui',
+    stacks: 'Stacks'
+  },
 
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet
@@ -33,5 +41,38 @@ export const ConstantsUtil = {
     '0x55d398326f99059fF775485246999027B3197955',
     // Arbitrum
     '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
-  ]
+  ],
+
+  PHANTOM_CUSTOM_WALLET: {
+    id: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+    name: 'Phantom Wallet',
+    image_id: 'b6ec7b81-bb4f-427d-e290-7631e6e50d00',
+    mobile_link: 'phantom://',
+    play_store: 'https://play.google.com/store/apps/details?id=app.phantom',
+    app_store: 'https://apps.apple.com/app/id1598432977',
+    android_app_id: 'app.phantom',
+    ios_schema: 'phantom://'
+  },
+
+  COINBASE_CUSTOM_WALLET: {
+    id: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+    name: 'Coinbase Wallet',
+    image_id: 'a5ebc364-8f91-4200-fcc6-be81310a0000',
+    mobile_link: 'https://wallet.coinbase.com/wsegue',
+    play_store: 'https://play.google.com/store/apps/details?id=org.toshi',
+    app_store: 'https://apps.apple.com/app/id1278383455',
+    android_app_id: 'org.toshi',
+    ios_schema: 'cbwallet://'
+  },
+
+  SOLFLARE_CUSTOM_WALLET: {
+    id: '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
+    name: 'Solflare Wallet',
+    image_id: '34c0e38d-66c4-470e-1aed-a6fabe2d1e00',
+    mobile_link: 'solflare://',
+    play_store: 'https://play.google.com/store/apps/details?id=com.solflare.mobile',
+    app_store: 'https://apps.apple.com/app/id1580902717',
+    android_app_id: 'com.solflare.mobile',
+    ios_schema: 'solflare://'
+  }
 };

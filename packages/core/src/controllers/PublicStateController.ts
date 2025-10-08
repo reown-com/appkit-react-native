@@ -1,6 +1,6 @@
 import { proxy, subscribe as sub } from 'valtio';
 import { subscribeKey as subKey } from 'valtio/utils';
-import type { CaipNetworkId } from '../utils/TypeUtil.js';
+import type { CaipNetworkId } from '@reown/appkit-common-react-native';
 
 // -- Types --------------------------------------------- //
 export interface PublicStateControllerState {

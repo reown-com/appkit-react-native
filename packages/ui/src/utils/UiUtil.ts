@@ -4,8 +4,8 @@ import { Spacing } from './ThemeUtil';
 import type { SpacingType, TruncateOptions } from './TypesUtil';
 
 export const UiUtil = {
-  getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {
-    if (Array.isArray(spacing)) {
+  getSpacingStyles(spacing: SpacingType | SpacingType[], index?: number) {
+    if (Array.isArray(spacing) && index !== undefined) {
       return spacing[index] ? Spacing[spacing[index] as SpacingType] : undefined;
     } else if (typeof spacing === 'string') {
       return Spacing[spacing];
@@ -71,20 +71,18 @@ export const UiUtil = {
   },
 
   formatNumberToLocalString(value: string | number | undefined, decimals = 2) {
+    let numericValue: number;
+
     if (value === undefined) {
-      return '0.00';
+      numericValue = 0;
+    } else if (typeof value === 'string') {
+      numericValue = parseFloat(value);
+    } else {
+      numericValue = value;
     }
 
-    if (typeof value === 'number') {
-      return value.toLocaleString('en-US', {
-        maximumFractionDigits: decimals,
-        minimumFractionDigits: decimals
-      });
-    }
-
-    return parseFloat(value).toLocaleString('en-US', {
-      maximumFractionDigits: decimals,
-      minimumFractionDigits: decimals
+    return numericValue.toLocaleString('en-US', {
+      maximumFractionDigits: decimals
     });
   }
 };

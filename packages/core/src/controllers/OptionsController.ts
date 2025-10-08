@@ -1,13 +1,16 @@
 import { proxy, ref } from 'valtio';
 import type {
+  Storage,
+  Metadata,
+  AppKitNetwork,
   CustomWallet,
   Features,
-  Metadata,
   ProjectId,
   SdkType,
   SdkVersion,
-  Tokens
-} from '../utils/TypeUtil';
+  SIWXConfig
+} from '@reown/appkit-common-react-native';
+
 import { ConstantsUtil } from '../utils/ConstantsUtil';
 
 // -- Types --------------------------------------------- //
@@ -17,28 +20,31 @@ export interface ClipboardClient {
 
 export interface OptionsControllerState {
   projectId: ProjectId;
-  _clipboardClient?: ClipboardClient;
+  clipboardClient?: ClipboardClient;
+  storage?: Storage;
   includeWalletIds?: string[];
   excludeWalletIds?: string[];
   featuredWalletIds?: string[];
   customWallets?: CustomWallet[];
-  tokens?: Tokens;
   enableAnalytics?: boolean;
   sdkType: SdkType;
   sdkVersion: SdkVersion;
   metadata?: Metadata;
-  isSiweEnabled?: boolean;
+  siwx?: SIWXConfig;
   isOnRampEnabled?: boolean;
   features?: Features;
   debug?: boolean;
+  defaultNetwork?: AppKitNetwork;
+  requestedNetworks?: AppKitNetwork[];
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
   projectId: '',
   sdkType: 'appkit',
-  sdkVersion: 'react-native-wagmi-undefined',
+  sdkVersion: 'react-native-undefined-undefined',
   features: ConstantsUtil.DEFAULT_FEATURES,
+  customWallets: [],
   debug: false
 });
 
@@ -47,7 +53,7 @@ export const OptionsController = {
   state,
 
   setClipboardClient(client: ClipboardClient) {
-    state._clipboardClient = ref(client);
+    state.clipboardClient = ref(client);
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -66,10 +72,6 @@ export const OptionsController = {
     state.featuredWalletIds = featuredWalletIds;
   },
 
-  setTokens(tokens: OptionsControllerState['tokens']) {
-    state.tokens = tokens;
-  },
-
   setCustomWallets(customWallets: OptionsControllerState['customWallets']) {
     state.customWallets = customWallets;
   },
@@ -86,10 +88,6 @@ export const OptionsController = {
     state.metadata = metadata;
   },
 
-  setIsSiweEnabled(isSiweEnabled: OptionsControllerState['isSiweEnabled']) {
-    state.isSiweEnabled = isSiweEnabled;
-  },
-
   setFeatures(features: OptionsControllerState['features']) {
     state.features = { ...ConstantsUtil.DEFAULT_FEATURES, ...features };
   },
@@ -102,12 +100,42 @@ export const OptionsController = {
     state.isOnRampEnabled = isOnRampEnabled;
   },
 
+  setStorage(storage?: OptionsControllerState['storage']) {
+    if (storage) {
+      state.storage = ref(storage);
+    }
+  },
+
+  setDefaultNetwork(defaultNetwork?: OptionsControllerState['defaultNetwork']) {
+    state.defaultNetwork = defaultNetwork;
+  },
+
+  setRequestedNetworks(requestedNetworks?: OptionsControllerState['requestedNetworks']) {
+    state.requestedNetworks = requestedNetworks;
+  },
+
+  setSiwx(siwx?: OptionsControllerState['siwx']) {
+    if (siwx && (siwx?.signOutOnDisconnect === undefined || siwx?.signOutOnDisconnect === null)) {
+      siwx.signOutOnDisconnect = true;
+    }
+
+    state.siwx = siwx;
+  },
+
   isClipboardAvailable() {
-    return !!state._clipboardClient;
+    return !!state.clipboardClient;
+  },
+
+  getStorage() {
+    if (!state.storage) {
+      throw new Error('AppKit: Storage is not set');
+    }
+
+    return state.storage;
   },
 
   copyToClipboard(value: string) {
-    const client = state._clipboardClient;
+    const client = state.clipboardClient;
     if (client) {
       client?.setString(value);
     }

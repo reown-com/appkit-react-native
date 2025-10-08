@@ -1,5 +1,5 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils';
-import { proxy, subscribe as sub } from 'valtio/vanilla';
+import { subscribeKey as subKey } from 'valtio/utils';
+import { proxy, subscribe as sub } from 'valtio';
 import {
   type OnRampPaymentMethod,
   type OnRampCountry,
@@ -12,17 +12,17 @@ import {
   type OnRampErrorTypeValues,
   type OnRampCountryDefaults,
   BlockchainOnRampError
-} from '../utils/TypeUtil';
+} from '@reown/appkit-common-react-native';
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil';
-import { NetworkController } from './NetworkController';
-import { AccountController } from './AccountController';
 import { OptionsController } from './OptionsController';
 import { ConstantsUtil, OnRampErrorType } from '../utils/ConstantsUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 import { SnackController } from './SnackController';
+import { LogController } from './LogController';
 import { EventsController } from './EventsController';
 import { BlockchainApiController, EXCLUDED_ONRAMP_PROVIDERS } from './BlockchainApiController';
+import { ConnectionsController } from './ConnectionsController';
 
 // -- Helpers ------------------------------------------- //
 
@@ -125,7 +125,11 @@ export const OnRampController = {
           state.countriesDefaults?.find(d => d.countryCode === country.countryCode)
             ?.defaultCurrencyCode || 'USD';
 
-        const currency = state.paymentCurrencies?.find(c => c.currencyCode === currencyCode);
+        let currency = state.paymentCurrencies?.find(c => c.currencyCode === currencyCode);
+
+        if (!currency) {
+          currency = state.paymentCurrencies?.find(c => c.currencyCode === 'USD');
+        }
 
         if (currency) {
           this.setPaymentCurrency(currency);
@@ -139,6 +143,7 @@ export const OnRampController = {
 
       StorageUtil.setOnRampPreferredCountry(country);
     } catch (error) {
+      LogController.sendError(error, 'OnRampController.ts', 'setSelectedCountry');
       state.loading = false;
       state.error = {
         type: OnRampErrorType.FAILED_TO_LOAD_COUNTRIES,
@@ -188,16 +193,16 @@ export const OnRampController = {
 
   updateSelectedPurchaseCurrency() {
     let selectedCurrency;
-    if (NetworkController.state.caipNetwork?.id) {
+    if (ConnectionsController.state.activeNetwork?.caipNetworkId) {
       const defaultCurrency =
         ConstantsUtil.NETWORK_DEFAULT_CURRENCIES[
-          NetworkController.state.caipNetwork
-            ?.id as keyof typeof ConstantsUtil.NETWORK_DEFAULT_CURRENCIES
+          ConnectionsController.state.activeNetwork
+            ?.caipNetworkId as keyof typeof ConstantsUtil.NETWORK_DEFAULT_CURRENCIES
         ];
       selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === defaultCurrency);
     }
 
-    state.purchaseCurrency = selectedCurrency ?? state.purchaseCurrencies?.[0] ?? undefined;
+    state.purchaseCurrency = selectedCurrency ?? undefined;
   },
 
   getServiceProviderImage(serviceProviderName?: string) {
@@ -237,6 +242,7 @@ export const OnRampController = {
           countries.find(c => c.countryCode === countryCode) || countries[0] || undefined;
       }
     } catch (error) {
+      LogController.sendError(error, 'OnRampController.ts', 'fetchCountries');
       state.error = {
         type: OnRampErrorType.FAILED_TO_LOAD_COUNTRIES,
         message: 'Failed to load countries'
@@ -258,6 +264,7 @@ export const OnRampController = {
 
       state.countriesDefaults = countriesDefaults;
     } catch (error) {
+      LogController.sendError(error, 'OnRampController.ts', 'fetchCountriesDefaults');
       state.error = {
         type: OnRampErrorType.FAILED_TO_LOAD_COUNTRIES,
         message: 'Failed to load countries defaults'
@@ -279,6 +286,7 @@ export const OnRampController = {
 
       state.serviceProviders = serviceProviders || [];
     } catch (error) {
+      LogController.sendError(error, 'OnRampController.ts', 'fetchServiceProviders');
       state.error = {
         type: OnRampErrorType.FAILED_TO_LOAD_PROVIDERS,
         message: 'Failed to load service providers'
@@ -310,6 +318,7 @@ export const OnRampController = {
 
       state.selectedPaymentMethod = state.paymentMethods[0];
     } catch (error) {
+      LogController.sendError(error, 'OnRampController.ts', 'fetchPaymentMethods');
       state.error = {
         type: OnRampErrorType.FAILED_TO_LOAD_METHODS,
         message: 'Failed to load payment methods'
@@ -328,17 +337,18 @@ export const OnRampController = {
       state.purchaseCurrencies = cryptoCurrencies || [];
 
       let selectedCurrency;
-      if (NetworkController.state.caipNetwork?.id) {
+      if (ConnectionsController.state.activeNetwork?.caipNetworkId) {
         const defaultCurrency =
           ConstantsUtil.NETWORK_DEFAULT_CURRENCIES[
-            NetworkController.state.caipNetwork
-              ?.id as keyof typeof ConstantsUtil.NETWORK_DEFAULT_CURRENCIES
-          ] || 'ETH';
+            ConnectionsController.state.activeNetwork
+              ?.caipNetworkId as keyof typeof ConstantsUtil.NETWORK_DEFAULT_CURRENCIES
+          ];
         selectedCurrency = state.purchaseCurrencies?.find(c => c.currencyCode === defaultCurrency);
       }
 
-      state.purchaseCurrency = selectedCurrency || cryptoCurrencies?.[0] || undefined;
+      state.purchaseCurrency = selectedCurrency || undefined;
     } catch (error) {
+      LogController.sendError(error, 'OnRampController.ts', 'fetchCryptoCurrencies');
       state.error = {
         type: OnRampErrorType.FAILED_TO_LOAD_CURRENCIES,
         message: 'Failed to load crypto currencies'
@@ -382,6 +392,7 @@ export const OnRampController = {
         this.setPaymentCurrency(defaultCurrency);
       }
     } catch (error) {
+      LogController.sendError(error, 'OnRampController.ts', 'fetchFiatCurrencies');
       state.error = {
         type: OnRampErrorType.FAILED_TO_LOAD_CURRENCIES,
         message: 'Failed to load fiat currencies'
@@ -420,7 +431,7 @@ export const OnRampController = {
         !state.selectedCountry?.countryCode ||
         !state.purchaseCurrency?.currencyCode ||
         !state.paymentCurrency?.currencyCode ||
-        !AccountController.state.address
+        !ConnectionsController.state.activeAddress
       ) {
         throw new BlockchainOnRampError(OnRampErrorType.UNKNOWN, 'Invalid quote parameters');
       }
@@ -430,12 +441,20 @@ export const OnRampController = {
       state.selectedServiceProvider = undefined;
       state.error = undefined;
 
+      const plainAddress = CoreHelperUtil.getPlainAddress(
+        ConnectionsController.state.activeAddress
+      );
+
+      if (!plainAddress) {
+        throw new Error('Invalid address');
+      }
+
       const body = {
         countryCode: state.selectedCountry.countryCode,
         destinationCurrencyCode: state.purchaseCurrency.currencyCode,
         sourceAmount: state.paymentAmount!,
         sourceCurrencyCode: state.paymentCurrency.currencyCode,
-        walletAddress: AccountController.state.address,
+        walletAddress: plainAddress,
         excludeProviders: EXCLUDED_ONRAMP_PROVIDERS
       };
 
@@ -492,6 +511,7 @@ export const OnRampController = {
         sp => sp.serviceProvider === state.selectedQuote?.serviceProvider
       );
     } catch (error: any) {
+      LogController.sendError(error, 'OnRampController.ts', 'getQuotes');
       if (error.name === 'AbortError') {
         // Do nothing, another request was made
         return;
@@ -524,7 +544,7 @@ export const OnRampController = {
       state.paymentCurrency?.currencyCode &&
       state.selectedCountry &&
       !state.loading &&
-      AccountController.state.address
+      ConnectionsController.state.activeAddress
     );
   },
 
@@ -542,6 +562,7 @@ export const OnRampController = {
 
       state.paymentCurrenciesLimits = limits;
     } catch (error) {
+      LogController.sendError(error, 'OnRampController.ts', 'fetchFiatLimits');
       state.error = {
         type: OnRampErrorType.FAILED_TO_LOAD_LIMITS,
         message: 'Failed to load fiat limits'
@@ -551,6 +572,10 @@ export const OnRampController = {
   },
 
   async generateWidget({ quote }: { quote: OnRampQuote }) {
+    if (!ConnectionsController.state.activeAddress) {
+      throw new Error('No active address');
+    }
+
     const metadata = OptionsController.state.metadata;
     const eventProperties = {
       asset: quote.destinationCurrencyCode,
@@ -567,6 +592,14 @@ export const OnRampController = {
         throw new Error('Invalid quote');
       }
 
+      const plainAddress = CoreHelperUtil.getPlainAddress(
+        ConnectionsController.state.activeAddress
+      );
+
+      if (!plainAddress) {
+        throw new Error('Invalid address');
+      }
+
       const body = {
         countryCode: quote.countryCode,
         destinationCurrencyCode: quote.destinationCurrencyCode,
@@ -574,7 +607,7 @@ export const OnRampController = {
         serviceProvider: quote.serviceProvider,
         sourceAmount: quote.sourceAmount,
         sourceCurrencyCode: quote.sourceCurrencyCode,
-        walletAddress: AccountController.state.address!,
+        walletAddress: plainAddress,
         redirectUrl: metadata?.redirect?.universal ?? metadata?.redirect?.native
       };
 
@@ -594,6 +627,7 @@ export const OnRampController = {
 
       return widget;
     } catch (e: any) {
+      LogController.sendError(e, 'OnRampController.ts', 'generateWidget', { quote });
       EventsController.sendEvent({
         type: 'track',
         event: 'BUY_FAIL',
@@ -639,6 +673,7 @@ export const OnRampController = {
         this.fetchFiatCurrencies()
       ]);
     } catch (error) {
+      LogController.sendError(error, 'OnRampController.ts', 'loadOnRampData');
       if (!state.error) {
         state.error = {
           type: OnRampErrorType.FAILED_TO_LOAD,
