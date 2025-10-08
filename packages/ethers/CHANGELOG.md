@@ -1,5 +1,15 @@
 # @reown/appkit-ethers-react-native
 
+## 2.0.1
+
+### Patch Changes
+
+- [#338](https://github.com/reown-com/appkit-react-native/pull/338) [`3efe03d`](https://github.com/reown-com/appkit-react-native/commit/3efe03d31b804040d9c9d2f7637db5c135a6fa92) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - Release v2.0.1 stable version
+
+- Updated dependencies [[`3efe03d`](https://github.com/reown-com/appkit-react-native/commit/3efe03d31b804040d9c9d2f7637db5c135a6fa92)]:
+  - @reown/appkit-react-native@2.0.1
+  - @reown/appkit-common-react-native@2.0.1
+
 ## 2.0.0
 
 ### Major Changes
