@@ -60,7 +60,22 @@ jobs:
             echo "tag=$snapshot" >> $GITHUB_OUTPUT
           fi
 
+      - name: Check for Changesets
+        id: check-changesets
+        run: |
+          # Check if any changeset files exist (excluding README.md)
+          changeset_count=$(find .changeset -name "*.md" ! -name "README.md" | wc -l)
+          if [ "$changeset_count" -eq 0 ]; then
+            echo "has_changesets=false" >> $GITHUB_OUTPUT
+            echo "::warning::No changesets found. Skipping snapshot release."
+            exit 1
+          else
+            echo "has_changesets=true" >> $GITHUB_OUTPUT
+            echo "Found $changeset_count changeset(s). Proceeding with snapshot release."
+          fi
+
       - name: Publish Snapshots
+        if: steps.check-changesets.outputs.has_changesets == 'true'
         continue-on-error: false
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -75,4 +90,8 @@ jobs:
       - name: Get Snapshot Tag
         id: get-snapshot-tag
         run: |
-          echo "tag=${{ steps.determine-tag.outputs.tag }}" >> $GITHUB_OUTPUT
+          if [ "${{ steps.check-changesets.outputs.has_changesets }}" == "true" ]; then
+            echo "tag=${{ steps.determine-tag.outputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=" >> $GITHUB_OUTPUT
+          fi
