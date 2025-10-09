@@ -1,14 +1,14 @@
 name: React Native CI/CD
 
 on:
-  push:
-    branches: [main, development]
-    paths-ignore:
-      - "**.md"
-      - "LICENSE"
-      - "docs/**"
-  pull_request:
-    branches: [main, development]
+  # push:
+  #   branches: [main, development]
+  #   paths-ignore:
+  #     - "**.md"
+  #     - "LICENSE"
+  #     - "docs/**"
+  # pull_request:
+  #   branches: [main, development]
   workflow_dispatch:
     inputs:
       buildType:
@@ -64,14 +64,14 @@ jobs:
       - name: 🧹 Run ESLint
         run: npm run lint
 
-      - name: 📢 Notify lint results
-        if: always()
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
-          SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
-          SLACK_TITLE: Lint Results
-          SLACK_MESSAGE: 'Linting ${{ job.status == "success" && "passed ✅" || "failed ❌" }}'
+      # - name: 📢 Notify lint results
+      #   if: always()
+      #   uses: rtCamp/action-slack-notify@v2
+      #   env:
+      #     SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
+      #     SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
+      #     SLACK_TITLE: Lint Results
+      #     SLACK_MESSAGE: Linting ${{ job.status == 'success' && 'passed ✅' || 'failed ❌' }}
 
   # Job 2: Publish snapshot for PRs (reuses the snapshot workflow)
   publish-snapshot:
@@ -289,7 +289,7 @@ jobs:
       #     SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
       #     SLACK_TITLE: PR Build Results - Android
       #     SLACK_MESSAGE: |
-      #       PR #${{ github.event.pull_request.number }} Android build ${{ job.status == "success" && "passed ✅" || "failed ❌" }}
+      #       PR #${{ github.event.pull_request.number }} Android build ${{ job.status == 'success' && 'passed ✅' || 'failed ❌' }}
       #       Snapshot: ${{ needs.publish-snapshot.outputs.snapshot-tag }}
 
   # Job 4: Build and test PR - iOS
@@ -473,7 +473,7 @@ jobs:
       #     SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
       #     SLACK_TITLE: PR Build Results - iOS
       #     SLACK_MESSAGE: |
-      #       PR #${{ github.event.pull_request.number }} iOS build ${{ job.status == "success" && "passed ✅" || "failed ❌" }}
+      #       PR #${{ github.event.pull_request.number }} iOS build ${{ job.status == 'success' && 'passed ✅' || 'failed ❌' }}
       #       Snapshot: ${{ needs.publish-snapshot.outputs.snapshot-tag }}
 
   # Job 5: Deploy preview builds on merge to development - Android
@@ -549,7 +549,7 @@ jobs:
   #         SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
   #         SLACK_TITLE: Preview Deploy - Android
   #         SLACK_MESSAGE: |
-  #           Preview build for Android ${{ job.status == "success" && "deployed successfully ✅" || "failed ❌" }}
+  #           Preview build for Android ${{ job.status == 'success' && 'deployed successfully ✅' || 'failed ❌' }}
   #           EAS Update: ${{ steps.eas_update.outcome == 'success' && 'Applied ✅' || 'Failed - Manual submission may be required ⚠️' }}
   #           Branch: ${{ github.ref_name }}
   #           Commit: ${{ github.sha }}
@@ -628,7 +628,7 @@ jobs:
   #         SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
   #         SLACK_TITLE: Preview Deploy - iOS
   #         SLACK_MESSAGE: |
-  #           Preview build for iOS ${{ job.status == "success" && "deployed successfully ✅" || "failed ❌" }}
+  #           Preview build for iOS ${{ job.status == 'success' && 'deployed successfully ✅' || 'failed ❌' }}
   #           EAS Update: ${{ steps.eas_update.outcome == 'success' && 'Applied ✅' || 'Failed - Manual submission may be required ⚠️' }}
   #           Branch: ${{ github.ref_name }}
   #           Commit: ${{ github.sha }}
@@ -671,7 +671,7 @@ jobs:
   #         SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
   #         SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
   #         SLACK_TITLE: Production Deploy - Android
-  #         SLACK_MESSAGE: 'Production build for Android ${{ job.status == "success" && "completed ✅" || "failed ❌" }}'
+  #         SLACK_MESSAGE: 'Production build for Android ${{ job.status == 'success' && 'completed ✅' || 'failed ❌' }}'
 
   # Job 8: Production iOS build (manual trigger only)
   # deploy-production-ios:
@@ -721,4 +721,4 @@ jobs:
   #         SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
   #         SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
   #         SLACK_TITLE: Production Deploy - iOS
-  #         SLACK_MESSAGE: 'Production build for iOS ${{ job.status == "success" && "completed ✅" || "failed ❌" }}'
+  #         SLACK_MESSAGE: 'Production build for iOS ${{ job.status == 'success' && 'completed ✅' || 'failed ❌' }}'
