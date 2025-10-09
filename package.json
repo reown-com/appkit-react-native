@@ -1,6 +1,6 @@
 {
   "name": "ak-rn-monorepo",
-  "version": "2.0.0-alpha.6",
+  "version": "2.0.1",
   "private": true,
   "license": "SEE LICENSE IN LICENSE.md",
   "workspaces": [
@@ -31,7 +31,7 @@
     "changeset:prepublish": "yarn run clean && yarn install && yarn version:update && yarn run lint && yarn run prettier && yarn run build && yarn run test",
     "changeset:prepublish:ci": "yarn version:update && yarn run lint && yarn run prettier && yarn run build && yarn run test",
     "changeset:publish": "yarn run changeset:prepublish && yarn run changeset publish",
-    "changeset:version": "changeset version; yarn run version:update; yarn install --refresh-lockfile",
+    "changeset:version": "changeset version; yarn run version:update; yarn install",
     "version:update": "./scripts/bump-version.sh"
   },
   "devDependencies": {
