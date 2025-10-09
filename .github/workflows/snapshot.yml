@@ -14,11 +14,6 @@ on:
       snapshot-tag:
         description: 'The snapshot tag that was published'
         value: ${{ jobs.snapshot.outputs.snapshot-tag }}
-    secrets:
-      NPM_TOKEN:
-        required: true
-      GITHUB_TOKEN:
-        required: true
   workflow_dispatch:
     inputs:
       snapshot-tag:
