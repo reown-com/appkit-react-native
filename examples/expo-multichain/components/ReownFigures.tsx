@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
-    gap: 3,
+    gap: 3
   },
   orangeCircle: {
     backgroundColor: reownOrange,
@@ -31,35 +31,35 @@ const styles = StyleSheet.create({
     width: 80,
     borderRadius: 16,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   whiteCircle: {
     backgroundColor: reownWhite,
     height: 65,
     width: 65,
-    borderRadius: 25,
+    borderRadius: 25
   },
   smallCirclesRow: {
     flexDirection: 'row',
     gap: 2,
-    alignItems: 'center',
+    alignItems: 'center'
   },
   greenCircle: {
     backgroundColor: reownGreen,
     height: 40,
     width: 40,
-    borderRadius: 100,
+    borderRadius: 100
   },
   whiteSquare: {
     backgroundColor: reownWhite,
     height: 40,
     width: 40,
-    borderRadius: 12,
+    borderRadius: 12
   },
   grayRectangle: {
     backgroundColor: reownGray,
     height: 40,
     width: 80,
-    borderRadius: 20,
-  },
+    borderRadius: 20
+  }
 });

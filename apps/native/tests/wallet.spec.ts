@@ -178,15 +178,18 @@ sampleWalletTest('it should disconnect using hook', async () => {
   await modalValidator.expectDisconnected();
 });
 
-sampleWalletTest('it should disconnect and close modal when disconnecting from wallet', async () => {
-  await modalValidator.expectDisconnected();
-  await modalPage.qrCodeFlow(modalPage, walletPage);
-  await modalValidator.expectConnected();
-  await modalPage.openAccountModal();
-  await walletPage.disconnectConnection();
-  await modalValidator.expectModalNotVisible();
-  await walletPage.page.waitForTimeout(500);
-});
+sampleWalletTest(
+  'it should disconnect and close modal when disconnecting from wallet',
+  async () => {
+    await modalValidator.expectDisconnected();
+    await modalPage.qrCodeFlow(modalPage, walletPage);
+    await modalValidator.expectConnected();
+    await modalPage.openAccountModal();
+    await walletPage.disconnectConnection();
+    await modalValidator.expectModalNotVisible();
+    await walletPage.page.waitForTimeout(500);
+  }
+);
 
 sampleWalletTest('it should disconnect as expected', async () => {
   await modalPage.qrCodeFlow(modalPage, walletPage);

@@ -88,5 +88,4 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
   }
 });
 
-
 export { expect } from '@playwright/test';

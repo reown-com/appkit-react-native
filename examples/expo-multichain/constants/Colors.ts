@@ -36,5 +36,5 @@ export const Colors = {
     orange: '#FF573B',
     blue: '#0988F0',
     gray: '#6C6C6C'
-  },
+  }
 };

@@ -27,7 +27,7 @@ export function WagmiActionsView() {
   const { isPending, signMessage } = useSignMessage({
     mutation: {
       onSuccess: onSignSuccess,
-      onError: onSignError,
+      onError: onSignError
     }
   });
   const TX = {
@@ -36,7 +36,10 @@ export function WagmiActionsView() {
     data: '0x' as Hex
   };
 
-  const { data: gas, isError: isGasError } = useEstimateGas({...TX, query: { enabled: isConnected }});
+  const { data: gas, isError: isGasError } = useEstimateGas({
+    ...TX,
+    query: { enabled: isConnected }
+  });
 
   const { isPending: isSending, sendTransaction } = useSendTransaction({
     mutation: {

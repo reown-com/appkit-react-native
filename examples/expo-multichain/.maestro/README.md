@@ -14,12 +14,14 @@ This directory contains Maestro test flows for the AppKit React Native example a
 Install Maestro CLI:
 
 **macOS:**
+
 ```bash
 brew tap mobile-dev-inc/tap
 brew install maestro
 ```
 
 **Linux/Windows:**
+
 ```bash
 curl -Ls "https://get.maestro.mobile.dev" | bash
 ```
@@ -27,6 +29,7 @@ curl -Ls "https://get.maestro.mobile.dev" | bash
 ### Run Tests
 
 **iOS Simulator:**
+
 ```bash
 # Start the app first
 cd examples/expo-multichain
@@ -37,6 +40,7 @@ maestro test .maestro/basic-smoke-test.yaml
 ```
 
 **Android Emulator:**
+
 ```bash
 # Start the app first
 cd examples/expo-multichain
@@ -47,6 +51,7 @@ maestro test .maestro/basic-smoke-test.yaml
 ```
 
 **Run all tests:**
+
 ```bash
 maestro test .maestro/
 ```
@@ -68,6 +73,7 @@ When you update the UI or change button labels/IDs, make sure to update the corr
 ### Debugging
 
 Add `takeScreenshot` commands to capture the current state:
+
 ```yaml
 - takeScreenshot: screenshots/debug-state
 ```
@@ -77,6 +83,7 @@ View screenshots in the test results or locally in `.maestro/screenshots/`.
 ## Test Structure
 
 Each test follows this pattern:
+
 1. Launch app
 2. Wait for UI to load
 3. Interact with elements
@@ -86,16 +93,18 @@ Each test follows this pattern:
 ## Troubleshooting
 
 ### Test fails with "Element not found"
+
 - Check if the text/id exists in the app
 - Increase timeout values
 - Add `waitForAnimationToEnd` before assertions
 
 ### Emulator issues
+
 - Make sure emulator/simulator is running before tests
 - Check that the app is properly installed
 - Grant necessary permissions (notifications, etc.)
 
 ### Screenshots not captured
+
 - Check file permissions in the `.maestro/screenshots/` directory
 - Ensure the path exists before running tests
-
