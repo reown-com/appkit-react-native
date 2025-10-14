@@ -87,7 +87,7 @@ jobs:
         run: |
           # Find PR associated with the current commit
           PR_NUMBER=$(gh api repos/${{ github.repository }}/commits/${{ github.sha }}/pulls \
-            --jq '.[0].number')
+            --jq '.[0].number' 2>/dev/null || echo "")
           
           if [ -n "$PR_NUMBER" ] && [ "$PR_NUMBER" != "null" ]; then
             gh pr comment $PR_NUMBER --body "Published pre-release version: ${{ env.VERSION }}"
