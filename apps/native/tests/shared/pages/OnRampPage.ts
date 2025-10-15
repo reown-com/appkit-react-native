@@ -100,8 +100,8 @@ export class OnRampPage {
   async getPaymentCurrency() {
     const currencyInput = this.page.getByTestId('currency-input-symbol');
     await expect(currencyInput).toBeVisible({ timeout: 5000 });
-    
-return currencyInput.innerText();
+
+    return currencyInput.innerText();
   }
 
   async clickSelectCountry() {

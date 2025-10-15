@@ -5,7 +5,21 @@ permissions:
 
 on:
   workflow_call:
+    inputs:
+      snapshot-tag:
+        description: 'Optional custom snapshot tag. If not provided, uses branch name'
+        required: false
+        type: string
+    outputs:
+      snapshot-tag:
+        description: 'The snapshot tag that was published'
+        value: ${{ jobs.snapshot.outputs.snapshot-tag }}
   workflow_dispatch:
+    inputs:
+      snapshot-tag:
+        description: 'Optional custom snapshot tag. If not provided, uses branch name'
+        required: false
+        type: string
 
 jobs:
   snapshot:
@@ -15,10 +29,14 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    outputs:
+      snapshot-tag: ${{ steps.get-snapshot-tag.outputs.tag }}
 
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -32,14 +50,53 @@ jobs:
           npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
           node .github/scripts/publish-initial-versions.js
 
+      - name: Determine Snapshot Tag
+        id: determine-tag
+        run: |
+          if [ -n "${{ inputs.snapshot-tag }}" ]; then
+            echo "tag=${{ inputs.snapshot-tag }}" >> $GITHUB_OUTPUT
+          else
+            snapshot=$(git branch --show-current | tr -cs '[:alnum:]-' '-' | tr '[:upper:]' '[:lower:]' | sed 's/-$//' | sed 's/^-//')
+            # Validate it's not empty
+            if [ -z "$snapshot" ]; then
+              echo "::error::Invalid branch name for snapshot tag"
+              exit 1
+            fi
+            echo "tag=$snapshot" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check for Changesets
+        id: check-changesets
+        run: |
+          # Check if any changeset files exist (excluding README.md)
+          changeset_count=$(find .changeset -name "*.md" ! -name "README.md" | wc -l)
+          if [ "$changeset_count" -eq 0 ]; then
+            echo "has_changesets=false" >> $GITHUB_OUTPUT
+            echo "::warning::No changesets found. Skipping snapshot release."
+            exit 1
+          else
+            echo "has_changesets=true" >> $GITHUB_OUTPUT
+            echo "Found $changeset_count changeset(s). Proceeding with snapshot release."
+          fi
+
       - name: Publish Snapshots
+        if: steps.check-changesets.outputs.has_changesets == 'true'
         continue-on-error: false
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          snapshot=$(git branch --show-current | tr -cs '[:alnum:]-' '-' | tr '[:upper:]' '[:lower:]' | sed 's/-$//')
+          snapshot="${{ steps.determine-tag.outputs.tag }}"
           npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
           yarn run changeset version --no-git-tag --snapshot $snapshot
           yarn run changeset:prepublish:ci
           yarn run changeset publish --no-git-tag --snapshot $snapshot --tag $snapshot
+
+      - name: Get Snapshot Tag
+        id: get-snapshot-tag
+        run: |
+          if [ "${{ steps.check-changesets.outputs.has_changesets }}" == "true" ]; then
+            echo "tag=${{ steps.determine-tag.outputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=" >> $GITHUB_OUTPUT
+          fi

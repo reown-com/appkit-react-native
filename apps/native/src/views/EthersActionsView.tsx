@@ -38,7 +38,8 @@ export function EthersActionsView() {
         {
           method: 'personal_sign',
           params: [hexMessage, address]
-        },`eip155:${chainId}`
+        },
+        `eip155:${chainId}`
       );
 
       onSignSuccess(signature);

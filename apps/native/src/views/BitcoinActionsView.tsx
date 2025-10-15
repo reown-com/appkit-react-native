@@ -92,7 +92,8 @@ export function BitcoinActionsView() {
             signInputs: params.signInputs,
             broadcast: params.broadcast
           }
-        }, `bip122:${chainId}`
+        },
+        `bip122:${chainId}`
       )) as SignPSBTResponse;
 
       onSignSuccess(`${response.psbt}-${response.txid}`);
