@@ -28,10 +28,15 @@ env:
   WORKING_DIRECTORY: examples/expo-multichain
 
 jobs:
+  # Gate job that allows skipping CI by including [skip ci] in commit message.
+  # For workflow_dispatch events, this always runs since head_commit is not available.
+  # For push/pull_request events, this checks the commit message.
   check-skip:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      !contains(github.event.head_commit.message, '[skip ci]')
     steps:
       - name: Skip CI check
         run: echo "Proceeding with workflow"
