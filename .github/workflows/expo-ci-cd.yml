@@ -1,5 +1,9 @@
 name: React Native CI/CD
 
+permissions:
+  id-token: write
+  contents: read
+
 on:
   # push:
   #   branches: [main, development]
@@ -11,13 +15,6 @@ on:
   #   branches: [main, development]
   workflow_dispatch:
     inputs:
-      buildType:
-        type: choice
-        description: "Build type to run"
-        options:
-          - preview
-          - production
-          - development
       platform:
         type: choice
         description: "Platform to build"
@@ -73,19 +70,55 @@ jobs:
       #     SLACK_TITLE: Lint Results
       #     SLACK_MESSAGE: Linting ${{ job.status == 'success' && 'passed ✅' || 'failed ❌' }}
 
-  # Job 2: Publish snapshot for PRs (reuses the snapshot workflow)
-  publish-snapshot:
+  # Job 2: Build local packages
+  build-packages:
     needs: lint
-    if: github.event_name == 'pull_request'
-    uses: ./.github/workflows/snapshot.yml
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"  # Changed to yarn
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable  # Use yarn for monorepo
+
+      - name: 🔨 Build all packages
+        run: yarn build  # Use yarn build command
+
+      - name: 📦 Pack packages
+        run: |
+          npm pack ./packages/appkit --pack-destination .
+          npm pack ./packages/wagmi --pack-destination .
+          npm pack ./packages/solana --pack-destination .
+          npm pack ./packages/bitcoin --pack-destination .
+          # Rename to simpler names
+          mv reown-appkit-react-native-*.tgz appkit.tgz
+          mv reown-appkit-wagmi-react-native-*.tgz wagmi.tgz
+          mv reown-appkit-solana-react-native-*.tgz solana.tgz
+          mv reown-appkit-bitcoin-react-native-*.tgz bitcoin.tgz
+
+      - name: 📤 Upload packed packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packed-packages
+          path: |
+            appkit.tgz
+            wagmi.tgz
+            solana.tgz
+            bitcoin.tgz
+          retention-days: 1
 
   # Job 3: Build and test PR - Android
   pr-build-test-android:
-    needs: publish-snapshot
-    if: github.event_name == 'pull_request'
+    needs: [lint, publish-snapshot]
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_dispatch' && (inputs.platform == 'android' || inputs.platform == 'all'))
     runs-on: ubuntu-latest
     steps:
       - name: 🏗 Checkout repository
@@ -109,13 +142,25 @@ jobs:
           node-version: "22"
           cache: "npm"
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.aws-account-id }}:role/prod-github-actions-react-native-builds-readonly
+          aws-region: eu-central-1
+      
+      - name: Download Android Wallet prod build
+        run: |
+          aws s3 cp \
+            s3://walletconnect.react-native-builds.prod/android/production/wallet-production.apk \
+            ${{ env.WORKING_DIRECTORY }}/wallet.apk
+
       - name: 📦 Install dependencies
         run: |
           npm ci
           npm install -g eas-cli@latest
 
       - name: 📱 Setup EAS build cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.eas-build-local
           key: ${{ runner.os }}-eas-build-android-${{ hashFiles('**/package.json') }}
@@ -125,15 +170,21 @@ jobs:
       - name: 🔄 Verify EAS CLI installation
         run: eas --version
 
-      - name: 📦 Install Snapshot Versions in Example App
+      - name: 📥 Download packed packages
+        uses: actions/download-artifact@v4
+        with:
+          name: packed-packages
+          path: ./packages
+
+      - name: 📦 Install Local Packages in Example App
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          # Install the snapshot versions of all @reown packages
+          # npm install works with .tgz files from either yarn or npm pack
           npm install \
-            @reown/appkit-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }} \
-            @reown/appkit-wagmi-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }} \
-            @reown/appkit-solana-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }} \
-            @reown/appkit-bitcoin-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }}
+            ../../appkit.tgz \
+            ../../wagmi.tgz \
+            ../../solana.tgz \
+            ../../bitcoin.tgz
 
       - name: 📱 Build Development APK with Snapshot
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -185,12 +236,12 @@ jobs:
             # Install app
             echo "Installing APK..."
             adb install -r ${{ env.WORKING_DIRECTORY }}/app-dev.apk
-            adb install -r ${{ env.WORKING_DIRECTORY }}/.maestro/sample-wallet/wallet.apk
+            adb install -r ${{ env.WORKING_DIRECTORY }}/wallet.apk
             
             # Verify installation
             echo "Verifying app installation..."
             adb shell pm list packages | grep "com.reown.appkit.expomultichain" || (echo "ERROR: App not installed correctly" && exit 1)
-            adb shell pm list packages | grep "com.walletconnect.web3modal.rnsample.internal" || (echo "ERROR: Wallet not installed correctly" && exit 1)
+            adb shell pm list packages | grep "com.walletconnect.web3modal.rnsample" || (echo "ERROR: Wallet not installed correctly" && exit 1)
             
             # Check APK info
             echo "Checking APK details:"
@@ -199,7 +250,6 @@ jobs:
             # Clear app data for clean state
             echo "Clearing app data..."
             adb shell pm clear com.reown.appkit.expomultichain || true
-            adb shell pm clear com.walletconnect.web3modal.rnsample.internal || true
                       
             # Wait for system to settle
             sleep 5
@@ -214,7 +264,6 @@ jobs:
             
             # Memory info
             adb shell dumpsys meminfo com.reown.appkit.expomultichain > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/meminfo.txt || true
-            adb shell dumpsys meminfo com.walletconnect.web3modal.rnsample.internal > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/meminfo.txt || true
             
             # App process info
             adb shell ps | grep reown > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/processes.txt || true
@@ -295,7 +344,9 @@ jobs:
   # Job 4: Build and test PR - iOS
   pr-build-test-ios:
     needs: publish-snapshot
-    if: github.event_name == 'pull_request'
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_dispatch' && (inputs.platform == 'ios' || inputs.platform == 'all'))
     runs-on: macos-latest
     steps:
       - name: 🏗 Checkout repository
@@ -307,13 +358,28 @@ jobs:
           node-version: "22"
           cache: "npm"
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.aws-account-id }}:role/prod-github-actions-react-native-builds-readonly
+          aws-region: eu-central-1
+      
+      - name: 📥 Download and extract iOS Wallet prod build
+        run: |
+          aws s3 cp \
+            s3://walletconnect.react-native-builds.prod/ios/production/wallet-production.ipa \
+            ${{ env.WORKING_DIRECTORY }}/wallet.ipa
+          cd ${{ env.WORKING_DIRECTORY }}
+          unzip -q wallet.ipa
+          mv Payload/*.app ./wallet.app
+
       - name: 📦 Install dependencies
         run: |
           npm ci
           npm install -g eas-cli@latest
 
       - name: 📱 Setup EAS build cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.eas-build-local
           key: ${{ runner.os }}-eas-build-ios-${{ hashFiles('**/package.json') }}
@@ -323,15 +389,21 @@ jobs:
       - name: 🔄 Verify EAS CLI installation
         run: eas --version
 
-      - name: 📦 Install Snapshot Versions in Example App
+      - name: 📥 Download packed packages
+        uses: actions/download-artifact@v4
+        with:
+          name: packed-packages
+          path: ./packages
+
+      - name: 📦 Install Local Packages in Example App
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          # Install the snapshot versions of all @reown packages
+          # npm install works with .tgz files from either yarn or npm pack
           npm install \
-            @reown/appkit-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }} \
-            @reown/appkit-wagmi-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }} \
-            @reown/appkit-solana-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }} \
-            @reown/appkit-bitcoin-react-native@${{ needs.publish-snapshot.outputs.snapshot-tag }}
+            ../../packages/appkit.tgz \
+            ../../packages/wagmi.tgz \
+            ../../packages/solana.tgz \
+            ../../packages/bitcoin.tgz
 
       - name: 📱 Build Development App with Snapshot
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -384,7 +456,7 @@ jobs:
           # Install app
           echo "Installing app on simulator..."
           xcrun simctl install "$UDID" ${{ env.WORKING_DIRECTORY }}/app-ios-dev.app
-          xcrun simctl install "$UDID" ${{ env.WORKING_DIRECTORY }}/.maestro/sample-wallet/wallet.app
+          xcrun simctl install "$UDID" ${{ env.WORKING_DIRECTORY }}/wallet.app
           
           # Verify installation
           echo "Verifying app installation..."
@@ -475,250 +547,3 @@ jobs:
       #     SLACK_MESSAGE: |
       #       PR #${{ github.event.pull_request.number }} iOS build ${{ job.status == 'success' && 'passed ✅' || 'failed ❌' }}
       #       Snapshot: ${{ needs.publish-snapshot.outputs.snapshot-tag }}
-
-  # Job 5: Deploy preview builds on merge to development - Android
-  # deploy-preview-android:
-  #   needs: lint
-  #   if: github.event_name == 'push' && github.ref == 'refs/heads/development'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: 🏗 Checkout repository
-  #       uses: actions/checkout@v4
-  #
-  #     - name: 🏗 Setup Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "22"
-  #         cache: "npm"
-  #
-  #     - name: 📦 Install dependencies
-  #       run: |
-  #         npm ci
-  #         npm install -g eas-cli@latest
-  #
-  #     - name: 📱 Setup EAS build cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: ~/.eas-build-local
-  #         key: ${{ runner.os }}-eas-build-preview-android-${{ hashFiles('**/package.json') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-eas-build-preview-android-
-  #
-  #     - name: 🔄 Verify EAS CLI installation
-  #       run: eas --version
-  #
-  #     - name: 📱 Build Preview Android
-  #       id: build_preview
-  #       working-directory: ${{ env.WORKING_DIRECTORY }}
-  #       run: |
-  #         export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-  #         eas build --platform android --profile preview --non-interactive
-  #       env:
-  #         NODE_ENV: production
-  #
-  #     - name: 🚀 Deploy EAS Update
-  #       id: eas_update
-  #       working-directory: ${{ env.WORKING_DIRECTORY }}
-  #       continue-on-error: true
-  #       run: |
-  #         eas update --branch preview --platform android --non-interactive --message "Deploy from ${{ github.sha }}"
-  #
-  #     - name: ⚠️ Handle Update Failure (Native Changes Detected)
-  #       if: steps.eas_update.outcome == 'failure'
-  #       run: |
-  #         echo "::warning::EAS Update failed - likely due to native code changes"
-  #         echo "A new build is required. Consider submitting to stores manually."
-  #         echo "Build ID from previous step can be used for submission."
-  #
-  #     # TODO: Uncomment when ready to auto-submit to Firebase on update failure
-  #     # - name: 🚀 Submit to Firebase App Distribution
-  #     #   if: steps.eas_update.outcome == 'failure'
-  #     #   working-directory: ${{ env.WORKING_DIRECTORY }}
-  #     #   run: |
-  #     #     npm install -g firebase-tools
-  #     #     firebase appdistribution:distribute \
-  #     #       --app ${{ secrets.FIREBASE_ANDROID_APP_ID }} \
-  #     #       --groups testers \
-  #     #       --release-notes "Automated preview build from development branch"
-  #
-  #     - name: 📢 Notify deployment results
-  #       if: always()
-  #       uses: rtCamp/action-slack-notify@v2
-  #       env:
-  #         SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
-  #         SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
-  #         SLACK_TITLE: Preview Deploy - Android
-  #         SLACK_MESSAGE: |
-  #           Preview build for Android ${{ job.status == 'success' && 'deployed successfully ✅' || 'failed ❌' }}
-  #           EAS Update: ${{ steps.eas_update.outcome == 'success' && 'Applied ✅' || 'Failed - Manual submission may be required ⚠️' }}
-  #           Branch: ${{ github.ref_name }}
-  #           Commit: ${{ github.sha }}
-
-  # Job 6: Deploy preview builds on merge to development - iOS
-  # deploy-preview-ios:
-  #   needs: lint
-  #   if: github.event_name == 'push' && github.ref == 'refs/heads/development'
-  #   runs-on: macos-latest
-  #   steps:
-  #     - name: 🏗 Checkout repository
-  #       uses: actions/checkout@v4
-  #
-  #     - name: 🏗 Setup Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "22"
-  #         cache: "npm"
-  #
-  #     - name: 📦 Install dependencies
-  #       run: |
-  #         npm ci
-  #         npm install -g eas-cli@latest
-  #
-  #     - name: 📱 Setup EAS build cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: ~/.eas-build-local
-  #         key: ${{ runner.os }}-eas-build-preview-ios-${{ hashFiles('**/package.json') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-eas-build-preview-ios-
-  #
-  #     - name: 🔄 Verify EAS CLI installation
-  #       run: eas --version
-  #
-  #     - name: 📱 Build Preview iOS
-  #       id: build_preview
-  #       working-directory: ${{ env.WORKING_DIRECTORY }}
-  #       run: |
-  #         export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-  #         eas build --platform ios --profile preview --non-interactive
-  #       env:
-  #         NODE_ENV: production
-  #
-  #     - name: 🚀 Deploy EAS Update
-  #       id: eas_update
-  #       working-directory: ${{ env.WORKING_DIRECTORY }}
-  #       continue-on-error: true
-  #       run: |
-  #         eas update --branch preview --platform ios --non-interactive --message "Deploy from ${{ github.sha }}"
-  #
-  #     - name: ⚠️ Handle Update Failure (Native Changes Detected)
-  #       if: steps.eas_update.outcome == 'failure'
-  #       run: |
-  #         echo "::warning::EAS Update failed - likely due to native code changes"
-  #         echo "A new build is required. Consider submitting to TestFlight manually."
-  #         echo "Build ID from previous step can be used for submission."
-  #
-  #     # TODO: Uncomment when ready to auto-submit to TestFlight on update failure
-  #     # - name: 🚀 Submit to TestFlight
-  #     #   if: steps.eas_update.outcome == 'failure'
-  #     #   working-directory: ${{ env.WORKING_DIRECTORY }}
-  #     #   run: |
-  #     #     eas submit -p ios --latest --non-interactive
-  #     #   env:
-  #     #     EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-  #     #     EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
-  #     #     EXPO_APPLE_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
-  #     #     EXPO_TEAM_ID: ${{ secrets.EXPO_TEAM_ID }}
-  #
-  #     - name: 📢 Notify deployment results
-  #       if: always()
-  #       uses: rtCamp/action-slack-notify@v2
-  #       env:
-  #         SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
-  #         SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
-  #         SLACK_TITLE: Preview Deploy - iOS
-  #         SLACK_MESSAGE: |
-  #           Preview build for iOS ${{ job.status == 'success' && 'deployed successfully ✅' || 'failed ❌' }}
-  #           EAS Update: ${{ steps.eas_update.outcome == 'success' && 'Applied ✅' || 'Failed - Manual submission may be required ⚠️' }}
-  #           Branch: ${{ github.ref_name }}
-  #           Commit: ${{ github.sha }}
-
-  # Job 7: Production Android build (manual trigger only)
-  # deploy-production-android:
-  #   needs: lint
-  #   if: |
-  #     github.event_name == 'workflow_dispatch' && 
-  #     github.event.inputs.buildType == 'production' &&
-  #     (github.event.inputs.platform == 'all' || github.event.inputs.platform == 'android')
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: 🏗 Checkout repository
-  #       uses: actions/checkout@v4
-  #
-  #     - name: 🏗 Setup Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "22"
-  #         cache: "npm"
-  #
-  #     - name: 📦 Install dependencies
-  #       run: |
-  #         npm ci
-  #         npm install -g eas-cli@latest
-  #
-  #     - name: 📱 Build Production Android
-  #       working-directory: ${{ env.WORKING_DIRECTORY }}
-  #       run: |
-  #         export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-  #         eas build --platform android --profile production --non-interactive
-  #       env:
-  #         NODE_ENV: production
-  #
-  #     - name: 📢 Notify production deployment
-  #       if: always()
-  #       uses: rtCamp/action-slack-notify@v2
-  #       env:
-  #         SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
-  #         SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
-  #         SLACK_TITLE: Production Deploy - Android
-  #         SLACK_MESSAGE: 'Production build for Android ${{ job.status == 'success' && 'completed ✅' || 'failed ❌' }}'
-
-  # Job 8: Production iOS build (manual trigger only)
-  # deploy-production-ios:
-  #   needs: lint
-  #   if: |
-  #     github.event_name == 'workflow_dispatch' && 
-  #     github.event.inputs.buildType == 'production' &&
-  #     (github.event.inputs.platform == 'all' || github.event.inputs.platform == 'ios')
-  #   runs-on: macos-latest
-  #   steps:
-  #     - name: 🏗 Checkout repository
-  #       uses: actions/checkout@v4
-  #
-  #     - name: 🏗 Setup Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "22"
-  #         cache: "npm"
-  #
-  #     - name: 📦 Install dependencies
-  #       run: |
-  #         npm ci
-  #         npm install -g eas-cli@latest
-  #
-  #     - name: 📱 Build Production iOS
-  #       working-directory: ${{ env.WORKING_DIRECTORY }}
-  #       run: |
-  #         export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-  #         eas build --platform ios --profile production --non-interactive
-  #       env:
-  #         NODE_ENV: production
-  #
-  #     - name: 🚀 Submit to App Store
-  #       working-directory: ${{ env.WORKING_DIRECTORY }}
-  #       run: |
-  #         eas submit -p ios --latest --non-interactive
-  #       env:
-  #         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-  #         EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
-  #         EXPO_APPLE_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
-  #         EXPO_TEAM_ID: ${{ secrets.EXPO_TEAM_ID }}
-  #
-  #     - name: 📢 Notify production deployment
-  #       if: always()
-  #       uses: rtCamp/action-slack-notify@v2
-  #       env:
-  #         SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
-  #         SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
-  #         SLACK_TITLE: Production Deploy - iOS
-  #         SLACK_MESSAGE: 'Production build for iOS ${{ job.status == 'success' && 'completed ✅' || 'failed ❌' }}'
