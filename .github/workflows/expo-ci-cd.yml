@@ -25,26 +25,22 @@ on:
           - all
 
 env:
-  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-  EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
-  EXPO_APPLE_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
-  EXPO_TEAM_ID: ${{ secrets.EXPO_TEAM_ID }}
-  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-  NODE_OPTIONS: --openssl-legacy-provider
   WORKING_DIRECTORY: examples/expo-multichain
 
 jobs:
   check-skip:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Skip CI check
         run: echo "Proceeding with workflow"
 
-  # Job 1: Linting for all PRs and pushes
-  lint:
+  # Job 1: Build local packages
+  build-packages:
     needs: check-skip
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
@@ -53,42 +49,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "npm"
-
-      - name: 📦 Install dependencies
-        run: npm ci
-
-      - name: 🧹 Run ESLint
-        run: npm run lint
-
-      # - name: 📢 Notify lint results
-      #   if: always()
-      #   uses: rtCamp/action-slack-notify@v2
-      #   env:
-      #     SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
-      #     SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
-      #     SLACK_TITLE: Lint Results
-      #     SLACK_MESSAGE: Linting ${{ job.status == 'success' && 'passed ✅' || 'failed ❌' }}
-
-  # Job 2: Build local packages
-  build-packages:
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🏗 Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 🏗 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "yarn"  # Changed to yarn
 
       - name: 📦 Install dependencies
         run: yarn install --immutable  # Use yarn for monorepo
 
       - name: 🔨 Build all packages
-        run: yarn build  # Use yarn build command
+        run: yarn build
 
       - name: 📦 Pack packages
         run: |
@@ -113,9 +79,10 @@ jobs:
             bitcoin.tgz
           retention-days: 1
 
-  # Job 3: Build and test PR - Android
+  # Job 2: Build and test PR - Android
   pr-build-test-android:
-    needs: [lint, publish-snapshot]
+    needs: build-packages
+    timeout-minutes: 60
     if: |
       github.event_name == 'pull_request' ||
       (github.event_name == 'workflow_dispatch' && (inputs.platform == 'android' || inputs.platform == 'all'))
@@ -126,6 +93,9 @@ jobs:
 
       - name: ⚡ Enable KVM
         run: |
+          # Allow all users to access KVM for hardware-accelerated virtualization
+          # MODE="0666" (rw-rw-rw-) grants read+write access to owner, group, and all users
+          # This is required for Android Studio emulator and other virtualization tools to work without sudo
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
@@ -140,12 +110,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "npm"
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.aws-account-id }}:role/prod-github-actions-react-native-builds-readonly
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/prod-github-actions-react-native-builds-readonly
           aws-region: eu-central-1
       
       - name: Download Android Wallet prod build
@@ -155,20 +124,15 @@ jobs:
             ${{ env.WORKING_DIRECTORY }}/wallet.apk
 
       - name: 📦 Install dependencies
-        run: |
-          npm ci
-          npm install -g eas-cli@latest
+        run: npm ci
 
-      - name: 📱 Setup EAS build cache
-        uses: actions/cache@v4
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
         with:
-          path: ~/.eas-build-local
-          key: ${{ runner.os }}-eas-build-android-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-eas-build-android-
-
-      - name: 🔄 Verify EAS CLI installation
-        run: eas --version
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+          eas-cache: true
+          packager: npm
 
       - name: 📥 Download packed packages
         uses: actions/download-artifact@v4
@@ -179,7 +143,6 @@ jobs:
       - name: 📦 Install Local Packages in Example App
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          # npm install works with .tgz files from either yarn or npm pack
           npm install \
             ../../appkit.tgz \
             ../../wagmi.tgz \
@@ -189,7 +152,7 @@ jobs:
       - name: 📱 Build Development APK with Snapshot
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
+          export NODE_OPTIONS="--max_old_space_size=2048"
           eas build --platform android --profile production-apk --local --non-interactive --output=./app-dev.apk
         env:
           NODE_ENV: development
@@ -200,7 +163,7 @@ jobs:
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: 🤖 Run Android Emulator and Maestro Tests
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed
         with:
           api-level: 34
           target: google_apis
@@ -212,123 +175,38 @@ jobs:
           avd-name: maestro_test_device
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot-save -no-snapshot-load
-          script: |
-            set -x
-            
-            # Setup debug directory
-            mkdir -p ${{ env.WORKING_DIRECTORY }}/debug-artifacts
-            
-            # Wait for emulator to be fully ready
-            echo "Waiting for emulator to be ready..."
-            adb wait-for-device
-            
-            # Wait for boot completion
-            echo "Waiting for boot completion..."
-            adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
-            echo "Boot completed!"
-            adb devices
-            
-            # Clear and start logcat capture
-            adb logcat -c
-            adb logcat > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/full-logcat.txt &
-            LOGCAT_PID=$!
-            
-            # Install app
-            echo "Installing APK..."
-            adb install -r ${{ env.WORKING_DIRECTORY }}/app-dev.apk
-            adb install -r ${{ env.WORKING_DIRECTORY }}/wallet.apk
-            
-            # Verify installation
-            echo "Verifying app installation..."
-            adb shell pm list packages | grep "com.reown.appkit.expomultichain" || (echo "ERROR: App not installed correctly" && exit 1)
-            adb shell pm list packages | grep "com.walletconnect.web3modal.rnsample" || (echo "ERROR: Wallet not installed correctly" && exit 1)
-            
-            # Check APK info
-            echo "Checking APK details:"
-            adb shell dumpsys package com.reown.appkit.expomultichain | grep -A 5 "versionName" || true
-            
-            # Clear app data for clean state
-            echo "Clearing app data..."
-            adb shell pm clear com.reown.appkit.expomultichain || true
-                      
-            # Wait for system to settle
-            sleep 5
-            
-            # Capture debug info before tests
-            echo "=== CAPTURING DEBUG INFO ==="
-            
-            # Network state (critical for WalletConnect)
-            echo "Network state:" > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/network_state.txt
-            adb shell dumpsys connectivity >> ${{ env.WORKING_DIRECTORY }}/debug-artifacts/network_state.txt
-            adb shell settings get global airplane_mode_on >> ${{ env.WORKING_DIRECTORY }}/debug-artifacts/network_state.txt
-            
-            # Memory info
-            adb shell dumpsys meminfo com.reown.appkit.expomultichain > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/meminfo.txt || true
-            
-            # App process info
-            adb shell ps | grep reown > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/processes.txt || true
-            
-            # Try manual app launch to verify
-            echo "Attempting manual app launch..."
-            adb shell monkey -p com.reown.appkit.expomultichain -c android.intent.category.LAUNCHER 1
-            sleep 5
-            
-            # Check if app is running
-            adb shell ps | grep -q "com.reown.appkit.expomultichain" || echo "WARNING: App may not be running"
-            
-            # Take screenshot before tests
-            adb shell screencap /sdcard/app_state_before_maestro.png
-            adb pull /sdcard/app_state_before_maestro.png ${{ env.WORKING_DIRECTORY }}/debug-artifacts/ || true
-            
-            # Check current activity
-            echo "Current activity before Maestro:"
-            adb shell dumpsys activity activities | grep -E "mResumedActivity|mFocusedActivity" || true
-            
-            echo "=== RUNNING MAESTRO TESTS ==="
-            
-            # Run Maestro tests
-            ~/.maestro/bin/maestro test ${{ env.WORKING_DIRECTORY }}/.maestro/basic-smoke-test.yaml || (echo "Basic test failed" && exit 1)
-            ~/.maestro/bin/maestro test ${{ env.WORKING_DIRECTORY }}/.maestro/wallet-qr-load.yaml || (echo "Wallet QR load test failed" && exit 1)
-            ~/.maestro/bin/maestro test ${{ env.WORKING_DIRECTORY }}/.maestro/connect-wallet.yaml || (echo "Connect wallet test failed" && exit 1)
-            
-            echo "All tests passed!"
-            
-            # Check for crashes
-            echo "Checking for crashes..."
-            adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime|Process:.*com.reown" > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/crashes.txt || echo "No crashes found" > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/crashes.txt
-            
-            # Kill logcat capture
-            kill $LOGCAT_PID || true
+          script: .github/scripts/run-android-tests.sh ${{ env.WORKING_DIRECTORY }}
 
       - name: 📦 Upload debug artifacts
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: debug-artifacts-android-${{ github.event.pull_request.number }}
+          name: debug-artifacts-android-${{ github.run_id }}
           path: ${{ env.WORKING_DIRECTORY }}/debug-artifacts/
-          retention-days: 7
+          retention-days: 1
           if-no-files-found: warn
 
       - name: 📦 Upload Maestro artifacts
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: maestro-artifacts-android-${{ github.event.pull_request.number }}
+          name: maestro-artifacts-android-${{ github.run_id }}
           path: |
             ${{ env.WORKING_DIRECTORY }}/.maestro/
             ~/.maestro/tests/**/*
             **/*.mp4
             **/*.mov
             **/*.png
-          retention-days: 7
+          retention-days: 1
           if-no-files-found: warn
 
       - name: 📦 Upload build artifacts
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: pr-build-android-${{ github.event.pull_request.number }}
+          name: build-android-${{ github.run_id }}
           path: ${{ env.WORKING_DIRECTORY }}/app-dev.apk
-          retention-days: 7
+          retention-days: 1
 
       # - name: 📢 Notify build results
       #   if: always()
@@ -341,9 +219,10 @@ jobs:
       #       PR #${{ github.event.pull_request.number }} Android build ${{ job.status == 'success' && 'passed ✅' || 'failed ❌' }}
       #       Snapshot: ${{ needs.publish-snapshot.outputs.snapshot-tag }}
 
-  # Job 4: Build and test PR - iOS
+  # Job 3: Build and test PR - iOS
   pr-build-test-ios:
-    needs: publish-snapshot
+    needs: build-packages
+    timeout-minutes: 60
     if: |
       github.event_name == 'pull_request' ||
       (github.event_name == 'workflow_dispatch' && (inputs.platform == 'ios' || inputs.platform == 'all'))
@@ -356,12 +235,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "npm"
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.aws-account-id }}:role/prod-github-actions-react-native-builds-readonly
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/prod-github-actions-react-native-builds-readonly
           aws-region: eu-central-1
       
       - name: 📥 Download and extract iOS Wallet prod build
@@ -374,20 +252,15 @@ jobs:
           mv Payload/*.app ./wallet.app
 
       - name: 📦 Install dependencies
-        run: |
-          npm ci
-          npm install -g eas-cli@latest
+        run: npm ci
 
-      - name: 📱 Setup EAS build cache
-        uses: actions/cache@v4
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
         with:
-          path: ~/.eas-build-local
-          key: ${{ runner.os }}-eas-build-ios-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-eas-build-ios-
-
-      - name: 🔄 Verify EAS CLI installation
-        run: eas --version
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+          eas-cache: true
+          packager: npm
 
       - name: 📥 Download packed packages
         uses: actions/download-artifact@v4
@@ -398,7 +271,6 @@ jobs:
       - name: 📦 Install Local Packages in Example App
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          # npm install works with .tgz files from either yarn or npm pack
           npm install \
             ../../packages/appkit.tgz \
             ../../packages/wagmi.tgz \
@@ -408,10 +280,14 @@ jobs:
       - name: 📱 Build Development App with Snapshot
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
+          export NODE_OPTIONS="--max_old_space_size=2048"
           eas build --platform ios --profile production-simulator --local --non-interactive --output=./app-ios-dev.app
         env:
           NODE_ENV: development
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
+          EXPO_APPLE_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
+          EXPO_TEAM_ID: ${{ secrets.EXPO_TEAM_ID }}
 
       - name: 🧪 Setup Maestro
         run: |
@@ -419,123 +295,38 @@ jobs:
           brew install maestro
 
       - name: 📱 Setup iOS Simulator and Run Maestro Tests
-        run: |
-          set -x
-          
-          # Setup debug directory
-          mkdir -p ${{ env.WORKING_DIRECTORY }}/debug-artifacts
-          
-          # Setup simulator
-          SIM_DEVICE_NAME="iPhone-15-Maestro-Test"
-          SIM_DEVICE_TYPE="iPhone 15"
-          
-          # Find iOS runtime (prefer iOS 18, fallback to latest available)
-          SIM_RUNTIME_ID=$(xcrun simctl list runtimes | grep -E "iOS 18" | awk '{print $NF}' | head -n 1)
-          if [ -z "$SIM_RUNTIME_ID" ]; then
-            echo "No suitable iOS runtime found. Using default."
-            SIM_RUNTIME_ID=$(xcrun simctl list runtimes | grep "iOS" | awk '{print $NF}' | tail -n 1)
-          fi
-          
-          echo "Using iOS runtime: $SIM_RUNTIME_ID"
-          
-          # Create or get existing simulator
-          UDID=$(xcrun simctl create "$SIM_DEVICE_NAME" "$SIM_DEVICE_TYPE" "$SIM_RUNTIME_ID" 2>/dev/null || xcrun simctl list devices | grep "$SIM_DEVICE_NAME" | grep -oE '\([0-9A-F-]+\)' | tr -d '()')
-          
-          echo "Simulator UDID: $UDID"
-          
-          # Boot the simulator
-          xcrun simctl boot "$UDID" || true
-          xcrun simctl bootstatus "$UDID" -b
-          
-          # Export UDID for Maestro
-          export MAESTRO_IOS_DEVICE="$UDID"
-          
-          # Wait for simulator to be fully ready
-          sleep 5
-          
-          # Install app
-          echo "Installing app on simulator..."
-          xcrun simctl install "$UDID" ${{ env.WORKING_DIRECTORY }}/app-ios-dev.app
-          xcrun simctl install "$UDID" ${{ env.WORKING_DIRECTORY }}/wallet.app
-          
-          # Verify installation
-          echo "Verifying app installation..."
-          xcrun simctl listapps "$UDID" | grep -i "expomultichain" || (echo "ERROR: App not installed correctly" && exit 1)
-          
-          # Get app bundle info
-          echo "App bundle info:" > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/app_info.txt
-          xcrun simctl listapps "$UDID" | grep -A 10 "expomultichain" >> ${{ env.WORKING_DIRECTORY }}/debug-artifacts/app_info.txt || true
-          
-          # Grant permissions
-          echo "Granting permissions..."
-          xcrun simctl privacy "$UDID" grant all com.reown.appkit.expomultichain || true
-          
-          # Clear app data for clean state
-          echo "Clearing app data..."
-          xcrun simctl uninstall "$UDID" com.reown.appkit.expomultichain 2>/dev/null || true
-          xcrun simctl install "$UDID" ${{ env.WORKING_DIRECTORY }}/app-ios-dev.app
-          
-          # Wait for system to settle
-          sleep 5
-          
-          # Capture debug info before tests
-          echo "=== CAPTURING DEBUG INFO ==="
-          
-          # Device status
-          xcrun simctl status_bar "$UDID" list > ${{ env.WORKING_DIRECTORY }}/debug-artifacts/device_status.txt || true
-          
-          # Take screenshot before tests
-          xcrun simctl io "$UDID" screenshot ${{ env.WORKING_DIRECTORY }}/debug-artifacts/app_state_before_maestro.png || true
-          
-          # Try to launch the app manually
-          echo "Attempting manual app launch..."
-          xcrun simctl launch "$UDID" com.reown.appkit.expomultichain || echo "Manual launch returned error, continuing..."
-          sleep 5
-          
-          # Take another screenshot after launch
-          xcrun simctl io "$UDID" screenshot ${{ env.WORKING_DIRECTORY }}/debug-artifacts/app_state_after_launch.png || true
-          
-          echo "=== RUNNING MAESTRO TESTS ==="
-          
-          # Run Maestro tests
-          maestro test ${{ env.WORKING_DIRECTORY }}/.maestro/basic-smoke-test.yaml || (echo "Basic test failed" && exit 1)
-          maestro test ${{ env.WORKING_DIRECTORY }}/.maestro/wallet-qr-load.yaml || (echo "Wallet QR load test failed" && exit 1)
-          maestro test ${{ env.WORKING_DIRECTORY }}/.maestro/connect-wallet.yaml || (echo "Connect wallet test failed" && exit 1)
-          
-          echo "All tests passed!"
-          
-          # Capture final state
-          xcrun simctl io "$UDID" screenshot ${{ env.WORKING_DIRECTORY }}/debug-artifacts/app_state_after_tests.png || true
+        run: .github/scripts/run-ios-tests.sh ${{ env.WORKING_DIRECTORY }}
 
       - name: 📦 Upload debug artifacts
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: debug-artifacts-ios-${{ github.event.pull_request.number }}
+          name: debug-artifacts-ios-${{ github.run_id }}
           path: ${{ env.WORKING_DIRECTORY }}/debug-artifacts/
-          retention-days: 7
+          retention-days: 1
           if-no-files-found: warn
 
       - name: 📦 Upload Maestro artifacts
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: maestro-artifacts-ios-${{ github.event.pull_request.number }}
+          name: maestro-artifacts-ios-${{ github.run_id }}
           path: |
             ${{ env.WORKING_DIRECTORY }}/.maestro/
             ~/.maestro/tests/**/*
             **/*.mp4
             **/*.mov
             **/*.png
-          retention-days: 7
+          retention-days: 1
           if-no-files-found: warn
 
       - name: 📦 Upload build artifacts
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: pr-build-ios-${{ github.event.pull_request.number }}
+          name: build-ios-${{ github.run_id }}
           path: ${{ env.WORKING_DIRECTORY }}/app-ios-dev.app
-          retention-days: 7
+          retention-days: 1
 
       # - name: 📢 Notify build results
       #   if: always()
