@@ -144,12 +144,12 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           npm install \
-            ../../appkit.tgz \
-            ../../wagmi.tgz \
-            ../../solana.tgz \
-            ../../bitcoin.tgz
+            ../../packages/appkit.tgz \
+            ../../packages/wagmi.tgz \
+            ../../packages/solana.tgz \
+            ../../packages/bitcoin.tgz
 
-      - name: 📱 Build Development APK with Snapshot
+      - name: 📱 Build Development APK
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           export NODE_OPTIONS="--max_old_space_size=2048"
@@ -217,7 +217,6 @@ jobs:
       #     SLACK_TITLE: PR Build Results - Android
       #     SLACK_MESSAGE: |
       #       PR #${{ github.event.pull_request.number }} Android build ${{ job.status == 'success' && 'passed ✅' || 'failed ❌' }}
-      #       Snapshot: ${{ needs.publish-snapshot.outputs.snapshot-tag }}
 
   # Job 3: Build and test PR - iOS
   pr-build-test-ios:
@@ -277,7 +276,7 @@ jobs:
             ../../packages/solana.tgz \
             ../../packages/bitcoin.tgz
 
-      - name: 📱 Build Development App with Snapshot
+      - name: 📱 Build Development App
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           export NODE_OPTIONS="--max_old_space_size=2048"
@@ -337,4 +336,3 @@ jobs:
       #     SLACK_TITLE: PR Build Results - iOS
       #     SLACK_MESSAGE: |
       #       PR #${{ github.event.pull_request.number }} iOS build ${{ job.status == 'success' && 'passed ✅' || 'failed ❌' }}
-      #       Snapshot: ${{ needs.publish-snapshot.outputs.snapshot-tag }}

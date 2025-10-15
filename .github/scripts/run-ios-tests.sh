@@ -49,7 +49,7 @@ echo "Using iOS runtime: $SIM_RUNTIME_ID"
 # Create or get existing simulator
 echo "Creating/getting simulator..."
 UDID=$(xcrun simctl create "$SIM_DEVICE_NAME" "$SIM_DEVICE_TYPE" "$SIM_RUNTIME_ID" 2>/dev/null || \
-       xcrun simctl list devices | grep "$SIM_DEVICE_NAME" | grep -oE '\([0-9A-F-]+\)' | tr -d '()')
+       xcrun simctl list devices | grep "$SIM_DEVICE_NAME" | grep -oE '\([0-9A-Fa-f-]+\)' | tr -d '()' | head -n 1)
 
 if [ -z "$UDID" ]; then
     echo "ERROR: Failed to create or find simulator"
