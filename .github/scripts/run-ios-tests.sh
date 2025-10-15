@@ -46,10 +46,15 @@ fi
 
 echo "Using iOS runtime: $SIM_RUNTIME_ID"
 
-# Create or get existing simulator
-echo "Creating/getting simulator..."
-UDID=$(xcrun simctl create "$SIM_DEVICE_NAME" "$SIM_DEVICE_TYPE" "$SIM_RUNTIME_ID" 2>/dev/null || \
-       xcrun simctl list devices | grep "$SIM_DEVICE_NAME" | grep -oE '\([0-9A-Fa-f-]+\)' | tr -d '()' | head -n 1)
+# Try to get existing simulator (exact name match only)
+echo "Looking for existing simulator..."
+UDID=$(xcrun simctl list devices | grep "    $SIM_DEVICE_NAME (" | grep -oE '\([0-9A-Fa-f-]+\)' | tr -d '()' | head -n 1)
+
+# Create if doesn't exist
+if [ -z "$UDID" ]; then
+    echo "Creating new simulator..."
+    UDID=$(xcrun simctl create "$SIM_DEVICE_NAME" "$SIM_DEVICE_TYPE" "$SIM_RUNTIME_ID")
+fi
 
 if [ -z "$UDID" ]; then
     echo "ERROR: Failed to create or find simulator"
@@ -141,21 +146,24 @@ xcrun simctl io "$UDID" screenshot "$DEBUG_DIR/app_state_after_launch.png" || tr
 
 echo "=== RUNNING MAESTRO TESTS ==="
 
-TEST_SCRIPT="$WORKING_DIR/.maestro/run-tests.sh"
-
-if [ ! -f "$TEST_SCRIPT" ]; then
-    echo "ERROR: Test script not found at $TEST_SCRIPT"
+# Run tests directly
+echo "📱 Running basic smoke test..."
+if ! maestro test "$WORKING_DIR/.maestro/basic-smoke-test.yaml"; then
+    echo "❌ Basic smoke test failed"
     exit 1
 fi
 
-# Make sure the script is executable
-chmod +x "$TEST_SCRIPT"
+echo ""
+echo "📱 Running wallet QR load test..."
+if ! maestro test "$WORKING_DIR/.maestro/wallet-qr-load.yaml"; then
+    echo "❌ Wallet QR load test failed"
+    exit 1
+fi
 
-# Run the test script from the working directory
-echo "Running test suite via $TEST_SCRIPT..."
-cd "$WORKING_DIR"
-if ! "$TEST_SCRIPT"; then
-    echo "ERROR: Test suite failed"
+echo ""
+echo "📱 Running connection test..."
+if ! maestro test "$WORKING_DIR/.maestro/connect-wallet.yaml"; then
+    echo "❌ Connection test failed"
     exit 1
 fi
 

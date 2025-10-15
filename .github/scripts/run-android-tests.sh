@@ -118,21 +118,24 @@ adb shell dumpsys activity activities | grep -E "mResumedActivity|mFocusedActivi
 
 echo "=== RUNNING MAESTRO TESTS ==="
 
-TEST_SCRIPT="$WORKING_DIR/.maestro/run-tests.sh"
-
-if [ ! -f "$TEST_SCRIPT" ]; then
-    echo "ERROR: Test script not found at $TEST_SCRIPT"
+# Run tests directly
+echo "📱 Running basic smoke test..."
+if ! maestro test "$WORKING_DIR/.maestro/basic-smoke-test.yaml"; then
+    echo "❌ Basic smoke test failed"
     exit 1
 fi
 
-# Make sure the script is executable
-chmod +x "$TEST_SCRIPT"
+echo ""
+echo "📱 Running wallet QR load test..."
+if ! maestro test "$WORKING_DIR/.maestro/wallet-qr-load.yaml"; then
+    echo "❌ Wallet QR load test failed"
+    exit 1
+fi
 
-# Run the test script from the working directory
-echo "Running test suite via $TEST_SCRIPT..."
-cd "$WORKING_DIR"
-if ! "$TEST_SCRIPT"; then
-    echo "ERROR: Test suite failed"
+echo ""
+echo "📱 Running connection test..."
+if ! maestro test "$WORKING_DIR/.maestro/connect-wallet.yaml"; then
+    echo "❌ Connection test failed"
     exit 1
 fi
 
