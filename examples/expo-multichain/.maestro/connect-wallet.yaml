@@ -44,7 +44,7 @@ appId: com.reown.appkit.expomultichain
 # Step 6: Press React wallet
 - doubleTapOn:
     id: "wallet-search-item-6880782cf8ff712bf8772b585960346290fd2499c1f1c51df9fe713d9d2e9384"
-    delay: 200
+    delay: 500
 - waitForAnimationToEnd:
     timeout: 5000
 - takeScreenshot: .maestro/screenshots/connect-wallet/step-06-react-pressed

@@ -56,7 +56,12 @@ jobs:
           if [ -n "${{ inputs.snapshot-tag }}" ]; then
             echo "tag=${{ inputs.snapshot-tag }}" >> $GITHUB_OUTPUT
           else
-            snapshot=$(git branch --show-current | tr -cs '[:alnum:]-' '-' | tr '[:upper:]' '[:lower:]' | sed 's/-$//')
+            snapshot=$(git branch --show-current | tr -cs '[:alnum:]-' '-' | tr '[:upper:]' '[:lower:]' | sed 's/-$//' | sed 's/^-//')
+            # Validate it's not empty
+            if [ -z "$snapshot" ]; then
+              echo "::error::Invalid branch name for snapshot tag"
+              exit 1
+            fi
             echo "tag=$snapshot" >> $GITHUB_OUTPUT
           fi
 

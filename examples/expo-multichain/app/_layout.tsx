@@ -11,7 +11,7 @@ import {
 import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { arbitrum, mainnet, polygon } from '@wagmi/core/chains';
-import { WagmiProvider } from 'wagmi';
+import { CreateConfigParameters, WagmiProvider } from 'wagmi';
 import { Alert, View } from 'react-native';
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
@@ -28,9 +28,9 @@ import { storage } from '@/config/storage';
 const queryClient = new QueryClient();
 
 // 1. Get projectId at https://dashboard.reown.com
-const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? 'undefined';
+const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? '';
 
-if (projectId === 'undefined') {
+if (projectId === '') {
   Alert.alert('Project ID is not set');
 }
 
@@ -45,11 +45,11 @@ const metadata = {
   }
 };
 
-const networks = [mainnet, polygon, arbitrum];
+const networks = [mainnet, polygon, arbitrum] as CreateConfigParameters['chains'];
 
 const wagmiAdapter = new WagmiAdapter({
   projectId,
-  networks: networks as any
+  networks
 });
 
 const solanaAdapter = new SolanaAdapter();
