@@ -1,0 +1,81 @@
+appId: com.reown.appkit.expomultichain
+---
+- launchApp:
+    clearState: true
+- takeScreenshot: onramp/step-00-home-screen
+- startRecording:
+    path: onramp/onramp-video
+    label: "Onramp test"
+- runFlow: flows/connect-wallet-flow.yaml
+- tapOn:
+    id: account-button
+- tapOn:
+    id: button-onramp
+- tapOn:
+    id: button-onramp-settings
+- waitForAnimationToEnd
+- tapOn:
+    id: button-select-country
+- tapOn:
+    id: wui-input-text
+- inputText: United States
+- tapOn:
+    id: country-item-US
+- assertVisible: US Dollar
+- tapOn:
+    id: button-back
+- assertVisible:
+    id: payment-method-button
+- tapOn:
+    id: key-2
+- assertVisible:
+    id: currency-input-error
+- tapOn:
+    id: key-0
+- assertNotVisible: Enter a valid amount
+- waitForAnimationToEnd
+- assertNotVisible:
+    id: currency-input-error
+- tapOn:
+    id: button-continue
+- assertVisible: Checkout
+- tapOn:
+    id: button-confirm
+- waitForAnimationToEnd
+
+## Workaround to check if Safari is open
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - assertVisible:
+          id: breadcrumb
+
+## Workaround to check if Chrome is open
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - assertVisible:
+          id: url-bar
+
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn:
+          id: breadcrumb
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - back
+- assertVisible: Please wait while we redirect you to finalize your purchase.
+- tapOn:
+    id: button-back
+- tapOn:
+    id: button-back
+- tapOn:
+    id: button-back
+- tapOn:
+    id: button-disconnect

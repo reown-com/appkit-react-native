@@ -125,7 +125,7 @@ jobs:
       - name: Download Android Wallet prod build
         run: |
           aws s3 cp \
-            s3://walletconnect.react-native-builds.prod/android/production/wallet-production.apk \
+            s3://walletconnect.react-native-builds.prod/android/internal/wallet-internal.apk \
             ${{ env.WORKING_DIRECTORY }}/wallet.apk
 
       - name: 📦 Install dependencies
@@ -249,7 +249,7 @@ jobs:
       - name: 📥 Download and extract iOS Wallet prod build
         run: |
           aws s3 cp \
-            s3://walletconnect.react-native-builds.prod/ios/production/wallet-production.ipa \
+            s3://walletconnect.react-native-builds.prod/ios/internal/wallet-internal.ipa \
             ${{ env.WORKING_DIRECTORY }}/wallet.ipa
           cd ${{ env.WORKING_DIRECTORY }}
           unzip -q wallet.ipa

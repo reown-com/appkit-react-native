@@ -13,10 +13,10 @@ appId: com.reown.appkit.expomultichain
 
 # Step 1: Verify main screen elements
 - assertVisible: "Connect Wallet"
-- takeScreenshot: .maestro/screenshots/basic-smoke-test/step-01-home-screen
+- takeScreenshot: basic-smoke-test/step-01-home-screen
 - startRecording:
-    path: '.maestro/screenshots/basic-smoke-test/basic-smoke-test-video'
-    label: 'Basic smoke test'
+    path: basic-smoke-test/basic-smoke-test-video
+    label: "Basic smoke test"
 
 # Step 2: Test connect button
 - tapOn: "Connect Wallet"
@@ -26,7 +26,7 @@ appId: com.reown.appkit.expomultichain
     timeout: 3000
 
 # Take screenshot of modal
-- takeScreenshot: .maestro/screenshots/basic-smoke-test/step-02-modal-opened
+- takeScreenshot: basic-smoke-test/step-02-modal-opened
 
 # Verify modal opened by checking for wallet options or modal title
 # This will pass if ANY of these texts are visible

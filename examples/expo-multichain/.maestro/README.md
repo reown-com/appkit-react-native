@@ -6,7 +6,11 @@ This directory contains Maestro test flows for the AppKit React Native example a
 
 - `basic-smoke-test.yaml` - Basic test that verifies app launch and modal opening
 - `wallet-qr-load.yaml` - Basic test that verifies if the WalletConnect QR Code loads
-- `connect-wallet.yaml` - Wallet connection flow test
+- `switch-network.yaml` - Tests switching between different blockchain networks
+- `account-activity.yaml` - Tests viewing account activity and transaction history
+- `send.yaml` - Tests the send transaction flow
+- `swaps.yaml` - Tests token swap functionality
+- `onramp.yaml` - Tests fiat onramp purchase flow
 
 ## Running Tests Locally
 

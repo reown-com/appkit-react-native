@@ -133,9 +133,37 @@ if ! maestro test "$WORKING_DIR/.maestro/wallet-qr-load.yaml"; then
 fi
 
 echo ""
-echo "📱 Running connection test..."
-if ! maestro test "$WORKING_DIR/.maestro/connect-wallet.yaml"; then
-    echo "❌ Connection test failed"
+echo "📱 Running switch network test..."
+if ! maestro test "$WORKING_DIR/.maestro/switch-network.yaml"; then
+    echo "❌ Switch network test failed"
+    exit 1
+fi
+
+echo ""
+echo "📱 Running account activity test..."
+if ! maestro test "$WORKING_DIR/.maestro/account-activity.yaml"; then
+    echo "❌ Account activity test failed"
+    exit 1
+fi
+
+echo ""
+echo "📱 Running send test..."
+if ! maestro test "$WORKING_DIR/.maestro/send.yaml"; then
+    echo "❌ Send test failed"
+    exit 1
+fi
+
+echo ""
+echo "📱 Running swap test..."
+if ! maestro test "$WORKING_DIR/.maestro/swaps.yaml"; then
+    echo "❌ Swap test failed"
+    exit 1
+fi
+
+echo ""
+echo "📱 Running onramp test..."
+if ! maestro test "$WORKING_DIR/.maestro/onramp.yaml"; then
+    echo "❌ Onramp test failed"
     exit 1
 fi
 

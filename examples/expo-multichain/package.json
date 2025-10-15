@@ -14,6 +14,7 @@
     "build:dev:android": "eas build --platform android --profile development",
     "build:dev:ios": "eas build --platform ios --profile development",
     "build:prod:android": "eas build --platform android --local --clear-cache --profile production-apk",
+    "build:prod:ios": "eas build --platform ios --local --clear-cache --profile production-simulator",
     "web": "expo start --web",
     "lint": "expo lint",
     "maestro:test": ".maestro/run-tests.sh",

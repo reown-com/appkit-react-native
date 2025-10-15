@@ -10,38 +10,38 @@ appId: com.reown.appkit.expomultichain
 - assertVisible: "AppKit"
 - assertVisible: "for React Native"
 - assertVisible: "Connect Wallet"
-- takeScreenshot: .maestro/screenshots/step-01-home
+- takeScreenshot: step-01-home
 - startRecording:
-    path: '.maestro/connect-wallet'
-    label: 'Connect wallet test'
+    path: ".maestro/connect-wallet"
+    label: "Connect wallet test"
 
 # Step 2: Press Connect Wallet button
 - tapOn: "Connect Wallet"
 - waitForAnimationToEnd:
     timeout: 5000
-- takeScreenshot: .maestro/screenshots/step-02-connect-modal
+- takeScreenshot: step-02-connect-modal
 
 # Step 3: Press "All wallets" button
 - tapOn:
     id: "all-wallets"
 - waitForAnimationToEnd:
     timeout: 5000
-- takeScreenshot: .maestro/screenshots/step-03-all-wallets
+- takeScreenshot: step-03-all-wallets
 
 # Step 4: Check if MetaMask wallet appears
 - assertVisible: "MetaMask"
-- takeScreenshot: .maestro/screenshots/step-04-metamask-visible
+- takeScreenshot: step-04-metamask-visible
 
 # Step 5: Press QR code button
 - tapOn:
     id: "button-qr-code"
 - waitForAnimationToEnd:
     timeout: 5000
-- takeScreenshot: .maestro/screenshots/step-05-qr-button-pressed
+- takeScreenshot: step-05-qr-button-pressed
 
 # Step 6: Check if QR code appears
 - assertVisible:
     id: "qr-code"
-- takeScreenshot: .maestro/screenshots/step-06-qr-code-visible
+- takeScreenshot: step-06-qr-code-visible
 
 - stopRecording

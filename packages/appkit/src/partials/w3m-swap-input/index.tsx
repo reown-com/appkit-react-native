@@ -28,6 +28,7 @@ export interface SwapInputProps {
   marketValue?: number;
   editable?: boolean;
   autoFocus?: boolean;
+  testID?: string;
 }
 
 const MINIMUM_USD_VALUE_TO_CONVERT = 0.00005;
@@ -43,7 +44,8 @@ export function SwapInput({
   onChange,
   marketValue,
   editable,
-  autoFocus
+  autoFocus,
+  testID
 }: SwapInputProps) {
   const Theme = useTheme();
   const valueInputRef = useRef<TextInput | null>(null);
@@ -118,6 +120,7 @@ export function SwapInput({
                 numberOfLines={1}
                 editable={editable}
                 autoFocus={autoFocus}
+                testID={testID}
               />
             )}
             <TokenButton
@@ -125,6 +128,7 @@ export function SwapInput({
               imageUrl={token?.logoUri}
               onPress={onTokenPress}
               chevron
+              testID={`${testID}-button`}
             />
           </FlexView>
           {loadingValues ? (
