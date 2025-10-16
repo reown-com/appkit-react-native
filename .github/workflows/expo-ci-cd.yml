@@ -134,18 +134,12 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY), format('{0}/eas.json', env.WORKING_DIRECTORY)) }}
+            ${{ env.WORKING_DIRECTORY }}/android/.gradle
+            ${{ env.WORKING_DIRECTORY }}/android/build
+            ${{ env.WORKING_DIRECTORY }}/android/app/build
+          key: ${{ runner.os }}-gradle-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/android/build.gradle', env.WORKING_DIRECTORY), format('{0}/android/app/build.gradle', env.WORKING_DIRECTORY)) }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-
-      - name: 📦 Cache EAS Build
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{ env.WORKING_DIRECTORY }}/.expo
-          key: ${{ runner.os }}-eas-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY), format('{0}/eas.json', env.WORKING_DIRECTORY)) }}
-          restore-keys: |
-            ${{ runner.os }}-eas-
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@00943011d9042930efac3dcd3a170e4273319bc8
@@ -163,14 +157,6 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci
 
-      - name: 🏗 Setup EAS
-        uses: expo/expo-github-action@c7b66a9c327a43a8fa7c0158e7f30d6040d2481e
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-          eas-cache: true
-          packager: npm
-
       - name: 📥 Download packed packages
         uses: actions/download-artifact@v4
         with:
@@ -186,14 +172,17 @@ jobs:
             ../../packages/solana.tgz \
             ../../packages/bitcoin.tgz
 
-      - name: 📱 Build Development APK
+      - name: 📱 Build Android APK with Gradle
         id: build
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          export NODE_OPTIONS="--max_old_space_size=4096"
-          eas build --platform android --profile production-ci --local --non-interactive --output=./app-dev.apk
+          cd android
+          chmod +x ./gradlew
+          ./gradlew assembleRelease \
+          cp app/build/outputs/apk/release/app-release.apk ../app-dev.apk
         env:
-          NODE_ENV: development
+          NODE_ENV: production
+          ORG_GRADLE_PROJECT_reactNativeArchitectures: x86_64
 
       - name: 🧪 Setup Maestro
         run: |
@@ -320,7 +309,8 @@ jobs:
           path: |
             ~/Library/Caches/CocoaPods
             ~/.cocoapods
-          key: ${{ runner.os }}-pods-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY), format('{0}/eas.json', env.WORKING_DIRECTORY)) }}
+            ${{ env.WORKING_DIRECTORY }}/ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/ios/Podfile.lock', env.WORKING_DIRECTORY)) }}
           restore-keys: |
             ${{ runner.os }}-pods-
 
@@ -328,18 +318,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-xcode-deriveddata-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY)) }}
+          key: ${{ runner.os }}-xcode-deriveddata-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/ios/Podfile.lock', env.WORKING_DIRECTORY)) }}
           restore-keys: |
             ${{ runner.os }}-xcode-deriveddata-
 
-      - name: 📦 Cache EAS Build
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{ env.WORKING_DIRECTORY }}/.expo
-          key: ${{ runner.os }}-eas-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY), format('{0}/eas.json', env.WORKING_DIRECTORY)) }}
-          restore-keys: |
-            ${{ runner.os }}-eas-
+      - name: 📝 Create .env file
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "EXPO_PUBLIC_PROJECT_ID=${{ secrets.CLOUD_PROJECT_ID }}" > .env
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@00943011d9042930efac3dcd3a170e4273319bc8
@@ -360,14 +346,6 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci
 
-      - name: 🏗 Setup EAS
-        uses: expo/expo-github-action@c7b66a9c327a43a8fa7c0158e7f30d6040d2481e
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-          eas-cache: true
-          packager: npm
-
       - name: 📥 Download packed packages
         uses: actions/download-artifact@v4
         with:
@@ -383,18 +361,29 @@ jobs:
             ../../packages/solana.tgz \
             ../../packages/bitcoin.tgz
 
-      - name: 📱 Build Development App
+      - name: 📦 Install CocoaPods
+        working-directory: ${{ env.WORKING_DIRECTORY }}/ios
+        run: |
+          bundle install
+          bundle exec pod install --repo-update
+
+      - name: 📱 Build iOS App with Xcode
         id: build
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          export NODE_OPTIONS="--max_old_space_size=4096"
-          eas build --platform ios --profile production-ci --local --non-interactive --output=./app-ios-dev.app
+          cd ios
+          xcodebuild \
+            -workspace expomultichain.xcworkspace \
+            -scheme expomultichain \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            COMPILER_INDEX_STORE_ENABLE=NO
+          cp -r build/Build/Products/Release-iphonesimulator/expomultichain.app ../app-ios-dev.app
         env:
-          NODE_ENV: development
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-          EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
-          EXPO_APPLE_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
-          EXPO_TEAM_ID: ${{ secrets.EXPO_TEAM_ID }}
+          NODE_ENV: production
 
       - name: 📱 Setup iOS Simulator
         uses: futureware-tech/simulator-action@dab10d813144ef59b48d401cd95da151222ef8cd
