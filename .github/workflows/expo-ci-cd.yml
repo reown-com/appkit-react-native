@@ -122,13 +122,14 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/prod-github-actions-react-native-builds-readonly
           aws-region: eu-central-1
       
-      - name: Download Android Wallet prod build
+      - name: Download Android Wallet build
         run: |
           aws s3 cp \
             s3://walletconnect.react-native-builds.prod/android/internal/wallet-internal.apk \
             ${{ env.WORKING_DIRECTORY }}/wallet.apk
 
       - name: 📦 Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci
 
       - name: 🏗 Setup EAS
@@ -246,7 +247,7 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/prod-github-actions-react-native-builds-readonly
           aws-region: eu-central-1
       
-      - name: 📥 Download and extract iOS Wallet prod build
+      - name: 📥 Download and extract iOS Wallet build
         run: |
           aws s3 cp \
             s3://walletconnect.react-native-builds.prod/ios/internal/wallet-internal.ipa \
@@ -256,6 +257,7 @@ jobs:
           mv Payload/*.app ./wallet.app
 
       - name: 📦 Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci
 
       - name: 🏗 Setup EAS
