@@ -1,0 +1,29 @@
+name: React Native CI/CD
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        type: choice
+        description: "Platform to build"
+        default: "all"
+        options:
+          - android
+          - ios
+          - all
+
+jobs:
+  test-echo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Echo message
+        run: |
+          echo "✅ Workflow dispatch is working!"
+          echo "Branch: ${{ github.ref }}"
+          echo "Triggered by: ${{ github.actor }}"
+          echo "Event: ${{ github.event_name }}"
