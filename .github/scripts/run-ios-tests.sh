@@ -108,53 +108,77 @@ xcrun simctl io "$UDID" screenshot "$DEBUG_DIR/app_state_after_launch.png" || tr
 
 echo "=== RUNNING MAESTRO TESTS ==="
 
-# Run tests directly
-echo "📱 Running basic smoke test..."
-if ! maestro test "$WORKING_DIR/.maestro/basic-smoke-test.yaml"; then
-    echo "❌ Basic smoke test failed"
-    exit 1
+# Track test results for GitHub Actions output
+# Define tests array: filename:display_name
+tests=(
+  "basic-smoke-test:Basic Smoke Test"
+  "wallet-qr-load:Wallet QR Load"
+  "switch-network:Switch Network"
+  "account-activity:Account Activity"
+  "send:Send"
+  "swaps:Swaps"
+  "onramp:Onramp"
+)
+
+# Initialize result tracking
+test_results=""
+failed_tests=""
+passed_count=0
+failed_count=0
+
+# Run each test and track results
+for test_pair in "${tests[@]}"; do
+  test_file="${test_pair%%:*}"
+  test_name="${test_pair##*:}"
+  
+  echo ""
+  echo "📱 Running $test_name..."
+  
+  # Record start time
+  start_time=$(date +%s)
+  
+  if maestro test "$WORKING_DIR/.maestro/$test_file.yaml"; then
+    end_time=$(date +%s)
+    duration=$((end_time - start_time))
+    echo "✅ $test_name passed (${duration}s)"
+    test_results="${test_results}✅ $test_name (${duration}s)\n"
+    passed_count=$((passed_count + 1))
+  else
+    end_time=$(date +%s)
+    duration=$((end_time - start_time))
+    echo "❌ $test_name failed (${duration}s)"
+    test_results="${test_results}❌ $test_name (${duration}s)\n"
+    failed_tests="${failed_tests}• $test_name\n"
+    failed_count=$((failed_count + 1))
+  fi
+done
+
+# Output results to GitHub Actions
+if [ -n "$GITHUB_OUTPUT" ]; then
+  echo "test_results<<EOF" >> "$GITHUB_OUTPUT"
+  echo -e "$test_results" >> "$GITHUB_OUTPUT"
+  echo "EOF" >> "$GITHUB_OUTPUT"
+  
+  echo "failed_tests<<EOF" >> "$GITHUB_OUTPUT"
+  echo -e "$failed_tests" >> "$GITHUB_OUTPUT"
+  echo "EOF" >> "$GITHUB_OUTPUT"
+  
+  echo "passed_count=$passed_count" >> "$GITHUB_OUTPUT"
+  echo "failed_count=$failed_count" >> "$GITHUB_OUTPUT"
 fi
 
+# Print summary
 echo ""
-echo "📱 Running wallet QR load test..."
-if ! maestro test "$WORKING_DIR/.maestro/wallet-qr-load.yaml"; then
-    echo "❌ Wallet QR load test failed"
-    exit 1
-fi
+echo "=== TEST SUMMARY ==="
+echo "Passed: $passed_count"
+echo "Failed: $failed_count"
+echo ""
+echo -e "$test_results"
 
-echo ""
-echo "📱 Running switch network test..."
-if ! maestro test "$WORKING_DIR/.maestro/switch-network.yaml"; then
-    echo "❌ Switch network test failed"
-    exit 1
-fi
-
-echo ""
-echo "📱 Running account activity test..."
-if ! maestro test "$WORKING_DIR/.maestro/account-activity.yaml"; then
-    echo "❌ Account activity test failed"
-    exit 1
-fi
-
-echo ""
-echo "📱 Running send test..."
-if ! maestro test "$WORKING_DIR/.maestro/send.yaml"; then
-    echo "❌ Send test failed"
-    exit 1
-fi
-
-echo ""
-echo "📱 Running swap test..."
-if ! maestro test "$WORKING_DIR/.maestro/swaps.yaml"; then
-    echo "❌ Swap test failed"
-    exit 1
-fi
-
-echo ""
-echo "📱 Running onramp test..."
-if ! maestro test "$WORKING_DIR/.maestro/onramp.yaml"; then
-    echo "❌ Onramp test failed"
-    exit 1
+# Exit with error if any tests failed
+if [ $failed_count -gt 0 ]; then
+  echo "Some tests failed"
+  exit 1
 fi
 
 echo "All tests passed! ✓"

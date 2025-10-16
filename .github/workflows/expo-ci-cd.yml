@@ -187,6 +187,7 @@ jobs:
             ../../packages/bitcoin.tgz
 
       - name: 📱 Build Development APK
+        id: build
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           export NODE_OPTIONS="--max_old_space_size=4096"
@@ -215,6 +216,7 @@ jobs:
           script: echo "Generated AVD snapshot for caching."
 
       - name: 🤖 Run Android Emulator and Maestro Tests
+        id: tests
         uses: reactivecircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed
         with:
           api-level: 35
@@ -235,6 +237,7 @@ jobs:
           if-no-files-found: warn
 
       - name: 📦 Upload Maestro artifacts
+        id: upload-maestro
         if: failure()
         uses: actions/upload-artifact@v4
         with:
@@ -248,23 +251,49 @@ jobs:
           retention-days: 1
           if-no-files-found: warn
 
-      - name: 📦 Upload build artifacts
-        if: failure()
-        uses: actions/upload-artifact@v4
+      - name: Send Slack notification
+        if: always() && !cancelled()
+        uses: slackapi/slack-github-action@v2.1.0
         with:
-          name: build-android-${{ github.run_id }}
-          path: ${{ env.WORKING_DIRECTORY }}/app-dev.apk
-          retention-days: 1
-
-      # - name: 📢 Notify build results
-      #   if: always()
-      #   uses: rtCamp/action-slack-notify@v2
-      #   env:
-      #     SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
-      #     SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
-      #     SLACK_TITLE: PR Build Results - Android
-      #     SLACK_MESSAGE: |
-      #       PR #${{ github.event.pull_request.number }} Android build ${{ job.status == 'success' && 'passed ✅' || 'failed ❌' }}
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "AppKit Build & Test Report on Android",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "🤖 AppKit Build & Test Report on Android" }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
+                    { "type": "mrkdwn", "text": "*Event:*\n`${{ github.event_name }}`" },
+                    { "type": "mrkdwn", "text": "*Triggered by:*\n`${{ github.actor }}`" },
+                    { "type": "mrkdwn", "text": "*Commit:*\n`${{ github.sha }}`" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Build APK:*\n${{ steps.build.outcome == 'success' && '✅ Success' || steps.build.outcome == 'failure' && '❌ Failed' || '⏭️ Skipped' }}" },
+                    { "type": "mrkdwn", "text": "*Tests:*\n${{ steps.tests.outcome == 'success' && format('✅ Passed ({0}/7)', steps.tests.outputs.passed_count) || steps.tests.outcome == 'failure' && format('❌ Failed ({0}/{1})', steps.tests.outputs.failed_count, steps.tests.outputs.passed_count + steps.tests.outputs.failed_count) || '⏭️ Skipped' }}" },
+                    { "type": "mrkdwn", "text": "*Overall Status:*\n${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}" }
+                  ]
+                }${{ steps.tests.outcome == 'failure' && steps.tests.outputs.failed_tests != '' && format(',{{"type":"section","text":{{"type":"mrkdwn","text":"*❌ Failed Tests:*\\n{0}"}}}}', steps.tests.outputs.failed_tests) || '' }}${{ steps.tests.outcome == 'success' && steps.tests.outputs.test_results != '' && format(',{{"type":"section","text":{{"type":"mrkdwn","text":"*📊 Test Results:*\\n{0}"}}}}', steps.tests.outputs.test_results) || '' }},
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "View Workflow Run" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }${{ steps.tests.outcome == 'failure' && steps.upload-maestro.outcome == 'success' && format(',{{"type":"button","text":{{"type":"plain_text","text":"📹 View Maestro Artifacts"}},"url":"{0}/{1}/actions/runs/{2}","style":"danger"}}', github.server_url, github.repository, github.run_id) || '' }}
+                  ]
+                }
+              ]
+            }
 
   # Job 3: Build and test PR - iOS
   pr-build-test-ios:
@@ -355,6 +384,7 @@ jobs:
             ../../packages/bitcoin.tgz
 
       - name: 📱 Build Development App
+        id: build
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           export NODE_OPTIONS="--max_old_space_size=4096"
@@ -380,7 +410,8 @@ jobs:
           brew tap mobile-dev-inc/tap
           brew install maestro
 
-      - name: 📱 Setup iOS Simulator and Run Maestro Tests
+      - name: 📱 Run Maestro Tests
+        id: tests
         run: .github/scripts/run-ios-tests.sh ${{ env.WORKING_DIRECTORY }}
 
       - name: 📦 Upload debug artifacts
@@ -393,6 +424,7 @@ jobs:
           if-no-files-found: warn
 
       - name: 📦 Upload Maestro artifacts
+        id: upload-maestro
         if: failure()
         uses: actions/upload-artifact@v4
         with:
@@ -406,20 +438,46 @@ jobs:
           retention-days: 1
           if-no-files-found: warn
 
-      - name: 📦 Upload build artifacts
-        if: failure()
-        uses: actions/upload-artifact@v4
+      - name: Send Slack notification
+        if: always() && !cancelled()
+        uses: slackapi/slack-github-action@v2.1.0
         with:
-          name: build-ios-${{ github.run_id }}
-          path: ${{ env.WORKING_DIRECTORY }}/app-ios-dev.app
-          retention-days: 1
-
-      # - name: 📢 Notify build results
-      #   if: always()
-      #   uses: rtCamp/action-slack-notify@v2
-      #   env:
-      #     SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
-      #     SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
-      #     SLACK_TITLE: PR Build Results - iOS
-      #     SLACK_MESSAGE: |
-      #       PR #${{ github.event.pull_request.number }} iOS build ${{ job.status == 'success' && 'passed ✅' || 'failed ❌' }}
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "AppKit Build & Test Report on iOS",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "🍎 AppKit Build & Test Report on iOS" }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
+                    { "type": "mrkdwn", "text": "*Event:*\n`${{ github.event_name }}`" },
+                    { "type": "mrkdwn", "text": "*Triggered by:*\n`${{ github.actor }}`" },
+                    { "type": "mrkdwn", "text": "*Commit:*\n`${{ github.sha }}`" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Build App:*\n${{ steps.build.outcome == 'success' && '✅ Success' || steps.build.outcome == 'failure' && '❌ Failed' || '⏭️ Skipped' }}" },
+                    { "type": "mrkdwn", "text": "*Tests:*\n${{ steps.tests.outcome == 'success' && format('✅ Passed ({0}/7)', steps.tests.outputs.passed_count) || steps.tests.outcome == 'failure' && format('❌ Failed ({0}/{1})', steps.tests.outputs.failed_count, steps.tests.outputs.passed_count + steps.tests.outputs.failed_count) || '⏭️ Skipped' }}" },
+                    { "type": "mrkdwn", "text": "*Overall Status:*\n${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}" }
+                  ]
+                }${{ steps.tests.outcome == 'failure' && steps.tests.outputs.failed_tests != '' && format(',{{"type":"section","text":{{"type":"mrkdwn","text":"*❌ Failed Tests:*\\n{0}"}}}}', steps.tests.outputs.failed_tests) || '' }}${{ steps.tests.outcome == 'success' && steps.tests.outputs.test_results != '' && format(',{{"type":"section","text":{{"type":"mrkdwn","text":"*📊 Test Results:*\\n{0}"}}}}', steps.tests.outputs.test_results) || '' }},
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "View Workflow Run" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }${{ steps.tests.outcome == 'failure' && steps.upload-maestro.outcome == 'success' && format(',{{"type":"button","text":{{"type":"plain_text","text":"📹 View Maestro Artifacts"}},"url":"{0}/{1}/actions/runs/{2}","style":"danger"}}', github.server_url, github.repository, github.run_id) || '' }}
+                  ]
+                }
+              ]
+            }
