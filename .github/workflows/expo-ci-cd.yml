@@ -205,7 +205,7 @@ jobs:
         run: |
           cd android
           chmod +x ./gradlew
-          ./gradlew assembleRelease \
+          ./gradlew assembleRelease
           cp app/build/outputs/apk/release/app-release.apk ../app-dev.apk
         env:
           NODE_ENV: production
