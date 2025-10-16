@@ -128,7 +128,7 @@ export function SwapInput({
               imageUrl={token?.logoUri}
               onPress={onTokenPress}
               chevron
-              testID={`${testID}-button`}
+              testID={testID ? `${testID}-button` : undefined}
             />
           </FlexView>
           {loadingValues ? (

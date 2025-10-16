@@ -95,7 +95,7 @@ export function SendInputToken({
           text={token?.symbol}
           onPress={onTokenPress}
           chevron
-          testID={`${testID}-button`}
+          testID={testID ? `${testID}-button` : undefined}
         />
       </FlexView>
       {token ? (
