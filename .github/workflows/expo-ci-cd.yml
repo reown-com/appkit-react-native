@@ -104,6 +104,16 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+          ls /dev/kvm
+
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-35-2
 
       - name: ☕ Set up JDK
         uses: actions/setup-java@v4
@@ -115,6 +125,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: 'npm'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
+
+      - name: 📦 Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY), format('{0}/eas.json', env.WORKING_DIRECTORY)) }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: 📦 Cache EAS Build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.WORKING_DIRECTORY }}/.expo
+          key: ${{ runner.os }}-eas-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY), format('{0}/eas.json', env.WORKING_DIRECTORY)) }}
+          restore-keys: |
+            ${{ runner.os }}-eas-
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@00943011d9042930efac3dcd3a170e4273319bc8
@@ -158,8 +189,8 @@ jobs:
       - name: 📱 Build Development APK
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          export NODE_OPTIONS="--max_old_space_size=2048"
-          eas build --platform android --profile production-apk --local --non-interactive --output=./app-dev.apk
+          export NODE_OPTIONS="--max_old_space_size=4096"
+          eas build --platform android --profile production-ci --local --non-interactive --output=./app-dev.apk
         env:
           NODE_ENV: development
 
@@ -168,19 +199,30 @@ jobs:
           curl -Ls "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
+      - name: 🤖 Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_7
+          disk-size: 1G
+          heap-size: 1G
+          force-avd-creation: false
+          avd-name: Pixel_8_API_35
+          disable-animations: true
+          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: echo "Generated AVD snapshot for caching."
+
       - name: 🤖 Run Android Emulator and Maestro Tests
         uses: reactivecircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed
         with:
-          api-level: 34
-          target: google_apis
+          api-level: 35
           arch: x86_64
-          ram-size: 4096M
-          heap-size: 576M
-          emulator-boot-timeout: 900
-          profile: pixel_6
-          avd-name: maestro_test_device
+          force-avd-creation: false
+          avd-name: Pixel_8_API_35
           disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot-save -no-snapshot-load
+          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: .github/scripts/run-android-tests.sh ${{ env.WORKING_DIRECTORY }}
 
       - name: 📦 Upload debug artifacts
@@ -240,6 +282,35 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: 'npm'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
+
+      - name: 📦 Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY), format('{0}/eas.json', env.WORKING_DIRECTORY)) }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: 📦 Cache Xcode DerivedData
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-xcode-deriveddata-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY)) }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-deriveddata-
+
+      - name: 📦 Cache EAS Build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.WORKING_DIRECTORY }}/.expo
+          key: ${{ runner.os }}-eas-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY), format('{0}/eas.json', env.WORKING_DIRECTORY)) }}
+          restore-keys: |
+            ${{ runner.os }}-eas-
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@00943011d9042930efac3dcd3a170e4273319bc8
@@ -286,14 +357,23 @@ jobs:
       - name: 📱 Build Development App
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          export NODE_OPTIONS="--max_old_space_size=2048"
-          eas build --platform ios --profile production-simulator --local --non-interactive --output=./app-ios-dev.app
+          export NODE_OPTIONS="--max_old_space_size=4096"
+          eas build --platform ios --profile production-ci --local --non-interactive --output=./app-ios-dev.app
         env:
           NODE_ENV: development
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
           EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
           EXPO_APPLE_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
           EXPO_TEAM_ID: ${{ secrets.EXPO_TEAM_ID }}
+
+      - name: 📱 Setup iOS Simulator
+        uses: futureware-tech/simulator-action@dab10d813144ef59b48d401cd95da151222ef8cd
+        with:
+          model: 'iPhone 15'
+          os: iOS
+          os_version: '>=18.0'
+          wait_for_boot: true
+          erase_before_boot: false
 
       - name: 🧪 Setup Maestro
         run: |

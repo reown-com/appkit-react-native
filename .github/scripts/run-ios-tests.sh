@@ -10,69 +10,31 @@ set -x  # Print commands
 #
 # Usage: ./run-ios-tests.sh <working-directory>
 ###############################################################################
+set -e
+set -x
 
 WORKING_DIR="${1:-.}"
 DEBUG_DIR="$WORKING_DIR/debug-artifacts"
 APP_BUNDLE_ID="com.reown.appkit.expomultichain"
-SIM_DEVICE_NAME="iPhone-15-Maestro-Test"
-SIM_DEVICE_TYPE="iPhone 15"
 
 ###############################################################################
 # Setup and Preparation
 ###############################################################################
 
-echo "Setting up debug directory..."
-mkdir -p "$DEBUG_DIR"
+# Get the booted simulator UDID
+UDID=$(xcrun simctl list devices | grep "(Booted)" | grep -oE '\([0-9A-Fa-f-]+\)' | tr -d '()' | head -n 1)
 
-###############################################################################
-# Setup iOS Simulator
-###############################################################################
-
-echo "=== SETTING UP iOS SIMULATOR ==="
-
-# Find iOS runtime (prefer iOS 18, fallback to latest available)
-echo "Finding iOS runtime..."
-SIM_RUNTIME_ID=$(xcrun simctl list runtimes | grep -E "iOS 18" | awk '{print $NF}' | head -n 1)
-
-if [ -z "$SIM_RUNTIME_ID" ]; then
-    echo "iOS 18 not found, using latest available iOS runtime..."
-    SIM_RUNTIME_ID=$(xcrun simctl list runtimes | grep "iOS" | awk '{print $NF}' | tail -n 1)
-fi
-
-if [ -z "$SIM_RUNTIME_ID" ]; then
-    echo "ERROR: No iOS runtime found"
+if [ -z "$UDID" ]; then
+    echo "ERROR: No booted simulator found"
     exit 1
 fi
 
-echo "Using iOS runtime: $SIM_RUNTIME_ID"
-
-# Try to get existing simulator (exact name match only)
-echo "Looking for existing simulator..."
-UDID=$(xcrun simctl list devices | grep "    $SIM_DEVICE_NAME (" | grep -oE '\([0-9A-Fa-f-]+\)' | tr -d '()' | head -n 1)
-
-# Create if doesn't exist
-if [ -z "$UDID" ]; then
-    echo "Creating new simulator..."
-    UDID=$(xcrun simctl create "$SIM_DEVICE_NAME" "$SIM_DEVICE_TYPE" "$SIM_RUNTIME_ID")
-fi
-
-if [ -z "$UDID" ]; then
-    echo "ERROR: Failed to create or find simulator"
-    exit 1
-fi
-
-echo "Simulator UDID: $UDID"
-
-# Boot the simulator
-echo "Booting simulator..."
-xcrun simctl boot "$UDID" || true
-xcrun simctl bootstatus "$UDID" -b
-
-# Export UDID for Maestro
+echo "Using simulator: $UDID"
 export MAESTRO_IOS_DEVICE="$UDID"
 
-echo "Waiting for simulator to be fully ready..."
-sleep 5
+
+echo "Setting up debug directory..."
+mkdir -p "$DEBUG_DIR"
 
 ###############################################################################
 # Install Applications

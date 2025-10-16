@@ -14,16 +14,22 @@
     "production": {
       "autoIncrement": true
     },
-    "production-apk": {
+    "production-ci": {
       "extends": "production",
       "android": {
         "buildType": "apk"
-      }
-    },
-    "production-simulator": {
-      "extends": "production",
+      },
       "ios": {
         "simulator": true
+      },
+      "env": {
+        "ORG_GRADLE_PROJECT_reactNativeArchitectures": "x86_64",
+        "GRADLE_OPTS": "-Xmx6144m -XX:MaxMetaspaceSize=1024m -XX:+HeapDumpOnOutOfMemoryError",
+        "ORG_GRADLE_PROJECT_org.gradle.parallel": "true",
+        "ORG_GRADLE_PROJECT_org.gradle.caching": "true",
+        "ORG_GRADLE_PROJECT_org.gradle.configureondemand": "true",
+        "ORG_GRADLE_PROJECT_org.gradle.daemon": "true",
+        "ORG_GRADLE_PROJECT_android.enableR8": "false"
       }
     }
   },
