@@ -14,7 +14,7 @@ set -x  # Print commands
 WORKING_DIR="${1:-.}"
 DEBUG_DIR="$WORKING_DIR/debug-artifacts"
 APP_PACKAGE="com.reown.appkit.expomultichain"
-WALLET_PACKAGE="com.walletconnect.web3modal.rnsample"
+WALLET_PACKAGE="com.walletconnect.web3wallet.rnsample.internal"
 
 ###############################################################################
 # Setup and Preparation
