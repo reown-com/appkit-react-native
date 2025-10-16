@@ -275,11 +275,11 @@ jobs:
           webhook-type: incoming-webhook
           payload: |
             {
-              "text": "AppKit Build & Test Report on Android",
+              "text": "AppKit - Maestro Test Report on Android",
               "blocks": [
                 {
                   "type": "header",
-                  "text": { "type": "plain_text", "text": "🤖 AppKit Build & Test Report on Android" }
+                  "text": { "type": "plain_text", "text": "🤖 AppKit - Maestro Test Report on Android" }
                 },
                 {
                   "type": "section",
@@ -407,12 +407,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-xcode-deriveddata-
 
-      - name: 📦 Install CocoaPods
-        working-directory: ${{ env.WORKING_DIRECTORY }}/ios
-        run: |
-          bundle install
-          bundle exec pod install --repo-update
-
       - name: 📱 Build iOS App with Xcode
         id: build
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -481,11 +475,11 @@ jobs:
           webhook-type: incoming-webhook
           payload: |
             {
-              "text": "AppKit Build & Test Report on iOS",
+              "text": "AppKit - Maestro Test Report on iOS",
               "blocks": [
                 {
                   "type": "header",
-                  "text": { "type": "plain_text", "text": "🍎 AppKit Build & Test Report on iOS" }
+                  "text": { "type": "plain_text", "text": "🍎 AppKit - Maestro Test Report on iOS" }
                 },
                 {
                   "type": "section",
