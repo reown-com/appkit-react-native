@@ -278,7 +278,7 @@ jobs:
                   "type": "section",
                   "fields": [
                     { "type": "mrkdwn", "text": "*Build APK:*\n${{ steps.build.outcome == 'success' && '✅ Success' || steps.build.outcome == 'failure' && '❌ Failed' || '⏭️ Skipped' }}" },
-                    { "type": "mrkdwn", "text": "*Tests:*\n${{ steps.tests.outcome == 'success' && format('✅ Passed ({0}/7)', steps.tests.outputs.passed_count) || steps.tests.outcome == 'failure' && format('❌ Failed ({0}/{1})', steps.tests.outputs.failed_count, steps.tests.outputs.passed_count + steps.tests.outputs.failed_count) || '⏭️ Skipped' }}" },
+                    { "type": "mrkdwn", "text": "*Tests:*\n${{ steps.tests.outcome == 'success' && format('✅ Passed ({0}/7)', steps.tests.outputs.passed_count) || steps.tests.outcome == 'failure' && format('❌ Failed ({0}/7)', steps.tests.outputs.failed_count) || '⏭️ Skipped' }}" },
                     { "type": "mrkdwn", "text": "*Overall Status:*\n${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}" }
                   ]
                 }${{ steps.tests.outcome == 'failure' && steps.tests.outputs.failed_tests != '' && format(',{{"type":"section","text":{{"type":"mrkdwn","text":"*❌ Failed Tests:*\\n{0}"}}}}', steps.tests.outputs.failed_tests) || '' }}${{ steps.tests.outcome == 'success' && steps.tests.outputs.test_results != '' && format(',{{"type":"section","text":{{"type":"mrkdwn","text":"*📊 Test Results:*\\n{0}"}}}}', steps.tests.outputs.test_results) || '' }},
@@ -465,7 +465,7 @@ jobs:
                   "type": "section",
                   "fields": [
                     { "type": "mrkdwn", "text": "*Build App:*\n${{ steps.build.outcome == 'success' && '✅ Success' || steps.build.outcome == 'failure' && '❌ Failed' || '⏭️ Skipped' }}" },
-                    { "type": "mrkdwn", "text": "*Tests:*\n${{ steps.tests.outcome == 'success' && format('✅ Passed ({0}/7)', steps.tests.outputs.passed_count) || steps.tests.outcome == 'failure' && format('❌ Failed ({0}/{1})', steps.tests.outputs.failed_count, steps.tests.outputs.passed_count + steps.tests.outputs.failed_count) || '⏭️ Skipped' }}" },
+                    { "type": "mrkdwn", "text": "*Tests:*\n${{ steps.tests.outcome == 'success' && format('✅ Passed ({0}/7)', steps.tests.outputs.passed_count) || steps.tests.outcome == 'failure' && format('❌ Failed ({0}/7)', steps.tests.outputs.failed_count) || '⏭️ Skipped' }}" },
                     { "type": "mrkdwn", "text": "*Overall Status:*\n${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}" }
                   ]
                 }${{ steps.tests.outcome == 'failure' && steps.tests.outputs.failed_tests != '' && format(',{{"type":"section","text":{{"type":"mrkdwn","text":"*❌ Failed Tests:*\\n{0}"}}}}', steps.tests.outputs.failed_tests) || '' }}${{ steps.tests.outcome == 'success' && steps.tests.outputs.test_results != '' && format(',{{"type":"section","text":{{"type":"mrkdwn","text":"*📊 Test Results:*\\n{0}"}}}}', steps.tests.outputs.test_results) || '' }},
