@@ -118,6 +118,7 @@ jobs:
             ~/.android/avd/*
             ~/.android/adb*
           key: avd-35-2
+          save-always: true
 
       - name: ☕ Set up JDK
         uses: actions/setup-java@v4
@@ -179,6 +180,7 @@ jobs:
           key: ${{ runner.os }}-prebuild-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY), format('{0}/plugins/**', env.WORKING_DIRECTORY)) }}
           restore-keys: |
             ${{ runner.os }}-prebuild-
+          save-always: true
 
       - name: 🔨 Prebuild Native Folders
         if: steps.cache-prebuild.outputs.cache-hit != 'true'
@@ -198,6 +200,7 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/android/build.gradle', env.WORKING_DIRECTORY), format('{0}/android/app/build.gradle', env.WORKING_DIRECTORY)) }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+          save-always: true
 
       - name: 📱 Build Android APK with Gradle
         id: build
@@ -376,6 +379,7 @@ jobs:
           key: ${{ runner.os }}-prebuild-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY), format('{0}/plugins/**', env.WORKING_DIRECTORY)) }}
           restore-keys: |
             ${{ runner.os }}-prebuild-
+          save-always: true
 
       - name: 🔨 Prebuild Native Folders
         if: steps.cache-prebuild-ios.outputs.cache-hit != 'true'
@@ -393,6 +397,7 @@ jobs:
           key: ${{ runner.os }}-pods-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/ios/Podfile.lock', env.WORKING_DIRECTORY)) }}
           restore-keys: |
             ${{ runner.os }}-pods-
+          save-always: true
 
       - name: 📦 Cache Xcode DerivedData
         if: inputs.clear_cache != true
@@ -402,6 +407,7 @@ jobs:
           key: ${{ runner.os }}-xcode-deriveddata-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/ios/Podfile.lock', env.WORKING_DIRECTORY)) }}
           restore-keys: |
             ${{ runner.os }}-xcode-deriveddata-
+          save-always: true
 
       - name: 📱 Build iOS App with Xcode
         id: build
