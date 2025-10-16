@@ -260,10 +260,6 @@ jobs:
           name: maestro-artifacts-android-${{ github.run_id }}
           path: |
             ${{ env.WORKING_DIRECTORY }}/.maestro/
-            ~/.maestro/tests/**/*
-            **/*.mp4
-            **/*.mov
-            **/*.png
           retention-days: 1
           if-no-files-found: warn
 
@@ -460,10 +456,6 @@ jobs:
           name: maestro-artifacts-ios-${{ github.run_id }}
           path: |
             ${{ env.WORKING_DIRECTORY }}/.maestro/
-            ~/.maestro/tests/**/*
-            **/*.mp4
-            **/*.mov
-            **/*.png
           retention-days: 1
           if-no-files-found: warn
 
