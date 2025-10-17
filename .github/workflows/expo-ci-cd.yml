@@ -259,7 +259,9 @@ jobs:
         with:
           name: maestro-artifacts-android-${{ github.run_id }}
           path: |
-            ${{ env.WORKING_DIRECTORY }}/.maestro/
+            ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.mp4
+            ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.mov
+            ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.png
           retention-days: 1
           if-no-files-found: warn
 
@@ -424,8 +426,13 @@ jobs:
             -sdk iphonesimulator \
             -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
             -derivedDataPath build \
+            -parallelizeTargets \
+            -jobs $(sysctl -n hw.ncpu) \
             CODE_SIGNING_ALLOWED=NO \
-            COMPILER_INDEX_STORE_ENABLE=NO
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            DEBUG_INFORMATION_FORMAT=dwarf \
+            | xcbeautify || true
           cp -r build/Build/Products/Release-iphonesimulator/expomultichain.app ../app-ios-dev.app
         env:
           NODE_ENV: production
@@ -456,7 +463,9 @@ jobs:
         with:
           name: maestro-artifacts-ios-${{ github.run_id }}
           path: |
-            ${{ env.WORKING_DIRECTORY }}/.maestro/
+            ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.mp4
+            ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.mov
+            ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.png
           retention-days: 1
           if-no-files-found: warn
 
