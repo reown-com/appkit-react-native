@@ -12,7 +12,7 @@ appId: com.reown.appkit.expomultichain
 - assertVisible: "Connect Wallet"
 - takeScreenshot: .maestro/screenshots/wallet-qr-load/step-01-home
 - startRecording:
-    path: ".maestro/screenshots/connect-wallet/connect-wallet-video"
+    path: ".maestro/screenshots/wallet-qr-load/wallet-qr-load-video"
     label: "Connect wallet test"
 
 # Step 2: Press Connect Wallet button
