@@ -2,9 +2,9 @@ appId: com.reown.appkit.expomultichain
 ---
 - launchApp:
     clearState: true
-- takeScreenshot: onramp/step-00-home-screen
+- takeScreenshot: .maestro/screenshots/onramp/step-00-home-screen
 - startRecording:
-    path: onramp/onramp-video
+    path: .maestro/screenshots/onramp/onramp-video
     label: "Onramp test"
 - runFlow: flows/connect-wallet-flow.yaml
 - tapOn:

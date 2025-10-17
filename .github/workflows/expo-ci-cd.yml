@@ -262,6 +262,9 @@ jobs:
             ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.mp4
             ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.mov
             ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.png
+            .maestro/**/*.mp4
+            .maestro/**/*.mov
+            .maestro/**/*.png
           retention-days: 1
           if-no-files-found: warn
 
@@ -468,6 +471,9 @@ jobs:
             ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.mp4
             ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.mov
             ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.png
+            .maestro/**/*.mp4
+            .maestro/**/*.mov
+            .maestro/**/*.png
           retention-days: 1
           if-no-files-found: warn
 

@@ -10,7 +10,7 @@ appId: com.reown.appkit.expomultichain
 - assertVisible: "AppKit"
 - assertVisible: "for React Native"
 - assertVisible: "Connect Wallet"
-- takeScreenshot: step-01-home
+- takeScreenshot: .maestro/screenshots/wallet-qr-load/step-01-home
 - startRecording:
     path: ".maestro/screenshots/connect-wallet/connect-wallet-video"
     label: "Connect wallet test"

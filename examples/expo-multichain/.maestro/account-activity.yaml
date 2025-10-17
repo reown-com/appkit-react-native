@@ -2,9 +2,9 @@ appId: com.reown.appkit.expomultichain
 ---
 - launchApp:
     clearState: true
-- takeScreenshot: account-activity/step-00-home-screen
+- takeScreenshot: .maestro/screenshots/account-activity/step-00-home-screen
 - startRecording:
-    path: account-activity/account-activity-video
+    path: .maestro/screenshots/account-activity/account-activity-video
     label: "Account activity test"
 - runFlow: flows/connect-wallet-flow.yaml
 - tapOn:
@@ -12,7 +12,7 @@ appId: com.reown.appkit.expomultichain
 - tapOn:
     id: button-activity
 - assertVisible: No activity yet
-- takeScreenshot: account-activity/step-01-no-activity
+- takeScreenshot: .maestro/screenshots/account-activity/step-01-no-activity
 - tapOn:
     id: button-back
 - tapOn:

@@ -6,7 +6,7 @@ appId: com.reown.appkit.expomultichain
 - startRecording:
     path: .maestro/screenshots/send/send-video
     label: "Send test"
-- runFlow: .maestro/flows/connect-wallet-flow.yaml
+- runFlow: flows/connect-wallet-flow.yaml
 - tapOn:
     id: account-button
 - tapOn:
