@@ -267,7 +267,8 @@ jobs:
           if-no-files-found: warn
 
       - name: Send Slack notification
-        if: always() && !cancelled()
+        # if: always() && !cancelled()
+        if: false # Temporarily disabled to build cache for CI/CD
         uses: slackapi/slack-github-action@v2.1.0
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -472,7 +473,8 @@ jobs:
           if-no-files-found: warn
 
       - name: Send Slack notification
-        if: always() && !cancelled()
+        # if: always() && !cancelled()
+        if: false # Temporarily disabled to build cache for CI/CD
         uses: slackapi/slack-github-action@v2.1.0
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
