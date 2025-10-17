@@ -259,12 +259,9 @@ jobs:
         with:
           name: maestro-artifacts-android-${{ github.run_id }}
           path: |
-            ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.mp4
-            ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.mov
-            ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.png
-            .maestro/**/*.mp4
-            .maestro/**/*.mov
-            .maestro/**/*.png
+            **/screenshots/
+            **/*.mp4
+            **/*.png
           retention-days: 1
           if-no-files-found: warn
 

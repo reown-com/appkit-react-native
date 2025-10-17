@@ -11,8 +11,7 @@ appId: com.reown.appkit.expomultichain
     id: account-button
 - tapOn:
     id: button-swap
-- tapOn:
-    id: swap-input-source-button
+- tapOn: Select Token
 - takeScreenshot: .maestro/screenshots/swaps/step-01-no-tokens-found
 - assertVisible: No tokens found
 - tapOn:

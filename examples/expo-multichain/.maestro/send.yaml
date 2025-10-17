@@ -12,10 +12,11 @@ appId: com.reown.appkit.expomultichain
 - tapOn:
     id: button-send
 - takeScreenshot: .maestro/screenshots/send/step-01-button-send
-- tapOn:
-    id: send-input-token
+- tapOn: Select Token
 - assertVisible: No tokens found
 - takeScreenshot: .maestro/screenshots/send/step-02-no-tokens-found
+- tapOn:
+    id: button-back
 - tapOn:
     id: button-back
 - tapOn:
