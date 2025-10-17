@@ -314,7 +314,7 @@ jobs:
     if: |
       github.event_name == 'pull_request' ||
       (github.event_name == 'workflow_dispatch' && (inputs.platform == 'ios' || inputs.platform == 'all'))
-    runs-on: macos-latest
+    runs-on: macos-latest-large
     steps:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
