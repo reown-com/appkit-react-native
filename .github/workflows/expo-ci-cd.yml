@@ -232,6 +232,7 @@ jobs:
           script: echo "Generated AVD snapshot for caching."
 
       - name: 🤖 Run Android Emulator and Maestro Tests
+        if: false  # Temporarily disabled to build cache for CI/CD
         id: tests
         uses: reactivecircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed
         with:
@@ -254,7 +255,7 @@ jobs:
 
       - name: 📦 Upload Maestro artifacts
         id: upload-maestro
-        if: failure()
+        if: failure() && false  # Temporarily disabled to build cache for CI/CD
         uses: actions/upload-artifact@v4
         with:
           name: maestro-artifacts-android-${{ github.run_id }}
@@ -444,6 +445,7 @@ jobs:
 
       - name: 📱 Run Maestro Tests
         id: tests
+        if: false  # Temporarily disabled to build cache for CI/CD
         timeout-minutes: 30
         run: .github/scripts/run-ios-tests.sh ${{ env.WORKING_DIRECTORY }}
 
@@ -458,7 +460,7 @@ jobs:
 
       - name: 📦 Upload Maestro artifacts
         id: upload-maestro
-        if: failure()
+        if: failure() && false  # Temporarily disabled to build cache for CI/CD
         uses: actions/upload-artifact@v4
         with:
           name: maestro-artifacts-ios-${{ github.run_id }}
