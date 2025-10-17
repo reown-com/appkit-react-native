@@ -445,7 +445,6 @@ jobs:
 
       - name: 📱 Run Maestro Tests
         id: tests
-        if: false  # Temporarily disabled to build cache for CI/CD
         timeout-minutes: 30
         run: .github/scripts/run-ios-tests.sh ${{ env.WORKING_DIRECTORY }}
 
@@ -460,17 +459,14 @@ jobs:
 
       - name: 📦 Upload Maestro artifacts
         id: upload-maestro
-        if: failure() && false  # Temporarily disabled to build cache for CI/CD
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: maestro-artifacts-ios-${{ github.run_id }}
           path: |
-            ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.mp4
-            ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.mov
-            ${{ env.WORKING_DIRECTORY }}/.maestro/**/*.png
-            .maestro/**/*.mp4
-            .maestro/**/*.mov
-            .maestro/**/*.png
+            **/screenshots/
+            **/*.mp4
+            **/*.png
           retention-days: 1
           if-no-files-found: warn
 
