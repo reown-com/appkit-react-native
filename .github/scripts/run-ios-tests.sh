@@ -137,7 +137,7 @@ for test_pair in "${tests[@]}"; do
   # Record start time
   start_time=$(date +%s)
   
-  if maestro test "$WORKING_DIR/.maestro/$test_file.yaml"; then
+  if maestro --debug-output test "$WORKING_DIR/.maestro/$test_file.yaml"; then
     end_time=$(date +%s)
     duration=$((end_time - start_time))
     echo "✅ $test_name passed (${duration}s)"
