@@ -166,7 +166,7 @@ jobs:
       - name: 📝 Create .env file
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          echo "EXPO_PUBLIC_PROJECT_ID=${{ secrets.EXPO_PROJECT_ID }}" > .env
+          echo "EXPO_PUBLIC_PROJECT_ID=${{ secrets.CLOUD_PROJECT_ID }}" > .env
 
       - name: 📦 Cache Native Folders (Prebuild Output)
         if: inputs.clear_cache != true
@@ -365,7 +365,7 @@ jobs:
       - name: 📝 Create .env file
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          echo "EXPO_PUBLIC_PROJECT_ID=${{ secrets.EXPO_PROJECT_ID }}" > .env
+          echo "EXPO_PUBLIC_PROJECT_ID=${{ secrets.CLOUD_PROJECT_ID }}" > .env
 
       - name: 📦 Cache Native Folders (Prebuild Output)
         if: inputs.clear_cache != true
