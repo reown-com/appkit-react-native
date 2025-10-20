@@ -39,8 +39,7 @@ appId: com.reown.appkit.expomultichain
 - tapOn:
     id: button-continue
 - assertVisible: Checkout
-- tapOn:
-    id: button-confirm
+- tapOn: Confirm
 - waitForAnimationToEnd
 
 ## Workaround to check if Safari is open
@@ -57,7 +56,7 @@ appId: com.reown.appkit.expomultichain
       platform: Android
     commands:
       - assertVisible:
-          id: url-bar
+          id: url_bar
 
 - runFlow:
     when:
