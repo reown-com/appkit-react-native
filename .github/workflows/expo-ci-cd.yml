@@ -148,21 +148,6 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci
 
-      - name: 📥 Download packed packages
-        uses: actions/download-artifact@v4
-        with:
-          name: packed-packages
-          path: ./packages
-
-      - name: 📦 Install Local Packages in Example App
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          npm install \
-            ../../packages/appkit.tgz \
-            ../../packages/wagmi.tgz \
-            ../../packages/solana.tgz \
-            ../../packages/bitcoin.tgz
-
       - name: 📝 Create .env file
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -198,6 +183,21 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/android/build.gradle', env.WORKING_DIRECTORY), format('{0}/android/app/build.gradle', env.WORKING_DIRECTORY)) }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+
+      - name: 📥 Download packed packages
+        uses: actions/download-artifact@v4
+        with:
+          name: packed-packages
+          path: ./packages
+
+      - name: 📦 Install Local Packages in Example App
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          npm install \
+            ../../packages/appkit.tgz \
+            ../../packages/wagmi.tgz \
+            ../../packages/solana.tgz \
+            ../../packages/bitcoin.tgz
 
       - name: 📱 Build Android APK with Gradle
         id: build
@@ -348,21 +348,6 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci
 
-      - name: 📥 Download packed packages
-        uses: actions/download-artifact@v4
-        with:
-          name: packed-packages
-          path: ./packages
-
-      - name: 📦 Install Local Packages in Example App
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          npm install \
-            ../../packages/appkit.tgz \
-            ../../packages/wagmi.tgz \
-            ../../packages/solana.tgz \
-            ../../packages/bitcoin.tgz
-
       - name: 📝 Create .env file
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -397,14 +382,30 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pods-
 
-      - name: 📦 Cache Xcode DerivedData
+      - name: 📦 Cache Xcode DerivedData & Build Products
         if: inputs.clear_cache != true
         uses: actions/cache@v4
         with:
-          path: ~/Library/Developer/Xcode/DerivedData
+          path: |
+            ~/Library/Developer/Xcode/DerivedData
           key: ${{ runner.os }}-xcode-deriveddata-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/ios/Podfile.lock', env.WORKING_DIRECTORY)) }}
           restore-keys: |
             ${{ runner.os }}-xcode-deriveddata-
+
+      - name: 📥 Download packed packages
+        uses: actions/download-artifact@v4
+        with:
+          name: packed-packages
+          path: ./packages
+
+      - name: 📦 Install Local Packages in Example App
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          npm install \
+            ../../packages/appkit.tgz \
+            ../../packages/wagmi.tgz \
+            ../../packages/solana.tgz \
+            ../../packages/bitcoin.tgz
 
       - name: 📱 Setup iOS Simulator
         uses: futureware-tech/simulator-action@dab10d813144ef59b48d401cd95da151222ef8cd
