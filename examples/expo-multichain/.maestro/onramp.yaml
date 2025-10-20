@@ -17,8 +17,7 @@ appId: com.reown.appkit.expomultichain
 - tapOn:
     id: button-select-country
 - takeScreenshot: onramp-step-03-button-select-country
-- tapOn:
-    id: wui-input-text
+- tapOn: Search country
 - inputText: United States
 - takeScreenshot: onramp-step-04-settings-screen
 - tapOn:
