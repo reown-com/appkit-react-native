@@ -20,6 +20,7 @@ on:
       - ".github/**"
       - ".maestro/**"
   pull_request:
+    types: [opened]
     branches: [main, development]
   workflow_dispatch:
     inputs:
