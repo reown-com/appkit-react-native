@@ -228,7 +228,7 @@ jobs:
           force-avd-creation: false
           avd-name: Pixel_8_API_35
           disable-animations: true
-          emulator-options: -no-snapshot-save -no-snapshot-load -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: echo "Generated AVD snapshot for caching."
 
       - name: 🤖 Run Android Emulator and Maestro Tests
@@ -240,7 +240,7 @@ jobs:
           force-avd-creation: false
           avd-name: Pixel_8_API_35
           disable-animations: true
-          emulator-options: -no-snapshot-save -no-snapshot-load -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: .github/scripts/run-android-tests.sh ${{ env.WORKING_DIRECTORY }}
 
       - name: 📦 Upload debug artifacts
