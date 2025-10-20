@@ -2,17 +2,15 @@ appId: com.reown.appkit.expomultichain
 ---
 - launchApp:
     clearState: true
-- takeScreenshot: .maestro/screenshots/swaps/step-00-home-screen
-- startRecording:
-    path: .maestro/screenshots/swaps/swaps-video
-    label: "Swaps test"
+- takeScreenshot: swaps-step-00-home-screen
+- startRecording: swaps-video
 - runFlow: flows/connect-wallet-flow.yaml
 - tapOn:
     id: account-button
 - tapOn:
     id: button-swap
 - tapOn: Select Token
-- takeScreenshot: .maestro/screenshots/swaps/step-01-no-tokens-found
+- takeScreenshot: swaps-step-01-no-tokens-found
 - assertVisible: No tokens found
 - tapOn:
     id: button-back

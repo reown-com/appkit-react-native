@@ -2,28 +2,31 @@ appId: com.reown.appkit.expomultichain
 ---
 - launchApp:
     clearState: true
-- takeScreenshot: .maestro/screenshots/onramp/step-00-home-screen
-- startRecording:
-    path: .maestro/screenshots/onramp/onramp-video
-    label: "Onramp test"
+- takeScreenshot: onramp-step-00-home-screen
+- startRecording: onramp-video
 - runFlow: flows/connect-wallet-flow.yaml
 - tapOn:
     id: account-button
 - tapOn:
     id: button-onramp
+- takeScreenshot: onramp-step-01-button-onramp
 - tapOn:
     id: button-onramp-settings
 - waitForAnimationToEnd
+- takeScreenshot: onramp-step-02-button-onramp-settings
 - tapOn:
     id: button-select-country
+- takeScreenshot: onramp-step-03-button-select-country
 - tapOn:
     id: wui-input-text
 - inputText: United States
+- takeScreenshot: onramp-step-04-settings-screen
 - tapOn:
     id: country-item-US
 - assertVisible: US Dollar
 - tapOn:
     id: button-back
+- takeScreenshot: onramp-step-05-main-screen
 - assertVisible:
     id: payment-method-button
 - tapOn:
@@ -33,14 +36,18 @@ appId: com.reown.appkit.expomultichain
 - tapOn:
     id: key-0
 - assertNotVisible: Enter a valid amount
+- takeScreenshot: onramp-step-06-main-screen
 - waitForAnimationToEnd
 - assertNotVisible:
     id: currency-input-error
-- tapOn:
-    id: button-continue
+
+- tapOn: Continue
+- takeScreenshot: onramp-step-07-checkout-screen
 - assertVisible: Checkout
 - tapOn: Confirm
+- takeScreenshot: onramp-step-08-loading-screen
 - waitForAnimationToEnd
+- takeScreenshot: onramp-step-09-browser
 
 ## Workaround to check if Safari is open
 - runFlow:
@@ -69,6 +76,7 @@ appId: com.reown.appkit.expomultichain
       platform: Android
     commands:
       - back
+- takeScreenshot: onramp-step-10-back-to-app
 - assertVisible: Please wait while we redirect you to finalize your purchase.
 - tapOn:
     id: button-back
@@ -76,5 +84,6 @@ appId: com.reown.appkit.expomultichain
     id: button-back
 - tapOn:
     id: button-back
+- takeScreenshot: onramp-step-11-back-to-app
 - tapOn:
     id: button-disconnect

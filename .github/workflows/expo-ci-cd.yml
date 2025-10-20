@@ -260,6 +260,8 @@ jobs:
           name: maestro-artifacts-android-${{ github.run_id }}
           path: |
             ${{ env.WORKING_DIRECTORY }}/.maestro/**
+            .maestro/**
+            ~/.maestro/**
           retention-days: 1
           if-no-files-found: warn
 
