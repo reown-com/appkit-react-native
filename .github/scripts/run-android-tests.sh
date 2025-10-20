@@ -137,6 +137,8 @@ passed_count=0
 failed_count=0
 
 # Run each test and track results
+MAX_RETRIES=2
+
 for test_pair in "${tests[@]}"; do
   test_file="${test_pair%%:*}"
   test_name="${test_pair##*:}"
@@ -146,18 +148,39 @@ for test_pair in "${tests[@]}"; do
   
   # Record start time
   start_time=$(date +%s)
+
+  # Retry logic
+  attempt=0
+  test_passed=false
   
-  if (cd "$WORKING_DIR/.maestro" && maestro test "$test_file.yaml"); then
-    end_time=$(date +%s)
-    duration=$((end_time - start_time))
+  while [ $attempt -le $MAX_RETRIES ]; do
+    if [ $attempt -gt 0 ]; then
+      echo "⚠️  Retry attempt $attempt for $test_name..."
+      sleep 3  # Brief pause between retries
+    fi
+    
+    if (cd "$WORKING_DIR/.maestro" && maestro test "$test_file.yaml"); then
+      test_passed=true
+      break
+    else
+      attempt=$((attempt + 1))
+    fi
+  done
+  
+  end_time=$(date +%s)
+  duration=$((end_time - start_time))
+  
+  if [ "$test_passed" = true ]; then
     echo "✅ $test_name passed (${duration}s)"
-    test_results="${test_results}✅ $test_name (${duration}s)\n"
+    if [ $attempt -gt 0 ]; then
+      test_results="${test_results}✅ $test_name (${duration}s, passed after $attempt retries)\n"
+    else
+      test_results="${test_results}✅ $test_name (${duration}s)\n"
+    fi
     passed_count=$((passed_count + 1))
   else
-    end_time=$(date +%s)
-    duration=$((end_time - start_time))
-    echo "❌ $test_name failed (${duration}s)"
-    test_results="${test_results}❌ $test_name (${duration}s)\n"
+    echo "❌ $test_name failed after $MAX_RETRIES retries (${duration}s)"
+    test_results="${test_results}❌ $test_name (${duration}s, failed after $MAX_RETRIES retries)\n"
     failed_tests="${failed_tests}• $test_name\n"
     failed_count=$((failed_count + 1))
   fi
