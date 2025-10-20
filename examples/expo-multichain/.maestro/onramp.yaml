@@ -47,22 +47,7 @@ appId: com.reown.appkit.expomultichain
 - takeScreenshot: onramp-step-08-loading-screen
 - waitForAnimationToEnd
 - takeScreenshot: onramp-step-09-browser
-
-## Workaround to check if Safari is open
-- runFlow:
-    when:
-      platform: iOS
-    commands:
-      - assertVisible:
-          id: breadcrumb
-
-## Workaround to check if Chrome is open
-- runFlow:
-    when:
-      platform: Android
-    commands:
-      - assertVisible:
-          id: url_bar
+- waitForAnimationToEnd
 
 - runFlow:
     when:
@@ -70,11 +55,13 @@ appId: com.reown.appkit.expomultichain
     commands:
       - tapOn:
           id: breadcrumb
+
 - runFlow:
     when:
       platform: Android
     commands:
       - back
+
 - takeScreenshot: onramp-step-10-back-to-app
 - assertVisible: Please wait while we redirect you to finalize your purchase.
 - tapOn:
