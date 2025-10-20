@@ -267,10 +267,7 @@ jobs:
         with:
           name: maestro-artifacts-android-${{ github.run_id }}
           path: |
-            ${{ env.WORKING_DIRECTORY }}/.maestro/**
-            .maestro/**
-            ~/.maestro/**
-          retention-days: 1
+            ${{ env.WORKING_DIRECTORY }}/.maestro/
           if-no-files-found: warn
 
       - name: 🔔 Send Slack notification
@@ -475,9 +472,7 @@ jobs:
         with:
           name: maestro-artifacts-ios-${{ github.run_id }}
           path: |
-            ${{ env.WORKING_DIRECTORY }}/.maestro/**
-            .maestro/**
-            ~/.maestro/**
+            ${{ env.WORKING_DIRECTORY }}/.maestro/
           retention-days: 1
           if-no-files-found: warn
 
