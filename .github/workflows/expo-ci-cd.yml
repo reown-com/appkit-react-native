@@ -5,14 +5,22 @@ permissions:
   contents: read
 
 on:
-  # push:
-  #   branches: [main, development]
-  #   paths-ignore:
-  #     - "**.md"
-  #     - "LICENSE"
-  #     - "docs/**"
-  # pull_request:
-  #   branches: [main, development]
+  push:
+    branches: [main, development]
+    paths-ignore:
+      - "**.md"
+      - "examples/**"
+      - "apps/**"
+      - ".vscode/**"
+      - ".yarn/**"
+      - ".gitignore"
+      - ".prettierignore"
+      - ".changeset/**"
+      - ".cursor/**"
+      - ".github/**"
+      - ".maestro/**"
+  pull_request:
+    branches: [main, development]
   workflow_dispatch:
     inputs:
       platform:
@@ -271,8 +279,7 @@ jobs:
           if-no-files-found: warn
 
       - name: 🔔 Send Slack notification
-        # if: always() && !cancelled()
-        if: false # Temporarily disabled to build cache for CI/CD
+        if: always() && !cancelled()
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -477,8 +484,7 @@ jobs:
           if-no-files-found: warn
 
       - name: 🔔 Send Slack notification
-        # if: always() && !cancelled()
-        if: false # Temporarily disabled to build cache for CI/CD
+        if: always() && !cancelled()
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
