@@ -61,6 +61,7 @@ export function OnRampView() {
   const purchaseCurrencyCode =
     purchaseCurrency?.currencyCode?.split('_')[0] ?? purchaseCurrency?.currencyCode;
   const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
+  const isContinueDisabled = quotesLoading || loading || !selectedQuote;
 
   const getQuotes = useCallback(() => {
     if (OnRampController.canGenerateQuote()) {
@@ -240,8 +241,8 @@ export function OnRampView() {
             <Button
               style={styles.continueButton}
               onPress={handleContinue}
-              disabled={quotesLoading || loading || !selectedQuote}
-              testID="button-continue"
+              disabled={isContinueDisabled}
+              testID={`button-continue${isContinueDisabled ? '-disabled' : '-enabled'}`}
             >
               Continue
             </Button>

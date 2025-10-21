@@ -39,7 +39,24 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-build-properties",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "buildArchs": ["x86_64"],
+            "buildReactNativeFromSource": true,
+            "enableShrinkResourcesInReleaseBuilds": false,
+            "enableMinifyInReleaseBuilds": false
+          },
+          "ios": {
+            "ccacheEnabled": true,
+            "buildReactNativeFromSource": true
+          }
+        }
+      ],
+      "./plugins/withGradleOptimizations.js"
     ],
     "experiments": {
       "typedRoutes": true

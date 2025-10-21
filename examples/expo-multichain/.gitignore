@@ -46,5 +46,5 @@ credentials.json
 /android
 
 # maestro
-.maestro/screenshots/
+.maestro/*.png
 .maestro/*.mp4

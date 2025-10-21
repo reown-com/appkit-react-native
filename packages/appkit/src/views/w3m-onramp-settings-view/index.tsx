@@ -90,6 +90,7 @@ export function OnRampSettingsView() {
           chevron
           style={styles.firstItem}
           contentStyle={styles.listItem}
+          testID="button-select-country"
         >
           <FlexView
             alignItems="center"
@@ -111,7 +112,12 @@ export function OnRampSettingsView() {
             ) : null}
           </FlexView>
         </ListItem>
-        <ListItem onPress={onPaymentCurrencyPress} chevron contentStyle={styles.listItem}>
+        <ListItem
+          onPress={onPaymentCurrencyPress}
+          chevron
+          contentStyle={styles.listItem}
+          testID="button-select-currency"
+        >
           <FlexView
             alignItems="center"
             justifyContent="center"

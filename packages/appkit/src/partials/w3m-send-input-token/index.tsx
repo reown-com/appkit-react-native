@@ -20,6 +20,7 @@ export interface SendInputTokenProps {
   style?: StyleProp<ViewStyle>;
   onTokenPress?: () => void;
   loading?: boolean;
+  testID?: string;
 }
 
 export function SendInputToken({
@@ -27,7 +28,8 @@ export function SendInputToken({
   sendTokenAmount,
   style,
   onTokenPress,
-  loading
+  loading,
+  testID
 }: SendInputTokenProps) {
   const Theme = useTheme();
   const valueInputRef = useRef<TextInput | null>(null);
@@ -86,12 +88,14 @@ export function SendInputToken({
           selectTextOnFocus={false}
           numberOfLines={1}
           autoFocus={!!token}
+          testID={testID}
         />
         <TokenButton
           imageUrl={token?.iconUrl}
           text={token?.symbol}
           onPress={onTokenPress}
           chevron
+          testID={testID ? `${testID}-button` : undefined}
         />
       </FlexView>
       {token ? (

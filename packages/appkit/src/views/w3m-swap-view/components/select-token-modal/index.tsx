@@ -98,7 +98,7 @@ export function SwapSelectTokenModal({ onClose, type, style, visible }: Props) {
           alignItems="center"
           padding={['0', 'm', 'm', 'm']}
         >
-          <IconLink icon="chevronLeft" size="md" onPress={onClose} />
+          <IconLink icon="chevronLeft" size="md" onPress={onClose} testID="button-back" />
           <Text variant="paragraph-600">Select token</Text>
           <View style={styles.iconPlaceholder} />
         </FlexView>

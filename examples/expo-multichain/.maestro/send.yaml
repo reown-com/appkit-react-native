@@ -1,0 +1,22 @@
+appId: com.reown.appkit.expomultichain
+---
+- launchApp:
+    clearState: true
+- takeScreenshot: send-step-00-home-screen
+- startRecording: send-video
+- runFlow: flows/connect-wallet-flow.yaml
+- tapOn:
+    id: account-button
+- tapOn:
+    id: button-send
+- takeScreenshot: send-step-01-button-send
+- tapOn: Select Token
+- assertVisible: No tokens found
+- takeScreenshot: send-step-02-no-tokens-found
+- tapOn:
+    id: button-back
+- tapOn:
+    id: button-back
+- tapOn:
+    id: button-disconnect
+- stopRecording

@@ -33,12 +33,40 @@ maestro test .maestro/wallet-qr-load.yaml || {
 }
 
 echo ""
-echo "📱 Running connection test..."
-maestro test .maestro/connect-wallet.yaml || {
-    echo "❌ Detailed connection test failed"
+echo "📱 Running switch network test..."
+maestro test .maestro/switch-network.yaml || {
+    echo "❌ Switch network test failed"
     exit 1
 }
 
+echo ""
+echo "📱 Running account activity test..."
+maestro test .maestro/account-activity.yaml || {
+    echo "❌ Account activity test failed"
+    exit 1
+}
+
+
+echo ""
+echo "📱 Running send test..."
+maestro test .maestro/send.yaml || {
+    echo "❌ Send test failed"
+    exit 1
+}
+
+echo ""
+echo "📱 Running swap test..."
+maestro test .maestro/swaps.yaml || {
+    echo "❌ Swap test failed"
+    exit 1
+}
+
+echo ""
+echo "📱 Running onramp test..."
+maestro test .maestro/onramp.yaml || {
+    echo "❌ Onramp test failed"
+    exit 1
+}
 
 echo ""
 echo "✅ All tests passed!"

@@ -14,14 +14,11 @@
     "production": {
       "autoIncrement": true
     },
-    "production-apk": {
+    "production-ci": {
       "extends": "production",
       "android": {
         "buildType": "apk"
-      }
-    },
-    "production-simulator": {
-      "extends": "production",
+      },
       "ios": {
         "simulator": true
       }

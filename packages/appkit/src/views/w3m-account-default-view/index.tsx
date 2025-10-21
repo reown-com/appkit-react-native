@@ -186,7 +186,12 @@ export function AccountDefaultView() {
   return (
     <>
       {showBack ? (
-        <IconLink icon="chevronLeft" style={styles.backIcon} onPress={RouterController.goBack} />
+        <IconLink
+          icon="chevronLeft"
+          style={styles.backIcon}
+          onPress={RouterController.goBack}
+          testID="header-back"
+        />
       ) : null}
       <IconLink
         icon="close"

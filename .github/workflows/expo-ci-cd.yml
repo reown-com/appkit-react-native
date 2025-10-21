@@ -5,6 +5,23 @@ permissions:
   contents: read
 
 on:
+  push:
+    branches: [main, development]
+    paths-ignore:
+      - "**.md"
+      - "examples/**"
+      - "apps/**"
+      - ".vscode/**"
+      - ".yarn/**"
+      - ".gitignore"
+      - ".prettierignore"
+      - ".changeset/**"
+      - ".cursor/**"
+      - ".github/**"
+      - ".maestro/**"
+  pull_request:
+    types: [opened]
+    branches: [main, development]
   workflow_dispatch:
     inputs:
       platform:
@@ -15,15 +32,496 @@ on:
           - android
           - ios
           - all
+      clear_cache:
+        type: boolean
+        description: "Clear all caches (prebuild, gradle, pods)"
+        default: false
+      upload_artifacts:
+        type: boolean
+        description: "Upload debug and Maestro artifacts (even on success)"
+        default: false
+
+env:
+  WORKING_DIRECTORY: examples/expo-multichain
 
 jobs:
-  test-echo:
+  # Gate job that allows skipping CI by including [skip ci] in commit message.
+  # For workflow_dispatch events, this always runs since head_commit is not available.
+  # For push/pull_request events, this checks the commit message.
+  check-skip:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      !contains(github.event.head_commit.message, '[skip ci]')
     steps:
-      - name: Echo message
+      - name: Skip CI check
+        run: echo "Proceeding with workflow"
+
+  # Job 1: Build local packages
+  build-packages:
+    needs: check-skip
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: 🔨 Build all packages
+        run: yarn build
+
+      - name: 📦 Pack packages
         run: |
-          echo "✅ Workflow dispatch is working!"
-          echo "Branch: ${{ github.ref }}"
-          echo "Triggered by: ${{ github.actor }}"
-          echo "Event: ${{ github.event_name }}"
+          npm pack ./packages/appkit --pack-destination .
+          npm pack ./packages/wagmi --pack-destination .
+          npm pack ./packages/solana --pack-destination .
+          npm pack ./packages/bitcoin --pack-destination .
+          # Rename to simpler names
+          mv reown-appkit-react-native-*.tgz appkit.tgz
+          mv reown-appkit-wagmi-react-native-*.tgz wagmi.tgz
+          mv reown-appkit-solana-react-native-*.tgz solana.tgz
+          mv reown-appkit-bitcoin-react-native-*.tgz bitcoin.tgz
+
+      - name: 📤 Upload packed packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packed-packages
+          path: |
+            appkit.tgz
+            wagmi.tgz
+            solana.tgz
+            bitcoin.tgz
+          retention-days: 1
+
+  # Job 2: Build and test PR - Android
+  pr-build-test-android:
+    needs: build-packages
+    timeout-minutes: 60
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_dispatch' && (inputs.platform == 'android' || inputs.platform == 'all'))
+    runs-on: ubuntu-16core
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚡ Enable KVM
+        run: |
+          # Allow all users to access KVM for hardware-accelerated virtualization
+          # MODE="0666" (rw-rw-rw-) grants read+write access to owner, group, and all users
+          # This is required for Android Studio emulator and other virtualization tools to work without sudo
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls /dev/kvm
+
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-35-2
+
+      - name: ☕ Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🏗 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: 'npm'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
+
+      - name: Configure AWS credentials
+        id: aws-creds
+        uses: aws-actions/configure-aws-credentials@00943011d9042930efac3dcd3a170e4273319bc8
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/prod-github-actions-react-native-builds-readonly
+          aws-region: eu-central-1
+          output-env-credentials: false
+          output-credentials: true
+      
+      - name: Download Android Wallet build
+        env:
+          AWS_REGION: eu-central-1
+          AWS_ACCESS_KEY_ID: ${{ steps.aws-creds.outputs.aws-access-key-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.aws-creds.outputs.aws-secret-access-key }}
+          AWS_SESSION_TOKEN: ${{ steps.aws-creds.outputs.aws-session-token }}
+        run: |
+          aws s3 cp \
+            s3://walletconnect.react-native-builds.prod/android/internal/wallet-internal.apk \
+            ${{ env.WORKING_DIRECTORY }}/wallet.apk
+
+      - name: 📦 Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm ci
+
+      - name: 📝 Create .env file
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "EXPO_PUBLIC_PROJECT_ID=${{ secrets.CLOUD_PROJECT_ID }}" > .env
+
+      - name: 📦 Cache Native Folders (Prebuild Output)
+        if: inputs.clear_cache != true
+        id: cache-prebuild
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.WORKING_DIRECTORY }}/android
+            ${{ env.WORKING_DIRECTORY }}/ios
+          key: ${{ runner.os }}-prebuild-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY), format('{0}/plugins/**', env.WORKING_DIRECTORY)) }}
+
+      - name: 🔨 Prebuild Native Folders
+        if: steps.cache-prebuild.outputs.cache-hit != 'true'
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npx expo prebuild --clean
+
+      - name: 📦 Cache Gradle
+        if: inputs.clear_cache != true
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ${{ env.WORKING_DIRECTORY }}/android/.gradle
+            ${{ env.WORKING_DIRECTORY }}/android/build
+            ${{ env.WORKING_DIRECTORY }}/android/app/build
+          key: ${{ runner.os }}-gradle-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/android/build.gradle', env.WORKING_DIRECTORY), format('{0}/android/app/build.gradle', env.WORKING_DIRECTORY)) }}
+
+      - name: 📥 Download packed packages
+        uses: actions/download-artifact@v4
+        with:
+          name: packed-packages
+          path: ./packages
+
+      - name: 📦 Install Local Packages in Example App
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          npm install \
+            ../../packages/appkit.tgz \
+            ../../packages/wagmi.tgz \
+            ../../packages/solana.tgz \
+            ../../packages/bitcoin.tgz
+
+      - name: 📱 Build Android APK with Gradle
+        id: build
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          cd android
+          chmod +x ./gradlew
+          ./gradlew assembleRelease
+          cp app/build/outputs/apk/release/app-release.apk ../app-dev.apk
+        env:
+          NODE_ENV: production
+          ORG_GRADLE_PROJECT_reactNativeArchitectures: x86_64
+
+      - name: 🧪 Setup Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: 🤖 Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_7
+          disk-size: 512M
+          heap-size: 1G
+          force-avd-creation: false
+          avd-name: Pixel_8_API_35
+          disable-animations: true
+          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: 🤖 Run Android Emulator and Maestro Tests
+        id: tests
+        uses: reactivecircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed
+        with:
+          api-level: 35
+          arch: x86_64
+          force-avd-creation: false
+          avd-name: Pixel_8_API_35
+          disable-animations: true
+          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: .github/scripts/run-android-tests.sh ${{ env.WORKING_DIRECTORY }}
+
+      - name: 📦 Upload debug artifacts
+        if: failure() || inputs.upload_artifacts == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-artifacts-android-${{ github.run_id }}
+          path: ${{ env.WORKING_DIRECTORY }}/debug-artifacts/
+          retention-days: 1
+          if-no-files-found: warn
+
+      - name: 📦 Upload Maestro artifacts
+        id: upload-maestro
+        if: failure() || inputs.upload_artifacts == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-artifacts-android-${{ github.run_id }}
+          path: ~/.maestro/tests/
+          if-no-files-found: warn
+
+      - name: 🔔 Send Slack notification
+        if: always() && !cancelled()
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "AppKit - Maestro Test Report on Android",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "🤖 AppKit - Maestro Test Report on Android" }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
+                    { "type": "mrkdwn", "text": "*Event:*\n`${{ github.event_name }}`" },
+                    { "type": "mrkdwn", "text": "*Triggered by:*\n`${{ github.actor }}`" },
+                    { "type": "mrkdwn", "text": "*Commit:*\n`${{ github.sha }}`" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Build APK:*\n${{ steps.build.outcome == 'success' && '✅ Success' || steps.build.outcome == 'failure' && '❌ Failed' || '⏭️ Skipped' }}" },
+                    { "type": "mrkdwn", "text": "*Tests:*\n${{ steps.tests.outcome == 'success' && format('✅ Passed ({0}/7)', steps.tests.outputs.passed_count) || steps.tests.outcome == 'failure' && format('❌ Failed ({0}/7)', steps.tests.outputs.failed_count) || '⏭️ Skipped' }}" },
+                    { "type": "mrkdwn", "text": "*Overall Status:*\n${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}" }
+                  ]
+                }${{ steps.tests.outputs.test_results != '' && format(',{{"type":"section","text":{{"type":"mrkdwn","text":"*📊 Test Results:*\n{0}"}}}}', steps.tests.outputs.test_results) || '' }},
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "View Workflow Run" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }${{ steps.tests.outcome == 'failure' && steps.upload-maestro.outcome == 'success' && format(',{{"type":"button","text":{{"type":"plain_text","text":"📹 View Maestro Artifacts"}},"url":"{0}/{1}/actions/runs/{2}","style":"danger"}}', github.server_url, github.repository, github.run_id) || '' }}
+                  ]
+                }
+              ]
+            }
+
+  # Job 3: Build and test PR - iOS
+  pr-build-test-ios:
+    needs: build-packages
+    timeout-minutes: 60
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_dispatch' && (inputs.platform == 'ios' || inputs.platform == 'all'))
+    runs-on: macos-latest-large
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: 'npm'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
+
+      - name: Configure AWS credentials
+        id: aws-creds
+        uses: aws-actions/configure-aws-credentials@00943011d9042930efac3dcd3a170e4273319bc8
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/prod-github-actions-react-native-builds-readonly
+          aws-region: eu-central-1
+          output-env-credentials: false
+          output-credentials: true
+      
+      - name: 📥 Download and extract iOS Wallet build
+        env:
+          AWS_REGION: eu-central-1
+          AWS_ACCESS_KEY_ID: ${{ steps.aws-creds.outputs.aws-access-key-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.aws-creds.outputs.aws-secret-access-key }}
+          AWS_SESSION_TOKEN: ${{ steps.aws-creds.outputs.aws-session-token }}
+        run: |
+          aws s3 cp \
+            s3://walletconnect.react-native-builds.prod/ios/internal/wallet-internal.ipa \
+            ${{ env.WORKING_DIRECTORY }}/wallet.ipa
+          cd ${{ env.WORKING_DIRECTORY }}
+          unzip -q wallet.ipa
+          mv Payload/*.app ./wallet.app
+
+      - name: 📦 Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm ci
+
+      - name: 📝 Create .env file
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "EXPO_PUBLIC_PROJECT_ID=${{ secrets.CLOUD_PROJECT_ID }}" > .env
+
+      - name: 📦 Cache Native Folders (Prebuild Output)
+        if: inputs.clear_cache != true
+        id: cache-prebuild-ios
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.WORKING_DIRECTORY }}/android
+            ${{ env.WORKING_DIRECTORY }}/ios
+          key: ${{ runner.os }}-prebuild-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/app.json', env.WORKING_DIRECTORY), format('{0}/plugins/**', env.WORKING_DIRECTORY)) }}
+
+      - name: 🔨 Prebuild Native Folders
+        if: steps.cache-prebuild-ios.outputs.cache-hit != 'true'
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npx expo prebuild --clean
+
+      - name: 📦 Cache CocoaPods
+        if: inputs.clear_cache != true
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+            ${{ env.WORKING_DIRECTORY }}/ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/ios/Podfile.lock', env.WORKING_DIRECTORY)) }}
+
+      - name: 📦 Cache Xcode DerivedData & Build Products
+        if: inputs.clear_cache != true
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.WORKING_DIRECTORY }}/ios/build
+          key: ${{ runner.os }}-xcode-deriveddata-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY), format('{0}/ios/Podfile.lock', env.WORKING_DIRECTORY)) }}
+
+      - name: 📥 Download packed packages
+        uses: actions/download-artifact@v4
+        with:
+          name: packed-packages
+          path: ./packages
+
+      - name: 📦 Install Local Packages in Example App
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          npm install \
+            ../../packages/appkit.tgz \
+            ../../packages/wagmi.tgz \
+            ../../packages/solana.tgz \
+            ../../packages/bitcoin.tgz
+
+      - name: 📱 Setup iOS Simulator
+        uses: futureware-tech/simulator-action@dab10d813144ef59b48d401cd95da151222ef8cd
+        with:
+          model: 'iPhone 16'
+          os: iOS
+          os_version: '>=18.0'
+          wait_for_boot: true
+          erase_before_boot: false
+
+      - name: 📱 Build iOS App with Xcode
+        id: build
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          cd ios
+          xcodebuild \
+            -workspace expomultichain.xcworkspace \
+            -scheme expomultichain \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -derivedDataPath build \
+            -parallelizeTargets \
+            -jobs $(sysctl -n hw.ncpu) \
+            CODE_SIGNING_ALLOWED=NO \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            DEBUG_INFORMATION_FORMAT=dwarf \
+            | xcbeautify || true
+          cp -r build/Build/Products/Release-iphonesimulator/expomultichain.app ../app-ios-dev.app
+        env:
+          NODE_ENV: production
+
+      - name: 🧪 Setup Maestro
+        run: |
+          brew tap mobile-dev-inc/tap
+          brew install maestro
+
+      - name: 📱 Run Maestro Tests
+        id: tests
+        timeout-minutes: 30
+        run: .github/scripts/run-ios-tests.sh ${{ env.WORKING_DIRECTORY }}
+
+      - name: 📦 Upload debug artifacts
+        if: failure() || inputs.upload_artifacts == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-artifacts-ios-${{ github.run_id }}
+          path: ${{ env.WORKING_DIRECTORY }}/debug-artifacts/
+          retention-days: 1
+          if-no-files-found: warn
+
+      - name: 📦 Upload Maestro artifacts
+        id: upload-maestro
+        if: failure() || inputs.upload_artifacts == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-artifacts-ios-${{ github.run_id }}
+          path: ~/.maestro/tests/
+          retention-days: 1
+          if-no-files-found: warn
+
+      - name: 🔔 Send Slack notification
+        if: always() && !cancelled()
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "AppKit - Maestro Test Report on iOS",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "🍎 AppKit - Maestro Test Report on iOS" }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
+                    { "type": "mrkdwn", "text": "*Event:*\n`${{ github.event_name }}`" },
+                    { "type": "mrkdwn", "text": "*Triggered by:*\n`${{ github.actor }}`" },
+                    { "type": "mrkdwn", "text": "*Commit:*\n`${{ github.sha }}`" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Build App:*\n${{ steps.build.outcome == 'success' && '✅ Success' || steps.build.outcome == 'failure' && '❌ Failed' || '⏭️ Skipped' }}" },
+                    { "type": "mrkdwn", "text": "*Tests:*\n${{ steps.tests.outcome == 'success' && format('✅ Passed ({0}/7)', steps.tests.outputs.passed_count) || steps.tests.outcome == 'failure' && format('❌ Failed ({0}/7)', steps.tests.outputs.failed_count) || '⏭️ Skipped' }}" },
+                    { "type": "mrkdwn", "text": "*Overall Status:*\n${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}" }
+                  ]
+                }${{ steps.tests.outputs.test_results != '' && format(',{{"type":"section","text":{{"type":"mrkdwn","text":"*📊 Test Results:*\n{0}"}}}}', steps.tests.outputs.test_results) || '' }},
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "View Workflow Run" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }${{ steps.tests.outcome == 'failure' && steps.upload-maestro.outcome == 'success' && format(',{{"type":"button","text":{{"type":"plain_text","text":"📹 View Maestro Artifacts"}},"url":"{0}/{1}/actions/runs/{2}","style":"danger"}}', github.server_url, github.repository, github.run_id) || '' }}
+                  ]
+                }
+              ]
+            }

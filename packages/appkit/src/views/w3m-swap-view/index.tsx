@@ -174,6 +174,7 @@ export function SwapView() {
             onChange={onSourceTokenChange}
             onTokenPress={() => setShowModal('sourceToken')}
             onMaxPress={onSourceMaxPress}
+            testID="swap-input-source"
           />
           <FlexView alignItems="center" justifyContent="center" style={styles.bottomInputContainer}>
             <SwapInput
@@ -186,6 +187,7 @@ export function SwapView() {
               onChange={onToTokenChange}
               onTokenPress={() => setShowModal('toToken')}
               editable={false}
+              testID="swap-input-to"
             />
             {showSwitch ? (
               <IconLink
