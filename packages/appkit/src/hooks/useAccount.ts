@@ -75,24 +75,27 @@ export function useAccount() {
   } = useSnapshot(ConnectionsController.state);
 
   const allAccounts: Account[] = useMemo(() => {
-    return Array.from(connections.values()).flatMap(_connection =>
-      _connection.accounts
-        .map(account => {
-          const [namespace, chainId, plainAddress] = account.split(':');
-          if (!plainAddress || !namespace || !chainId) {
-            LogController.sendError('Invalid account', 'useAccount.ts', 'useAccount', { account });
+    return Array.from(connections.values()).flatMap(
+      _connection =>
+        _connection.accounts
+          .map(account => {
+            const [namespace, chainId, plainAddress] = account.split(':');
+            if (!plainAddress || !namespace || !chainId) {
+              LogController.sendError('Invalid account', 'useAccount.ts', 'useAccount', {
+                account
+              });
 
-            return undefined;
-          }
+              return undefined;
+            }
 
-          return {
-            address: plainAddress,
-            namespace,
-            chainId,
-            type: _connection.type
-          };
-        })
-        .filter(account => account !== undefined)
+            return {
+              address: plainAddress,
+              namespace,
+              chainId,
+              type: _connection.type
+            };
+          })
+          .filter(account => account !== undefined) as Account[]
     );
   }, [connections]);
 
