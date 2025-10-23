@@ -1,7 +1,7 @@
 /* eslint-disable valtio/state-snapshot-rule */
+import { ConnectionsController, CoreHelperUtil } from '@reown/appkit-core-react-native';
 import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
-import { ConnectionsController, CoreHelperUtil } from '@reown/appkit-core-react-native';
 import { useAppKit } from './useAppKit';
 
 export function useAccount() {
@@ -11,8 +11,24 @@ export function useAccount() {
     activeAddress: address,
     activeNamespace,
     connection,
+    connections,
     networks
   } = useSnapshot(ConnectionsController.state);
+
+  const allAccounts = useMemo(() => {
+    return Array.from(connections.values()).flatMap(_connection =>
+      _connection.accounts.map(account => {
+        const [namespace, chainId, plainAddress] = account.split(':');
+
+        return {
+          address: plainAddress,
+          namespace,
+          chainId,
+          type: _connection.type
+        };
+      })
+    );
+  }, [connections]);
 
   const activeChain = useMemo(
     () =>
@@ -23,6 +39,7 @@ export function useAccount() {
   );
 
   return {
+    allAccounts,
     address: CoreHelperUtil.getPlainAddress(address),
     isConnected: !!address,
     chainId: activeChain?.id,
