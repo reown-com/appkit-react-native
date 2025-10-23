@@ -6,7 +6,7 @@ permissions:
 
 on:
   push:
-    branches: [main, development]
+    branches: [main, develop]
     paths-ignore:
       - "**.md"
       - "examples/**"
@@ -21,7 +21,7 @@ on:
       - ".maestro/**"
   pull_request:
     types: [opened]
-    branches: [main, development]
+    branches: [main, develop]
   workflow_dispatch:
     inputs:
       platform:
