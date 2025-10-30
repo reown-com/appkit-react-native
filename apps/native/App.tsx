@@ -18,7 +18,7 @@ import {
   bitcoin
 } from '@reown/appkit-react-native';
 
-import { Button, Text } from '@reown/appkit-ui-react-native';
+import { Text } from '@reown/appkit-ui-react-native';
 
 import { chains } from './src/utils/WagmiUtils';
 import { OpenButton } from './src/components/OpenButton';
@@ -112,9 +112,6 @@ export default function Native() {
               <ActionsView />
               <OpenButton />
               <DisconnectButton />
-              <Button size="sm" onPress={() => appKit.disconnect()}>
-                Disconnect
-              </Button>
               <EventsView style={styles.events} />
               <AppKit />
             </SafeAreaView>
