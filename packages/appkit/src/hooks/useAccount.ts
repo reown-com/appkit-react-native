@@ -7,7 +7,7 @@ import {
 import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import { useAppKit } from './useAppKit';
-import type { AccountType } from '@reown/appkit-common-react-native';
+import type { AccountType, AppKitNetwork } from '@reown/appkit-common-react-native';
 
 /**
  * Represents a blockchain account with its associated metadata
@@ -112,7 +112,7 @@ export function useAccount() {
     address: CoreHelperUtil.getPlainAddress(address),
     isConnected: !!address,
     chainId: activeChain?.id,
-    chain: activeChain,
+    chain: activeChain as AppKitNetwork,
     namespace: activeNamespace
   };
 }

@@ -1,6 +1,6 @@
 import type { ChainNamespace, CaipNetworkId } from '../common';
 
-export type Network = {
+export type BaseNetwork = {
   // Core viem/chain properties
   id: number | string;
   name: string;
@@ -22,7 +22,7 @@ export type Network = {
   imageUrl?: string;
 };
 
-export type AppKitNetwork = Network & {
+export type AppKitNetwork = BaseNetwork & {
   chainNamespace: ChainNamespace; // mandatory for AppKitNetwork
   caipNetworkId: CaipNetworkId; // mandatory for AppKitNetwork
 };
