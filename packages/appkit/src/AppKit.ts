@@ -271,29 +271,41 @@ export class AppKit {
     return this.networks;
   }
 
-  async switchNetwork(network: AppKitNetwork): Promise<void> {
+  async switchNetwork(network: AppKitNetwork | CaipNetworkId): Promise<void> {
     const { isConnected } = ConnectionsController.state;
 
+    const appKitNetwork =
+      typeof network === 'string' ? this.networks.find(n => n.caipNetworkId === network) : network;
+
+    if (!appKitNetwork) {
+      LogController.sendError(`Network not found: ${network}`, 'AppKit.ts', 'switchNetwork');
+
+      return;
+    }
+
     if (!isConnected) {
-      OptionsController.setDefaultNetwork(network);
+      OptionsController.setDefaultNetwork(appKitNetwork);
 
       return Promise.resolve();
     }
 
-    const adapter = this.getAdapterByNamespace(network.chainNamespace);
+    const adapter = this.getAdapterByNamespace(appKitNetwork.chainNamespace);
     if (!adapter) throw new Error('No active adapter');
 
-    await adapter.switchNetwork(network);
+    await adapter.switchNetwork(appKitNetwork);
 
     EventsController.sendEvent({
       type: 'track',
       event: 'SWITCH_NETWORK',
       properties: {
-        network: network.caipNetworkId
+        network: appKitNetwork.caipNetworkId
       }
     });
 
-    ConnectionsController.setActiveNetwork(network.chainNamespace, network.caipNetworkId);
+    ConnectionsController.setActiveNetwork(
+      appKitNetwork.chainNamespace,
+      appKitNetwork.caipNetworkId
+    );
   }
 
   open(options?: AppKitOpenOptions) {

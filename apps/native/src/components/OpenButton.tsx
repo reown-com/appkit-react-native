@@ -8,7 +8,7 @@ export function OpenButton() {
 
   return !isConnected ? (
     <Button testID="open-hook-button" style={styles.button} onPress={() => open()}>
-      Open hook
+      Open AppKit
     </Button>
   ) : null;
 }

@@ -112,9 +112,6 @@ export default function Native() {
               <ActionsView />
               <OpenButton />
               <DisconnectButton />
-              <Button size="sm" onPress={() => appKit.disconnect()}>
-                Disconnect
-              </Button>
               <EventsView style={styles.events} />
               <AppKit />
             </SafeAreaView>
