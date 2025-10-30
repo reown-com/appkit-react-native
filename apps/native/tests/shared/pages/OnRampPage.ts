@@ -72,9 +72,8 @@ export class OnRampPage {
   }
 
   async clickContinue() {
-    const continueButton = this.page.getByTestId('button-continue');
+    const continueButton = this.page.getByTestId('button-continue-enabled');
     await expect(continueButton).toBeVisible({ timeout: 5000 });
-    await expect(continueButton).toBeEnabled({ timeout: 5000 });
     await continueButton.click();
     // Wait for navigation
     await this.page.waitForTimeout(TIMEOUTS.ANIMATION);

@@ -17,9 +17,11 @@
   ],
   "scripts": {
     "gallery": "turbo run dev:gallery",
+    "start": "cd apps/native && yarn start",
     "android": "cd apps/native && yarn android",
     "ios": "cd apps/native && yarn ios",
     "web": "cd apps/native && yarn web",
+    "watchman:clean": "watchman shutdown-server && watchman watch-del-all",
     "build": "turbo build",
     "build:gallery": "turbo run build:gallery",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
