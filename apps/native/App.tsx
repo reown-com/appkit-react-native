@@ -18,7 +18,7 @@ import {
   bitcoin
 } from '@reown/appkit-react-native';
 
-import { Button, Text } from '@reown/appkit-ui-react-native';
+import { Text } from '@reown/appkit-ui-react-native';
 
 import { chains } from './src/utils/WagmiUtils';
 import { OpenButton } from './src/components/OpenButton';
