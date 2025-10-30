@@ -271,6 +271,13 @@ export class AppKit {
     return this.networks;
   }
 
+  /**
+   * Switches to a different network.
+   * @param network - Either an AppKitNetwork object or a CAIP network ID string (e.g., 'eip155:1')
+   * @throws {Error} When the network is not found in configured networks
+   * @throws {Error} When no active adapter is available (only when connected)
+   * @returns Promise that resolves when the network switch is complete
+   */
   async switchNetwork(network: AppKitNetwork | CaipNetworkId): Promise<void> {
     const { isConnected } = ConnectionsController.state;
 
@@ -278,15 +285,16 @@ export class AppKit {
       typeof network === 'string' ? this.networks.find(n => n.caipNetworkId === network) : network;
 
     if (!appKitNetwork) {
+      const error = new Error(`Network not found: ${network}`);
       LogController.sendError(`Network not found: ${network}`, 'AppKit.ts', 'switchNetwork');
 
-      return;
+      throw error;
     }
 
     if (!isConnected) {
       OptionsController.setDefaultNetwork(appKitNetwork);
 
-      return Promise.resolve();
+      return;
     }
 
     const adapter = this.getAdapterByNamespace(appKitNetwork.chainNamespace);
