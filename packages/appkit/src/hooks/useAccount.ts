@@ -111,7 +111,7 @@ export function useAccount() {
     allAccounts,
     address: CoreHelperUtil.getPlainAddress(address),
     isConnected: !!address,
-    chainId: String(activeChain?.id),
+    chainId: activeChain?.id !== undefined ? String(activeChain.id) : undefined,
     chain: activeChain as AppKitNetwork | undefined,
     namespace: activeNamespace
   };
