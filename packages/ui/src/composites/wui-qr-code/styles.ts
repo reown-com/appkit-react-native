@@ -8,8 +8,5 @@ export default StyleSheet.create({
     borderRadius: BorderRadius.l,
     padding: Spacing.l,
     alignSelf: 'center'
-  },
-  icon: {
-    position: 'absolute'
   }
 });

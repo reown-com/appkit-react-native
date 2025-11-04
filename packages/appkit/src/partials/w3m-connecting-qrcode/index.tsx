@@ -65,7 +65,7 @@ export function ConnectingQrCode() {
       flexDirection={isPortrait ? 'column' : 'row'}
       padding={['xl', 'xl', 'xs', 'xl']}
     >
-      <QrCode size={qrSize} uri={wcUri} testID="qr-code" />
+      <QrCode size={qrSize} uri={wcUri} testID="qr-code" logoBorderRadius={20} logoSize={60} />
       <FlexView alignItems="center" margin="m">
         <Text variant="paragraph-500">Scan this QR code with your phone</Text>
         {showCopy ? (
