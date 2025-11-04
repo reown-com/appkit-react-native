@@ -1,10 +1,10 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useMemo } from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg, { Circle, Line, Rect } from 'react-native-svg';
 import { Icon } from '../../components/wui-icon';
 import { Image } from '../../components/wui-image';
 import { Shimmer } from '../../components/wui-shimmer';
-import { QRCodeUtil, type QRData } from '../../utils/QRCodeUtil';
+import { QRCodeUtil } from '../../utils/QRCodeUtil';
 import { BorderRadius, LightTheme, Spacing } from '../../utils/ThemeUtil';
 import type { IconType } from '../../utils/TypesUtil';
 import styles from './styles';
@@ -37,37 +37,13 @@ export function QrCode_({
   const qrSize = size - containerPadding * 2;
   const _logoSize = arenaClear ? 0 : logoSize ?? qrSize / 4;
 
-  const [qrData, setQrData] = useState<QRData | null>(null);
-
   const dotColor = Theme['inverse-000'];
   const edgeColor = Theme['inverse-100'];
 
-  useEffect(() => {
-    if (!uri) {
-      setQrData(null);
-
-      return;
-    }
-
-    let cancelled = false;
-
-    // Run QR generation asynchronously
-    QRCodeUtil.generateAsync(uri, qrSize, _logoSize, logoBorderRadius)
-      .then(data => {
-        if (!cancelled) {
-          setQrData(data);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setQrData(null);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [uri, qrSize, _logoSize, logoBorderRadius]);
+  const qrData = useMemo(
+    () => (uri ? QRCodeUtil.generate(uri, qrSize, _logoSize, logoBorderRadius) : null),
+    [uri, qrSize, _logoSize, logoBorderRadius]
+  );
 
   const logoTemplate = () => {
     if (arenaClear) {
@@ -116,9 +92,9 @@ export function QrCode_({
     >
       <Svg height={qrSize} width={qrSize}>
         {/* Render rectangles */}
-        {qrData.rects.map((rect, idx) => (
+        {qrData.rects.map(rect => (
           <Rect
-            key={`rect_${idx}`}
+            key={`rect_${rect.x}_${rect.y}`}
             fill={rect.fillType === 'dot' ? dotColor : edgeColor}
             height={rect.size}
             rx={rect.size * 0.32}
@@ -130,9 +106,9 @@ export function QrCode_({
         ))}
 
         {/* Render circles */}
-        {qrData.circles.map((circle, idx) => (
+        {qrData.circles.map(circle => (
           <Circle
-            key={`circle_${idx}`}
+            key={`circle_${circle.cx}_${circle.cy}`}
             cx={circle.cx}
             cy={circle.cy}
             fill={dotColor}
@@ -141,9 +117,9 @@ export function QrCode_({
         ))}
 
         {/* Render lines */}
-        {qrData.lines.map((line, idx) => (
+        {qrData.lines.map(line => (
           <Line
-            key={`line_${idx}`}
+            key={`line_${line.x1}_${line.y1}_${line.y2}`}
             x1={line.x1}
             x2={line.x2}
             y1={line.y1}

@@ -20,6 +20,9 @@ import styles from './styles';
 import { ReownButton } from './components/ReownButton';
 import { useWindowDimensions } from 'react-native';
 
+const LOGO_SIZE = 60;
+const LOGO_BORDER_RADIUS = 20;
+
 export function ConnectingQrCode() {
   const { height, width } = useWindowDimensions();
   const windowSize = Math.min(height, width);
@@ -65,7 +68,13 @@ export function ConnectingQrCode() {
       flexDirection={isPortrait ? 'column' : 'row'}
       padding={['xl', 'xl', 'xs', 'xl']}
     >
-      <QrCode size={qrSize} uri={wcUri} testID="qr-code" logoBorderRadius={20} logoSize={60} />
+      <QrCode
+        size={qrSize}
+        uri={wcUri}
+        testID="qr-code"
+        logoBorderRadius={LOGO_BORDER_RADIUS}
+        logoSize={LOGO_SIZE}
+      />
       <FlexView alignItems="center" margin="m">
         <Text variant="paragraph-500">Scan this QR code with your phone</Text>
         {showCopy ? (

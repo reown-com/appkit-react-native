@@ -64,20 +64,9 @@ function processQRMatrix(
   const strokeWidth = cellSize / (CIRCLE_SIZE_MODIFIER / 2);
   const circleRadius = cellSize / CIRCLE_SIZE_MODIFIER;
 
-  // Pre-allocate arrays with estimated capacity
   const rects: QRData['rects'] = [];
-  rects.length = 27; // 3 corners × 3 layers × 3 = 27 rects max
-  let rectIndex = 0;
-
-  // Estimate circle capacity (roughly half the matrix minus corners and logo area)
-  const estimatedCircles = Math.floor((matrixLength * matrixLength) / 2);
   const circles: QRData['circles'] = [];
-  circles.length = estimatedCircles;
-  let circleIndex = 0;
-
   const lines: QRData['lines'] = [];
-  lines.length = Math.floor(estimatedCircles / 4);
-  let lineIndex = 0;
 
   // Generate corner rectangles - optimized with direct indexing
   const qrList = [
@@ -96,12 +85,12 @@ function processQRMatrix(
 
     for (let i = 0; i < 3; i++) {
       const dotSize = cellSize * (QRCODE_MATRIX_MARGIN - i * 2);
-      rects[rectIndex++] = {
+      rects.push({
         x: x1 + cellSize * i,
         y: y1 + cellSize * i,
         size: dotSize,
         fillType: i % 2 === 0 ? 'dot' : 'edge'
-      };
+      });
     }
   }
 
@@ -208,11 +197,11 @@ function processQRMatrix(
       if (firstCy === undefined) continue;
 
       // Single dot, add as circle
-      circles[circleIndex++] = {
+      circles.push({
         cx,
         cy: firstCy,
         r: circleRadius
-      };
+      });
       continue;
     }
 
@@ -246,21 +235,21 @@ function processQRMatrix(
 
       if (!isConnected[i]) {
         // Lonely dot - add as circle
-        circles[circleIndex++] = {
+        circles.push({
           cx,
           cy,
           r: circleRadius
-        };
+        });
 
         // Finish any ongoing line group
         if (groupStart !== -1 && groupEnd !== -1 && groupStart !== groupEnd) {
-          lines[lineIndex++] = {
+          lines.push({
             x1: cx,
             x2: cx,
             y1: groupStart,
             y2: groupEnd,
             strokeWidth
-          };
+          });
         }
         groupStart = -1;
         groupEnd = -1;
@@ -277,13 +266,13 @@ function processQRMatrix(
           } else {
             // Gap in the group, finish previous line
             if (groupStart !== groupEnd) {
-              lines[lineIndex++] = {
+              lines.push({
                 x1: cx,
                 x2: cx,
                 y1: groupStart,
                 y2: groupEnd,
                 strokeWidth
-              };
+              });
             }
             groupStart = cy;
             groupEnd = cy;
@@ -294,48 +283,34 @@ function processQRMatrix(
 
     // Don't forget the last group
     if (groupStart !== -1 && groupEnd !== -1 && groupStart !== groupEnd) {
-      lines[lineIndex++] = {
+      lines.push({
         x1: cx,
         x2: cx,
         y1: groupStart,
         y2: groupEnd,
         strokeWidth
-      };
+      });
     }
   }
-
-  // Trim arrays to actual size
-  rects.length = rectIndex;
-  circles.length = circleIndex;
-  lines.length = lineIndex;
 
   return { rects, circles, lines };
 }
 
-// Run asynchronously without blocking the UI
-export async function generateQRDataAsync(
+export function generateQRData(
   uri: string,
   size: number,
   logoSize: number,
   logoBorderRadius?: number
-): Promise<QRData> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      try {
-        if (!uri || size <= 0) {
-          throw new Error('Invalid QR code parameters');
-        }
+): QRData {
+  if (!uri || size <= 0) {
+    throw new Error('Invalid QR code parameters');
+  }
 
-        const matrix = getMatrix(uri, 'Q');
-        const data = processQRMatrix(matrix, size, logoSize, logoBorderRadius);
-        resolve(data);
-      } catch (error) {
-        reject(error);
-      }
-    }, 0);
-  });
+  const matrix = getMatrix(uri, 'Q');
+
+  return processQRMatrix(matrix, size, logoSize, logoBorderRadius);
 }
 
 export const QRCodeUtil = {
-  generateAsync: generateQRDataAsync
+  generate: generateQRData
 };
