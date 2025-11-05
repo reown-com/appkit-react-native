@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import type { ThemeMode, ThemeVariables } from '@reown/appkit-common-react-native';
 import { ThemeController } from '@reown/appkit-core-react-native';
-import { useAppKit } from './useAppKit';
+import { useAppKitContext } from './useAppKitContext';
 
 /**
  * Interface representing the result of the useAppKitTheme hook
@@ -62,7 +62,7 @@ export interface UseAppKitThemeReturn {
  * ```
  */
 export function useAppKitTheme(): UseAppKitThemeReturn {
-  useAppKit(); // Use the hook for checks
+  useAppKitContext();
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
 
   const stableFunctions = useMemo(

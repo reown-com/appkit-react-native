@@ -13,7 +13,7 @@ export interface ThemeControllerState {
 const state = proxy<ThemeControllerState>({
   themeMode: undefined,
   defaultThemeMode: undefined,
-  themeVariables: {}
+  themeVariables: undefined
 });
 
 // -- Controller ---------------------------------------- //
@@ -39,7 +39,9 @@ export const ThemeController = {
 
   setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     if (!themeVariables) {
-      state.themeVariables = {};
+      state.themeVariables = undefined;
+
+      return;
     }
 
     state.themeVariables = { ...state.themeVariables, ...themeVariables };
