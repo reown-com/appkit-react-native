@@ -7,7 +7,7 @@ import { useAppKit } from './useAppKit';
 /**
  * Interface representing the result of the useAppKitTheme hook
  */
-interface UseAppKitThemeReturn {
+export interface UseAppKitThemeReturn {
   /** The current theme mode ('dark' or 'light'), or undefined if using system default */
   themeMode: ThemeMode | undefined;
   /** The current theme variables, currently only supports 'accent' color */
