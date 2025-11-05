@@ -77,9 +77,7 @@ function processQRMatrix(
   const baseOffset = (matrixLength - QRCODE_MATRIX_MARGIN) * cellSize;
 
   for (let qrIdx = 0; qrIdx < 3; qrIdx++) {
-    const qr = qrList[qrIdx];
-    if (!qr) continue;
-
+    const qr = qrList[qrIdx]!;
     const x1 = baseOffset * qr.x;
     const y1 = baseOffset * qr.y;
 
@@ -102,9 +100,7 @@ function processQRMatrix(
 
   // Calculate circle coordinates - optimized with configurable hole shape
   for (let i = 0; i < matrixLength; i++) {
-    const row = matrix[i];
-    if (!row) continue;
-
+    const row = matrix[i]!;
     const rowLength = row.length;
 
     for (let j = 0; j < rowLength; j++) {
@@ -174,10 +170,7 @@ function processQRMatrix(
   // Build circlesToConnect - optimized loop
   const circlesToConnect: Record<number, number[]> = {};
   for (let k = 0; k < circleCoords.length; k++) {
-    const coord = circleCoords[k];
-    if (!coord) continue;
-
-    const [cx, cy] = coord;
+    const [cx, cy] = circleCoords[k]!;
     const existing = circlesToConnect[cx];
     if (existing) {
       existing.push(cy);
@@ -189,8 +182,7 @@ function processQRMatrix(
   // Process circles and lines - optimized to avoid Object.entries
   for (const cxKey in circlesToConnect) {
     const cx = Number(cxKey);
-    const cys = circlesToConnect[cxKey];
-    if (!cys) continue;
+    const cys = circlesToConnect[cxKey]!;
 
     if (cys.length === 1) {
       const firstCy = cys[0];
