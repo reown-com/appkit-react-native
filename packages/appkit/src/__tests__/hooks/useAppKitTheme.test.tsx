@@ -15,7 +15,7 @@ jest.mock('@reown/appkit-core-react-native', () => ({
   ThemeController: {
     state: {
       themeMode: undefined,
-      themeVariables: {}
+      themeVariables: undefined
     },
     setThemeMode: jest.fn(),
     setThemeVariables: jest.fn()
