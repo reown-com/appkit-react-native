@@ -5,7 +5,7 @@ describe('ThemeController', () => {
   it('should have valid default state', () => {
     expect(ThemeController.state).toEqual({
       themeMode: undefined,
-      themeVariables: {}
+      themeVariables: undefined
     });
   });
 
@@ -13,7 +13,7 @@ describe('ThemeController', () => {
     ThemeController.setThemeMode('light');
     expect(ThemeController.state).toEqual({
       themeMode: 'light',
-      themeVariables: {}
+      themeVariables: undefined
     });
   });
 });
