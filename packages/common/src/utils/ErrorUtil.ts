@@ -63,7 +63,7 @@ export const ErrorUtil = {
     if (ErrorUtil.isRpcProviderError(error)) {
       const isUserRejectedCode = error.code === ErrorUtil.RPC_ERROR_CODE.USER_REJECTED_REQUEST;
       const isUserRejectedMethodsCode =
-        error?.code === ErrorUtil.RPC_ERROR_CODE.USER_REJECTED_METHODS;
+        error.code === ErrorUtil.RPC_ERROR_CODE.USER_REJECTED_METHODS;
 
       return (
         isUserRejectedCode ||

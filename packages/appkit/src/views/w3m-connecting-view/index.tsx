@@ -61,6 +61,8 @@ export function ConnectingView() {
       if (isQr && CoreHelperUtil.isAllowedRetry(lastRetry)) {
         setLastRetry(Date.now());
         initializeConnection(true);
+
+        return;
       }
 
       const isUserRejected = ErrorUtil.isUserRejectedRequestError(error);
