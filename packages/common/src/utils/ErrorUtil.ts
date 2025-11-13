@@ -1,8 +1,7 @@
 export const ErrorUtil = {
   RPC_ERROR_CODE: {
     USER_REJECTED_REQUEST: 4001,
-    USER_REJECTED_METHODS: 5002,
-    USER_REJECTED: 5000
+    USER_REJECTED_METHODS: 5002
   } as const,
   UniversalProviderErrors: {
     UNAUTHORIZED_DOMAIN_NOT_ALLOWED: {
@@ -37,7 +36,7 @@ export const ErrorUtil = {
       longMessage: 'Project ID Not Configured - update configuration'
     }
   },
-  isRpcProviderError(error: any) {
+  isRpcProviderError(error: any): error is { message: string; code: number } {
     try {
       if (typeof error === 'object' && error !== null) {
         const objErr = error as Record<string, unknown>;
@@ -55,7 +54,7 @@ export const ErrorUtil = {
   },
   isUserRejectedMessage(message: string) {
     return (
-      message.toLowerCase().includes('user rejected') ||
+      message.toLowerCase().includes('rejected') ||
       message.toLowerCase().includes('user cancelled') ||
       message.toLowerCase().includes('user canceled')
     );
@@ -80,6 +79,35 @@ export const ErrorUtil = {
     return false;
   },
   isProposalExpiredError(error: any) {
-    return error?.message?.includes('expired');
+    if (ErrorUtil.isRpcProviderError(error)) {
+      return error.message?.toLowerCase().includes('proposal expired');
+    }
+
+    if (error) {
+      return (
+        typeof error?.message === 'string' &&
+        error.message?.toLowerCase().includes('proposal expired')
+      );
+    }
+
+    return false;
+  },
+  isWalletNotFoundError(error: any) {
+    if (error && typeof error?.message === 'string') {
+      return /wallet not found/i.test(error.message);
+    }
+
+    return false;
+  },
+  categorizeConnectionError(error: any): 'not_installed' | 'declined' | 'default' {
+    if (ErrorUtil.isWalletNotFoundError(error)) {
+      return 'not_installed';
+    }
+
+    if (ErrorUtil.isUserRejectedRequestError(error)) {
+      return 'declined';
+    }
+
+    return 'default';
   }
 };
