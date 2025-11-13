@@ -21,7 +21,7 @@ import { ReownButton } from './components/ReownButton';
 import { useWindowDimensions } from 'react-native';
 
 const LOGO_SIZE = 60;
-const LOGO_BORDER_RADIUS = 20;
+const LOGO_BORDER_RADIUS = 12;
 
 export function ConnectingQrCode() {
   const { height, width } = useWindowDimensions();
