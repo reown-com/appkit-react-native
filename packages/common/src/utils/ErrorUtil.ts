@@ -1,4 +1,9 @@
 export const ErrorUtil = {
+  RPC_ERROR_CODE: {
+    USER_REJECTED_REQUEST: 4001,
+    USER_REJECTED_METHODS: 5002,
+    USER_REJECTED: 5000
+  } as const,
   UniversalProviderErrors: {
     UNAUTHORIZED_DOMAIN_NOT_ALLOWED: {
       message: 'Unauthorized: origin not allowed',
@@ -31,5 +36,50 @@ export const ErrorUtil = {
       shortMessage: 'Project ID Not Configured',
       longMessage: 'Project ID Not Configured - update configuration'
     }
+  },
+  isRpcProviderError(error: any) {
+    try {
+      if (typeof error === 'object' && error !== null) {
+        const objErr = error as Record<string, unknown>;
+
+        const hasMessage = typeof objErr['message'] === 'string';
+        const hasCode = typeof objErr['code'] === 'number';
+
+        return hasMessage && hasCode;
+      }
+
+      return false;
+    } catch {
+      return false;
+    }
+  },
+  isUserRejectedMessage(message: string) {
+    return (
+      message.toLowerCase().includes('user rejected') ||
+      message.toLowerCase().includes('user cancelled') ||
+      message.toLowerCase().includes('user canceled')
+    );
+  },
+  isUserRejectedRequestError(error: any) {
+    if (ErrorUtil.isRpcProviderError(error)) {
+      const isUserRejectedCode = error.code === ErrorUtil.RPC_ERROR_CODE.USER_REJECTED_REQUEST;
+      const isUserRejectedMethodsCode =
+        error?.code === ErrorUtil.RPC_ERROR_CODE.USER_REJECTED_METHODS;
+
+      return (
+        isUserRejectedCode ||
+        isUserRejectedMethodsCode ||
+        ErrorUtil.isUserRejectedMessage(error.message)
+      );
+    }
+
+    if (error instanceof Error) {
+      return ErrorUtil.isUserRejectedMessage(error.message);
+    }
+
+    return false;
+  },
+  isProposalExpiredError(error: any) {
+    return error?.message?.includes('expired');
   }
 };
