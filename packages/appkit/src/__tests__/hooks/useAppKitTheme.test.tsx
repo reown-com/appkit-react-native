@@ -36,7 +36,7 @@ describe('useAppKitTheme', () => {
     // Reset ThemeController state
     ThemeController.state = {
       themeMode: undefined,
-      themeVariables: {}
+      themeVariables: undefined
     };
   });
 
@@ -55,13 +55,13 @@ describe('useAppKitTheme', () => {
     const { result } = renderHook(() => useAppKitTheme(), { wrapper });
 
     expect(result.current.themeMode).toBeUndefined();
-    expect(result.current.themeVariables).toEqual({});
+    expect(result.current.themeVariables).toBeUndefined();
   });
 
   it('should return dark theme mode when set', () => {
     ThemeController.state = {
       themeMode: 'dark',
-      themeVariables: {}
+      themeVariables: undefined
     };
 
     const { result } = renderHook(() => useAppKitTheme(), { wrapper });
@@ -72,7 +72,7 @@ describe('useAppKitTheme', () => {
   it('should return light theme mode when set', () => {
     ThemeController.state = {
       themeMode: 'light',
-      themeVariables: {}
+      themeVariables: undefined
     };
 
     const { result } = renderHook(() => useAppKitTheme(), { wrapper });
