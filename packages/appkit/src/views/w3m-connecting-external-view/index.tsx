@@ -26,6 +26,7 @@ import styles from './styles';
 import { useInternalAppKit } from '../../AppKitContext';
 import { StoreLink } from '../../partials/w3m-connecting-mobile/components/StoreLink';
 import { WcHelpersUtil } from '../../utils/HelpersUtil';
+import { ErrorUtil } from '@reown/appkit-common-react-native';
 
 export function ConnectingExternalView() {
   const { data } = useSnapshot(RouterController.state);
@@ -94,16 +95,11 @@ export function ConnectingExternalView() {
       }
     } catch (error) {
       LogController.sendError(error, 'ConnectingExternalView.tsx', 'onConnect');
-      if (/(Wallet not found)/i.test((error as Error).message)) {
-        setErrorType('not_installed');
-      } else if (/(rejected)/i.test((error as Error).message)) {
-        setErrorType('declined');
-      } else {
-        setErrorType('default');
-      }
+      const type = ErrorUtil.categorizeConnectionError(error);
+      setErrorType(type);
       EventsController.sendEvent({
         type: 'track',
-        event: 'CONNECT_ERROR',
+        event: type === 'declined' ? 'USER_REJECTED' : 'CONNECT_ERROR',
         properties: { message: (error as Error)?.message ?? 'Unknown' }
       });
     }

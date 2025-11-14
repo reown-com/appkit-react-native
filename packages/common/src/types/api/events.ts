@@ -33,6 +33,7 @@ export type EventName =
   | 'SELECT_WALLET'
   | 'CONNECT_SUCCESS'
   | 'CONNECT_ERROR'
+  | 'USER_REJECTED'
   | 'DISCONNECT_SUCCESS'
   | 'DISCONNECT_ERROR'
   | 'CLICK_WALLET_HELP'
@@ -149,6 +150,14 @@ export type Event =
   | {
       type: 'track';
       event: 'CONNECT_ERROR';
+      properties: {
+        message: string;
+      };
+    }
+  | {
+      type: 'track';
+      address?: string;
+      event: 'USER_REJECTED';
       properties: {
         message: string;
       };
