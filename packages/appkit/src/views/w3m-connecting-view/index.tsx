@@ -38,7 +38,7 @@ export function ConnectingView() {
     }
   };
 
-  const initializeConnection = async (retry = false, retryTimestamp?: number) => {
+  const initializeConnection = async (retry = false) => {
     try {
       const { wcPairingExpiry } = WcController.state;
       const { data: routeData } = RouterController.state;
@@ -73,11 +73,9 @@ export function ConnectingView() {
         }
       });
 
-      const currentRetryTime = retryTimestamp ?? lastRetryRef.current;
-      if (isQr && CoreHelperUtil.isAllowedRetry(currentRetryTime)) {
-        const newRetryTime = Date.now();
-        lastRetryRef.current = newRetryTime;
-        initializeConnection(true, newRetryTime);
+      if (isQr && CoreHelperUtil.isAllowedRetry(lastRetryRef.current)) {
+        lastRetryRef.current = Date.now();
+        initializeConnection(true);
       }
     }
   };
@@ -107,10 +105,7 @@ export function ConnectingView() {
   }, [data, isInstalled]);
 
   useEffect(() => {
-    // Clear any stale URI from previous connection attempts
-    WcController.clearUri();
-
-    initializeConnection();
+    initializeConnection(true);
     let _interval: NodeJS.Timeout;
 
     // Check if the pairing expired every 10 seconds. If expired, it will create a new uri.
