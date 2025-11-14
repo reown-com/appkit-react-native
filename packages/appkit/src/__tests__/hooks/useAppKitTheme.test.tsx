@@ -21,7 +21,7 @@ jest.mock('valtio', () => ({
 jest.mock('@reown/appkit-core-react-native', () => ({
   ThemeController: {
     state: {
-      themeMode: undefined,
+      themeMode: 'light',
       themeVariables: {}
     },
     setThemeMode: jest.fn(),
@@ -42,7 +42,7 @@ describe('useAppKitTheme', () => {
     jest.clearAllMocks();
     // Reset ThemeController state
     ThemeController.state = {
-      themeMode: undefined,
+      themeMode: 'light',
       themeVariables: {}
     };
   });
@@ -61,7 +61,7 @@ describe('useAppKitTheme', () => {
   it('should return initial theme state', () => {
     const { result } = renderHook(() => useAppKitTheme(), { wrapper });
 
-    expect(result.current.themeMode).toBeUndefined();
+    expect(result.current.themeMode).toBe('light');
     expect(result.current.themeVariables).toStrictEqual({});
   });
 
@@ -99,24 +99,24 @@ describe('useAppKitTheme', () => {
     expect(result.current.themeVariables).toEqual(themeVariables);
   });
 
-  it('should call ThemeController.setThemeMode when setThemeMode is called', () => {
+  it('should call ThemeController.setDefaultThemeMode when setThemeMode is called', () => {
     const { result } = renderHook(() => useAppKitTheme(), { wrapper });
 
     act(() => {
       result.current.setThemeMode('dark');
     });
 
-    expect(ThemeController.setThemeMode).toHaveBeenCalledWith('dark');
+    expect(ThemeController.setDefaultThemeMode).toHaveBeenCalledWith('dark');
   });
 
-  it('should call ThemeController.setThemeMode with undefined', () => {
+  it('should call ThemeController.setDefaultThemeMode with undefined', () => {
     const { result } = renderHook(() => useAppKitTheme(), { wrapper });
 
     act(() => {
       result.current.setThemeMode(undefined);
     });
 
-    expect(ThemeController.setThemeMode).toHaveBeenCalledWith(undefined);
+    expect(ThemeController.setDefaultThemeMode).toHaveBeenCalledWith(undefined);
   });
 
   it('should call ThemeController.setThemeVariables when setThemeVariables is called', () => {
@@ -172,10 +172,10 @@ describe('useAppKitTheme', () => {
       result.current.setThemeMode(undefined);
     });
 
-    expect(ThemeController.setThemeMode).toHaveBeenCalledTimes(3);
-    expect(ThemeController.setThemeMode).toHaveBeenNthCalledWith(1, 'dark');
-    expect(ThemeController.setThemeMode).toHaveBeenNthCalledWith(2, 'light');
-    expect(ThemeController.setThemeMode).toHaveBeenNthCalledWith(3, undefined);
+    expect(ThemeController.setDefaultThemeMode).toHaveBeenCalledTimes(3);
+    expect(ThemeController.setDefaultThemeMode).toHaveBeenNthCalledWith(1, 'dark');
+    expect(ThemeController.setDefaultThemeMode).toHaveBeenNthCalledWith(2, 'light');
+    expect(ThemeController.setDefaultThemeMode).toHaveBeenNthCalledWith(3, undefined);
   });
 
   it('should handle multiple setThemeVariables calls', () => {

@@ -63,11 +63,12 @@ export interface UseAppKitThemeReturn {
  */
 export function useAppKitTheme(): UseAppKitThemeReturn {
   useAppKitContext();
+
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
 
   const stableFunctions = useMemo(
     () => ({
-      setThemeMode: ThemeController.setThemeMode.bind(ThemeController),
+      setThemeMode: ThemeController.setDefaultThemeMode.bind(ThemeController),
       setThemeVariables: ThemeController.setThemeVariables.bind(ThemeController)
     }),
     []

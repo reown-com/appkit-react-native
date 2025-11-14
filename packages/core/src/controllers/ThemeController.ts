@@ -1,49 +1,58 @@
-import { Appearance } from 'react-native';
 import { proxy, subscribe as sub } from 'valtio';
 import type { ThemeMode, ThemeVariables } from '@reown/appkit-common-react-native';
+import { derive } from 'derive-valtio';
 
 // -- Types --------------------------------------------- //
 export interface ThemeControllerState {
-  themeMode?: ThemeMode;
-  defaultThemeMode?: ThemeMode;
+  systemThemeMode?: ThemeMode | null;
+  defaultThemeMode?: ThemeMode | null;
   themeVariables: ThemeVariables;
 }
 
 // -- State --------------------------------------------- //
-const state = proxy<ThemeControllerState>({
-  themeMode: undefined,
+const baseState = proxy<ThemeControllerState>({
+  systemThemeMode: undefined,
   defaultThemeMode: undefined,
   themeVariables: {}
 });
 
+// -- Derived State ------------------------------------- //
+const derivedState = derive(
+  {
+    themeMode: (get): ThemeMode => {
+      const snap = get(baseState);
+
+      return snap.defaultThemeMode ?? snap.systemThemeMode ?? 'light';
+    }
+  },
+  {
+    proxy: baseState
+  }
+);
+
 // -- Controller ---------------------------------------- //
 export const ThemeController = {
-  state,
+  state: derivedState,
 
   subscribe(callback: (newState: ThemeControllerState) => void) {
-    return sub(state, () => callback(state));
+    return sub(derivedState, () => callback(derivedState));
   },
 
-  setThemeMode(themeMode?: ThemeControllerState['themeMode']) {
-    if (!themeMode) {
-      state.themeMode = (Appearance.getColorScheme() ?? 'light') as ThemeMode;
-    } else {
-      state.themeMode = themeMode;
-    }
+  setSystemThemeMode(systemThemeMode?: ThemeControllerState['systemThemeMode']) {
+    baseState.systemThemeMode = systemThemeMode ?? 'light';
   },
 
   setDefaultThemeMode(themeMode?: ThemeControllerState['defaultThemeMode']) {
-    state.defaultThemeMode = themeMode;
-    this.setThemeMode(themeMode);
+    baseState.defaultThemeMode = themeMode;
   },
 
   setThemeVariables(themeVariables?: ThemeControllerState['themeVariables']) {
     if (!themeVariables) {
-      state.themeVariables = {};
+      baseState.themeVariables = {};
 
       return;
     }
 
-    state.themeVariables = { ...state.themeVariables, ...themeVariables };
+    baseState.themeVariables = { ...baseState.themeVariables, ...themeVariables };
   }
 };

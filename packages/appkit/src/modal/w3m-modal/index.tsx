@@ -23,7 +23,7 @@ export function AppKit() {
   const { bottom, top } = useSafeAreaInsets();
   const { close } = useInternalAppKit();
   const { open } = useSnapshot(ModalController.state);
-  const { themeMode, themeVariables, defaultThemeMode } = useSnapshot(ThemeController.state);
+  const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
   const { projectId } = useSnapshot(OptionsController.state);
 
   const handleBackPress = () => {
@@ -35,10 +35,8 @@ export function AppKit() {
   };
 
   useEffect(() => {
-    if (theme && !defaultThemeMode) {
-      ThemeController.setThemeMode(theme);
-    }
-  }, [theme, defaultThemeMode]);
+    ThemeController.setSystemThemeMode(theme);
+  }, [theme]);
 
   const prefetch = useCallback(async () => {
     await ApiController.prefetch();
