@@ -4,8 +4,8 @@ import { derive } from 'derive-valtio';
 
 // -- Types --------------------------------------------- //
 export interface ThemeControllerState {
-  systemThemeMode?: ThemeMode | null;
-  defaultThemeMode?: ThemeMode | null;
+  systemThemeMode?: ThemeMode;
+  defaultThemeMode?: ThemeMode;
   themeVariables: ThemeVariables;
 }
 

@@ -24,7 +24,7 @@ jest.mock('@reown/appkit-core-react-native', () => ({
       themeMode: 'light',
       themeVariables: {}
     },
-    setThemeMode: jest.fn(),
+    setDefaultThemeMode: jest.fn(),
     setThemeVariables: jest.fn()
   }
 }));

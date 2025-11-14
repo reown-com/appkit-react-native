@@ -35,7 +35,7 @@ export function AppKit() {
   };
 
   useEffect(() => {
-    ThemeController.setSystemThemeMode(theme);
+    ThemeController.setSystemThemeMode(theme ?? undefined);
   }, [theme]);
 
   const prefetch = useCallback(async () => {
