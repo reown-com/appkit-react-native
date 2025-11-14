@@ -31,7 +31,7 @@ export const useAppKitContext = (): AppKitContextType => {
   const context = useContext(AppKitContext);
 
   if (context === undefined) {
-    throw new Error('useAppKit must be used within an AppKitProvider');
+    throw new Error('useAppKitContext must be used within an AppKitProvider');
   }
 
   if (!context.appKit) {
