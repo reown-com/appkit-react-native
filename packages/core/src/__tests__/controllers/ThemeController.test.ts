@@ -14,9 +14,9 @@ const mockedAppearance = Appearance as jest.Mocked<typeof Appearance>;
 describe('ThemeController', () => {
   beforeEach(() => {
     // Reset state before each test
-    ThemeController.setThemeMode(undefined);
-    ThemeController.setDefaultThemeMode(undefined);
-    ThemeController.setThemeVariables(undefined);
+    ThemeController.setThemeMode();
+    ThemeController.setDefaultThemeMode();
+    ThemeController.setThemeVariables();
     jest.clearAllMocks();
   });
 
@@ -41,21 +41,21 @@ describe('ThemeController', () => {
 
     it('should fall back to system theme when undefined and system is dark', () => {
       mockedAppearance.getColorScheme.mockReturnValue('dark');
-      ThemeController.setThemeMode(undefined);
+      ThemeController.setThemeMode();
       expect(ThemeController.state.themeMode).toBe('dark');
       expect(mockedAppearance.getColorScheme).toHaveBeenCalled();
     });
 
     it('should fall back to system theme when undefined and system is light', () => {
       mockedAppearance.getColorScheme.mockReturnValue('light');
-      ThemeController.setThemeMode(undefined);
+      ThemeController.setThemeMode();
       expect(ThemeController.state.themeMode).toBe('light');
       expect(mockedAppearance.getColorScheme).toHaveBeenCalled();
     });
 
     it('should default to light when system returns null', () => {
       mockedAppearance.getColorScheme.mockReturnValue(null);
-      ThemeController.setThemeMode(undefined);
+      ThemeController.setThemeMode();
       expect(ThemeController.state.themeMode).toBe('light');
     });
   });
@@ -75,7 +75,7 @@ describe('ThemeController', () => {
 
     it('should set default theme mode to undefined and fall back to system', () => {
       mockedAppearance.getColorScheme.mockReturnValue('dark');
-      ThemeController.setDefaultThemeMode(undefined);
+      ThemeController.setDefaultThemeMode();
       expect(ThemeController.state.defaultThemeMode).toBeUndefined();
       expect(ThemeController.state.themeMode).toBe('dark');
     });
