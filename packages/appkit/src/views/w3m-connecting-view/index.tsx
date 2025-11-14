@@ -39,7 +39,7 @@ export function ConnectingView() {
     }
   };
 
-  const initializeConnection = async (retry = false) => {
+  const initializeConnection = async (retry = false, retryTimestamp?: number) => {
     try {
       const { wcPairingExpiry } = WcController.state;
       const { data: routeData } = RouterController.state;
@@ -58,9 +58,12 @@ export function ConnectingView() {
       WcController.setWcError(true);
       WcController.clearUri();
 
-      if (isQr && CoreHelperUtil.isAllowedRetry(lastRetry)) {
-        setLastRetry(Date.now());
-        initializeConnection(true);
+      const currentRetryTime = retryTimestamp ?? lastRetry;
+
+      if (isQr && CoreHelperUtil.isAllowedRetry(currentRetryTime)) {
+        const newRetryTime = Date.now();
+        setLastRetry(newRetryTime);
+        initializeConnection(true, newRetryTime);
 
         return;
       }
