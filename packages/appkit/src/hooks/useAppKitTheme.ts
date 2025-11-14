@@ -9,9 +9,9 @@ import { useAppKitContext } from './useAppKitContext';
  */
 export interface UseAppKitThemeReturn {
   /** The current theme mode ('dark' or 'light'), or undefined if using system default */
-  themeMode: ThemeMode | undefined;
+  themeMode: ThemeMode;
   /** The current theme variables, currently only supports 'accent' color */
-  themeVariables: ThemeVariables | undefined;
+  themeVariables: ThemeVariables;
   /** Function to set the theme mode */
   setThemeMode: (themeMode: ThemeMode | undefined) => void;
   /** Function to set theme variables */

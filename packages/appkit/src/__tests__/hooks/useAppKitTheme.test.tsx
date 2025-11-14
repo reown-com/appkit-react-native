@@ -14,8 +14,8 @@ jest.mock('valtio', () => ({
 jest.mock('@reown/appkit-core-react-native', () => ({
   ThemeController: {
     state: {
-      themeMode: undefined,
-      themeVariables: undefined
+      themeMode: 'dark',
+      themeVariables: {}
     },
     setThemeMode: jest.fn(),
     setThemeVariables: jest.fn()
@@ -35,8 +35,8 @@ describe('useAppKitTheme', () => {
     jest.clearAllMocks();
     // Reset ThemeController state
     ThemeController.state = {
-      themeMode: undefined,
-      themeVariables: undefined
+      themeMode: 'dark',
+      themeVariables: {}
     };
   });
 
@@ -55,13 +55,13 @@ describe('useAppKitTheme', () => {
     const { result } = renderHook(() => useAppKitTheme(), { wrapper });
 
     expect(result.current.themeMode).toBeUndefined();
-    expect(result.current.themeVariables).toBeUndefined();
+    expect(result.current.themeVariables).toBe({});
   });
 
   it('should return dark theme mode when set', () => {
     ThemeController.state = {
       themeMode: 'dark',
-      themeVariables: undefined
+      themeVariables: {}
     };
 
     const { result } = renderHook(() => useAppKitTheme(), { wrapper });
@@ -72,7 +72,7 @@ describe('useAppKitTheme', () => {
   it('should return light theme mode when set', () => {
     ThemeController.state = {
       themeMode: 'light',
-      themeVariables: undefined
+      themeVariables: {}
     };
 
     const { result } = renderHook(() => useAppKitTheme(), { wrapper });
@@ -83,7 +83,7 @@ describe('useAppKitTheme', () => {
   it('should return theme variables when set', () => {
     const themeVariables = { accent: '#00BB7F' };
     ThemeController.state = {
-      themeMode: undefined,
+      themeMode: 'dark',
       themeVariables
     };
 
