@@ -75,6 +75,8 @@ export function useAccount() {
   } = useSnapshot(ConnectionsController.state);
 
   const allAccounts: Account[] = useMemo(() => {
+    if (!address) return [];
+
     return Array.from(connections.values()).flatMap(
       _connection =>
         _connection.accounts
@@ -97,7 +99,7 @@ export function useAccount() {
           })
           .filter(account => account !== undefined) as Account[]
     );
-  }, [connections]);
+  }, [connections, address]);
 
   const activeChain = useMemo(
     () =>
