@@ -107,6 +107,9 @@ export function ConnectingView() {
   }, [data, isInstalled]);
 
   useEffect(() => {
+    // Clear any stale URI from previous connection attempts
+    WcController.clearUri();
+
     initializeConnection();
     let _interval: NodeJS.Timeout;
 
