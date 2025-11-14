@@ -5,6 +5,13 @@ import { ThemeController } from '@reown/appkit-core-react-native';
 import { type AppKitContextType, AppKitContext } from '../../AppKitContext';
 import type { AppKit } from '../../AppKit';
 
+// Mock Appearance
+jest.mock('react-native', () => ({
+  Appearance: {
+    getColorScheme: jest.fn().mockReturnValue('light')
+  }
+}));
+
 // Mock valtio
 jest.mock('valtio', () => ({
   useSnapshot: jest.fn(state => state)
@@ -14,7 +21,7 @@ jest.mock('valtio', () => ({
 jest.mock('@reown/appkit-core-react-native', () => ({
   ThemeController: {
     state: {
-      themeMode: 'dark',
+      themeMode: undefined,
       themeVariables: {}
     },
     setThemeMode: jest.fn(),
@@ -35,7 +42,7 @@ describe('useAppKitTheme', () => {
     jest.clearAllMocks();
     // Reset ThemeController state
     ThemeController.state = {
-      themeMode: 'dark',
+      themeMode: undefined,
       themeVariables: {}
     };
   });
@@ -55,7 +62,7 @@ describe('useAppKitTheme', () => {
     const { result } = renderHook(() => useAppKitTheme(), { wrapper });
 
     expect(result.current.themeMode).toBeUndefined();
-    expect(result.current.themeVariables).toBe({});
+    expect(result.current.themeVariables).toStrictEqual({});
   });
 
   it('should return dark theme mode when set', () => {

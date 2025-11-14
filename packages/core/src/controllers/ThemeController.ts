@@ -2,18 +2,16 @@ import { Appearance } from 'react-native';
 import { proxy, subscribe as sub } from 'valtio';
 import type { ThemeMode, ThemeVariables } from '@reown/appkit-common-react-native';
 
-const systemThemeMode = Appearance.getColorScheme() as ThemeMode;
-
 // -- Types --------------------------------------------- //
 export interface ThemeControllerState {
-  themeMode: ThemeMode;
+  themeMode?: ThemeMode;
   defaultThemeMode?: ThemeMode;
   themeVariables: ThemeVariables;
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<ThemeControllerState>({
-  themeMode: systemThemeMode,
+  themeMode: undefined,
   defaultThemeMode: undefined,
   themeVariables: {}
 });
@@ -28,16 +26,15 @@ export const ThemeController = {
 
   setThemeMode(themeMode?: ThemeControllerState['themeMode']) {
     if (!themeMode) {
-      state.themeMode = Appearance.getColorScheme() as ThemeMode;
+      state.themeMode = (Appearance.getColorScheme() ?? 'light') as ThemeMode;
     } else {
       state.themeMode = themeMode;
     }
   },
 
   setDefaultThemeMode(themeMode?: ThemeControllerState['defaultThemeMode']) {
-    const _systemThemeMode = Appearance.getColorScheme() as ThemeMode;
-    state.defaultThemeMode = themeMode ?? _systemThemeMode;
-    this.setThemeMode(themeMode ?? _systemThemeMode);
+    state.defaultThemeMode = themeMode;
+    this.setThemeMode(themeMode);
   },
 
   setThemeVariables(themeVariables?: ThemeControllerState['themeVariables']) {
