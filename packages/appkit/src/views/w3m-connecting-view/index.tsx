@@ -32,7 +32,6 @@ export function ConnectingView() {
   const onRetry = () => {
     if (CoreHelperUtil.isAllowedRetry(lastRetry)) {
       setLastRetry(Date.now());
-      WcController.clearUri();
       initializeConnection(true);
     } else {
       SnackController.showError('Please wait a second before retrying');
@@ -46,6 +45,7 @@ export function ConnectingView() {
       const isPairingExpired = CoreHelperUtil.isPairingExpired(wcPairingExpiry);
       if (retry || isPairingExpired) {
         WcController.setWcError(false);
+        WcController.clearUri();
 
         const connectPromise = connect({
           wallet: routeData?.wallet
@@ -56,17 +56,6 @@ export function ConnectingView() {
     } catch (error) {
       LogController.sendError(error, 'ConnectingView.tsx', 'initializeConnection');
       WcController.setWcError(true);
-      WcController.clearUri();
-
-      const currentRetryTime = retryTimestamp ?? lastRetry;
-
-      if (isQr && CoreHelperUtil.isAllowedRetry(currentRetryTime)) {
-        const newRetryTime = Date.now();
-        setLastRetry(newRetryTime);
-        initializeConnection(true, newRetryTime);
-
-        return;
-      }
 
       const isUserRejected = ErrorUtil.isUserRejectedRequestError(error);
       const isProposalExpired = ErrorUtil.isProposalExpiredError(error);
@@ -83,6 +72,13 @@ export function ConnectingView() {
           message: (error as Error)?.message ?? 'Unknown'
         }
       });
+
+      const currentRetryTime = retryTimestamp ?? lastRetry;
+      if (isQr && CoreHelperUtil.isAllowedRetry(currentRetryTime)) {
+        const newRetryTime = Date.now();
+        setLastRetry(newRetryTime);
+        initializeConnection(true, newRetryTime);
+      }
     }
   };
 
