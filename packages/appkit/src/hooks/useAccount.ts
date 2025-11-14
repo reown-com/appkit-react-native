@@ -6,8 +6,8 @@ import {
 } from '@reown/appkit-core-react-native';
 import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
-import { useAppKit } from './useAppKit';
 import type { AccountType, AppKitNetwork } from '@reown/appkit-common-react-native';
+import { useAppKitContext } from './useAppKitContext';
 
 /**
  * Represents a blockchain account with its associated metadata
@@ -64,7 +64,7 @@ export interface Account {
  * @throws Will log errors via LogController if account parsing fails
  */
 export function useAccount() {
-  useAppKit(); // Use the hook for checks
+  useAppKitContext();
 
   const {
     activeAddress: address,

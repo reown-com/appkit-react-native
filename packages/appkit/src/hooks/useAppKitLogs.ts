@@ -1,7 +1,7 @@
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import { LogController, type LogEntry, type LogLevel } from '@reown/appkit-core-react-native';
-import { AppKitContext } from '../AppKitContext';
+import { useAppKitContext } from './useAppKitContext';
 
 export interface UseAppKitLogsReturn {
   /**
@@ -65,15 +65,7 @@ export interface UseAppKitLogsReturn {
  * ```
  */
 export const useAppKitLogs = (): UseAppKitLogsReturn => {
-  const context = useContext(AppKitContext);
-
-  if (context === undefined) {
-    throw new Error('useAppKitLogs must be used within an AppKitProvider');
-  }
-
-  if (!context.appKit) {
-    throw new Error('AppKit instance is not yet available in context.');
-  }
+  useAppKitContext();
 
   const { logs } = useSnapshot(LogController.state);
 

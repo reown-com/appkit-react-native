@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { AppKit } from './AppKit';
 
-interface AppKitContextType {
+export interface AppKitContextType {
   appKit: AppKit | null;
 }
 
