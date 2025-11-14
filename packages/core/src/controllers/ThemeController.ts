@@ -38,7 +38,7 @@ export const ThemeController = {
   },
 
   setThemeVariables(themeVariables?: ThemeControllerState['themeVariables']) {
-    if (Object.keys(themeVariables ?? {}).length === 0) {
+    if (!themeVariables) {
       state.themeVariables = {};
 
       return;
