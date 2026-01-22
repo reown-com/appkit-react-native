@@ -37,6 +37,7 @@ apps/
 
 **Controller Pattern (Valtio)**
 State management via reactive controllers:
+
 - `ModalController` - Modal visibility and state
 - `RouterController` - Navigation between views
 - `ConnectionsController` - Wallet connections and networks
@@ -46,6 +47,7 @@ State management via reactive controllers:
 
 **Adapter Pattern**
 Blockchain-specific implementations:
+
 - `BlockchainAdapter` - Base interface
 - EVM adapters (Ethers, Wagmi)
 - Solana adapter
@@ -53,6 +55,7 @@ Blockchain-specific implementations:
 
 **Connector Pattern**
 Wallet connection methods:
+
 - `WalletConnectConnector` - Default WalletConnect protocol
 - Custom connectors for Coinbase, Phantom, etc.
 
@@ -92,6 +95,7 @@ packages/appkit/src/          # AppKit-specific UI (@reown/appkit-react-native)
 ### Component Hierarchy
 
 **Base Components** (`packages/ui/src/components/`):
+
 - `wui-card` - Container with themed background/border
 - `wui-icon` - SVG icon renderer (60+ icons)
 - `wui-text` - Typography with 23 variants
@@ -102,6 +106,7 @@ packages/appkit/src/          # AppKit-specific UI (@reown/appkit-react-native)
 - `wui-loading-spinner` - Loading indicator
 
 **Composite Components** (`packages/ui/src/composites/`):
+
 - `wui-button` - Primary button (size: sm/md, variant: fill/shade/accent)
 - `wui-list-item` - Pressable list item with animations
 - `wui-input-text` - Animated text input with focus states
@@ -112,6 +117,7 @@ packages/appkit/src/          # AppKit-specific UI (@reown/appkit-react-native)
 - `wui-avatar` - Address-based avatar with gradient
 
 **Layout Components** (`packages/ui/src/layout/`):
+
 - `FlexView` - Flex container replacing View (supports gap, padding arrays)
 - `Overlay` - Semi-transparent overlay
 - `Separator` - Divider with optional text
@@ -119,6 +125,7 @@ packages/appkit/src/          # AppKit-specific UI (@reown/appkit-react-native)
 ### Theming System
 
 **Theme Colors** (62 keys in DarkTheme/LightTheme):
+
 - `accent-100` to `accent-020` - Primary brand colors
 - `fg-100` to `fg-300` - Foreground/text colors
 - `bg-100` to `bg-300` - Background colors
@@ -126,6 +133,7 @@ packages/appkit/src/          # AppKit-specific UI (@reown/appkit-react-native)
 - `gray-glass-001` to `gray-glass-090` - Glass morphism overlays
 
 **Design Tokens**:
+
 ```
 Spacing: '0' | '4xs' | '3xs' | '2xs' | 'xs' | 's' | 'm' | 'l' | 'xl' | '2xl' | '3xl' | '4xl'
          0     2       4       6       8      12    14    16    20     24      32      40 (px)
@@ -135,13 +143,15 @@ BorderRadius: '5xs' | '4xs' | '3xs' | 'xxs' | 'xs' | 's' | 'm' | 'l' | '3xl' | '
 ```
 
 **Typography** (23 variants):
+
 - Sizes: `medium-title`, `small-title`, `large`, `medium`, `paragraph`, `small`, `tiny`, `micro`
 - Weights: `400`, `500`, `600`, `700`
 - Example: `paragraph-500`, `small-400`, `micro-700`
 
 **Using Theme**:
+
 ```typescript
-const Theme = useTheme()
+const Theme = useTheme();
 // Returns themed color object that responds to light/dark mode
 ```
 
@@ -150,11 +160,13 @@ const Theme = useTheme()
 Animations use React Native's `Animated` API, preferring the native driver for GPU-accelerated properties (opacity, transforms) and falling back to `useNativeDriver: false` when animating unsupported properties like colors.
 
 **Modal Animation** (native driver):
+
 - Opening: Spring physics (damping: 25, stiffness: 220)
 - Closing: Timing animation (150ms) for snappy UX
 - Backdrop: Opacity fade (300ms in, 250ms out)
 
 **Component Animations** (JS-driven, `useNativeDriver: false`):
+
 - `useAnimatedValue` hook for color interpolation on press states
 - `Animated.createAnimatedComponent(Pressable)` for interactive elements
 - Color transitions between normal/pressed states
@@ -164,6 +176,7 @@ Animations use React Native's `Animated` API, preferring the native driver for G
 **RouterController** manages navigation between views defined in `RouterControllerState` (see `packages/core/src/controllers/RouterController.ts` for the up-to-date list of route IDs).
 
 View categories:
+
 - Account flows (account overview and default account views)
 - Connection flows (social logins, external wallets, WalletConnect, etc.)
 - Network management (network selection, switching, unsupported network messaging)
@@ -173,6 +186,7 @@ View categories:
 - Informational views (e.g., "What is a network?", "What is a wallet?")
 
 **View Pattern**:
+
 ```typescript
 export function MyView() {
   const snapshot = useSnapshot(ControllerState)
@@ -191,6 +205,7 @@ export function MyView() {
 ### Common UI Patterns
 
 **FlexView Layout**:
+
 ```typescript
 <FlexView
   flexDirection="row"
@@ -201,6 +216,7 @@ export function MyView() {
 ```
 
 **List Item**:
+
 ```typescript
 <ListItem
   icon="wallet"
@@ -214,6 +230,7 @@ export function MyView() {
 ```
 
 **Button**:
+
 ```typescript
 <Button size="md" variant="fill" onPress={handlePress}>
   Connect Wallet
@@ -237,6 +254,7 @@ export function MyView() {
 ### Code Quality Requirements
 
 **Before pushing any solution, always run:**
+
 ```bash
 yarn format   # Prettier formatting
 yarn lint     # ESLint checks
