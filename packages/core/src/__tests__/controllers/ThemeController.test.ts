@@ -91,6 +91,24 @@ describe('ThemeController', () => {
       expect(state.systemThemeMode).toBe('dark');
       expect(state.defaultThemeMode).toBeUndefined();
     });
+    it('should derive themeMode with correct priority: defaultThemeMode > systemThemeMode > light', () => {
+      // Initially, with no values set, should default to 'light'
+      ThemeController.setDefaultThemeMode(undefined);
+      ThemeController.setSystemThemeMode();
+      expect(ThemeController.state.themeMode).toBe('light');
+    
+      // When only systemThemeMode is set, themeMode should follow it
+      ThemeController.setSystemThemeMode('dark');
+      expect(ThemeController.state.themeMode).toBe('dark');
+    
+      // When defaultThemeMode is set, it takes priority over systemThemeMode
+      ThemeController.setDefaultThemeMode('light');
+      expect(ThemeController.state.themeMode).toBe('light');
+    
+      // When defaultThemeMode is cleared, falls back to systemThemeMode
+      ThemeController.setDefaultThemeMode(undefined);
+      expect(ThemeController.state.themeMode).toBe('dark');
+    });
   });
 
   describe('setThemeVariables', () => {
