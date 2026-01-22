@@ -189,16 +189,14 @@ View categories:
 
 ```typescript
 export function MyView() {
-  const snapshot = useSnapshot(ControllerState)
-  const { padding } = useCustomDimensions()
+  const snapshot = useSnapshot(ControllerState);
+  const { padding } = useCustomDimensions();
 
   return (
     <ScrollView style={{ paddingHorizontal: padding }}>
-      <FlexView padding={['xs', '0', 'xs', '0']}>
-        {/* Content */}
-      </FlexView>
+      <FlexView padding={['xs', '0', 'xs', '0']}>{/* Content */}</FlexView>
     </ScrollView>
-  )
+  );
 }
 ```
 
@@ -218,14 +216,10 @@ export function MyView() {
 **List Item**:
 
 ```typescript
-<ListItem
-  icon="wallet"
-  imageSrc={imageUrl}
-  chevron
-  onPress={handlePress}
-  loading={isLoading}
->
-  <Text variant="paragraph-500" color="fg-100">{name}</Text>
+<ListItem icon="wallet" imageSrc={imageUrl} chevron onPress={handlePress} loading={isLoading}>
+  <Text variant="paragraph-500" color="fg-100">
+    {name}
+  </Text>
 </ListItem>
 ```
 
