@@ -306,18 +306,23 @@ Follow conventional commits: `fix:`, `feat:`, `refactor:`, `docs:`, `test:`, `ch
 When resolving Dependabot security alerts or dependency update PRs:
 
 1. **Direct dependencies** - Update the version directly in the package's `package.json` where it's declared. This is cleaner than using resolutions because:
+
    - It keeps the dependency version visible where the package is used
    - Resolutions are meant for transitive dependencies you don't control
    - Example: update storybook in `apps/gallery/package.json`, not via root resolutions
 
 2. **Transitive dependencies** - Use resolutions/overrides for dependencies you don't directly declare:
+
    - Root `package.json` → `resolutions` field (for yarn workspaces)
    - Specific package's `package.json` → `overrides` field (for npm packages like expo-multichain)
 
 3. **Update lockfiles** - After making changes:
+
    - Run `yarn install` at root to update `yarn.lock`
    - Run `npm install` in the specific package directory to update `package-lock.json`
 
 4. **Check for related packages** - When updating a package, check if there are related packages that should be updated together (e.g., updating `storybook` should also update all `@storybook/*` addons to the same version for consistency)
 
 5. **Never update to new major versions** - Only apply patch/minor updates. Major version bumps can cause breaking changes and compatibility issues.
+
+6. **Run formatting before committing** - Always run `yarn format` to fix any prettier issues before creating a commit.
