@@ -19,6 +19,6 @@ Patched 9 vulnerable packages via resolutions/overrides:
 - qs 6.14.1 (arrayLimit DoS)
 - undici 6.23.0 (Decompression DoS)
 - preact 10.28.2 (VNode Injection)
-- js-yaml 4.1.1 (Prototype Pollution)
+- js-yaml 3.14.2 (Prototype Pollution)
 - valibot 1.2.0 (CVE-2025-66020 EMOJI_REGEX ReDoS)
 - hono 4.11.4 (JWT Algorithm Confusion)
