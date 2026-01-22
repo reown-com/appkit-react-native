@@ -85,7 +85,8 @@
     "undici": "6.23.0",
     "preact": "10.28.2",
     "js-yaml": "3.14.2",
-    "valibot": "1.2.0"
+    "valibot": "1.2.0",
+    "lodash": "4.17.23"
   },
   "private": true
 }
