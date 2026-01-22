@@ -58,7 +58,7 @@ Wallet connection methods:
 
 ### Tech Stack
 
-- React Native 0.76+
+- React Native 0.72+ (tested with 0.76+)
 - TypeScript 5.2+
 - Valtio (state management)
 - WalletConnect v2
@@ -75,7 +75,7 @@ The UI layer is split between two packages:
 
 ```
 packages/ui/src/              # Reusable UI library (@reown/appkit-ui-react-native)
-├── components/               # 13 base primitives (Card, Icon, Text, Image, Modal, etc.)
+├── components/               # 11 base primitives (Card, Icon, Text, Image, Modal, etc.)
 ├── composites/               # 42 feature-rich components (Button, ListItem, InputText, etc.)
 ├── layout/                   # 3 layout helpers (FlexView, Overlay, Separator)
 ├── context/                  # ThemeContext and ThemeProvider
@@ -85,7 +85,7 @@ packages/ui/src/              # Reusable UI library (@reown/appkit-ui-react-nati
 
 packages/appkit/src/          # AppKit-specific UI (@reown/appkit-react-native)
 ├── modal/                    # Modal wrapper and router
-├── views/                    # 23 route views (Connect, Account, Swap, Networks, etc.)
+├── views/                    # Route views (Connect, Account, Swap, Networks, etc.)
 └── partials/                 # 24 AppKit-specific composites (Header, Snackbar, QrCode, etc.)
 ```
 
@@ -94,7 +94,7 @@ packages/appkit/src/          # AppKit-specific UI (@reown/appkit-react-native)
 **Base Components** (`packages/ui/src/components/`):
 - `wui-card` - Container with themed background/border
 - `wui-icon` - SVG icon renderer (60+ icons)
-- `wui-text` - Typography with 24 variants
+- `wui-text` - Typography with 23 variants
 - `wui-image` - Image loader with error handling
 - `wui-modal` - Animated bottom sheet
 - `wui-pressable` - Base pressable wrapper
@@ -134,10 +134,10 @@ BorderRadius: '5xs' | '4xs' | '3xs' | 'xxs' | 'xs' | 's' | 'm' | 'l' | '3xl' | '
               4       6       8       12      16     20    28    36    80      100 (px)
 ```
 
-**Typography** (24 variants):
-- Sizes: `medium-title`, `large`, `paragraph`, `small`, `tiny`, `micro`
-- Weights: `400`, `500`, `600`
-- Example: `paragraph-500`, `small-400`
+**Typography** (23 variants):
+- Sizes: `medium-title`, `small-title`, `large`, `medium`, `paragraph`, `small`, `tiny`, `micro`
+- Weights: `400`, `500`, `600`, `700`
+- Example: `paragraph-500`, `small-400`, `micro-700`
 
 **Using Theme**:
 ```typescript
@@ -147,28 +147,30 @@ const Theme = useTheme()
 
 ### Animation Patterns
 
-All animations use React Native's `Animated` API with native driver for GPU acceleration.
+Animations use React Native's `Animated` API, preferring the native driver for GPU-accelerated properties (opacity, transforms) and falling back to `useNativeDriver: false` when animating unsupported properties like colors.
 
-**Modal Animation**:
+**Modal Animation** (native driver):
 - Opening: Spring physics (damping: 25, stiffness: 220)
 - Closing: Timing animation (150ms) for snappy UX
 - Backdrop: Opacity fade (300ms in, 250ms out)
 
-**Component Animations**:
+**Component Animations** (JS-driven, `useNativeDriver: false`):
 - `useAnimatedValue` hook for color interpolation on press states
 - `Animated.createAnimatedComponent(Pressable)` for interactive elements
 - Color transitions between normal/pressed states
 
 ### Views and Router
 
-**RouterController** manages navigation between 23 views:
-- Account flows: `Account`, `AccountDefault`
-- Connection: `Connect`, `ConnectingSocials`, `ConnectingExternal`, `WalletConnect`
-- Networks: `Networks`, `NetworkSwitch`, `UnsupportedChain`
-- OnRamp: `OnRamp`, `OnRampCheckout`, `OnRampSettings`
-- Swap: `Swap`, `SwapPreview`
-- Wallet: `WalletReceive`, `WalletSend`, `WalletSendPreview`
-- Info: `WhatIsANetwork`, `WhatIsAWallet`
+**RouterController** manages navigation between views defined in `RouterControllerState` (see `packages/core/src/controllers/RouterController.ts` for the up-to-date list of route IDs).
+
+View categories:
+- Account flows (account overview and default account views)
+- Connection flows (social logins, external wallets, WalletConnect, etc.)
+- Network management (network selection, switching, unsupported network messaging)
+- On-ramp experiences (on-ramp setup, checkout, loading, settings)
+- Swap flows (swap entry and swap preview/review)
+- Wallet actions (receiving, sending, send preview/review)
+- Informational views (e.g., "What is a network?", "What is a wallet?")
 
 **View Pattern**:
 ```typescript
