@@ -1,58 +1,48 @@
 import { proxy, subscribe as sub } from 'valtio';
 import type { ThemeMode, ThemeVariables } from '@reown/appkit-common-react-native';
-import { derive } from 'derive-valtio';
 
 // -- Types --------------------------------------------- //
 export interface ThemeControllerState {
+  themeMode: ThemeMode;
   systemThemeMode?: ThemeMode;
   defaultThemeMode?: ThemeMode;
   themeVariables: ThemeVariables;
 }
 
 // -- State --------------------------------------------- //
-const baseState = proxy<ThemeControllerState>({
-  systemThemeMode: undefined,
-  defaultThemeMode: undefined,
-  themeVariables: {}
-});
-
-// -- Derived State ------------------------------------- //
-const derivedState = derive(
-  {
-    themeMode: (get): ThemeMode => {
-      const snap = get(baseState);
-
-      return snap.defaultThemeMode ?? snap.systemThemeMode ?? 'light';
-    }
-  },
-  {
-    proxy: baseState
+const state = proxy({
+  systemThemeMode: undefined as ThemeMode | undefined,
+  defaultThemeMode: undefined as ThemeMode | undefined,
+  themeVariables: {} as ThemeVariables,
+  get themeMode(): ThemeMode {
+    // eslint-disable-next-line valtio/avoid-this-in-proxy -- using `this` for sibling property access in getters is the recommended valtio pattern for computed properties
+    return this.defaultThemeMode ?? this.systemThemeMode ?? 'light';
   }
-);
+});
 
 // -- Controller ---------------------------------------- //
 export const ThemeController = {
-  state: derivedState,
+  state: state as ThemeControllerState,
 
   subscribe(callback: (newState: ThemeControllerState) => void) {
-    return sub(derivedState, () => callback(derivedState));
+    return sub(state, () => callback(state));
   },
 
   setSystemThemeMode(systemThemeMode?: ThemeControllerState['systemThemeMode']) {
-    baseState.systemThemeMode = systemThemeMode ?? 'light';
+    state.systemThemeMode = systemThemeMode ?? 'light';
   },
 
   setDefaultThemeMode(themeMode?: ThemeControllerState['defaultThemeMode']) {
-    baseState.defaultThemeMode = themeMode;
+    state.defaultThemeMode = themeMode;
   },
 
   setThemeVariables(themeVariables?: ThemeControllerState['themeVariables']) {
     if (!themeVariables) {
-      baseState.themeVariables = {};
+      state.themeVariables = {};
 
       return;
     }
 
-    baseState.themeVariables = { ...baseState.themeVariables, ...themeVariables };
+    state.themeVariables = { ...state.themeVariables, ...themeVariables };
   }
 };
