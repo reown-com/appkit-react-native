@@ -96,15 +96,15 @@ describe('ThemeController', () => {
       ThemeController.setDefaultThemeMode(undefined);
       ThemeController.setSystemThemeMode();
       expect(ThemeController.state.themeMode).toBe('light');
-    
+
       // When only systemThemeMode is set, themeMode should follow it
       ThemeController.setSystemThemeMode('dark');
       expect(ThemeController.state.themeMode).toBe('dark');
-    
+
       // When defaultThemeMode is set, it takes priority over systemThemeMode
       ThemeController.setDefaultThemeMode('light');
       expect(ThemeController.state.themeMode).toBe('light');
-    
+
       // When defaultThemeMode is cleared, falls back to systemThemeMode
       ThemeController.setDefaultThemeMode(undefined);
       expect(ThemeController.state.themeMode).toBe('dark');
