@@ -8,8 +8,8 @@ import { useAppKitContext } from './useAppKitContext';
  * Interface representing the result of the useAppKitTheme hook
  */
 export interface UseAppKitThemeReturn {
-  /** The current theme mode ('dark' or 'light'), or undefined if using system default */
-  themeMode?: ThemeMode;
+  /** The current theme mode ('dark' or 'light') */
+  themeMode: ThemeMode;
   /** The current theme variables, currently only supports 'accent' color */
   themeVariables: ThemeVariables;
   /** Function to set the theme mode */
@@ -63,11 +63,12 @@ export interface UseAppKitThemeReturn {
  */
 export function useAppKitTheme(): UseAppKitThemeReturn {
   useAppKitContext();
+
   const { themeMode, themeVariables } = useSnapshot(ThemeController.state);
 
   const stableFunctions = useMemo(
     () => ({
-      setThemeMode: ThemeController.setThemeMode.bind(ThemeController),
+      setThemeMode: ThemeController.setDefaultThemeMode.bind(ThemeController),
       setThemeVariables: ThemeController.setThemeVariables.bind(ThemeController)
     }),
     []
