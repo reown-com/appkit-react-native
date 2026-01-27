@@ -44,11 +44,15 @@ export const EventsController = {
   },
 
   subscribeEvent(event: EventName, callback: (newEvent: EventsControllerState) => void) {
-    return sub(state, () => {
-      if (state.data.event === event) {
-        callback(state);
-      }
-    }, true);
+    return sub(
+      state,
+      () => {
+        if (state.data.event === event) {
+          callback(state);
+        }
+      },
+      true
+    );
   },
 
   trackWalletImpression(props: {
