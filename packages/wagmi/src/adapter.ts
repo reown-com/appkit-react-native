@@ -26,7 +26,6 @@ import { UniversalConnector } from './connectors/UniversalConnector';
 type ConfigParams = Partial<CreateConfigParameters> & {
   networks: readonly [Chain, ...Chain[]];
   projectId: string;
-  connectors?: Connector[];
 };
 
 export class WagmiAdapter extends EVMAdapter {
@@ -46,11 +45,6 @@ export class WagmiAdapter extends EVMAdapter {
   }
 
   private createWagmiInternalConfig(configParams: ConfigParams): Config {
-    // Connectors are typically added via wagmiConfig.connectors, but here AppKit manages the connection.
-    // We'll use the `connect` action with our dynamically created connector instance.
-    // So, the `connectors` array for createConfig can be empty and is added later.
-    const initialConnectors: (() => Connector)[] = [];
-
     const transportsArr = configParams.networks.map(chain => [
       chain.id,
       getTransport({ chainId: chain.id, projectId: configParams.projectId })
@@ -59,7 +53,7 @@ export class WagmiAdapter extends EVMAdapter {
 
     return createConfig({
       chains: configParams.networks,
-      connectors: initialConnectors, // Empty, as we connect programmatically
+      connectors: [...(configParams.connectors ?? [])],
       transports,
       multiInjectedProviderDiscovery: false
     });

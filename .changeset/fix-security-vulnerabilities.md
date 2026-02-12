@@ -13,6 +13,7 @@
 fix: resolve high-severity security vulnerabilities in transitive dependencies
 
 Patched 9 vulnerable packages via resolutions/overrides:
+
 - h3 1.15.5 (Request Smuggling)
 - tar 7.5.6 (Race Condition, Arbitrary File Overwrite)
 - node-forge 1.3.2 (ASN.1 vulnerabilities)
