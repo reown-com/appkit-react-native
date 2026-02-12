@@ -92,6 +92,50 @@ jobs:
           yarn run changeset:prepublish:ci
           yarn run changeset publish --no-git-tag --snapshot $snapshot --tag $snapshot
 
+      - name: Get NPM Version
+        if: steps.check-changesets.outputs.has_changesets == 'true'
+        id: get_version
+        run: |
+          VERSION=$(node -pe "require('./package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Send Slack notification
+        if: steps.check-changesets.outputs.has_changesets == 'true'
+        continue-on-error: true
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "📦 AppKit RN Snapshot Published",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "📦 AppKit RN Snapshot Published" }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Version:*\n`${{ steps.get_version.outputs.VERSION }}`" },
+                    { "type": "mrkdwn", "text": "*Tag:*\n`${{ steps.determine-tag.outputs.tag }}`" },
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
+                    { "type": "mrkdwn", "text": "*Triggered by:*\n`${{ github.actor }}`" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": { "type": "mrkdwn", "text": "*NPM:* <https://www.npmjs.com/package/@reown/appkit-react-native/v/${{ steps.get_version.outputs.VERSION }}|@reown/appkit-react-native>" }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    { "type": "mrkdwn", "text": "Install: `yarn add @reown/appkit-react-native@${{ steps.determine-tag.outputs.tag }}`" }
+                  ]
+                }
+              ]
+            }
+
       - name: Get Snapshot Tag
         id: get-snapshot-tag
         run: |
