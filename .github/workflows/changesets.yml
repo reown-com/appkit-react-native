@@ -81,17 +81,46 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Comment Version on Pull Request
-        if: steps.changesets.outputs.published != 'true'
+        if: steps.changesets.outputs.published != 'true' && steps.changesets.outputs.pullRequestNumber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Find PR associated with the current commit
-          PR_NUMBER=$(gh api repos/${{ github.repository }}/commits/${{ github.sha }}/pulls \
-            --jq '.[0].number' 2>/dev/null || echo "")
-          
-          if [ -n "$PR_NUMBER" ] && [ "$PR_NUMBER" != "null" ]; then
-            gh pr comment $PR_NUMBER --body "Published pre-release version: ${{ env.VERSION }}"
-            echo "Commented on PR #$PR_NUMBER"
-          else
-            echo "No associated PR found. This might be a direct push to main."
-          fi
+          gh pr comment ${{ steps.changesets.outputs.pullRequestNumber }} \
+            --body "Published pre-release version: ${{ env.VERSION }}"
+          echo "Commented on PR #${{ steps.changesets.outputs.pullRequestNumber }}"
+
+      - name: Send Slack notification
+        if: steps.changesets.outputs.published != 'true'
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "📦 AppKit RN Canary Published",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "📦 AppKit RN Canary Published" }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Version:*\n`${{ env.VERSION }}`" },
+                    { "type": "mrkdwn", "text": "*Tag:*\n`canary`" },
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
+                    { "type": "mrkdwn", "text": "*Triggered by:*\n`${{ github.actor }}`" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": { "type": "mrkdwn", "text": "*NPM:* <https://www.npmjs.com/package/@reown/appkit-react-native/v/${{ env.VERSION }}|@reown/appkit-react-native>" }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    { "type": "mrkdwn", "text": "Install: `yarn add @reown/appkit-react-native@canary`" }
+                  ]
+                }
+              ]
+            }
