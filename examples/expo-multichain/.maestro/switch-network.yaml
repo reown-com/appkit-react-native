@@ -1,0 +1,21 @@
+appId: com.reown.appkit.expomultichain
+---
+- launchApp:
+    clearState: true
+- takeScreenshot: switch-network-step-00-home-screen
+- startRecording: switch-network-video
+- runFlow: flows/connect-wallet-flow.yaml
+- tapOn:
+    id: account-button
+- takeScreenshot: switch-network-step-01-account-button
+- tapOn:
+    id: button-network
+- takeScreenshot: switch-network-step-02-button-network
+- tapOn:
+    id: w3m-network-switch-Polygon
+- takeScreenshot: switch-network-step-03-w3m-network-switch-Polygon
+- assertVisible: Block Explorer
+- assertVisible: Polygon
+- tapOn:
+    id: button-disconnect
+- stopRecording

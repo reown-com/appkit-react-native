@@ -1,0 +1,44 @@
+appId: com.reown.appkit.expomultichain
+---
+# Basic Smoke Test: Verify app opens and modal can be triggered
+
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+
+# Wait for app to fully load
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Step 1: Verify main screen elements
+- assertVisible: "Connect Wallet"
+- takeScreenshot: smoke-test-step-01-home-screen
+- startRecording: basic-smoke-test-video
+
+# Step 2: Test connect button
+- tapOn: "Connect Wallet"
+
+# Wait for modal animation
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# Take screenshot of modal
+- takeScreenshot: smoke-test-step-02-modal-opened
+
+# Verify modal opened by checking for wallet options or modal title
+# This will pass if ANY of these texts are visible
+- runFlow:
+    when:
+      visible: "All wallets"
+    commands:
+      - assertVisible:
+          id: "all-wallets"
+
+- runFlow:
+    when:
+      visible: "Connect wallet"
+    commands:
+      - assertVisible: "Connect wallet"
+
+- stopRecording

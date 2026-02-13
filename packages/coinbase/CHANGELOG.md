@@ -10,7 +10,8 @@
 
 ### Added
 
-- **Core Multichain Architecture**: 
+- **Core Multichain Architecture**:
+
   - New `@reown/appkit-react-native` core library as the central hub for managing multichain connections, adapters, and events
   - Modular adapter system with dedicated packages for different blockchain ecosystems:
     - `@reown/appkit-ethers-react-native` - EVM support via Ethers.js
@@ -19,6 +20,7 @@
     - `@reown/appkit-bitcoin-react-native` - Native Bitcoin blockchain support
 
 - **SIWX (Sign In With X) Authentication**:
+
   - Chain-agnostic authentication framework supporting Ethereum, Polygon, Solana, and more
   - Plugin-based architecture with `siwx` parameter in `createAppKit` configuration
   - **Reown Authentication**: Cloud-managed SIWX sessions with Dashboard integration
@@ -28,6 +30,7 @@
   - Compliance with CAIP-122 standard for blockchain-based authentication
 
 - **Enhanced Social Login**:
+
   - **Google Authentication**: Added missing Google social login provider
   - Complete social authentication suite now includes Google, Apple, Facebook, GitHub, Discord, and more
 
@@ -38,21 +41,21 @@
 
 ### Changed
 
--  ⚠️ **BREAKING: Initialization Process**:
-  - Replaced monolithic package imports with modular adapter system
-  - `createAppKit` now requires `adapters` and `networks` arrays instead of chain-specific configs
-  - `createAppKit` now requires `storage` to handles data persistence
-  - Configuration moved from adapter-specific functions to centralized `AppKitConfig`
+- ⚠️ **BREAKING: Initialization Process**:
+- Replaced monolithic package imports with modular adapter system
+- `createAppKit` now requires `adapters` and `networks` arrays instead of chain-specific configs
+- `createAppKit` now requires `storage` to handles data persistence
+- Configuration moved from adapter-specific functions to centralized `AppKitConfig`
 
--  ⚠️ **BREAKING: Package Structure**:
-  - Primary entry point changed from `@reown/appkit-wagmi-react-native` or `@reown/appkit-ethers-react-native` to `@reown/appkit-react-native`
-  - Chain-specific packages now serve as adapters rather than primary libraries
-  - All hooks and components now imported from `@reown/appkit-react-native`
+- ⚠️ **BREAKING: Package Structure**:
+- Primary entry point changed from `@reown/appkit-wagmi-react-native` or `@reown/appkit-ethers-react-native` to `@reown/appkit-react-native`
+- Chain-specific packages now serve as adapters rather than primary libraries
+- All hooks and components now imported from `@reown/appkit-react-native`
 
--  ⚠️ **BREAKING: Provider Setup**:
-  - New `AppKitProvider` wrapper required for all applications
-  - Wagmi users must now access config via `wagmiAdapter.wagmiConfig`
-  - Enhanced provider hierarchy supporting multiple blockchain contexts
+- ⚠️ **BREAKING: Provider Setup**:
+- New `AppKitProvider` wrapper required for all applications
+- Wagmi users must now access config via `wagmiAdapter.wagmiConfig`
+- Enhanced provider hierarchy supporting multiple blockchain contexts
 
 - **Configuration Options**:
   - `defaultChain` renamed to `defaultNetwork`
@@ -64,6 +67,7 @@
 ### Deprecated
 
 - **SIWE Authentication**:
+
   - **SIWE Configuration**: Deprecated in favor of new SIWX authentication system
   - Legacy SIWE setup methods - Use `siwx` parameter with SIWX providers instead
 
@@ -73,7 +77,7 @@
 
 ### Migration Required
 
-This is a major release requiring migration for existing applications. 
+This is a major release requiring migration for existing applications.
 
 For detailed migration instructions, see: [Migration Guide](https://docs.reown.com/appkit/react-native/core/migration-multichain)
 

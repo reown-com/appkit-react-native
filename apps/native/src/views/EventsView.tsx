@@ -1,4 +1,9 @@
-import { useAppKitLogs, useAppKitEvents, useAppKitEventSubscription, useAppKitState } from '@reown/appkit-react-native';
+import {
+  useAppKitLogs,
+  useAppKitEvents,
+  useAppKitEventSubscription,
+  useAppKitState
+} from '@reown/appkit-react-native';
 import { FlexView, Text } from '@reown/appkit-ui-react-native';
 import { useState } from 'react';
 import { type ViewStyle, type StyleProp, StyleSheet } from 'react-native';
@@ -12,7 +17,7 @@ export function EventsView({ style }: Props) {
   const { isOpen } = useAppKitState();
   const { logs } = useAppKitLogs();
   const [eventCount, setEventCount] = useState(0);
-  const lastLog = logs.slice(-1)[0]
+  const lastLog = logs.slice(-1)[0];
 
   useAppKitEventSubscription('MODAL_OPEN', () => {
     setEventCount(prev => prev + 1);

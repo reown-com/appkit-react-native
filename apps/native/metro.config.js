@@ -25,13 +25,13 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
       workspaceRoot,
       'node_modules/@walletconnect/ethereum-provider/dist/index.native.js'
     );
-    
+
     return {
       type: 'sourceFile',
-      filePath: nativePath,
+      filePath: nativePath
     };
   }
-  
+
   return context.resolveRequest(context, moduleName, platform);
 };
 

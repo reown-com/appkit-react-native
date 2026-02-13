@@ -18,12 +18,16 @@ import {
   bitcoin
 } from '@reown/appkit-react-native';
 
-import { Button, Text } from '@reown/appkit-ui-react-native';
+import { Text } from '@reown/appkit-ui-react-native';
 
 import { chains } from './src/utils/WagmiUtils';
 import { OpenButton } from './src/components/OpenButton';
 import { DisconnectButton } from './src/components/DisconnectButton';
-import { SolanaAdapter, PhantomConnector, SolflareConnector } from '@reown/appkit-solana-react-native';
+import {
+  SolanaAdapter,
+  PhantomConnector,
+  SolflareConnector
+} from '@reown/appkit-solana-react-native';
 import { BitcoinAdapter } from '@reown/appkit-bitcoin-react-native';
 import { WagmiAdapter } from '@reown/appkit-wagmi-react-native';
 import { ActionsView } from './src/views/ActionsView';
@@ -72,7 +76,7 @@ const appKit = createAppKit({
   enableAnalytics: true,
   storage,
   // siwx: new ReownAuthentication(),
-  extraConnectors: [new PhantomConnector(), new SolflareConnector()],
+  extraConnectors: [new PhantomConnector(), new SolflareConnector()]
   // tokens: {
   //   'eip155:1': {
   //     address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
@@ -108,9 +112,6 @@ export default function Native() {
               <ActionsView />
               <OpenButton />
               <DisconnectButton />
-              <Button size="sm" onPress={() => appKit.disconnect()}>
-                Disconnect
-              </Button>
               <EventsView style={styles.events} />
               <AppKit />
             </SafeAreaView>

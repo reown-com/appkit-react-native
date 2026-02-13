@@ -12,7 +12,7 @@ export function StoreLink({ visible, walletName = 'Wallet', onPress }: StoreLink
 
   return (
     <ActionEntry style={styles.storeButton}>
-      <Text numberOfLines={1} variant="paragraph-500" color="fg-200">
+      <Text numberOfLines={1} style={styles.storeText} variant="paragraph-500" color="fg-200">
         {`Don't have ${walletName}?`}
       </Text>
       <Button
@@ -34,5 +34,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.l,
     marginHorizontal: Spacing.xl,
     marginTop: Spacing.l
+  },
+  storeText: {
+    flexShrink: 1
   }
 });

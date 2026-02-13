@@ -100,7 +100,12 @@ export function Header() {
       padding={['l', 'xl', bottomPadding, 'xl']}
     >
       {dynamicButtonTemplate()}
-      <Text variant="paragraph-600" numberOfLines={1} testID="header-text">
+      <Text
+        variant="paragraph-600"
+        numberOfLines={1}
+        style={styles.headerText}
+        testID="header-text"
+      >
         {header}
       </Text>
       {showClose ? (

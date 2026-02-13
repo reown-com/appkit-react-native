@@ -1,11 +1,12 @@
 import { StyleSheet } from 'react-native';
 import { Button, Text, FlexView } from '@reown/appkit-ui-react-native';
-import { useSignMessage, useSendTransaction, useEstimateGas } from 'wagmi';
+import { useSignMessage, useSendTransaction, useEstimateGas, useAccount } from 'wagmi';
 import { Hex, parseEther } from 'viem';
 import { SendTransactionData, SignMessageData } from 'wagmi/query';
 import { ToastUtils } from '../utils/ToastUtils';
 
 export function WagmiActionsView() {
+  const { isConnected } = useAccount();
 
   const onSignSuccess = (data: SignMessageData) => {
     ToastUtils.showSuccessToast('Signature successful', data);
@@ -35,7 +36,10 @@ export function WagmiActionsView() {
     data: '0x' as Hex
   };
 
-  const { data: gas, isError: isGasError } = useEstimateGas(TX);
+  const { data: gas, isError: isGasError } = useEstimateGas({
+    ...TX,
+    query: { enabled: isConnected }
+  });
 
   const { isPending: isSending, sendTransaction } = useSendTransaction({
     mutation: {

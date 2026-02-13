@@ -31,7 +31,8 @@ export type { AppKitConfig } from './types';
 /****** Hooks *******/
 export { useAppKit } from './hooks/useAppKit';
 export { useProvider } from './hooks/useProvider';
-export { useAccount } from './hooks/useAccount';
+export { useAccount, type Account as UseAccountReturn } from './hooks/useAccount';
+export { useAppKitTheme, type UseAppKitThemeReturn } from './hooks/useAppKitTheme';
 export { useWalletInfo } from './hooks/useWalletInfo';
 export { useAppKitEvents, useAppKitEventSubscription } from './hooks/useAppKitEvents';
 export { useAppKitState } from './hooks/useAppKitState';

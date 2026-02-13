@@ -1,0 +1,45 @@
+appId: com.reown.appkit.expomultichain
+---
+# Connect Wallet Flow Test
+
+- launchApp:
+    clearState: true
+    clearKeychain: true
+
+# Step 1: Verify home screen
+- assertVisible: "AppKit"
+- assertVisible: "for React Native"
+- assertVisible: "Connect Wallet"
+- takeScreenshot: wallet-qr-load-step-01-home
+- startRecording: wallet-qr-load-video
+
+# Step 2: Press Connect Wallet button
+- tapOn: "Connect Wallet"
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: wallet-qr-load-step-02-connect-modal
+
+# Step 3: Press "All wallets" button
+- tapOn:
+    id: "all-wallets"
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: wallet-qr-load-step-03-all-wallets
+
+# Step 4: Check if MetaMask wallet appears
+- assertVisible: "MetaMask"
+- takeScreenshot: wallet-qr-load-step-04-metamask-visible
+
+# Step 5: Press QR code button
+- tapOn:
+    id: "button-qr-code"
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: wallet-qr-load-step-05-qr-button-pressed
+
+# Step 6: Check if QR code appears
+- assertVisible:
+    id: "qr-code"
+- takeScreenshot: wallet-qr-load-step-06-qr-code-visible
+
+- stopRecording

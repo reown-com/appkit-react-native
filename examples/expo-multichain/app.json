@@ -1,0 +1,72 @@
+{
+  "expo": {
+    "name": "expo-multichain",
+    "slug": "expo-multichain",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "appkitexpomultichain",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.reown.appkit.expomultichain",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.reown.appkit.expomultichain"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ],
+      "expo-web-browser",
+      "expo-build-properties",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "buildArchs": ["x86_64"],
+            "buildReactNativeFromSource": true,
+            "enableShrinkResourcesInReleaseBuilds": false,
+            "enableMinifyInReleaseBuilds": false
+          },
+          "ios": {
+            "ccacheEnabled": true,
+            "buildReactNativeFromSource": true
+          }
+        }
+      ],
+      "./plugins/withGradleOptimizations.js"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "566deffa-b12d-4eee-ab01-5b452592af46"
+      }
+    },
+    "owner": "reown-mobile"
+  }
+}

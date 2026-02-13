@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
-import { useEffect, useLayoutEffect, useState } from 'react';
-import { type Platform } from '@reown/appkit-common-react-native';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ErrorUtil, type Platform } from '@reown/appkit-common-react-native';
 import {
   WcController,
   ConstantsUtil,
@@ -22,7 +22,7 @@ export function ConnectingView() {
   const { connect } = useInternalAppKit();
   const { installed } = useSnapshot(ApiController.state);
   const { data } = RouterController.state;
-  const [lastRetry, setLastRetry] = useState(Date.now());
+  const lastRetryRef = useRef<number>(Date.now());
   const isQr = !data?.wallet;
   const isInstalled = !!installed?.find(wallet => wallet.id === data?.wallet?.id);
 
@@ -30,9 +30,8 @@ export function ConnectingView() {
   const [platforms, setPlatforms] = useState<Platform[]>([]);
 
   const onRetry = () => {
-    if (CoreHelperUtil.isAllowedRetry(lastRetry)) {
-      setLastRetry(Date.now());
-      WcController.clearUri();
+    if (CoreHelperUtil.isAllowedRetry(lastRetryRef.current)) {
+      lastRetryRef.current = Date.now();
       initializeConnection(true);
     } else {
       SnackController.showError('Please wait a second before retrying');
@@ -43,30 +42,41 @@ export function ConnectingView() {
     try {
       const { wcPairingExpiry } = WcController.state;
       const { data: routeData } = RouterController.state;
-      if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
+      const isPairingExpired = CoreHelperUtil.isPairingExpired(wcPairingExpiry);
+      if (retry || isPairingExpired) {
         WcController.setWcError(false);
+        WcController.clearUri();
 
         const connectPromise = connect({
           wallet: routeData?.wallet
         });
         WcController.setWcPromise(connectPromise);
+        await connectPromise;
       }
     } catch (error) {
       LogController.sendError(error, 'ConnectingView.tsx', 'initializeConnection');
       WcController.setWcError(true);
-      WcController.clearUri();
-      SnackController.showError('Declined');
-      if (isQr && CoreHelperUtil.isAllowedRetry(lastRetry)) {
-        setLastRetry(Date.now());
-        initializeConnection(true);
+
+      const isUserRejected = ErrorUtil.isUserRejectedRequestError(error);
+      const isProposalExpired = ErrorUtil.isProposalExpiredError(error);
+      if (!isProposalExpired) {
+        SnackController.showError(
+          isUserRejected ? 'User rejected the request' : 'Something went wrong'
+        );
       }
+
       EventsController.sendEvent({
         type: 'track',
-        event: 'CONNECT_ERROR',
+        event: isUserRejected ? 'USER_REJECTED' : 'CONNECT_ERROR',
         properties: {
           message: (error as Error)?.message ?? 'Unknown'
         }
       });
+
+      if (isQr && CoreHelperUtil.isAllowedRetry(lastRetryRef.current)) {
+        lastRetryRef.current = Date.now();
+        initializeConnection(true);
+      }
     }
   };
 
@@ -95,7 +105,7 @@ export function ConnectingView() {
   }, [data, isInstalled]);
 
   useEffect(() => {
-    initializeConnection();
+    initializeConnection(true);
     let _interval: NodeJS.Timeout;
 
     // Check if the pairing expired every 10 seconds. If expired, it will create a new uri.

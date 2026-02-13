@@ -92,6 +92,7 @@ export function WalletSendView() {
           style={styles.tokenInput}
           onTokenPress={() => RouterController.push('WalletSendSelectToken')}
           loading={isBalanceLoading}
+          testID="send-input-token"
         />
         <FlexView alignItems="center" justifyContent="center" style={styles.addressContainer}>
           <SendInputAddress value={receiverProfileName || receiverAddress} />

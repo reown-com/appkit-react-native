@@ -61,6 +61,7 @@ jobs:
       #     gh release create "v$VERSION" --generate-notes --target main
 
       - name: Publish NPM pre-release
+        id: publish_prerelease
         if: steps.changesets.outputs.published != 'true'
         continue-on-error: true
         env:
@@ -74,16 +75,54 @@ jobs:
           yarn run changeset publish --no-git-tag --snapshot canary --tag canary
 
       - name: Get NPM Version
-        if: steps.changesets.outputs.published != 'true'
+        if: steps.publish_prerelease.outcome == 'success'
         id: get_version
         run: |
           VERSION=$(node -pe "require('./package.json').version")
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Comment Version on Pull Request
-        if: steps.changesets.outputs.published != 'true'
+        if: steps.publish_prerelease.outcome == 'success' && steps.changesets.outputs.pullRequestNumber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_NUMBER=$(gh pr list --state open --author ${{ github.actor }} --json number --jq '.[0].number')
-          gh pr comment $PR_NUMBER --body "Published pre-release version: ${{ env.VERSION }}"
+          gh pr comment ${{ steps.changesets.outputs.pullRequestNumber }} \
+            --body "Published pre-release version: ${{ steps.get_version.outputs.VERSION }}"
+          echo "Commented on PR #${{ steps.changesets.outputs.pullRequestNumber }}"
+
+      - name: Send Slack notification
+        if: steps.publish_prerelease.outcome == 'success'
+        continue-on-error: true
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "📦 AppKit RN Canary Published",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "📦 AppKit RN Canary Published" }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Version:*\n`${{ steps.get_version.outputs.VERSION }}`" },
+                    { "type": "mrkdwn", "text": "*Tag:*\n`canary`" },
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
+                    { "type": "mrkdwn", "text": "*Triggered by:*\n`${{ github.actor }}`" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": { "type": "mrkdwn", "text": "*NPM:* <https://www.npmjs.com/package/@reown/appkit-react-native/v/${{ steps.get_version.outputs.VERSION }}|@reown/appkit-react-native>" }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    { "type": "mrkdwn", "text": "Install: `yarn add @reown/appkit-react-native@canary`" }
+                  ]
+                }
+              ]
+            }

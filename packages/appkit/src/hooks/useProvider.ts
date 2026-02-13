@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import { ConnectionsController, LogController } from '@reown/appkit-core-react-native';
 import type { Provider, ChainNamespace } from '@reown/appkit-common-react-native';
+import { useAppKitContext } from './useAppKitContext';
 
 /**
  * Interface representing the result of the useProvider hook
@@ -29,14 +30,12 @@ interface ProviderResult {
  *
  * if (provider) {
  *   // Use the provider for blockchain operations
- *   const balance = await provider.request({
- *     method: 'eth_getBalance',
- *     params: [address, 'latest']
- *   });
+ *   const balance = await provider.request({...});
  * }
  * ```
  */
 export function useProvider(): ProviderResult {
+  useAppKitContext();
   const { connection } = useSnapshot(ConnectionsController.state);
 
   const returnValue = useMemo(() => {
