@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.26.10",
-    "@playwright/test": "1.49.1",
+    "@playwright/test": "1.55.1",
     "@types/gh-pages": "6",
     "@types/node": "22.10.1",
     "@types/react": "~18.2.79",
