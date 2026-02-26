@@ -29,7 +29,7 @@
     "react-native": "*",
     "react-native-svg": "*",
     "react-native-web": "^0.19.7",
-    "storybook": "^8.6.15"
+    "storybook": "^8.6.17"
   },
   "scripts": {
     "dev:gallery": "storybook dev -p 6006",
