@@ -87,7 +87,8 @@
     "valibot": "1.2.0",
     "lodash": "4.17.23",
     "bn.js": "5.2.3",
-    "minimatch": "10.2.1"
+    "minimatch": "10.2.1",
+    "picomatch": "2.3.2"
   },
   "private": true
 }
