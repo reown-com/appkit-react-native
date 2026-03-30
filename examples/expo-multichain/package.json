@@ -88,7 +88,8 @@
     "lodash": "4.17.23",
     "bn.js": "5.2.3",
     "minimatch": "10.2.1",
-    "picomatch": "2.3.2"
+    "picomatch@^2": "2.3.2",
+    "picomatch@^4": "4.0.4"
   },
   "private": true
 }
