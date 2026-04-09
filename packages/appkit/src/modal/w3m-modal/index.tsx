@@ -18,17 +18,17 @@ import { Snackbar } from '../../partials/w3m-snackbar';
 import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
-export interface AppKitModalWrapperProps {
+export interface AppKitModalContentWrapperProps {
   children: ReactNode;
 }
 
-export type AppKitModalWrapperComponent = ComponentType<AppKitModalWrapperProps>;
+export type AppKitModalContentWrapperComponent = ComponentType<AppKitModalContentWrapperProps>;
 
 export interface AppKitProps {
-  modalWrapper?: AppKitModalWrapperComponent;
+  modalContentWrapper?: AppKitModalContentWrapperComponent;
 }
 
-export function AppKit({ modalWrapper: ModalWrapper }: AppKitProps) {
+export function AppKit({ modalContentWrapper }: AppKitProps) {
   const theme = useColorScheme();
   const { bottom, top } = useSafeAreaInsets();
   const { close } = useInternalAppKit();
@@ -63,24 +63,21 @@ export function AppKit({ modalWrapper: ModalWrapper }: AppKitProps) {
     }
   }, [projectId, prefetch]);
 
-  const modal = (
-    <Modal
-      visible={open}
-      onRequestClose={handleBackPress}
-      onBackdropPress={handleModalClose}
-      testID="w3m-modal"
-    >
-      <Card style={[styles.card, { paddingBottom: bottom, marginTop: top }]}>
-        <Header />
-        <AppKitRouter />
-        <Snackbar />
-      </Card>
-    </Modal>
-  );
-
   return (
     <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
-      {ModalWrapper ? <ModalWrapper>{modal}</ModalWrapper> : modal}
+      <Modal
+        visible={open}
+        onRequestClose={handleBackPress}
+        onBackdropPress={handleModalClose}
+        testID="w3m-modal"
+        contentWrapper={modalContentWrapper}
+      >
+        <Card style={[styles.card, { paddingBottom: bottom, marginTop: top }]}>
+          <Header />
+          <AppKitRouter />
+          <Snackbar />
+        </Card>
+      </Modal>
     </ThemeProvider>
   );
 }

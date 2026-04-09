@@ -5,6 +5,9 @@ import { View } from 'react-native';
 const mockClose = jest.fn();
 const mockPrefetch = jest.fn().mockResolvedValue(undefined);
 const mockSendEvent = jest.fn();
+const modalState = {
+  open: true
+};
 
 jest.mock('valtio', () => ({
   useSnapshot: jest.fn((state: Record<string, unknown>) => state)
@@ -43,7 +46,15 @@ jest.mock(
           {children}
         </MockView>
       ),
-      Modal: ({ children, testID }: any) => <MockView testID={testID}>{children}</MockView>,
+      Modal: ({ children, testID, visible, contentWrapper: ContentWrapper }: any) => {
+        if (!visible) {
+          return null;
+        }
+
+        const content = ContentWrapper ? <ContentWrapper>{children}</ContentWrapper> : children;
+
+        return <MockView testID={testID}>{content}</MockView>;
+      },
       ThemeProvider: ({ children }: any) => <>{children}</>
     };
   },
@@ -60,9 +71,7 @@ jest.mock(
       sendEvent: mockSendEvent
     },
     ModalController: {
-      state: {
-        open: true
-      }
+      state: modalState
     },
     OptionsController: {
       state: {
@@ -91,6 +100,7 @@ const { AppKit } = require('../../modal/w3m-modal');
 describe('AppKit modal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    modalState.open = true;
   });
 
   it('renders the modal without a wrapper', () => {
@@ -100,14 +110,23 @@ describe('AppKit modal', () => {
     expect(queryByTestId('modal-wrapper')).toBeNull();
   });
 
-  it('wraps the modal when modalWrapper is provided', () => {
-    function ModalWrapper({ children }: { children: React.ReactNode }) {
-      return <View testID="modal-wrapper">{children}</View>;
+  it('wraps modal content when modalContentWrapper is provided', () => {
+    function ModalContentWrapper({ children }: { children: React.ReactNode }) {
+      return <View testID="modal-content-wrapper">{children}</View>;
     }
 
-    const { getByTestId } = render(<AppKit modalWrapper={ModalWrapper} />);
+    const { getByTestId } = render(<AppKit modalContentWrapper={ModalContentWrapper} />);
 
-    expect(getByTestId('modal-wrapper')).toBeTruthy();
+    expect(getByTestId('modal-content-wrapper')).toBeTruthy();
     expect(getByTestId('w3m-modal')).toBeTruthy();
+  });
+
+  it('does not render modal content when closed', () => {
+    modalState.open = false;
+
+    const { queryByTestId } = render(<AppKit />);
+
+    expect(queryByTestId('w3m-modal')).toBeNull();
+    expect(queryByTestId('mock-card')).toBeNull();
   });
 });

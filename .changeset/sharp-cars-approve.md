@@ -11,4 +11,4 @@
 '@reown/appkit-wagmi-react-native': patch
 ---
 
-feat: add modalWrapper prop for custom modal window wrappers
+feat: add modalContentWrapper prop for custom modal content wrappers

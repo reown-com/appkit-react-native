@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import {
   useWindowDimensions,
   Modal as RNModal,
@@ -14,13 +14,27 @@ export type ModalProps = Pick<
   RNModalProps,
   'visible' | 'onDismiss' | 'testID' | 'onRequestClose'
 > & {
-  children: React.ReactNode;
+  children: ReactNode;
   onBackdropPress?: () => void;
+  contentWrapper?: ModalContentWrapperComponent;
 };
+
+export interface ModalContentWrapperProps {
+  children: ReactNode;
+}
+
+export type ModalContentWrapperComponent = ComponentType<ModalContentWrapperProps>;
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export function Modal({ visible, onBackdropPress, onRequestClose, testID, children }: ModalProps) {
+export function Modal({
+  visible,
+  onBackdropPress,
+  onRequestClose,
+  testID,
+  children,
+  contentWrapper: ContentWrapper
+}: ModalProps) {
   const { height } = useWindowDimensions();
   const Theme = useTheme();
   const backdropOpacity = useRef(new Animated.Value(0)).current;
@@ -120,16 +134,35 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
       onRequestClose={onRequestClose}
       testID={testID}
     >
-      {showBackdrop ? (
-        <AnimatedPressable
-          style={[styles.backdrop, { opacity: backdropOpacity }]}
-          onPress={onBackdropPress}
-        />
-      ) : null}
-      <Animated.View style={[styles.modal, { transform: [{ translateY }] }]}>
-        <Animated.View onLayout={onContentLayout}>{children}</Animated.View>
-        <View style={[styles.bottomBackground, { backgroundColor: Theme['bg-100'] }]} />
-      </Animated.View>
+      {ContentWrapper ? (
+        <ContentWrapper>
+          <>
+            {showBackdrop ? (
+              <AnimatedPressable
+                style={[styles.backdrop, { opacity: backdropOpacity }]}
+                onPress={onBackdropPress}
+              />
+            ) : null}
+            <Animated.View style={[styles.modal, { transform: [{ translateY }] }]}>
+              <Animated.View onLayout={onContentLayout}>{children}</Animated.View>
+              <View style={[styles.bottomBackground, { backgroundColor: Theme['bg-100'] }]} />
+            </Animated.View>
+          </>
+        </ContentWrapper>
+      ) : (
+        <>
+          {showBackdrop ? (
+            <AnimatedPressable
+              style={[styles.backdrop, { opacity: backdropOpacity }]}
+              onPress={onBackdropPress}
+            />
+          ) : null}
+          <Animated.View style={[styles.modal, { transform: [{ translateY }] }]}>
+            <Animated.View onLayout={onContentLayout}>{children}</Animated.View>
+            <View style={[styles.bottomBackground, { backgroundColor: Theme['bg-100'] }]} />
+          </Animated.View>
+        </>
+      )}
     </RNModal>
   );
 }

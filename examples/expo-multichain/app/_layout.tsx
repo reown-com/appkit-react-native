@@ -98,7 +98,7 @@ export default function RootLayout() {
             <StatusBar style="auto" />
             {/* Mount AppKit once in the root layout to avoid Android Expo Router modal layering issues.
                 If your app already uses react-native-screens and transparentModal still hides the modal,
-                pass modalWrapper={FullWindowOverlay} here. */}
+                pass modalContentWrapper={FullWindowOverlay} here. */}
             <View style={{ position: 'absolute', height: '100%', width: '100%' }}>
               <AppKit />
             </View>

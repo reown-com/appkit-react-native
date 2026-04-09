@@ -17,8 +17,8 @@ export {
 export {
   AppKit,
   type AppKitProps,
-  type AppKitModalWrapperComponent,
-  type AppKitModalWrapperProps
+  type AppKitModalContentWrapperComponent,
+  type AppKitModalContentWrapperProps
 } from './modal/w3m-modal';
 
 /********** Types **********/
