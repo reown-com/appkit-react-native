@@ -5,7 +5,6 @@
 '@reown/appkit-core-react-native': patch
 '@reown/appkit-ethers-react-native': patch
 '@reown/appkit-react-native': patch
-'@reown/appkit-react-native-cli': patch
 '@reown/appkit-solana-react-native': patch
 '@reown/appkit-ui-react-native': patch
 '@reown/appkit-wagmi-react-native': patch

@@ -125,6 +125,21 @@ export function Modal({
     }
   }, [modalVisible, translateY, backdropOpacity, height]);
 
+  const modalContent = (
+    <>
+      {showBackdrop ? (
+        <AnimatedPressable
+          style={[styles.backdrop, { opacity: backdropOpacity }]}
+          onPress={onBackdropPress}
+        />
+      ) : null}
+      <Animated.View style={[styles.modal, { transform: [{ translateY }] }]}>
+        <Animated.View onLayout={onContentLayout}>{children}</Animated.View>
+        <View style={[styles.bottomBackground, { backgroundColor: Theme['bg-100'] }]} />
+      </Animated.View>
+    </>
+  );
+
   return (
     <RNModal
       visible={modalVisible}
@@ -134,35 +149,7 @@ export function Modal({
       onRequestClose={onRequestClose}
       testID={testID}
     >
-      {ContentWrapper ? (
-        <ContentWrapper>
-          <>
-            {showBackdrop ? (
-              <AnimatedPressable
-                style={[styles.backdrop, { opacity: backdropOpacity }]}
-                onPress={onBackdropPress}
-              />
-            ) : null}
-            <Animated.View style={[styles.modal, { transform: [{ translateY }] }]}>
-              <Animated.View onLayout={onContentLayout}>{children}</Animated.View>
-              <View style={[styles.bottomBackground, { backgroundColor: Theme['bg-100'] }]} />
-            </Animated.View>
-          </>
-        </ContentWrapper>
-      ) : (
-        <>
-          {showBackdrop ? (
-            <AnimatedPressable
-              style={[styles.backdrop, { opacity: backdropOpacity }]}
-              onPress={onBackdropPress}
-            />
-          ) : null}
-          <Animated.View style={[styles.modal, { transform: [{ translateY }] }]}>
-            <Animated.View onLayout={onContentLayout}>{children}</Animated.View>
-            <View style={[styles.bottomBackground, { backgroundColor: Theme['bg-100'] }]} />
-          </Animated.View>
-        </>
-      )}
+      {ContentWrapper ? <ContentWrapper>{modalContent}</ContentWrapper> : modalContent}
     </RNModal>
   );
 }
