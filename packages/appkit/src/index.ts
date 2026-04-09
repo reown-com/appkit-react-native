@@ -14,7 +14,12 @@ export {
   NetworkButton as NetworkButton,
   type NetworkButtonProps as NetworkButtonProps
 } from './modal/w3m-network-button';
-export { AppKit } from './modal/w3m-modal';
+export {
+  AppKit,
+  type AppKitProps,
+  type AppKitModalWrapperComponent,
+  type AppKitModalWrapperProps
+} from './modal/w3m-modal';
 
 /********** Types **********/
 export type * from '@reown/appkit-core-react-native';

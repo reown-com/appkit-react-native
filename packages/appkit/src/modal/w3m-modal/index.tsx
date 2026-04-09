@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, type ComponentType, type ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 import { Card, Modal, ThemeProvider } from '@reown/appkit-ui-react-native';
 import {
@@ -18,7 +18,17 @@ import { Snackbar } from '../../partials/w3m-snackbar';
 import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
-export function AppKit() {
+export interface AppKitModalWrapperProps {
+  children: ReactNode;
+}
+
+export type AppKitModalWrapperComponent = ComponentType<AppKitModalWrapperProps>;
+
+export interface AppKitProps {
+  modalWrapper?: AppKitModalWrapperComponent;
+}
+
+export function AppKit({ modalWrapper: ModalWrapper }: AppKitProps) {
   const theme = useColorScheme();
   const { bottom, top } = useSafeAreaInsets();
   const { close } = useInternalAppKit();
@@ -53,20 +63,24 @@ export function AppKit() {
     }
   }, [projectId, prefetch]);
 
+  const modal = (
+    <Modal
+      visible={open}
+      onRequestClose={handleBackPress}
+      onBackdropPress={handleModalClose}
+      testID="w3m-modal"
+    >
+      <Card style={[styles.card, { paddingBottom: bottom, marginTop: top }]}>
+        <Header />
+        <AppKitRouter />
+        <Snackbar />
+      </Card>
+    </Modal>
+  );
+
   return (
     <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
-      <Modal
-        visible={open}
-        onRequestClose={handleBackPress}
-        onBackdropPress={handleModalClose}
-        testID="w3m-modal"
-      >
-        <Card style={[styles.card, { paddingBottom: bottom, marginTop: top }]}>
-          <Header />
-          <AppKitRouter />
-          <Snackbar />
-        </Card>
-      </Modal>
+      {ModalWrapper ? <ModalWrapper>{modal}</ModalWrapper> : modal}
     </ThemeProvider>
   );
 }

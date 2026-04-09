@@ -1,8 +1,10 @@
+const rootConfig = require('../../jest.config');
+
 const uiConfig = {
-  ...require('../../jest.config'),
+  ...rootConfig,
   setupFilesAfterEnv: ['./jest-setup.ts'],
-  // Override the moduleNameMapper to use the correct path from the package
   moduleNameMapper: {
+    ...rootConfig.moduleNameMapper,
     '^@shared-jest-setup$': '../../jest-shared-setup.ts'
   }
 };
