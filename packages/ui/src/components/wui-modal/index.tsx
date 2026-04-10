@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import {
   useWindowDimensions,
   Modal as RNModal,
@@ -14,13 +14,27 @@ export type ModalProps = Pick<
   RNModalProps,
   'visible' | 'onDismiss' | 'testID' | 'onRequestClose'
 > & {
-  children: React.ReactNode;
+  children: ReactNode;
   onBackdropPress?: () => void;
+  contentWrapper?: ModalContentWrapperComponent;
 };
+
+export interface ModalContentWrapperProps {
+  children: ReactNode;
+}
+
+export type ModalContentWrapperComponent = ComponentType<ModalContentWrapperProps>;
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export function Modal({ visible, onBackdropPress, onRequestClose, testID, children }: ModalProps) {
+export function Modal({
+  visible,
+  onBackdropPress,
+  onRequestClose,
+  testID,
+  children,
+  contentWrapper: ContentWrapper
+}: ModalProps) {
   const { height } = useWindowDimensions();
   const Theme = useTheme();
   const backdropOpacity = useRef(new Animated.Value(0)).current;
@@ -111,15 +125,8 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
     }
   }, [modalVisible, translateY, backdropOpacity, height]);
 
-  return (
-    <RNModal
-      visible={modalVisible}
-      transparent
-      animationType="none"
-      statusBarTranslucent
-      onRequestClose={onRequestClose}
-      testID={testID}
-    >
+  const modalContent = (
+    <>
       {showBackdrop ? (
         <AnimatedPressable
           style={[styles.backdrop, { opacity: backdropOpacity }]}
@@ -130,6 +137,19 @@ export function Modal({ visible, onBackdropPress, onRequestClose, testID, childr
         <Animated.View onLayout={onContentLayout}>{children}</Animated.View>
         <View style={[styles.bottomBackground, { backgroundColor: Theme['bg-100'] }]} />
       </Animated.View>
+    </>
+  );
+
+  return (
+    <RNModal
+      visible={modalVisible}
+      transparent
+      animationType="none"
+      statusBarTranslucent
+      onRequestClose={onRequestClose}
+      testID={testID}
+    >
+      {ContentWrapper ? <ContentWrapper>{modalContent}</ContentWrapper> : modalContent}
     </RNModal>
   );
 }

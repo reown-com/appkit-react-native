@@ -18,16 +18,20 @@ jest.mock('valtio', () => ({
 }));
 
 // Mock ThemeController
-jest.mock('@reown/appkit-core-react-native', () => ({
-  ThemeController: {
-    state: {
-      themeMode: 'light',
-      themeVariables: {}
-    },
-    setDefaultThemeMode: jest.fn(),
-    setThemeVariables: jest.fn()
-  }
-}));
+jest.mock(
+  '@reown/appkit-core-react-native',
+  () => ({
+    ThemeController: {
+      state: {
+        themeMode: 'light',
+        themeVariables: {}
+      },
+      setDefaultThemeMode: jest.fn(),
+      setThemeVariables: jest.fn()
+    }
+  }),
+  { virtual: true }
+);
 
 describe('useAppKitTheme', () => {
   const mockAppKit = {} as AppKit;

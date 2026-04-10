@@ -96,7 +96,9 @@ export default function RootLayout() {
               <Stack.Screen name="+not-found" />
             </Stack>
             <StatusBar style="auto" />
-            {/* This is a workaround for the Android modal issue. https://github.com/expo/expo/issues/32991#issuecomment-2489620459 */}
+            {/* Mount AppKit once in the root layout to avoid Android Expo Router modal layering issues.
+                If your app already uses react-native-screens and transparentModal still hides the modal,
+                pass modalContentWrapper={FullWindowOverlay} here. */}
             <View style={{ position: 'absolute', height: '100%', width: '100%' }}>
               <AppKit />
             </View>
