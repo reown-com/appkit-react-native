@@ -1,5 +1,37 @@
 # @reown/appkit-bitcoin-react-native
 
+## 2.0.3
+
+### Patch Changes
+
+- [#549](https://github.com/reown-com/appkit-react-native/pull/549) [`4af3f58`](https://github.com/reown-com/appkit-react-native/commit/4af3f5837efa776203db2bcf988792b7778aafc2) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: add modalContentWrapper prop to work around Expo Router modal layering issues
+
+- Updated dependencies [[`4af3f58`](https://github.com/reown-com/appkit-react-native/commit/4af3f5837efa776203db2bcf988792b7778aafc2)]:
+  - @reown/appkit-common-react-native@2.0.3
+
+## 2.0.2
+
+### Patch Changes
+
+- [#501](https://github.com/reown-com/appkit-react-native/pull/501) [`5308d3c`](https://github.com/reown-com/appkit-react-native/commit/5308d3c0c02d7e516c3c689bd66308b6d6f6cf7d) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: renew uri after failure
+
+- [#497](https://github.com/reown-com/appkit-react-native/pull/497) [`5b8eb47`](https://github.com/reown-com/appkit-react-native/commit/5b8eb479880eda9c6d799692f5f48153111d16ad) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: round logo from qr code + added borderWidth 0 to card component
+
+- [#519](https://github.com/reown-com/appkit-react-native/pull/519) [`31a73c5`](https://github.com/reown-com/appkit-react-native/commit/31a73c568100e91e3159a270b496b630460e9098) Thanks [@normanzb](https://github.com/normanzb)! - fix: in EventsController, set `NotifyInSync` to true to avoid omitting events
+
+- [#504](https://github.com/reown-com/appkit-react-native/pull/504) [`43a068e`](https://github.com/reown-com/appkit-react-native/commit/43a068e14b84f73c70877268d2dac91a5060c094) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: refactors the theme management logic to introduce a clearer separation between system theme and user-defined default theme
+
+- [#499](https://github.com/reown-com/appkit-react-native/pull/499) [`7d078de`](https://github.com/reown-com/appkit-react-native/commit/7d078de2fb99eedbec13d16eba42a8ce1d3843c7) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: added useAppKitTheme hook
+
+- [#495](https://github.com/reown-com/appkit-react-native/pull/495) [`474a544`](https://github.com/reown-com/appkit-react-native/commit/474a544f8b32e11db3647353d544dfefa8795654) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: updated the switchNetwork to accept a CAIP network ID string
+
+- [#489](https://github.com/reown-com/appkit-react-native/pull/489) [`b2e4801`](https://github.com/reown-com/appkit-react-native/commit/b2e48012c76e9d7aef88fe216ee11709effe0ab8) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: export account list on useAccount hook
+
+- [#498](https://github.com/reown-com/appkit-react-native/pull/498) [`fd620bd`](https://github.com/reown-com/appkit-react-native/commit/fd620bda62118fc0da0b85971c6ed80c9d084592) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: useAccount hook now returns empty array if appkit is not connected
+
+- Updated dependencies [[`5308d3c`](https://github.com/reown-com/appkit-react-native/commit/5308d3c0c02d7e516c3c689bd66308b6d6f6cf7d), [`5b8eb47`](https://github.com/reown-com/appkit-react-native/commit/5b8eb479880eda9c6d799692f5f48153111d16ad), [`31a73c5`](https://github.com/reown-com/appkit-react-native/commit/31a73c568100e91e3159a270b496b630460e9098), [`43a068e`](https://github.com/reown-com/appkit-react-native/commit/43a068e14b84f73c70877268d2dac91a5060c094), [`7d078de`](https://github.com/reown-com/appkit-react-native/commit/7d078de2fb99eedbec13d16eba42a8ce1d3843c7), [`474a544`](https://github.com/reown-com/appkit-react-native/commit/474a544f8b32e11db3647353d544dfefa8795654), [`b2e4801`](https://github.com/reown-com/appkit-react-native/commit/b2e48012c76e9d7aef88fe216ee11709effe0ab8), [`fd620bd`](https://github.com/reown-com/appkit-react-native/commit/fd620bda62118fc0da0b85971c6ed80c9d084592)]:
+  - @reown/appkit-common-react-native@2.0.2
+
 ## 2.0.1
 
 ### Major Changes
