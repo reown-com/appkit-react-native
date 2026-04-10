@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, type ComponentType, type ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 import { Card, Modal, ThemeProvider } from '@reown/appkit-ui-react-native';
 import {
@@ -18,7 +18,17 @@ import { Snackbar } from '../../partials/w3m-snackbar';
 import { useInternalAppKit } from '../../AppKitContext';
 import styles from './styles';
 
-export function AppKit() {
+export interface AppKitModalContentWrapperProps {
+  children: ReactNode;
+}
+
+export type AppKitModalContentWrapperComponent = ComponentType<AppKitModalContentWrapperProps>;
+
+export interface AppKitProps {
+  modalContentWrapper?: AppKitModalContentWrapperComponent;
+}
+
+export function AppKit({ modalContentWrapper }: AppKitProps) {
   const theme = useColorScheme();
   const { bottom, top } = useSafeAreaInsets();
   const { close } = useInternalAppKit();
@@ -60,6 +70,7 @@ export function AppKit() {
         onRequestClose={handleBackPress}
         onBackdropPress={handleModalClose}
         testID="w3m-modal"
+        contentWrapper={modalContentWrapper}
       >
         <Card style={[styles.card, { paddingBottom: bottom, marginTop: top }]}>
           <Header />
