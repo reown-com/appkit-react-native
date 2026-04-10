@@ -10,4 +10,4 @@
 '@reown/appkit-wagmi-react-native': patch
 ---
 
-feat: add modalContentWrapper prop for custom modal content wrappers
+fix: add modalContentWrapper prop to work around Expo Router modal layering issues

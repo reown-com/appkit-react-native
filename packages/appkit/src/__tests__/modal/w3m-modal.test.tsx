@@ -107,7 +107,7 @@ describe('AppKit modal', () => {
     const { getByTestId, queryByTestId } = render(<AppKit />);
 
     expect(getByTestId('w3m-modal')).toBeTruthy();
-    expect(queryByTestId('modal-wrapper')).toBeNull();
+    expect(queryByTestId('modal-content-wrapper')).toBeNull();
   });
 
   it('wraps modal content when modalContentWrapper is provided', () => {
