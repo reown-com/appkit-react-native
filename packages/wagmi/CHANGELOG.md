@@ -1,5 +1,15 @@
 # @reown/appkit-wagmi-react-native
 
+## 2.0.3
+
+### Patch Changes
+
+- [#549](https://github.com/reown-com/appkit-react-native/pull/549) [`4af3f58`](https://github.com/reown-com/appkit-react-native/commit/4af3f5837efa776203db2bcf988792b7778aafc2) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: add modalContentWrapper prop to work around Expo Router modal layering issues
+
+- Updated dependencies [[`4af3f58`](https://github.com/reown-com/appkit-react-native/commit/4af3f5837efa776203db2bcf988792b7778aafc2)]:
+  - @reown/appkit-common-react-native@2.0.3
+  - @reown/appkit-react-native@2.0.3
+
 ## 2.0.2
 
 ### Patch Changes
