@@ -13,6 +13,18 @@ import {
   type SIWXConfig
 } from '@reown/appkit-common-react-native';
 
+type WalletConnectLoggerLevel = 'silent' | 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace';
+
+type WalletConnectLogger = {
+  child(bindings: Record<string, unknown>): WalletConnectLogger;
+  trace: (...args: unknown[]) => void;
+  debug: (...args: unknown[]) => void;
+  info: (...args: unknown[]) => void;
+  warn: (...args: unknown[]) => void;
+  error: (...args: unknown[]) => void;
+  fatal: (...args: unknown[]) => void;
+};
+
 /**
  * Configuration interface for initializing the AppKit instance.
  * This interface defines all the required and optional parameters needed to set up
@@ -135,6 +147,16 @@ export interface AppKitConfig {
    * @default false
    */
   debug?: OptionsControllerState['debug'];
+
+  /**
+   * Optional logger configuration forwarded to `@walletconnect/universal-provider`.
+   * Accepts a pino log level (`'silent' | 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'`)
+   * or a custom pino-compatible `Logger` instance. When omitted, WalletConnect's
+   * default logging is used.
+   *
+   * @example logger: 'silent'
+   */
+  logger?: WalletConnectLoggerLevel | WalletConnectLogger;
 
   /**
    * Optional theme mode for the AppKit UI.
