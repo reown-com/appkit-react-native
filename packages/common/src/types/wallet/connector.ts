@@ -32,9 +32,19 @@ export type ConnectOptions = {
   universalLink?: string;
 };
 
+export type WalletConnectLoggerLevel =
+  | 'silent'
+  | 'fatal'
+  | 'error'
+  | 'warn'
+  | 'info'
+  | 'debug'
+  | 'trace';
+
 export type ConnectorInitOptions = {
   storage: Storage;
   metadata: Metadata;
+  logger?: WalletConnectLoggerLevel;
 };
 
 export abstract class WalletConnector extends EventEmitter {
