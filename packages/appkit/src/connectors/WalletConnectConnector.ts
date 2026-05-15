@@ -1,5 +1,5 @@
 import { WcController } from '@reown/appkit-core-react-native';
-import UniversalProvider, { type UniversalProviderOpts } from '@walletconnect/universal-provider';
+import UniversalProvider from '@walletconnect/universal-provider';
 import {
   WalletConnector,
   type AppKitNetwork,
@@ -30,11 +30,12 @@ export class WalletConnectConnector extends WalletConnector {
 
   override async init(ops: ConnectorInitOptions) {
     super.init(ops);
+    const logger = typeof ops.logger === 'string' ? ops.logger : undefined;
 
     const provider = await this.getUniversalProvider({
       projectId: this.config.projectId,
       metadata: ops.metadata,
-      logger: ops.logger as UniversalProviderOpts['logger']
+      logger
     });
 
     this.provider = provider as Provider;
@@ -89,7 +90,7 @@ export class WalletConnectConnector extends WalletConnector {
   }: {
     projectId: string;
     metadata: Metadata;
-    logger?: UniversalProviderOpts['logger'];
+    logger?: string;
   }): Promise<UniversalProvider> {
     if (!this.provider) {
       this.provider = (await UniversalProvider.init({

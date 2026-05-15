@@ -41,21 +41,10 @@ export type WalletConnectLoggerLevel =
   | 'debug'
   | 'trace';
 
-// Structural subset of the pino-compatible logger WalletConnect expects.
-export type WalletConnectLogger = {
-  child(bindings: Record<string, unknown>): WalletConnectLogger;
-  trace: (...args: unknown[]) => void;
-  debug: (...args: unknown[]) => void;
-  info: (...args: unknown[]) => void;
-  warn: (...args: unknown[]) => void;
-  error: (...args: unknown[]) => void;
-  fatal: (...args: unknown[]) => void;
-};
-
 export type ConnectorInitOptions = {
   storage: Storage;
   metadata: Metadata;
-  logger?: WalletConnectLoggerLevel | WalletConnectLogger;
+  logger?: WalletConnectLoggerLevel;
 };
 
 export abstract class WalletConnector extends EventEmitter {
