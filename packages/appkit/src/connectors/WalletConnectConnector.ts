@@ -30,12 +30,11 @@ export class WalletConnectConnector extends WalletConnector {
 
   override async init(ops: ConnectorInitOptions) {
     super.init(ops);
-    const logger = typeof ops.logger === 'string' ? ops.logger : undefined;
 
     const provider = await this.getUniversalProvider({
       projectId: this.config.projectId,
       metadata: ops.metadata,
-      logger
+      logger: ops.logger
     });
 
     this.provider = provider as Provider;
@@ -90,7 +89,7 @@ export class WalletConnectConnector extends WalletConnector {
   }: {
     projectId: string;
     metadata: Metadata;
-    logger?: string;
+    logger?: ConnectorInitOptions['logger'];
   }): Promise<UniversalProvider> {
     if (!this.provider) {
       this.provider = (await UniversalProvider.init({

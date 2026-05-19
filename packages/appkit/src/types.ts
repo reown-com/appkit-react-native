@@ -139,7 +139,7 @@ export interface AppKitConfig {
 
   /**
    * Optional logger configuration forwarded to `@walletconnect/universal-provider`.
-   * Accepts a pino log level (`'silent' | 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'`).
+   * Accepts a log level (`'silent' | 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'`).
    * When omitted, WalletConnect's default logging is used.
    *
    * @example logger: 'silent'
