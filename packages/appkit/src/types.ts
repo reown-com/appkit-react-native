@@ -3,6 +3,7 @@ import {
   type Features,
   type UniversalProviderConfigOverride,
   type WalletConnector,
+  type ConnectorInitOptions,
   type BlockchainAdapter,
   type Metadata,
   type Network,
@@ -135,6 +136,15 @@ export interface AppKitConfig {
    * @default false
    */
   debug?: OptionsControllerState['debug'];
+
+  /**
+   * Optional logger configuration forwarded to `@walletconnect/universal-provider`.
+   * Accepts a log level (`'silent' | 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'`).
+   * When omitted, WalletConnect's default logging is used.
+   *
+   * @example logger: 'silent'
+   */
+  logger?: ConnectorInitOptions['logger'];
 
   /**
    * Optional theme mode for the AppKit UI.
