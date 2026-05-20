@@ -393,7 +393,8 @@ export class AppKit {
     if (CustomConnector) {
       await CustomConnector.init({
         storage: this.config.storage,
-        metadata: this.config.metadata
+        metadata: this.config.metadata,
+        logger: this.config.logger
       });
 
       return CustomConnector;
@@ -413,7 +414,8 @@ export class AppKit {
     });
     await this.walletConnectConnector.init({
       storage: this.config.storage,
-      metadata: this.config.metadata
+      metadata: this.config.metadata,
+      logger: this.config.logger
     });
 
     return this.walletConnectConnector;

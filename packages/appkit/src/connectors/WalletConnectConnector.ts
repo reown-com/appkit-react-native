@@ -33,7 +33,8 @@ export class WalletConnectConnector extends WalletConnector {
 
     const provider = await this.getUniversalProvider({
       projectId: this.config.projectId,
-      metadata: ops.metadata
+      metadata: ops.metadata,
+      logger: ops.logger
     });
 
     this.provider = provider as Provider;
@@ -83,16 +84,19 @@ export class WalletConnectConnector extends WalletConnector {
 
   private async getUniversalProvider({
     projectId,
-    metadata
+    metadata,
+    logger
   }: {
     projectId: string;
     metadata: Metadata;
+    logger?: ConnectorInitOptions['logger'];
   }): Promise<UniversalProvider> {
     if (!this.provider) {
       this.provider = (await UniversalProvider.init({
         projectId,
         metadata,
-        storage: this.storage
+        storage: this.storage,
+        ...(logger !== undefined && { logger })
       })) as Provider;
     }
 
