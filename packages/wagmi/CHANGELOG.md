@@ -1,5 +1,15 @@
 # @reown/appkit-wagmi-react-native
 
+## 2.0.4
+
+### Patch Changes
+
+- [#558](https://github.com/reown-com/appkit-react-native/pull/558) [`85ea6a9`](https://github.com/reown-com/appkit-react-native/commit/85ea6a9a1ac8f2f934cc1afd67b39e530fd2d6e8) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - feat: add `logger` option to `createAppKit` for controlling `@walletconnect/universal-provider` log output. Accepts a log level (`'silent' | 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'`). When omitted, WalletConnect's default logging is preserved.
+
+- Updated dependencies [[`85ea6a9`](https://github.com/reown-com/appkit-react-native/commit/85ea6a9a1ac8f2f934cc1afd67b39e530fd2d6e8)]:
+  - @reown/appkit-react-native@2.0.4
+  - @reown/appkit-common-react-native@2.0.4
+
 ## 2.0.3
 
 ### Patch Changes
