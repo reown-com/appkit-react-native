@@ -73,7 +73,7 @@
     "react-test-renderer": "18.3.1",
     "ts-jest": "29.1.1",
     "ts-node": "10.9.1",
-    "tsconfig": "*",
+    "tsconfig": "7.0.0",
     "turbo": "2.5.5",
     "typescript": "5.2.2",
     "viem": "2.31.3",

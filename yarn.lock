@@ -4321,11 +4321,11 @@ __metadata:
     "@reown/appkit-common-react-native": 2.0.4
     "@reown/appkit-react-native": 2.0.4
   peerDependencies:
-    "@react-native-community/netinfo": "*"
+    "@react-native-community/netinfo": ">=11.0.0"
     "@walletconnect/react-native-compat": ">=2.16.1"
     react: ">=18"
     react-native: ">=0.72"
-    react-native-get-random-values: "*"
+    react-native-get-random-values: ">=1.11.0"
   languageName: unknown
   linkType: soft
 
@@ -4453,11 +4453,11 @@ __metadata:
     "@reown/appkit-common-react-native": 2.0.4
     "@reown/appkit-react-native": 2.0.4
   peerDependencies:
-    "@react-native-community/netinfo": "*"
+    "@react-native-community/netinfo": ">=11.0.0"
     "@walletconnect/react-native-compat": ">=2.16.1"
     react: ">=18"
     react-native: ">=0.72"
-    react-native-get-random-values: "*"
+    react-native-get-random-values: ">=1.11.0"
     viem: ">=2 <3.0.0"
     wagmi: ">=2 <3.0.0"
   languageName: unknown
@@ -7014,7 +7014,7 @@ __metadata:
     react-test-renderer: 18.3.1
     ts-jest: 29.1.1
     ts-node: 10.9.1
-    tsconfig: "*"
+    tsconfig: 7.0.0
     turbo: 2.5.5
     typescript: 5.2.2
     viem: 2.31.3
@@ -18280,7 +18280,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig@npm:*":
+"tsconfig@npm:7.0.0":
   version: 7.0.0
   resolution: "tsconfig@npm:7.0.0"
   dependencies:
