@@ -1,5 +1,11 @@
 # @reown/appkit-common-react-native
 
+## 2.0.5
+
+### Patch Changes
+
+- [#566](https://github.com/reown-com/appkit-react-native/pull/566) [`b3c8126`](https://github.com/reown-com/appkit-react-native/commit/b3c8126258a2a543b3c6bd0db93341f21a565387) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - chore: pin peer dependency version ranges
+
 ## 2.0.4
 
 ### Patch Changes
