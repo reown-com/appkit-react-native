@@ -45,11 +45,11 @@
     "@reown/appkit-react-native": "2.0.4"
   },
   "peerDependencies": {
-    "@react-native-community/netinfo": "*",
+    "@react-native-community/netinfo": ">=11.0.0",
     "@walletconnect/react-native-compat": ">=2.16.1",
     "react": ">=18",
     "react-native": ">=0.72",
-    "react-native-get-random-values": "*",
+    "react-native-get-random-values": ">=1.11.0",
     "viem": ">=2 <3.0.0",
     "wagmi": ">=2 <3.0.0"
   },
