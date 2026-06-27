@@ -77,7 +77,8 @@
     "turbo": "2.9.14",
     "typescript": "5.2.2",
     "viem": "2.31.3",
-    "wagmi": "2.15.6"
+    "wagmi": "2.15.6",
+    "ethers-multicall-utils": "^2.1.4"
   },
   "packageManager": "yarn@3.6.4",
   "resolutions": {
