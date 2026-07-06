@@ -104,4 +104,61 @@ describe('FetchUtil', () => {
       expect(url).toBe('https://another.com/test?foo=bar&bar=baz&clientId=test-client-id');
     });
   });
+
+  describe('fetchImage', () => {
+    const originalFetch = global.fetch;
+
+    afterEach(() => {
+      global.fetch = originalFetch;
+    });
+
+    it('should build a base64 data URL from the response ArrayBuffer', async () => {
+      // "foobar" -> base64 "Zm9vYmFy"
+      const bytes = new Uint8Array([0x66, 0x6f, 0x6f, 0x62, 0x61, 0x72]);
+      global.fetch = jest.fn().mockResolvedValue({
+        arrayBuffer: async () => bytes.buffer,
+        headers: { get: () => 'image/png' }
+      }) as unknown as typeof fetch;
+
+      const fetchUtil = new FetchUtil({ baseUrl });
+      const result = await fetchUtil.fetchImage('/getWalletImage/1');
+
+      expect(result).toBe('data:image/png;base64,Zm9vYmFy');
+    });
+
+    it('should default the content type to image/png when the header is missing', async () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        arrayBuffer: async () => new Uint8Array([0x66, 0x6f, 0x6f, 0x62, 0x61, 0x72]).buffer,
+        headers: { get: () => null }
+      }) as unknown as typeof fetch;
+
+      const fetchUtil = new FetchUtil({ baseUrl });
+      const result = await fetchUtil.fetchImage('/getWalletImage/1');
+
+      expect(result).toBe('data:image/png;base64,Zm9vYmFy');
+    });
+
+    it('should not call response.blob() (RN cannot build a Blob from an ArrayBuffer)', async () => {
+      const blob = jest.fn();
+      global.fetch = jest.fn().mockResolvedValue({
+        arrayBuffer: async () => new Uint8Array([1, 2, 3]).buffer,
+        headers: { get: () => 'image/webp' },
+        blob
+      }) as unknown as typeof fetch;
+
+      const fetchUtil = new FetchUtil({ baseUrl });
+      await fetchUtil.fetchImage('/getWalletImage/1');
+
+      expect(blob).not.toHaveBeenCalled();
+    });
+
+    it('should return undefined when the request throws', async () => {
+      global.fetch = jest.fn().mockRejectedValue(new Error('network error')) as unknown as typeof fetch;
+
+      const fetchUtil = new FetchUtil({ baseUrl });
+      const result = await fetchUtil.fetchImage('/getWalletImage/1');
+
+      expect(result).toBeUndefined();
+    });
+  });
 });
