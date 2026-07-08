@@ -153,7 +153,9 @@ describe('FetchUtil', () => {
     });
 
     it('should return undefined when the request throws', async () => {
-      global.fetch = jest.fn().mockRejectedValue(new Error('network error')) as unknown as typeof fetch;
+      global.fetch = jest
+        .fn()
+        .mockRejectedValue(new Error('network error')) as unknown as typeof fetch;
 
       const fetchUtil = new FetchUtil({ baseUrl });
       const result = await fetchUtil.fetchImage('/getWalletImage/1');
