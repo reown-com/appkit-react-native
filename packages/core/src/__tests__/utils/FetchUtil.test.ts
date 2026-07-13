@@ -116,6 +116,7 @@ describe('FetchUtil', () => {
       // "foobar" -> base64 "Zm9vYmFy"
       const bytes = new Uint8Array([0x66, 0x6f, 0x6f, 0x62, 0x61, 0x72]);
       global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
         arrayBuffer: async () => bytes.buffer,
         headers: { get: () => 'image/png' }
       }) as unknown as typeof fetch;
@@ -126,8 +127,24 @@ describe('FetchUtil', () => {
       expect(result).toBe('data:image/png;base64,Zm9vYmFy');
     });
 
+    it('should return undefined for a non-ok response', async () => {
+      const arrayBuffer = jest.fn();
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        arrayBuffer,
+        headers: { get: () => 'application/json' }
+      }) as unknown as typeof fetch;
+
+      const fetchUtil = new FetchUtil({ baseUrl });
+      const result = await fetchUtil.fetchImage('/getWalletImage/1');
+
+      expect(result).toBeUndefined();
+      expect(arrayBuffer).not.toHaveBeenCalled();
+    });
+
     it('should default the content type to image/png when the header is missing', async () => {
       global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
         arrayBuffer: async () => new Uint8Array([0x66, 0x6f, 0x6f, 0x62, 0x61, 0x72]).buffer,
         headers: { get: () => null }
       }) as unknown as typeof fetch;
@@ -141,6 +158,7 @@ describe('FetchUtil', () => {
     it('should not call response.blob() (RN cannot build a Blob from an ArrayBuffer)', async () => {
       const blob = jest.fn();
       global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
         arrayBuffer: async () => new Uint8Array([1, 2, 3]).buffer,
         headers: { get: () => 'image/webp' },
         blob

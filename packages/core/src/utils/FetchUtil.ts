@@ -81,6 +81,12 @@ export class FetchUtil {
       const url = this.createUrl({ path, params }).toString();
       const response = await fetch(url, { headers });
 
+      // Bail on non-2xx so error bodies aren't base64-encoded into a bogus data
+      // URL (RN's `Image` would silently fail instead of showing the placeholder).
+      if (!response.ok) {
+        return undefined;
+      }
+
       // React Native's `fetch(...).blob()` throws "Creating blobs from
       // 'ArrayBuffer' and 'ArrayBufferView' are not supported" for binary
       // responses, so Blob + FileReader can't be used to build the data URL
@@ -100,20 +106,22 @@ export class FetchUtil {
   private static _arrayBufferToBase64(buffer: ArrayBuffer): string {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     const bytes = new Uint8Array(buffer);
-    let base64 = '';
+    const parts: string[] = [];
 
     for (let i = 0; i < bytes.length; i += 3) {
       const byte0 = bytes[i] as number;
       const byte1 = i + 1 < bytes.length ? (bytes[i + 1] as number) : 0;
       const byte2 = i + 2 < bytes.length ? (bytes[i + 2] as number) : 0;
 
-      base64 += chars[byte0 >> 2];
-      base64 += chars[((byte0 & 0x03) << 4) | (byte1 >> 4)];
-      base64 += i + 1 < bytes.length ? chars[((byte1 & 0x0f) << 2) | (byte2 >> 6)] : '=';
-      base64 += i + 2 < bytes.length ? chars[byte2 & 0x3f] : '=';
+      parts.push(chars[byte0 >> 2] as string);
+      parts.push(chars[((byte0 & 0x03) << 4) | (byte1 >> 4)] as string);
+      parts.push(
+        i + 1 < bytes.length ? (chars[((byte1 & 0x0f) << 2) | (byte2 >> 6)] as string) : '='
+      );
+      parts.push(i + 2 < bytes.length ? (chars[byte2 & 0x3f] as string) : '=');
     }
 
-    return base64;
+    return parts.join('');
   }
   /* eslint-enable no-bitwise */
 
