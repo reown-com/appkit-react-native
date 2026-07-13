@@ -80,17 +80,50 @@ export class FetchUtil {
     try {
       const url = this.createUrl({ path, params }).toString();
       const response = await fetch(url, { headers });
-      const blob = await response.blob();
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
 
-      return new Promise<string>(resolve => {
-        reader.onloadend = () => resolve(reader.result as string);
-      });
+      // Bail on non-2xx so error bodies aren't base64-encoded into a bogus data
+      // URL (RN's `Image` would silently fail instead of showing the placeholder).
+      if (!response.ok) {
+        return undefined;
+      }
+
+      // React Native's `fetch(...).blob()` throws "Creating blobs from
+      // 'ArrayBuffer' and 'ArrayBufferView' are not supported" for binary
+      // responses, so Blob + FileReader can't be used to build the data URL
+      // (wallet/network images would silently fail to load). Read the bytes as
+      // an ArrayBuffer and base64-encode them into a data URL instead.
+      const arrayBuffer = await response.arrayBuffer();
+      const contentType = response.headers.get('content-type') ?? 'image/png';
+
+      return `data:${contentType};base64,${FetchUtil._arrayBufferToBase64(arrayBuffer)}`;
     } catch {
       return undefined;
     }
   }
+
+  // Dependency-free base64 encoder (RN has no global `Buffer`/`btoa` guarantee).
+  /* eslint-disable no-bitwise */
+  private static _arrayBufferToBase64(buffer: ArrayBuffer): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    const bytes = new Uint8Array(buffer);
+    const parts: string[] = [];
+
+    for (let i = 0; i < bytes.length; i += 3) {
+      const byte0 = bytes[i] as number;
+      const byte1 = i + 1 < bytes.length ? (bytes[i + 1] as number) : 0;
+      const byte2 = i + 2 < bytes.length ? (bytes[i + 2] as number) : 0;
+
+      parts.push(chars[byte0 >> 2] as string);
+      parts.push(chars[((byte0 & 0x03) << 4) | (byte1 >> 4)] as string);
+      parts.push(
+        i + 1 < bytes.length ? (chars[((byte1 & 0x0f) << 2) | (byte2 >> 6)] as string) : '='
+      );
+      parts.push(i + 2 < bytes.length ? (chars[byte2 & 0x3f] as string) : '=');
+    }
+
+    return parts.join('');
+  }
+  /* eslint-enable no-bitwise */
 
   public createUrl({ path, params }: RequestArguments) {
     let fullUrl: string;
