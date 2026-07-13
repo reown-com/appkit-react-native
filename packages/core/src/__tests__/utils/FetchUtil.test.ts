@@ -142,6 +142,47 @@ describe('FetchUtil', () => {
       expect(arrayBuffer).not.toHaveBeenCalled();
     });
 
+    it('should produce correct single-char padding (==) for a one-byte remainder', async () => {
+      // 'f' -> base64 "Zg=="
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        arrayBuffer: async () => new Uint8Array([0x66]).buffer,
+        headers: { get: () => 'image/png' }
+      }) as unknown as typeof fetch;
+
+      const fetchUtil = new FetchUtil({ baseUrl });
+      const result = await fetchUtil.fetchImage('/getWalletImage/1');
+
+      expect(result).toBe('data:image/png;base64,Zg==');
+    });
+
+    it('should produce correct single-char padding (=) for a two-byte remainder', async () => {
+      // 'fo' -> base64 "Zm8="
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        arrayBuffer: async () => new Uint8Array([0x66, 0x6f]).buffer,
+        headers: { get: () => 'image/png' }
+      }) as unknown as typeof fetch;
+
+      const fetchUtil = new FetchUtil({ baseUrl });
+      const result = await fetchUtil.fetchImage('/getWalletImage/1');
+
+      expect(result).toBe('data:image/png;base64,Zm8=');
+    });
+
+    it('should strip content-type parameters when building the data URL', async () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        arrayBuffer: async () => new Uint8Array([0x66, 0x6f, 0x6f, 0x62, 0x61, 0x72]).buffer,
+        headers: { get: () => 'image/svg+xml; charset=utf-8' }
+      }) as unknown as typeof fetch;
+
+      const fetchUtil = new FetchUtil({ baseUrl });
+      const result = await fetchUtil.fetchImage('/getWalletImage/1');
+
+      expect(result).toBe('data:image/svg+xml;base64,Zm9vYmFy');
+    });
+
     it('should default the content type to image/png when the header is missing', async () => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
