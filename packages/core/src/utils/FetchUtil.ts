@@ -94,8 +94,8 @@ export class FetchUtil {
       // an ArrayBuffer and base64-encode them into a data URL instead.
       const arrayBuffer = await response.arrayBuffer();
       // Strip any `; charset=...`/`; quality=...` parameters so the media type
-      // doesn't leak into the data URL (e.g. `data:image/svg+xml; charset=utf-8;
-      // base64,...`), which strict parsers may reject.
+      // doesn't leak into the data URL as `data:image/svg+xml; charset=utf-8;base64,...`,
+      // which strict parsers may reject.
       const rawContentType = response.headers.get('content-type') ?? 'image/png';
       const contentType = rawContentType.split(';')[0]?.trim() || 'image/png';
 

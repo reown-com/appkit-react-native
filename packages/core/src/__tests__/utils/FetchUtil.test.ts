@@ -142,7 +142,7 @@ describe('FetchUtil', () => {
       expect(arrayBuffer).not.toHaveBeenCalled();
     });
 
-    it('should produce correct single-char padding (==) for a one-byte remainder', async () => {
+    it('should produce correct double-char padding (==) for a one-byte remainder', async () => {
       // 'f' -> base64 "Zg=="
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
