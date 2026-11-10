@@ -19,6 +19,15 @@ export abstract class BlockchainAdapter extends EventEmitter {
   public supportedNamespace: ChainNamespace;
   public adapterType: AdapterType;
 
+  // Provider we are currently listening to, so we can remove the exact same handlers later
+  private subscribedProvider?: Provider;
+
+  // Stable handler references. `off` only removes a listener when it receives the same
+  // function that was passed to `on`, so these must not be recreated with `.bind` each time.
+  private readonly handleChainChanged = (chainId: string) => this.onChainChanged(chainId);
+  private readonly handleAccountsChanged = (accounts: string[]) => this.onAccountsChanged(accounts);
+  private readonly handleDisconnect = () => this.onDisconnect();
+
   // Typed emit method
   override emit<K extends keyof AdapterEvents>(
     event: K,
@@ -50,6 +59,7 @@ export abstract class BlockchainAdapter extends EventEmitter {
   }
 
   removeConnector() {
+    this.unsubscribeFromEvents();
     this.connector = undefined;
   }
 
@@ -60,12 +70,26 @@ export abstract class BlockchainAdapter extends EventEmitter {
   }
 
   subscribeToEvents(): void {
+    // Drop any previous subscription first, so calling init again doesn't stack listeners
+    this.unsubscribeFromEvents();
+
     const provider = this.connector?.getProvider();
     if (!provider) return;
 
-    provider.on('chainChanged', this.onChainChanged.bind(this));
-    provider.on('accountsChanged', this.onAccountsChanged.bind(this));
-    provider.on('disconnect', this.onDisconnect.bind(this));
+    provider.on('chainChanged', this.handleChainChanged);
+    provider.on('accountsChanged', this.handleAccountsChanged);
+    provider.on('disconnect', this.handleDisconnect);
+    this.subscribedProvider = provider;
+  }
+
+  unsubscribeFromEvents(): void {
+    const provider = this.subscribedProvider;
+    if (!provider) return;
+
+    provider.off('chainChanged', this.handleChainChanged);
+    provider.off('accountsChanged', this.handleAccountsChanged);
+    provider.off('disconnect', this.handleDisconnect);
+    this.subscribedProvider = undefined;
   }
 
   onChainChanged(chainId: string): void {
@@ -109,15 +133,10 @@ export abstract class BlockchainAdapter extends EventEmitter {
   }
 
   onDisconnect(): void {
+    // Emit before clearing the connector: listeners (ConnectionsController.disconnect) read it
     this.emit('disconnect', undefined);
 
-    const provider = this.connector?.getProvider();
-    if (provider) {
-      provider.off('chainChanged', this.onChainChanged.bind(this));
-      provider.off('accountsChanged', this.onAccountsChanged.bind(this));
-      provider.off('disconnect', this.onDisconnect.bind(this));
-    }
-
+    this.unsubscribeFromEvents();
     this.connector = undefined;
   }
 
