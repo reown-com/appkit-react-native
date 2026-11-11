@@ -66,10 +66,6 @@ export const UiUtil = {
     )}`;
   },
 
-  getWalletName(name: string, short = true) {
-    return short ? name.split(' ')[0] : name;
-  },
-
   formatNumberToLocalString(value: string | number | undefined, decimals = 2) {
     let numericValue: number;
 

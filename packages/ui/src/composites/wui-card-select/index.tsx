@@ -8,7 +8,6 @@ import type { CardSelectType } from '../../utils/TypesUtil';
 import { NetworkImage } from '../wui-network-image';
 import { WalletImage } from '../wui-wallet-image';
 import styles, { getBackgroundColor, ITEM_HEIGHT, ITEM_WIDTH } from './styles';
-import { UiUtil } from '../../utils/UiUtil';
 import { FlexView } from '../../layout/wui-flex';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -88,7 +87,7 @@ function CardSelect_({
           ) : null}
         </View>
         <Text variant="tiny-500" color={textColor} style={styles.text} numberOfLines={1}>
-          {UiUtil.getWalletName(name)}
+          {name}
         </Text>
       </AnimatedPressable>
     </FlexView>
