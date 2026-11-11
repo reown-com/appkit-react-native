@@ -426,6 +426,11 @@ export const ConnectionsController = {
       await connection.adapter.disconnect();
     }
 
+    // Detach the adapters from the provider now, so their handlers don't stay on it until the next connect
+    namespacesUsingConnector.forEach(ns => {
+      baseState.connections.get(ns)?.adapter.removeConnector();
+    });
+
     // Remove all namespaces that used this connector
     const newConnectionsMap = new Map(baseState.connections);
     namespacesUsingConnector.forEach(ns => {

@@ -20,3 +20,6 @@ provider is reused for the life of the app, every connect added another set of
 event was handled once per past connection. The adapter now keeps stable handler
 references, drops its previous subscription before subscribing again, and removes
 its listeners on disconnect and in `removeConnector()`.
+Disconnecting from the app now also calls `removeConnector()` on every adapter that
+shared the connector, so their listeners leave the provider right away instead of
+at the next connect.
