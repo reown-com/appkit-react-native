@@ -69,7 +69,7 @@ export abstract class BlockchainAdapter extends EventEmitter {
     return this.connector.getProvider(this.getSupportedNamespace());
   }
 
-  subscribeToEvents(): void {
+  protected subscribeToEvents(): void {
     // Drop any previous subscription first, so calling init again doesn't stack listeners
     this.unsubscribeFromEvents();
 
@@ -82,7 +82,7 @@ export abstract class BlockchainAdapter extends EventEmitter {
     this.subscribedProvider = provider;
   }
 
-  unsubscribeFromEvents(): void {
+  protected unsubscribeFromEvents(): void {
     const provider = this.subscribedProvider;
     if (!provider) return;
 

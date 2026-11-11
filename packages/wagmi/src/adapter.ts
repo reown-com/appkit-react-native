@@ -151,7 +151,7 @@ export class WagmiAdapter extends EVMAdapter {
 
   // Override subscribeToEvents to prevent double subscription
   // Wagmi handles provider events through its connector system and watchAccount
-  override subscribeToEvents(): void {
+  protected override subscribeToEvents(): void {
     // Do nothing - wagmi's watchAccount in setupWatchers handles all events
   }
 
