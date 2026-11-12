@@ -66,6 +66,14 @@ export const UiUtil = {
     )}`;
   },
 
+  /**
+   * @deprecated No longer used by AppKit, which now shows the full wallet name
+   * and lets the text truncate with an ellipsis. Kept for backwards compatibility.
+   */
+  getWalletName(name: string, short = true) {
+    return short ? name.split(' ')[0] : name;
+  },
+
   formatNumberToLocalString(value: string | number | undefined, decimals = 2) {
     let numericValue: number;
 
