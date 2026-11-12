@@ -1,5 +1,6 @@
 // Learn more https://docs.expo.io/guides/customizing-metro
 const { getDefaultConfig } = require('expo/metro-config');
+const fs = require('fs');
 const path = require('path');
 
 // Find the workspace root, this can be replaced with `find-yarn-workspace-root`
@@ -24,10 +25,13 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   // condition, so native platforms would get its Node build (which requires `stream`).
   // Resolve it to its browser entry, as Metro did before via the `browser` field.
   if (moduleName === 'ws' && platform !== 'web') {
-    return {
-      type: 'sourceFile',
-      filePath: path.resolve(projectRoot, 'node_modules/ws/browser.js')
-    };
+    const browserEntry = config.resolver.nodeModulesPaths
+      .map(dir => path.join(dir, 'ws/browser.js'))
+      .find(file => fs.existsSync(file));
+
+    if (browserEntry) {
+      return { type: 'sourceFile', filePath: browserEntry };
+    }
   }
 
   if (moduleName === '@walletconnect/ethereum-provider') {
