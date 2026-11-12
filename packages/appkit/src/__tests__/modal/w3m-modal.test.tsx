@@ -6,8 +6,15 @@ const mockClose = jest.fn();
 const mockPrefetch = jest.fn().mockResolvedValue(undefined);
 const mockSendEvent = jest.fn();
 const modalState = {
-  open: true
+  open: true,
+  shake: false
 };
+const mockRouterState: { view: string; history: string[] } = {
+  view: 'Connect',
+  history: ['Connect']
+};
+const mockGoBack = jest.fn();
+let mockModalProps: any;
 
 jest.mock('valtio', () => ({
   useSnapshot: jest.fn((state: Record<string, unknown>) => state)
@@ -46,7 +53,10 @@ jest.mock(
           {children}
         </MockView>
       ),
-      Modal: ({ children, testID, visible, contentWrapper: ContentWrapper }: any) => {
+      Modal: (props: any) => {
+        const { children, testID, visible, contentWrapper: ContentWrapper } = props;
+        mockModalProps = props;
+
         if (!visible) {
           return null;
         }
@@ -79,10 +89,8 @@ jest.mock(
       }
     },
     RouterController: {
-      state: {
-        history: ['Connect']
-      },
-      goBack: jest.fn()
+      state: mockRouterState,
+      goBack: mockGoBack
     },
     ThemeController: {
       state: {
@@ -101,6 +109,8 @@ describe('AppKit modal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     modalState.open = true;
+    mockRouterState.view = 'Connect';
+    mockRouterState.history = ['Connect'];
   });
 
   it('renders the modal without a wrapper', () => {
@@ -128,5 +138,27 @@ describe('AppKit modal', () => {
 
     expect(queryByTestId('w3m-modal')).toBeNull();
     expect(queryByTestId('mock-card')).toBeNull();
+  });
+
+  it('goes back on back press when there is history', () => {
+    mockRouterState.view = 'Networks';
+    mockRouterState.history = ['Account', 'Networks'];
+    render(<AppKit />);
+
+    mockModalProps.onRequestClose();
+
+    expect(mockGoBack).toHaveBeenCalled();
+    expect(mockClose).not.toHaveBeenCalled();
+  });
+
+  it('does not go back from the unsupported network view, it calls close instead', () => {
+    mockRouterState.view = 'UnsupportedChain';
+    mockRouterState.history = ['Account', 'UnsupportedChain'];
+    render(<AppKit />);
+
+    mockModalProps.onRequestClose();
+
+    expect(mockGoBack).not.toHaveBeenCalled();
+    expect(mockClose).toHaveBeenCalled();
   });
 });

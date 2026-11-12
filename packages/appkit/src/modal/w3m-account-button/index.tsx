@@ -24,8 +24,20 @@ export function AccountButton({ balance, disabled, style, testID }: AccountButto
     activeAddress: address,
     activeBalance,
     activeNetwork,
+    activeCaipNetworkId,
     identity
   } = useSnapshot(ConnectionsController.state);
+
+  // Connected to a network the app doesn't support (e.g. the wallet switched to it)
+  const isUnsupportedNetwork = !!activeCaipNetworkId && !activeNetwork;
+
+  const onPress = () => {
+    if (isUnsupportedNetwork) {
+      ModalController.open({ view: 'UnsupportedChain' });
+    } else {
+      ModalController.open();
+    }
+  };
 
   const networkImage = AssetUtil.getNetworkImage(activeNetwork, networkImages);
   const showBalance = balance === 'show';
@@ -33,7 +45,7 @@ export function AccountButton({ balance, disabled, style, testID }: AccountButto
   return (
     <ThemeProvider themeMode={themeMode} themeVariables={themeVariables}>
       <AccountButtonUI
-        onPress={() => ModalController.open()}
+        onPress={onPress}
         address={address?.split(':')[2] ?? ''}
         profileName={identity?.name}
         networkSrc={networkImage}
