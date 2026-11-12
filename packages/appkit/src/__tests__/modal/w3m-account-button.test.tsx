@@ -1,4 +1,3 @@
-import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 import { AccountButton } from '../../modal/w3m-account-button';
 
