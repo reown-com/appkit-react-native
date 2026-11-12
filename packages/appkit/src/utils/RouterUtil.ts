@@ -7,6 +7,15 @@ import {
 } from '@reown/appkit-core-react-native';
 
 export const RouterUtil = {
+  // The user is on the unsupported network screen, or switching network from it
+  isUnsupportedChainView() {
+    const { view, history } = RouterController.state;
+
+    return (
+      view === 'UnsupportedChain' ||
+      (view === 'SwitchNetwork' && history.includes('UnsupportedChain'))
+    );
+  },
   checkBack() {
     this.checkSwapBack();
     this.checkSendBack();

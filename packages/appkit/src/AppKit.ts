@@ -321,6 +321,13 @@ export class AppKit {
   }
 
   async close() {
+    // Like AppKit web: the user has to switch to a supported network or disconnect
+    if (RouterUtil.isUnsupportedChainView()) {
+      ModalController.shake();
+
+      return;
+    }
+
     ModalController.close();
     const isSIWXRequired = SIWXUtil.getSIWX()?.getRequired?.();
 
@@ -331,16 +338,18 @@ export class AppKit {
       }
     }
 
-    if (RouterController.state.view === 'UnsupportedChain') {
-      return await this.disconnect();
-    }
-
     RouterUtil.checkOnRampBack();
     RouterUtil.checkSocialLoginBack();
     EventsController.sendWalletImpressions();
   }
 
   back() {
+    if (RouterUtil.isUnsupportedChainView()) {
+      ModalController.shake();
+
+      return;
+    }
+
     if (RouterController.state.history.length > 1) {
       RouterUtil.checkBack();
 
@@ -658,13 +667,17 @@ export class AppKit {
     });
 
     adapter.on('chainChanged', async ({ chainId }) => {
-      const isSupported = this.networks.some(network => network.id?.toString() === chainId);
-      if (!isSupported) {
-        return this.navigate('UnsupportedChain');
-      }
-
       const namespace = adapter.getSupportedNamespace();
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
+
+      const isSupported = this.networks.some(network => network.id?.toString() === chainId);
+      if (!isSupported) {
+        // Store the wallet's real network so AppKit doesn't keep showing the previous one
+        ConnectionsController.setActiveNetwork(namespace, chain);
+        SendController.resetState();
+
+        return this.navigate('UnsupportedChain');
+      }
 
       ConnectionsController.setActiveNetwork(namespace, chain);
 

@@ -9,6 +9,7 @@ import { ConnectionsController } from './ConnectionsController';
 export interface ModalControllerState {
   open: boolean;
   loading: boolean;
+  shake: boolean;
 }
 
 export interface ModalControllerArguments {
@@ -20,7 +21,8 @@ export interface ModalControllerArguments {
 // -- State --------------------------------------------- //
 const state = proxy<ModalControllerState>({
   open: false,
-  loading: false
+  loading: false,
+  shake: false
 });
 
 // -- Controller ---------------------------------------- //
@@ -64,5 +66,16 @@ export const ModalController = {
 
   setLoading(loading: ModalControllerState['loading']) {
     state.loading = loading;
+  },
+
+  // Shakes the modal to signal it can't be closed in the current view
+  shake() {
+    if (state.shake) {
+      return;
+    }
+    state.shake = true;
+    setTimeout(() => {
+      state.shake = false;
+    }, 500);
   }
 };
