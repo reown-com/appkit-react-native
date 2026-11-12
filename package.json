@@ -70,6 +70,7 @@
     "react-native": "0.76.7",
     "react-native-builder-bob": "0.40.13",
     "react-native-get-random-values": "^1.11.0",
+    "react-native-safe-area-context": "5.6.1",
     "react-native-svg": "15.8.0",
     "react-test-renderer": "18.3.1",
     "ts-jest": "29.1.1",

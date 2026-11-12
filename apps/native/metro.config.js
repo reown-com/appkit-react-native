@@ -1,5 +1,6 @@
 // Learn more https://docs.expo.io/guides/customizing-metro
 const { getDefaultConfig } = require('expo/metro-config');
+const fs = require('fs');
 const path = require('path');
 
 // Find the workspace root, this can be replaced with `find-yarn-workspace-root`
@@ -20,6 +21,19 @@ config.resolver.disableHierarchicalLookup = true;
 
 // 4. Force react native entry point for web platform
 config.resolver.resolveRequest = (context, moduleName, platform) => {
+  // Package exports are enabled by default since SDK 53, and `ws` has no `react-native`
+  // condition, so native platforms would get its Node build (which requires `stream`).
+  // Resolve it to its browser entry, as Metro did before via the `browser` field.
+  if (moduleName === 'ws' && platform !== 'web') {
+    const browserEntry = config.resolver.nodeModulesPaths
+      .map(dir => path.join(dir, 'ws/browser.js'))
+      .find(file => fs.existsSync(file));
+
+    if (browserEntry) {
+      return { type: 'sourceFile', filePath: browserEntry };
+    }
+  }
+
   if (moduleName === '@walletconnect/ethereum-provider') {
     const nativePath = path.resolve(
       workspaceRoot,

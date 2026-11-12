@@ -6,7 +6,6 @@
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -21,7 +20,7 @@
     },
     "owner": "nacho.reown",
     "assetBundlePatterns": ["**/*"],
-    "plugins": ["./expo-plugins/installed-wallets.js"],
+    "plugins": ["./expo-plugins/installed-wallets.js", "expo-status-bar"],
     "ios": {
       "buildNumber": "1",
       "bundleIdentifier": "com.walletconnect.web3modal.rnsdk",
