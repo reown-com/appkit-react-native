@@ -50,7 +50,8 @@ async function isAppInstalledIos(deepLink?: string): Promise<boolean> {
       return Boolean(await global.Application.isAppInstalled(scheme));
     }
 
-    return await Linking.canOpenURL(deepLink);
+    // canOpenURL needs a URL, so a bare scheme like `zerion` becomes `zerion://`
+    return await Linking.canOpenURL(deepLink.includes('://') ? deepLink : `${scheme}://`);
   } catch (error) {
     return false;
   }

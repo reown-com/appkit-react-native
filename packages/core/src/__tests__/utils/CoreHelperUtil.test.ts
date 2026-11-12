@@ -142,6 +142,19 @@ describe('CoreHelperUtil', () => {
       expect(canOpenURL).toHaveBeenCalledWith('phantom://');
     });
 
+    it.each([
+      ['zerion', 'zerion://'],
+      ['rainbow:', 'rainbow://'],
+      ['metamask://wc?uri=abc', 'metamask://wc?uri=abc']
+    ])('should pass a valid URL to Linking.canOpenURL for %p', async (deepLink, expected) => {
+      globalAny.Application = undefined;
+      canOpenURL.mockResolvedValue(true);
+
+      await CoreHelperUtil.checkInstalled({ id: '1', ios_schema: deepLink });
+
+      expect(canOpenURL).toHaveBeenCalledWith(expected);
+    });
+
     it('should fall back to Linking.canOpenURL when global.Application is undefined', async () => {
       globalAny.Application = undefined;
       canOpenURL.mockResolvedValue(true);
