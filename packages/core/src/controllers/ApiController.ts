@@ -127,7 +127,7 @@ export const ApiController = {
     let timeoutId: NodeJS.Timeout | undefined;
 
     try {
-      const { includeWalletIds, customWallets } = OptionsController.state;
+      const { includeWalletIds, excludeWalletIds, customWallets } = OptionsController.state;
       const path = Platform.select({ default: 'getIosData', android: 'getAndroidData' });
       const response = await api.get<ApiGetDataWalletsResponse>({
         path,
@@ -143,23 +143,12 @@ export const ApiController = {
         walletData = walletData.filter(({ id }) => includeWalletIds.includes(id));
       }
 
-      const promises = walletData.map(async item => {
-        return {
-          id: item.id,
-          isInstalled: await CoreHelperUtil.checkInstalled(item)
-        };
-      });
+      if (excludeWalletIds?.length) {
+        walletData = walletData.filter(({ id }) => !excludeWalletIds.includes(id));
+      }
 
-      const customPromises = customWallets?.map(async item => {
-        return {
-          id: item.id,
-          isInstalled: await CoreHelperUtil.checkInstalled(item)
-        };
-      });
-
-      const results = await Promise.all(promises);
+      const results = await CoreHelperUtil.checkInstalledInBatches(walletData);
       const installed = results.filter(({ isInstalled }) => isInstalled).map(({ id }) => id);
-      const { excludeWalletIds } = OptionsController.state;
       const chains = CoreHelperUtil.getRequestedCaipNetworkIds();
 
       // Add timeout to prevent hanging
@@ -196,8 +185,8 @@ export const ApiController = {
 
       // Collect custom installed wallets
       let customInstalledWallets: CustomWallet[] = [];
-      if (customPromises?.length) {
-        const customResults = await Promise.all(customPromises);
+      if (customWallets?.length) {
+        const customResults = await CoreHelperUtil.checkInstalledInBatches(customWallets);
         const customInstalled = customResults
           .filter(({ isInstalled }) => isInstalled)
           .map(({ id }) => id);

@@ -21,11 +21,38 @@ import { ConstantsUtil } from './ConstantsUtil';
 import { OptionsController } from '../controllers/OptionsController';
 
 // -- Helpers -----------------------------------------------------------------
+/**
+ * Returns the bare scheme of an iOS deep link: `phantom://` -> `phantom`.
+ */
+function getIosScheme(deepLink?: string): string | undefined {
+  const scheme = deepLink?.split(':')[0]?.trim();
+
+  return scheme || undefined;
+}
+
+/**
+ * Prefer the native `isAppInstalled` from `@walletconnect/react-native-compat` (available on iOS
+ * since 2.10.5). It resolves a boolean, while `Linking.canOpenURL` rejects for every scheme not
+ * listed in `LSApplicationQueriesSchemes`, and each rejection symbolicates a native stack on the
+ * JS thread. Falls back to `Linking.canOpenURL` when compat's native module is not linked
+ * (e.g. Expo Go, where `global.Application` may be `expo-application`).
+ */
 async function isAppInstalledIos(deepLink?: string): Promise<boolean> {
   try {
-    return deepLink ? Linking.canOpenURL(deepLink) : Promise.resolve(false);
+    const scheme = getIosScheme(deepLink);
+    if (!deepLink || !scheme) {
+      return false;
+    }
+
+    //@ts-ignore
+    if (typeof global?.Application?.isAppInstalled === 'function') {
+      //@ts-ignore
+      return Boolean(await global.Application.isAppInstalled(scheme));
+    }
+
+    return await Linking.canOpenURL(deepLink);
   } catch (error) {
-    return Promise.resolve(false);
+    return false;
   }
 }
 
@@ -294,6 +321,34 @@ export const CoreHelperUtil = {
     }
 
     return isInstalled;
+  },
+
+  /**
+   * Checks wallets in batches, yielding the JS thread between batches so a long list
+   * doesn't block it in a single chunk.
+   */
+  async checkInstalledInBatches(
+    wallets: DataWallet[] = [],
+    batchSize: number = ConstantsUtil.INSTALLED_CHECK_BATCH_SIZE
+  ): Promise<{ id: string; isInstalled: boolean }[]> {
+    const results: { id: string; isInstalled: boolean }[] = [];
+
+    for (let i = 0; i < wallets.length; i += batchSize) {
+      if (i > 0) {
+        await new Promise(resolve => setTimeout(resolve, 0));
+      }
+
+      const batch = wallets.slice(i, i + batchSize);
+      const batchResults = await Promise.all(
+        batch.map(async wallet => ({
+          id: wallet.id,
+          isInstalled: await CoreHelperUtil.checkInstalled(wallet)
+        }))
+      );
+      results.push(...batchResults);
+    }
+
+    return results;
   },
 
   isValidEmail(email: string) {
