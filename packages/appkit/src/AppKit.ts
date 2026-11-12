@@ -876,11 +876,12 @@ export class AppKit {
   }
 
   private navigate = (routeName: RouterControllerState['view']) => {
-    if (RouterController.state.view === routeName) {
-      return;
-    }
-
     if (ModalController.state.open) {
+      // Closing the modal doesn't reset the router, so only skip when the view is actually shown
+      if (RouterController.state.view === routeName) {
+        return;
+      }
+
       RouterController.push(routeName);
     } else {
       ModalController.open({ view: routeName });

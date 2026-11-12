@@ -17,7 +17,9 @@ network as the active one, so the network button shows "Unknown Network" instead
 previous network. Closing the `UnsupportedChain` view (close button, backdrop or Android
 back) no longer disconnects the user: the modal shakes and stays open until the user
 switches to a supported network or disconnects. The account button opens the
-`UnsupportedChain` view while the active network is unsupported.
+`UnsupportedChain` view while the active network is unsupported. The `UnsupportedChain` view
+also opens again if the wallet switches to an unsupported network a second time (the router
+kept the old view after the modal closed, so AppKit skipped opening it).
 
 Note: `useAppKit().close()` also shakes instead of closing while the `UnsupportedChain`
 view (or `SwitchNetwork` opened from it) is shown.
