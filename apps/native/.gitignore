@@ -18,3 +18,7 @@ web-build/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Generated native projects (Continuous Native Generation)
+/ios
+/android

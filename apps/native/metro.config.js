@@ -20,6 +20,16 @@ config.resolver.disableHierarchicalLookup = true;
 
 // 4. Force react native entry point for web platform
 config.resolver.resolveRequest = (context, moduleName, platform) => {
+  // Package exports are enabled by default since SDK 53, and `ws` has no `react-native`
+  // condition, so native platforms would get its Node build (which requires `stream`).
+  // Resolve it to its browser entry, as Metro did before via the `browser` field.
+  if (moduleName === 'ws' && platform !== 'web') {
+    return {
+      type: 'sourceFile',
+      filePath: path.resolve(projectRoot, 'node_modules/ws/browser.js')
+    };
+  }
+
   if (moduleName === '@walletconnect/ethereum-provider') {
     const nativePath = path.resolve(
       workspaceRoot,

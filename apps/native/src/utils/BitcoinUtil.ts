@@ -1,7 +1,7 @@
 import ecc from '@bitcoinerlab/secp256k1';
 import * as bitcoin from 'bitcoinjs-lib';
 
-import * as bitcoinPSBTUtils from 'bitcoinjs-lib/src/cjs/psbt/psbtutils';
+import * as bitcoinPSBTUtils from 'bitcoinjs-lib/src/psbt/psbtutils';
 
 import type { CaipNetworkId } from '@reown/appkit';
 import { bitcoinTestnet as bitcoinTestnetNetwork } from '@reown/appkit-react-native';

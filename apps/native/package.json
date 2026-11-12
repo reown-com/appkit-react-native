@@ -20,9 +20,9 @@
   },
   "dependencies": {
     "@bitcoinerlab/secp256k1": "1.2.0",
-    "@expo/metro-runtime": "~4.0.1",
-    "@react-native-async-storage/async-storage": "2.1.2",
-    "@react-native-community/netinfo": "11.4.1",
+    "@expo/metro-runtime": "~58.0.17",
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native-community/netinfo": "12.0.1",
     "@reown/appkit-bitcoin-react-native": "workspace:*",
     "@reown/appkit-ethers-react-native": "workspace:*",
     "@reown/appkit-react-native": "workspace:*",
@@ -35,32 +35,35 @@
     "@walletconnect/react-native-compat": "2.21.5",
     "bitcoinjs-lib": "7.0.0-rc.0",
     "ethers": "6.13.5",
-    "expo": "^52.0.38",
-    "expo-application": "~6.0.2",
-    "expo-clipboard": "~7.0.1",
-    "expo-status-bar": "~2.0.1",
-    "expo-updates": "~0.27.3",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-native": "0.76.7",
+    "expo": "58.0.25",
+    "expo-application": "~58.1.2",
+    "expo-clipboard": "~58.0.4",
+    "expo-status-bar": "~58.0.5",
+    "expo-updates": "~58.0.22",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-native": "0.88.1",
     "react-native-get-random-values": "~1.11.0",
-    "react-native-safe-area-context": "5.6.1",
-    "react-native-svg": "15.12.0",
+    "react-native-safe-area-context": "~5.11.1",
+    "react-native-svg": "15.16.0",
     "react-native-toast-message": "2.2.1",
-    "react-native-web": "~0.19.13",
+    "react-native-web": "^0.21.4",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@babel/core": "7.26.10",
+    "@babel/core": "^7.29.7",
     "@playwright/test": "1.55.1",
     "@types/gh-pages": "6",
     "@types/node": "22.10.1",
-    "@types/react": "~18.2.79",
+    "@types/react": "~19.3.0",
     "babel-plugin-module-resolver": "5.0.0",
     "gh-pages": "6.2.0",
-    "typescript": "5.2.2"
+    "typescript": "~6.0.3"
   },
   "resolutions": {
     "@walletconnect/universal-provider": "2.21.9"
+  },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
   }
 }
