@@ -28,6 +28,8 @@ export const ConstantsUtil = {
 
   TEN_SEC_MS: 10000,
 
+  INSTALLED_CHECK_BATCH_SIZE: 20,
+
   ONE_SEC_MS: 1000,
 
   EMAIL_REGEX: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/,

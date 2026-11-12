@@ -24,6 +24,10 @@ jest.mock('react-native', () => {
     NativeModules: {
       StatusBarManager: { height: 44 }
     },
+    Linking: {
+      canOpenURL: jest.fn().mockResolvedValue(false),
+      openURL: jest.fn().mockResolvedValue(undefined)
+    },
     Text: 'Text',
     View: 'View',
     TouchableOpacity: 'TouchableOpacity',
