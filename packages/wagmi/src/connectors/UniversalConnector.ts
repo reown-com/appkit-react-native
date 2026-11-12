@@ -238,11 +238,13 @@ export function UniversalConnector(appKitProvidedConnector: WalletConnector) {
     onChainChanged(chain: string) {
       const chainId = Number(chain);
 
-      //Only emit if the chain is in the config (evm)
-      const shouldEmit = config.chains.some(c => c.id === chainId);
-      if (shouldEmit) {
-        config.emitter.emit('change', { chainId });
-      }
+      // The universal provider is shared with other namespaces, so it also emits chainChanged
+      // with non-EVM chain references (e.g. Solana/Bitcoin genesis hashes). Those are not numbers.
+      if (!Number.isSafeInteger(chainId) || chainId <= 0) return;
+
+      // Emit even if the chain is not in the wagmi config, like wagmi's walletConnect connector.
+      // wagmi reports it as `chain: undefined` and AppKit shows the UnsupportedChain view.
+      config.emitter.emit('change', { chainId });
     },
 
     async onDisconnect() {
