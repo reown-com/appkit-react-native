@@ -20,3 +20,7 @@ forwards every EVM chain change to wagmi, like wagmi's own `walletConnect` conne
 `useAccount()` returns `chain: undefined` with the new `chainId`, and AppKit asks the
 user to switch to a supported network. Non-EVM chain references from the shared
 provider (Solana, Bitcoin) are still ignored.
+
+Note: when the wallet is on a chain that isn't in your wagmi config, `useAccount().chain`
+is now `undefined` (it used to keep the previous chain). Check it before reading
+`chain.id` or `chain.name`.

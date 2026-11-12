@@ -18,3 +18,6 @@ previous network. Closing the `UnsupportedChain` view (close button, backdrop or
 back) no longer disconnects the user: the modal shakes and stays open until the user
 switches to a supported network or disconnects. The account button opens the
 `UnsupportedChain` view while the active network is unsupported.
+
+Note: `useAppKit().close()` also shakes instead of closing while the `UnsupportedChain`
+view (or `SwitchNetwork` opened from it) is shown.
