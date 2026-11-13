@@ -3,7 +3,7 @@ import { WalletPage } from './shared/pages/WalletPage';
 import { WalletValidator } from './shared/validators/WalletValidator';
 import { ModalPage } from './shared/pages/ModalPage';
 import { ModalValidator } from './shared/validators/ModalValidator';
-import { DEFAULT_CHAIN_NAME, TEST_CHAINS } from './shared/constants';
+import { TEST_CHAINS } from './shared/constants';
 
 let modalPage: ModalPage;
 let modalValidator: ModalValidator;
@@ -62,11 +62,10 @@ sampleWalletTest('it should switch networks and sign', async () => {
   const chains = [TEST_CHAINS.POLYGON, TEST_CHAINS.ETHEREUM];
 
   async function processChain(index: number) {
-    if (index >= chains.length) {
+    const chainName = chains[index];
+    if (!chainName) {
       return;
     }
-
-    const chainName = chains[index] ?? DEFAULT_CHAIN_NAME;
 
     // -- Switch network --------------------------------------------------------
     const chainNameOnWalletPage = chainName;

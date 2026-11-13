@@ -1,5 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
-
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Otp } from '@reown/appkit-ui-react-native';
@@ -23,7 +21,7 @@ type Story = StoryObj<typeof Otp>;
 export const Default: Story = {
   render: args => (
     <GalleryContainer width={350}>
-      <Otp length={args.length} style={{ outlineStyle: 'none' }} />
+      <Otp length={args.length} />
     </GalleryContainer>
   )
 };

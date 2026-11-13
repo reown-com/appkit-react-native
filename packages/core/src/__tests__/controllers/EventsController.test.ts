@@ -1,4 +1,5 @@
-import { Event, EventsController } from '../../index';
+import type { Event } from '@reown/appkit-common-react-native';
+import { EventsController } from '../../index';
 
 // -- Setup --------------------------------------------------------------------
 const event: Event = { type: 'track', event: 'MODAL_CLOSE', properties: { connected: false } };

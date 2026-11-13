@@ -1,5 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
-
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { EmailInput } from '@reown/appkit-ui-react-native';
@@ -23,7 +21,7 @@ type Story = StoryObj<typeof EmailInput>;
 export const Default: Story = {
   render: args => (
     <GalleryContainer width={350}>
-      <EmailInput errorMessage={args.errorMessage} inputStyle={{ outlineStyle: 'none' }} />
+      <EmailInput errorMessage={args.errorMessage} />
     </GalleryContainer>
   )
 };

@@ -3,7 +3,7 @@ import { Button, Text, FlexView } from '@reown/appkit-ui-react-native';
 import { useAccount, useProvider } from '@reown/appkit-react-native';
 
 import { ToastUtils } from '../utils/ToastUtils';
-import { BitcoinUtil, SignPSBTResponse } from '../utils/BitcoinUtil';
+import { BitcoinUtil, type SignPSBTResponse } from '../utils/BitcoinUtil';
 
 export function BitcoinActionsView() {
   const { address, chainId, namespace } = useAccount();

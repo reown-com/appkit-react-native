@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { type Page, expect } from '@playwright/test';
 
 export class OnRampValidator {
   constructor(private readonly page: Page) {}
