@@ -156,10 +156,20 @@ export class AppKit {
         universalLink: targetWallet?.link_mode ?? undefined
       });
 
-      this.processConnection(connector, approvedNamespaces);
+      try {
+        await this.processConnection(connector, approvedNamespaces, { requireAdapters: true });
+      } catch (error) {
+        await this.cleanUpFailedConnection(connector, approvedNamespaces);
+        throw error;
+      }
 
-      // Save connector type and namespaces in storage
-      if (approvedNamespaces && Object.keys(approvedNamespaces).length > 0) {
+      // Save connector type and namespaces in storage.
+      // The SIWX check can disconnect it, so it's only saved while it's still connected.
+      if (
+        approvedNamespaces &&
+        Object.keys(approvedNamespaces).length > 0 &&
+        this.isConnectorConnected(connector)
+      ) {
         await StorageUtil.setConnectedConnectors({
           type: connector.type,
           namespaces: Object.keys(approvedNamespaces)
@@ -171,7 +181,15 @@ export class AppKit {
     }
   }
 
-  private async processConnection(connector: WalletConnector, namespaces?: Namespaces) {
+  /**
+   * Binds the adapters to the connector, stores the connection, syncs the accounts and runs the SIWX check.
+   * @param options.requireAdapters - Throw when no adapter matches the namespaces, instead of only warning.
+   */
+  private async processConnection(
+    connector: WalletConnector,
+    namespaces?: Namespaces,
+    { requireAdapters = false }: { requireAdapters?: boolean } = {}
+  ) {
     if (!namespaces || Object.keys(namespaces).length === 0) {
       throw new Error('No namespaces provided');
     }
@@ -182,6 +200,12 @@ export class AppKit {
     const initializedAdapters = this.setupAdaptersAndSubscribe(connector, Object.keys(namespaces));
 
     if (initializedAdapters.length === 0) {
+      if (requireAdapters) {
+        throw new Error(
+          `No compatible adapters found for namespaces: ${Object.keys(namespaces).join(', ')}`
+        );
+      }
+
       console.warn('No compatible adapters found for namespaces:', Object.keys(namespaces));
 
       return;
@@ -190,10 +214,68 @@ export class AppKit {
     // Store the connection details
     this.setConnection(initializedAdapters, namespaces, walletInfo, properties);
 
-    // Sync accounts
-    await this.syncAccounts(initializedAdapters);
+    // Sync accounts. Balance and identity are fetched in the background.
+    this.syncAccounts(initializedAdapters);
+
+    // The derived connection state (activeAddress, isConnected) updates on the next microtask.
+    // Wait for it, so the SIWX check reads the new address.
+    await Promise.resolve();
 
     await SIWXUtil.initializeIfEnabled({ onDisconnect: this.disconnect, closeModal: true });
+  }
+
+  private isConnectorConnected(connector: WalletConnector): boolean {
+    return Array.from(ConnectionsController.state.connections.values()).some(
+      connection => connection.adapter.connector === connector
+    );
+  }
+
+  /**
+   * Undoes a connection that failed to set up after the wallet approved it, so the wallet doesn't keep
+   * an open session and ConnectionsController doesn't keep a half-set connection.
+   * Unlike AppKit.disconnect, it doesn't close the modal or reset the router, so the connecting view can show the error.
+   */
+  private async cleanUpFailedConnection(connector: WalletConnector, namespaces?: Namespaces) {
+    try {
+      const storedNamespace = Array.from(ConnectionsController.state.connections.keys()).find(
+        namespace =>
+          ConnectionsController.state.connections.get(namespace)?.adapter.connector === connector
+      );
+
+      if (storedNamespace) {
+        // Removes the listeners and connections of every namespace using this connector.
+        // The session is closed below, so the adapter doesn't close it here.
+        await ConnectionsController.disconnect(storedNamespace, false);
+      }
+
+      // Adapters bound to the connector but not stored yet.
+      // Their listeners are removed before closing the session, so its disconnect event doesn't run AppKit.disconnect.
+      const approvedNamespaces = Object.keys(namespaces ?? {});
+      this.adapters
+        .filter(
+          adapter =>
+            approvedNamespaces.includes(adapter.getSupportedNamespace()) &&
+            adapter.connector === connector
+        )
+        .forEach(adapter => {
+          adapter.removeAllListeners();
+          adapter.removeConnector();
+        });
+
+      if (!ConnectionsController.state.activeNamespace) {
+        ConnectionsController.setActiveNamespace(
+          OptionsController.state.defaultNetwork?.chainNamespace
+        );
+      }
+    } catch (error) {
+      LogController.sendError(error, 'AppKit.ts', 'cleanUpFailedConnection');
+    }
+
+    try {
+      await connector.disconnect();
+    } catch (error) {
+      LogController.sendError(error, 'AppKit.ts', 'cleanUpFailedConnection');
+    }
   }
 
   /**
@@ -538,8 +620,8 @@ export class AppKit {
     return null;
   }
 
-  private async syncAccounts(adapters: BlockchainAdapter[]) {
-    adapters.forEach(async adapter => {
+  private syncAccounts(adapters: BlockchainAdapter[]) {
+    adapters.forEach(adapter => {
       const namespace = adapter.getSupportedNamespace();
       const connection = ConnectionsController.state.connections.get(namespace);
       const network = this.networks.find(
@@ -547,7 +629,9 @@ export class AppKit {
       );
 
       this.syncNativeBalance(adapter, network);
-      this.syncIdentity(namespace, connection);
+      this.syncIdentity(namespace, connection).catch(error =>
+        LogController.sendError(error, 'AppKit.ts', 'syncIdentity')
+      );
     });
   }
 
@@ -559,7 +643,9 @@ export class AppKit {
 
         if (addresses.length > 0) {
           addresses.forEach(address => {
-            adapter.getBalance({ address, network, tokens: this.config.tokens });
+            adapter
+              .getBalance({ address, network, tokens: this.config.tokens })
+              .catch(error => LogController.sendError(error, 'AppKit.ts', 'syncNativeBalance'));
           });
         }
       }
@@ -657,7 +743,7 @@ export class AppKit {
     wallet?: WalletInfo,
     properties?: ConnectionProperties
   ) {
-    adapters.forEach(async adapter => {
+    adapters.forEach(adapter => {
       const namespace = adapter.getSupportedNamespace();
       const namespaceDetails = approvedNamespaces[namespace];
       if (!namespaceDetails) return;
