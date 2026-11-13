@@ -121,7 +121,8 @@ describe('ConnectingView', () => {
     await flush();
 
     await act(async () => {
-      attempt.reject(new Error('User rejected the request.'));
+      // How WalletConnect reports a rejected session proposal (getSdkError('USER_REJECTED'))
+      attempt.reject({ code: 5000, message: 'User rejected.' });
     });
 
     expect(WcController.state.wcError).toBe(true);

@@ -50,7 +50,12 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
         WcController.setWcLinking(wcLinking);
         WcController.setPressedWallet(data?.wallet);
         await Linking.openURL(redirect);
-        await WcController.state.wcPromise;
+        try {
+          await WcController.state.wcPromise;
+        } catch {
+          // ConnectingView handles and logs connection failures
+          return;
+        }
         WcController.setConnectedWallet(wcLinking, data?.wallet);
         const address = ConnectionsController.state.activeAddress;
         const caipNetworkId = ConnectionsController.state.activeNetwork?.caipNetworkId;
