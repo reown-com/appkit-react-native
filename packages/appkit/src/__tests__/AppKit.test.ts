@@ -97,8 +97,19 @@ describe('AppKit initialization', () => {
     expect(ModalController.state.loading).toBe(false);
 
     await expect(appKit.connect()).rejects.toThrow('User rejected');
-    expect(mockConnectorConstructor).toHaveBeenCalledTimes(2);
+    // The same connector instance is initialized again instead of creating a new one
+    expect(mockConnectorConstructor).toHaveBeenCalledTimes(1);
+    expect(mockInit).toHaveBeenCalledTimes(2);
     expect(mockConnect).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects connect when the controllers setup fails', async () => {
+    const appKit = new AppKit(createConfig({ storage: undefined as unknown as Storage }));
+    await flushPromises();
+
+    expect(ModalController.state.loading).toBe(false);
+    await expect(appKit.connect()).rejects.toThrow('AppKit: Storage is not set');
+    expect(mockConnect).not.toHaveBeenCalled();
   });
 
   it('keeps the stored connections when the initialization fails', async () => {

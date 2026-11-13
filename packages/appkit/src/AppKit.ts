@@ -60,6 +60,7 @@ export class AppKit {
   private namespaces: ProposalNamespaces;
   private config: AppKitConfig;
   private extraConnectors: WalletConnector[];
+  private walletConnectConnector?: WalletConnectConnector;
   private walletConnectConnectorPromise?: Promise<WalletConnector>;
   private controllersReady: Promise<void>;
   private balanceIntervalId?: ReturnType<typeof setInterval>;
@@ -109,12 +110,14 @@ export class AppKit {
     // Shown until the stored connections are restored, cleared in initConnectors
     ModalController.setLoading(true);
 
-    this.controllersReady = this.initControllers(config).catch(error => {
-      LogController.sendError(error, 'AppKit.ts', 'initControllers');
-    });
+    // connect() awaits this, so a failed setup surfaces there instead of connecting with partial state
+    this.controllersReady = this.initControllers(config);
 
-    // Restore sessions only after the controllers (SIWX, default network, etc.) are set
-    this.controllersReady.then(() => this.initConnectors());
+    // Restore sessions only after the controllers (SIWX, default network, etc.) are set.
+    // Runs even if the setup failed, so the loading state is cleared.
+    this.controllersReady
+      .catch(error => LogController.sendError(error, 'AppKit.ts', 'initControllers'))
+      .then(() => this.initConnectors());
     this.watchBalance();
   }
 
@@ -427,12 +430,17 @@ export class AppKit {
   /**
    * Returns the WalletConnect connector once it's initialized.
    * Concurrent callers share the same initialization, and a failed one is discarded so the next call retries it.
+   * The connector instance is reused across retries, so a provider created by a previous attempt isn't recreated.
    */
   private createWalletConnectConnector(): Promise<WalletConnector> {
     if (!this.walletConnectConnectorPromise) {
-      const connector = new WalletConnectConnector({
-        projectId: this.projectId
-      });
+      if (!this.walletConnectConnector) {
+        this.walletConnectConnector = new WalletConnectConnector({
+          projectId: this.projectId
+        });
+      }
+
+      const connector = this.walletConnectConnector;
 
       this.walletConnectConnectorPromise = connector
         .init({
