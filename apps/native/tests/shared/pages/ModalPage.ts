@@ -2,7 +2,7 @@ import { type Locator, type Page, expect } from '@playwright/test';
 import { BASE_URL, DEFAULT_SESSION_PARAMS, TIMEOUTS } from '../constants';
 import { WalletValidator } from '../validators/WalletValidator';
 import { WalletPage } from './WalletPage';
-import { SupportedChain, TimingRecords } from '../types';
+import type { SupportedChain, TimingRecords } from '../types';
 import { ModalValidator } from '../validators/ModalValidator';
 
 export class ModalPage {

@@ -1,4 +1,4 @@
-import { Image, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import { Image, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { useAccount, useWalletInfo } from '@reown/appkit-react-native';
 import { FlexView, Text } from '@reown/appkit-ui-react-native';
 

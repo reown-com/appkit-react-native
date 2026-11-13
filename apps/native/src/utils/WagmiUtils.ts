@@ -1,4 +1,4 @@
-import { CreateConfigParameters } from 'wagmi';
+import type { CreateConfigParameters } from 'wagmi';
 import {
   arbitrum,
   mainnet,

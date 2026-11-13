@@ -1,5 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
-
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { InputText } from '@reown/appkit-ui-react-native';
@@ -44,7 +42,6 @@ export const Default: Story = {
         placeholder={args.placeholder}
         size={args.size}
         disabled={args.disabled}
-        inputStyle={{ outlineStyle: 'none' }}
       />
     </GalleryContainer>
   )

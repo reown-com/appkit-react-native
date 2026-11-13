@@ -23,7 +23,16 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "paths": {
+      // apps/native imports a bitcoinjs-lib subpath that is only exposed through package.json
+      // "exports", which "moduleResolution": "node" does not read. Map it to its CJS typings,
+      // whether yarn hoists the package to the root or keeps it under apps/native.
+      "bitcoinjs-lib/src/*": [
+        "./node_modules/bitcoinjs-lib/src/cjs/*",
+        "./apps/native/node_modules/bitcoinjs-lib/src/cjs/*"
+      ]
+    }
   },
-  "exclude": ["node_modules", "dist", "types", "lib", "build"]
+  "exclude": ["node_modules", "dist", "types", "lib", "build", "examples", "**/jest.config.ts"]
 }
