@@ -60,7 +60,9 @@ export class AppKit {
   private namespaces: ProposalNamespaces;
   private config: AppKitConfig;
   private extraConnectors: WalletConnector[];
-  private walletConnectConnector?: WalletConnector;
+  private walletConnectConnector?: WalletConnectConnector;
+  private walletConnectConnectorPromise?: Promise<WalletConnector>;
+  private controllersReady: Promise<void>;
   private balanceIntervalId?: ReturnType<typeof setInterval>;
 
   constructor(config: AppKitConfig) {
@@ -105,8 +107,17 @@ export class AppKit {
     this.config = config;
     this.extraConnectors = config.extraConnectors || [];
 
-    this.initControllers(config);
-    this.initConnectors();
+    // Shown until the stored connections are restored, cleared in initConnectors
+    ModalController.setLoading(true);
+
+    // connect() awaits this, so a failed setup surfaces there instead of connecting with partial state
+    this.controllersReady = this.initControllers(config);
+
+    // Restore sessions only after the controllers (SIWX, default network, etc.) are set.
+    // Runs even if the setup failed, so the loading state is cleared.
+    this.controllersReady
+      .catch(error => LogController.sendError(error, 'AppKit.ts', 'initControllers'))
+      .then(() => this.initConnectors());
     this.watchBalance();
   }
 
@@ -128,6 +139,9 @@ export class AppKit {
       }
 
       const connectorType = WcHelpersUtil.getConnectorTypeByWallet(targetWallet);
+
+      // Wait for the initial setup (default network, SIWX, etc.) before connecting
+      await this.controllersReady;
 
       const connector = await this.createConnector(connectorType);
 
@@ -413,21 +427,35 @@ export class AppKit {
     return this.createWalletConnectConnector();
   }
 
-  private async createWalletConnectConnector() {
-    if (this.walletConnectConnector) {
-      return this.walletConnectConnector;
+  /**
+   * Returns the WalletConnect connector once it's initialized.
+   * Concurrent callers share the same initialization, and a failed one is discarded so the next call retries it.
+   * The connector instance is reused across retries, so a provider created by a previous attempt isn't recreated.
+   */
+  private createWalletConnectConnector(): Promise<WalletConnector> {
+    if (!this.walletConnectConnectorPromise) {
+      if (!this.walletConnectConnector) {
+        this.walletConnectConnector = new WalletConnectConnector({
+          projectId: this.projectId
+        });
+      }
+
+      const connector = this.walletConnectConnector;
+
+      this.walletConnectConnectorPromise = connector
+        .init({
+          storage: this.config.storage,
+          metadata: this.config.metadata,
+          logger: this.config.logger
+        })
+        .then(() => connector)
+        .catch(error => {
+          this.walletConnectConnectorPromise = undefined;
+          throw error;
+        });
     }
 
-    this.walletConnectConnector = new WalletConnectConnector({
-      projectId: this.projectId
-    });
-    await this.walletConnectConnector.init({
-      storage: this.config.storage,
-      metadata: this.config.metadata,
-      logger: this.config.logger
-    });
-
-    return this.walletConnectConnector;
+    return this.walletConnectConnectorPromise;
   }
 
   /**
@@ -435,44 +463,47 @@ export class AppKit {
    * This attempts to restore previous sessions.
    */
   private async initConnectors() {
-    ModalController.setLoading(true);
+    try {
+      // Always init the walletconnect connector. If it fails, the stored connections are kept
+      // for the next app start and connect() retries the initialization.
+      await this.createWalletConnectConnector();
 
-    //Always init the walletconnect connector
-    await this.createWalletConnectConnector();
+      const connectedConnectors = await StorageUtil.getConnectedConnectors();
+      if (connectedConnectors.length > 0) {
+        for (const connected of connectedConnectors) {
+          try {
+            const connector = await this.createConnector(connected.type);
 
-    const connectedConnectors = await StorageUtil.getConnectedConnectors();
-    if (connectedConnectors.length > 0) {
-      for (const connected of connectedConnectors) {
-        try {
-          const connector = await this.createConnector(connected.type);
+            const namespaces = connector.getNamespaces();
 
-          const namespaces = connector.getNamespaces();
+            await this.processConnection(connector, namespaces);
+          } catch (error) {
+            LogController.sendError(error, 'AppKit.ts', 'initializeConnector', {
+              connectorType: connected.type
+            });
+            await StorageUtil.removeConnectedConnectors(connected.type);
+          }
+        }
 
-          await this.processConnection(connector, namespaces);
-        } catch (error) {
-          LogController.sendError(error, 'AppKit.ts', 'initializeConnector', {
-            connectorType: connected.type
+        const address = ConnectionsController.state.activeAddress;
+        const walletInfo = ConnectionsController.state.walletInfo;
+        if (address) {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'CONNECT_SUCCESS',
+            address: CoreHelperUtil.getPlainAddress(address),
+            properties: {
+              name: walletInfo?.name ?? 'Unknown',
+              reconnect: true
+            }
           });
-          await StorageUtil.removeConnectedConnectors(connected.type);
         }
       }
-
-      const address = ConnectionsController.state.activeAddress;
-      const walletInfo = ConnectionsController.state.walletInfo;
-      if (address) {
-        EventsController.sendEvent({
-          type: 'track',
-          event: 'CONNECT_SUCCESS',
-          address: CoreHelperUtil.getPlainAddress(address),
-          properties: {
-            name: walletInfo?.name ?? 'Unknown',
-            reconnect: true
-          }
-        });
-      }
+    } catch (error) {
+      LogController.sendError(error, 'AppKit.ts', 'initConnectors');
+    } finally {
+      ModalController.setLoading(false);
     }
-
-    ModalController.setLoading(false);
   }
 
   private setupAdaptersAndSubscribe(

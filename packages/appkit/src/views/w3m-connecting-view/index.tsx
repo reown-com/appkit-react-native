@@ -73,7 +73,9 @@ export function ConnectingView() {
         }
       });
 
-      if (isQr && CoreHelperUtil.isAllowedRetry(lastRetryRef.current)) {
+      // The pairing-expiry interval already retries every 10s, so only retry right away
+      // when the attempt came from opening the view or tapping retry
+      if (isQr && retry && CoreHelperUtil.isAllowedRetry(lastRetryRef.current)) {
         lastRetryRef.current = Date.now();
         initializeConnection(true);
       }

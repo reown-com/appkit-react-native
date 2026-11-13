@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   WcController,
   CoreHelperUtil,
@@ -28,10 +28,23 @@ export function ConnectingSocialView() {
   const { data } = useSnapshot(RouterController.state);
   const { wcUri } = useSnapshot(WcController.state);
   const [error, setError] = useState(false);
+  const linkOpenedRef = useRef(false);
+
+  const onError = useCallback((e: unknown, method: string) => {
+    LogController.sendError(e, 'ConnectingSocialView.tsx', method);
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SOCIAL_LOGIN_ERROR',
+      properties: { provider: RouterController.state.data?.socialProvider! }
+    });
+    SnackController.showError('Something went wrong');
+    setError(true);
+  }, []);
 
   const onConnect = useCallback(async () => {
     try {
       if (wcUri) {
+        linkOpenedRef.current = true;
         const { redirect, href } = CoreHelperUtil.formatUniversalUrl(
           ConstantsUtil.WEB_WALLET_URL,
           wcUri,
@@ -49,21 +62,23 @@ export function ConnectingSocialView() {
         });
       }
     } catch (e) {
-      LogController.sendError(e, 'ConnectingSocialView.tsx', 'onConnect');
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SOCIAL_LOGIN_ERROR',
-        properties: { provider: RouterController.state.data?.socialProvider! }
-      });
-      SnackController.showError('Something went wrong');
-      setError(true);
+      onError(e, 'onConnect');
     }
-  }, [wcUri]);
+  }, [wcUri, onError]);
 
   const initializeConnection = useCallback(async () => {
     const connectPromise = connect();
     WcController.setWcPromise(connectPromise);
-  }, [connect]);
+
+    try {
+      await connectPromise;
+    } catch (e) {
+      // Once the link is open, onConnect handles the result
+      if (!linkOpenedRef.current) {
+        onError(e, 'initializeConnection');
+      }
+    }
+  }, [connect, onError]);
 
   useEffect(() => {
     initializeConnection();

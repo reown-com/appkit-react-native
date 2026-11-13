@@ -119,19 +119,24 @@ export class WalletConnectConnector extends WalletConnector {
     // SIWE
     const isEVMOnly = Object.keys(namespaces ?? {}).length === 1 && namespaces?.['eip155'];
 
-    if (isEVMOnly && SIWXUtil.getSIWX()) {
-      // 1CA is only supported on EVM
+    try {
+      if (isEVMOnly && SIWXUtil.getSIWX()) {
+        // 1CA is only supported on EVM
 
-      session = await SIWXUtil.universalProviderAuthenticate({
-        universalProvider: this.provider as UniversalProvider,
-        chains: namespaces?.['eip155']?.chains ?? [],
-        methods: namespaces?.['eip155']?.methods ?? [],
-        universalLink
-      });
-    } else {
-      session = await (this.provider as UniversalProvider).connect({
-        optionalNamespaces: namespaces
-      });
+        session = await SIWXUtil.universalProviderAuthenticate({
+          universalProvider: this.provider as UniversalProvider,
+          chains: namespaces?.['eip155']?.chains ?? [],
+          methods: namespaces?.['eip155']?.methods ?? [],
+          universalLink
+        });
+      } else {
+        session = await (this.provider as UniversalProvider).connect({
+          optionalNamespaces: namespaces
+        });
+      }
+    } finally {
+      // Also remove it when the attempt fails, otherwise every failed attempt leaks a listener
+      provider.off('display_uri', onUri);
     }
 
     const metadata = session?.peer?.metadata;
@@ -164,8 +169,6 @@ export class WalletConnectConnector extends WalletConnector {
     }
 
     this.namespaces = session?.namespaces as Namespaces;
-
-    provider.off('display_uri', onUri);
 
     return (session?.namespaces as Namespaces) ?? {};
   }
