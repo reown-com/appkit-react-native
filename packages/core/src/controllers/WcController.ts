@@ -5,12 +5,16 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil';
 import { StorageUtil } from '../utils/StorageUtil';
 
 // -- Types --------------------------------------------- //
+export type WcErrorType = 'declined' | 'default';
+
 export interface WcControllerState {
   wcUri?: string;
   wcPromise?: Promise<void>;
   wcPairingExpiry?: number;
   wcLinking?: WalletDeepLink;
   wcError?: boolean;
+  // Why the last connection attempt failed. Only set while wcError is true.
+  wcErrorType?: WcErrorType;
   pressedWallet?: WcWallet;
   recentWallets?: WcWallet[];
 }
@@ -38,8 +42,9 @@ export const WcController = {
     state.wcLinking = undefined;
   },
 
-  setWcError(wcError: WcControllerState['wcError']) {
+  setWcError(wcError: WcControllerState['wcError'], errorType: WcErrorType = 'default') {
     state.wcError = wcError;
+    state.wcErrorType = wcError ? errorType : undefined;
   },
 
   setPressedWallet(wallet: WcControllerState['pressedWallet']) {
@@ -87,6 +92,8 @@ export const WcController = {
 
   resetState() {
     this.clearUri();
+    state.wcError = false;
+    state.wcErrorType = undefined;
     state.pressedWallet = undefined;
     StorageUtil.removeWalletConnectDeepLink();
   }

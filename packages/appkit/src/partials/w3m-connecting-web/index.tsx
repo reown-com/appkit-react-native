@@ -31,12 +31,12 @@ interface ConnectingWebProps {
 
 export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
   const { data } = RouterController.state;
-  const { wcUri, wcError } = useSnapshot(WcController.state);
+  const { wcUri, wcError, wcErrorType } = useSnapshot(WcController.state);
   const { walletImages } = useSnapshot(AssetController.state);
   const showCopy = OptionsController.isClipboardAvailable();
   const bodyMessage = getMessage({
     walletName: data?.wallet?.name,
-    declined: wcError,
+    errorType: wcErrorType,
     isWeb: true
   });
 
