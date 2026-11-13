@@ -1,4 +1,4 @@
-import { Linking } from 'react-native';
+import { AppState, Linking } from 'react-native';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
 import { Buffer } from 'buffer';
@@ -36,6 +36,17 @@ export const SOLANA_SIGNING_METHODS = {
 
 type SolanaSigningMethod = Values<typeof SOLANA_SIGNING_METHODS>;
 
+/**
+ * How long to wait for the wallet redirect while the app is in the foreground.
+ * The time spent in the wallet (app in the background) doesn't count, so a user who takes a while
+ * to approve isn't timed out; a user who comes back to the app without approving gets an error.
+ */
+export const DEEPLINK_RESPONSE_TIMEOUT_MS = 30_000;
+
+interface PendingRequest {
+  reject: (error: Error) => void;
+}
+
 function isValidSolanaSigningMethod(method: string): method is SolanaSigningMethod {
   return Object.values(SOLANA_SIGNING_METHODS).includes(method as SolanaSigningMethod);
 }
@@ -52,9 +63,8 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
   private userPublicKey: string | null = null;
   private walletEncryptionPublicKeyBs58: string | null = null;
 
-  // Single subscription management - deep links are sequential by nature
-  private activeSubscription: { remove: () => void } | null = null;
-  private isOperationPending = false;
+  // Deep link requests are sequential: a new request cancels the pending one
+  private pendingRequest: PendingRequest | null = null;
 
   constructor(config: DeeplinkProviderConfig) {
     super();
@@ -72,31 +82,18 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
    * Cleanup method to be called when the provider is destroyed
    */
   public destroy(): void {
-    this.cleanupActiveSubscription();
+    this.cancelPendingRequest('the wallet connection was reset');
     this.removeAllListeners();
   }
 
   /**
-   * Safely cleanup the active subscription
+   * Rejects the pending request, if any, and removes its listeners
    */
-  private cleanupActiveSubscription(): void {
-    if (this.activeSubscription) {
-      this.activeSubscription.remove();
-      this.activeSubscription = null;
-    }
-    this.isOperationPending = false;
-  }
-
-  /**
-   * Safely set a new subscription, ensuring no operation is pending
-   */
-  private setActiveSubscription(subscription: { remove: () => void }): void {
-    // If there's already a pending operation, reject it
-    if (this.isOperationPending) {
-      this.cleanupActiveSubscription();
-    }
-    this.activeSubscription = subscription;
-    this.isOperationPending = true;
+  private cancelPendingRequest(reason: string): void {
+    this.pendingRequest?.reject(
+      new Error(`${this.config.type} provider: Request cancelled because ${reason}.`)
+    );
+    this.pendingRequest = null;
   }
 
   getUserPublicKey(): string | null {
@@ -118,50 +115,130 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
   }
 
   /**
-   * Open a deeplink URL and wait for a redirect back to the app. Handles subscription
-   * lifecycle and common error extraction from `errorCode`/`errorMessage` query params.
+   * Returns the query params of `url` if it's the wallet's redirect for the pending request:
+   * it must start with the app's redirect link and carry either an error or all `requiredParams`.
+   * Other deep links (opened by the user, another wallet, etc.) are not the wallet's answer.
+   */
+  private getResponseParams(url: string, requiredParams: string[]): URLSearchParams | null {
+    if (!url.startsWith(this.config.appScheme)) {
+      return null;
+    }
+
+    const queryIndex = url.indexOf('?');
+    const params = new URLSearchParams(queryIndex === -1 ? '' : url.substring(queryIndex + 1));
+    if (params.has('errorCode')) {
+      return params;
+    }
+
+    return requiredParams.every(param => params.get(param)) ? params : null;
+  }
+
+  /**
+   * Open a deeplink URL and wait for the wallet's redirect back to the app.
+   * The request is rejected when the wallet returns an error, when a new request is started,
+   * or when the app stays in the foreground for `DEEPLINK_RESPONSE_TIMEOUT_MS` without a redirect.
+   * @param requiredParams - query params a successful wallet redirect always has
    */
   private async openDeeplinkAndWait<T>(
     deeplinkUrl: string,
     processParams: (params: URLSearchParams) => Promise<T> | T,
-    contextLabel: string
+    contextLabel: string,
+    requiredParams: string[]
   ): Promise<T> {
+    this.cancelPendingRequest('a new request was sent to the wallet');
+
     return new Promise<T>((resolve, reject) => {
-      const handleDeepLink = async (event: { url: string }) => {
-        try {
-          this.cleanupActiveSubscription();
-          const fullUrl = event.url;
-          if (!fullUrl.startsWith(this.config.appScheme)) {
-            return reject(
-              new Error(`${this.config.type} provider: ${contextLabel}: Unexpected redirect URI.`)
-            );
-          }
-          const params = new URLSearchParams(fullUrl.substring(fullUrl.indexOf('?') + 1));
-          const errorCode = params.get('errorCode');
-          const errorMessage = params.get('errorMessage');
-          if (errorCode) {
-            return reject(
-              new Error(
-                `${this.config.type} provider: ${contextLabel} Failed: ${
-                  errorMessage || 'Unknown error'
-                } (Code: ${errorCode})`
-              )
-            );
-          }
-          const result = await Promise.resolve(processParams(params));
-          resolve(result);
-        } catch (error) {
-          this.cleanupActiveSubscription();
+      let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+      const clearTimer = () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = undefined;
+        }
+      };
+
+      const cleanup = () => {
+        clearTimer();
+        urlSubscription.remove();
+        appStateSubscription.remove();
+        if (this.pendingRequest === request) {
+          this.pendingRequest = null;
+        }
+      };
+
+      const request: PendingRequest = {
+        reject: (error: Error) => {
+          cleanup();
           reject(error);
         }
       };
 
-      const subscription = Linking.addEventListener('url', handleDeepLink);
-      this.setActiveSubscription(subscription);
+      const startTimer = () => {
+        clearTimer();
+        timeoutId = setTimeout(() => {
+          request.reject(
+            new Error(
+              `${this.config.type} provider: ${contextLabel}: No response from the wallet. Please try again.`
+            )
+          );
+        }, DEEPLINK_RESPONSE_TIMEOUT_MS);
+      };
+
+      const handleDeepLink = async (event: { url: string }) => {
+        if (this.pendingRequest !== request) {
+          return;
+        }
+
+        const params = this.getResponseParams(event.url, requiredParams);
+        if (!params) {
+          // Not the wallet's answer to this request
+          return;
+        }
+
+        cleanup();
+
+        const errorCode = params.get('errorCode');
+        if (errorCode) {
+          const errorMessage = params.get('errorMessage');
+
+          return reject(
+            new Error(
+              `${this.config.type} provider: ${contextLabel} Failed: ${
+                errorMessage || 'Unknown error'
+              } (Code: ${errorCode})`
+            )
+          );
+        }
+
+        try {
+          resolve(await processParams(params));
+        } catch (error) {
+          reject(error);
+        }
+      };
+
+      this.pendingRequest = request;
+      const urlSubscription = Linking.addEventListener('url', handleDeepLink);
+
+      // The timer only runs while the app is in the foreground
+      const appStateSubscription = AppState.addEventListener('change', state => {
+        if (this.pendingRequest !== request) return;
+
+        if (state === 'active') {
+          startTimer();
+        } else {
+          clearTimer();
+        }
+      });
+
+      if (AppState.currentState !== 'background' && AppState.currentState !== 'inactive') {
+        startTimer();
+      }
 
       Linking.openURL(deeplinkUrl).catch(err => {
-        this.cleanupActiveSubscription();
-        reject(
+        if (this.pendingRequest !== request) return;
+
+        request.reject(
           new Error(
             `${this.config.type} provider: Failed to open wallet for ${contextLabel}: ${err.message}.`
           )
@@ -309,7 +386,6 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
 
   public async connect<T = DeeplinkConnectResult>(params?: { cluster?: Cluster }): Promise<T> {
     const cluster = params?.cluster ?? 'mainnet-beta';
-    this.currentCluster = cluster;
     const connectDeeplinkParams: DeeplinkConnectParams = {
       app_url: this.config.dappUrl,
       dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
@@ -320,7 +396,7 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
 
     return this.openDeeplinkAndWait<DeeplinkConnectResult>(
       url,
-      (responseUrlParams: URLSearchParams) => {
+      async (responseUrlParams: URLSearchParams) => {
         const responsePayload: DeeplinkResponse = {
           wallet_encryption_public_key: responseUrlParams.get(this.config.encryptionKeyFieldName)!,
           nonce: responseUrlParams.get('nonce')!,
@@ -347,6 +423,8 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
         this.userPublicKey = decryptedData.public_key;
         this.sessionToken = decryptedData.session;
         this.walletEncryptionPublicKeyBs58 = responsePayload.wallet_encryption_public_key;
+        // Only change the cluster once the wallet approved the connection
+        this.currentCluster = cluster;
 
         // Precompute shared key for subsequent communications
         try {
@@ -360,7 +438,7 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
         }
 
         // Save session on successful connect
-        this.saveSession();
+        await this.saveSession();
 
         return {
           userPublicKey: this.userPublicKey!,
@@ -369,47 +447,43 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
           cluster
         } as DeeplinkConnectResult;
       },
-      'Connection'
+      'Connection',
+      [this.config.encryptionKeyFieldName, 'nonce', 'data']
     ) as Promise<T>;
   }
 
+  /**
+   * Asks the wallet to close the session, then clears it locally and emits `disconnect`.
+   * The local session is cleared even if the wallet doesn't answer, so the app is never left half connected.
+   */
   public async disconnect(): Promise<void> {
-    if (!this.sessionToken || !this.walletEncryptionPublicKeyBs58) {
+    try {
+      if (!this.sessionToken || !this.walletEncryptionPublicKeyBs58) {
+        return;
+      }
+
+      const encryptedDisconnectPayload = this.encryptPayload(
+        { session: this.sessionToken },
+        this.walletEncryptionPublicKeyBs58
+      );
+      if (!encryptedDisconnectPayload) {
+        return;
+      }
+
+      const disconnectDeeplinkParams: DeeplinkDisconnectParams = {
+        dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
+        redirect_link: this.config.appScheme,
+        payload: encryptedDisconnectPayload.encryptedPayload,
+        nonce: encryptedDisconnectPayload.nonce
+      };
+      const url = this.buildUrl('disconnect', disconnectDeeplinkParams as any);
+
+      // The wallet redirects back without params
+      await this.openDeeplinkAndWait<void>(url, () => undefined, 'Disconnection', []);
+    } finally {
       await this.clearSession();
       this.emit('disconnect');
-
-      return Promise.resolve();
     }
-
-    const payloadToEncrypt = { session: this.sessionToken };
-    const encryptedDisconnectPayload = this.encryptPayload(
-      payloadToEncrypt,
-      this.walletEncryptionPublicKeyBs58
-    );
-
-    if (!encryptedDisconnectPayload) {
-      // console.warn(`${this.config.type} provider: Failed to encrypt disconnect payload. Clearing session locally.`);
-      await this.clearSession();
-      this.emit('disconnect');
-
-      return Promise.resolve(); // Or reject, depending on desired strictness
-    }
-
-    const disconnectDeeplinkParams: DeeplinkDisconnectParams = {
-      dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
-      redirect_link: this.config.appScheme,
-      payload: encryptedDisconnectPayload.encryptedPayload,
-      nonce: encryptedDisconnectPayload.nonce
-    };
-    const url = this.buildUrl('disconnect', disconnectDeeplinkParams as any);
-
-    return this.openDeeplinkAndWait<void>(
-      url,
-      () => {
-        this.clearSession();
-      },
-      'Disconnection'
-    );
   }
 
   public async clearSession(): Promise<void> {
@@ -420,7 +494,7 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
       this.sharedKey.fill(0);
     }
     this.sharedKey = null;
-    this.cleanupActiveSubscription();
+    this.cancelPendingRequest('the session was cleared');
     await this.clearSessionStorage();
   }
 
@@ -597,7 +671,8 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
 
         return decryptedResult as T;
       },
-      signingMethod
+      signingMethod,
+      ['nonce', 'data']
     );
   }
 }

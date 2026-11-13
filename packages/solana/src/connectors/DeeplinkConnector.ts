@@ -71,6 +71,12 @@ export abstract class DeeplinkConnector extends WalletConnector {
       encryptionKeyFieldName: this.getEncryptionKeyFieldName()
     };
 
+    // AppKit calls init before every connect. Cancel the previous provider's pending request and drop
+    // its listeners, so it doesn't keep handling deep links next to the new one.
+    if (this.provider) {
+      (this.provider as DeeplinkProvider).destroy();
+    }
+
     this.provider = new DeeplinkProvider(providerConfig);
     await this.restoreSession();
   }
@@ -90,8 +96,8 @@ export abstract class DeeplinkConnector extends WalletConnector {
         );
       }
     } catch (error) {
-      // disconnect and clear session
-      await this.disconnect();
+      // Clear the local session only; opening the wallet here would interrupt the app's startup
+      await this.clearLocalSession();
       throw error;
     }
   }
@@ -113,42 +119,50 @@ export abstract class DeeplinkConnector extends WalletConnector {
       ) as Cluster | undefined);
 
     try {
-      const connectResult = await this.getProvider().connect({ cluster: requestedCluster });
-
-      const solanaChainId = SOLANA_CLUSTER_TO_NETWORK[connectResult.cluster]?.caipNetworkId;
-      if (!solanaChainId) {
-        throw new Error(
-          `${this.type} Connect: Internal - Unknown cluster mapping for ${connectResult.cluster}`
-        );
-      }
-      this.currentCaipNetworkId = solanaChainId;
-
-      this.wallet = {
-        name: this.getWalletInfo()?.name
-      };
-
-      const userPublicKey = this.getProvider().getUserPublicKey();
-      if (!userPublicKey) {
-        throw new Error(`${this.type} Connect: Provider failed to return a user public key.`);
-      }
-
-      const caipAddress = `${this.currentCaipNetworkId}:${userPublicKey}` as CaipAddress;
-      this.namespaces = {
-        [DeeplinkConnector.SUPPORTED_NAMESPACE]: {
-          accounts: [caipAddress],
-          methods: Object.values(SOLANA_SIGNING_METHODS),
-          events: [],
-          chains: [this.currentCaipNetworkId]
-        }
-      };
-
-      await this.saveSession(); // Save connector-specific session on successful connect
-
-      return this.namespaces;
+      return await this.connectToCluster(requestedCluster);
     } catch (error: any) {
-      this.clearSession();
+      await this.clearSession();
       throw error;
     }
+  }
+
+  /**
+   * Asks the wallet to connect on `cluster` and stores the new session.
+   * The connector state only changes once the wallet approved, so a failed attempt keeps the previous session.
+   */
+  private async connectToCluster(cluster?: Cluster): Promise<Namespaces> {
+    const connectResult = await this.getProvider().connect({ cluster });
+
+    const solanaChainId = SOLANA_CLUSTER_TO_NETWORK[connectResult.cluster]?.caipNetworkId;
+    if (!solanaChainId) {
+      throw new Error(
+        `${this.type} Connect: Internal - Unknown cluster mapping for ${connectResult.cluster}`
+      );
+    }
+
+    const userPublicKey = this.getProvider().getUserPublicKey();
+    if (!userPublicKey) {
+      throw new Error(`${this.type} Connect: Provider failed to return a user public key.`);
+    }
+
+    this.currentCaipNetworkId = solanaChainId;
+    this.wallet = {
+      name: this.getWalletInfo()?.name
+    };
+
+    const caipAddress = `${solanaChainId}:${userPublicKey}` as CaipAddress;
+    this.namespaces = {
+      [DeeplinkConnector.SUPPORTED_NAMESPACE]: {
+        accounts: [caipAddress],
+        methods: Object.values(SOLANA_SIGNING_METHODS),
+        events: [],
+        chains: [solanaChainId]
+      }
+    };
+
+    await this.saveSession(); // Save connector-specific session on successful connect
+
+    return this.namespaces;
   }
 
   override async disconnect(): Promise<void> {
@@ -175,6 +189,17 @@ export abstract class DeeplinkConnector extends WalletConnector {
     this.wallet = undefined;
     this.currentCaipNetworkId = null;
     await this.clearSessionStorage();
+  }
+
+  /**
+   * Clears the connector and provider sessions without contacting the wallet.
+   * Used when a stored session can't be restored: opening the wallet on startup would be unexpected.
+   */
+  private async clearLocalSession(): Promise<void> {
+    if (this.provider) {
+      await (this.provider as DeeplinkProvider).clearSession();
+    }
+    await this.clearSession();
   }
 
   override getProvider(): DeeplinkProvider {
@@ -239,29 +264,25 @@ export abstract class DeeplinkConnector extends WalletConnector {
       return Promise.resolve();
     }
 
-    // Phantom/Solflare don't provide a way to switch network, so we need to disconnect and reconnect.
-    await this.disconnect(); // Clear current session
-
-    // Create a temporary options object to guide the new connection
-    const tempConnectOpts: ConnectOptions = {
-      defaultNetwork: SOLANA_CLUSTER_TO_NETWORK[targetClusterName]
-    };
-
-    // Attempt to connect to the new cluster
-    // The connect method will use the defaultNetwork from opts to determine the cluster.
-    await this.connect(tempConnectOpts);
-    this.getProvider().emit('chainChanged', network.id);
-
-    // Verify if the connection was successful and to the correct new network
-    if (
-      !this.isConnected() ||
-      this.getChainId(DeeplinkConnector.SUPPORTED_NAMESPACE) !==
-        tempConnectOpts.defaultNetwork?.caipNetworkId
-    ) {
+    // The connector was set up for a single cluster
+    if (this.config?.cluster && this.config.cluster !== targetClusterName) {
       throw new Error(
         `${this.type} Connector: Failed to switch network to ${targetClusterName}. Please try connecting manually.`
       );
     }
+
+    // Phantom/Solflare don't provide a way to switch network, so we connect again on the new cluster.
+    // The current session stays in place until the wallet approves, so it's kept if the switch fails.
+    // The provider isn't recreated or disconnected: the adapter's listeners stay on it, and the app doesn't
+    // receive a `disconnect` event in the middle of the switch.
+    await this.connectToCluster(targetClusterName);
+
+    const provider = this.getProvider();
+    const userPublicKey = provider.getUserPublicKey();
+    if (userPublicKey) {
+      provider.emit('accountsChanged', [userPublicKey]);
+    }
+    provider.emit('chainChanged', network.id);
   }
 
   // Orchestrates session restoration
@@ -296,7 +317,7 @@ export abstract class DeeplinkConnector extends WalletConnector {
           await this.saveSession();
         } else {
           // Provider looks connected but we can't reconstruct state → clear everything
-          await this.disconnect();
+          await this.clearLocalSession();
 
           return false;
         }
@@ -312,12 +333,12 @@ export abstract class DeeplinkConnector extends WalletConnector {
       }
 
       // If validation fails, something is out of sync. Clear everything.
-      await this.disconnect();
+      await this.clearLocalSession();
 
       return false;
     } catch (error) {
-      // On any error, disconnect to ensure a clean state
-      await this.disconnect();
+      // On any error, clear the local session to ensure a clean state (without opening the wallet)
+      await this.clearLocalSession();
 
       return false;
     }
