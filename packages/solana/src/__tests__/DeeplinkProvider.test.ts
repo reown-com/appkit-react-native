@@ -95,6 +95,42 @@ describe('DeeplinkProvider', () => {
     });
   });
 
+  describe('pending signing requests', () => {
+    const startSignRequest = async () => {
+      await connect();
+      const pending = track(
+        provider.request({ method: 'solana_signMessage', params: { message: 'hello' } })
+      );
+      await flushPromises();
+      expect(pending.status).toBe('pending');
+
+      return pending;
+    };
+
+    it('rejects a pending sign request when the provider is destroyed', async () => {
+      const pending = await startSignRequest();
+
+      provider.destroy();
+      await flushPromises();
+
+      expect(pending.status).toBe('rejected');
+      expect(pending.error?.message).toMatch(/request cancelled/i);
+      expect(env.urlListenerCount()).toBe(0);
+    });
+
+    it('rejects a pending sign request when a new connect starts', async () => {
+      const pending = await startSignRequest();
+
+      const reconnect = track(provider.connect({ cluster: 'devnet' }));
+      await flushPromises();
+
+      expect(pending.status).toBe('rejected');
+      expect(pending.error?.message).toMatch(/cancelled because a new request was sent/i);
+      expect(reconnect.status).toBe('pending');
+      expect(env.urlListenerCount()).toBe(1);
+    });
+  });
+
   describe('timeout', () => {
     it('rejects when the user comes back to the app without a wallet redirect', async () => {
       const pending = track(provider.connect());
