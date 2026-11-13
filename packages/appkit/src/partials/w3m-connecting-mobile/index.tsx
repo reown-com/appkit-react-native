@@ -37,7 +37,7 @@ interface Props {
 export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
   const { data } = RouterController.state;
   const { padding } = useCustomDimensions();
-  const { wcUri, wcError } = useSnapshot(WcController.state);
+  const { wcUri, wcError, wcErrorType } = useSnapshot(WcController.state);
   const { walletImages } = useSnapshot(AssetController.state);
   const [errorType, setErrorType] = useState<BodyErrorType>();
   const showCopy =
@@ -46,7 +46,10 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
     !CoreHelperUtil.isLinkModeURL(wcUri);
 
   const showRetry = errorType !== 'not_installed';
-  const bodyMessage = getMessage({ walletName: data?.wallet?.name, errorType, declined: wcError });
+  const bodyMessage = getMessage({
+    walletName: data?.wallet?.name,
+    errorType: wcErrorType ?? errorType
+  });
 
   const storeUrl = Platform.select({
     ios: data?.wallet?.app_store,
@@ -89,7 +92,12 @@ export function ConnectingMobile({ onRetry, onCopyUri, isInstalled }: Props) {
         WcController.setWcLinking(wcLinking);
         WcController.setPressedWallet(data?.wallet);
         await CoreHelperUtil.openLink(redirect);
-        await WcController.state.wcPromise;
+        try {
+          await WcController.state.wcPromise;
+        } catch {
+          // ConnectingView handles and shows connection failures
+          return;
+        }
         WcController.setConnectedWallet(wcLinking, data?.wallet);
         const address = ConnectionsController.state.activeAddress;
         const caipNetworkId = ConnectionsController.state.activeNetwork?.caipNetworkId;

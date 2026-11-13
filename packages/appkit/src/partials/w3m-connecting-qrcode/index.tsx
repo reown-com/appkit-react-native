@@ -39,7 +39,12 @@ export function ConnectingQrCode() {
   };
 
   const onConnect = async () => {
-    await WcController.state.wcPromise;
+    try {
+      await WcController.state.wcPromise;
+    } catch {
+      // ConnectingView handles and shows connection failures
+      return;
+    }
     const address = ConnectionsController.state.activeAddress;
     const caipNetworkId = ConnectionsController.state.activeNetwork?.caipNetworkId;
 
