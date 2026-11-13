@@ -64,8 +64,14 @@ export function ConnectingView() {
         return;
       }
 
-      // Not in flight anymore, so the pairing-expiry check can start a new attempt
-      WcController.setWcPromise(undefined);
+      if (isQr) {
+        // The failed URI can't be used anymore. Clearing it lets the next pairing-expiry check
+        // start a new attempt, so the QR doesn't keep showing a dead code until it expires
+        WcController.clearUri();
+      } else {
+        // Not in flight anymore, so a new attempt can start
+        WcController.setWcPromise(undefined);
+      }
 
       LogController.sendError(error, 'ConnectingView.tsx', 'initializeConnection');
 

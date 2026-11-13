@@ -84,6 +84,42 @@ describe('ConnectingView', () => {
     view.unmount();
   });
 
+  it('replaces a failed QR attempt started by the interval on the next check', async () => {
+    const first = deferred();
+    const fromInterval = deferred();
+    mockConnect
+      .mockReturnValueOnce(first.promise)
+      .mockReturnValueOnce(fromInterval.promise)
+      .mockReturnValue(deferred().promise);
+
+    const view = render(<ConnectingView />);
+    await flush();
+
+    // The first pairing expired, so the interval started a new attempt
+    WcController.setWcUri('wc:first@2');
+    WcController.state.wcPairingExpiry = Date.now();
+    await act(async () => {
+      jest.advanceTimersByTime(ConstantsUtil.TEN_SEC_MS);
+    });
+    expect(mockConnect).toHaveBeenCalledTimes(2);
+    WcController.setWcUri('wc:from-interval@2');
+
+    // The wallet rejects the code shown for the interval's attempt
+    await act(async () => {
+      fromInterval.reject({ code: 5000, message: 'User rejected.' });
+    });
+    expect(WcController.state.wcUri).toBeUndefined();
+    expect(WcController.state.wcErrorType).toBe('declined');
+    expect(mockConnect).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      jest.advanceTimersByTime(ConstantsUtil.TEN_SEC_MS);
+    });
+    expect(mockConnect).toHaveBeenCalledTimes(3);
+
+    view.unmount();
+  });
+
   it('ignores the failure of an attempt that a newer one replaced', async () => {
     const stale = deferred();
     const current = deferred();
