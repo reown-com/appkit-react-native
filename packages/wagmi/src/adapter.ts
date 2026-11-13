@@ -140,10 +140,7 @@ export class WagmiAdapter extends EVMAdapter {
       this.onDisconnect();
     }
 
-    const evmAdapterInstance = this as any;
-    if ('connector' in evmAdapterInstance) {
-      evmAdapterInstance.connector = undefined;
-    }
+    this.connector = undefined;
   }
 
   // Called by ConnectionsController.disconnect for every adapter that shared the session,
@@ -184,6 +181,8 @@ export class WagmiAdapter extends EVMAdapter {
 
         connectorInstance.emitter.on('message', ({ type }: { type: string }) => {
           if (type === 'externalDisconnect') {
+            // onDisconnect() must run first: it clears this.connector, so the wagmi `disconnect`
+            // emitted by removeWagmiConnector() is ignored by watchAccount instead of emitting again
             this.onDisconnect();
 
             this.removeWagmiConnector(connectorInstance);

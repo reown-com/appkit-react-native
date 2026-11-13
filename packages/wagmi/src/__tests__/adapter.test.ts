@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import type { AppKitNetwork, WalletConnector } from '@reown/appkit-common-react-native';
 import { mainnet, polygon } from 'viem/chains';
+import { disconnect as disconnectWagmi } from '@wagmi/core';
 import { WagmiAdapter } from '../adapter';
 
 // The `wagmi` package pulls in React; the connector only needs what it re-exports from @wagmi/core
@@ -172,5 +173,82 @@ describe('WagmiAdapter', () => {
     expect(adapter.wagmiConfig.state.status).toBe('disconnected');
     expect(adapter.wagmiConfig.connectors).toHaveLength(0);
     expect(adapter.connector).toBeUndefined();
+  });
+
+  describe('disconnect events', () => {
+    // Counts every 'disconnect' the adapter emits, whether or not a listener is still attached
+    const countDisconnectEvents = () => {
+      const emit = jest.spyOn(adapter, 'emit');
+
+      return () => emit.mock.calls.filter(([event]) => event === 'disconnect').length;
+    };
+
+    // Without AppKit's listener nothing calls removeConnector(), so a second emit would not be hidden
+    const initWithoutAppKit = async (connector: WalletConnector) => {
+      adapter.init({ connector });
+      await flush();
+    };
+
+    it.each([
+      ['with', initLikeAppKit],
+      ['without', (_adapter: WagmiAdapter, c: WalletConnector) => initWithoutAppKit(c)]
+    ])('emits once when the wallet ends the session (%s AppKit listening)', async (_, init) => {
+      const wallet = createWalletConnector(ADDRESS_1);
+      await init(adapter, wallet.connector);
+      const disconnectEvents = countDisconnectEvents();
+
+      await disconnectFromWallet(wallet.provider);
+
+      expect(disconnectEvents()).toBe(1);
+      expect(adapter.wagmiConfig.connectors).toHaveLength(0);
+    });
+
+    it.each([
+      ['with', initLikeAppKit],
+      ['without', (_adapter: WagmiAdapter, c: WalletConnector) => initWithoutAppKit(c)]
+    ])(
+      'emits once when wagmi disconnects the connector itself (externalDisconnect, %s AppKit listening)',
+      async (_, init) => {
+        const wallet = createWalletConnector(ADDRESS_1);
+        await init(adapter, wallet.connector);
+        const disconnectEvents = countDisconnectEvents();
+
+        // e.g. the app calls wagmi's useDisconnect()
+        await disconnectWagmi(adapter.wagmiConfig);
+        await flush();
+
+        expect(disconnectEvents()).toBe(1);
+        expect(wallet.connector.disconnect).toHaveBeenCalledTimes(1);
+        expect(adapter.wagmiConfig.state.status).toBe('disconnected');
+        expect(adapter.wagmiConfig.connectors).toHaveLength(0);
+      }
+    );
+
+    it('emits at most once when AppKit disconnects the adapter', async () => {
+      const wallet = createWalletConnector(ADDRESS_1);
+      await initLikeAppKit(adapter, wallet.connector);
+      const disconnectEvents = countDisconnectEvents();
+
+      // ConnectionsController.disconnect(namespace) with isInternal = true
+      adapter.removeAllListeners();
+      await adapter.disconnect();
+      adapter.removeConnector();
+      await flush();
+
+      expect(disconnectEvents()).toBeLessThanOrEqual(1);
+    });
+
+    it('does not emit when AppKit removes the connector', async () => {
+      const wallet = createWalletConnector(ADDRESS_1);
+      await initLikeAppKit(adapter, wallet.connector);
+      const disconnectEvents = countDisconnectEvents();
+
+      // ConnectionsController.disconnect from another namespace: AppKit already knows
+      adapter.removeAllListeners();
+      adapter.removeConnector();
+      await flush();
+
+      expect(disconnectEvents()).toBe(0);
+    });
   });
 });
