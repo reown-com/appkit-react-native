@@ -31,12 +31,12 @@ interface ConnectingWebProps {
 
 export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
   const { data } = RouterController.state;
-  const { wcUri, wcError } = useSnapshot(WcController.state);
+  const { wcUri, wcError, wcErrorType } = useSnapshot(WcController.state);
   const { walletImages } = useSnapshot(AssetController.state);
   const showCopy = OptionsController.isClipboardAvailable();
   const bodyMessage = getMessage({
     walletName: data?.wallet?.name,
-    declined: wcError,
+    errorType: wcErrorType,
     isWeb: true
   });
 
@@ -50,7 +50,12 @@ export function ConnectingWeb({ onCopyUri }: ConnectingWebProps) {
         WcController.setWcLinking(wcLinking);
         WcController.setPressedWallet(data?.wallet);
         await Linking.openURL(redirect);
-        await WcController.state.wcPromise;
+        try {
+          await WcController.state.wcPromise;
+        } catch {
+          // ConnectingView handles and logs connection failures
+          return;
+        }
         WcController.setConnectedWallet(wcLinking, data?.wallet);
         const address = ConnectionsController.state.activeAddress;
         const caipNetworkId = ConnectionsController.state.activeNetwork?.caipNetworkId;
