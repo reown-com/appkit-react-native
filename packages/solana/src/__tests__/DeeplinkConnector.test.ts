@@ -127,6 +127,24 @@ describe('DeeplinkConnector', () => {
     });
   });
 
+  it('rejects a pending sign request when a network switch starts', async () => {
+    await connect();
+    const provider = connector.getProvider();
+    const signRequest = track(
+      provider.request({ method: 'solana_signMessage', params: { message: 'hello' } })
+    );
+    await flushPromises();
+    expect(signRequest.status).toBe('pending');
+
+    const result = track(connector.switchNetwork(solanaDevnet));
+    await flushPromises();
+
+    expect(signRequest.status).toBe('rejected');
+    expect(signRequest.error?.message).toMatch(/cancelled because a new request was sent/i);
+    expect(result.status).toBe('resolved');
+    expect(connector.getChainId('solana')).toBe(solanaDevnet.caipNetworkId);
+  });
+
   describe('restoreSession', () => {
     const storeCorruptedSession = () => {
       // A session the provider can read but that can't be used (no user public key)
