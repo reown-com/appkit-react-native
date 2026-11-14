@@ -189,7 +189,14 @@ export class WagmiAdapter extends EVMAdapter {
           }
         });
 
-        connectWagmi(this.wagmiConfig, { connector: connectorInstance }).catch(() => {
+        // The AppKit connection stays as it is (like AppKit web, which ignores a failed wagmi
+        // reconnect after the WalletConnect session is approved); wagmi just isn't connected
+        connectWagmi(this.wagmiConfig, { connector: connectorInstance }).catch(error => {
+          console.warn(
+            `WagmiAdapter: failed to connect wagmi to the AppKit connector: ${
+              (error as Error)?.message ?? error
+            }`
+          );
           this.removeWagmiConnector(connectorInstance);
         });
       }

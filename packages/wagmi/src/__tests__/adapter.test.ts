@@ -128,6 +128,7 @@ describe('WagmiAdapter', () => {
   it('clears the wagmi connector when connecting wagmi fails', async () => {
     const unhandled = jest.fn();
     process.on('unhandledRejection', unhandled);
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
     try {
       // No accounts: UniversalConnector.connect rejects
@@ -142,8 +143,15 @@ describe('WagmiAdapter', () => {
       await expect(adapter.switchNetwork(polygonNetwork)).rejects.toThrow(
         'AppKit connector not set'
       );
+
+      // The failure is logged, and the AppKit connection is kept (no disconnect, session not closed)
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(warn.mock.calls[0]?.[0]).toContain('WagmiAdapter: failed to connect wagmi');
+      expect(adapter.connector).toBe(wallet.connector);
+      expect(wallet.connector.disconnect).not.toHaveBeenCalled();
     } finally {
       process.off('unhandledRejection', unhandled);
+      warn.mockRestore();
     }
   });
 
