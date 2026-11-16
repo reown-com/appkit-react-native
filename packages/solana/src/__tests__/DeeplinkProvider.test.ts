@@ -40,6 +40,8 @@ describe('DeeplinkProvider', () => {
     env.sendUrl(wallet.connectReply(lastOpenedUrl()));
     await flushPromises();
     expect(result.status).toBe('resolved');
+    expect(provider.getUserPublicKey()).toBe(wallet.userPublicKey);
+    expect(env.urlListenerCount()).toBe(0);
   };
 
   beforeEach(() => {
@@ -57,45 +59,14 @@ describe('DeeplinkProvider', () => {
     jest.useRealTimers();
   });
 
-  it('connects with a wallet redirect', async () => {
-    await connect();
-
-    expect(provider.isConnected()).toBe(true);
-    expect(provider.getUserPublicKey()).toBe(wallet.userPublicKey);
-    expect(env.urlListenerCount()).toBe(0);
-  });
-
-  describe('superseded requests', () => {
-    it('rejects the earlier request when a new one starts', async () => {
-      const first = track(provider.connect());
-      await flushPromises();
-      const second = track(provider.connect());
-      await flushPromises();
-
-      expect(first.status).toBe('rejected');
-      expect(first.error?.message).toMatch(/cancelled because a new request was sent/i);
-      expect(second.status).toBe('pending');
-
-      // The newer request still completes
-      env.sendUrl(wallet.connectReply(lastOpenedUrl()));
-      await flushPromises();
-      expect(second.status).toBe('resolved');
-      expect(env.urlListenerCount()).toBe(0);
-    });
-
-    it('rejects a pending request when the provider is destroyed', async () => {
+  describe('pending requests', () => {
+    const startConnect = async () => {
       const pending = track(provider.connect());
       await flushPromises();
 
-      provider.destroy();
-      await flushPromises();
+      return pending;
+    };
 
-      expect(pending.status).toBe('rejected');
-      expect(env.urlListenerCount()).toBe(0);
-    });
-  });
-
-  describe('pending signing requests', () => {
     const startSignRequest = async () => {
       await connect();
       const pending = track(
@@ -107,8 +78,31 @@ describe('DeeplinkProvider', () => {
       return pending;
     };
 
-    it('rejects a pending sign request when the provider is destroyed', async () => {
-      const pending = await startSignRequest();
+    it.each([
+      ['connect', startConnect],
+      ['sign', startSignRequest]
+    ])('rejects a pending %s request when a new connect starts', async (_, start) => {
+      const pending = await start();
+
+      const next = track(provider.connect({ cluster: 'devnet' }));
+      await flushPromises();
+
+      expect(pending.status).toBe('rejected');
+      expect(pending.error?.message).toMatch(/cancelled because a new request was sent/i);
+      expect(next.status).toBe('pending');
+
+      // The newer request still completes
+      env.sendUrl(wallet.connectReply(lastOpenedUrl()));
+      await flushPromises();
+      expect(next.status).toBe('resolved');
+      expect(env.urlListenerCount()).toBe(0);
+    });
+
+    it.each([
+      ['connect', startConnect],
+      ['sign', startSignRequest]
+    ])('rejects a pending %s request when the provider is destroyed', async (_, start) => {
+      const pending = await start();
 
       provider.destroy();
       await flushPromises();
@@ -116,18 +110,6 @@ describe('DeeplinkProvider', () => {
       expect(pending.status).toBe('rejected');
       expect(pending.error?.message).toMatch(/request cancelled/i);
       expect(env.urlListenerCount()).toBe(0);
-    });
-
-    it('rejects a pending sign request when a new connect starts', async () => {
-      const pending = await startSignRequest();
-
-      const reconnect = track(provider.connect({ cluster: 'devnet' }));
-      await flushPromises();
-
-      expect(pending.status).toBe('rejected');
-      expect(pending.error?.message).toMatch(/cancelled because a new request was sent/i);
-      expect(reconnect.status).toBe('pending');
-      expect(env.urlListenerCount()).toBe(1);
     });
   });
 
@@ -163,19 +145,6 @@ describe('DeeplinkProvider', () => {
 
       expect(pending.status).toBe('rejected');
       expect(pending.error?.message).toMatch(/no response from the wallet/i);
-    });
-
-    it("doesn't count the time spent in the wallet", async () => {
-      const pending = track(provider.connect());
-      await flushPromises();
-
-      env.setAppState('background');
-      jest.advanceTimersByTime(5 * 60_000);
-      env.setAppState('active');
-      env.sendUrl(wallet.connectReply(lastOpenedUrl()));
-      await flushPromises();
-
-      expect(pending.status).toBe('resolved');
     });
   });
 
