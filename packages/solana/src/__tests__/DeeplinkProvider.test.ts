@@ -1,0 +1,247 @@
+import nacl from 'tweetnacl';
+import { DeeplinkProvider } from '../providers/DeeplinkProvider';
+import {
+  createFakeWallet,
+  createMemoryStorage,
+  flushPromises,
+  setupDeeplinkEnvironment,
+  track,
+  type DeeplinkEnvironment,
+  type FakeWallet
+} from '../__fixtures__/deeplinkWallet';
+
+const APP_SCHEME = 'appkittest://';
+const SESSION_KEY = '@appkit/phantom-provider-session';
+const RESPONSE_TIMEOUT_MS = 30_000;
+
+describe('DeeplinkProvider', () => {
+  let env: DeeplinkEnvironment;
+  let wallet: FakeWallet;
+  let storage: ReturnType<typeof createMemoryStorage>;
+  let provider: DeeplinkProvider;
+
+  const lastOpenedUrl = () => env.openURL.mock.calls[env.openURL.mock.calls.length - 1]![0];
+
+  const createProvider = () =>
+    new DeeplinkProvider({
+      appScheme: APP_SCHEME,
+      dappUrl: 'https://example.com',
+      storage: storage.storage,
+      type: 'phantom',
+      cluster: 'mainnet-beta',
+      dappEncryptionKeyPair: nacl.box.keyPair(),
+      baseUrl: 'https://phantom.app/ul/v1',
+      encryptionKeyFieldName: 'phantom_encryption_public_key'
+    });
+
+  const connect = async () => {
+    const result = track(provider.connect());
+    await flushPromises();
+    env.sendUrl(wallet.connectReply(lastOpenedUrl()));
+    await flushPromises();
+    expect(result.status).toBe('resolved');
+    expect(provider.getUserPublicKey()).toBe(wallet.userPublicKey);
+    expect(env.urlListenerCount()).toBe(0);
+  };
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    env = setupDeeplinkEnvironment();
+    wallet = createFakeWallet({
+      appScheme: APP_SCHEME,
+      encryptionKeyFieldName: 'phantom_encryption_public_key'
+    });
+    storage = createMemoryStorage();
+    provider = createProvider();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  describe('pending requests', () => {
+    const startConnect = async () => {
+      const pending = track(provider.connect());
+      await flushPromises();
+
+      return pending;
+    };
+
+    const startSignRequest = async () => {
+      await connect();
+      const pending = track(
+        provider.request({ method: 'solana_signMessage', params: { message: 'hello' } })
+      );
+      await flushPromises();
+      expect(pending.status).toBe('pending');
+
+      return pending;
+    };
+
+    it.each([
+      ['connect', startConnect],
+      ['sign', startSignRequest]
+    ])('rejects a pending %s request when a new connect starts', async (_, start) => {
+      const pending = await start();
+
+      const next = track(provider.connect({ cluster: 'devnet' }));
+      await flushPromises();
+
+      expect(pending.status).toBe('rejected');
+      expect(pending.error?.message).toMatch(/cancelled because a new request was sent/i);
+      expect(next.status).toBe('pending');
+
+      // The newer request still completes
+      env.sendUrl(wallet.connectReply(lastOpenedUrl()));
+      await flushPromises();
+      expect(next.status).toBe('resolved');
+      expect(env.urlListenerCount()).toBe(0);
+    });
+
+    it.each([
+      ['connect', startConnect],
+      ['sign', startSignRequest]
+    ])('rejects a pending %s request when the provider is destroyed', async (_, start) => {
+      const pending = await start();
+
+      provider.destroy();
+      await flushPromises();
+
+      expect(pending.status).toBe('rejected');
+      expect(pending.error?.message).toMatch(/request cancelled/i);
+      expect(env.urlListenerCount()).toBe(0);
+    });
+  });
+
+  describe('timeout', () => {
+    it('rejects when the user comes back to the app without a wallet redirect', async () => {
+      const pending = track(provider.connect());
+      await flushPromises();
+
+      // The wallet opens, then the user switches back to the app manually
+      env.setAppState('background');
+      jest.advanceTimersByTime(10 * 60_000);
+      await flushPromises();
+      expect(pending.status).toBe('pending');
+
+      env.setAppState('active');
+      jest.advanceTimersByTime(RESPONSE_TIMEOUT_MS - 1);
+      await flushPromises();
+      expect(pending.status).toBe('pending');
+
+      jest.advanceTimersByTime(1);
+      await flushPromises();
+      expect(pending.status).toBe('rejected');
+      expect(pending.error?.message).toMatch(/no response from the wallet/i);
+      expect(env.urlListenerCount()).toBe(0);
+    });
+
+    it('rejects when the wallet never opens and the app stays in the foreground', async () => {
+      const pending = track(provider.connect());
+      await flushPromises();
+
+      jest.advanceTimersByTime(RESPONSE_TIMEOUT_MS);
+      await flushPromises();
+
+      expect(pending.status).toBe('rejected');
+      expect(pending.error?.message).toMatch(/no response from the wallet/i);
+    });
+  });
+
+  describe('incoming deep links', () => {
+    it('ignores deep links that are not the wallet response', async () => {
+      const pending = track(provider.connect());
+      await flushPromises();
+
+      env.sendUrl('https://example.com/some/page');
+      env.sendUrl('otherapp://wc?uri=abc');
+      env.sendUrl(`${APP_SCHEME}settings`);
+      env.sendUrl(`${APP_SCHEME}?foo=bar`);
+      await flushPromises();
+      expect(pending.status).toBe('pending');
+
+      env.sendUrl(wallet.connectReply(lastOpenedUrl()));
+      await flushPromises();
+      expect(pending.status).toBe('resolved');
+    });
+
+    it('rejects with the wallet error when the user rejects the request', async () => {
+      const pending = track(provider.connect());
+      await flushPromises();
+
+      env.sendUrl(wallet.errorReply('4001', 'User rejected the request.'));
+      await flushPromises();
+
+      expect(pending.status).toBe('rejected');
+      expect(pending.error?.message).toMatch(/User rejected the request\. \(Code: 4001\)/);
+      expect(env.urlListenerCount()).toBe(0);
+    });
+
+    it('ignores unrelated deep links while a sign request is pending', async () => {
+      await connect();
+
+      const pending = track(
+        provider.request<{ signature: string }>({
+          method: 'solana_signMessage',
+          params: { message: 'hello' }
+        })
+      );
+      await flushPromises();
+
+      env.sendUrl(`${APP_SCHEME}some/screen`);
+      await flushPromises();
+      expect(pending.status).toBe('pending');
+
+      env.sendUrl(wallet.signReply(lastOpenedUrl(), { signature: 'sig' }));
+      await flushPromises();
+      expect(pending.status).toBe('resolved');
+      expect(pending.value).toEqual({ signature: 'sig' });
+    });
+  });
+
+  describe('disconnect', () => {
+    it('clears the stored session after the wallet redirect, without emitting disconnect', async () => {
+      await connect();
+      expect(storage.data.has(SESSION_KEY)).toBe(true);
+      const onDisconnect = jest.fn();
+      provider.on('disconnect', onDisconnect);
+
+      const pending = track(provider.disconnect());
+      await flushPromises();
+      env.sendUrl(wallet.disconnectReply());
+      await flushPromises();
+
+      expect(pending.status).toBe('resolved');
+      // Same as before: the caller handles a wallet-confirmed disconnect
+      expect(onDisconnect).not.toHaveBeenCalled();
+      expect(provider.isConnected()).toBe(false);
+      expect(storage.data.has(SESSION_KEY)).toBe(false);
+    });
+
+    it('clears the local session when the wallet redirect fails', async () => {
+      await connect();
+      const onDisconnect = jest.fn();
+      provider.on('disconnect', onDisconnect);
+
+      const pending = track(provider.disconnect());
+      await flushPromises();
+      env.sendUrl(wallet.errorReply('-32603', 'Internal error'));
+      await flushPromises();
+
+      expect(pending.status).toBe('rejected');
+      expect(onDisconnect).not.toHaveBeenCalled();
+      expect(provider.isConnected()).toBe(false);
+      expect(storage.data.has(SESSION_KEY)).toBe(false);
+    });
+
+    it('emits disconnect without opening the wallet when there is no session', async () => {
+      const onDisconnect = jest.fn();
+      provider.on('disconnect', onDisconnect);
+
+      await provider.disconnect();
+
+      expect(env.openURL).not.toHaveBeenCalled();
+      expect(onDisconnect).toHaveBeenCalledTimes(1);
+    });
+  });
+});

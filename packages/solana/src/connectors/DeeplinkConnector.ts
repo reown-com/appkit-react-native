@@ -71,6 +71,12 @@ export abstract class DeeplinkConnector extends WalletConnector {
       encryptionKeyFieldName: this.getEncryptionKeyFieldName()
     };
 
+    // AppKit calls init before every connect. Cancel the previous provider's pending request and drop
+    // its listeners, so it doesn't keep handling deep links next to the new one.
+    if (this.provider) {
+      (this.provider as DeeplinkProvider).destroy();
+    }
+
     this.provider = new DeeplinkProvider(providerConfig);
     await this.restoreSession();
   }
@@ -90,8 +96,8 @@ export abstract class DeeplinkConnector extends WalletConnector {
         );
       }
     } catch (error) {
-      // disconnect and clear session
-      await this.disconnect();
+      // Clear the local session only; opening the wallet here would interrupt the app's startup
+      await this.clearLocalSession();
       throw error;
     }
   }
@@ -146,7 +152,7 @@ export abstract class DeeplinkConnector extends WalletConnector {
 
       return this.namespaces;
     } catch (error: any) {
-      this.clearSession();
+      await this.clearSession();
       throw error;
     }
   }
@@ -175,6 +181,17 @@ export abstract class DeeplinkConnector extends WalletConnector {
     this.wallet = undefined;
     this.currentCaipNetworkId = null;
     await this.clearSessionStorage();
+  }
+
+  /**
+   * Clears the connector and provider sessions without contacting the wallet.
+   * Used when a stored session can't be restored: opening the wallet on startup would be unexpected.
+   */
+  private async clearLocalSession(): Promise<void> {
+    if (this.provider) {
+      await (this.provider as DeeplinkProvider).clearSession();
+    }
+    await this.clearSession();
   }
 
   override getProvider(): DeeplinkProvider {
@@ -296,7 +313,7 @@ export abstract class DeeplinkConnector extends WalletConnector {
           await this.saveSession();
         } else {
           // Provider looks connected but we can't reconstruct state → clear everything
-          await this.disconnect();
+          await this.clearLocalSession();
 
           return false;
         }
@@ -312,12 +329,12 @@ export abstract class DeeplinkConnector extends WalletConnector {
       }
 
       // If validation fails, something is out of sync. Clear everything.
-      await this.disconnect();
+      await this.clearLocalSession();
 
       return false;
     } catch (error) {
-      // On any error, disconnect to ensure a clean state
-      await this.disconnect();
+      // On any error, clear the local session to ensure a clean state (without opening the wallet)
+      await this.clearLocalSession();
 
       return false;
     }
