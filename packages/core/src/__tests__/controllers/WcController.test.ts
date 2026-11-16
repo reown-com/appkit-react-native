@@ -35,6 +35,9 @@ describe('WcController', () => {
   });
 
   it('should keep the error type only while there is an error', () => {
+    WcController.setWcError(true);
+    expect(WcController.state.wcErrorType).toBe('default');
+
     WcController.setWcError(true, 'declined');
     expect(WcController.state.wcError).toBe(true);
     expect(WcController.state.wcErrorType).toBe('declined');
@@ -42,11 +45,6 @@ describe('WcController', () => {
     WcController.setWcError(false);
     expect(WcController.state.wcError).toBe(false);
     expect(WcController.state.wcErrorType).toBeUndefined();
-  });
-
-  it('should default to a generic error type', () => {
-    WcController.setWcError(true);
-    expect(WcController.state.wcErrorType).toBe('default');
   });
 
   it('should clear the error on resetState()', () => {
