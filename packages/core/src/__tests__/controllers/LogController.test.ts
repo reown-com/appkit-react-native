@@ -399,10 +399,12 @@ describe('LogController', () => {
       });
     });
 
-    it('should maintain performance under memory pressure', () => {
-      const startTime = Date.now();
+    it('should stay bounded under memory pressure', () => {
+      // No wall-clock assertion here: CI runs every package's tests in parallel on
+      // shared runners, so timing is not a reliable signal. What matters is that the
+      // buffer never grows past MAX_LOGS_COUNT (300) and keeps the newest entries.
+      let maxObservedLength = 0;
 
-      // Add a large number of logs quickly
       for (let i = 0; i < 1000; i++) {
         LogController.sendError(
           new Error(`Performance test error ${i}`),
@@ -410,16 +412,15 @@ describe('LogController', () => {
           'testFunction',
           { index: i, data: 'x'.repeat(100) } // Some additional data
         );
+        maxObservedLength = Math.max(maxObservedLength, LogController.state.logs.length);
       }
 
-      const endTime = Date.now();
-      const duration = endTime - startTime;
-
-      // Should complete in reasonable time (less than 1 second for 1000 logs)
-      expect(duration).toBeLessThan(2000);
+      expect(maxObservedLength).toBe(300);
 
       const logs = LogController.getLogs();
-      expect(logs.length).toBeLessThanOrEqual(300); // Capped at MAX_LOGS_COUNT
+      expect(logs).toHaveLength(300);
+      expect(logs[0]?.message).toBe('Performance test error 700');
+      expect(logs[logs.length - 1]?.message).toBe('Performance test error 999');
     });
   });
 
