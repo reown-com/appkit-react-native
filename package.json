@@ -26,6 +26,7 @@
     "build": "turbo build",
     "build:gallery": "turbo run build:gallery",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "typecheck": "tsc --noEmit -p tsconfig.sdk.json",
     "prettier": "prettier --check .",
     "test": "turbo run test --parallel",
     "clean": "turbo clean && rm -rf node_modules && (watchman watch-del-all || true)",
