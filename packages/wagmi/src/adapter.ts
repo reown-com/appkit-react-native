@@ -132,17 +132,28 @@ export class WagmiAdapter extends EVMAdapter {
     }
 
     if (this.wagmiConfigConnector) {
-      await disconnectWagmiCore(this.wagmiConfig, { connector: this.wagmiConfigConnector });
-      this.wagmiConfigConnector = undefined;
+      const connectorInstance = this.wagmiConfigConnector;
+      await disconnectWagmiCore(this.wagmiConfig, { connector: connectorInstance });
+      this.removeWagmiConnector(connectorInstance);
     } else if (this.connector) {
       await this.connector.disconnect();
       this.onDisconnect();
     }
 
-    const evmAdapterInstance = this as any;
-    if ('connector' in evmAdapterInstance) {
-      evmAdapterInstance.connector = undefined;
+    this.connector = undefined;
+  }
+
+  // Called by ConnectionsController.disconnect for every adapter that shared the session,
+  // including when it was disconnected from another namespace (e.g. Solana)
+  override removeConnector(): void {
+    this.unsubscribeWatchAccount?.();
+    this.unsubscribeWatchAccount = undefined;
+
+    if (this.wagmiConfigConnector) {
+      this.removeWagmiConnector(this.wagmiConfigConnector);
     }
+
+    super.removeConnector();
   }
 
   getSupportedNamespace(): ChainNamespace {
@@ -170,21 +181,46 @@ export class WagmiAdapter extends EVMAdapter {
 
         connectorInstance.emitter.on('message', ({ type }: { type: string }) => {
           if (type === 'externalDisconnect') {
+            // onDisconnect() must run first: it clears this.connector, so the wagmi `disconnect`
+            // emitted by removeWagmiConnector() is ignored by watchAccount instead of emitting again
             this.onDisconnect();
 
-            this.wagmiConfigConnector = undefined;
+            this.removeWagmiConnector(connectorInstance);
           }
         });
 
-        try {
-          connectWagmi(this.wagmiConfig, { connector: connectorInstance });
-        } catch (error) {
-          this.wagmiConfigConnector = undefined;
-        }
+        // The AppKit connection stays as it is (like AppKit web, which ignores a failed wagmi
+        // reconnect after the WalletConnect session is approved); wagmi just isn't connected
+        connectWagmi(this.wagmiConfig, { connector: connectorInstance }).catch(error => {
+          console.warn(
+            `WagmiAdapter: failed to connect wagmi to the AppKit connector: ${
+              (error as Error)?.message ?? error
+            }`
+          );
+          this.removeWagmiConnector(connectorInstance);
+        });
       }
     }
 
     this.setupWatchers();
+  }
+
+  // Removes the connector from the wagmi config and drops its wagmi connection, if any.
+  // It doesn't disconnect the AppKit connector.
+  private removeWagmiConnector(connectorInstance: Connector) {
+    // Drop the wagmi connection through wagmi's own disconnect handler, without calling connector.disconnect()
+    if (this.wagmiConfig.state.connections.has(connectorInstance.uid)) {
+      connectorInstance.emitter.emit('disconnect');
+    }
+
+    connectorInstance.emitter.off('connect', this.wagmiConfig._internal.events.connect);
+    this.wagmiConfig._internal.connectors.setState(prev =>
+      prev.filter(c => c.uid !== connectorInstance.uid)
+    );
+
+    if (this.wagmiConfigConnector === connectorInstance) {
+      this.wagmiConfigConnector = undefined;
+    }
   }
 
   setupWatchers() {
@@ -197,6 +233,9 @@ export class WagmiAdapter extends EVMAdapter {
 
         // Handle disconnect
         if (accountData.status === 'disconnected' && prevAccountData.address) {
+          if (this.wagmiConfigConnector) {
+            this.removeWagmiConnector(this.wagmiConfigConnector);
+          }
           this.onDisconnect();
 
           return;
