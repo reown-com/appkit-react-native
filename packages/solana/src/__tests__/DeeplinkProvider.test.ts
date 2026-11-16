@@ -230,55 +230,8 @@ describe('DeeplinkProvider', () => {
     });
   });
 
-  describe('connect while a session exists', () => {
-    it('decrypts the reply with the encryption key the wallet sends back', async () => {
-      await connect();
-
-      // The wallet answers the new connect with a different encryption key
-      wallet.rotateEncryptionKey();
-      const reconnect = track(provider.connect({ cluster: 'devnet' }));
-      await flushPromises();
-      env.sendUrl(wallet.connectReply(lastOpenedUrl()));
-      await flushPromises();
-
-      expect(reconnect.status).toBe('resolved');
-      expect(provider.getCurrentCluster()).toBe('devnet');
-      expect(storage.data.get(SESSION_KEY)).toMatchObject({
-        sessionToken: 'session-2',
-        walletEncryptionPublicKeyBs58: wallet.walletEncryptionPublicKeyBs58,
-        cluster: 'devnet'
-      });
-
-      // Later requests use the new key
-      const signRequest = track(
-        provider.request({ method: 'solana_signMessage', params: { message: 'hello' } })
-      );
-      await flushPromises();
-      env.sendUrl(wallet.signReply(lastOpenedUrl(), { signature: 'sig' }));
-      await flushPromises();
-      expect(signRequest.status).toBe('resolved');
-      expect(signRequest.value).toEqual({ signature: 'sig' });
-    });
-
-    it('clears the local session when an approved reply cannot be decrypted', async () => {
-      await connect();
-
-      const reconnect = track(provider.connect({ cluster: 'devnet' }));
-      await flushPromises();
-      env.sendUrl(wallet.undecryptableConnectReply());
-      await flushPromises();
-
-      // The wallet approved, so the previous session may no longer be valid on its side
-      expect(reconnect.status).toBe('rejected');
-      expect(reconnect.error?.message).toMatch(/failed to decrypt/i);
-      expect(provider.isConnected()).toBe(false);
-      expect(storage.data.has(SESSION_KEY)).toBe(false);
-      expect(env.openURL).toHaveBeenCalledTimes(2); // connect, reconnect: no disconnect deep link
-    });
-  });
-
   describe('disconnect', () => {
-    it('emits disconnect and clears the stored session after the wallet redirect', async () => {
+    it('clears the stored session after the wallet redirect, without emitting disconnect', async () => {
       await connect();
       expect(storage.data.has(SESSION_KEY)).toBe(true);
       const onDisconnect = jest.fn();
@@ -290,12 +243,13 @@ describe('DeeplinkProvider', () => {
       await flushPromises();
 
       expect(pending.status).toBe('resolved');
-      expect(onDisconnect).toHaveBeenCalledTimes(1);
+      // Same as before: the caller handles a wallet-confirmed disconnect
+      expect(onDisconnect).not.toHaveBeenCalled();
       expect(provider.isConnected()).toBe(false);
       expect(storage.data.has(SESSION_KEY)).toBe(false);
     });
 
-    it('clears the local session and emits disconnect when the wallet redirect fails', async () => {
+    it('clears the local session when the wallet redirect fails', async () => {
       await connect();
       const onDisconnect = jest.fn();
       provider.on('disconnect', onDisconnect);
@@ -306,7 +260,7 @@ describe('DeeplinkProvider', () => {
       await flushPromises();
 
       expect(pending.status).toBe('rejected');
-      expect(onDisconnect).toHaveBeenCalledTimes(1);
+      expect(onDisconnect).not.toHaveBeenCalled();
       expect(provider.isConnected()).toBe(false);
       expect(storage.data.has(SESSION_KEY)).toBe(false);
     });
@@ -320,15 +274,5 @@ describe('DeeplinkProvider', () => {
       expect(env.openURL).not.toHaveBeenCalled();
       expect(onDisconnect).toHaveBeenCalledTimes(1);
     });
-  });
-
-  it('keeps the current cluster when a connect fails', async () => {
-    const pending = track(provider.connect({ cluster: 'devnet' }));
-    await flushPromises();
-    env.sendUrl(wallet.errorReply());
-    await flushPromises();
-
-    expect(pending.status).toBe('rejected');
-    expect(provider.getCurrentCluster()).toBe('mainnet-beta');
   });
 });

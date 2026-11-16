@@ -119,50 +119,42 @@ export abstract class DeeplinkConnector extends WalletConnector {
       ) as Cluster | undefined);
 
     try {
-      return await this.connectToCluster(requestedCluster);
+      const connectResult = await this.getProvider().connect({ cluster: requestedCluster });
+
+      const solanaChainId = SOLANA_CLUSTER_TO_NETWORK[connectResult.cluster]?.caipNetworkId;
+      if (!solanaChainId) {
+        throw new Error(
+          `${this.type} Connect: Internal - Unknown cluster mapping for ${connectResult.cluster}`
+        );
+      }
+      this.currentCaipNetworkId = solanaChainId;
+
+      this.wallet = {
+        name: this.getWalletInfo()?.name
+      };
+
+      const userPublicKey = this.getProvider().getUserPublicKey();
+      if (!userPublicKey) {
+        throw new Error(`${this.type} Connect: Provider failed to return a user public key.`);
+      }
+
+      const caipAddress = `${this.currentCaipNetworkId}:${userPublicKey}` as CaipAddress;
+      this.namespaces = {
+        [DeeplinkConnector.SUPPORTED_NAMESPACE]: {
+          accounts: [caipAddress],
+          methods: Object.values(SOLANA_SIGNING_METHODS),
+          events: [],
+          chains: [this.currentCaipNetworkId]
+        }
+      };
+
+      await this.saveSession(); // Save connector-specific session on successful connect
+
+      return this.namespaces;
     } catch (error: any) {
       await this.clearSession();
       throw error;
     }
-  }
-
-  /**
-   * Asks the wallet to connect on `cluster` and stores the new session.
-   * The connector state only changes once the wallet approved, so a failed attempt keeps the previous session.
-   */
-  private async connectToCluster(cluster?: Cluster): Promise<Namespaces> {
-    const connectResult = await this.getProvider().connect({ cluster });
-
-    const solanaChainId = SOLANA_CLUSTER_TO_NETWORK[connectResult.cluster]?.caipNetworkId;
-    if (!solanaChainId) {
-      throw new Error(
-        `${this.type} Connect: Internal - Unknown cluster mapping for ${connectResult.cluster}`
-      );
-    }
-
-    const userPublicKey = this.getProvider().getUserPublicKey();
-    if (!userPublicKey) {
-      throw new Error(`${this.type} Connect: Provider failed to return a user public key.`);
-    }
-
-    this.currentCaipNetworkId = solanaChainId;
-    this.wallet = {
-      name: this.getWalletInfo()?.name
-    };
-
-    const caipAddress = `${solanaChainId}:${userPublicKey}` as CaipAddress;
-    this.namespaces = {
-      [DeeplinkConnector.SUPPORTED_NAMESPACE]: {
-        accounts: [caipAddress],
-        methods: Object.values(SOLANA_SIGNING_METHODS),
-        events: [],
-        chains: [solanaChainId]
-      }
-    };
-
-    await this.saveSession(); // Save connector-specific session on successful connect
-
-    return this.namespaces;
   }
 
   override async disconnect(): Promise<void> {
@@ -264,36 +256,29 @@ export abstract class DeeplinkConnector extends WalletConnector {
       return Promise.resolve();
     }
 
-    // The connector was set up for a single cluster
-    if (this.config?.cluster && this.config.cluster !== targetClusterName) {
+    // Phantom/Solflare don't provide a way to switch network, so we need to disconnect and reconnect.
+    await this.disconnect(); // Clear current session
+
+    // Create a temporary options object to guide the new connection
+    const tempConnectOpts: ConnectOptions = {
+      defaultNetwork: SOLANA_CLUSTER_TO_NETWORK[targetClusterName]
+    };
+
+    // Attempt to connect to the new cluster
+    // The connect method will use the defaultNetwork from opts to determine the cluster.
+    await this.connect(tempConnectOpts);
+    this.getProvider().emit('chainChanged', network.id);
+
+    // Verify if the connection was successful and to the correct new network
+    if (
+      !this.isConnected() ||
+      this.getChainId(DeeplinkConnector.SUPPORTED_NAMESPACE) !==
+        tempConnectOpts.defaultNetwork?.caipNetworkId
+    ) {
       throw new Error(
         `${this.type} Connector: Failed to switch network to ${targetClusterName}. Please try connecting manually.`
       );
     }
-
-    // Phantom/Solflare don't provide a way to switch network, so we connect again on the new cluster.
-    // The current session stays in place until the wallet approves, so it's kept if the switch fails.
-    // The provider isn't recreated or disconnected: the adapter's listeners stay on it, and the app doesn't
-    // receive a `disconnect` event in the middle of the switch.
-    const provider = this.getProvider();
-    try {
-      await this.connectToCluster(targetClusterName);
-    } catch (error) {
-      // The wallet rejected or didn't answer: the previous session is kept.
-      // If the provider lost its session (the wallet approved but the reply couldn't be used), clear the
-      // connector too and tell the app it's disconnected.
-      if (!provider.isConnected()) {
-        await this.clearSession();
-        provider.emit('disconnect');
-      }
-      throw error;
-    }
-
-    const userPublicKey = provider.getUserPublicKey();
-    if (userPublicKey) {
-      provider.emit('accountsChanged', [userPublicKey]);
-    }
-    provider.emit('chainChanged', network.id);
   }
 
   // Orchestrates session restoration

@@ -74,116 +74,22 @@ describe('DeeplinkConnector', () => {
     expect(result.status).toBe('resolved');
   };
 
-  describe('switchNetwork', () => {
-    it('keeps the listeners on the provider and emits the new chain and account', async () => {
-      await connect();
-      const provider = connector.getProvider();
-      const onChainChanged = jest.fn();
-      const onAccountsChanged = jest.fn();
-      const onDisconnect = jest.fn();
-      provider.on('chainChanged', onChainChanged);
-      provider.on('accountsChanged', onAccountsChanged);
-      provider.on('disconnect', onDisconnect);
-
-      const result = track(connector.switchNetwork(solanaDevnet));
-      await flushPromises();
-
-      expect(result.status).toBe('resolved');
-      expect(connector.getChainId('solana')).toBe(solanaDevnet.caipNetworkId);
-      expect(connector.getNamespaces()['solana']?.accounts).toEqual([
-        `${solanaDevnet.caipNetworkId}:${wallet.userPublicKey}`
-      ]);
-      expect(onChainChanged).toHaveBeenCalledWith(solanaDevnet.id);
-      expect(onAccountsChanged).toHaveBeenCalledWith([wallet.userPublicKey]);
-      expect(onDisconnect).not.toHaveBeenCalled();
-
-      // Listeners added by the adapter are still there for later events
-      expect(provider.listenerCount('chainChanged')).toBe(1);
-      expect(provider.listenerCount('accountsChanged')).toBe(1);
-      expect(provider.listenerCount('disconnect')).toBe(1);
-      expect(connector.getProvider()).toBe(provider);
-    });
-
-    it('switches when the wallet answers with a new encryption key', async () => {
-      await connect();
-      const provider = connector.getProvider();
-      const onChainChanged = jest.fn();
-      provider.on('chainChanged', onChainChanged);
-      wallet.rotateEncryptionKey();
-
-      const result = track(connector.switchNetwork(solanaDevnet));
-      await flushPromises();
-
-      expect(result.status).toBe('resolved');
-      expect(connector.getChainId('solana')).toBe(solanaDevnet.caipNetworkId);
-      expect(onChainChanged).toHaveBeenCalledWith(solanaDevnet.id);
-      expect(storage.data.get(PROVIDER_SESSION_KEY)).toMatchObject({
-        walletEncryptionPublicKeyBs58: wallet.walletEncryptionPublicKeyBs58,
-        cluster: 'devnet'
-      });
-    });
-
-    it('disconnects locally when the wallet approved the switch but the reply cannot be decrypted', async () => {
-      await connect();
-      const provider = connector.getProvider();
-      const onDisconnect = jest.fn();
-      provider.on('disconnect', onDisconnect);
-      env.openURL.mockImplementation(async (url: string) => {
-        if (getDeeplinkMethod(url) === 'connect') {
-          Promise.resolve().then(() => env.sendUrl(wallet.undecryptableConnectReply()));
-        }
-      });
-
-      const result = track(connector.switchNetwork(solanaDevnet));
-      await flushPromises();
-
-      expect(result.status).toBe('rejected');
-      expect(connector.isConnected()).toBe(false);
-      expect(onDisconnect).toHaveBeenCalledTimes(1);
-      expect(storage.data.has(PROVIDER_SESSION_KEY)).toBe(false);
-      expect(storage.data.has(CONNECTOR_SESSION_KEY)).toBe(false);
-      expect(openedMethods()).toEqual(['connect', 'connect']);
-    });
-
-    it('keeps the previous connection when the wallet rejects the switch', async () => {
-      await connect();
-      const provider = connector.getProvider();
-      const onDisconnect = jest.fn();
-      provider.on('disconnect', onDisconnect);
-      const namespacesBefore = connector.getNamespaces();
-      behaviour = { connect: 'reject', disconnect: 'approve' };
-
-      const result = track(connector.switchNetwork(solanaDevnet));
-      await flushPromises();
-
-      expect(result.status).toBe('rejected');
-      expect(connector.isConnected()).toBe(true);
-      expect(connector.getChainId('solana')).toBe(solana.caipNetworkId);
-      expect(connector.getNamespaces()).toEqual(namespacesBefore);
-      expect(provider.getCurrentCluster()).toBe('mainnet-beta');
-      expect(storage.data.has(PROVIDER_SESSION_KEY)).toBe(true);
-      expect(storage.data.has(CONNECTOR_SESSION_KEY)).toBe(true);
-      expect(onDisconnect).not.toHaveBeenCalled();
-      expect(provider.listenerCount('disconnect')).toBe(1);
-    });
-  });
-
-  it('rejects a pending sign request when a network switch starts', async () => {
+  // switchNetwork keeps its existing flow (disconnect, then connect on the new cluster)
+  it('switches network by disconnecting and connecting again, without emitting disconnect', async () => {
     await connect();
     const provider = connector.getProvider();
-    const signRequest = track(
-      provider.request({ method: 'solana_signMessage', params: { message: 'hello' } })
-    );
-    await flushPromises();
-    expect(signRequest.status).toBe('pending');
+    const onDisconnect = jest.fn();
+    provider.on('disconnect', onDisconnect);
 
     const result = track(connector.switchNetwork(solanaDevnet));
     await flushPromises();
 
-    expect(signRequest.status).toBe('rejected');
-    expect(signRequest.error?.message).toMatch(/cancelled because a new request was sent/i);
     expect(result.status).toBe('resolved');
+    expect(openedMethods()).toEqual(['connect', 'disconnect', 'connect']);
+    expect(connector.isConnected()).toBe(true);
     expect(connector.getChainId('solana')).toBe(solanaDevnet.caipNetworkId);
+    // The wallet-confirmed disconnect in the middle of the switch isn't reported to the app
+    expect(onDisconnect).not.toHaveBeenCalled();
   });
 
   describe('restoreSession', () => {

@@ -297,22 +297,17 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
     }
   }
 
-  /**
-   * @param useSharedKey - decrypt with the shared key of the current session. A `connect` reply must not
-   * use it: the wallet can answer with a new encryption key, so it's decrypted with `walletSenderPublicKeyBs58`.
-   */
   private decryptPayload<T>(
     encryptedDataBs58: string,
     nonceBs58: string,
-    walletSenderPublicKeyBs58: string,
-    { useSharedKey = true }: { useSharedKey?: boolean } = {}
+    walletSenderPublicKeyBs58: string
   ): T | null {
     try {
       const formattedEncryptedDataBs58 = encryptedDataBs58.replace('#', '');
       const encryptedDataBytes = bs58.decode(formattedEncryptedDataBs58);
       const nonceBytes = bs58.decode(nonceBs58);
       let decryptedPayloadBytes: Uint8Array | null;
-      if (useSharedKey && this.sharedKey) {
+      if (this.sharedKey) {
         decryptedPayloadBytes = nacl.box.open.after(encryptedDataBytes, nonceBytes, this.sharedKey);
       } else {
         const walletSenderPublicKeyBytes = bs58.decode(walletSenderPublicKeyBs58);
@@ -391,6 +386,7 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
 
   public async connect<T = DeeplinkConnectResult>(params?: { cluster?: Cluster }): Promise<T> {
     const cluster = params?.cluster ?? 'mainnet-beta';
+    this.currentCluster = cluster;
     const connectDeeplinkParams: DeeplinkConnectParams = {
       app_url: this.config.dappUrl,
       dapp_encryption_public_key: bs58.encode(this.dappEncryptionKeyPair.publicKey),
@@ -415,18 +411,12 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
           throw new Error(`${this.config.type} provider: Invalid response - missing parameters.`);
         }
 
-        // Decrypt with the key in this reply, not the current session's shared key:
-        // when connecting again (e.g. to switch cluster) the wallet can use a new encryption key
         const decryptedData = this.decryptPayload<DecryptedConnectData>(
           responsePayload.data,
           responsePayload.nonce,
-          responsePayload.wallet_encryption_public_key,
-          { useSharedKey: false }
+          responsePayload.wallet_encryption_public_key
         );
         if (!decryptedData || !decryptedData.public_key || !decryptedData.session) {
-          // The wallet approved this connection, so a previous session may no longer be valid on its side.
-          // Clear it locally instead of keeping a session the wallet would reject.
-          await this.clearSession();
           throw new Error(
             `${this.config.type} provider: Failed to decrypt or invalid decrypted data.`
           );
@@ -434,8 +424,6 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
         this.userPublicKey = decryptedData.public_key;
         this.sessionToken = decryptedData.session;
         this.walletEncryptionPublicKeyBs58 = responsePayload.wallet_encryption_public_key;
-        // Only change the cluster once the wallet approved the connection
-        this.currentCluster = cluster;
 
         // Precompute shared key for subsequent communications
         try {
@@ -468,8 +456,13 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
    * The local session is cleared even if the wallet doesn't answer, so the app is never left half connected.
    */
   public async disconnect(): Promise<void> {
+    let emitDisconnect = false;
     try {
+      // Like before, `disconnect` is only emitted when the wallet can't be asked to disconnect.
+      // After a wallet-confirmed disconnect, the caller (AppKit or switchNetwork) already handles the state.
       if (!this.sessionToken || !this.walletEncryptionPublicKeyBs58) {
+        emitDisconnect = true;
+
         return;
       }
 
@@ -478,6 +471,8 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
         this.walletEncryptionPublicKeyBs58
       );
       if (!encryptedDisconnectPayload) {
+        emitDisconnect = true;
+
         return;
       }
 
@@ -493,7 +488,9 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
       await this.openDeeplinkAndWait<void>(url, () => undefined, 'Disconnection', []);
     } finally {
       await this.clearSession();
-      this.emit('disconnect');
+      if (emitDisconnect) {
+        this.emit('disconnect');
+      }
     }
   }
 
