@@ -275,9 +275,20 @@ export abstract class DeeplinkConnector extends WalletConnector {
     // The current session stays in place until the wallet approves, so it's kept if the switch fails.
     // The provider isn't recreated or disconnected: the adapter's listeners stay on it, and the app doesn't
     // receive a `disconnect` event in the middle of the switch.
-    await this.connectToCluster(targetClusterName);
-
     const provider = this.getProvider();
+    try {
+      await this.connectToCluster(targetClusterName);
+    } catch (error) {
+      // The wallet rejected or didn't answer: the previous session is kept.
+      // If the provider lost its session (the wallet approved but the reply couldn't be used), clear the
+      // connector too and tell the app it's disconnected.
+      if (!provider.isConnected()) {
+        await this.clearSession();
+        provider.emit('disconnect');
+      }
+      throw error;
+    }
+
     const userPublicKey = provider.getUserPublicKey();
     if (userPublicKey) {
       provider.emit('accountsChanged', [userPublicKey]);
