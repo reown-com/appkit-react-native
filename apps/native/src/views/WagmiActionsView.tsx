@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
 import { Button, Text, FlexView } from '@reown/appkit-ui-react-native';
 import { useSignMessage, useSendTransaction, useEstimateGas, useAccount } from 'wagmi';
-import { Hex, parseEther } from 'viem';
-import { SendTransactionData, SignMessageData } from 'wagmi/query';
+import { type Hex, parseEther } from 'viem';
+import type { SendTransactionData, SignMessageData } from 'wagmi/query';
 import { ToastUtils } from '../utils/ToastUtils';
 
 export function WagmiActionsView() {

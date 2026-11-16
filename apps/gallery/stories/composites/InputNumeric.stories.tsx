@@ -1,5 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
-
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { InputNumeric } from '@reown/appkit-ui-react-native';
@@ -21,5 +19,5 @@ export default meta;
 type Story = StoryObj<typeof InputNumeric>;
 
 export const Default: Story = {
-  render: args => <InputNumeric disabled={args.disabled} style={{ outlineStyle: 'none' }} />
+  render: args => <InputNumeric disabled={args.disabled} />
 };
