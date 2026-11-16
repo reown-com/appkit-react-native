@@ -297,17 +297,22 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
     }
   }
 
+  /**
+   * @param useSharedKey - decrypt with the shared key of the current session. A `connect` reply must not
+   * use it: the wallet can answer with a new encryption key, so it's decrypted with `walletSenderPublicKeyBs58`.
+   */
   private decryptPayload<T>(
     encryptedDataBs58: string,
     nonceBs58: string,
-    walletSenderPublicKeyBs58: string
+    walletSenderPublicKeyBs58: string,
+    { useSharedKey = true }: { useSharedKey?: boolean } = {}
   ): T | null {
     try {
       const formattedEncryptedDataBs58 = encryptedDataBs58.replace('#', '');
       const encryptedDataBytes = bs58.decode(formattedEncryptedDataBs58);
       const nonceBytes = bs58.decode(nonceBs58);
       let decryptedPayloadBytes: Uint8Array | null;
-      if (this.sharedKey) {
+      if (useSharedKey && this.sharedKey) {
         decryptedPayloadBytes = nacl.box.open.after(encryptedDataBytes, nonceBytes, this.sharedKey);
       } else {
         const walletSenderPublicKeyBytes = bs58.decode(walletSenderPublicKeyBs58);
@@ -410,12 +415,18 @@ export class DeeplinkProvider extends EventEmitter implements Provider {
           throw new Error(`${this.config.type} provider: Invalid response - missing parameters.`);
         }
 
+        // Decrypt with the key in this reply, not the current session's shared key:
+        // when connecting again (e.g. to switch cluster) the wallet can use a new encryption key
         const decryptedData = this.decryptPayload<DecryptedConnectData>(
           responsePayload.data,
           responsePayload.nonce,
-          responsePayload.wallet_encryption_public_key
+          responsePayload.wallet_encryption_public_key,
+          { useSharedKey: false }
         );
         if (!decryptedData || !decryptedData.public_key || !decryptedData.session) {
+          // The wallet approved this connection, so a previous session may no longer be valid on its side.
+          // Clear it locally instead of keeping a session the wallet would reject.
+          await this.clearSession();
           throw new Error(
             `${this.config.type} provider: Failed to decrypt or invalid decrypted data.`
           );

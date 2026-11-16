@@ -230,6 +230,53 @@ describe('DeeplinkProvider', () => {
     });
   });
 
+  describe('connect while a session exists', () => {
+    it('decrypts the reply with the encryption key the wallet sends back', async () => {
+      await connect();
+
+      // The wallet answers the new connect with a different encryption key
+      wallet.rotateEncryptionKey();
+      const reconnect = track(provider.connect({ cluster: 'devnet' }));
+      await flushPromises();
+      env.sendUrl(wallet.connectReply(lastOpenedUrl()));
+      await flushPromises();
+
+      expect(reconnect.status).toBe('resolved');
+      expect(provider.getCurrentCluster()).toBe('devnet');
+      expect(storage.data.get(SESSION_KEY)).toMatchObject({
+        sessionToken: 'session-2',
+        walletEncryptionPublicKeyBs58: wallet.walletEncryptionPublicKeyBs58,
+        cluster: 'devnet'
+      });
+
+      // Later requests use the new key
+      const signRequest = track(
+        provider.request({ method: 'solana_signMessage', params: { message: 'hello' } })
+      );
+      await flushPromises();
+      env.sendUrl(wallet.signReply(lastOpenedUrl(), { signature: 'sig' }));
+      await flushPromises();
+      expect(signRequest.status).toBe('resolved');
+      expect(signRequest.value).toEqual({ signature: 'sig' });
+    });
+
+    it('clears the local session when an approved reply cannot be decrypted', async () => {
+      await connect();
+
+      const reconnect = track(provider.connect({ cluster: 'devnet' }));
+      await flushPromises();
+      env.sendUrl(wallet.undecryptableConnectReply());
+      await flushPromises();
+
+      // The wallet approved, so the previous session may no longer be valid on its side
+      expect(reconnect.status).toBe('rejected');
+      expect(reconnect.error?.message).toMatch(/failed to decrypt/i);
+      expect(provider.isConnected()).toBe(false);
+      expect(storage.data.has(SESSION_KEY)).toBe(false);
+      expect(env.openURL).toHaveBeenCalledTimes(2); // connect, reconnect: no disconnect deep link
+    });
+  });
+
   describe('disconnect', () => {
     it('emits disconnect and clears the stored session after the wallet redirect', async () => {
       await connect();

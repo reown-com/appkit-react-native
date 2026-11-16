@@ -97,7 +97,7 @@ export function createFakeWallet({
   appScheme: string;
   encryptionKeyFieldName: string;
 }) {
-  const walletKeyPair = nacl.box.keyPair();
+  let walletKeyPair = nacl.box.keyPair();
   const userPublicKey = bs58.encode(nacl.sign.keyPair().publicKey);
   let sessionCount = 0;
 
@@ -117,7 +117,23 @@ export function createFakeWallet({
 
   return {
     userPublicKey,
-    walletEncryptionPublicKeyBs58: bs58.encode(walletKeyPair.publicKey),
+    get walletEncryptionPublicKeyBs58() {
+      return bs58.encode(walletKeyPair.publicKey);
+    },
+
+    /** Like Phantom, use a new encryption key pair from now on (e.g. for the next connect). */
+    rotateEncryptionKey() {
+      walletKeyPair = nacl.box.keyPair();
+    },
+
+    /** An approved `connect` redirect whose payload can't be decrypted. */
+    undecryptableConnectReply() {
+      return `${appScheme}?${new URLSearchParams({
+        [encryptionKeyFieldName]: bs58.encode(walletKeyPair.publicKey),
+        nonce: bs58.encode(nacl.randomBytes(nacl.box.nonceLength)),
+        data: bs58.encode(nacl.randomBytes(64))
+      }).toString()}`;
+    },
 
     /** The redirect for an approved `connect` request (`requestUrl` is the URL the app opened). */
     connectReply(requestUrl: string) {
