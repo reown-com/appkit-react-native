@@ -39,26 +39,46 @@ export function ConnectingView() {
   };
 
   const initializeConnection = async (retry = false) => {
-    try {
-      const { wcPairingExpiry } = WcController.state;
-      const { data: routeData } = RouterController.state;
-      const isPairingExpired = CoreHelperUtil.isPairingExpired(wcPairingExpiry);
-      if (retry || isPairingExpired) {
-        WcController.setWcError(false);
-        WcController.clearUri();
+    const { wcPairingExpiry, wcPromise, wcUri } = WcController.state;
+    // An attempt that is still waiting for its pairing URI (e.g. slow relay) has no expiry yet,
+    // so the interval must not start another one on top of it
+    const isWaitingForUri = !!wcPromise && !wcUri;
+    const isPairingExpired = CoreHelperUtil.isPairingExpired(wcPairingExpiry);
+    if (!retry && (isWaitingForUri || !isPairingExpired)) {
+      return;
+    }
 
-        const connectPromise = connect({
-          wallet: routeData?.wallet
-        });
-        WcController.setWcPromise(connectPromise);
-        await connectPromise;
-      }
+    WcController.setWcError(false);
+    WcController.clearUri();
+
+    const connectPromise = connect({
+      wallet: RouterController.state.data?.wallet
+    });
+    WcController.setWcPromise(connectPromise);
+
+    try {
+      await connectPromise;
     } catch (error) {
+      // A newer attempt replaced this one, so its failure doesn't apply to the current attempt
+      if (WcController.state.wcPromise !== connectPromise) {
+        return;
+      }
+
+      if (isQr) {
+        // The failed URI can't be used anymore. Clearing it lets the next pairing-expiry check
+        // start a new attempt, so the QR doesn't keep showing a dead code until it expires
+        WcController.clearUri();
+      } else {
+        // Not in flight anymore, so a new attempt can start
+        WcController.setWcPromise(undefined);
+      }
+
       LogController.sendError(error, 'ConnectingView.tsx', 'initializeConnection');
-      WcController.setWcError(true);
 
       const isUserRejected = ErrorUtil.isUserRejectedRequestError(error);
       const isProposalExpired = ErrorUtil.isProposalExpiredError(error);
+      WcController.setWcError(true, isUserRejected ? 'declined' : 'default');
+
       if (!isProposalExpired) {
         SnackController.showError(
           isUserRejected ? 'User rejected the request' : 'Something went wrong'
