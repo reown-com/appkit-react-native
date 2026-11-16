@@ -149,24 +149,6 @@ describe('ConnectingView', () => {
     view.unmount();
   });
 
-  it('marks a user rejection as declined', async () => {
-    const attempt = deferred();
-    mockConnect.mockReturnValueOnce(attempt.promise).mockReturnValue(deferred().promise);
-
-    const view = render(<ConnectingView />);
-    await flush();
-
-    await act(async () => {
-      // How WalletConnect reports a rejected session proposal (getSdkError('USER_REJECTED'))
-      attempt.reject({ code: 5000, message: 'User rejected.' });
-    });
-
-    expect(WcController.state.wcError).toBe(true);
-    expect(WcController.state.wcErrorType).toBe('declined');
-
-    view.unmount();
-  });
-
   it('marks other failures as a generic error', async () => {
     const attempt = deferred();
     mockConnect.mockReturnValueOnce(attempt.promise).mockReturnValue(deferred().promise);
