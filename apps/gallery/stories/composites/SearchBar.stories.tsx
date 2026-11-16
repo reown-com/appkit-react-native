@@ -1,5 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
-
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { SearchBar } from '@reown/appkit-ui-react-native';
@@ -23,7 +21,7 @@ type Story = StoryObj<typeof SearchBar>;
 export const Default: Story = {
   render: args => (
     <GalleryContainer width={300}>
-      <SearchBar placeholder={args.placeholder} inputStyle={{ outlineStyle: 'none' }} />
+      <SearchBar placeholder={args.placeholder} />
     </GalleryContainer>
   )
 };

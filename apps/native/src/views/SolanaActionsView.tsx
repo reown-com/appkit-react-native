@@ -217,17 +217,16 @@ export function SolanaActionsView() {
 
       if (result.transactions) {
         onSignSuccess(
-          `Signed ${result.transactions.length} Txs (bs58): Tx1: ${result.transactions[0].substring(
-            0,
-            30
-          )}...`,
+          `Signed ${
+            result.transactions.length
+          } Txs (bs58): Tx1: ${result.transactions[0]?.substring(0, 30)}...`,
           'Sign All Txs successful'
         );
       } else if (result.signatures) {
         onSignSuccess(
           `Signed ${
             result.signatures.length
-          } Txs (signatures): Sig1: ${result.signatures[0].substring(0, 30)}...`,
+          } Txs (signatures): Sig1: ${result.signatures[0]?.substring(0, 30)}...`,
           'Sign All Txs successful'
         );
       } else {
