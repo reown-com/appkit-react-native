@@ -112,7 +112,7 @@ const derivedState = derive(
     isConnected: (get): boolean => {
       const snap = get(baseState);
 
-      return !!snap.activeNamespace && !!snap.connections.size;
+      return !!snap.activeNamespace && snap.connections.has(snap.activeNamespace);
     },
     activeAddress: (get): CaipAddress | undefined => {
       const snap = get(baseState);

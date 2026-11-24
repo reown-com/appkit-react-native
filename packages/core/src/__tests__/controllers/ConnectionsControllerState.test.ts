@@ -124,6 +124,15 @@ describe('ConnectionsController derived state', () => {
     expect(core.ConnectionsController.state.isConnected).toBe(false);
   });
 
+  it('is not connected when the active namespace has no connection', async () => {
+    connectEvm();
+    core.ConnectionsController.setActiveNamespace('solana');
+
+    await flush();
+    expect(core.ConnectionsController.state.isConnected).toBe(false);
+    expect(core.ConnectionsController.state.activeAddress).toBeUndefined();
+  });
+
   it('uses the account that matches the active network', async () => {
     connectEvm({ caipNetwork: 'eip155:137' });
     core.ConnectionsController.setActiveNamespace('eip155');
@@ -304,7 +313,10 @@ describe('ConnectionsController networks', () => {
     connectEvm();
     core.ConnectionsController.setActiveNamespace('eip155');
 
-    core.ConnectionsController.setActiveNetwork('solana', 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp');
+    core.ConnectionsController.setActiveNetwork(
+      'solana',
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+    );
 
     await flush();
     expect(core.ConnectionsController.state.activeNamespace).toBe('eip155');
