@@ -194,10 +194,6 @@ describe('LogController', () => {
       OptionsController.setDebug(true);
     });
 
-    afterEach(() => {
-      LogController.destroy();
-    });
-
     it('should stay bounded under memory pressure', () => {
       // No wall-clock assertion here: CI runs every package's tests in parallel on
       // shared runners, so timing is not a reliable signal. What matters is that the
@@ -227,10 +223,6 @@ describe('LogController', () => {
     beforeEach(() => {
       LogController.clearLogs();
       OptionsController.setDebug(true);
-    });
-
-    afterEach(() => {
-      LogController.destroy();
     });
 
     it('should handle Error objects with missing properties', () => {
