@@ -1,7 +1,5 @@
+import { resetControllers } from '@shared-jest-setup';
 import { OptionsController, SnackController } from '../../index';
-
-// Setup
-OptionsController.state.debug = true;
 
 // eslint-disable-next-line no-console
 console.error = jest.fn();
@@ -11,12 +9,14 @@ describe('SnackController', () => {
   beforeEach(() => {
     // Use Jest's timer mocking
     jest.useFakeTimers();
+    OptionsController.state.debug = true;
   });
 
   afterEach(() => {
     // Restore real timers and clear any remaining timeouts
     jest.useRealTimers();
     SnackController.hide();
+    resetControllers();
   });
 
   it('should have valid default state', () => {
@@ -39,6 +39,7 @@ describe('SnackController', () => {
   });
 
   it('should update state correctly on hide()', () => {
+    SnackController.showSuccess('Success Msg');
     SnackController.hide();
     expect(SnackController.state).toEqual({
       ...SnackController.state,

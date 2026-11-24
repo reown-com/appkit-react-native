@@ -178,9 +178,24 @@ describe('CoreHelperUtil', () => {
     const globalAny = global as any;
     const originalApplication = globalAny.Application;
 
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
     afterEach(() => {
+      jest.useRealTimers();
       globalAny.Application = originalApplication;
     });
+
+    // Runs the batch check while flushing the setTimeout(0) the util uses between batches
+    const runBatches = async (
+      ...args: Parameters<typeof CoreHelperUtil.checkInstalledInBatches>
+    ) => {
+      const promise = CoreHelperUtil.checkInstalledInBatches(...args);
+      await jest.runAllTimersAsync();
+
+      return promise;
+    };
 
     const createWallets = (count: number): DataWallet[] =>
       Array.from({ length: count }, (_, i) => ({ id: `w${i}`, ios_schema: `w${i}://` }));
@@ -191,7 +206,7 @@ describe('CoreHelperUtil', () => {
       globalAny.Application = { isAppInstalled };
 
       const wallets = createWallets(45);
-      const results = await CoreHelperUtil.checkInstalledInBatches(wallets, 20);
+      const results = await runBatches(wallets, 20);
 
       expect(isAppInstalled).toHaveBeenCalledTimes(45);
       expect(results.map(({ id }) => id)).toEqual(wallets.map(({ id }) => id));
@@ -212,7 +227,7 @@ describe('CoreHelperUtil', () => {
         })
       };
 
-      await CoreHelperUtil.checkInstalledInBatches(createWallets(45), 20);
+      await runBatches(createWallets(45), 20);
 
       expect(maxInFlight).toBe(20);
     });
@@ -226,15 +241,15 @@ describe('CoreHelperUtil', () => {
         callsWhenTimerFired = isAppInstalled.mock.calls.length;
       }, 0);
 
-      await CoreHelperUtil.checkInstalledInBatches(createWallets(45), 20);
+      await runBatches(createWallets(45), 20);
 
       // The timer queued before the checks runs after the first batch, not after all of them
       expect(callsWhenTimerFired).toBe(20);
     });
 
     it('should return an empty array for no wallets', async () => {
-      await expect(CoreHelperUtil.checkInstalledInBatches([])).resolves.toEqual([]);
-      await expect(CoreHelperUtil.checkInstalledInBatches(undefined)).resolves.toEqual([]);
+      await expect(runBatches([])).resolves.toEqual([]);
+      await expect(runBatches(undefined)).resolves.toEqual([]);
     });
   });
 });

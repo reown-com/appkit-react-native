@@ -1,7 +1,12 @@
+import { resetControllers } from '@shared-jest-setup';
 import { ModalController } from '../../index';
 
 // -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {
+  afterEach(() => {
+    resetControllers();
+  });
+
   it('should have valid default state', () => {
     expect(ModalController.state.open).toEqual(false);
   });
@@ -11,7 +16,8 @@ describe('ModalController', () => {
     expect(ModalController.state.open).toEqual(true);
   });
 
-  it('should update state correctly on close()', () => {
+  it('should update state correctly on close()', async () => {
+    await ModalController.open();
     ModalController.close();
     expect(ModalController.state.open).toEqual(false);
   });

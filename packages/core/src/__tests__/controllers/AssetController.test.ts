@@ -1,9 +1,14 @@
+import { resetControllers } from '@shared-jest-setup';
 import { AssetController, CoreHelperUtil } from '../../index';
 
 const API_URL = CoreHelperUtil.getApiUrl();
 
 // -- Tests --------------------------------------------------------------------
 describe('AssetController', () => {
+  afterEach(() => {
+    resetControllers();
+  });
+
   it('should have valid default state', () => {
     expect(AssetController.state).toEqual({
       walletImages: {},

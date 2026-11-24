@@ -1,3 +1,4 @@
+import { resetControllers } from '@shared-jest-setup';
 import type { Event } from '@reown/appkit-common-react-native';
 import { EventsController } from '../../index';
 
@@ -7,6 +8,10 @@ const event: Event = { type: 'track', event: 'MODAL_CLOSE', properties: { connec
 // -- Tests --------------------------------------------------------------------
 
 describe('EventsController', () => {
+  afterEach(() => {
+    resetControllers();
+  });
+
   it('should have valid default state', () => {
     expect(EventsController.state.data).toEqual({
       type: 'track',

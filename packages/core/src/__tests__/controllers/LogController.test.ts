@@ -238,13 +238,22 @@ describe('LogController', () => {
 
   describe('Concurrent Access Patterns', () => {
     beforeEach(() => {
+      jest.useFakeTimers();
       LogController.clearLogs();
       OptionsController.setDebug(true);
     });
 
     afterEach(() => {
       LogController.destroy();
+      jest.useRealTimers();
     });
+
+    // Fires every scheduled operation (all delays are under 10ms) and waits for them
+    const settle = async <T>(promises: Promise<T>[]) => {
+      jest.advanceTimersByTime(10);
+
+      return Promise.all(promises);
+    };
 
     it('should handle concurrent log writes without data corruption', async () => {
       const promises: Promise<void>[] = [];
@@ -260,12 +269,12 @@ describe('LogController', () => {
             setTimeout(() => {
               LogController.sendInfo(message, 'ConcurrentTest.ts', 'testFunction');
               resolve();
-            }, Math.random() * 10); // Random delay 0-10ms
+            }, i % 10); // Staggered delay 0-9ms
           })
         );
       }
 
-      await Promise.all(promises);
+      await settle(promises);
 
       const logs = LogController.getLogs();
       expect(logs).toHaveLength(50);
@@ -289,16 +298,16 @@ describe('LogController', () => {
       // Trigger multiple concurrent read operations
       const readPromises = Array.from(
         { length: 10 },
-        () =>
+        (_, i) =>
           new Promise<LogEntry[]>(resolve => {
             setTimeout(() => {
               const logs = LogController.getLogs();
               resolve(logs);
-            }, Math.random() * 5);
+            }, i % 5);
           })
       );
 
-      const results = await Promise.all(readPromises);
+      const results = await settle(readPromises);
 
       // All reads should return the same logs
       results.forEach(logs => {
@@ -323,7 +332,7 @@ describe('LogController', () => {
             setTimeout(() => {
               LogController.sendError(`Concurrent error ${i}`, 'MixedTest.ts', 'errorFunction');
               resolve();
-            }, Math.random() * 10);
+            }, i % 10);
           })
         );
       }
@@ -335,12 +344,12 @@ describe('LogController', () => {
             setTimeout(() => {
               const logs = LogController.getLogs();
               resolve(logs);
-            }, Math.random() * 10);
+            }, i % 10);
           })
         );
       }
 
-      const results = await Promise.all(operations);
+      const results = await settle(operations);
 
       // Verify final state
       const finalLogs = LogController.getLogs();

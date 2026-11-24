@@ -1,3 +1,4 @@
+import { resetControllers } from '@shared-jest-setup';
 import { SendController } from '../../index';
 
 // -- Setup --------------------------------------------------------------------
@@ -22,6 +23,10 @@ const receiverProfileImageUrl = 'https://ipfs.com/0x123.png';
 
 // -- Tests --------------------------------------------------------------------
 describe('SendController', () => {
+  afterEach(() => {
+    resetControllers();
+  });
+
   it('should have valid default state', () => {
     expect(SendController.state).toEqual({ loading: false });
   });
@@ -52,6 +57,9 @@ describe('SendController', () => {
   });
 
   it('should update state correctly on resetState()', () => {
+    SendController.setToken(token);
+    SendController.setTokenAmount(sendTokenAmount);
+    SendController.setReceiverAddress(receiverAddress);
     SendController.resetState();
     expect(SendController.state).toEqual({ loading: false });
   });
