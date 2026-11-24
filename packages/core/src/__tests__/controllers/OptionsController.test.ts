@@ -1,3 +1,4 @@
+import { resetControllers } from '@shared-jest-setup';
 import { ConstantsUtil, OptionsController } from '../../index';
 
 const MOCK_WALLET_IDS = [
@@ -11,6 +12,10 @@ const MOCK_CLIPBOARD_CLIENT = {
 
 // -- Tests --------------------------------------------------------------------
 describe('OptionsController', () => {
+  afterEach(() => {
+    resetControllers();
+  });
+
   it('should have valid default state', () => {
     expect(OptionsController.state).toEqual({
       projectId: '',

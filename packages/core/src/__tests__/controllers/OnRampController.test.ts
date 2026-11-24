@@ -1,3 +1,4 @@
+import { resetControllers } from '@shared-jest-setup';
 import {
   OnRampController,
   BlockchainApiController,
@@ -48,7 +49,7 @@ jest.mock('../../utils/CoreHelperUtil', () => ({
     getBlockchainApiUrl: jest.fn(),
     getApiUrl: jest.fn(),
     debounce: jest.fn(),
-    getPlainAddress: jest.fn(caipAddress => caipAddress?.split(':')[2]),
+    getPlainAddress: jest.fn(),
     getUUID: jest.fn()
   }
 }));
@@ -133,9 +134,18 @@ const mockQuote: OnRampQuote = {
 
 // Reset mocks and state before each test
 beforeEach(() => {
-  jest.clearAllMocks();
-  // Reset controller state
-  OnRampController.resetState();
+  // Reset implementations too, so a mockResolvedValue from one test can't leak into the next
+  jest.resetAllMocks();
+  (CoreHelperUtil.getPlainAddress as jest.Mock).mockImplementation(
+    (caipAddress?: string) => caipAddress?.split(':')[2]
+  );
+  // Empty storage caches by default, so the controller falls through to the API mocks
+  (StorageUtil.getOnRampFiatCurrencies as jest.Mock).mockResolvedValue([]);
+  (StorageUtil.getOnRampFiatLimits as jest.Mock).mockResolvedValue([]);
+});
+
+afterEach(() => {
+  resetControllers();
 });
 
 // -- Tests --------------------------------------------------------------------

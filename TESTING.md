@@ -77,6 +77,22 @@ declare module '@shared-jest-setup' {
 }
 ```
 
+### Resetting controller state
+
+Core controllers are module-level valtio singletons, so state set in one test leaks into the next. Use `resetControllers()` to restore every core controller to its initial state:
+
+```ts
+import { resetControllers } from '@shared-jest-setup';
+
+afterEach(() => {
+  resetControllers();
+});
+```
+
+Importing `@shared-jest-setup` from a test file needs an absolute mapping in the package's `jest.config.ts` (see `packages/core/jest.config.ts`) and the `resetControllers` declaration in `types/shared-jest-setup.d.ts`.
+
+Prefer `jest.useFakeTimers()` over real `setTimeout` waits in tests.
+
 ## Running Tests
 
 To run tests for all packages:
@@ -90,6 +106,14 @@ To run tests for a specific package:
 ```bash
 yarn workspace @reown/appkit-[package-name]-react-native test
 ```
+
+To run all tests with coverage (what CI runs):
+
+```bash
+yarn test:coverage
+```
+
+`packages/appkit` and `packages/core` set a `coverageThreshold` for critical files (`AppKit.ts`, `ConnectionsController.ts`, `StorageUtil.ts`). It's enforced only with `--coverage`, at the level measured when it was added, so it only catches regressions. Raise it when you add tests.
 
 ## Playwright Testing (E2E)
 
