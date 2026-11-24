@@ -244,7 +244,6 @@ describe('LogController', () => {
     });
 
     afterEach(() => {
-      LogController.destroy();
       jest.useRealTimers();
     });
 
@@ -375,10 +374,6 @@ describe('LogController', () => {
       OptionsController.setDebug(true);
     });
 
-    afterEach(() => {
-      LogController.destroy();
-    });
-
     it('should handle cleanup with maximum log count exceeded', () => {
       // Add more than MAX_LOGS_COUNT (300) logs
       for (let i = 0; i < 350; i++) {
@@ -437,10 +432,6 @@ describe('LogController', () => {
     beforeEach(() => {
       LogController.clearLogs();
       OptionsController.setDebug(true);
-    });
-
-    afterEach(() => {
-      LogController.destroy();
     });
 
     it('should handle Error objects with missing properties', () => {
