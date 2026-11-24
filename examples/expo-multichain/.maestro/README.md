@@ -63,7 +63,13 @@ maestro test .maestro/
 
 ## CI/CD Integration
 
-The tests are integrated into the GitHub Actions workflow and run automatically on every PR.
+The flows run in `.github/workflows/expo-ci-cd.yml` on an Android emulator and an iOS simulator:
+
+- On every push to a pull request against `develop` or `main` (`opened`, `synchronize`, `reopened`, `ready_for_review`) that changes files under `packages/**`. PRs that only touch docs, examples or apps do not run them.
+- A new push to the same PR cancels the run for the previous push.
+- Manually via `workflow_dispatch` (pick `android`, `ios` or `all`).
+
+Add `[skip ci]` to the commit message to skip the run for a push.
 
 ## Updating Tests
 

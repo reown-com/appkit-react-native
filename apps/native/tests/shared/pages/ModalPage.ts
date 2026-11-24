@@ -147,6 +147,18 @@ export class ModalPage {
     await qrCodeButton.click();
   }
 
+  async switchNetworkFromUnsupportedView(network: SupportedChain) {
+    const networkItem = this.page.getByTestId('button-network').filter({ hasText: network });
+    await expect(networkItem, `${network} should be listed`).toBeVisible();
+    await networkItem.click();
+  }
+
+  async disconnectFromUnsupportedView() {
+    const disconnectBtn = this.page.getByTestId('button-disconnect');
+    await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible();
+    await disconnectBtn.click();
+  }
+
   async clickHookDisconnectButton() {
     const disconnectHookButton = this.page.getByTestId('disconnect-hook-button');
     await expect(disconnectHookButton).toBeVisible();

@@ -15,6 +15,9 @@ export const TEST_CHAINS = {
   GNOSIS: 'Gnosis'
 } as const;
 
+// A network the wallet supports but the sample app does not list (Sepolia)
+export const UNSUPPORTED_CHAIN_ID = 'eip155:11155111';
+
 export type SupportedChain = (typeof TEST_CHAINS)[keyof typeof TEST_CHAINS];
 
 export const TIMEOUTS = {

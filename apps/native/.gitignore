@@ -16,6 +16,7 @@ web-build/
 .env
 /test-results/
 /playwright-report/
+/playwright-results/
 /blob-report/
 /playwright/.cache/
 
