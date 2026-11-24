@@ -59,19 +59,25 @@ const createSession = (overrides: Record<string, unknown> = {}) => ({
   ...overrides
 });
 
-// A UniversalProvider stand-in with real event handling
+// A UniversalProvider stand-in with real event handling. Like EventEmitter, it keeps a
+// listener registered twice twice, and `off` removes only its latest registration, so
+// listenerCount exposes double registration.
 const createUniversalProvider = (session?: ReturnType<typeof createSession>) => {
-  const listeners = new Map<string, Set<(arg: unknown) => void>>();
+  const listeners = new Map<string, Array<(arg: unknown) => void>>();
   const provider = {
     session,
     on: jest.fn((event: string, fn: (arg: unknown) => void) => {
-      listeners.set(event, (listeners.get(event) ?? new Set()).add(fn));
+      listeners.set(event, [...(listeners.get(event) ?? []), fn]);
     }),
     off: jest.fn((event: string, fn: (arg: unknown) => void) => {
-      listeners.get(event)?.delete(fn);
+      const list = listeners.get(event) ?? [];
+      const index = list.lastIndexOf(fn);
+      if (index > -1) {
+        list.splice(index, 1);
+      }
     }),
-    emit: (event: string, arg: unknown) => listeners.get(event)?.forEach(fn => fn(arg)),
-    listenerCount: (event: string) => listeners.get(event)?.size ?? 0,
+    emit: (event: string, arg: unknown) => [...(listeners.get(event) ?? [])].forEach(fn => fn(arg)),
+    listenerCount: (event: string) => listeners.get(event)?.length ?? 0,
     connect: jest.fn(),
     disconnect: jest.fn(),
     request: jest.fn().mockResolvedValue('0xresult'),
