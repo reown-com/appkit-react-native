@@ -39,8 +39,16 @@ function walk(suite, titles) {
   for (const child of suite.suites ?? []) walk(child, nextTitles);
 }
 
+const unreadable = [];
 for (const file of files) {
-  const report = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
+  let report;
+  try {
+    report = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
+  } catch {
+    // A cancelled run can leave a cut-off report. Skip it and say so in the summary
+    unreadable.push(file);
+    continue;
+  }
   // Top-level suites are the spec files, already shown in the File column
   for (const suite of report.suites ?? []) walk({ ...suite, title: '' }, []);
 }
@@ -61,6 +69,8 @@ if (!files.length) {
     for (const t of list) lines.push(`| ${t.title} | \`${t.file}:${t.line}\` | ${t.attempts} |`);
   }
 }
+
+if (unreadable.length) lines.push('', `Could not read: ${unreadable.join(', ')}`);
 
 const summary = lines.join('\n') + '\n';
 process.stdout.write(summary);
