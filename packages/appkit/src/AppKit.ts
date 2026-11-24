@@ -21,6 +21,7 @@ import {
 
 import {
   type WalletConnector,
+  type AdapterEvents,
   type BlockchainAdapter,
   type ProposalNamespaces,
   type ConnectorType,
@@ -64,6 +65,8 @@ export class AppKit {
   private walletConnectConnectorPromise?: Promise<WalletConnector>;
   private controllersReady: Promise<void>;
   private balanceIntervalId?: ReturnType<typeof setInterval>;
+  // Removes the handlers subscribeToAdapterEvents added to each adapter
+  private adapterSubscriptions = new Map<BlockchainAdapter, () => void>();
 
   constructor(config: AppKitConfig) {
     this.projectId = config.projectId;
@@ -778,12 +781,16 @@ export class AppKit {
   }
 
   private subscribeToAdapterEvents(adapter: BlockchainAdapter): void {
-    adapter.on('accountsChanged', ({ accounts }) => {
+    // Connecting again on the same adapter (another connect, or restoring two connectors that share a
+    // namespace) calls this again. Drop the previous handlers first, so each event runs once.
+    this.adapterSubscriptions.get(adapter)?.();
+
+    const onAccountsChanged: AdapterEvents['accountsChanged'] = ({ accounts }) => {
       const namespace = adapter.getSupportedNamespace();
       ConnectionsController.updateAccounts(namespace, accounts);
-    });
+    };
 
-    adapter.on('chainChanged', async ({ chainId }) => {
+    const onChainChanged: AdapterEvents['chainChanged'] = async ({ chainId }) => {
       const namespace = adapter.getSupportedNamespace();
       const chain = `${namespace}:${chainId}` as CaipNetworkId;
 
@@ -824,16 +831,29 @@ export class AppKit {
         caipAddress: address,
         closeModal
       });
-    });
+    };
 
-    adapter.on('disconnect', () => {
+    const onDisconnect: AdapterEvents['disconnect'] = () => {
       const namespace = adapter.getSupportedNamespace();
       this.disconnect(namespace, false);
-    });
+    };
 
-    adapter.on('balanceChanged', ({ address, balance }) => {
+    const onBalanceChanged: AdapterEvents['balanceChanged'] = ({ address, balance }) => {
       const namespace = adapter.getSupportedNamespace();
       ConnectionsController.updateBalance(namespace, address, balance);
+    };
+
+    adapter.on('accountsChanged', onAccountsChanged);
+    adapter.on('chainChanged', onChainChanged);
+    adapter.on('disconnect', onDisconnect);
+    adapter.on('balanceChanged', onBalanceChanged);
+
+    this.adapterSubscriptions.set(adapter, () => {
+      adapter.off('accountsChanged', onAccountsChanged);
+      adapter.off('chainChanged', onChainChanged);
+      adapter.off('disconnect', onDisconnect);
+      adapter.off('balanceChanged', onBalanceChanged);
+      this.adapterSubscriptions.delete(adapter);
     });
   }
 
