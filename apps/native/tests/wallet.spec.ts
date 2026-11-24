@@ -240,6 +240,8 @@ sampleWalletTest('it should recover from an unsupported network in the wallet', 
  */
 
 sampleWalletTest('it should connect, disconnect, reconnect and sign once', async () => {
+  // Two full QR connections plus a sign: takes about 26s locally, close to the 30s default
+  sampleWalletTest.setTimeout(90_000);
   await modalValidator.expectDisconnected();
 
   // Connect
