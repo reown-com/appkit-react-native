@@ -15,6 +15,27 @@ import {
 import { OptionsController } from '../controllers/OptionsController';
 import { LogController } from '../controllers/LogController';
 
+// -- Helpers -----------------------------------------------------------------
+type ConnectedConnector = { type: ConnectorType; namespaces: string[] };
+
+/**
+ * Runs read-modify-write tasks on the same storage key one after another, so
+ * concurrent callers don't overwrite each other's changes.
+ */
+function createWriteQueue() {
+  let queue: Promise<unknown> = Promise.resolve();
+
+  return <T>(task: () => Promise<T>): Promise<T> => {
+    const run = queue.then(task, task);
+    queue = run.catch(() => undefined);
+
+    return run;
+  };
+}
+
+const queueConnectorsWrite = createWriteQueue();
+const queueRecentWalletsWrite = createWriteQueue();
+
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
   setWalletConnectDeepLink({ href, name }: WalletDeepLink) {
@@ -52,26 +73,28 @@ export const StorageUtil = {
   },
 
   async addRecentWallet(wallet: WcWallet) {
-    try {
-      const recentWallets = await StorageUtil.getRecentWallets();
-      const recentIndex = recentWallets.findIndex(w => w.id === wallet.id);
+    return queueRecentWalletsWrite(async () => {
+      try {
+        const recentWallets = await StorageUtil.getRecentWallets();
+        const recentIndex = recentWallets.findIndex(w => w.id === wallet.id);
 
-      if (recentIndex > -1) {
-        recentWallets.splice(recentIndex, 1);
+        if (recentIndex > -1) {
+          recentWallets.splice(recentIndex, 1);
+        }
+
+        recentWallets.unshift(wallet);
+        if (recentWallets.length > 2) {
+          recentWallets.pop();
+        }
+        await OptionsController.getStorage().setItem(SafeStorageKeys.RECENT_WALLET, recentWallets);
+
+        return recentWallets;
+      } catch (error) {
+        LogController.sendError(error, 'StorageUtil.ts', 'addRecentWallet');
+
+        return undefined;
       }
-
-      recentWallets.unshift(wallet);
-      if (recentWallets.length > 2) {
-        recentWallets.pop();
-      }
-      OptionsController.getStorage().setItem(SafeStorageKeys.RECENT_WALLET, recentWallets);
-
-      return recentWallets;
-    } catch (error) {
-      LogController.sendError(error, 'StorageUtil.ts', 'addRecentWallet');
-
-      return undefined;
-    }
+    });
   },
 
   async setRecentWallets(wallets: WcWallet[]) {
@@ -86,7 +109,7 @@ export const StorageUtil = {
     try {
       const recent = await OptionsController.getStorage().getItem(SafeStorageKeys.RECENT_WALLET);
 
-      return recent ?? [];
+      return Array.isArray(recent) ? recent : [];
     } catch (error) {
       LogController.sendError(error, 'StorageUtil.ts', 'getRecentWallets');
     }
@@ -101,28 +124,30 @@ export const StorageUtil = {
     type: ConnectorType;
     namespaces: string[];
   }) {
-    try {
-      const currentConnectors = (await StorageUtil.getConnectedConnectors()) || [];
-      // Only add if it doesn't exist already
-      if (!currentConnectors.some(c => c.type === type)) {
-        const updatedConnectors = [...currentConnectors, { type, namespaces }];
-        await OptionsController.getStorage().setItem(
-          SafeStorageKeys.CONNECTED_CONNECTORS,
-          updatedConnectors
-        );
+    return queueConnectorsWrite(async () => {
+      try {
+        const currentConnectors = await StorageUtil.getConnectedConnectors();
+        // Only add if it doesn't exist already
+        if (!currentConnectors.some(c => c.type === type)) {
+          const updatedConnectors = [...currentConnectors, { type, namespaces }];
+          await OptionsController.getStorage().setItem(
+            SafeStorageKeys.CONNECTED_CONNECTORS,
+            updatedConnectors
+          );
+        }
+      } catch (error) {
+        LogController.sendError(error, 'StorageUtil.ts', 'setConnectedConnectors');
       }
-    } catch (error) {
-      LogController.sendError(error, 'StorageUtil.ts', 'setConnectedConnectors');
-    }
+    });
   },
 
-  async getConnectedConnectors(): Promise<{ type: ConnectorType; namespaces: string[] }[]> {
+  async getConnectedConnectors(): Promise<ConnectedConnector[]> {
     try {
-      const connectors = await OptionsController.getStorage().getItem<
-        { type: ConnectorType; namespaces: string[] }[]
-      >(SafeStorageKeys.CONNECTED_CONNECTORS);
+      const connectors = await OptionsController.getStorage().getItem<ConnectedConnector[]>(
+        SafeStorageKeys.CONNECTED_CONNECTORS
+      );
 
-      return connectors ?? [];
+      return Array.isArray(connectors) ? connectors : [];
     } catch (err) {
       LogController.sendError(err, 'StorageUtil.ts', 'getConnectedConnectors');
     }
@@ -131,16 +156,18 @@ export const StorageUtil = {
   },
 
   async removeConnectedConnectors(type: ConnectorType) {
-    try {
-      const currentConnectors = await StorageUtil.getConnectedConnectors();
-      const updatedConnectors = currentConnectors.filter(c => c.type !== type);
-      await OptionsController.getStorage().setItem(
-        SafeStorageKeys.CONNECTED_CONNECTORS,
-        updatedConnectors
-      );
-    } catch (error) {
-      LogController.sendError(error, 'StorageUtil.ts', 'removeConnectedConnectors');
-    }
+    return queueConnectorsWrite(async () => {
+      try {
+        const currentConnectors = await StorageUtil.getConnectedConnectors();
+        const updatedConnectors = currentConnectors.filter(c => c.type !== type);
+        await OptionsController.getStorage().setItem(
+          SafeStorageKeys.CONNECTED_CONNECTORS,
+          updatedConnectors
+        );
+      } catch (error) {
+        LogController.sendError(error, 'StorageUtil.ts', 'removeConnectedConnectors');
+      }
+    });
   },
 
   async setOnRampPreferredCountry(country: OnRampCountry) {
@@ -383,11 +410,11 @@ export const StorageUtil = {
 
   async getActiveNamespace() {
     try {
-      const namespace = (await OptionsController.getStorage().getItem(
+      const namespace = await OptionsController.getStorage().getItem(
         SafeStorageKeys.ACTIVE_NAMESPACE
-      )) as ChainNamespace;
+      );
 
-      return namespace ?? undefined;
+      return typeof namespace === 'string' && namespace ? (namespace as ChainNamespace) : undefined;
     } catch (err) {
       LogController.sendError(err, 'StorageUtil.ts', 'getActiveNamespace');
     }
