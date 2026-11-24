@@ -43,13 +43,21 @@ const getActiveConnection = (snap: ConnectionsControllerState): Connection | und
   return snap.connections.get(snap.activeNamespace);
 };
 
+/**
+ * Whether a CAIP-10 account belongs to a CAIP-2 network. Compares the full chain id,
+ * so `eip155:1` doesn't match accounts on `eip155:137` or `eip155:10`.
+ */
+const isAccountOnNetwork = (account: CaipAddress, caipNetworkId?: CaipNetworkId): boolean => {
+  return !!caipNetworkId && account.startsWith(`${caipNetworkId}:`);
+};
+
 const hasValidAccounts = (connection: Connection): boolean => {
   return connection?.accounts && connection.accounts.length > 0;
 };
 
 const findSmartAccountForNetwork = (connection: Connection): CaipAddress | undefined => {
   return connection.properties?.smartAccounts?.find(account =>
-    account.startsWith(connection.caipNetwork)
+    isAccountOnNetwork(account, connection.caipNetwork)
   );
 };
 
@@ -57,7 +65,8 @@ const findEOAForNetwork = (connection: Connection): CaipAddress | undefined => {
   const smartAccounts = connection.properties?.smartAccounts || [];
 
   return connection.accounts.find(
-    account => account.startsWith(connection.caipNetwork) && !smartAccounts.includes(account)
+    account =>
+      isAccountOnNetwork(account, connection.caipNetwork) && !smartAccounts.includes(account)
   );
 };
 
@@ -235,7 +244,7 @@ export const ConnectionsController = {
   }) {
     const type: AccountType =
       properties?.smartAccounts?.length &&
-      properties.smartAccounts.find(account => account.startsWith(caipNetwork))
+      properties.smartAccounts.find(account => isAccountOnNetwork(account, caipNetwork))
         ? 'smartAccount'
         : 'eoa';
 
@@ -360,7 +369,7 @@ export const ConnectionsController = {
       network =>
         baseState.connections
           .get(network.chainNamespace)
-          ?.accounts.some(account => account.startsWith(network.caipNetworkId))
+          ?.accounts.some(account => isAccountOnNetwork(account, network.caipNetworkId))
     );
   },
 
@@ -377,7 +386,7 @@ export const ConnectionsController = {
       network =>
         baseState.connections
           .get(network.chainNamespace)
-          ?.accounts.some(account => account.startsWith(network.caipNetworkId)) ||
+          ?.accounts.some(account => isAccountOnNetwork(account, network.caipNetworkId)) ||
         (canAddEvmChain && network.chainNamespace === 'eip155')
     );
   },
@@ -515,16 +524,13 @@ export const ConnectionsController = {
   },
 
   async fetchBalance(forceUpdateAddresses?: CaipAddress[]) {
+    // Called without awaiting from event handlers (e.g. chainChanged, account type switch),
+    // so it must never reject: with no connection or address there is nothing to fetch.
     const connection = getActiveConnection(baseState);
-    if (!connection) {
-      throw new Error('No active connection found for balance fetch');
-    }
-
-    const chainId = connection.caipNetwork;
-    const address = getActiveAddress(connection);
+    const address = connection ? getActiveAddress(connection) : undefined;
     const namespace = baseState.activeNamespace;
-    if (!namespace || !address || !chainId) {
-      throw new Error('Missing required data for balance fetch');
+    if (!connection?.caipNetwork || !address || !namespace) {
+      return;
     }
 
     try {
