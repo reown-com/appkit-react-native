@@ -2,6 +2,8 @@ const path = require('path');
 
 module.exports = {
   preset: 'react-native',
+  // Jest 29 can't format inline snapshots with Prettier 3, so write them unformatted
+  prettierPath: null,
   modulePathIgnorePatterns: ['<rootDir>/node_modules', '<rootDir>/lib/'],
   transformIgnorePatterns: [
     'node_modules/(?!(react-native|@react-native|react-native-.*|@react-native-.*)/)'
