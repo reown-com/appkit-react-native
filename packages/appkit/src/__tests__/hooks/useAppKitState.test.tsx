@@ -11,18 +11,14 @@ jest.mock('valtio', () => ({
 }));
 
 // Mock ConnectionsController and ModalController
-jest.mock(
-  '@reown/appkit-core-react-native',
-  () => ({
-    ConnectionsController: {
-      state: {}
-    },
-    ModalController: {
-      state: { open: false, loading: false }
-    }
-  }),
-  { virtual: true }
-);
+jest.mock('@reown/appkit-core-react-native', () => ({
+  ConnectionsController: {
+    state: {}
+  },
+  ModalController: {
+    state: { open: false, loading: false }
+  }
+}));
 
 const mainnet = { id: 1, caipNetworkId: 'eip155:1', name: 'Ethereum', chainNamespace: 'eip155' };
 

@@ -11,15 +11,11 @@ jest.mock('valtio', () => ({
 }));
 
 // Mock ConnectionsController
-jest.mock(
-  '@reown/appkit-core-react-native',
-  () => ({
-    ConnectionsController: {
-      state: { walletInfo: undefined }
-    }
-  }),
-  { virtual: true }
-);
+jest.mock('@reown/appkit-core-react-native', () => ({
+  ConnectionsController: {
+    state: { walletInfo: undefined }
+  }
+}));
 
 describe('useWalletInfo', () => {
   const mockAppKit = {} as AppKit;

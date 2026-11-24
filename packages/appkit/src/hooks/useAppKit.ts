@@ -64,8 +64,7 @@ export const useAppKit = (): UseAppKitReturn => {
     return {
       open: context.appKit.open.bind(context.appKit),
       close: context.appKit.close.bind(context.appKit),
-      disconnect: (namespace?: ChainNamespace) =>
-        context.appKit!.disconnect.bind(context.appKit!)(namespace),
+      disconnect: (namespace?: ChainNamespace) => context.appKit!.disconnect(namespace),
       switchNetwork: context.appKit.switchNetwork.bind(context.appKit)
     };
   }, [context.appKit]);
