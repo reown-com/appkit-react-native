@@ -19,9 +19,12 @@ on:
       - ".cursor/**"
       - ".github/**"
       - ".maestro/**"
+  # Maestro runs on every push to a PR that touches the SDK packages
   pull_request:
-    types: [opened]
+    types: [opened, synchronize, reopened, ready_for_review]
     branches: [main, develop]
+    paths:
+      - "packages/**"
   workflow_dispatch:
     inputs:
       platform:
@@ -40,6 +43,11 @@ on:
         type: boolean
         description: "Upload debug and Maestro artifacts (even on success)"
         default: false
+
+# A new push to the same PR cancels the Maestro run for the previous push
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   WORKING_DIRECTORY: examples/expo-multichain

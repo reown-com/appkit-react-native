@@ -126,6 +126,15 @@ export class ModalValidator {
     });
   }
 
+  async expectUnsupportedChainView() {
+    await expect(
+      this.page.getByText('The current network is not supported by this application', {
+        exact: false
+      }),
+      'Unsupported network view should be visible'
+    ).toBeVisible({ timeout: MAX_WAIT });
+  }
+
   async expectModalNotVisible() {
     const modal = this.page.getByTestId('w3m-modal');
     await expect(modal).toBeHidden({

@@ -64,6 +64,10 @@ jobs:
           echo "Running tests against $BASE_URL"
           yarn playwright:test
 
+      - name: Report flaky tests
+        if: always()
+        run: node .github/scripts/playwright-flaky-summary.js apps/native/playwright-results
+
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
