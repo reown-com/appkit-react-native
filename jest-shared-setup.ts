@@ -137,9 +137,10 @@ const getControllerState = (moduleExports: any, name: string): ControllerState |
   return state && typeof state === 'object' ? state : undefined;
 };
 
-// Copies plain objects, arrays and Maps so tests can't mutate the captured initial values
+// Copies plain objects, arrays, Maps and Sets so tests can't mutate the captured initial values
 const cloneValue = (value: unknown): unknown => {
   if (value instanceof Map) return new Map(value);
+  if (value instanceof Set) return new Set(value);
   if (Array.isArray(value)) return value.map(cloneValue);
   if (value && typeof value === 'object' && Object.getPrototypeOf(value) === Object.prototype) {
     return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, cloneValue(v)]));

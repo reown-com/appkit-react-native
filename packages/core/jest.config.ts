@@ -16,7 +16,8 @@ const coreConfig = {
       functions: 30,
       lines: 28
     },
-    './src/utils/StorageUtil.ts': { statements: 4, branches: 0, functions: 6, lines: 4 }
+    // No branch threshold yet: no test covers a StorageUtil branch today. Add one once #606 adds its tests
+    './src/utils/StorageUtil.ts': { statements: 4, functions: 6, lines: 4 }
   }
 };
 module.exports = coreConfig;
