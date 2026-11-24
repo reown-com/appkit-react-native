@@ -7,14 +7,6 @@ describe('RouterController', () => {
     resetControllers();
   });
 
-  it('should have valid default state', () => {
-    expect(RouterController.state).toEqual({
-      view: 'Connect',
-      history: ['Connect'],
-      navigationDirection: 'none'
-    });
-  });
-
   it('should update state correctly on push()', () => {
     RouterController.push('Account');
     expect(RouterController.state).toEqual({

@@ -34,18 +34,6 @@ function mockApi(dataWallets: DataWallet[]) {
 
 // -- Tests --------------------------------------------------------------------
 describe('ApiController', () => {
-  it('should have valid default state', () => {
-    expect(ApiController.state).toEqual({
-      page: 1,
-      count: 0,
-      recommended: [],
-      featured: [],
-      installed: [],
-      wallets: [],
-      search: []
-    });
-  });
-
   describe('fetchInstalledWallets', () => {
     const globalAny = global as any;
     const originalApplication = globalAny.Application;

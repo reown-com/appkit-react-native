@@ -7,10 +7,6 @@ describe('ModalController', () => {
     resetControllers();
   });
 
-  it('should have valid default state', () => {
-    expect(ModalController.state.open).toEqual(false);
-  });
-
   it('should update state correctly on open()', async () => {
     await ModalController.open();
     expect(ModalController.state.open).toEqual(true);

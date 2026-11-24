@@ -138,6 +138,8 @@ describe('AppKit initialization', () => {
     expect(() => new AppKit(createConfig())).not.toThrow();
     await flushPromises();
 
+    // The startup restore ran and its connector init failed
+    expect(mockInit).toHaveBeenCalledTimes(1);
     expect(removeSpy).not.toHaveBeenCalled();
     expect(ModalController.state.loading).toBe(false);
   });

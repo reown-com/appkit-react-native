@@ -113,31 +113,16 @@ describe('AppKit modal', () => {
     mockRouterState.history = ['Connect'];
   });
 
-  it('renders the modal without a wrapper', () => {
-    const { getByTestId, queryByTestId } = render(<AppKit />);
-
-    expect(getByTestId('w3m-modal')).toBeTruthy();
-    expect(queryByTestId('modal-content-wrapper')).toBeNull();
-  });
-
-  it('wraps modal content when modalContentWrapper is provided', () => {
+  it('passes the open state and the content wrapper to the modal', () => {
     function ModalContentWrapper({ children }: { children: React.ReactNode }) {
-      return <View testID="modal-content-wrapper">{children}</View>;
+      return <View>{children}</View>;
     }
-
-    const { getByTestId } = render(<AppKit modalContentWrapper={ModalContentWrapper} />);
-
-    expect(getByTestId('modal-content-wrapper')).toBeTruthy();
-    expect(getByTestId('w3m-modal')).toBeTruthy();
-  });
-
-  it('does not render modal content when closed', () => {
     modalState.open = false;
 
-    const { queryByTestId } = render(<AppKit />);
+    render(<AppKit modalContentWrapper={ModalContentWrapper} />);
 
-    expect(queryByTestId('w3m-modal')).toBeNull();
-    expect(queryByTestId('mock-card')).toBeNull();
+    expect(mockModalProps.visible).toBe(false);
+    expect(mockModalProps.contentWrapper).toBe(ModalContentWrapper);
   });
 
   it('goes back on back press when there is history', () => {

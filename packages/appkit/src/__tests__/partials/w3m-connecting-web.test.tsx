@@ -1,4 +1,5 @@
 import { fireEvent, render, act } from '@testing-library/react-native';
+import { Linking } from 'react-native';
 import { LogController, RouterController, WcController } from '@reown/appkit-core-react-native';
 import { ConnectingWeb } from '../../partials/w3m-connecting-web';
 
@@ -49,6 +50,8 @@ describe('ConnectingWeb', () => {
 
   it('leaves logging a failed connection to ConnectingView', async () => {
     const sendError = jest.spyOn(LogController, 'sendError').mockImplementation(() => {});
+    const openURL = jest.spyOn(Linking, 'openURL').mockResolvedValue(true);
+    const setConnectedWallet = jest.spyOn(WcController, 'setConnectedWallet');
     const failedAttempt = Promise.reject(new Error('relay error'));
     failedAttempt.catch(() => {});
     WcController.setWcPromise(failedAttempt);
@@ -60,6 +63,8 @@ describe('ConnectingWeb', () => {
       fireEvent.press(view.getByText('Open'));
     });
 
+    expect(openURL).toHaveBeenCalledWith(expect.stringContaining('https://wallet.example'));
+    expect(setConnectedWallet).not.toHaveBeenCalled();
     expect(sendError).not.toHaveBeenCalled();
   });
 });

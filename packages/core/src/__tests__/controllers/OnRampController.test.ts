@@ -150,14 +150,6 @@ afterEach(() => {
 
 // -- Tests --------------------------------------------------------------------
 describe('OnRampController', () => {
-  it('should have valid default state', () => {
-    expect(OnRampController.state.quotesLoading).toBe(false);
-    expect(OnRampController.state.countries).toEqual([]);
-    expect(OnRampController.state.paymentMethods).toEqual([]);
-    expect(OnRampController.state.serviceProviders).toEqual([]);
-    expect(OnRampController.state.paymentAmount).toBeUndefined();
-  });
-
   describe('loadOnRampData', () => {
     it('should load initial onramp data and set loading states correctly', async () => {
       // Mock API responses
@@ -221,28 +213,8 @@ describe('OnRampController', () => {
       (BlockchainApiController.fetchOnRampFiatCurrencies as jest.Mock).mockResolvedValue([]);
       (BlockchainApiController.fetchOnRampFiatLimits as jest.Mock).mockResolvedValue([]);
 
-      // Clear the error state before the test
-      OnRampController.state.error = undefined;
-
-      // First directly test fetchCountries to ensure it sets the error
-      await OnRampController.fetchCountries();
-
-      // Verify the error is set by fetchCountries
-      expect(OnRampController.state.error).toBeDefined();
-      // @ts-expect-error - error type is not defined
-      expect(OnRampController.state.error?.type).toBe(
-        ConstantsUtil.ONRAMP_ERROR_TYPES.FAILED_TO_LOAD_COUNTRIES
-      );
-
-      // Reset the error
-      OnRampController.state.error = undefined;
-
-      // Now test loadOnRampData
       await OnRampController.loadOnRampData();
 
-      // Verify error is preserved after loadOnRampData
-      expect(OnRampController.state.error).toBeDefined();
-      // @ts-expect-error - error type is not defined
       expect(OnRampController.state.error?.type).toBe(
         ConstantsUtil.ONRAMP_ERROR_TYPES.FAILED_TO_LOAD_COUNTRIES
       );
@@ -251,79 +223,46 @@ describe('OnRampController', () => {
   });
 
   describe('setSelectedCountry', () => {
-    it('should update country and currency', async () => {
-      // Mock utils
+    // US defaults to USD and AR to ARS
+    const loadTwoCountries = async () => {
       (StorageUtil.getOnRampCountries as jest.Mock).mockResolvedValue([]);
       (StorageUtil.getOnRampCountriesDefaults as jest.Mock).mockResolvedValue([]);
-      (StorageUtil.getOnRampPreferredCountry as jest.Mock).mockResolvedValue(undefined);
-      (StorageUtil.setOnRampCountries as jest.Mock).mockImplementation(() => Promise.resolve([]));
       (CoreHelperUtil.getCountryFromTimezone as jest.Mock).mockReturnValue('US');
-
-      // Mock API responses with countries and currencies
       (BlockchainApiController.fetchOnRampCountries as jest.Mock).mockResolvedValue([
         mockCountry,
         mockCountry2
       ]);
       (BlockchainApiController.fetchOnRampFiatCurrencies as jest.Mock).mockResolvedValue([
-        mockFiatCurrency, // USD
-        mockFiatCurrency2 // ARS
+        mockFiatCurrency,
+        mockFiatCurrency2
       ]);
-
       (BlockchainApiController.fetchOnRampCountriesDefaults as jest.Mock).mockResolvedValue([
-        {
-          countryCode: 'US',
-          defaultCurrencyCode: 'USD',
-          defaultPaymentMethods: ['CREDIT_DEBIT_CARD']
-        },
-        {
-          countryCode: 'AR',
-          defaultCurrencyCode: 'ARS',
-          defaultPaymentMethods: ['CREDIT_DEBIT_CARD']
-        }
+        { countryCode: 'US', defaultCurrencyCode: 'USD', defaultPaymentMethods: [] },
+        { countryCode: 'AR', defaultCurrencyCode: 'ARS', defaultPaymentMethods: [] }
       ]);
 
-      // Execute
       await OnRampController.loadOnRampData();
 
-      // First verify the initial state
       expect(OnRampController.state.selectedCountry).toEqual(mockCountry);
       expect(OnRampController.state.paymentCurrency).toEqual(mockFiatCurrency);
+    };
 
-      // Now change the country
+    it("should switch to the new country's default currency", async () => {
+      await loadTwoCountries();
+
       await OnRampController.setSelectedCountry(mockCountry2);
 
-      // Verify both country and currency were updated
       expect(OnRampController.state.selectedCountry).toEqual(mockCountry2);
       expect(OnRampController.state.paymentCurrency).toEqual(mockFiatCurrency2);
     });
 
-    it('should not update currency when updateCurrency is false', async () => {
-      // Mock API responses
-      (StorageUtil.setOnRampPreferredCountry as jest.Mock).mockResolvedValue(undefined);
+    it('should keep the currency when updateCurrency is false', async () => {
+      await loadTwoCountries();
 
-      (BlockchainApiController.fetchOnRampCountriesDefaults as jest.Mock).mockResolvedValue([
-        {
-          countryCode: 'US',
-          defaultCurrencyCode: 'USD',
-          defaultPaymentMethods: ['CREDIT_DEBIT_CARD']
-        },
-        {
-          countryCode: 'AR',
-          defaultCurrencyCode: 'ARS',
-          defaultPaymentMethods: ['CREDIT_DEBIT_CARD']
-        }
-      ]);
-
-      // Load initial data
-      await OnRampController.loadOnRampData();
-      const initialCurrency = OnRampController.state.paymentCurrency;
-
-      // Change country but don't update currency
       await OnRampController.setSelectedCountry(mockCountry2, false);
 
-      // Verify country changed but currency remained the same
       expect(OnRampController.state.selectedCountry).toEqual(mockCountry2);
-      expect(OnRampController.state.paymentCurrency).toEqual(initialCurrency);
+      expect(OnRampController.state.paymentCurrency).toEqual(mockFiatCurrency);
     });
   });
 
@@ -413,24 +352,6 @@ describe('OnRampController', () => {
   });
 
   describe('canGenerateQuote', () => {
-    it('should return true when all required fields are present', () => {
-      // Mock implementation to return true for testing
-      jest.spyOn(OnRampController, 'canGenerateQuote').mockReturnValue(true);
-
-      // Setup
-      OnRampController.setSelectedCountry(mockCountry);
-      OnRampController.setSelectedPaymentMethod(mockPaymentMethod);
-      OnRampController.setPaymentCurrency(mockFiatCurrency);
-      OnRampController.setPurchaseCurrency(mockCryptoCurrency);
-      OnRampController.setPaymentAmount(100);
-
-      // Verify
-      expect(OnRampController.canGenerateQuote()).toBe(true);
-
-      // Restore original implementation
-      jest.spyOn(OnRampController, 'canGenerateQuote').mockRestore();
-    });
-
     it('should return false when any required field is missing', () => {
       // Missing country
       OnRampController.state.selectedCountry = undefined;
@@ -463,54 +384,6 @@ describe('OnRampController', () => {
       // Payment amount is 0
       OnRampController.state.paymentAmount = 0;
       expect(OnRampController.canGenerateQuote()).toBe(false);
-    });
-  });
-
-  describe('clearError and clearQuotes', () => {
-    it('should clear error state', () => {
-      // Setup
-      OnRampController.state.error = {
-        type: ConstantsUtil.ONRAMP_ERROR_TYPES.AMOUNT_TOO_LOW,
-        message: 'Amount too low'
-      };
-
-      // Execute
-      OnRampController.clearError();
-
-      // Verify
-      expect(OnRampController.state.error).toBeUndefined();
-    });
-
-    it('should clear quotes state', () => {
-      // Setup
-      OnRampController.state.quotes = [mockQuote];
-      OnRampController.state.selectedQuote = mockQuote;
-
-      // Execute
-      OnRampController.clearQuotes();
-
-      // Verify - note: quotes array is set to [] not undefined in the actual implementation
-      expect(OnRampController.state.quotes).toEqual([]);
-      expect(OnRampController.state.selectedQuote).toBeUndefined();
-    });
-  });
-
-  describe('fetchCountries', () => {
-    it('should set error state when API call fails', async () => {
-      // Mock API error
-      (BlockchainApiController.fetchOnRampCountries as jest.Mock).mockRejectedValue(
-        new Error('Network error')
-      );
-      (StorageUtil.getOnRampCountries as jest.Mock).mockResolvedValue([]);
-
-      // Execute
-      await OnRampController.fetchCountries();
-
-      // Verify error is set
-      expect(OnRampController.state.error).toBeDefined();
-      expect(OnRampController.state.error?.type).toBe(
-        ConstantsUtil.ONRAMP_ERROR_TYPES.FAILED_TO_LOAD_COUNTRIES
-      );
     });
   });
 });

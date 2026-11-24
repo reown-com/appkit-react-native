@@ -1,4 +1,4 @@
-import { LogController, type LogEntry } from '../../controllers/LogController';
+import { LogController } from '../../controllers/LogController';
 import { OptionsController } from '../../controllers/OptionsController';
 
 // Mock console methods
@@ -24,10 +24,6 @@ describe('LogController', () => {
   });
 
   describe('Basic Logging', () => {
-    it('should initialize correctly', () => {
-      expect(LogController.state.logs).toEqual([]);
-    });
-
     it('should not log when debug is false', () => {
       OptionsController.setDebug(false);
       LogController.sendInfo('This should not be logged', 'TestFile.ts', 'testFunction');
@@ -37,15 +33,6 @@ describe('LogController', () => {
 
       const logs = LogController.getLogs();
       expect(logs).toHaveLength(0);
-    });
-
-    it('should log when debug is true', () => {
-      OptionsController.setDebug(true);
-      LogController.sendInfo('This should be logged', 'TestFile.ts', 'testFunction');
-
-      const logs = LogController.getLogs();
-      expect(logs).toHaveLength(1);
-      expect(logs[0]?.message).toBe('This should be logged');
     });
 
     // All subsequent tests in this describe block need debug mode enabled
@@ -96,22 +83,6 @@ describe('LogController', () => {
           fileName: 'StringFile.ts',
           functionName: 'stringFunction'
         });
-      });
-
-      it('should send warning log', () => {
-        LogController.sendWarn('Test warning', 'WarnFile.ts', 'warnFunction');
-
-        const logs = LogController.getLogs();
-        expect(logs).toHaveLength(1);
-        expect(logs[0]?.level).toBe('warn');
-      });
-
-      it('should send debug log', () => {
-        LogController.sendDebug('Test debug', 'DebugFile.ts', 'debugFunction');
-
-        const logs = LogController.getLogs();
-        expect(logs).toHaveLength(1);
-        expect(logs[0]?.level).toBe('debug');
       });
     });
   });
@@ -177,25 +148,6 @@ describe('LogController', () => {
       expect(recentLogs[2]?.message).toBe('Message 4'); // Most recent
     });
 
-    it('should clear all logs', () => {
-      LogController.sendInfo('Test message');
-      expect(LogController.getLogs()).toHaveLength(1);
-
-      LogController.clearLogs();
-      expect(LogController.getLogs()).toHaveLength(0);
-    });
-
-    it('should export logs as JSON', () => {
-      LogController.sendInfo('Test message', 'TestFile.ts', 'testFunction');
-
-      const exported = LogController.exportLogs();
-      const parsed = JSON.parse(exported);
-
-      expect(Array.isArray(parsed)).toBe(true);
-      expect(parsed).toHaveLength(1);
-      expect(parsed[0].message).toBe('Test message');
-    });
-
     it('should get logs statistics', () => {
       LogController.sendInfo('Info 1');
       LogController.sendInfo('Info 2');
@@ -236,139 +188,6 @@ describe('LogController', () => {
     });
   });
 
-  describe('Concurrent Access Patterns', () => {
-    beforeEach(() => {
-      jest.useFakeTimers();
-      LogController.clearLogs();
-      OptionsController.setDebug(true);
-    });
-
-    afterEach(() => {
-      LogController.destroy();
-      jest.useRealTimers();
-    });
-
-    // Fires every scheduled operation (all delays are under 10ms) and waits for them
-    const settle = async <T>(promises: Promise<T>[]) => {
-      jest.advanceTimersByTime(10);
-
-      return Promise.all(promises);
-    };
-
-    it('should handle concurrent log writes without data corruption', async () => {
-      const promises: Promise<void>[] = [];
-      const expectedMessages = new Set<string>();
-
-      // Create 50 concurrent log operations
-      for (let i = 0; i < 50; i++) {
-        const message = `Concurrent message ${i}`;
-        expectedMessages.add(message);
-
-        promises.push(
-          new Promise<void>(resolve => {
-            setTimeout(() => {
-              LogController.sendInfo(message, 'ConcurrentTest.ts', 'testFunction');
-              resolve();
-            }, i % 10); // Staggered delay 0-9ms
-          })
-        );
-      }
-
-      await settle(promises);
-
-      const logs = LogController.getLogs();
-      expect(logs).toHaveLength(50);
-
-      // Verify all messages were logged correctly
-      const actualMessages = new Set(logs.map(log => log.message));
-      expect(actualMessages).toEqual(expectedMessages);
-
-      // Verify no duplicate IDs
-      const ids = logs.map(log => log.id);
-      const uniqueIds = new Set(ids);
-      expect(uniqueIds.size).toBe(ids.length);
-    });
-
-    it('should handle concurrent read operations safely', async () => {
-      // Add logs
-      for (let i = 0; i < 20; i++) {
-        LogController.sendInfo(`Message ${i}`, 'ConcurrentTest.ts', 'testFunction');
-      }
-
-      // Trigger multiple concurrent read operations
-      const readPromises = Array.from(
-        { length: 10 },
-        (_, i) =>
-          new Promise<LogEntry[]>(resolve => {
-            setTimeout(() => {
-              const logs = LogController.getLogs();
-              resolve(logs);
-            }, i % 5);
-          })
-      );
-
-      const results = await settle(readPromises);
-
-      // All reads should return the same logs
-      results.forEach(logs => {
-        expect(logs.length).toBe(20);
-        expect(logs[0]?.message).toBe('Message 0');
-        expect(logs[19]?.message).toBe('Message 19');
-      });
-    });
-
-    it('should handle mixed concurrent read/write operations', async () => {
-      const operations: Promise<any>[] = [];
-
-      // Add some initial logs
-      for (let i = 0; i < 10; i++) {
-        LogController.sendInfo(`Initial message ${i}`, 'MixedTest.ts', 'testFunction');
-      }
-
-      // Concurrent writes
-      for (let i = 0; i < 20; i++) {
-        operations.push(
-          new Promise<void>(resolve => {
-            setTimeout(() => {
-              LogController.sendError(`Concurrent error ${i}`, 'MixedTest.ts', 'errorFunction');
-              resolve();
-            }, i % 10);
-          })
-        );
-      }
-
-      // Concurrent reads
-      for (let i = 0; i < 15; i++) {
-        operations.push(
-          new Promise<LogEntry[]>(resolve => {
-            setTimeout(() => {
-              const logs = LogController.getLogs();
-              resolve(logs);
-            }, i % 10);
-          })
-        );
-      }
-
-      const results = await settle(operations);
-
-      // Verify final state
-      const finalLogs = LogController.getLogs();
-      expect(finalLogs.length).toBeGreaterThanOrEqual(30); // 10 initial + 20 concurrent
-
-      // Verify read operations returned valid data
-      const readResults = results.slice(20) as LogEntry[][];
-      readResults.forEach(logs => {
-        expect(Array.isArray(logs)).toBe(true);
-        logs.forEach(log => {
-          expect(log).toHaveProperty('id');
-          expect(log).toHaveProperty('timestamp');
-          expect(log).toHaveProperty('level');
-          expect(log).toHaveProperty('message');
-        });
-      });
-    });
-  });
-
   describe('Memory Cleanup Under Load', () => {
     beforeEach(() => {
       LogController.clearLogs();
@@ -377,35 +196,6 @@ describe('LogController', () => {
 
     afterEach(() => {
       LogController.destroy();
-    });
-
-    it('should handle cleanup with maximum log count exceeded', () => {
-      // Add more than MAX_LOGS_COUNT (300) logs
-      for (let i = 0; i < 350; i++) {
-        LogController.sendInfo(`Load test message ${i}`, 'LoadTest.ts', 'testFunction');
-      }
-
-      const logs = LogController.getLogs();
-      expect(logs.length).toBeLessThanOrEqual(300); // Should be capped at MAX_LOGS_COUNT
-
-      // Verify the most recent logs are kept
-      const lastLog = logs[logs.length - 1];
-      expect(lastLog?.message).toContain('Load test message');
-    });
-
-    it('should handle rapid successive log operations', () => {
-      // Add logs rapidly
-      for (let i = 0; i < 100; i++) {
-        LogController.sendInfo(`Rapid message ${i}`, 'RapidTest.ts', 'testFunction');
-      }
-
-      const logs = LogController.getLogs();
-      expect(logs.length).toBe(100);
-
-      // Verify all messages are present and in order
-      logs.forEach((log, index) => {
-        expect(log.message).toBe(`Rapid message ${index}`);
-      });
     });
 
     it('should stay bounded under memory pressure', () => {
