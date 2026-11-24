@@ -16,6 +16,11 @@ const api = new FetchUtil({ baseUrl });
 const excluded = ['MODAL_CREATED'];
 const IMPRESSION_TIMEOUT = 3000;
 
+// sendEvent writes `timestamp` and then `data`, and subscribers run synchronously on every write.
+// Only notify on the `data` write, so each event reaches subscribers once, with its timestamp set.
+type Ops = Parameters<Parameters<typeof sub>[1]>[0];
+const isNewEvent = (ops: Ops) => ops.some(([, path]) => path[0] === 'data');
+
 // -- Types --------------------------------------------- //
 export interface EventsControllerState {
   timestamp: number;
@@ -40,14 +45,22 @@ export const EventsController = {
   state,
 
   subscribe(callback: (newState: EventsControllerState) => void) {
-    return sub(state, () => callback(state), true);
+    return sub(
+      state,
+      ops => {
+        if (isNewEvent(ops)) {
+          callback(state);
+        }
+      },
+      true
+    );
   },
 
   subscribeEvent(event: EventName, callback: (newEvent: EventsControllerState) => void) {
     return sub(
       state,
-      () => {
-        if (state.data.event === event) {
+      ops => {
+        if (isNewEvent(ops) && state.data.event === event) {
           callback(state);
         }
       },
@@ -127,7 +140,8 @@ export const EventsController = {
   async sendEvent(data: EventsControllerState['data']) {
     const timestamp = Date.now();
     state.timestamp = timestamp;
-    state.data = data;
+    // Assign a copy so the write always notifies, even if the same event object is sent again
+    state.data = { ...data };
     await ApiController.state.prefetchPromise;
 
     if (OptionsController.state.enableAnalytics) {

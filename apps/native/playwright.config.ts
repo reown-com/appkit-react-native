@@ -23,8 +23,18 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
 
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['html'], ['list']],
+  /*
+   * Reporter to use. See https://playwright.dev/docs/test-reporters
+   * On CI, a JSON report per run lets the workflow list tests that only passed on retry (flaky).
+   * `yarn playwright:test` runs one spec file per invocation, so each run gets its own file.
+   */
+  reporter: process.env.CI
+    ? [
+        ['list'],
+        ['html', { open: 'never' }],
+        ['json', { outputFile: `playwright-results/results-${Date.now()}.json` }]
+      ]
+    : [['html'], ['list']],
 
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:8081',
@@ -52,7 +62,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: 'yarn web',
-    url: 'http://localhost:8081',
+    url: process.env.BASE_URL || 'http://localhost:8081',
     reuseExistingServer: !process.env.CI,
     timeout: 30000
 

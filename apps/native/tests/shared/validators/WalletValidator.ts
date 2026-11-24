@@ -52,6 +52,27 @@ export class WalletValidator {
     });
   }
 
+  async expectSessionCount(count: number) {
+    await this.gotoSessions.click();
+    await expect(
+      this.page.getByTestId('session-card'),
+      `Wallet should have ${count} session(s)`
+    ).toHaveCount(count, { timeout: MAX_WAIT });
+  }
+
+  /**
+   * A duplicated request (e.g. from adapter listeners registered twice) shows up as a second
+   * request modal right after the first one is handled.
+   */
+  async expectNoPendingRequest() {
+    // Give a duplicated request time to arrive
+    await this.page.waitForTimeout(3000);
+    await expect(
+      this.page.getByTestId('session-approve-button'),
+      'Wallet should not have another pending request'
+    ).toBeHidden();
+  }
+
   async expectReceivedSign({ chainName = 'Ethereum' }) {
     await expect(
       this.page.getByTestId('session-approve-button'),

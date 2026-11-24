@@ -3,7 +3,7 @@ import { WalletPage } from './shared/pages/WalletPage';
 import { WalletValidator } from './shared/validators/WalletValidator';
 import { ModalPage } from './shared/pages/ModalPage';
 import { ModalValidator } from './shared/validators/ModalValidator';
-import { TEST_CHAINS } from './shared/constants';
+import { DEFAULT_CHAIN_NAME, TEST_CHAINS, UNSUPPORTED_CHAIN_ID } from './shared/constants';
 
 let modalPage: ModalPage;
 let modalValidator: ModalValidator;
@@ -193,6 +193,86 @@ sampleWalletTest(
 sampleWalletTest('it should disconnect as expected', async () => {
   await modalPage.qrCodeFlow(modalPage, walletPage);
   await modalValidator.expectConnected();
+  await modalPage.disconnect();
+  await modalValidator.expectDisconnected();
+});
+
+/**
+ * Unsupported network Tests
+ * The wallet moves to a network the app does not support. The app must show the unsupported
+ * network view and stay usable through both ways out of it: switching to a supported network
+ * and disconnecting.
+ *
+ * The view only lists networks already approved in the session, so the switch is handled by the
+ * provider without a wallet request (the hosted test wallet never gets one to reject).
+ */
+
+sampleWalletTest('it should recover from an unsupported network in the wallet', async () => {
+  await modalValidator.expectDisconnected();
+  await modalPage.qrCodeFlow(modalPage, walletPage);
+  await modalValidator.expectConnected();
+
+  // The wallet moves to a network the app does not list (Sepolia)
+  await walletPage.enableTestnets();
+  await walletPage.switchNetwork(UNSUPPORTED_CHAIN_ID);
+  await modalValidator.expectUnsupportedChainView();
+
+  // Pick a supported network: the view closes and the app can sign again
+  await modalPage.switchNetworkFromUnsupportedView(TEST_CHAINS.ETHEREUM);
+  await modalValidator.expectModalNotVisible();
+  await modalValidator.expectConnected();
+  await modalPage.sign();
+  await walletValidator.expectReceivedSign({ chainName: TEST_CHAINS.ETHEREUM });
+  await walletPage.handleRequest({ accept: true });
+  await modalValidator.expectAcceptedSign();
+
+  // Back on an unsupported network, the user can disconnect from the view
+  await walletPage.switchNetwork(UNSUPPORTED_CHAIN_ID);
+  await modalValidator.expectUnsupportedChainView();
+  await modalPage.disconnectFromUnsupportedView();
+  await modalValidator.expectDisconnected();
+});
+
+/**
+ * Reconnection Tests
+ * A disconnect followed by a new connection must not leave duplicated adapter listeners or a stale
+ * session behind: the sign request must reach the wallet once, on the new session.
+ */
+
+sampleWalletTest('it should connect, disconnect, reconnect and sign once', async () => {
+  // Two full QR connections plus a sign: takes about 26s locally, close to the 30s default
+  sampleWalletTest.setTimeout(90_000);
+  await modalValidator.expectDisconnected();
+
+  // Connect
+  await modalPage.qrCodeFlow(modalPage, walletPage);
+  await modalValidator.expectConnected();
+
+  // Disconnect
+  await modalPage.disconnect();
+  await modalValidator.expectDisconnected();
+  await walletValidator.expectDisconnected();
+
+  // Reconnect
+  await modalPage.qrCodeFlow(modalPage, walletPage);
+  await modalValidator.expectConnected();
+  await walletValidator.expectSessionCount(1);
+
+  // Sign
+  await modalPage.sign();
+  await walletValidator.expectReceivedSign({ chainName: DEFAULT_CHAIN_NAME });
+  await walletPage.handleRequest({ accept: true });
+  await modalValidator.expectAcceptedSign();
+  await walletValidator.expectNoPendingRequest();
+
+  // The modal shows the connected account
+  await modalPage.openAccountModal();
+  await modalValidator.expectSwitchedNetwork(DEFAULT_CHAIN_NAME);
+  await modalPage.closeModal();
+  await modalValidator.expectModalNotVisible();
+  await modalValidator.expectConnected();
+
+  // Leave the suite disconnected
   await modalPage.disconnect();
   await modalValidator.expectDisconnected();
 });
