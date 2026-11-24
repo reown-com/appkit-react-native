@@ -5,7 +5,7 @@
  * instead of only checking that `on` was called.
  */
 import { EventEmitter } from 'events';
-// Imported by package name, so tests in other packages get the same class declarations they use
+// Imported by package name, so every package's tests get the same class declarations they use
 import {
   BlockchainAdapter,
   WalletConnector,

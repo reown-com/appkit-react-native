@@ -11,6 +11,7 @@ module.exports = {
   },
   moduleNameMapper: {
     '^@shared-jest-setup$': '<rootDir>/jest-shared-setup.ts',
+    '^@shared-test-utils/(.*)$': path.join(__dirname, 'test-utils/$1'),
     '^@reown/appkit-react-native$': path.join(__dirname, 'packages/appkit/src/index.ts'),
     '^@reown/appkit-bitcoin-react-native$': path.join(__dirname, 'packages/bitcoin/src/index.tsx'),
     '^@reown/appkit-coinbase-react-native$': path.join(__dirname, 'packages/coinbase/src/index.ts'),

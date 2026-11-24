@@ -1,7 +1,7 @@
 import { bitcoin, bitcoinTestnet } from '@reown/appkit-common-react-native';
 
-import { describeAdapterContract } from '../../../common/src/__fixtures__/adapterContract';
-import { FakeConnector } from '../../../common/src/__fixtures__/adapterFakes';
+import { describeAdapterContract } from '@shared-test-utils/adapterContract';
+import { FakeConnector } from '@shared-test-utils/adapterFakes';
 import { BitcoinAdapter } from '../adapter';
 
 const ADDRESS = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';

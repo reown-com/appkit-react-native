@@ -1,7 +1,7 @@
 import type { AppKitNetwork } from '@reown/appkit-common-react-native';
 
-import { describeAdapterContract } from '../../../common/src/__fixtures__/adapterContract';
-import { FakeConnector } from '../../../common/src/__fixtures__/adapterFakes';
+import { describeAdapterContract } from '@shared-test-utils/adapterContract';
+import { FakeConnector } from '@shared-test-utils/adapterFakes';
 import { EthersAdapter } from '../adapter';
 
 const ADDRESS = '0x1234567890123456789012345678901234567890';

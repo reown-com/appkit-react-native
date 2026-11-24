@@ -12,7 +12,7 @@ import {
 } from '@reown/appkit-core-react-native';
 import type { AppKitNetwork, Namespaces, Storage } from '@reown/appkit-common-react-native';
 
-import { FakeAdapter, FakeConnector } from '../../../common/src/__fixtures__/adapterFakes';
+import { FakeAdapter, FakeConnector } from '@shared-test-utils/adapterFakes';
 import { AppKit } from '../AppKit';
 import type { AppKitConfig } from '../types';
 

@@ -8,7 +8,7 @@ import {
 import type { AppKitNetwork, SIWXConfig, SIWXSession } from '@reown/appkit-common-react-native';
 import type UniversalProvider from '@walletconnect/universal-provider';
 
-import { FakeAdapter } from '../../../../common/src/__fixtures__/adapterFakes';
+import { FakeAdapter } from '@shared-test-utils/adapterFakes';
 import { SIWXUtil } from '../../utils/SIWXUtil';
 
 const ADDRESS = '0x1234567890123456789012345678901234567890';
