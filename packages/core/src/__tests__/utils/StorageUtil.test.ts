@@ -211,6 +211,15 @@ describe('StorageUtil recent wallets', () => {
     await expect(StorageUtil.getRecentWallets()).resolves.toEqual([wallet('a'), wallet('b')]);
   });
 
+  it('keeps both wallets when two are added at the same time', async () => {
+    await Promise.all([
+      StorageUtil.addRecentWallet(wallet('a')),
+      StorageUtil.addRecentWallet(wallet('b'))
+    ]);
+
+    await expect(StorageUtil.getRecentWallets()).resolves.toEqual([wallet('b'), wallet('a')]);
+  });
+
   it('has saved the wallet by the time addRecentWallet resolves', async () => {
     await StorageUtil.addRecentWallet(wallet('a'));
 
