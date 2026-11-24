@@ -9,7 +9,13 @@
 const fs = require('fs');
 const path = require('path');
 
-const dir = process.argv[2];
+// Only read reports inside the working directory (the repository root in CI)
+const root = process.cwd();
+const dir = process.argv[2] ? path.resolve(root, process.argv[2]) : undefined;
+if (dir && path.relative(root, dir).startsWith('..')) {
+  console.error(`Report folder must be inside ${root}: ${process.argv[2]}`);
+  process.exit(1);
+}
 const files = dir && fs.existsSync(dir) ? fs.readdirSync(dir).filter(f => f.endsWith('.json')) : [];
 
 const results = { flaky: [], unexpected: [] };
