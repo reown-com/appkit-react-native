@@ -30,4 +30,12 @@ jobs:
         run: yarn typecheck
 
       - name: Package Tests
-        run: yarn test
+        run: yarn test:coverage
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: packages/*/coverage
+          if-no-files-found: ignore
