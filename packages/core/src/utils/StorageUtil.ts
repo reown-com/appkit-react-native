@@ -34,7 +34,6 @@ function createWriteQueue() {
 }
 
 const queueConnectorsWrite = createWriteQueue();
-const queueRecentWalletsWrite = createWriteQueue();
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -73,28 +72,26 @@ export const StorageUtil = {
   },
 
   async addRecentWallet(wallet: WcWallet) {
-    return queueRecentWalletsWrite(async () => {
-      try {
-        const recentWallets = await StorageUtil.getRecentWallets();
-        const recentIndex = recentWallets.findIndex(w => w.id === wallet.id);
+    try {
+      const recentWallets = await StorageUtil.getRecentWallets();
+      const recentIndex = recentWallets.findIndex(w => w.id === wallet.id);
 
-        if (recentIndex > -1) {
-          recentWallets.splice(recentIndex, 1);
-        }
-
-        recentWallets.unshift(wallet);
-        if (recentWallets.length > 2) {
-          recentWallets.pop();
-        }
-        await OptionsController.getStorage().setItem(SafeStorageKeys.RECENT_WALLET, recentWallets);
-
-        return recentWallets;
-      } catch (error) {
-        LogController.sendError(error, 'StorageUtil.ts', 'addRecentWallet');
-
-        return undefined;
+      if (recentIndex > -1) {
+        recentWallets.splice(recentIndex, 1);
       }
-    });
+
+      recentWallets.unshift(wallet);
+      if (recentWallets.length > 2) {
+        recentWallets.pop();
+      }
+      await OptionsController.getStorage().setItem(SafeStorageKeys.RECENT_WALLET, recentWallets);
+
+      return recentWallets;
+    } catch (error) {
+      LogController.sendError(error, 'StorageUtil.ts', 'addRecentWallet');
+
+      return undefined;
+    }
   },
 
   async setRecentWallets(wallets: WcWallet[]) {
