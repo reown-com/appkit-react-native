@@ -21,5 +21,7 @@ fix(core): keep stored connections consistent and match accounts to the exact ne
 - Accounts are matched to the exact network: `eip155:1` no longer picks accounts or smart
   accounts from `eip155:137` or `eip155:10`, and networks the wallet isn't connected to
   are no longer listed as available.
+- `ConnectionsController.state.isConnected` is true only when the active namespace has a
+  connection, so it matches `activeAddress` and `connection`.
 - `ConnectionsController.fetchBalance` returns without fetching when there is no active
   connection or address instead of rejecting.
