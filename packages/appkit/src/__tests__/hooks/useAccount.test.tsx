@@ -11,21 +11,17 @@ jest.mock('valtio', () => ({
 }));
 
 // Mock ConnectionsController
-jest.mock(
-  '@reown/appkit-core-react-native',
-  () => ({
-    ConnectionsController: {
-      state: {}
-    },
-    CoreHelperUtil: {
-      getPlainAddress: jest.fn((address?: string) => address?.split(':')[2])
-    },
-    LogController: {
-      sendError: jest.fn()
-    }
-  }),
-  { virtual: true }
-);
+jest.mock('@reown/appkit-core-react-native', () => ({
+  ConnectionsController: {
+    state: {}
+  },
+  CoreHelperUtil: {
+    getPlainAddress: jest.fn((address?: string) => address?.split(':')[2])
+  },
+  LogController: {
+    sendError: jest.fn()
+  }
+}));
 
 const mainnet = { id: 1, caipNetworkId: 'eip155:1', name: 'Ethereum', chainNamespace: 'eip155' };
 const polygon = { id: 137, caipNetworkId: 'eip155:137', name: 'Polygon', chainNamespace: 'eip155' };

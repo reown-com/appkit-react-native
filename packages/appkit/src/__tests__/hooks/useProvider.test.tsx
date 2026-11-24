@@ -11,18 +11,14 @@ jest.mock('valtio', () => ({
 }));
 
 // Mock ConnectionsController
-jest.mock(
-  '@reown/appkit-core-react-native',
-  () => ({
-    ConnectionsController: {
-      state: { connection: undefined }
-    },
-    LogController: {
-      sendError: jest.fn()
-    }
-  }),
-  { virtual: true }
-);
+jest.mock('@reown/appkit-core-react-native', () => ({
+  ConnectionsController: {
+    state: { connection: undefined }
+  },
+  LogController: {
+    sendError: jest.fn()
+  }
+}));
 
 const setConnection = (connection: unknown) => {
   (ConnectionsController as { state: unknown }).state = { connection };
