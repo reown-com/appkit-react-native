@@ -25,6 +25,8 @@
     "target": "esnext",
     "verbatimModuleSyntax": true,
     "paths": {
+      // Test fakes shared by the packages' Jest tests (see test-utils/)
+      "@shared-test-utils/*": ["./test-utils/*"],
       // apps/native imports a bitcoinjs-lib subpath that is only exposed through package.json
       // "exports", which "moduleResolution": "node" does not read. Map it to its CJS typings,
       // whether yarn hoists the package to the root or keeps it under apps/native.
