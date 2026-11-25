@@ -66,34 +66,37 @@ export function AllWalletList({ itemStyle, onWalletPress }: Props) {
     }
   }, [prefetchLoading, list]);
 
+  // The modal opens before the prefetch ends, so show the loaders even while the list is empty
+  if (prefetchLoading) {
+    return (
+      <>
+        <ListItemLoader style={itemStyle} />
+        <ListItemLoader style={itemStyle} />
+      </>
+    );
+  }
+
   if (!list?.length) {
     return null;
   }
 
-  return prefetchLoading ? (
-    <>
-      <ListItemLoader style={itemStyle} />
-      <ListItemLoader style={itemStyle} />
-    </>
-  ) : (
-    list.map((wallet, index) => {
-      const isRecent = recentWallets?.some(recentWallet => recentWallet.id === wallet.id);
-      //eslint-disable-next-line valtio/state-snapshot-rule
-      const isInstalled = !!installed.find(installedWallet => installedWallet.id === wallet.id);
+  return list.map((wallet, index) => {
+    const isRecent = recentWallets?.some(recentWallet => recentWallet.id === wallet.id);
+    //eslint-disable-next-line valtio/state-snapshot-rule
+    const isInstalled = !!installed.find(installedWallet => installedWallet.id === wallet.id);
 
-      return (
-        <ListWallet
-          key={wallet?.id}
-          imageSrc={AssetUtil.getWalletImage(wallet, walletImages)}
-          imageHeaders={imageHeaders}
-          name={wallet?.name ?? 'Unknown'}
-          onPress={() => onWalletPress(wallet, index, isInstalled)}
-          tagLabel={isRecent ? 'Recent' : undefined}
-          tagVariant={isRecent ? 'shade' : undefined}
-          style={itemStyle}
-          installed={isInstalled}
-        />
-      );
-    })
-  );
+    return (
+      <ListWallet
+        key={wallet?.id}
+        imageSrc={AssetUtil.getWalletImage(wallet, walletImages)}
+        imageHeaders={imageHeaders}
+        name={wallet?.name ?? 'Unknown'}
+        onPress={() => onWalletPress(wallet, index, isInstalled)}
+        tagLabel={isRecent ? 'Recent' : undefined}
+        tagVariant={isRecent ? 'shade' : undefined}
+        style={itemStyle}
+        installed={isInstalled}
+      />
+    );
+  });
 }

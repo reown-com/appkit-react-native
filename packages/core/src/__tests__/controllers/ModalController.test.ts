@@ -1,5 +1,5 @@
 import { resetControllers } from '@shared-jest-setup';
-import { ModalController } from '../../index';
+import { ApiController, ModalController } from '../../index';
 
 // -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {
@@ -15,6 +15,21 @@ describe('ModalController', () => {
   it('should update state correctly on close()', async () => {
     await ModalController.open();
     ModalController.close();
+    expect(ModalController.state.open).toEqual(false);
+  });
+
+  it('opens without waiting for the prefetch, and a close() keeps it closed', async () => {
+    let finishPrefetch!: () => void;
+    ApiController.state.prefetchPromise = new Promise<void>(resolve => {
+      finishPrefetch = resolve;
+    });
+
+    const opening = ModalController.open();
+    expect(ModalController.state.open).toEqual(true);
+
+    ModalController.close();
+    finishPrefetch();
+    await opening;
     expect(ModalController.state.open).toEqual(false);
   });
 

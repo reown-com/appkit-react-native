@@ -18,8 +18,9 @@ export function AllWalletsButton({ itemStyle, onPress }: Props) {
     <ListWallet
       name="All wallets"
       showAllWallets
-      tagLabel={String(label)}
-      tagVariant="shade"
+      // No count until the wallets load (the modal opens before the prefetch ends)
+      tagLabel={total > 0 ? String(label) : undefined}
+      tagVariant={total > 0 ? 'shade' : undefined}
       onPress={onPress}
       style={itemStyle}
       testID="all-wallets"

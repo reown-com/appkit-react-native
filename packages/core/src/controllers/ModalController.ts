@@ -2,7 +2,6 @@ import { proxy } from 'valtio';
 import { RouterController, type RouterControllerState } from './RouterController';
 import { PublicStateController } from './PublicStateController';
 import { EventsController } from './EventsController';
-import { ApiController } from './ApiController';
 import { ConnectionsController } from './ConnectionsController';
 
 // -- Types --------------------------------------------- //
@@ -29,8 +28,8 @@ const state = proxy<ModalControllerState>({
 export const ModalController = {
   state,
 
+  // Opens right away. Views show their own loading state while ApiController.prefetch() runs.
   async open(options?: ModalControllerArguments['open']) {
-    await ApiController.state.prefetchPromise;
     const isConnected = ConnectionsController.state.isConnected;
     const isUniversalWallet = !!ConnectionsController.state.connection?.properties?.provider;
     if (options?.view) {
