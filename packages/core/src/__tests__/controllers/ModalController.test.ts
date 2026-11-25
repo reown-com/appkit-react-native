@@ -18,33 +18,19 @@ describe('ModalController', () => {
     expect(ModalController.state.open).toEqual(false);
   });
 
-  it('stays closed when close() runs while open() waits for the prefetch', async () => {
+  it('opens without waiting for the prefetch, and a close() keeps it closed', async () => {
     let finishPrefetch!: () => void;
     ApiController.state.prefetchPromise = new Promise<void>(resolve => {
       finishPrefetch = resolve;
     });
 
     const opening = ModalController.open();
+    expect(ModalController.state.open).toEqual(true);
+
     ModalController.close();
     finishPrefetch();
     await opening;
-
     expect(ModalController.state.open).toEqual(false);
-  });
-
-  it('opens when open() is called again after a close() during the wait', async () => {
-    let finishPrefetch!: () => void;
-    ApiController.state.prefetchPromise = new Promise<void>(resolve => {
-      finishPrefetch = resolve;
-    });
-
-    const firstOpen = ModalController.open();
-    ModalController.close();
-    const secondOpen = ModalController.open();
-    finishPrefetch();
-    await Promise.all([firstOpen, secondOpen]);
-
-    expect(ModalController.state.open).toEqual(true);
   });
 
   it('should shake for a moment and ignore shakes while shaking', () => {

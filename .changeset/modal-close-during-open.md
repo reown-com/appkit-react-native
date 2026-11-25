@@ -10,8 +10,9 @@
 '@reown/appkit-wagmi-react-native': patch
 ---
 
-fix(core): keep the modal closed when it is closed while opening
+fix: open the modal right away instead of waiting for the wallet prefetch
 
-`ModalController.open` waits for the initial data prefetch before showing the modal.
-If `close()` ran during that wait, the modal still opened once the prefetch finished.
-An `open()` call now does nothing if `close()` or another `open()` ran while it waited.
+`ModalController.open` waited up to 3 seconds for the initial data prefetch before
+showing the modal, with no feedback, and a `close()` during that wait was ignored.
+The modal now opens immediately and the connect view shows loading placeholders
+until the wallets arrive. The "All wallets" count is hidden until it is known.
