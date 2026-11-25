@@ -8,7 +8,8 @@ import {
   ModalController,
   OptionsController,
   RouterController,
-  StorageUtil
+  StorageUtil,
+  TransactionsController
 } from '@reown/appkit-core-react-native';
 import type { AppKitNetwork, Namespaces, Storage } from '@reown/appkit-common-react-native';
 
@@ -88,6 +89,8 @@ describe('AppKit connection lifecycle', () => {
     getConnectedSpy = jest.spyOn(StorageUtil, 'getConnectedConnectors').mockResolvedValue([]);
     removeConnectedSpy = jest.spyOn(StorageUtil, 'removeConnectedConnectors').mockResolvedValue();
     jest.spyOn(BlockchainApiController, 'fetchIdentity').mockResolvedValue(undefined as any);
+    // A chain change fetches the account history, which would call the real API
+    jest.spyOn(TransactionsController, 'fetchTransactions').mockResolvedValue();
   });
 
   afterEach(async () => {
