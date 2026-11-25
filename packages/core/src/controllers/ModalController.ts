@@ -25,12 +25,20 @@ const state = proxy<ModalControllerState>({
   shake: false
 });
 
+// open() waits for the prefetch before showing the modal. Each open() and close() bumps this id,
+// so an open() that finishes waiting after a newer close() or open() does nothing.
+let latestRequestId = 0;
+
 // -- Controller ---------------------------------------- //
 export const ModalController = {
   state,
 
   async open(options?: ModalControllerArguments['open']) {
+    const requestId = ++latestRequestId;
     await ApiController.state.prefetchPromise;
+    if (requestId !== latestRequestId) {
+      return;
+    }
     const isConnected = ConnectionsController.state.isConnected;
     const isUniversalWallet = !!ConnectionsController.state.connection?.properties?.provider;
     if (options?.view) {
@@ -54,6 +62,7 @@ export const ModalController = {
   },
 
   close() {
+    latestRequestId++;
     const connected = ConnectionsController.state.isConnected;
     state.open = false;
     PublicStateController.set({ open: false });
