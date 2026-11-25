@@ -92,6 +92,25 @@ describe('DeeplinkConnector', () => {
     expect(onDisconnect).not.toHaveBeenCalled();
   });
 
+  it('keeps the adapter listeners after switching network', async () => {
+    await connect();
+    const provider = connector.getProvider();
+    // The adapter subscribes to these when the wallet connects
+    const onChainChanged = jest.fn();
+    const onAccountsChanged = jest.fn();
+    provider.on('chainChanged', onChainChanged);
+    provider.on('accountsChanged', onAccountsChanged);
+
+    track(connector.switchNetwork(solanaDevnet));
+    await flushPromises();
+
+    expect(onChainChanged).toHaveBeenCalledWith(solanaDevnet.id);
+
+    // Wallet events after the switch still reach the adapter
+    provider.emit('accountsChanged', ['address']);
+    expect(onAccountsChanged).toHaveBeenCalledWith(['address']);
+  });
+
   describe('restoreSession', () => {
     const storeCorruptedSession = () => {
       // A session the provider can read but that can't be used (no user public key)
