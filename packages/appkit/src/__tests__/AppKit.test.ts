@@ -4,6 +4,7 @@ import {
   LogController,
   ModalController,
   OptionsController,
+  SnackController,
   StorageUtil
 } from '@reown/appkit-core-react-native';
 import type {
@@ -222,6 +223,8 @@ describe('AppKit connect', () => {
     for (const namespace of ConnectionsController.state.connections.keys()) {
       await ConnectionsController.disconnect(namespace, false);
     }
+    // Error snacks schedule a hide timer that would keep Jest running after the tests
+    SnackController.hide();
     jest.restoreAllMocks();
   });
 
