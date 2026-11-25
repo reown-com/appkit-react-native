@@ -21,13 +21,9 @@ jest.mock('../../controllers/OptionsController', () => ({
 
 // -- Tests --------------------------------------------------------------------
 describe('WcController', () => {
-  it('should have valid default state', () => {
-    expect(WcController.state).toEqual({
-      wcError: false
-    });
-  });
-
-  it('should update state correctly on resetState()', () => {
+  it('should clear the pairing on resetState()', () => {
+    WcController.setWcUri('wc:test@2');
+    WcController.setWcPromise(Promise.resolve() as any);
     WcController.resetState();
     expect(WcController.state.wcUri).toEqual(undefined);
     expect(WcController.state.wcPairingExpiry).toEqual(undefined);

@@ -73,14 +73,6 @@ onrampTest.afterAll(async () => {
  * - Checkout flow
  */
 
-onrampTest('Should be able to open buy crypto modal', async () => {
-  await onRampValidator.expectOnRampInitialScreen();
-});
-
-onrampTest('Should display loading view when initializing', async () => {
-  await onRampValidator.expectOnRampInitialScreen();
-});
-
 onrampTest('Should be able to select a purchase currency', async () => {
   await onRampPage.clickSelectCurrency();
   await onRampValidator.expectCurrencySelectionModal();
@@ -91,48 +83,18 @@ onrampTest('Should be able to select a purchase currency', async () => {
 onrampTest('Should be able to select a payment method', async () => {
   await onRampPage.enterAmount(200);
   await onRampValidator.expectQuotesLoaded();
-  try {
-    await onRampPage.clickPaymentMethod();
-    await onRampValidator.expectPaymentMethodModal();
-    await onRampPage.selectPaymentMethod('Apple Pay');
-    await onRampPage.selectQuote(0);
-    await onRampValidator.expectOnRampInitialScreen();
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log('Payment method selection failed');
-    throw error;
-  }
-});
-
-onrampTest('Should proceed to checkout when continue button is clicked', async () => {
-  test.setTimeout(60000); // Extend timeout for this test
-
-  await onRampPage.enterAmount(100);
-
-  try {
-    await onRampValidator.expectQuotesLoaded();
-    await onRampPage.clickContinue();
-    await onRampValidator.expectCheckoutScreen();
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log('Checkout process failed, likely API issue');
-    throw error;
-  }
-  await modalPage.goBack();
+  await onRampPage.clickPaymentMethod();
+  await onRampValidator.expectPaymentMethodModal();
+  await onRampPage.selectPaymentMethod('Apple Pay');
+  await onRampPage.selectQuote(0);
+  await onRampValidator.expectOnRampInitialScreen();
 });
 
 onrampTest('Should be able to navigate to onramp settings', async () => {
-  try {
-    await onRampPage.openSettings();
-    await onRampValidator.expectSettingsScreen();
-    // Go back to main screen
-    await modalPage.goBack();
-    await onRampValidator.expectOnRampInitialScreen();
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log('Settings navigation failed');
-    throw error;
-  }
+  await onRampPage.openSettings();
+  await onRampValidator.expectSettingsScreen();
+  await modalPage.goBack();
+  await onRampValidator.expectOnRampInitialScreen();
 });
 
 onrampTest('Should be able to select a country and see currency update', async () => {
@@ -152,22 +114,18 @@ onrampTest('Should be able to select a country and see currency update', async (
 });
 
 onrampTest('Should display appropriate error messages for invalid amounts', async () => {
-  try {
-    // Test too low amount
-    await onRampPage.enterAmount(1);
-    await onRampValidator.expectAmountError();
+  // Too low
+  await onRampPage.enterAmount(1);
+  await onRampValidator.expectAmountError();
 
-    // Test too high amount
-    await onRampPage.enterAmount(50000);
-    await onRampValidator.expectAmountError();
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log('Amount error testing failed, API might accept these values');
-    throw error;
-  }
+  // Too high
+  await onRampPage.enterAmount(50000);
+  await onRampValidator.expectAmountError();
 });
 
-onrampTest('Should navigate to a loading view after checkout', async () => {
+onrampTest('Should go through checkout to the loading view', async () => {
+  test.setTimeout(60000);
+
   await onRampPage.enterAmount(100);
   await onRampValidator.expectQuotesLoaded();
   await onRampPage.clickContinue();

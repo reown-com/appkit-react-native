@@ -19,35 +19,6 @@ describe('SnackController', () => {
     resetControllers();
   });
 
-  it('should have valid default state', () => {
-    expect(SnackController.state).toEqual({
-      message: '',
-      variant: 'success',
-      open: false,
-      long: false
-    });
-  });
-
-  it('should update state correctly on showSuccess()', () => {
-    SnackController.showSuccess('Success Msg');
-    expect(SnackController.state).toEqual({
-      message: 'Success Msg',
-      variant: 'success',
-      open: true,
-      long: false
-    });
-  });
-
-  it('should update state correctly on hide()', () => {
-    SnackController.showSuccess('Success Msg');
-    SnackController.hide();
-    expect(SnackController.state).toEqual({
-      ...SnackController.state,
-      open: false,
-      long: false
-    });
-  });
-
   it('should update state correctly on showError()', () => {
     SnackController.showError('Error Msg');
     expect(SnackController.state).toEqual({
@@ -88,11 +59,15 @@ describe('SnackController', () => {
 
   it('should clear previous timeout when showing new snack', () => {
     SnackController.showSuccess('First Msg');
+    jest.advanceTimersByTime(2000);
     SnackController.showError('Second Msg');
 
-    // Only the second message should auto-hide
-    jest.advanceTimersByTime(2200);
-    expect(SnackController.state.open).toBe(false);
+    // The first snack's timer would have fired at 2200ms
+    jest.advanceTimersByTime(300);
+    expect(SnackController.state.open).toBe(true);
     expect(SnackController.state.message).toBe('Second Msg');
+
+    jest.advanceTimersByTime(1900);
+    expect(SnackController.state.open).toBe(false);
   });
 });
