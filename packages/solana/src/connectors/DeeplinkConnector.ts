@@ -158,6 +158,20 @@ export abstract class DeeplinkConnector extends WalletConnector {
   }
 
   override async disconnect(): Promise<void> {
+    await this.disconnectWallet();
+
+    // Cleanup provider resources
+    if (this.provider) {
+      (this.provider as DeeplinkProvider).destroy();
+    }
+
+    await this.clearSession();
+  }
+
+  /**
+   * Ends the wallet session but keeps the provider and its listeners.
+   */
+  private async disconnectWallet(): Promise<void> {
     try {
       if (this.isConnected()) {
         await super.disconnect();
@@ -167,13 +181,6 @@ export abstract class DeeplinkConnector extends WalletConnector {
         `${this.type} Connector: Error during provider disconnect: ${error.message}. Proceeding with local clear.`
       );
     }
-
-    // Cleanup provider resources
-    if (this.provider) {
-      (this.provider as DeeplinkProvider).destroy();
-    }
-
-    await this.clearSession();
   }
 
   private async clearSession(): Promise<void> {
@@ -257,7 +264,9 @@ export abstract class DeeplinkConnector extends WalletConnector {
     }
 
     // Phantom/Solflare don't provide a way to switch network, so we need to disconnect and reconnect.
-    await this.disconnect(); // Clear current session
+    // Don't use disconnect(): it destroys the provider, dropping the adapter's listeners.
+    await this.disconnectWallet();
+    await this.clearSession();
 
     // Create a temporary options object to guide the new connection
     const tempConnectOpts: ConnectOptions = {
