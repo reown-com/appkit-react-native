@@ -2,6 +2,7 @@
 .github/
 .maestro/
 .cursor/
+.claude/
 .turbo/
 .vscode/
 .yarn/
