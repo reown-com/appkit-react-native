@@ -110,3 +110,8 @@ Rules:
 4. **Related packages** — update families together (e.g. `storybook` + all `@storybook/*` addons to the same version).
 5. **Never bump major versions** — patch/minor only.
 6. Run `yarn format` before committing.
+
+## Pull Requests
+
+- Opening a PR or refreshing its description: `/pr-handoff` (`.claude/skills/pr-handoff/`), which writes the agent blocks through `/visual-recap`.
+- `Why`, `Decisions`, `Worth looking at` and the Breaking change checkbox in `.github/pull_request_template.md` are author-owned. Never write them unless the author supplies or approves the exact text in the current conversation.
